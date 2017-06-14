@@ -2,6 +2,7 @@
 
 #ifdef _WIN32
 #include <direct.h>
+#include <algorithm>
 #else
 #include <limits.h>
 #include <stdlib.h>

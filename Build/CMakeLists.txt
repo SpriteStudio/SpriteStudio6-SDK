@@ -2,8 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(sssdk)
 
 IF (WIN32)
-#SET(BOOST_ROOT "C:/boost-1_56_0")
-SET(BOOST_ROOT "C:/Boost/include/boost-1_56/")
+#SET(BOOST_ROOT "C:/boost-1_64_0")
+SET(BOOST_ROOT "C:/Boost/include/boost-1_64/")
 SET(BOOST_PYTHON_LIB "C:/Boost/lib" )
 SET(PYTHON_IHNCLUDE "C:/Python27/include")
 
@@ -143,7 +143,7 @@ ADD_EXECUTABLE(viewer_sample_dx9
 #ENDIF(WIN32)
 
 
-ADD_EXECUTABLE(Ss5Converter
+ADD_EXECUTABLE(Ss6Converter
 ./Converter/main.cpp
 ./Converter/BinaryDataWriter.cpp
 ./Converter/BinaryDataWriter.h
@@ -207,7 +207,7 @@ target_link_libraries(viewer_sample_dx9 ${LINK_LIB1} ${LINK_LIB2} ${LINK_LIB3} $
 ENDIF()
 
 
-target_link_libraries(Ss5Converter ${LINK_LIB1} ${LINK_LIB2} ${LINK_LIB3} )
+target_link_libraries(Ss6Converter ${LINK_LIB1} ${LINK_LIB2} ${LINK_LIB3} )
 
 
 
