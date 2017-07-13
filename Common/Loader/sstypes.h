@@ -555,6 +555,7 @@ namespace SsAttributeKind
 		user,		///< [USER]ユーザーデータ
 		instance,	///< [IPRM]インスタンスパーツパラメータ
 		effect,		///< [EFCT]エフェクトパラメータ
+		mask,
 		num,
 	};
 };

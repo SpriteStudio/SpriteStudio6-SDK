@@ -265,6 +265,61 @@ void	SsRenderGL::SetTexture( SsCellValue* cellvalue )
 }
 
 
+void	SsRenderGL::MaskExec(SsPartState* state)
+{
+
+	glEnable(GL_STENCIL_TEST);
+	if (state->partType == SsPartType::mask)
+	{
+
+		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+		//if (!(state->maskInfluence && state->getMaskParentSetting())) { //マスクが有効では無い＝重ね合わせる
+		if (!(state->maskInfluence )) { //マスクが有効では無い＝重ね合わせる
+
+			glStencilFunc(GL_ALWAYS, 1, ~0);  //常に通過
+			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+			//描画部分を1へ
+		}
+		else {
+			glStencilFunc(GL_ALWAYS, 1, ~0);  //常に通過
+			glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+		}
+
+
+		glEnable(GL_ALPHA_TEST);
+
+		//この設定だと
+		//1.0fでは必ず抜けないため非表示フラグなし（＝1.0f)のときの挙動は考えたほうがいい
+
+		//不透明度からマスク閾値へ変更
+		float mask_alpha = (float)(255 - state->masklimen ) / 255.0f;
+		glAlphaFunc(GL_GREATER, mask_alpha);
+		;
+		state->alpha = 1.0f;
+	}
+	else {
+
+		//if ((state->maskInfluence && state->getMaskParentSetting())) //パーツに対してのマスクが有効か否か
+		if ((state->maskInfluence )) //パーツに対してのマスクが有効か否か
+		{
+			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+			glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);  //1と等しい
+			glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		}
+		else {
+			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+			glDisable(GL_STENCIL_TEST);
+		}
+
+		// 常に無効
+		glDisable(GL_ALPHA_TEST);
+
+	}
+
+}
+
+
 void	SsRenderGL::renderPart( SsPartState* state )
 {
 	bool texture_is_pow2 = true;

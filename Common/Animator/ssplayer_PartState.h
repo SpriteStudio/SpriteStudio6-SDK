@@ -69,6 +69,10 @@ struct SsPartState
 
 	SsPartType::_enum partType;
 
+	int				masklimen;
+	bool			maskInfluence;
+
+
 	SsPartState();
 
 	virtual ~SsPartState();

@@ -124,6 +124,9 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 		partState[i].inheritRates = p->inheritRates;
 		partState[i].index = i;
 		partState[i].partType = p->type;
+		partState[i].maskInfluence = p->maskInfluence;
+
+
 		if (sspj)
 		{
 			//インスタンスパーツの場合の初期設定
@@ -525,7 +528,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 
 	bool hidekey_find = false;
 	bool hideTriger = false;
-
+	state->masklimen = 0;
 
 	if ( !anime->attributes.empty() )
 	{
@@ -678,6 +681,9 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 							}
 						}
 					}
+					break;
+				case SsAttributeKind::mask:
+					SsGetKeyValue(nowTime, attr, state->masklimen);
 					break;
 
 			}

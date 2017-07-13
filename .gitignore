@@ -70,3 +70,4 @@ Build/ssloader.dir/
 Build/viewer_sample_dx9.dir/
 Build/viewer_sample_gl.dir/
 Build/
+*.log

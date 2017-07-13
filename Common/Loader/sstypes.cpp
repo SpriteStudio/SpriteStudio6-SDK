@@ -260,6 +260,9 @@ SsString	__EnumToString_( SsAttributeKind::_enum n )
 	if ( SsAttributeKind::boundr )		return "BNDR";
 	if ( SsAttributeKind::user )		return "USER";
 	if ( SsAttributeKind::instance )    return "IPRM";
+	if ( SsAttributeKind::mask)    return "MASK";
+	
+
 
 	return "invalid";	
 }
@@ -302,6 +305,8 @@ void	__StringToEnum_( SsString n , SsAttributeKind::_enum &out )
 	if ( n == "USER") out = SsAttributeKind::user;
 	if ( n == "IPRM") out = SsAttributeKind::instance;
 	if ( n == "EFCT") out = SsAttributeKind::effect;
+	if (n == "MASK") out = SsAttributeKind::mask;
+
 
 }
 
