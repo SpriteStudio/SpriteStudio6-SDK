@@ -12,7 +12,13 @@ SsString	__EnumToString_( SsPartType::_enum n )
 	if ( SsPartType::instance ) return "instance";
 	if ( SsPartType::effect ) return "effect";
 
-	
+	if (SsPartType::mesh) return "mesh";
+	if (SsPartType::movenode) return "movenode";
+	if (SsPartType::constraint) return "constraint";
+	if (SsPartType::mask) return "mask";
+	if (SsPartType::joint) return "joint";
+	if (SsPartType::bonepoint) return "bonepoint";
+
 
 	return "invalid";	
 }
@@ -26,6 +32,15 @@ void 	__StringToEnum_( SsString n , SsPartType::_enum& out)
 	if ( n == "text") out = SsPartType::text;
 	if ( n == "instance") out = SsPartType::instance;
 	if ( n == "effect") out = SsPartType::effect;
+
+	if (n == "mesh") out = SsPartType::mesh;
+	if (n == "movenode") out = SsPartType::movenode;
+	if (n == "constraint") out = SsPartType::constraint;
+	if (n == "mask") {
+		out = SsPartType::mask;
+	}
+	if (n == "joint") out = SsPartType::joint;
+	if (n == "bonepoint") out = SsPartType::bonepoint;
 
 }
 

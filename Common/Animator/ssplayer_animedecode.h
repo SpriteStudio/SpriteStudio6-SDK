@@ -53,6 +53,8 @@ private:
 
 	SsPartState*					partState;			///パーツの現在の状態が格納されています。
 	std::list<SsPartState*>			sortList;			///ソート状態
+	std::list<SsPartState*>			partStatesMask_;			///マスクテンポラリ
+	std::vector<SsPartState*>		maskIndexList;
 
 
 	int				seedOffset;							//エフェクトのシードへ影響

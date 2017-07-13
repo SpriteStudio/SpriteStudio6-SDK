@@ -207,7 +207,7 @@ template <> inline SsString& SsValue::get<SsString>() {
 		}else if ( this->type == int_type )
 		{
 #ifdef _WIN32
-            ret = std::to_string( (long long)_int);
+            ret = std::to_string( (int)_int);
 #else
             ret = std::to_string( (int)(_int) );
 #endif

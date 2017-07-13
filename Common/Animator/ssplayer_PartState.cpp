@@ -83,6 +83,8 @@ void	SsPartState::init()
 	instanceValue.startFrame = 0;
 	instanceValue.endFrame = 0;
 //	instanceValue.liveFrame = 0.0f;	//‰ÁZ’l‚È‚Ì‚Å‰Šú‰»‚µ‚Ä‚Í‚¢‚¯‚È‚¢
+	
+	partType = SsPartType::normal;
 
 
 }
