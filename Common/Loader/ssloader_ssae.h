@@ -58,9 +58,12 @@ public:
 
 	SsString        colorLabel;		///< カラーラベル
 
+	bool			maskInfluence;			///< マスクの影響を受けるかどうか
+
+
 public:
 	SsPart() : 
-	  name("") , arrayIndex(0), parentIndex(0) , show(0) , locked(0)
+	  name("") , arrayIndex(0), parentIndex(0) , show(0) , locked(0) , maskInfluence(true)
 	  {
 			//memset( inheritRates , 0 , sizeof( float) * SsAttributeKind::num );
 			for (int i = 0; i < (int)SsAttributeKind::num ; ++i)
@@ -124,6 +127,7 @@ public:
 			}
 		}
 
+		SSAR_DECLARE(maskInfluence);
 	}
 };
 

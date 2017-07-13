@@ -67,6 +67,7 @@ struct SsPartState
 	SsVector3		_temp_rotation;
 	SsVector2		_temp_scale;
 
+	SsPartType::_enum partType;
 
 	SsPartState();
 

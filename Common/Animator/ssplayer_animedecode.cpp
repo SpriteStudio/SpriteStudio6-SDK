@@ -101,6 +101,7 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	partState = new SsPartState[partNum]();
 	sortList.clear();
 	partAnime.clear();
+	partStatesMask_.clear();
 
 	for ( size_t i = 0 ; i < partNum ; i++ ) 
 	{
@@ -122,7 +123,7 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 		//継承率の設定
 		partState[i].inheritRates = p->inheritRates;
 		partState[i].index = i;
-
+		partState[i].partType = p->type;
 		if (sspj)
 		{
 			//インスタンスパーツの場合の初期設定
@@ -160,6 +161,12 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 
 					partState[i].refEffect = er;
 				}
+			}
+
+			//マスクパーツの追加
+			if (p->type == SsPartType::mask )
+			{
+				partStatesMask_.push_back( &partState[i]);
 			}
 		}
 
@@ -1204,6 +1211,14 @@ void	SsAnimeDecoder::update(float frameDelta)
 	}
 
 	sortList.sort(_ssPartStateLess);
+	partStatesMask_.sort(_ssPartStateLess);
+
+	maskIndexList.clear();
+	for ( auto it = partStatesMask_.begin(); it != partStatesMask_.end(); ++it)
+	{
+		SsPartState * ps = (*it);
+		maskIndexList.push_back(ps);
+	}
 
 	//今回再生した時間を保存しておく
 	nowPlatTimeOld = nowPlatTime;
@@ -1253,6 +1268,19 @@ void	SsAnimeDecoder::draw()
 
 	SsCurrentRenderer::getRender()->renderSetup();
 
+	//初期に適用されているマスクを精製
+	for (size_t i = 0; i < maskIndexList.size(); i++)
+	{
+		SsPartState * ps = maskIndexList[i];
+
+		if (!ps->hide)
+		{
+			//ステンシルバッファの作成
+			//ps->draw(_root_alpha, renderTexture);
+		}
+	}
+
+
 	foreach( std::list<SsPartState*> , sortList , e )
 	{
 		SsPartState* state = (*e);
@@ -1269,6 +1297,28 @@ void	SsAnimeDecoder::draw()
 			{
 				state->refEffect->draw();
 			}
+		}
+		else if ( state->partType == SsPartType::mask )
+		{
+/*			
+			//一度ステンシルを消し、最下層から消し再構築する
+
+			glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+			mask_index++;	//0番は処理しないので先にインクメントする
+
+			for (size_t i = mask_index; i < maskIndexList.size(); i++)
+			{
+				SsPartState * ps2 = maskIndexList[i];
+				if (!ps2->hide)
+				{
+					ps2->draw(_root_alpha, renderTexture);
+				}
+			}
+
+			glFlush();
+*/
+
 		}else
 		{
 			SsCurrentRenderer::getRender()->renderPart(state);
