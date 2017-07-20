@@ -1306,7 +1306,7 @@ void	SsAnimeDecoder::draw()
 		else if ( state->partType == SsPartType::mask )
 		{
 
-			SsCurrentRenderer::getRender()->resetMask();
+			SsCurrentRenderer::getRender()->clearMask();
 			mask_index++;	//0番は処理しないので先にインクメントする
 
 			for (size_t i = mask_index; i < maskIndexList.size(); i++)

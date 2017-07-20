@@ -20,7 +20,7 @@ public:
 
 	//未実装
 	virtual void	execMask(SsPartState* state) {}
-	virtual void	resetMask() {}
+	virtual void	clearMask() {}
 	virtual void	enableMask(bool flag) {}
 
 

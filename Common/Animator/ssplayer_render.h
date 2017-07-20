@@ -16,7 +16,7 @@ public:
 	virtual void	renderSetup() = 0;
 	virtual void	renderPart(SsPartState* state) = 0;
 	virtual void	execMask(SsPartState* state) = 0;
-	virtual void	resetMask() = 0;
+	virtual void	clearMask() = 0;
 
 	virtual void	renderSpriteSimple( float matrix[16], 
 										int width, int height, 

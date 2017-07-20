@@ -264,7 +264,7 @@ void	SsRenderGL::SetTexture( SsCellValue* cellvalue )
 
 }
 
-void	SsRenderGL::resetMask()
+void	SsRenderGL::clearMask()
 {
 
 	glClear(  GL_STENCIL_BUFFER_BIT );
@@ -280,6 +280,7 @@ void	SsRenderGL::enableMask(bool flag)
 		glEnable(GL_STENCIL_TEST);
 	}else{
 		glDisable(GL_STENCIL_TEST);
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	}
 }
 
