@@ -55,7 +55,13 @@ static void	update()
 
 	task_manager_singleton::getinst()->exec_resist_tasks(delta);
 
-	glClear( GL_COLOR_BUFFER_BIT );
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+	//glClear(GL_COLOR_BUFFER_BIT);
+	glDisable(GL_STENCIL_TEST);
+	glEnable(GL_DEPTH_TEST);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+
 	glClearColor( bgColor[0] , bgColor[1] , bgColor[2] , 1.0f );
 
 	task_manager_singleton::getinst()->draw_resist_tasks();
@@ -173,6 +179,9 @@ int main(void)
    // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #endif
 
+	glfwWindowHint(GLFW_DEPTH_BITS, 24);
+	glfwWindowHint(GLFW_STENCIL_BITS, 1);
+
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(800, 600, "Sprite Studio Viewer Sample", NULL, NULL);
     if (!window)
@@ -213,6 +222,8 @@ int main(void)
     // - Directly redirect GLFW char events to AntTweakBar
 
 	glfwSetCharCallback(window ,CharFunCB);
+
+
 
 #ifdef _WIN32
 	//initialize of GLEW

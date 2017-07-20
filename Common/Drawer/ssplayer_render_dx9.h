@@ -17,6 +17,13 @@ public:
 	virtual void	initialize();
 	virtual void	renderSetup();
 	virtual void	renderPart( SsPartState* state );
+
+	//未実装
+	virtual void	execMask(SsPartState* state) {}
+	virtual void	resetMask() {}
+	virtual void	enableMask(bool flag) {}
+
+
 	virtual void	renderSpriteSimple( float matrix[16], 
 										int width, int height, 
 										SsVector2& pivot , 

@@ -781,7 +781,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 	}
 
 	// 頂点の設定
-	if ( part->type == SsPartType::normal )
+	if ( part->type == SsPartType::normal || part->type == SsPartType::mask )
 	{
 		SsCell * cell = state->cellValue.cell;
 		if (cell && anime)
@@ -1282,10 +1282,12 @@ void	SsAnimeDecoder::draw()
 		if (!ps->hide)
 		{
 			//ステンシルバッファの作成
-			//ps->draw(_root_alpha, renderTexture);
+			//ps->partType = SsPartType::mask;
+			SsCurrentRenderer::getRender()->renderPart(ps);
 		}
 	}
 
+	int mask_index = 0;
 
 	foreach( std::list<SsPartState*> , sortList , e )
 	{
@@ -1299,13 +1301,23 @@ void	SsAnimeDecoder::draw()
 
 		}else if ( state->refEffect )
 		{
-			//if ( state->refEffect->getEffectData()->effectName == "001c" )
-			{
-				state->refEffect->draw();
-			}
+			state->refEffect->draw();
 		}
 		else if ( state->partType == SsPartType::mask )
 		{
+
+			SsCurrentRenderer::getRender()->resetMask();
+			mask_index++;	//0番は処理しないので先にインクメントする
+
+			for (size_t i = mask_index; i < maskIndexList.size(); i++)
+			{
+				SsPartState * ps2 = maskIndexList[i];
+				if (!ps2->hide)
+				{
+					SsCurrentRenderer::getRender()->renderPart(ps2);
+				}
+			}
+
 /*			
 			//一度ステンシルを消し、最下層から消し再構築する
 
@@ -1330,5 +1342,7 @@ void	SsAnimeDecoder::draw()
 			SsCurrentRenderer::getRender()->renderPart(state);
 		}
 	}
+
+	SsCurrentRenderer::getRender()->enableMask(false);
 }
 

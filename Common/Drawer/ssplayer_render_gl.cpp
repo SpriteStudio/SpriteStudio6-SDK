@@ -264,12 +264,31 @@ void	SsRenderGL::SetTexture( SsCellValue* cellvalue )
 
 }
 
+void	SsRenderGL::resetMask()
+{
 
-void	SsRenderGL::MaskExec(SsPartState* state)
+	glClear(  GL_STENCIL_BUFFER_BIT );
+
+	enableMask(false);
+}
+
+void	SsRenderGL::enableMask(bool flag)
+{
+
+	if (flag)
+	{
+		glEnable(GL_STENCIL_TEST);
+	}else{
+		glDisable(GL_STENCIL_TEST);
+	}
+}
+
+void	SsRenderGL::execMask(SsPartState* state)
 {
 
 	glEnable(GL_STENCIL_TEST);
 	if (state->partType == SsPartType::mask)
+	//if(0)
 	{
 
 		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -344,6 +363,9 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	SsPoint2 texturePixelSize;
 	texturePixelSize.x = state->cellValue.texture->getWidth();
 	texturePixelSize.y = state->cellValue.texture->getHeight();
+
+	execMask(state);
+
 
 	if (cell)
 	{

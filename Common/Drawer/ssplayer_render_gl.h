@@ -26,7 +26,12 @@ public:
 
 	virtual void	SetAlphaBlendMode(SsBlendType::_enum type);
 	virtual void	SetTexture( SsCellValue* cell );
-	virtual void	MaskExec(SsPartState* state);
+	virtual void	execMask(SsPartState* state);
+	virtual void	resetMask();
+	virtual void	enableMask(bool flag);
+
+
+
 
 
 

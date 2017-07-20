@@ -15,6 +15,8 @@ public:
 	virtual void	initialize() = 0;
 	virtual void	renderSetup() = 0;
 	virtual void	renderPart(SsPartState* state) = 0;
+	virtual void	execMask(SsPartState* state) = 0;
+	virtual void	resetMask() = 0;
 
 	virtual void	renderSpriteSimple( float matrix[16], 
 										int width, int height, 
@@ -24,7 +26,7 @@ public:
 
 	virtual void	SetAlphaBlendMode(SsBlendType::_enum type)=0;
 	virtual void	SetTexture( SsCellValue* cell )=0;
-
+	virtual void	enableMask(bool flag) = 0;
 
 };
 
