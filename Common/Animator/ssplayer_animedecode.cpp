@@ -1297,10 +1297,12 @@ void	SsAnimeDecoder::draw()
 
 		if ( state->refAnime )
 		{
+			SsCurrentRenderer::getRender()->execMask(state);
 			state->refAnime->draw();
 
 		}else if ( state->refEffect )
 		{
+			SsCurrentRenderer::getRender()->execMask(state);
 			state->refEffect->draw();
 		}
 		else if ( state->partType == SsPartType::mask )
@@ -1317,26 +1319,6 @@ void	SsAnimeDecoder::draw()
 					SsCurrentRenderer::getRender()->renderPart(ps2);
 				}
 			}
-
-/*			
-			//一度ステンシルを消し、最下層から消し再構築する
-
-			glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-			mask_index++;	//0番は処理しないので先にインクメントする
-
-			for (size_t i = mask_index; i < maskIndexList.size(); i++)
-			{
-				SsPartState * ps2 = maskIndexList[i];
-				if (!ps2->hide)
-				{
-					ps2->draw(_root_alpha, renderTexture);
-				}
-			}
-
-			glFlush();
-*/
-
 		}else
 		{
 			SsCurrentRenderer::getRender()->renderPart(state);
