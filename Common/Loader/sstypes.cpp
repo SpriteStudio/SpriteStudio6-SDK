@@ -117,6 +117,10 @@ SsString	__EnumToString_( SsBlendType::_enum n )
 	if ( SsBlendType::mul ) return "mul";
 	if ( SsBlendType::add ) return "add";
 	if ( SsBlendType::sub ) return "sub";
+	if ( SsBlendType::mulalpha ) return "mulalpha";
+	if ( SsBlendType::screen ) return "screen";
+	if ( SsBlendType::exclusion ) return "exclusion";
+	if ( SsBlendType::invert ) return "invert";
 
 	return "invalid";	
 }
@@ -129,6 +133,10 @@ void	__StringToEnum_( SsString n , SsBlendType::_enum &out )
 	if ( n == "mul") out = SsBlendType::mul;
 	if ( n == "add") out = SsBlendType::add;
 	if ( n == "sub") out = SsBlendType::sub;
+	if ( n == "mulalpha") out = SsBlendType::mulalpha;
+	if ( n == "screen") out = SsBlendType::screen;
+	if ( n == "exclusion") out = SsBlendType::exclusion;
+	if ( n == "invert") out = SsBlendType::invert;
 }
 
 
@@ -237,11 +245,15 @@ SsString	__EnumToString_( SsAttributeKind::_enum n )
 	if ( SsAttributeKind::rotz )		return "ROTZ";
 	if ( SsAttributeKind::sclx )		return "SCLX";
 	if ( SsAttributeKind::scly )		return "SCLY";
+	if ( SsAttributeKind::losclx )		return "LSCX";
+	if ( SsAttributeKind::loscly )		return "LSCY";
 	if ( SsAttributeKind::alpha )		return "ALPH";
+	if ( SsAttributeKind::loalpha )		return "LALP";
 	if ( SsAttributeKind::prio )		return "PRIO";
 	if ( SsAttributeKind::fliph )		return "FLPH";
 	if ( SsAttributeKind::flipv )		return "FLPV";
 	if ( SsAttributeKind::hide )		return "HIDE";
+	if ( SsAttributeKind::partsColor )	return "PCOL";
 	if ( SsAttributeKind::color )		return "VCOL";
 	if ( SsAttributeKind::vertex )		return "VERT";
 	if ( SsAttributeKind::pivotx )		return "PVTX";
@@ -257,6 +269,7 @@ SsString	__EnumToString_( SsAttributeKind::_enum n )
 	if ( SsAttributeKind::uvrz )		return "UVRZ";
 	if ( SsAttributeKind::uvsx )		return "UVSX";
 	if ( SsAttributeKind::uvsy )		return "UVSY";
+	if ( SsAttributeKind::mask )		return "MASK";
 	if ( SsAttributeKind::boundr )		return "BNDR";
 	if ( SsAttributeKind::user )		return "USER";
 	if ( SsAttributeKind::instance )    return "IPRM";
@@ -281,11 +294,15 @@ void	__StringToEnum_( SsString n , SsAttributeKind::_enum &out )
 	if ( n == "ROTZ") out = SsAttributeKind::rotz;
 	if ( n == "SCLX") out = SsAttributeKind::sclx;
 	if ( n == "SCLY") out = SsAttributeKind::scly;
+	if ( n == "LSCX") out = SsAttributeKind::losclx;
+	if ( n == "LSCY") out = SsAttributeKind::loscly;
 	if ( n == "ALPH") out = SsAttributeKind::alpha;
+	if ( n == "LALP") out = SsAttributeKind::loalpha;
 	if ( n == "PRIO") out = SsAttributeKind::prio;
 	if ( n == "FLPH") out = SsAttributeKind::fliph;
 	if ( n == "FLPV") out = SsAttributeKind::flipv;
 	if ( n == "HIDE") out = SsAttributeKind::hide;
+	if ( n == "PCOL") out = SsAttributeKind::partsColor;
 	if ( n == "VCOL") out = SsAttributeKind::color;
 	if ( n == "VERT") out = SsAttributeKind::vertex;
 	if ( n == "PVTX") out = SsAttributeKind::pivotx;
@@ -301,6 +318,7 @@ void	__StringToEnum_( SsString n , SsAttributeKind::_enum &out )
 	if ( n == "UVRZ") out = SsAttributeKind::uvrz;
 	if ( n == "UVSX") out = SsAttributeKind::uvsx;
 	if ( n == "UVSY") out = SsAttributeKind::uvsy;
+	if ( n == "MASK") out = SsAttributeKind::mask;
 	if ( n == "BNDR") out = SsAttributeKind::boundr;
 	if ( n == "USER") out = SsAttributeKind::user;
 	if ( n == "IPRM") out = SsAttributeKind::instance;

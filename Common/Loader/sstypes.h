@@ -447,6 +447,10 @@ namespace SsBlendType
 		mul,			///< 1 乗算
 		add,			///< 2 加算
 		sub,			///< 3 減算
+		mulalpha, 		///< 4 α乗算
+		screen, 		///< 5 スクリーン
+		exclusion,		///< 6 除外
+		invert, 		///< 7 反転
 		num
 	};
 };
@@ -531,11 +535,15 @@ namespace SsAttributeKind
 		rotz,		///< [ROTZ]回転.Z
 		sclx,		///< [SCLX]スケール.X
 		scly,		///< [SCLY]スケール.Y
+		losclx,		///< [LSCX]ローカルスケール.X
+		loscly,		///< [LSCY]ローカルスケール.Y
 		alpha,		///< [ALPH]不透明度
+		loalpha,	///< [LALP]ローカル不透明度
 		prio,		///< [PRIO]優先度
 		fliph,		///< [FLPH]左右反転(セルの原点を軸にする)
 		flipv,		///< [FLPV]上下反転(セルの原点を軸にする)
 		hide,		///< [HIDE]非表示
+		partsColor,	///< [PCOL]パーツカラー
 		color,		///< [VCOL]カラーブレンド
 		vertex,		///< [VERT]頂点変形
 		pivotx,		///< [PVTX]原点オフセット.X
@@ -552,10 +560,10 @@ namespace SsAttributeKind
 		uvsx,		///< [UVSX]UVアニメ.スケール.X
 		uvsy,		///< [UVSY]UVアニメ.スケール.Y
 		boundr,		///< [BNDR]当たり判定用の半径
+		mask,		///< [MASK]マスク閾値
 		user,		///< [USER]ユーザーデータ
 		instance,	///< [IPRM]インスタンスパーツパラメータ
 		effect,		///< [EFCT]エフェクトパラメータ
-		mask,
 		num,
 	};
 };

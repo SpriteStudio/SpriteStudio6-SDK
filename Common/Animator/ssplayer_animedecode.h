@@ -66,6 +66,8 @@ private:
 	int				curAnimeFPS;
 	SsAnimation*	curAnimation;
 	bool			instancePartsHide;
+	bool			maskFuncFlag;						//マスク機能（初期化、描画）を有効にするか？インスタンスパーツ内のマスク対応
+	bool			maskParentSetting;					//親のマスク対象
 
 
 private:
@@ -126,6 +128,11 @@ public:
 
 	void	setSeedOffset(int a ){ seedOffset = a; }
 	int		getSeedOffset(){ return seedOffset; }
+
+	void setMaskFuncFlag(bool flg);									//マスク用ステンシルバッファの初期化を行うか
+	void setMaskParentSetting(bool flg);							//親のマスク対象を設定する
+	bool getMaskParentSetting(void) { return maskParentSetting; };	//設定された親のマスク対象を取得する
+
 };
 
 

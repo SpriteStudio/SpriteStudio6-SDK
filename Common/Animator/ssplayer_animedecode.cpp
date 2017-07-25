@@ -40,7 +40,9 @@ SsAnimeDecoder::SsAnimeDecoder() :
 	rootPartFunctionAsVer4(false),
 	dontUseMatrixForTransform(false),
 	instancePartsHide(false),
-	seedOffset(0)
+	seedOffset(0),
+	maskFuncFlag(true),
+	maskParentSetting(true)
 	{
 	}
 
@@ -125,7 +127,7 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 		partState[i].inheritRates = p->inheritRates;
 		partState[i].index = i;
 		partState[i].partType = p->type;
-		partState[i].maskInfluence = p->maskInfluence;
+		partState[i].maskInfluence = p->maskInfluence && getMaskParentSetting();
 
 
 		if (sspj)
@@ -141,10 +143,17 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 				SsCellMapList* __cellmap = new SsCellMapList();
 				__cellmap->set( sspj , refpack );
 				SsAnimeDecoder* animedecoder = new SsAnimeDecoder();
+
+				//インスタンスパーツの設定setAnimationでソースアニメになるパーツに適用するので先に設定を行う
+				animedecoder->setMaskFuncFlag(false);					//マスク機能を無効にする
+				animedecoder->setMaskParentSetting(p->maskInfluence);	//親のマスク対象を設定する 
+
 				animedecoder->setAnimation( &refpack->Model , refanime , __cellmap , sspj );
 				partState[i].refAnime = animedecoder;
 				//親子関係を付ける
 				animedecoder->partState[0].parent = &partState[i];
+				
+				
 			}
 
 			//エフェクトデータの初期設定
@@ -1179,6 +1188,20 @@ int		SsAnimeDecoder::CalcAnimeLabel2Frame(const SsString& str, int offset, SsAni
 
 }
 
+//マスク用ステンシルバッファの初期化を行うか？
+//インスタンスパーツとして再生する場合のみ設定する
+void	SsAnimeDecoder::setMaskFuncFlag(bool flg)
+{
+	maskFuncFlag = flg;
+}
+
+//親のマスク対象
+//インスタンスパーツとして再生する場合のみ設定する
+//各パーツのマスク対象とアンドを取って処理する
+void	SsAnimeDecoder::setMaskParentSetting(bool flg)
+{
+	maskParentSetting = flg;
+}
 
 static SsPartStateLess _ssPartStateLess;
 
@@ -1277,16 +1300,20 @@ void	SsAnimeDecoder::draw()
 
 	SsCurrentRenderer::getRender()->renderSetup();
 
-	//初期に適用されているマスクを精製
-	for (size_t i = 0; i < maskIndexList.size(); i++)
-	{
-		SsPartState * ps = maskIndexList[i];
 
-		if (!ps->hide)
+	if (maskFuncFlag == true) //マスク機能が有効（インスタンスのソースアニメではない）
+	{
+		//初期に適用されているマスクを精製
+		for (size_t i = 0; i < maskIndexList.size(); i++)
 		{
-			//ステンシルバッファの作成
-			//ps->partType = SsPartType::mask;
-			SsCurrentRenderer::getRender()->renderPart(ps);
+			SsPartState * ps = maskIndexList[i];
+
+			if (!ps->hide)
+			{
+				//ステンシルバッファの作成
+				//ps->partType = SsPartType::mask;
+				SsCurrentRenderer::getRender()->renderPart(ps);
+			}
 		}
 	}
 
@@ -1310,19 +1337,22 @@ void	SsAnimeDecoder::draw()
 		}
 		else if ( state->partType == SsPartType::mask )
 		{
-
-			SsCurrentRenderer::getRender()->clearMask();
-			mask_index++;	//0番は処理しないので先にインクメントする
-
-			for (size_t i = mask_index; i < maskIndexList.size(); i++)
+			if (maskFuncFlag == true) //マスク機能が有効（インスタンスのソースアニメではない）
 			{
-				SsPartState * ps2 = maskIndexList[i];
-				if (!ps2->hide)
+				SsCurrentRenderer::getRender()->clearMask();
+				mask_index++;	//0番は処理しないので先にインクメントする
+
+				for (size_t i = mask_index; i < maskIndexList.size(); i++)
 				{
-					SsCurrentRenderer::getRender()->renderPart(ps2);
+					SsPartState * ps2 = maskIndexList[i];
+					if (!ps2->hide)
+					{
+						SsCurrentRenderer::getRender()->renderPart(ps2);
+					}
 				}
 			}
-		}else
+		}
+		else
 		{
 			SsCurrentRenderer::getRender()->renderPart(state);
 		}
