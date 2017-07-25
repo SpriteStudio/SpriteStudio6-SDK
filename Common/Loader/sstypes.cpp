@@ -355,3 +355,22 @@ void 	__StringToEnum_( SsString n , SsRenderBlendType::_enum& out)
 	if ( n == "Mix") out = SsRenderBlendType::Mix;
 	if ( n == "Add") out = SsRenderBlendType::Add;
 }
+
+//---------------------------------------------------------------
+//相互変換 SsMeshDivType
+SsString	__EnumToString_(SsMeshDivType::_enum n)
+{
+	if (n == SsMeshDivType::unknown) return "unknown";
+	if (n == SsMeshDivType::polyline_base) return "polyline_base";
+	if (n == SsMeshDivType::boxdiv) return "boxdiv";
+
+	return "unknown";
+}
+
+void 	__StringToEnum_(SsString n, SsMeshDivType::_enum& out)
+{
+	out = SsMeshDivType::unknown;
+	if (n == "unknown") out = SsMeshDivType::unknown;
+	if (n == "polyline_base") out = SsMeshDivType::polyline_base;
+	if (n == "boxdiv") out = SsMeshDivType::boxdiv;
+}

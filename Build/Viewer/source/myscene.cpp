@@ -67,6 +67,7 @@ void	SampleScene::update(double delta)
 	if ( m_player )
 	{
 		m_InfoAnimeFps = m_player->getAnimeFPS();
+		m_InfoAnimeStartFrame = m_player->getAnimeStartFrame();
 		m_InfoAnimeEndFrame = m_player->getAnimeEndFrame();
 	}
 	if ( m_isAnimeAutoPlay )
@@ -76,6 +77,11 @@ void	SampleScene::update(double delta)
 		frameDelta = (delta*m_Speed / frameper_sec );
 
 		m_nowPlayFrameD+= frameDelta;
+		//開始フレーム以下であれば開始フレームとする
+		if (m_nowPlayFrameD < m_player->getAnimeStartFrame())
+		{
+			m_nowPlayFrameD = (float)m_player->getAnimeStartFrame();
+		}
 		m_nowPlayFrame = (int)m_nowPlayFrameD;
 
 		
@@ -85,8 +91,9 @@ void	SampleScene::update(double delta)
 		{
 			if ( m_player->getAnimeEndFrame() < (int)m_nowPlayFrame )
 			{
-				m_nowPlayFrame = 0;
-				m_nowPlayFrameD = 0;
+				//次のループの開始フレームを設定する
+				m_nowPlayFrame = m_player->getAnimeStartFrame();
+				m_nowPlayFrameD = m_player->getAnimeStartFrame();
 				sceneLoop++;
 			}
 		}
@@ -186,7 +193,8 @@ void	SampleScene::UIRebuild()
 	
 
     TwAddVarRW(g_twbar, "Loop num", TW_TYPE_INT32, &sceneLoop, " group='Anime Info' ");
-    TwAddVarRW(g_twbar, "Endframe", TW_TYPE_INT32, &m_InfoAnimeEndFrame, " group='Anime Info' ");
+	TwAddVarRW(g_twbar, "Startframe", TW_TYPE_INT32, &m_InfoAnimeStartFrame, " group='Anime Info' ");
+	TwAddVarRW(g_twbar, "Endframe", TW_TYPE_INT32, &m_InfoAnimeEndFrame, " group='Anime Info' ");
     TwAddVarRW(g_twbar, "FPS", TW_TYPE_INT32, &m_InfoAnimeFps, " group='Anime Info' ");
 
 //    TwAddVarRW(g_twbar, "pos-X", TW_TYPE_FLOAT, &m_animeOffsetpos.x, " group='Position' min='-1000' max ='1000' ");
@@ -246,6 +254,7 @@ void	SampleScene::init()
 	m_nowPlayFrame = 0;
 	m_nowPlayFrameD = 0;
 
+	m_InfoAnimeStartFrame = 0;
 	m_InfoAnimeEndFrame = 0;
 	m_InfoAnimeFps = 0;
 

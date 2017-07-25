@@ -15,6 +15,8 @@ public:
 	SsPartsSortMode::_enum	sortMode;		//!< パーツのソートモード
 	SsPoint2		canvasSize;				//!< キャンバスサイズ(元基準枠)。ビューポートのサイズとイコールではない。
 	SsVector2		pivot;					//!< キャンバスの原点。0,0 が中央。-0.5, +0.5 が左上
+	int				startFrame;				//!< アニメーションの開始フレーム
+	int				endFrame;				//!< アニメーションの終了フレーム
 
 	SsAnimationSettings(){}
 	virtual ~SsAnimationSettings(){}
@@ -28,6 +30,15 @@ public:
 		SSAR_DECLARE( canvasSize );
 		SSAR_DECLARE( pivot );
 		SSAR_DECLARE_ENUM(sortMode);
+		//タグが存在しない（Ver5.8以前のデータ）場合は初期値を入れる
+		if (SSAR_DECLARE(startFrame) == false)
+		{
+			startFrame = 0;
+		}
+		if (SSAR_DECLARE(endFrame) == false)
+		{
+			endFrame = frameCount - 1;
+		}
 	}
 };
 

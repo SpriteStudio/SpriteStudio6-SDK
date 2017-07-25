@@ -130,6 +130,8 @@ public:
 	virtual bool	dc( const char* name , std::vector<SsString>& list );
 	virtual bool	dc( const char* name , SsPoint2& member );
 	virtual bool	dc( const char* name , SsCurve& member );
+	virtual bool	dc( const char* name , SsTriangle& member);
+//	virtual bool	dc( const char* name , SsBoneBind& member);
 	virtual bool	dc( const char* name , SsXmlRangeValueConverter& member )
 	{
 		XMLElement* e = getxml()->FirstChildElement( name );

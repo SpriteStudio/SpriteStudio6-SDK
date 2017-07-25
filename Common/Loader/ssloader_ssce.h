@@ -17,8 +17,32 @@ public:
 //	SsVector2	pivot;			///< 原点。size /2 が中央=0,0になる。
 	bool		rotated;		///< 左方向に９０度回転されている。uvs の割り当てが変わる。
 
+	//---------- メッシュ化機能 --------------
+	bool ismesh;
+
+	//エディット用のポイントリスト
+	std::vector<SsVector2*>	 innerPoint;
+	std::vector<SsVector2*>	 outerPoint;
+
+	//実際に使用されるメッシュ構造
+	std::vector<SsVector2*>   		meshPointList;  //ポイントリスト
+	std::vector<SsTriangle*>  		meshTriList;    //トライアングルリスト
+
+	SsMeshDivType::_enum			divtype;
+	int	divw;
+	int	divh;
+
 	SsCell(){}
-	virtual ~SsCell(){}
+	virtual ~SsCell() {
+		for (std::vector<SsVector2*>::iterator itr = innerPoint.begin();
+			itr != innerPoint.end(); itr++) delete (*itr);
+		for (std::vector<SsVector2*>::iterator itr = outerPoint.begin();
+			itr != outerPoint.end(); itr++) delete (*itr);
+		for (std::vector<SsVector2*>::iterator itr = meshPointList.begin();
+			itr != meshPointList.end(); itr++) delete (*itr);
+		for (std::vector<SsTriangle*>::iterator itr = meshTriList.begin();
+			itr != meshTriList.end(); itr++) delete (*itr);
+	}
 
 
 	///シリアライズのための宣言です。
@@ -29,6 +53,16 @@ public:
 		SSAR_DECLARE( size );
 		SSAR_DECLARE( pivot );
 		SSAR_DECLARE( rotated );
+
+		SSAR_DECLARE(ismesh);
+		//SsVerctor2のリストのシリアライズが必要
+//		SSAR_DECLARE_LISTEX(innerPoint, "value");
+//		SSAR_DECLARE_LISTEX(outerPoint, "value");
+//		SSAR_DECLARE_LISTEX(meshPointList, "value");
+//		SSAR_DECLARE_LISTEX(meshTriList, "value");
+		SSAR_DECLARE_ENUM(divtype);
+		SSAR_DECLARE(divw);
+		SSAR_DECLARE(divh);
 	}
 };
 

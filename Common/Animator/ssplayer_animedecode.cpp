@@ -31,6 +31,7 @@ unsigned int getRandomSeed()
 
 SsAnimeDecoder::SsAnimeDecoder() : 
 	curAnimeFPS(0),
+	curAnimeStartFrame(0), 
 	curAnimeEndFrame(0),
 	nowPlatTime(0) ,
 	nowPlatTimeOld(0),
@@ -179,7 +180,9 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 
 
 	//アニメの最大フレーム数を取得
-	curAnimeEndFrame = anime->settings.frameCount;
+	curAnimeStartFrame = anime->settings.startFrame;	//Ver6.0.0開始終了フレーム対応
+	curAnimeEndFrame = anime->settings.endFrame;
+//	curAnimeEndFrame = anime->settings.frameCount;
 	curAnimeFPS = anime->settings.fps;
 
 	rootPartFunctionAsVer4 = sspj->settings.rootPartFunctionAsVer4 == 0 ? false : true;

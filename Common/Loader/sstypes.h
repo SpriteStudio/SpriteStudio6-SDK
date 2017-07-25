@@ -774,5 +774,34 @@ enum {
 	EFFECT_LOOP_FLAG_INFINITY = 1 << 0,
 };
 
+//メッシュの分割タイプ
+namespace SsMeshDivType
+{
+	enum _enum
+	{
+		unknown,
+		polyline_base,
+		boxdiv,
+		num
+	};
+};
+SS_DECLARE_ENUM_STRING_DEF(SsMeshDivType);
+
+struct SsTriangle
+{
+	int	idxPo1;
+	int	idxPo2;
+	int	idxPo3;
+
+};
+
+struct SsBoneBind
+{
+	int		boneIndex;               //暫定でパーツIDを使用する
+	float   blend;
+};
+
+typedef std::vector<SsBoneBind> SsBoneBindArray;
+
 
 #endif

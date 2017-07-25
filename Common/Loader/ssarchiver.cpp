@@ -30,6 +30,10 @@ bool	SsXmlIArchiver::dc( const char* name , int& member )
 	SsString str;
 	dc( name , str );
 	member = atoi( str.c_str() );
+	if (str == "")
+	{
+		return false;
+	}
 
 	return true;
 }
@@ -40,6 +44,10 @@ bool	SsXmlIArchiver::dc( const char* name , float& member )
 	SsString str;
 	dc( name , str );
 	member = (float)atof( str.c_str() );
+	if (str == "")
+	{
+		return false;
+	}
 
 	return true;
 }
@@ -138,6 +146,56 @@ bool	SsXmlIArchiver::dc( const char* name , SsCurve& member )
 	return false;
 }
 
+bool	SsXmlIArchiver::dc(const char* name, SsTriangle& member)
+{
+	AR_SELF_CHECK();
+
+	XMLElement* e = getxml()->FirstChildElement(name);
+
+	if (e)
+	{
+		std::vector<SsString>	str_list;
+		split_string(e->GetText(), ' ', str_list);
+		if (str_list.size() < 4)
+		{
+			return false;
+		}
+		else {
+			member.idxPo1 = (int)atoi(str_list[0].c_str());
+			member.idxPo2 = (int)atoi(str_list[1].c_str());
+			member.idxPo3 = (int)atoi(str_list[2].c_str());
+
+			return true;
+		}
+	}
+	return false;
+}
+/*
+bool	SsXmlIArchiver::dc(const char* name, SsBoneBind& member)
+{
+	AR_SELF_CHECK();
+
+	XMLElement* e = getxml()->FirstChildElement(name);
+
+	if (e)
+	{
+		std::vector<SsString>	str_list;
+		split_string(e->GetText(), ' ', str_list);
+		if (str_list.size() < 4)
+		{
+			return false;
+		}
+		else 
+		{
+			member.boneIndex = (float)atof(str_list[0].c_str());
+			member.blend = (float)atof(str_list[1].c_str());
+
+			return true;
+		}
+	}
+	return false;
+}
+*/
 
 bool	StringToPoint2( const std::string& str , SsPoint2& point )
 {

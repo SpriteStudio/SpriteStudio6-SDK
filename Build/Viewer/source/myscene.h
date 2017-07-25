@@ -36,6 +36,7 @@ private:
 	bool		m_isAnimeAutoPlay;
 
 	//UIへの情報表示用
+	int			m_InfoAnimeStartFrame;
 	int			m_InfoAnimeEndFrame;
 	int			m_InfoAnimeFps;
 

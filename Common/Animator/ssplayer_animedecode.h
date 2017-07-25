@@ -61,6 +61,7 @@ private:
 	float			nowPlatTime;
 	float			nowPlatTimeOld;						//前のフレームで再生した時間
 	float			frameDelta;
+	int				curAnimeStartFrame;
 	int				curAnimeEndFrame;
 	int				curAnimeFPS;
 	SsAnimation*	curAnimation;
@@ -99,6 +100,7 @@ public:
 	void	setAnimation( SsModel*	model , SsAnimation* anime , SsCellMapList* cellmap , SsProject* sspj=0 );
 
 	void	setPlayFrame( float time ) { nowPlatTime = time; }
+	int		getAnimeStartFrame() { return curAnimeStartFrame; }
 	int		getAnimeEndFrame() { return curAnimeEndFrame; }
 	int		getAnimeFPS() { 
 		return curAnimeFPS; }		
