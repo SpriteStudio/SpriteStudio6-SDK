@@ -811,5 +811,4 @@ struct SsBoneBind
 
 typedef std::vector<SsBoneBind> SsBoneBindArray;
 
-
 #endif

@@ -5,6 +5,7 @@
 #include "ssarchiver.h"
 #include "ssattribute.h"
 
+class SsAnimation;
 
 /// アニメーション再生設定情報です。
 class SsAnimationSettings
@@ -13,10 +14,10 @@ public:
 	int						fps;			//!< 再生FPS
 	int						frameCount;		//!< フレーム数
 	SsPartsSortMode::_enum	sortMode;		//!< パーツのソートモード
-	SsPoint2		canvasSize;				//!< キャンバスサイズ(元基準枠)。ビューポートのサイズとイコールではない。
-	SsVector2		pivot;					//!< キャンバスの原点。0,0 が中央。-0.5, +0.5 が左上
-	int				startFrame;				//!< アニメーションの開始フレーム
-	int				endFrame;				//!< アニメーションの終了フレーム
+	SsPoint2				canvasSize;		//!< キャンバスサイズ(元基準枠)。ビューポートのサイズとイコールではない。
+	SsVector2				pivot;			//!< キャンバスの原点。0,0 が中央。-0.5, +0.5 が左上
+	int						startFrame;		//!< アニメーションの開始フレーム
+	int						endFrame;		//!< アニメーションの終了フレーム
 
 	SsAnimationSettings(){}
 	virtual ~SsAnimationSettings(){}
@@ -142,12 +143,12 @@ public:
 	}
 };
 
-
 //アニメーションを構成するパーツをリスト化したものです。
 class SsModel
 {
 public:
 	std::vector<SsPart*>	partList;	//!<格納されているパーツのリスト
+	SsAnimation*			setupAnimation;	///< 参照するセットアップアニメ
 
 public:
 	SsModel(){}
@@ -161,8 +162,8 @@ public:
 	SSSERIALIZE_BLOCK
 	{
 		SSAR_DECLARE_LIST( partList );
+		setupAnimation = NULL;
 	}
-
 };
 
 
@@ -215,8 +216,9 @@ public:
 	bool		overrideSettings;				/// このインスタンスが持つ設定を使いanimePack の設定を参照しない。FPS, frameCount は常に自身の設定を使う。
 	SsAnimationSettings			settings;		/// 設定情報 
 	std::vector<SsPartAnime*>	partAnimes;		///	パーツ毎のアニメーションキーフレームが格納されるリスト
+	std::vector<SsLabel*>		labels;			/// アニメーションが持つラベルのリストです。
+	bool						isSetup;		///< セットアップアニメか？
 
-	std::vector<SsLabel*>	labels;				/// アニメーションが持つラベルのリストです。
 public:
 	SsAnimation(){}
 	virtual ~SsAnimation()
@@ -234,6 +236,7 @@ public:
 		SSAR_STRUCT_DECLARE( settings );
 		SSAR_DECLARE_LISTEX( labels , "value" );
 		SSAR_DECLARE_LISTEX( partAnimes , "partAnime" );
+		SSAR_DECLARE(isSetup);
 	}
 };
 
@@ -268,6 +271,21 @@ public:
 		SSAR_STRUCT_DECLARE( Model );
 		SSAR_DECLARE( cellmapNames );
 		SSAR_DECLARE_LISTEX( animeList , "anime" );
+
+		//モデルにセットアップアニメーションを設定する
+		int i;
+		int size = (int)animeList.size();
+		for (i = 0; i < size; i++)
+		{
+			SsAnimation* anime = animeList[i];
+			if (anime->isSetup != 0)
+			{
+				Model.setupAnimation = anime;
+				break;
+			}
+		}
+
+
 	}
 
 	//アニメーション名からアニメーションを取得する

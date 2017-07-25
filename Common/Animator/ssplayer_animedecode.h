@@ -45,6 +45,8 @@ private:
 
 	///パーツ情報とパーツアニメーションを結びつけアレイにしたもの
 	std::vector<SsPartAndAnime>		partAnime;
+	///セットアップデータ
+	std::vector<SsPartAndAnime>		setupPartAnime;
 
 	///パーツ名からアニメ情報をとるために使うもし、そういった用途が無い場合はローカル変数でも機能する
 	std::map<SsString,SsPartAnime*> partAnimeDic;
