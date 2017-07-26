@@ -89,6 +89,7 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 
 	//partStateをパーツ分作成する
 	partAnimeDic.clear();
+	setupPartAnimeDic.clear();
 
 	//パーツの数
 	size_t panum = anime->partAnimes.size();
@@ -97,6 +98,14 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 		SsPartAnime* panime = anime->partAnimes[i];
 		partAnimeDic[panime->partName] = panime;
 	}
+	//セットアップデータの作成
+	panum = model->setupAnimation->partAnimes.size();
+	for (size_t i = 0; i < panum; i++)
+	{
+		SsPartAnime* panime = model->setupAnimation->partAnimes[i];
+		setupPartAnimeDic[panime->partName] = panime;
+	}
+
 	//パーツとパーツアニメを関連付ける
 	size_t partNum = model->partList.size();
 
@@ -104,6 +113,7 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	partState = new SsPartState[partNum]();
 	sortList.clear();
 	partAnime.clear();
+	setupPartAnime.clear();
 	partStatesMask_.clear();
 
 	for ( size_t i = 0 ; i < partNum ; i++ ) 
@@ -114,6 +124,11 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 		_temp.first = p;
 		_temp.second = partAnimeDic[p->name];
 		partAnime.push_back( _temp );
+
+		SsPartAndAnime _tempSetup;
+		_tempSetup.first = p;
+		_tempSetup.second = setupPartAnimeDic[p->name];
+		setupPartAnime.push_back(_tempSetup);
 
 		//親子関係の設定
 		if ( p->parentIndex != -1 )
