@@ -52,4 +52,12 @@ std::string getFullPath( const std::string& basePath , const std::string &relPat
 
 std::string nomarizeFilename( std::string str );
 
+/*
+* @brief ファイルバージョンチェック
+* param[in] fileVersion チェックするファイルのバージョン
+* param[in] nowVersion  現在のバージョン
+* retval 現在のバージョンより古い場合はfalse
+*/
+bool checkFileVersion(std::string fileVersion, std::string nowVersion);
+
 #endif

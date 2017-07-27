@@ -100,6 +100,12 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 		std::string project_filepath = path2dir( filename );
 		proj->setFilepath( project_filepath );
 
+		if ( checkFileVersion(proj->version, SPRITESTUDIO6_SSPJVERSION) == false )
+		{
+			DEBUG_PRINTF("Project load error : %s", project_filepath.c_str());
+			delete proj;
+			return 0;
+		}
 
 		//アニメーションリストを元に読み込みます。
 		for ( size_t i = 0 ;i < proj->getAnimePackNum() ; i++ )
@@ -107,7 +113,8 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 
 			SsString ssaepath = proj->getAnimePackFilePath(i);
 			SsAnimePack* anime = ssloader_ssae::Load( ssaepath );
-			if ( anime )
+
+			if ( ( anime ) && ( checkFileVersion(anime->version, SPRITESTUDIO6_SSAEVERSION) == true ) ) 
 			{
 				proj->animeList.push_back( anime );
 			}else{
@@ -124,7 +131,7 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 			SsString sscepath = proj->getCellMapFilePath(i);
 
 			SsCellMap* cell = ssloader_ssce::Load( sscepath );
-			if ( cell )
+			if ( ( cell ) && (checkFileVersion(cell->version, SPRITESTUDIO6_SSCEVERSION) == true) )
 			{
 				cell->loadFilepath = proj->getCelMapFileOriginalPath(i);
 				proj->cellmapList.push_back( cell );
@@ -141,7 +148,7 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 			SsString sscepath = proj->getEffectFilePath(i);
 
 			SsEffectFile* efile = ssloader_ssee::Load( sscepath );
-			if ( efile )
+			if ( ( efile ) && ( checkFileVersion(efile->version, SPRITESTUDIO6_SSCEVERSION) == true ) )
 			{
 				//efile->loadFilepath = proj->getCelMapFileOriginalPath(i);
 				proj->effectfileList.push_back( efile );

@@ -6,6 +6,7 @@
 
 #include "SsEffectBehavior.h"
 
+#define SPRITESTUDIO6_SSEEVERSION "2.00.00"
 
 
 class SimpleTree
@@ -186,14 +187,16 @@ public:
 class SsEffectFile
 {
 public:
-	SsEffectModel	   effectData;  //親子構造＋各アトリビュート
-	SsString		   name;
+	SsString			version;
+	SsEffectModel		effectData;  //親子構造＋各アトリビュート
+	SsString			name;
 
 	SsEffectFile(){}
 	virtual ~SsEffectFile(){}
 
 	SSSERIALIZE_BLOCK
 	{
+		SSAR_DECLARE_ATTRIBUTE(version);
 		SSAR_DECLARE(name);
 		SSAR_STRUCT_DECLARE( effectData );
 		effectData.effectName = name;

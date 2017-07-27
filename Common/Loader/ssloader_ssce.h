@@ -4,6 +4,7 @@
 #include "sstypes.h"
 #include "ssarchiver.h"
 
+#define SPRITESTUDIO6_SSCEVERSION "2.00.00"
 
 ///パーツに使用される画素の矩形範囲を示した構造です。
 class SsCell 

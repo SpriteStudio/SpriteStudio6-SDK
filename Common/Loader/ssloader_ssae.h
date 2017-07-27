@@ -5,6 +5,8 @@
 #include "ssarchiver.h"
 #include "ssattribute.h"
 
+#define SPRITESTUDIO6_SSAEVERSION "2.00.00"
+
 class SsAnimation;
 
 /// アニメーション再生設定情報です。

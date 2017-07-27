@@ -285,6 +285,11 @@ void	SampleScene::ProjectFileLoad()
 
 		//sspjファイルを読み込む
 		m_proj = ssloader_sspj::Load( dlg.getFilePath() );
+		if (m_proj == 0)
+		{
+			//読み込み失敗
+			return;
+		}
 
 		//UIの作り直し
 		TwRemoveAllVars( g_twbar );

@@ -28,7 +28,9 @@ struct SsPartState
 	SsVector3		position;		///< 位置。あくまで親パーツ基準のローカル座標
 	SsVector3		rotation;		///< 回転角。degree
 	SsVector2		scale;			///< スケール	
+	SsVector2		localscale;		///< ローカルスケール	
 	float			alpha;			///< 不透明度 0~1
+	float			localalpha;		///< ローカル不透明度 0~1
 	int				prio;			///< 優先度
 	bool			hFlip;			///< 水平反転
 	bool			vFlip;			///< 垂直反転
@@ -44,6 +46,7 @@ struct SsPartState
 	float			boundingRadius;	///< 当たり判定用の円の半径
 
 	SsCellValue		cellValue;		///< セルアニメの値
+	SsPartColorAnime partColorValue;	///< カラーアニメの値
 	SsColorAnime	colorValue;		///< カラーアニメの値
 	SsVertexAnime	vertexValue;	///< 頂点アニメの値
 	SsEffectAttr	effectValue;	///< エフェクトの値

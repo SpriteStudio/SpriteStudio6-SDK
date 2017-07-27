@@ -6,6 +6,8 @@
 #include "ssarchiver.h"
 #include "ssstring_uty.h"
 
+#define SPRITESTUDIO6_SSPJVERSION "2.00.00"
+
 /// プロジェクトファイルの設定が記載されているデータです。
 /// 以下のタグはエディタ編集用のデータなので読み飛ばします。
 //	編集時設定のためよまない

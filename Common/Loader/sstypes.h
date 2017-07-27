@@ -618,6 +618,22 @@ class ISSTexture;
 class SsCell;
 
 
+///パーツカラー使用時のブレンドタイプとカラー値
+struct SsPartColorAnime
+{
+	SsColorBlendTarget::_enum	target;		//ブレンドの適用方法  単色(全体) , 頂点単位 
+	SsBlendType::_enum			blendType;	//ブレンド種別 (mix　乗算　加算　減算）
+	SsColorBlendValue			color;		//単色。全体の場合に使用されるカラー値
+	SsColorBlendValue			colors[4];	//頂点単位の場合使用されるカラー値
+
+	SsColorBlendValue&			getColors(int index) { return colors[index]; }
+	int							getTargetToInt() { return (int)target; }
+	int							getBlendTypeToInt() { return (int)blendType; }
+	SsPartColorAnime() :
+		target(SsColorBlendTarget::invalid),
+		blendType(SsBlendType::invalid) {}
+
+};
 
 ///カラーブレンド使用時のブレンドタイプとカラー値
 struct SsColorAnime

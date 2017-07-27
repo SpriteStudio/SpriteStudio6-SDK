@@ -146,3 +146,20 @@ std::string nomarizeFilename( std::string str )
 
 	return ret;
 }
+
+bool checkFileVersion(std::string fileVersion, std::string nowVersion)
+{
+	fileVersion =  Replace(fileVersion, ".", "" );
+	nowVersion  =  Replace(nowVersion , ".", "" );
+
+	bool ret = true;
+	int fv = std::stoi(fileVersion);	//確認するファイルのバージョン
+	int nv = std::stoi(nowVersion);		//現在のバージョン
+
+	if (fv < nv)
+	{
+		ret = false;
+	}
+
+	return ret;
+}

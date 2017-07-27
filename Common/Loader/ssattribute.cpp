@@ -62,6 +62,40 @@ const SsKeyframe*	SsAttribute::findRightKey( int time )
 
 
 //頂点カラーアニメデータの取得
+void	GetSsPartColorValue( const SsKeyframe* key , SsPartColorAnime& v )
+{
+	SsColorBlendTarget::_enum target;
+	__StringToEnum_( key->value["target"].get<SsString>() , target );
+		SsBlendType::_enum blendtype;
+	__StringToEnum_( key->value["blendType"].get<SsString>() , blendtype);
+
+	v.blendType = blendtype;
+	v.target = target;
+
+	if ( target == SsColorBlendTarget::vertex )
+	{
+		SsHash lt = key->value["LT"].get<SsHash>();
+		SsHash rt = key->value["RT"].get<SsHash>();
+		SsHash lb = key->value["LB"].get<SsHash>();
+		SsHash rb = key->value["RB"].get<SsHash>();
+
+		ConvertStringToSsColor( lt["rgba"].get<SsString>() , v.colors[0].rgba);
+
+		ConvertStringToSsColor( rt["rgba"].get<SsString>() , v.colors[1].rgba);
+
+		ConvertStringToSsColor( lb["rgba"].get<SsString>() , v.colors[2].rgba);
+
+		ConvertStringToSsColor( rb["rgba"].get<SsString>() , v.colors[3].rgba);
+
+	}else{
+		SsHash color = key->value["color"].get<SsHash>();
+
+		ConvertStringToSsColor( color["rgba"].get<SsString>() , v.color.rgba);
+	}
+
+}
+
+//頂点カラーアニメデータの取得
 void	GetSsColorValue( const SsKeyframe* key , SsColorAnime& v )
 {
 	SsColorBlendTarget::_enum target;
