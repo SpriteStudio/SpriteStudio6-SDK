@@ -518,7 +518,10 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 	//ステートの初期値を設定
 	state->init();
 	state->inheritRates = part->inheritRates;
-	if ( anime == 0 ){
+
+	SsPartAnime* setupAnime = setupPartAnimeDic[part->name];	//セットアップアニメを取得する
+
+	if ( ( anime == 0 ) && ( setupAnime == 0 ) ){
 		state->hide = true;
 		IdentityMatrix( state->matrix );
 		state->hide = true;
@@ -557,9 +560,41 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 	bool hideTriger = false;
 	state->masklimen = 0;
 
-	if ( !anime->attributes.empty() )
+	
+
+	//セットアップデータをアニメーションデータ
+	int idx = 0;
+	for (idx = 0; idx < 2; idx++)
 	{
-		foreach( SsAttributeList , anime->attributes , e )
+		SsAttributeList attList;
+
+		if (idx == 0)
+		{
+			//セットアップデータで初期化する
+			if (!setupAnime)
+			{
+				continue;
+			}
+			if (setupAnime->attributes.empty())
+			{
+				continue;
+			}
+			attList = setupAnime->attributes;
+		}
+		else
+		{
+			//アニメーションデータを解析する
+			if (!anime)
+			{
+				continue;
+			}
+			if (anime->attributes.empty())
+			{
+				continue;
+			}
+			attList = anime->attributes;
+		}
+		foreach( SsAttributeList , attList , e )
 		{
 			SsAttribute* attr = (*e);
 			switch( attr->tag )
@@ -811,7 +846,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 	if ( part->type == SsPartType::normal || part->type == SsPartType::mask )
 	{
 		SsCell * cell = state->cellValue.cell;
-		if (cell && anime)
+		if (cell && ( anime || setupAnime ) )
 		{
 			//サイズアトリビュートが指定されていない場合、セルのサイズを設定する
 			if ( !size_x_key_find ) state->size.x = cell->size.x;
@@ -1233,6 +1268,7 @@ void	SsAnimeDecoder::update(float frameDelta)
 	{
 		SsPart* part = e->first;
 		SsPartAnime* anime = e->second;
+
 		updateState( time , part , anime , &partState[cnt] );
 
 		if ( dontUseMatrixForTransform )

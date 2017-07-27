@@ -45,19 +45,17 @@ private:
 
 	///パーツ情報とパーツアニメーションを結びつけアレイにしたもの
 	std::vector<SsPartAndAnime>		partAnime;
+	std::vector<SsPartAndAnime>		setupPartAnime;		///セットアップデータ
 
 	///パーツ名からアニメ情報をとるために使うもし、そういった用途が無い場合はローカル変数でも機能する
 	std::map<SsString,SsPartAnime*> partAnimeDic;
-
-	///セットアップデータ
-	std::vector<SsPartAndAnime>			setupPartAnime;
-	std::map<SsString, SsPartAnime*>	setupPartAnimeDic;
+	std::map<SsString, SsPartAnime*>setupPartAnimeDic;	///セットアップデータ
 
 	SsCellMapList*					curCellMapManager;///アニメに関連付けられているセルマップ
 
 	SsPartState*					partState;			///パーツの現在の状態が格納されています。
 	std::list<SsPartState*>			sortList;			///ソート状態
-	std::list<SsPartState*>			partStatesMask_;			///マスクテンポラリ
+	std::list<SsPartState*>			partStatesMask_;	///マスクテンポラリ
 	std::vector<SsPartState*>		maskIndexList;
 
 
