@@ -1052,25 +1052,53 @@ void	SsAnimeDecoder::update_matrix_ss4(SsPart* part , SsPartAnime* anime , SsPar
 void	SsAnimeDecoder::updateMatrix(SsPart* part , SsPartAnime* anime , SsPartState* state)
 {
 
-	IdentityMatrix( state->matrix );
-
-	if (state->parent)
+	int num = 1;
+	if ((state->localscale.x != 1.0f) || (state->localscale.y != 1.0f))
 	{
-		memcpy( state->matrix , state->parent->matrix , sizeof( float ) * 16 );
+		//ローカルスケール適用マトリクスを作成する
+		num = 2;
 	}
-
-	// アンカー
-	if ( state->parent )
+	int matcnt;
+	for (matcnt = 0; matcnt < num; matcnt++)
 	{
-		const SsVector2& parentSize = state->parent->size;
-		state->position.x = state->position.x + state->parent->size.x * state->anchor.x;
-		state->position.y = state->position.y + state->parent->size.y * state->anchor.y;
+		float *pmat = state->matrix;	//子パーツに継承するマトリクス
+		if (matcnt > 0)
+		{
+			pmat = state->matrixLocal;	//自分だけに適用するローカルマトリクス
+		}
+
+		IdentityMatrix( pmat );
+
+		if (state->parent)	//親パーツがある場合は親のマトリクスを継承する
+		{
+			memcpy( pmat , state->parent->matrix , sizeof( float ) * 16 );
+		}
+
+		// アンカー
+		if ( state->parent )
+		{
+			const SsVector2& parentSize = state->parent->size;
+			state->position.x = state->position.x + state->parent->size.x * state->anchor.x;
+			state->position.y = state->position.y + state->parent->size.y * state->anchor.y;
+		}
+
+		TranslationMatrixM( pmat , state->position.x, state->position.y, state->position.z );//
+		RotationXYZMatrixM( pmat , DegreeToRadian(state->rotation.x) , DegreeToRadian(state->rotation.y) , DegreeToRadian( state->rotation.z) );
+		if (matcnt > 0)
+		{
+			//ローカルスケールを適用する
+			ScaleMatrixM(pmat, state->localscale.x, state->localscale.y, 1.0f);
+		}
+		else
+		{
+			ScaleMatrixM(pmat, state->scale.x, state->scale.y, 1.0f);
+		}
 	}
-
-	TranslationMatrixM( state->matrix , state->position.x, state->position.y, state->position.z );//
-	RotationXYZMatrixM( state->matrix , DegreeToRadian(state->rotation.x) , DegreeToRadian(state->rotation.y) , DegreeToRadian( state->rotation.z) );
-	ScaleMatrixM(  state->matrix , state->scale.x, state->scale.y, 1.0f );
-
+	if (num == 1)
+	{
+		//ローカルスケールが使用されていない場合は継承マトリクスをローカルマトリクスに適用
+		memcpy(state->matrixLocal, state->matrix, sizeof(state->matrix));
+	}
 
 
 }
@@ -1278,7 +1306,16 @@ void	SsAnimeDecoder::updateInstance( int nowTime , SsPart* part , SsPartAnime* p
 
 	state->refAnime->setInstancePartsHide(state->hide);
 	state->refAnime->setPlayFrame(_time);
-	state->refAnime->update(this->frameDelta);
+
+	//Ver6 ローカルスケール対応
+	//ローカルスケールを適用するために一時的に継承マトリクスを入れ替える
+	float mattemp[16];
+	memcpy(mattemp, state->matrix, sizeof(state->matrix));					//継承用マトリクスを退避する
+	memcpy(state->matrix, state->matrixLocal, sizeof(state->matrixLocal));	//ローカルをmatrixに適用する
+
+	state->refAnime->update(this->frameDelta);								//インスタンスが参照するソースアニメのアップデート
+
+	memcpy(state->matrix, mattemp, sizeof(mattemp));						//継承用マトリクスを戻す
 
   
 	//頂点の作成
@@ -1305,14 +1342,16 @@ int		SsAnimeDecoder::CalcAnimeLabel2Frame(const SsString& str, int offset, SsAni
 
 	//10フレームのアニメだと11が入ってるため計算がずれるため-1する
 	int maxframe = Animation->settings.frameCount - 1;
-    int ret2 = offset;
+	int startframe = Animation->settings.startFrame;	//Ver6.0対応
+	int endframe = Animation->settings.endFrame;		//Ver6.0対応
+	int ret2 = offset;
 
     if (  str == "_start" )
 	{
-    	return offset;
+		ret2 = startframe + offset;
 	}else if ( str == "_end" )
 	{
-        return maxframe + offset;
+		ret2 = endframe + offset;
 	}else if ( str == "none" )
 	{
         return offset;
@@ -1322,16 +1361,16 @@ int		SsAnimeDecoder::CalcAnimeLabel2Frame(const SsString& str, int offset, SsAni
         if ( ret != -1 )
         {
 			int ret2 = ret + offset;
-            if ( ret2 < 0 ) ret2 = 0;
-            if ( ret2 > maxframe ) ret2 = maxframe;
+			if ( ret2 < startframe ) ret2 = startframe;
+			if ( ret2 > endframe ) ret2 = endframe;
 
         	return ret2;
 		}
 		//警告など出すべき？
 	}
 
-    if ( ret2 < 0 ) ret2 = 0;
-    if ( ret2 > maxframe ) ret2 = maxframe;
+    if ( ret2 < startframe ) ret2 = startframe;
+	if ( ret2 > endframe ) ret2 = endframe;
 
 	return ret2;
 
@@ -1479,13 +1518,24 @@ void	SsAnimeDecoder::draw()
 
 		if ( state->refAnime )
 		{
-			SsCurrentRenderer::getRender()->execMask(state);
-			state->refAnime->draw();
 
-		}else if ( state->refEffect )
+			SsCurrentRenderer::getRender()->execMask(state);
+
+			state->refAnime->draw();
+		}
+		else if ( state->refEffect )
 		{
 			SsCurrentRenderer::getRender()->execMask(state);
+
+			//Ver6 ローカルスケール対応
+			//ローカルスケールを適用するために一時的に継承マトリクスを入れ替える
+			float mattemp[16];
+			memcpy(mattemp, state->matrix, sizeof(state->matrix));					//継承用マトリクスを退避する
+			memcpy(state->matrix, state->matrixLocal, sizeof(state->matrixLocal));	//ローカルをmatrixに適用する
+
 			state->refEffect->draw();
+
+			memcpy(state->matrix, mattemp, sizeof(mattemp));						//継承用マトリクスを戻す
 		}
 		else if ( state->partType == SsPartType::mask )
 		{

@@ -20,6 +20,7 @@ struct SsPartState
 	float			colors[4 * 4];		///< カラー (４頂点分）
 	float			uvs[2 * 5];			///< UV		(４隅＋中央)
 	float			matrix[4 * 4];		///< 行列
+	float			matrixLocal[4 * 4];	///< ローカル行列
 
 
 	SsPartState*	parent;			/// 親へのポインタ

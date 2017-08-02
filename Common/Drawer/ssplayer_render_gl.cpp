@@ -351,7 +351,6 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	int		gl_target = GL_TEXTURE_2D;
 	float	rates[5];
 
-
 	if ( state->hide ) return ; //非表示なので処理をしない
 
 
@@ -366,6 +365,14 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	texturePixelSize.y = state->cellValue.texture->getHeight();
 
 	execMask(state);
+
+	//Ver6 ローカル不透明度対応
+	float 	alpha = state->alpha;
+	if (state->localalpha != 1.0f)
+	{
+		alpha = state->localalpha;
+	}
+	if (alpha == 0.0f) return; //表示されないので処理をしない
 
 
 	if (cell)
@@ -574,7 +581,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 			// RGB値の事前ブレンド
 			blendColor_( state->colors, state->colorValue.blendType, cbv);
 			// α値のブレンド。常に乗算とする。
-			state->colors[3] = blendColorValue_(SsBlendType::mul, cbv.rgba.a * state->alpha, cbv.rate);
+			state->colors[3] = blendColorValue_(SsBlendType::mul, cbv.rgba.a * alpha, cbv.rate);
 			rates[0] = cbv.rate;
 			vertexID[0] = 0;
 
@@ -606,7 +613,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 				const SsColorBlendValue& cbv = state->colorValue.colors[i];
 				blendColor_( state->colors + i * 4, state->colorValue.blendType, cbv);
 				// α値のブレンド。常に乗算とする。
-				state->colors[i * 4 + 3] = blendColorValue_(SsBlendType::mul, cbv.rgba.a * state->alpha, cbv.rate);
+				state->colors[i * 4 + 3] = blendColorValue_(SsBlendType::mul, cbv.rgba.a * alpha, cbv.rate);
 				rates[i] = cbv.rate;
 				vertexID[i*2] = i;
 				vertexID[i*2+1] = i;
@@ -642,7 +649,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	else
 	{
 		for (int i = 0; i < 5; ++i)
-			state->colors[i * 4 + 3] = state->alpha;
+			state->colors[i * 4 + 3] = alpha;
 
 		// カラーは１００％テクスチャ
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -670,7 +677,8 @@ void	SsRenderGL::renderPart( SsPartState* state )
 
 	// update で計算しておいた行列をロード
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(state->matrix);
+//	glLoadMatrixf(state->matrix);
+	glLoadMatrixf(state->matrixLocal);	//Ver6 ローカルスケール対応
 
 	GLint VertexLocation;
 	if (state->noCells)

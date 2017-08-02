@@ -36,8 +36,10 @@ void	SsPartState::init()
 	position = SsVector3( 0.0f , 0.0f, 0.0f );
 	rotation = SsVector3( 0.0f , 0.0f , 0.0f );
 	scale = SsVector2( 1.0f , 1.0f );
+	localscale = SsVector2(1.0f, 1.0f);
 
 	alpha = 1.0f;
+	localalpha = 1.0f;
 	prio = 0;
 	hFlip = false;
 	vFlip = false;
