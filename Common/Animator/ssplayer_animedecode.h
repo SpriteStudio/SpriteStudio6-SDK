@@ -38,8 +38,6 @@ public:
 class SsAnimeDecoder
 {
 public:
-	bool	rootPartFunctionAsVer4;
-	bool	dontUseMatrixForTransform;
 
 private:
 

@@ -265,16 +265,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 	topLump->add(Lump::s32Data(CURRENT_DATA_VERSION));
 
 	//4互換設定の出力
-	int headflag = 0;
-	if (proj->settings.rootPartFunctionAsVer4 != 0)
-	{
-		headflag = headflag | HEAD_FLAG_rootPartFunctionAsVer4;
-	}
-	if (proj->settings.dontUseMatrixForTransform != 0)
-	{
-		headflag = headflag | HEAD_FLAG_dontUseMatrixForTransform;
-	}
-	topLump->add(Lump::s32Data(headflag));
+	topLump->add(Lump::s32Data(0));
 
 	
 	if (imageBaseDir.length() > 0)

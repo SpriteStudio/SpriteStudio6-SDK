@@ -13,8 +13,6 @@
 //stdでののforeach宣言　
 #define USE_TRIANGLE_FIN (0)
 
-#define USE_COMPATIBLE_SS4 (1)
-
 //乱数シードに利用するユニークIDを作成します。
 int seedMakeID = 123456;
 //エフェクトに与えるシードを取得する関数
@@ -37,8 +35,6 @@ SsAnimeDecoder::SsAnimeDecoder() :
 	nowPlatTimeOld(0),
 	curCellMapManager(0),
 	partState(0),
-	rootPartFunctionAsVer4(false),
-	dontUseMatrixForTransform(false),
 	instancePartsHide(false),
 	seedOffset(0),
 	maskFuncFlag(true),
@@ -209,8 +205,6 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 //	curAnimeEndFrame = anime->settings.frameCount;
 	curAnimeFPS = anime->settings.fps;
 
-	rootPartFunctionAsVer4 = sspj->settings.rootPartFunctionAsVer4 == 0 ? false : true;
-	dontUseMatrixForTransform = sspj->settings.dontUseMatrixForTransform == 0 ? false : true;
 
 
 }
@@ -630,18 +624,6 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 		}
 	}
 
-#if USE_COMPATIBLE_SS4
-    //SS4互換モード
-    if ( rootPartFunctionAsVer4 )
-    {
-    	//ルートあるいはルートの子である場合
-        if ( state->parent == 0 || (state->parent && state->parent->parent == 0) )
-        {
-	        state->inheritRates = part->inheritRates;
-        }
-	}
-#endif
-
 	bool	size_x_key_find = false;
 	bool	size_y_key_find = false;
 
@@ -882,42 +864,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 
 	// 継承
 
-	//SS4互換モードのとき
-    if ( rootPartFunctionAsVer4 )
     {
-
-        if ( state->parent == 0 || (state->parent && state->parent->parent == 0) )
-        {
-        	//継承せず
-		}else{
-			//ルートではなく、ルートの子でないときに継承する
-            // α
-
-            if (state->inherits_(SsAttributeKind::alpha))
-                state->alpha *= state->parent->alpha;
-
-            // フリップの継承。継承ONだと親に対しての反転になる…ヤヤコシス
-            if (state->inherits_(SsAttributeKind::fliph))
-            {
-                state->hFlip = state->parent->hFlip ^ state->hFlip;
-            }
-
-            if (state->inherits_(SsAttributeKind::flipv))
-                state->vFlip = state->parent->vFlip ^ state->vFlip;
-
-            bool temp_hide = state->hide;
-            // 非表示は継承ONだと親のをただ引き継ぐ
-            if (state->inherits_(SsAttributeKind::hide))
-                state->hide = state->parent->hide;
-
-            //SS4では継承があろうが無かろうが
-            //非表示フラグが立っていればとにかく消える  (SS4互換）
-            if ( temp_hide )
-            {
-                state->hide = true;
-            }
-        }
-    }else{
 		// 継承 SS5
 		if (state->parent)
 		{
@@ -927,21 +874,6 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 				state->alpha *= state->parent->alpha;
 			}
 
-			// フリップの継承。継承ONだと親に対しての反転になる…ヤヤコシス
-			if (state->inherits_(SsAttributeKind::fliph))
-			{
-				state->hFlip = state->parent->hFlip ^ state->hFlip;
-			}
-			if (state->inherits_(SsAttributeKind::flipv))
-			{
-				state->vFlip = state->parent->vFlip ^ state->vFlip;
-			}
-
-			// 引き継ぐ場合は親の値をそのまま引き継ぐ
-			if (state->inherits_(SsAttributeKind::hide))
-			{
-				state->hide = state->parent->hide;
-			}
 			//親がインスタンスパーツでかつ非表示フラグがある場合は非表示にする。
 			if (instancePartsHide == true )
 			{
@@ -959,13 +891,6 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 			//サイズアトリビュートが指定されていない場合、セルのサイズを設定する
 			if ( !size_x_key_find ) state->size.x = cell->size.x;
 			if ( !size_y_key_find ) state->size.y = cell->size.y;
-
-
-			if ( dontUseMatrixForTransform )
-			{
-                state->size.x = cell->size.x;
-                state->size.y = cell->size.y;				
-			}
 		}
 
 		updateVertices(part , anime , state);
@@ -1418,12 +1343,7 @@ void	SsAnimeDecoder::update(float frameDelta)
 
 		updateState( time , part , anime , &partState[cnt] );
 
-		if ( dontUseMatrixForTransform )
-		{
-			update_matrix_ss4( part , anime , &partState[cnt]);
-		}else{
-			updateMatrix( part , anime , &partState[cnt]);
-		}
+		updateMatrix( part , anime , &partState[cnt]);
 
 		if ( part->type == SsPartType::instance )
 		{
