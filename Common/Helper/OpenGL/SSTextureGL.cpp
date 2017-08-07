@@ -43,9 +43,10 @@ GLuint	LoadTextureGL( const char* Filename ,int& width , int& height)
 	glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameterf(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
 	if ( bpp == 4 )
 	{
+/*
+		//Ver6 ではストレートアルファで処理を行うのでコメントにする
 		stbi_uc *ip = image;
 		for ( int i = 0 ; i < width * height ; i++ )
 		{
@@ -65,6 +66,7 @@ GLuint	LoadTextureGL( const char* Filename ,int& width , int& height)
 				*b = ( _b * _a) >> 8 ;
 			}
 		}
+*/
 		glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);	
 	}else if ( bpp == 3 )
 	{

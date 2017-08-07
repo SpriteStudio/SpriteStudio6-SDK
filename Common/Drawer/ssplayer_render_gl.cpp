@@ -146,23 +146,33 @@ void	SsRenderGL::SetAlphaBlendMode(SsBlendType::_enum type)
 {
 	glBlendEquation( GL_FUNC_ADD );
 
-	// 演算方法の指定
 	switch ( type )
 	{
-	case SsBlendType::mix:
+	case SsBlendType::mix:				//< 0 ブレンド（ミックス）
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		break;
-	case SsBlendType::mul:
-		glBlendFuncSeparateEXT( GL_ZERO, GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA, GL_ONE );
+	case SsBlendType::mul:				//< 1 乗算
+		glBlendFunc(GL_ZERO, GL_SRC_COLOR);
 		break;
-	case SsBlendType::add:
+	case SsBlendType::add:				//< 2 加算
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		break;
-	case SsBlendType::sub:
+	case SsBlendType::sub:				//< 3 減算
 		// TODO SrcAlpha を透明度として使えない
 		glBlendEquation( GL_FUNC_REVERSE_SUBTRACT );
 		glBlendFuncSeparateEXT( GL_SRC_ALPHA, GL_ONE, GL_ZERO, GL_DST_ALPHA );
-
+		break;
+	case SsBlendType::mulalpha: 		//< 4 α乗算
+		glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+		break;
+	case SsBlendType::screen: 			//< 5 スクリーン
+		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+		break;
+	case SsBlendType::exclusion:		//< 6 除外
+		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
+		break;
+	case SsBlendType::invert: 			//< 7 反転
+		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
 		break;
 	}
 }
@@ -372,8 +382,6 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	{
 		alpha = state->localalpha;
 	}
-	if (alpha == 0.0f) return; //表示されないので処理をしない
-
 
 	if (cell)
 	{
