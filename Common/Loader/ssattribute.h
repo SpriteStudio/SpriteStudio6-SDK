@@ -95,7 +95,7 @@ public:
 };
 
 
-void	GetSsPartColorValue( const SsKeyframe* key , SsPartColorAnime& v );
+void	GetSsPartsColorValue( const SsKeyframe* key , SsPartsColorAnime& v );
 void	GetSsColorValue(const SsKeyframe* key, SsColorAnime& v);
 void	GetSsVertexAnime( const SsKeyframe* key , SsVertexAnime& v );
 void	GetSsRefCell( const SsKeyframe* key , SsRefCell& v );

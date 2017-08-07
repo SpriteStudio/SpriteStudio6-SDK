@@ -57,6 +57,7 @@ void	SsPartState::init()
 
 	boundingRadius = 0;
 
+	is_part_color = false;
 	is_color_blend = false;
 	is_vertex_transform = false;
 	inheritRates = 0; 

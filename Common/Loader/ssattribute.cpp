@@ -62,7 +62,7 @@ const SsKeyframe*	SsAttribute::findRightKey( int time )
 
 
 //頂点カラーアニメデータの取得
-void	GetSsPartColorValue( const SsKeyframe* key , SsPartColorAnime& v )
+void	GetSsPartsColorValue( const SsKeyframe* key , SsPartsColorAnime& v )
 {
 	SsColorBlendTarget::_enum target;
 	__StringToEnum_( key->value["target"].get<SsString>() , target );

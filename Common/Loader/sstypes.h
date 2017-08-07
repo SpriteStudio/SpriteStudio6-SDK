@@ -619,7 +619,7 @@ class SsCell;
 
 
 ///パーツカラー使用時のブレンドタイプとカラー値
-struct SsPartColorAnime
+struct SsPartsColorAnime
 {
 	SsColorBlendTarget::_enum	target;		//ブレンドの適用方法  単色(全体) , 頂点単位 
 	SsBlendType::_enum			blendType;	//ブレンド種別 (mix　乗算　加算　減算）
@@ -629,7 +629,7 @@ struct SsPartColorAnime
 	SsColorBlendValue&			getColors(int index) { return colors[index]; }
 	int							getTargetToInt() { return (int)target; }
 	int							getBlendTypeToInt() { return (int)blendType; }
-	SsPartColorAnime() :
+	SsPartsColorAnime() :
 		target(SsColorBlendTarget::invalid),
 		blendType(SsBlendType::invalid) {}
 

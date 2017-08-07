@@ -270,20 +270,20 @@ static	float clamp( float v , float min , float max )
 
 }
 
-void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, const SsKeyframe* rightkey, SsPartColorAnime& v)
+void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, const SsKeyframe* rightkey, SsPartsColorAnime& v)
 {
 	//☆Mapを使っての参照なので高速化必須
 	if (rightkey == 0)
 	{
-		GetSsPartColorValue(leftkey, v);
+		GetSsPartsColorValue(leftkey, v);
 		return;
 	}
 
-	SsPartColorAnime leftv;
-	SsPartColorAnime rightv;
+	SsPartsColorAnime leftv;
+	SsPartsColorAnime rightv;
 
-	GetSsPartColorValue(leftkey, leftv);
-	GetSsPartColorValue(rightkey, rightv);
+	GetSsPartsColorValue(leftkey, leftv);
+	GetSsPartsColorValue(rightkey, rightv);
 
 
 	SsCurve curve;
@@ -315,6 +315,7 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 			//両方とも４頂点カラー
 			for (int i = 0; i < 4; i++)
 			{
+				v.colors[i].rate = 1.0f;
 				v.colors[i].rgba.a = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.a, rightv.colors[i].rgba.a, &curve), 0.0f, 255.0f);
 				v.colors[i].rgba.r = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.r, rightv.colors[i].rgba.r, &curve), 0.0f, 255.0f);
 				v.colors[i].rgba.g = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.g, rightv.colors[i].rgba.g, &curve), 0.0f, 255.0f);
@@ -326,6 +327,7 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 			//左は４頂点、右は単色
 			for (int i = 0; i < 4; i++)
 			{
+				v.colors[i].rate = 1.0f;
 				v.colors[i].rgba.a = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.a, rightv.color.rgba.a, &curve), 0.0f, 255.0f);
 				v.colors[i].rgba.r = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.r, rightv.color.rgba.r, &curve), 0.0f, 255.0f);
 				v.colors[i].rgba.g = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.g, rightv.color.rgba.g, &curve), 0.0f, 255.0f);
@@ -340,6 +342,7 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 			//左は単色、右は４頂点カラー
 			for (int i = 0; i < 4; i++)
 			{
+				v.colors[i].rate = 1.0f;
 				v.colors[i].rgba.a = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.a, rightv.colors[i].rgba.a, &curve), 0.0f, 255.0f);
 				v.colors[i].rgba.r = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.r, rightv.colors[i].rgba.r, &curve), 0.0f, 255.0f);
 				v.colors[i].rgba.g = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.g, rightv.colors[i].rgba.g, &curve), 0.0f, 255.0f);
@@ -349,6 +352,7 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 		else
 		{
 			//両方とも単色
+			v.color.rate = 1.0f;
 			v.color.rgba.a = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.a, rightv.color.rgba.a, &curve), 0.0f, 255.0f);
 			v.color.rgba.r = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.r, rightv.color.rgba.r, &curve), 0.0f, 255.0f);
 			v.color.rgba.g = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.g, rightv.color.rgba.g, &curve), 0.0f, 255.0f);
@@ -642,6 +646,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 	bool	size_y_key_find = false;
 
 	state->is_vertex_transform = false;
+	state->is_part_color = false;
 	state->is_color_blend = false;
 	state->alphaBlendType = part->alphaBlendType;
 
@@ -745,7 +750,8 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 					{
 						int useTime = SsGetKeyValue( nowTime , attr , state->hide );
 						// 非表示キーがないか、先頭の非表示キーより手前の場合は常に非表示にする。
-						if ( useTime > nowTime )
+						//セットアップによってhidekey_findがあった場合は強制非表示にしない
+						if ( ( useTime > nowTime ) && ( hidekey_find == false ) )
 						{
 							state->hide = true;
 						}
@@ -757,7 +763,8 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 					}
 					break;
 				case SsAttributeKind::partsColor:
-					SsGetKeyValue( nowTime , attr , state->partColorValue);
+					SsGetKeyValue( nowTime , attr , state->partsColorValue);
+					state->is_part_color = true;
 					break;
 				case SsAttributeKind::color:	///< カラーブレンド
 					SsGetKeyValue( nowTime , attr , state->colorValue );

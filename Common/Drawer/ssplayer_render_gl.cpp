@@ -26,7 +26,7 @@
 
 
 
-#define PROGRAMABLE_SHADER_ON (1)
+#define PROGRAMABLE_SHADER_ON (0)
 
 static const char* glshader_sprite_vs = 
 #include "GLSL/sprite.vs";
@@ -53,38 +53,104 @@ inline float blendColorValue_(SsBlendType::_enum type, u8 color8, float rate)
 {
 	float c = static_cast<float>(color8) / 255.f;
 	return c;
+}
+
+/**
+パーツカラー用
+ブレンドタイプに応じたテクスチャコンバイナの設定を行う
+http://www.opengl.org/sdk/docs/man/xhtml/glTexEnv.xml
+
+ミックスのみコンスタント値を使う。
+他は事前に頂点カラーに対してブレンド率を掛けておく事でαも含めてブレンドに対応している。
+
+TODO: シェーダを用意すると少し速くなるかもしれない
+*/
+static void setupPartsColorTextureCombiner(SsBlendType::_enum type, float rate, SsColorBlendTarget::_enum target)
+{
+	//static const float oneColor[4] = {1.f,1.f,1.f,1.f};
+	float constColor[4] = { 0.5f,0.5f,0.5f,rate };
+	static const GLuint funcs[] = { GL_INTERPOLATE, GL_MODULATE, GL_ADD, GL_SUBTRACT };
+	GLuint func = funcs[(int)type];
+	GLuint srcRGB = GL_TEXTURE0;
+	GLuint dstRGB = GL_PRIMARY_COLOR;
+
+	bool combineAlpha = true;
 
 	switch (type)
 	{
 	case SsBlendType::mix:
-		// GPU側で補間させるので何もしない。
-		break;
 	case SsBlendType::mul:
-		// カラー値→１(テクスチャの色)に向けて補間する。
-		c = c * rate + 1 * (1 - rate);
-		break;
 	case SsBlendType::add:
 	case SsBlendType::sub:
-		// c はテクスチャカラーに対してのオフセットになるため単純に率をかければいい。
-		c = c * rate;
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+		// rgb
+		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, func);
+
+		// mix の場合、特殊
+		if (type == SsBlendType::mix)
+		{
+			if (target == SsColorBlendTarget::whole)
+			{
+				// 全体なら、const 値で補間する
+				glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE2_RGB, GL_CONSTANT);
+				glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, constColor);
+			}
+			else
+			{
+				// 頂点カラーのアルファをテクスチャに対する頂点カラーの割合にする。
+				glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE2_RGB, GL_PRIMARY_COLOR);
+
+				combineAlpha = false;
+			}
+			// 強度なので 1 に近付くほど頂点カラーが濃くなるよう SOURCE0 を頂点カラーにしておく。
+			std::swap(srcRGB, dstRGB);
+		}
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, srcRGB);
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, dstRGB);
+		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+		break;
+	case SsBlendType::screen:
+	case SsBlendType::exclusion:
+	case SsBlendType::invert:
+	default:
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE0);
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE2_RGB, GL_CONSTANT);
+		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
 		break;
 	}
 
-	return c;
+	if (combineAlpha)
+	{
+		// alpha は常に掛け算
+		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
+		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+	}
+	else
+	{
+		// ミックス＋頂点単位の場合αブレンドはできない。
+		// αはテクスチャを100%使えれば最高だが、そうはいかない。
+		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+	}
 }
 
-
-inline void blendColor_(float * dest, SsBlendType::_enum blendType, const SsColorBlendValue& color)
+inline void simpleblendColor_(float * dest, SsBlendType::_enum blendType, const SsColorBlendValue& color, SsColorBlendTarget::_enum target)
 {
 	const SsColor * srcColor = &color.rgba;
 	float rate = color.rate;
 
+	setupPartsColorTextureCombiner(blendType, rate, target);
+
 	dest[0] = blendColorValue_(blendType, srcColor->r, rate);
 	dest[1] = blendColorValue_(blendType, srcColor->g, rate);
 	dest[2] = blendColorValue_(blendType, srcColor->b, rate);
-
 }
-
 
 void	SsRenderGL::initialize()
 {
@@ -355,8 +421,9 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	bool texture_is_pow2 = true;
 	bool color_blend_v4 = false;
 	float vertexID[10];
-	bool  colorBlendEnabled = false;
-	bool  alphaBlendMix = false;
+//	bool colorBlendEnabled = false;
+	bool partsColorEnabled = false;
+	bool alphaBlendMix = false;
 
 	int		gl_target = GL_TEXTURE_2D;
 	float	rates[5];
@@ -575,83 +642,82 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	SetAlphaBlendMode( state->alphaBlendType );
 
 
-	// 頂点カラーの指定
-	//SsAttrKeyList *	keys = anime ? anime->keyframes(SsAttributeKind::color) : NULL;
-	void* keys = 0;
-	if (state->is_color_blend)
+	// パーツカラーの指定
+	if (state->is_part_color)
 	{
-		colorBlendEnabled = true;
-		// 頂点カラーがある時だけブレンド計算する
-		if ( state->colorValue.target == SsColorBlendTarget::whole)
+		partsColorEnabled = true;
+		// パーツカラーがある時だけブレンド計算する
+		if (state->partsColorValue.target == SsColorBlendTarget::whole)
 		{
 			// 単色
-			const SsColorBlendValue& cbv = state->colorValue.color;
-			// RGB値の事前ブレンド
-			blendColor_( state->colors, state->colorValue.blendType, cbv);
+			const SsColorBlendValue& cbv = state->partsColorValue.color;
+			simpleblendColor_(state->colors, state->partsColorValue.blendType, cbv, state->partsColorValue.target);
 			// α値のブレンド。常に乗算とする。
-			state->colors[3] = blendColorValue_(SsBlendType::mul, cbv.rgba.a * alpha, cbv.rate);
-			rates[0] = cbv.rate;
+			state->colors[3] = blendColorValue_(SsBlendType::mix, cbv.rgba.a * alpha, 1.0f);
+			rates[0] = 1.0f;
 			vertexID[0] = 0;
 
 			// 残り３つは先頭のをコピー
 			for (int i = 1; i < 5; ++i)
 			{
-				memcpy( state->colors + i * 4, state->colors, sizeof(state->colors[0]) * 4);
-				rates[i] = cbv.rate;
+				memcpy(state->colors + i * 4, state->colors, sizeof(state->colors[0]) * 4);
+				rates[i] = 1.0f;
 				vertexID[i*2] = 0;
 				vertexID[i*2+1] = 0;
 				//vertexID[i] = 0;
 			}
+
 		}
 		else
 		{
-
-			color_blend_v4 = true;
-			state->colors[4*4+0] = 0 ;
-			state->colors[4*4+1] = 0 ;
-			state->colors[4*4+2] = 0 ;
-			state->colors[4*4+3] = 0 ;
-			rates[4] = 0 ;
-
+			state->colors[4 * 4 + 0] = 0;
+			state->colors[4 * 4 + 1] = 0;
+			state->colors[4 * 4 + 2] = 0;
+			state->colors[4 * 4 + 3] = 0;
+			rates[4] = 0;
 
 			// 頂点単位
+
+			// α値のブレンド。常に乗算とする。
+//			float alpha = _alpha;
+
 			for (int i = 0; i < 4; ++i)
 			{
 				// RGB値の事前ブレンド
-				const SsColorBlendValue& cbv = state->colorValue.colors[i];
-				blendColor_( state->colors + i * 4, state->colorValue.blendType, cbv);
-				// α値のブレンド。常に乗算とする。
-				state->colors[i * 4 + 3] = blendColorValue_(SsBlendType::mul, cbv.rgba.a * alpha, cbv.rate);
-				rates[i] = cbv.rate;
-				vertexID[i*2] = i;
-				vertexID[i*2+1] = i;
+				const SsColorBlendValue& cbv = state->partsColorValue.colors[i];
+				simpleblendColor_(state->colors + i * 4, state->partsColorValue.blendType, cbv, state->partsColorValue.target);
+
+				state->colors[i * 4 + 3] = blendColorValue_(SsBlendType::mix, cbv.rgba.a * alpha, 1.0f);
+				rates[i] = 1.0f;
+				vertexID[i * 2] = i;
+				vertexID[i * 2 + 1] = i;
+
 			}
 
 #if USE_TRIANGLE_FIN
-			float a,r,g,b ,rate;
+			float a, r, g, b, rate;
 			a = r = g = b = rate = 0;
-			for  ( int i = 0 ; i < 4 ; i ++ )
+			for (int i = 0; i < 4; i++)
 			{
-				a+=state->colors[i*4+0];
-				r+=state->colors[i*4+1];
-				g+=state->colors[i*4+2];
-				b+=state->colors[i*4+3];
-				rate+=rates[i];
-			}
+				int idx = i * 4;
+				a += colors[idx++];
+				r += colors[idx++];
+				g += colors[idx++];
+				b += colors[idx++];
+				rate += rates[i];
+		}
 
+			//きれいな頂点変形への対応
+			vertexID[4 * 2] = 4;
+			vertexID[4 * 2 + 1] = 4;
 
-
-			//5頂点での頂点変形への対応
-			vertexID[4*2] = 4;
-			vertexID[4*2+1] = 4;
-
-			state->colors[4*4+0]=a/4.0f;
-			state->colors[4*4+1]=r/4.0f;
-			state->colors[4*4+2]=g/4.0f;
-			state->colors[4*4+3]=b/4.0f;
-			rates[4]= rate / 4.0f;
+			int idx = 4 * 4;
+			colors[idx++] = a / 4.0f;
+			colors[idx++] = r / 4.0f;
+			colors[idx++] = g / 4.0f;
+			colors[idx++] = b / 4.0f;
+			rates[4] = rate / 4.0f;
 #endif
-
 		}
 	}
 	else
@@ -693,42 +759,6 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	{
 		//セルが無いので描画を行わない
 	}else{
-
-#if PROGRAMABLE_SHADER_ON
-	if ( colorBlendEnabled )
-	{
-
-		if ( GL_TEXTURE_RECTANGLE_ARB == gl_target )
-		{
-			SSOpenGLShaderMan::SetCurrent(PG_SHADER_NPOT);
-		}else{
-			SSOpenGLShaderMan::SetCurrent(PG_SHADER_POT);
-		}
-
-		if ( glpgObject )
-		{
-			VertexLocation = glpgObject->GetAttribLocation( "vertexID" );
-			glVertexAttribPointer( VertexLocation , 2 , GL_FLOAT , GL_FALSE, 0, vertexID);//GL_FALSE→データを正規化しない
-			glEnableVertexAttribArray(VertexLocation);//有効化
-
-			//シェーダのセットアップ
-			glpgObject->Enable();
-			int type = (int)state->colorValue.blendType;
-
-			//セレクター非０はきちんとチェックすること
-			GLint uid = glpgObject->GetUniformLocation( "selector" );
-			if ( uid >= 0 )
-				glUniform1i( uid , type );
-
-
-			uid = glpgObject->GetUniformLocation( "rates" );
-			if ( uid >= 0 )
-				glUniform1fv( uid , 5 , rates );
-		}
-	}
-
-#endif
-
 #if USE_TRIANGLE_FIN
 		if ( state->is_vertex_transform || state->is_color_blend )
 		{
@@ -748,6 +778,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 #if PROGRAMABLE_SHADER_ON
 	if ( glpgObject )
 	{
+/*
 		if ( colorBlendEnabled )
 		{
 			if ( glpgObject )
@@ -756,6 +787,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 				glpgObject->Disable();
 			}
 		}
+*/
 	}
 #endif
 
