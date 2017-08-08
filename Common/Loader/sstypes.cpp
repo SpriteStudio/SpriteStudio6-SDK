@@ -12,6 +12,8 @@ SsString	__EnumToString_( SsPartType::_enum n )
 	if ( SsPartType::instance ) return "instance";
 	if ( SsPartType::effect ) return "effect";
 
+
+	if (SsPartType::armature) return "armature";
 	if (SsPartType::mesh) return "mesh";
 	if (SsPartType::movenode) return "movenode";
 	if (SsPartType::constraint) return "constraint";
@@ -33,6 +35,7 @@ void 	__StringToEnum_( SsString n , SsPartType::_enum& out)
 	if ( n == "instance") out = SsPartType::instance;
 	if ( n == "effect") out = SsPartType::effect;
 
+	if (n == "armature") out = SsPartType::armature;
 	if (n == "mesh") out = SsPartType::mesh;
 	if (n == "movenode") out = SsPartType::movenode;
 	if (n == "constraint") out = SsPartType::constraint;

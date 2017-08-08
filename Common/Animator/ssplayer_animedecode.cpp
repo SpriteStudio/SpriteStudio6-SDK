@@ -31,6 +31,7 @@ SsAnimeDecoder::SsAnimeDecoder() :
 	curAnimeFPS(0),
 	curAnimeStartFrame(0), 
 	curAnimeEndFrame(0),
+	curAnimeTotalFrame(0),
 	nowPlatTime(0) ,
 	nowPlatTimeOld(0),
 	curCellMapManager(0),
@@ -202,7 +203,7 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	//アニメの最大フレーム数を取得
 	curAnimeStartFrame = anime->settings.startFrame;	//Ver6.0.0開始終了フレーム対応
 	curAnimeEndFrame = anime->settings.endFrame;
-//	curAnimeEndFrame = anime->settings.frameCount;
+	curAnimeTotalFrame = anime->settings.frameCount;
 	curAnimeFPS = anime->settings.fps;
 
 
@@ -628,7 +629,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 	bool	size_y_key_find = false;
 
 	state->is_vertex_transform = false;
-	state->is_part_color = false;
+	state->is_parts_color = false;
 	state->is_color_blend = false;
 	state->alphaBlendType = part->alphaBlendType;
 
@@ -746,7 +747,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 					break;
 				case SsAttributeKind::partsColor:
 					SsGetKeyValue( nowTime , attr , state->partsColorValue);
-					state->is_part_color = true;
+					state->is_parts_color = true;
 					break;
 //				case SsAttributeKind::color:	///< カラーブレンド  Ver6非対応
 //					SsGetKeyValue( nowTime , attr , state->colorValue );

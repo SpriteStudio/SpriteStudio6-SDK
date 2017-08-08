@@ -63,6 +63,7 @@ private:
 	float			frameDelta;
 	int				curAnimeStartFrame;
 	int				curAnimeEndFrame;
+	int				curAnimeTotalFrame;
 	int				curAnimeFPS;
 	SsAnimation*	curAnimation;
 	bool			instancePartsHide;
@@ -104,7 +105,8 @@ public:
 	void	setPlayFrame( float time ) { nowPlatTime = time; }
 	int		getAnimeStartFrame() { return curAnimeStartFrame; }
 	int		getAnimeEndFrame() { return curAnimeEndFrame; }
-	int		getAnimeFPS() { 
+	int		getAnimeTotalFrame() { return curAnimeTotalFrame; }
+	int		getAnimeFPS() {
 		return curAnimeFPS; }		
 
 

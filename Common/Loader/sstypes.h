@@ -390,13 +390,14 @@ namespace SsPartType
 		normal,			///< 通常パーツ。領域を持つ。画像は無くてもいい。
 		text,			///< テキスト(予約　未実装）
 		instance,		///< インスタンス。他アニメ、パーツへの参照。シーン編集モードの代替になるもの
-		effect,		///<エフェクト
-		mesh,       ///< メッシュパーツ
-		movenode,	///< 動作起点
-		constraint, ///<コンストレイント
-		mask,		///< マスク
-		joint,		///< メッシュとボーンの関連付けパーツ
-		bonepoint,	///< ボーンポイント
+		armature,		///< ボーンパーツ
+		effect,			///<エフェクト
+		mesh,			///< メッシュパーツ
+		movenode,		///< 動作起点
+		constraint,		///<コンストレイント
+		mask,			///< マスク
+		joint,			///< メッシュとボーンの関連付けパーツ
+		bonepoint,		///< ボーンポイント
 
 		num
 	};

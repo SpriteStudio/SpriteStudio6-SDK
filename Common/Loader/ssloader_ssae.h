@@ -60,25 +60,62 @@ public:
 	SsBlendType::_enum		alphaBlendType;	//!< αブレンドの演算式
 	int						show;			//!< [編集用データ] パーツの表示・非常時
 	int						locked;			//!< [編集用データ] パーツのロック状態
+	SsString				colorLabel;		//!< カラーラベル
+	bool					maskInfluence;	//!< マスクの影響を受けるかどうか
 
 	float					inheritRates[(int)SsAttributeKind::num];	///< 親の値の継承率。SS4との互換性のため残されているが0 or 1
 
 	//参照アニメーション名
 	//ツールはともかくランタイムでは勿体ない使い方なので何らか考えること
-	SsString        refAnimePack;   ///< 参照アニメ名
-	SsString        refAnime;       ///< 参照アニメ名			
+	//--------------------------------------------------------------------------------------
+	//インスタンスパーツパラメータ
+	//--------------------------------------------------------------------------------------
+	SsString				refAnimePack;	//!< 参照アニメ名
+	SsString				refAnime;		//!< 参照アニメ名			
 
-	SsString        refEffectName;	///< 割り当てたパーティクル名
+	//--------------------------------------------------------------------------------------
+	//エフェクトパーツパラメータ
+	//--------------------------------------------------------------------------------------
+	SsString				refEffectName;	//!< 割り当てたパーティクル名
 
-	SsString        colorLabel;		///< カラーラベル
+	//--------------------------------------------------------------------------------------
+	//ボーンパーツパラメータ
+	//--------------------------------------------------------------------------------------
+	int						boneLength;		//!< ボーンの長さ
+	SsVector2				bonePosition;	//!< ボーンの座標
+	float					boneRotation;	//!< ボーンの角度
 
-	bool			maskInfluence;			///< マスクの影響を受けるかどうか
+	SsVector2				weightPosition;	//!< ウェイトの位置
+	float					weightImpact;	//!< ウェイトの強さ
 
+	//--------------------------------------------------------------------------------------
+	//メッシュパーツパラメータ
+	//--------------------------------------------------------------------------------------
+	int						meshWeightType;	//!< ウェイトの種類
+	int						meshWeightStrong;//!< ウェイトの強さ
+
+	//--------------------------------------------------------------------------------------
+	//コンストレイントパーツパラメータ
+	//--------------------------------------------------------------------------------------
+	int						IKDepth;		//!< IK深度
+	bool					IKRotationArrow;//!< 回転方向
 
 public:
 	SsPart() : 
 	  name("") , arrayIndex(0), parentIndex(0) , show(0) , locked(0) , maskInfluence(true)
 	  {
+			refEffectName = "";
+			boneLength = 0;
+			bonePosition = SsVector2(0,0);
+			boneRotation = 0;
+			weightPosition = SsVector2(0, 0);
+			weightImpact = 0;
+			meshWeightType = 0;
+			meshWeightStrong = 0;
+			IKDepth = 0;
+			IKRotationArrow = 0;
+
+		
 			//memset( inheritRates , 0 , sizeof( float) * SsAttributeKind::num );
 			for (int i = 0; i < (int)SsAttributeKind::num ; ++i)
 				inheritRates[i] = 1.f;
@@ -112,14 +149,23 @@ public:
 		SSAR_DECLARE_ENUM( alphaBlendType );
 		SSAR_DECLARE( show );
 		SSAR_DECLARE( locked );
+		SSAR_DECLARE( colorLabel );
+		SSAR_DECLARE( maskInfluence );
+
 		SSAR_DECLARE( refAnimePack );
 		SSAR_DECLARE( refAnime );
-		SSAR_DECLARE( colorLabel );
 
-		if ( type == SsPartType::effect )
-		{
-			SSAR_DECLARE( refEffectName ); 	
-		}
+		SSAR_DECLARE( refEffectName );
+
+		SSAR_DECLARE( boneLength );
+		SSAR_DECLARE( bonePosition );
+		SSAR_DECLARE( boneRotation );
+		SSAR_DECLARE( weightPosition );
+		SSAR_DECLARE( weightImpact );
+		SSAR_DECLARE( meshWeightType );
+		SSAR_DECLARE( meshWeightStrong );
+		SSAR_DECLARE( IKDepth );
+		SSAR_DECLARE( IKRotationArrow );
 
 		//継承率後に改良を実施
 		if ( ar->getType() == EnumSsArchiver::in )
@@ -140,8 +186,6 @@ public:
 				}
 			}
 		}
-
-		SSAR_DECLARE(maskInfluence);
 	}
 };
 

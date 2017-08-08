@@ -56,7 +56,7 @@ struct SsPartState
 	int				effectseed;
 
 	bool			noCells;				/// セル参照が見つからない
-	bool			is_part_color;			/// パーツカラーが使用される 
+	bool			is_parts_color;			/// パーツカラーが使用される 
 	bool			is_color_blend;			/// カラーブレンドが使用される (描画コストが高いシェーダが使われるためフラグ化)　※Ver6では非対応
 	bool			is_vertex_transform;	/// 頂点変形が使用される (描画コストが高いシェーダが使われるためフラグ化)
 

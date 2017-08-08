@@ -643,7 +643,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 
 
 	// パーツカラーの指定
-	if (state->is_part_color)
+	if (state->is_parts_color)
 	{
 		partsColorEnabled = true;
 		// パーツカラーがある時だけブレンド計算する

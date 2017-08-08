@@ -38,6 +38,7 @@ private:
 	//UIへの情報表示用
 	int			m_InfoAnimeStartFrame;
 	int			m_InfoAnimeEndFrame;
+	int			m_InfoAnimeTotalFrame;
 	int			m_InfoAnimeFps;
 
 	float		m_Zoom;

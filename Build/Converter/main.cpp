@@ -55,22 +55,29 @@ enum {
 	PART_FLAG_ROTATIONZ			= 1 << 11,
 	PART_FLAG_SCALE_X			= 1 << 12,
 	PART_FLAG_SCALE_Y			= 1 << 13,
-	PART_FLAG_OPACITY			= 1 << 14,
-	PART_FLAG_COLOR_BLEND		= 1 << 15,
-	PART_FLAG_VERTEX_TRANSFORM	= 1 << 16,
+	PART_FLAG_LOCALSCALE_X		= 1 << 14,
+	PART_FLAG_LOCALSCALE_Y		= 1 << 15,
+	PART_FLAG_OPACITY			= 1 << 16,
+	PART_FLAG_LOCALOPACITY		= 1 << 17,
+	PART_FLAG_PARTS_COLOR		= 1 << 18,
+	PART_FLAG_VERTEX_TRANSFORM	= 1 << 19,
 
-	PART_FLAG_SIZE_X			= 1 << 17,
-	PART_FLAG_SIZE_Y			= 1 << 18,
+	PART_FLAG_SIZE_X			= 1 << 20,
+	PART_FLAG_SIZE_Y			= 1 << 21,
 
-	PART_FLAG_U_MOVE			= 1 << 19,
-	PART_FLAG_V_MOVE			= 1 << 20,
-	PART_FLAG_UV_ROTATION		= 1 << 21,
-	PART_FLAG_U_SCALE			= 1 << 22,
-	PART_FLAG_V_SCALE			= 1 << 23,
-	PART_FLAG_BOUNDINGRADIUS	= 1 << 24,
+	PART_FLAG_U_MOVE			= 1 << 22,
+	PART_FLAG_V_MOVE			= 1 << 23,
+	PART_FLAG_UV_ROTATION		= 1 << 24,
+	PART_FLAG_U_SCALE			= 1 << 25,
+	PART_FLAG_V_SCALE			= 1 << 26,
+	PART_FLAG_BOUNDINGRADIUS	= 1 << 27,
 
-	PART_FLAG_INSTANCE_KEYFRAME	= 1 << 25,
-	PART_FLAG_EFFECT_KEYFRAME   = 1 << 26,
+	PART_FLAG_MASK				= 1 << 28,
+	PART_FLAG_PRIORITY			= 1 << 29,
+
+	PART_FLAG_INSTANCE_KEYFRAME	= 1 << 30,
+	PART_FLAG_EFFECT_KEYFRAME   = 1 << 31,
+
 
 	NUM_PART_FLAGS
 };
@@ -89,13 +96,6 @@ enum {
 	USER_DATA_FLAG_POINT	= 1 << 2,
 	USER_DATA_FLAG_STRING	= 1 << 3
 };
-
-//Ver4互換フラグ
-enum {
-	HEAD_FLAG_rootPartFunctionAsVer4 = 1 << 0,
-	HEAD_FLAG_dontUseMatrixForTransform = 1 << 1,
-};
-
 
 bool convert_error_exit = false;	//データにエラーがありコンバートを中止した
 
@@ -197,7 +197,10 @@ struct PartInitialData
 	float	rotationY;
 	float	scaleX;
 	float	scaleY;
+	float	localscaleX;
+	float	localscaleY;
 	int		opacity;
+	int		localopacity;
 	float	size_X;
 	float	size_Y;
 	float	uv_move_X;
@@ -206,6 +209,8 @@ struct PartInitialData
 	float	uv_scale_X;
 	float	uv_scale_Y;
 	float	boundingRadius;
+	int		masklimen;
+	int		priority;
 
 	//インスタンスアトリビュート
 	int		instanceValue_curKeyframe;
@@ -254,7 +259,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 {
 //	static SsPartStateLess _ssPartStateLess;
 	std::cerr << SPRITESTUDIOSDK_VERSION << "\n";	//バージョン表記は ssloader.h　にあります。
-	std::cerr << "Ss5Converter ssbpFormatVersion=" << CURRENT_DATA_VERSION << "\n";
+	std::cerr << "Ss6Converter ssbpFormatVersion=" << CURRENT_DATA_VERSION << "\n";
 	std::cerr << "convert start!" << "\n";
 
 	CellList* cellList = makeCellList(proj);
@@ -407,6 +412,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			{
 			case SsPartType::null:			// null。領域を持たずSRT情報のみ。ただし円形の当たり判定は設定可能。
 			case SsPartType::normal:		// 通常パーツ。領域を持つ。画像は無くてもいい。
+			case SsPartType::mask:			// 6.0マスクパーツ
+			case SsPartType::constraint:	// 6.0コンストレイントパーツ
+			case SsPartType::bonepoint:		// 6.0ボーンエフェクトパーツ
+			case SsPartType::joint:			// 6.0ジョイントパーツ
+			case SsPartType::armature:		// 6.0ボーンパーツ
+			case SsPartType::mesh:			// 6.0メッシュパーツ
 				partData->add(Lump::s16Data(part->type));
 				break;
 			case SsPartType::instance:		// インスタンス。他アニメ、パーツへの参照。シーン編集モードの代替になるもの
@@ -472,9 +483,30 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				const SsString str = part->refEffectName;
 				partData->add(Lump::stringData(str));							//文字列
 			}
+			//ボーン情報
+			partData->add(Lump::s16Data(part->boneLength));
+			partData->add(Lump::floatData(part->bonePosition.x));
+			partData->add(Lump::floatData(part->bonePosition.y));
+			partData->add(Lump::floatData(part->boneRotation));
+
+			partData->add(Lump::floatData(part->weightPosition.x));
+			partData->add(Lump::floatData(part->weightPosition.y));
+			partData->add(Lump::floatData(part->weightImpact));
+
+			//メッシュ情報
+			partData->add(Lump::s16Data(part->meshWeightType));
+			partData->add(Lump::s16Data(part->meshWeightStrong));
+
+			//コンストレイント情報
+			partData->add(Lump::s16Data(part->IKDepth));
+			partData->add(Lump::s16Data(part->IKRotationArrow));
+
+			//マスク対象
+			partData->add(Lump::s16Data(part->maskInfluence));
+
 			//パーツカラー
 			const SsString str = part->colorLabel;
-			partData->add(Lump::stringData(str));							//文字列
+			partData->add(Lump::stringData(str));								//文字列
 
 		}
 
@@ -535,13 +567,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				if (state->cellValue.cell) cellIndex = (*cellList)[state->cellValue.cell];
 				init.cellIndex = cellIndex;
 				
-//				// posx
-//				key = findFirstKey(partAnime, SsAttributeKind::posx);
-//				init.posX = key != NULL ? (int)key->value._float : 0;
-//				// posy
-//				key = findFirstKey(partAnime, SsAttributeKind::posy);
-//				init.posY = key != NULL ? (int)key->value._float : 0;
-
 				init.posX = state->position.x;
 				init.posY = state->position.y;
 				init.posZ = state->position.z;
@@ -551,12 +576,14 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				init.rotationY = state->rotation.y;
 				init.rotationZ = state->rotation.z;
 
-				float size_scale_x = state->scale.x;
-				float size_scale_y = state->scale.y;
+				init.scaleX = state->scale.x;
+				init.scaleY = state->scale.y;
+				init.localscaleX = state->localscale.x;
+				init.localscaleY = state->localscale.y;
 
-				init.scaleX = size_scale_x;
-				init.scaleY = size_scale_y;
 				init.opacity = (int)(state->alpha * 255);
+				init.localopacity = (int)(state->localalpha * 255);
+
 				//サイズはエディターでは初期値が1が設定されているが、
 				//本来であればキーがないときはセルのサイズが初期値になる
 				init.size_X = state->size.x;
@@ -582,6 +609,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				init.uv_scale_X = 1;
 				init.uv_scale_Y = 1;
 				init.boundingRadius = state->boundingRadius;
+
+				init.masklimen = state->masklimen;
+				init.priority = state->prio;
+
 				//インスタンス関連
 				init.instanceValue_curKeyframe = state->instanceValue.curKeyframe;
 				init.instanceValue_startFrame = state->instanceValue.startFrame;
@@ -602,8 +633,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				initialData->add(Lump::s16Data(init.index));
 				initialData->add(Lump::s16Data(0)); //ダミーデータ
 				initialData->add(Lump::s32Data(init.flags));
+				initialData->add(Lump::s16Data(init.priority));
 				initialData->add(Lump::s16Data(init.cellIndex));
 				initialData->add(Lump::s16Data(init.opacity));
+				initialData->add(Lump::s16Data(init.localopacity));
+				initialData->add(Lump::s16Data(init.masklimen));
+				initialData->add(Lump::s16Data(0)); //ダミーデータ
 				initialData->add(Lump::floatData(init.posX));
 				initialData->add(Lump::floatData(init.posY));
 				initialData->add(Lump::floatData(init.posZ));
@@ -614,6 +649,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				initialData->add(Lump::floatData(init.rotationZ));
 				initialData->add(Lump::floatData(init.scaleX));
 				initialData->add(Lump::floatData(init.scaleY));
+				initialData->add(Lump::floatData(init.localscaleX));
+				initialData->add(Lump::floatData(init.localscaleY));
 				initialData->add(Lump::floatData(init.size_X));
 				initialData->add(Lump::floatData(init.size_Y));
 				initialData->add(Lump::floatData(init.uv_move_X));
@@ -725,11 +762,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					if (state->rotation.y != init.rotationY)				p_flags |= PART_FLAG_ROTATIONY;
 					if (state->rotation.z != init.rotationZ)				p_flags |= PART_FLAG_ROTATIONZ;
 
-					float size_scale_x = state->scale.x;
-					float size_scale_y = state->scale.y;
-					if (size_scale_x != init.scaleX)						p_flags |= PART_FLAG_SCALE_X;
-					if (size_scale_y != init.scaleY)						p_flags |= PART_FLAG_SCALE_Y;
+					if (state->scale.x != init.scaleX)						p_flags |= PART_FLAG_SCALE_X;
+					if (state->scale.y != init.scaleY)						p_flags |= PART_FLAG_SCALE_Y;
+					if (state->localscale.x != init.localscaleX)			p_flags |= PART_FLAG_LOCALSCALE_X;
+					if (state->localscale.y != init.localscaleY)			p_flags |= PART_FLAG_LOCALSCALE_Y;
 					if ((int)( state->alpha * 255 ) != init.opacity)		p_flags |= PART_FLAG_OPACITY;
+					if ((int)( state->localalpha * 255 ) != init.localopacity)		p_flags |= PART_FLAG_LOCALOPACITY;
 					if (state->size.x != init.size_X)						p_flags |= PART_FLAG_SIZE_X;
 					if (state->size.y != init.size_Y)						p_flags |= PART_FLAG_SIZE_Y;
 					if (state->uvTranslate.x != init.uv_move_X )			p_flags |= PART_FLAG_U_MOVE;
@@ -738,6 +776,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					if (state->uvScale.x != init.uv_scale_X)				p_flags |= PART_FLAG_U_SCALE;
 					if (state->uvScale.y != init.uv_scale_Y)				p_flags |= PART_FLAG_V_SCALE;
 					if (state->boundingRadius != init.boundingRadius)		p_flags |= PART_FLAG_BOUNDINGRADIUS;
+					if (state->masklimen != init.masklimen)					p_flags |= PART_FLAG_MASK;
+					if (state->prio != init.priority)						p_flags |= PART_FLAG_PRIORITY;
 					//インスタンス情報出力チェック
 					if (state->refAnime)
 					{
@@ -770,18 +810,18 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					}
 
 
-					// カラーブレンド値を格納する必要があるかチェック
+					// パーツカラー値を格納する必要があるかチェック
 					int cb_flags = 0;
-					if (state->is_color_blend)
+					if (state->is_parts_color)
 					{
-						switch (state->colorValue.target)
+						switch (state->partsColorValue.target)
 						{
 							case SsColorBlendTarget::whole:
 								if ( 
-									  ( state->colorValue.color.rgba.a == 0 )
-								   && ( state->colorValue.color.rgba.r == 0 )	
-								   && ( state->colorValue.color.rgba.g == 0 )
-								   && ( state->colorValue.color.rgba.b == 0 )	
+									  ( state->partsColorValue.color.rgba.a == 0 )
+								   && ( state->partsColorValue.color.rgba.r == 0 )
+								   && ( state->partsColorValue.color.rgba.g == 0 )
+								   && ( state->partsColorValue.color.rgba.b == 0 )
 								   )
 								{
 									//右のキーが単色、左のキーが4頂点などの場合に単色の色出力ができないため
@@ -803,7 +843,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								break;
 						}
 						
-						if (cb_flags) p_flags |= PART_FLAG_COLOR_BLEND;
+						if (cb_flags) p_flags |= PART_FLAG_PARTS_COLOR;
 					}
 
 					// 頂点変形のオフセット値を格納する必要あるかチェック
@@ -848,9 +888,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					if (p_flags & PART_FLAG_ROTATIONX) frameData->add(Lump::floatData(state->rotation.x));	// degree
 					if (p_flags & PART_FLAG_ROTATIONY) frameData->add(Lump::floatData(state->rotation.y));	// degree
 					if (p_flags & PART_FLAG_ROTATIONZ) frameData->add(Lump::floatData(state->rotation.z));	// degree
-					if (p_flags & PART_FLAG_SCALE_X) frameData->add(Lump::floatData(size_scale_x));
-					if (p_flags & PART_FLAG_SCALE_Y) frameData->add(Lump::floatData(size_scale_y));
+					if (p_flags & PART_FLAG_SCALE_X) frameData->add(Lump::floatData(state->scale.x));
+					if (p_flags & PART_FLAG_SCALE_Y) frameData->add(Lump::floatData(state->scale.y));
+					if (p_flags & PART_FLAG_LOCALSCALE_X) frameData->add(Lump::floatData(state->localscale.x));
+					if (p_flags & PART_FLAG_LOCALSCALE_Y) frameData->add(Lump::floatData(state->localscale.y));
 					if (p_flags & PART_FLAG_OPACITY) frameData->add(Lump::s16Data((int)(state->alpha * 255)));
+					if (p_flags & PART_FLAG_LOCALOPACITY) frameData->add(Lump::s16Data((int)(state->localalpha * 255)));
 
 					if (p_flags & PART_FLAG_SIZE_X) frameData->add(Lump::floatData(state->size.x));
 					if (p_flags & PART_FLAG_SIZE_Y) frameData->add(Lump::floatData(state->size.y));
@@ -862,6 +905,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					if (p_flags & PART_FLAG_V_SCALE) frameData->add(Lump::floatData(state->uvScale.y));
 
 					if (p_flags & PART_FLAG_BOUNDINGRADIUS) frameData->add(Lump::floatData(state->boundingRadius));
+
+					if (p_flags & PART_FLAG_MASK) frameData->add(Lump::s16Data(state->masklimen));
+					if (p_flags & PART_FLAG_PRIORITY) frameData->add(Lump::s16Data(state->prio));
+
 					//インスタンス情報出力
 					if (p_flags & PART_FLAG_INSTANCE_KEYFRAME)
 					{
@@ -899,17 +946,16 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						}
 					}
 
-					// カラーブレンドデータ
-					if (p_flags & PART_FLAG_COLOR_BLEND)
+					// パーツカラーデータ
+					if (p_flags & PART_FLAG_PARTS_COLOR)
 					{
 						// ブレンド方法と、単色もしくはどの頂点に対するカラー値が格納されているかをu16にまとめる
-						int typeAndFlags = (int)state->colorValue.blendType | (cb_flags << 8);
+						int typeAndFlags = (int)state->partsColorValue.blendType | (cb_flags << 8);
 						frameData->add(Lump::s16Data(typeAndFlags));
 
 						if (cb_flags & VERTEX_FLAG_ONE)
 						{
-							frameData->add(Lump::floatData(state->colorValue.color.rate));
-							frameData->add(Lump::colorData(state->colorValue.color.rgba.toARGB()));
+							frameData->add(Lump::colorData(state->partsColorValue.color.rgba.toARGB()));
 						}
 						else
 						{
@@ -917,8 +963,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							{
 								if (cb_flags & (1 << vtxNo))
 								{
-									frameData->add(Lump::floatData(state->colorValue.colors[vtxNo].rate));
-									frameData->add(Lump::colorData(state->colorValue.colors[vtxNo].rgba.toARGB()));
+									frameData->add(Lump::colorData(state->partsColorValue.colors[vtxNo].rgba.toARGB()));
 								}
 							}
 						}
@@ -1043,7 +1088,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			animeData->add(frameDataIndexArray);
 			animeData->add(hasUserData ? userDataIndexArray : Lump::s32Data(0));
 			animeData->add(hasLabelData ? LabelDataIndexArray : Lump::s32Data(0));
+			animeData->add(Lump::s16Data(decoder.getAnimeStartFrame()));
 			animeData->add(Lump::s16Data(decoder.getAnimeEndFrame()));
+			animeData->add(Lump::s16Data(decoder.getAnimeTotalFrame()));
 			animeData->add(Lump::s16Data(anime->settings.fps));
 			animeData->add(Lump::s16Data(label_idx));							//ラベルデータ数
 			animeData->add(Lump::s16Data(anime->settings.canvasSize.x));		//基準枠W
