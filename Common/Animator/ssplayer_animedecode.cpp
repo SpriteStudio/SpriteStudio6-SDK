@@ -722,12 +722,12 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 				case SsAttributeKind::prio:		///< 優先度
 					SsGetKeyValue( nowTime , attr , state->prio );
 					break;
-				case SsAttributeKind::fliph:	///< 左右反転(セルの原点を軸にする)
-					SsGetKeyValue( nowTime , attr , state->hFlip );
-					break;
-				case SsAttributeKind::flipv:	///< 上下反転(セルの原点を軸にする)
-					SsGetKeyValue( nowTime , attr , state->vFlip );
-					break;
+//				case SsAttributeKind::fliph:	///< 左右反転(セルの原点を軸にする) Ver6非対応
+//					SsGetKeyValue( nowTime , attr , state->hFlip );
+//					break;
+//				case SsAttributeKind::flipv:	///< 上下反転(セルの原点を軸にする) Ver6非対応
+//					SsGetKeyValue( nowTime , attr , state->vFlip );
+//					break;
 				case SsAttributeKind::hide:		///< 非表示
 					{
 						int useTime = SsGetKeyValue( nowTime , attr , state->hide );
@@ -748,10 +748,10 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 					SsGetKeyValue( nowTime , attr , state->partsColorValue);
 					state->is_part_color = true;
 					break;
-				case SsAttributeKind::color:	///< カラーブレンド
-					SsGetKeyValue( nowTime , attr , state->colorValue );
-					state->is_color_blend = true;
-					break;
+//				case SsAttributeKind::color:	///< カラーブレンド  Ver6非対応
+//					SsGetKeyValue( nowTime , attr , state->colorValue );
+//					state->is_color_blend = true;
+//					break;
 				case SsAttributeKind::vertex:	///< 頂点変形
 					SsGetKeyValue( nowTime , attr , state->vertexValue );
 					state->is_vertex_transform = true;
@@ -762,12 +762,12 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 				case SsAttributeKind::pivoty:	///< 原点オフセット.Y
 					SsGetKeyValue( nowTime , attr , state->pivotOffset.y );
 					break;
-				case SsAttributeKind::anchorx:	///< アンカーポイント.X
-					SsGetKeyValue( nowTime , attr , state->anchor.x );
-					break;
-				case SsAttributeKind::anchory:	///< アンカーポイント.Y
-					SsGetKeyValue( nowTime , attr , state->anchor.y );
-					break;
+//				case SsAttributeKind::anchorx:	///< アンカーポイント.X Ver6非対応
+//					SsGetKeyValue( nowTime , attr , state->anchor.x );
+//					break;
+//				case SsAttributeKind::anchory:	///< アンカーポイント.Y Ver6非対応
+//					SsGetKeyValue( nowTime , attr , state->anchor.y );
+//					break;
 				case SsAttributeKind::sizex:	///< 表示サイズ.X
 					SsGetKeyValue( nowTime , attr , state->size.x );
 					size_x_key_find = true;

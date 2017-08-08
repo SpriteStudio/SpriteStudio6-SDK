@@ -260,7 +260,7 @@ void	SampleScene::init()
 
 	m_Zoom = 1.0f;
 	m_Speed = 1.0f;
-
+	isLoop = true;
 	
     g_twbar = TwNewBar("Main Panel");
 	UIRebuild();
