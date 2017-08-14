@@ -483,6 +483,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				const SsString str = part->refEffectName;
 				partData->add(Lump::stringData(str));							//文字列
 			}
+			//パーツカラー
+			const SsString str = part->colorLabel;
+			partData->add(Lump::stringData(str));								//文字列
+
 			//ボーン情報
 			partData->add(Lump::s16Data(part->boneLength));
 			partData->add(Lump::floatData(part->bonePosition.x));
@@ -503,10 +507,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 			//マスク対象
 			partData->add(Lump::s16Data(part->maskInfluence));
-
-			//パーツカラー
-			const SsString str = part->colorLabel;
-			partData->add(Lump::stringData(str));								//文字列
+			partData->add(Lump::s16Data(0));	// reserved
 
 		}
 
@@ -678,7 +679,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 			// フレーム毎データ
 			Lump* frameDataIndexArray = Lump::set("ss::ss_u16*[]", true);
-			for (int frame = 0; frame < decoder.getAnimeEndFrame(); frame++)
+			for (int frame = 0; frame <= decoder.getAnimeEndFrame(); frame++)
 			{
 				// パラメータを計算し更新する
 				decoder.setPlayFrame(static_cast<float>(frame));
