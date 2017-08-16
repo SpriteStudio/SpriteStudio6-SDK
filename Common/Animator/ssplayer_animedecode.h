@@ -78,7 +78,6 @@ private:
 
 
 	void	updateMatrix(SsPart* part , SsPartAnime* anime , SsPartState* state);
-	void	update_matrix_ss4(SsPart* part , SsPartAnime* anime , SsPartState* state);
 
 	void	updateVertices(SsPart* part , SsPartAnime* anime , SsPartState* state);
 

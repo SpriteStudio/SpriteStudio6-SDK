@@ -901,90 +901,8 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 
 }
 
-
-
-
-//テンポラリの r s tを作った方がよさげ？
-//（プレビュー時に問題が生じるため
-void	SsAnimeDecoder::update_matrix_ss4(SsPart* part , SsPartAnime* anime , SsPartState* state)
-{
-
-	//単位行列にする
-	IdentityMatrix( state->matrix );
-
-
-    if ( state->parent == 0 ){
-
-    	state->_temp_position = SsVector3( 0 , 0 , 0 );
-        state->_temp_rotation = SsVector3( 0 , 0 , 0 );
-        state->_temp_scale = SsVector2 ( 1.0f,1.0f);
-    	 return ;
-    }
-
-
-    float x = state->position.x;
-    float y = state->position.y;
-    float z = state->position.z;
-
-    //scaleを適用
-    x*=state->parent->_temp_scale.x;
-    y*=state->parent->_temp_scale.y;
-
-    float temp = 1.0f;
-
-    //回転
-    float angle = state->parent->_temp_rotation.z;
-    double aa = DegreeToRadian( angle ) * temp;
-    double  asin = sinf( aa );
-    double  acos = cosf( aa );
-
-    float rx = (float)( x * acos - y * asin );
-    float ry = (float)( x * asin + y * acos );
-
-    x = rx;
-    y = ry;
-
-    //平行移動
-    state->_temp_position.x = state->parent->_temp_position.x + x;
-    state->_temp_position.y = state->parent->_temp_position.y + y;
-
-
-    //ローカル回転
-    state->_temp_rotation.z = state->rotation.z + state->parent->_temp_rotation.z;
-
-
-	float scx = state->inheritRates[SsAttributeKind::sclx];
-	float scy = state->inheritRates[SsAttributeKind::scly];
-
-
-		//拡大率
-	state->_temp_scale.x = state->scale.x * state->parent->_temp_scale.x;
-	state->_temp_scale.y = state->scale.y * state->parent->_temp_scale.y;
-	
-	if ( scx == 0.0f )
-	{
-		state->_temp_scale.x = state->scale.x;
-		state->scale.x = state->scale.x / state->parent->_temp_scale.x;
-	}
-	if ( scy == 0.0f )
-	{
-		state->_temp_scale.y = state->scale.y;	
-		state->scale.y = state->scale.y / state->parent->_temp_scale.y;
-	}
-
-    //以上からローカルマトリクスを作る
-	TranslationMatrixM( state->matrix , state->_temp_position.x, state->_temp_position.y, state->_temp_position.z );//
-	RotationXYZMatrixM( state->matrix , DegreeToRadian(0) , DegreeToRadian(0) , DegreeToRadian( state->_temp_rotation.z * temp) );
-	ScaleMatrixM(  state->matrix , state->_temp_scale.x, state->_temp_scale.y, 1.0f );
-
-
-
-}
-
-
 void	SsAnimeDecoder::updateMatrix(SsPart* part , SsPartAnime* anime , SsPartState* state)
 {
-
 	int num = 1;
 	if ((state->localscale.x != 1.0f) || (state->localscale.y != 1.0f))
 	{
@@ -1017,15 +935,15 @@ void	SsAnimeDecoder::updateMatrix(SsPart* part , SsPartAnime* anime , SsPartStat
 
 		TranslationMatrixM( pmat , state->position.x, state->position.y, state->position.z );//
 		RotationXYZMatrixM( pmat , DegreeToRadian(state->rotation.x) , DegreeToRadian(state->rotation.y) , DegreeToRadian( state->rotation.z) );
+		float sx = state->scale.x;
+		float sy = state->scale.x;
 		if (matcnt > 0)
 		{
 			//ローカルスケールを適用する
-			ScaleMatrixM(pmat, state->localscale.x, state->localscale.y, 1.0f);
+			sx *= state->localscale.x;
+			sy *= state->localscale.y;
 		}
-		else
-		{
-			ScaleMatrixM(pmat, state->scale.x, state->scale.y, 1.0f);
-		}
+		ScaleMatrixM(pmat, sx, sy, 1.0f);
 	}
 	if (num == 1)
 	{
