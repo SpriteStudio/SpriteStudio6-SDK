@@ -370,7 +370,6 @@ void	SsRenderGL::execMask(SsPartState* state)
 
 		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
-		//if (!(state->maskInfluence && state->getMaskParentSetting())) { //マスクが有効では無い＝重ね合わせる
 		if (!(state->maskInfluence )) { //マスクが有効では無い＝重ね合わせる
 
 			glStencilFunc(GL_ALWAYS, 1, ~0);  //常に通過
@@ -396,7 +395,6 @@ void	SsRenderGL::execMask(SsPartState* state)
 	}
 	else {
 
-		//if ((state->maskInfluence && state->getMaskParentSetting())) //パーツに対してのマスクが有効か否か
 		if ((state->maskInfluence )) //パーツに対してのマスクが有効か否か
 		{
 			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
