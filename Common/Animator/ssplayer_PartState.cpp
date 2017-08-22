@@ -61,6 +61,8 @@ void	SsPartState::init()
 	is_color_blend = false;
 	is_vertex_transform = false;
 	inheritRates = 0; 
+
+	is_localAlpha = false;
 	
 	effectValue.independent = false;
 	effectValue.loopflag = 0;

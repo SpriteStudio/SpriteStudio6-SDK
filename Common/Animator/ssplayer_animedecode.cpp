@@ -636,6 +636,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 	bool hidekey_find = false;
 	bool hideTriger = false;
 	state->masklimen = 0;
+	state->is_localAlpha = false;
 
 	
 
@@ -719,6 +720,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 					break;
 				case SsAttributeKind::loalpha:	///< ローカル不透明度
 					SsGetKeyValue( nowTime , attr , state->localalpha);
+					state->is_localAlpha = true;
 					break;
 				case SsAttributeKind::prio:		///< 優先度
 					SsGetKeyValue( nowTime , attr , state->prio );
@@ -1164,9 +1166,17 @@ void	SsAnimeDecoder::updateInstance( int nowTime , SsPart* part , SsPartAnime* p
 	memcpy(mattemp, state->matrix, sizeof(state->matrix));					//継承用マトリクスを退避する
 	memcpy(state->matrix, state->matrixLocal, sizeof(state->matrixLocal));	//ローカルをmatrixに適用する
 
+	float orgAlpha = state->alpha;
+	if (state->is_localAlpha)
+	{
+		//ローカス不透明度が使用されている場合は不透明度をアップデート中だけ上書きする
+		state->alpha = state->localalpha;									// ローカル不透明度対応
+	}
+
 	state->refAnime->update(this->frameDelta);								//インスタンスが参照するソースアニメのアップデート
 
 	memcpy(state->matrix, mattemp, sizeof(mattemp));						//継承用マトリクスを戻す
+	state->alpha = orgAlpha;
 
   
 	//頂点の作成
@@ -1379,9 +1389,17 @@ void	SsAnimeDecoder::draw()
 			memcpy(mattemp, state->matrix, sizeof(state->matrix));					//継承用マトリクスを退避する
 			memcpy(state->matrix, state->matrixLocal, sizeof(state->matrixLocal));	//ローカルをmatrixに適用する
 
+			float orgAlpha = state->alpha;
+			if (state->is_localAlpha)
+			{
+				//ローカス不透明度が使用されている場合は不透明度をアップデート中だけ上書きする
+				state->alpha = state->localalpha;									// ローカル不透明度対応
+			}
+
 			state->refEffect->draw();
 
 			memcpy(state->matrix, mattemp, sizeof(mattemp));						//継承用マトリクスを戻す
+			state->alpha = orgAlpha;
 		}
 		else if ( state->partType == SsPartType::mask )
 		{
