@@ -679,7 +679,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 			// フレーム毎データ
 			Lump* frameDataIndexArray = Lump::set("ss::ss_u16*[]", true);
-			for (int frame = 0; frame <= decoder.getAnimeEndFrame(); frame++)
+			for (int frame = 0; frame < decoder.getAnimeTotalFrame(); frame++)
 			{
 				// パラメータを計算し更新する
 				decoder.setPlayFrame(static_cast<float>(frame));
@@ -981,7 +981,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			Lump* userDataIndexArray = Lump::set("ss::ss_u16*[]", true);
 			bool hasUserData = false;
 
-			for (int frame = 0; frame < decoder.getAnimeEndFrame(); frame++)
+			for (int frame = 0; frame < decoder.getAnimeTotalFrame(); frame++)
 			{
 				Lump* userData = Lump::set("ss::ss_u16[]", true);
 				int partsCount = 0;
