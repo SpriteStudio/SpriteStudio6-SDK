@@ -8,6 +8,7 @@
 class SsAnimeDecoder;
 //class SsEffectRenderer;
 class SsEffectRenderV2;
+class SsMeshPart;
 
 
 
@@ -77,6 +78,9 @@ struct SsPartState
 
 	int				masklimen;
 	bool			maskInfluence;
+
+	SsMeshPart*		meshPart;
+
 
 
 	SsPartState();

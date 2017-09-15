@@ -90,6 +90,7 @@ void	SsPartState::init()
 //	instanceValue.liveFrame = 0.0f;	//‰ÁZ’l‚È‚Ì‚Å‰Šú‰»‚µ‚Ä‚Í‚¢‚¯‚È‚¢
 	
 	masklimen = 0;
+	meshPart = 0;
 
 //	partType = SsPartType::normal;
 //	maskInfluence = false;

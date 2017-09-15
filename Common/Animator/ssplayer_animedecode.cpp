@@ -8,6 +8,7 @@
 #include "ssplayer_render.h"
 #include "ssplayer_effect.h"
 #include "ssplayer_effect2.h"
+#include "ssplayer_mesh.h"
 
 
 //stdでののforeach宣言　
@@ -193,6 +194,21 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 			{
 				partStatesMask_.push_back( &partState[i]);
 			}
+
+			//メッシュパーツの追加
+			if (p->type == SsPartType::mesh)
+			{
+				SsMeshPart* mesh = new SsMeshPart();
+				partState[i].meshPart = mesh;
+				mesh->myPartState = &partState[i];
+				//使用するセルを調査する
+				
+
+
+
+			}
+
+
 		}
 
 		sortList.push_back( &partState[i] );

@@ -76,6 +76,8 @@ public:
 	virtual bool	dc( const char* name , SsCurve& member ) = 0;
 	virtual bool	dc( const char* name , SsXmlRangeValueConverter& member ) = 0;
 
+	virtual bool	dc(const char* name, std::vector<SsPoint2>& list) = 0;
+	virtual bool	dc(const char* name, std::vector<SsTriangle>& list) = 0;
 
 
 	virtual bool	dc_attr( const char* name , SsString& member ) = 0;
@@ -132,6 +134,7 @@ public:
 	virtual bool	dc( const char* name , SsCurve& member );
 	virtual bool	dc( const char* name , SsTriangle& member);
 //	virtual bool	dc( const char* name , SsBoneBind& member);
+	
 	virtual bool	dc( const char* name , SsXmlRangeValueConverter& member )
 	{
 		XMLElement* e = getxml()->FirstChildElement( name );
@@ -146,6 +149,8 @@ public:
 		return member.inputString(str,str2);		
 	}
 
+	virtual bool	dc(const char* name, std::vector<SsPoint2>& list);
+	virtual bool	dc(const char* name, std::vector<SsTriangle>& list);
 
 	virtual bool	dc_attr( const char* name , SsString& member );
 	virtual bool	dc_attr( const char* name , int& member );
@@ -255,6 +260,8 @@ inline bool	__SSAR_DECLARE_ATTRIBUTE_ENUM__( ISsXmlArchiver* ar ,myclass& type, 
 
 bool	StringToPoint2( const std::string& str , SsPoint2& point );
 bool	StringToIRect( const std::string& str , SsIRect& rect );
+bool	StringToTriangle(const std::string& str, SsTriangle& tri);
+
 
 
 ///SpriteStudio XMLデータ読み書きの初期化

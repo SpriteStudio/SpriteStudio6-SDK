@@ -171,6 +171,7 @@ public:
 		return get_angle_360_unit(uv0, uv1);
 	}
 
+
 };
 
 ///３次元座標を表現するためのクラスです。
@@ -682,6 +683,23 @@ namespace SsRenderBlendType
 	};
 };
 SS_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
+
+
+//2.0.1で追加　IKの方向
+namespace SsIkRotationArrow
+{
+	enum _enum
+	{
+		unknown = -1,
+		arrowfree = 0,
+		clockwise,
+		anticlockwise,
+		num
+	};
+};
+
+SS_DECLARE_ENUM_STRING_DEF(SsIkRotationArrow);
+
 
 class SsEffectAttr
 {
