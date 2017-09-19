@@ -14,7 +14,7 @@ void	SsMeshPart::makeMesh()
 {
 	//パーツステートの初期化の際にターゲットセルが作られる、その際にマップもコピーする？
 
-	size_t psize = tagetCell->meshPointList.size();
+	size_t psize = targetCell->meshPointList.size();
 
 	if (vertices) delete[] vertices;
 	if (colors) delete[] colors;
@@ -44,22 +44,24 @@ void	SsMeshPart::makeMesh()
 
 
 	SsVector2 offs; //中央
-	offs.x = (-tagetCell->size.x / 2.0f);
-	offs.y = (tagetCell->size.y / 2.0f);
+	offs.x = (-targetCell->size.x / 2.0f);
+	offs.y = (targetCell->size.y / 2.0f);
 
-	offs.x -= tagetCell->pivot.x * tagetCell->size.x;
-	offs.y -= tagetCell->pivot.y * tagetCell->size.y;
+	offs.x -= targetCell->pivot.x * targetCell->size.x;
+	offs.y -= targetCell->pivot.y * targetCell->size.y;
 
-	ver_size = tagetCell->meshPointList.size();
+	ver_size = targetCell->meshPointList.size();
+
+	float txsizew = this->targetTexture->getWidth();
+	float txsizeh = this->targetTexture->getHeight();
+
+	float uvpixel_x = 1.0f / txsizew;
+	float uvpixel_y = 1.0f / txsizeh;
 
 
-//	float uvpixel_x = 1.0f / tagetCell->parentSize.x;
-//	float uvpixel_y = 1.0f / tagetCell->parentSize.y;
-
-
-	for (size_t i = 0; i < tagetCell->meshPointList.size(); i++)
+	for (size_t i = 0; i < targetCell->meshPointList.size(); i++)
 	{
-		SsVector2& v = tagetCell->meshPointList[i];
+		SsVector2& v = targetCell->meshPointList[i];
 		vertices[i * 3 + 0] = v.x + offs.x;
 		vertices[i * 3 + 1] = -v.y + offs.y;
 		vertices[i * 3 + 2] = 0;
@@ -69,28 +71,26 @@ void	SsMeshPart::makeMesh()
 		colors[i * 4 + 1] = 1.0f;
 		colors[i * 4 + 2] = 1.0f;
 		colors[i * 4 + 3] = 1.0f;
-/*
-		uvs[i * 2 + 0] = (tagetCell->pos.x + v.x) * uvpixel_x;
-		uvs[i * 2 + 1] = (tagetCell->pos.y + v.y) * uvpixel_y;
-*/
+		uvs[i * 2 + 0] = (targetCell->pos.x + v.x) * uvpixel_x;
+		uvs[i * 2 + 1] = (targetCell->pos.y + v.y) * uvpixel_y;
 	}
 
-	outter_vertexnum = tagetCell->outerPoint.size();
+	outter_vertexnum = targetCell->outerPoint.size();
 	for (size_t i = 0; i < outter_vertexnum; i++)
 	{
-		SsVector2& v = tagetCell->outerPoint[i];
+		SsVector2& v = targetCell->outerPoint[i];
 
 		vertices_outer[i].x = v.x + offs.x;
 		vertices_outer[i].y = -v.y + offs.y;
 	}
 
 
-	tri_size = tagetCell->meshTriList.size();
+	tri_size = targetCell->meshTriList.size();
 
 	indices = new unsigned short[tri_size * 3];
-	for (size_t i = 0; i < tagetCell->meshTriList.size(); i++)
+	for (size_t i = 0; i < targetCell->meshTriList.size(); i++)
 	{
-		SsTriangle& t = tagetCell->meshTriList[i];
+		SsTriangle& t = targetCell->meshTriList[i];
 		indices[i * 3 + 0] = t.idxPo1;
 		indices[i * 3 + 1] = t.idxPo2;
 		indices[i * 3 + 2] = t.idxPo3;

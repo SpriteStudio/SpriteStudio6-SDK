@@ -3,7 +3,7 @@
 #define __SSPLAYER_MESH__
 
 
-
+class ISSTexture;
 
 #define SSMESHPART_BONEMAX	(128)
 #define SSMESHPART_CHECKRANGE (4)
@@ -51,9 +51,14 @@ private:
 	std::vector<SsPartState*>   bindCandidateBoneList; //バインド候補[Editer]
 
 
+
+
+
 public:
 	StBoneWeight*   	bindBoneInfo;
-	SsCell*  			tagetCell;
+	SsCell*  			targetCell;
+	ISSTexture*			targetTexture;
+
 	SsPartState*	   	myPartState;
 
 	//テンポラリ [editor]
@@ -62,7 +67,7 @@ public:
 
 public:
 	SsMeshPart() :
-		isBind(false), weightColors(0), bindBoneInfo(0), tagetCell(0),
+		isBind(false), weightColors(0), bindBoneInfo(0), targetCell(0),
 		vertices_outer(0), draw_vertices(0),
 		vertices(0), colors(0), uvs(0), indices(0), update_vertices_outer(0), myPartState(0)
 	{
@@ -70,7 +75,7 @@ public:
 
 
 	SsMeshPart(SsPartState* s) :
-		isBind(false), weightColors(0), bindBoneInfo(0), tagetCell(0),
+		isBind(false), weightColors(0), bindBoneInfo(0), targetCell(0),
 		vertices_outer(0), draw_vertices(0),
 		vertices(0), colors(0), uvs(0), indices(0), update_vertices_outer(0)
 	{

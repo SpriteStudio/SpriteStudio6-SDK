@@ -78,6 +78,39 @@ void	SsAnimeDecoder::restart()
 
 }
 
+bool	SsAnimeDecoder::getFirstCell(SsPart* part , SsCellValue& out)
+{
+	bool	retFlag = false;
+
+	SsPartAnime* setupAnime = partAnimeDic[part->name];
+	if (setupAnime && !setupAnime->attributes.empty())
+	{
+		SsAttributeList attList;
+		attList = setupAnime->attributes;
+
+		foreach(SsAttributeList, attList, e)
+		{
+			SsAttribute* attr = (*e);
+			switch (attr->tag)
+			{
+				case SsAttributeKind::cell:		///< 参照セル
+				{
+					SsGetKeyValue(0, attr, out);
+					retFlag = true;
+				}
+				break;
+				default:
+					break;
+			}
+		}
+
+	}
+
+	return retFlag;
+
+}
+
+
 
 void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellMapList* cellmap , SsProject* sspj )
 {
@@ -165,8 +198,6 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 				partState[i].refAnime = animedecoder;
 				//親子関係を付ける
 				animedecoder->partState[0].parent = &partState[i];
-				
-				
 			}
 
 			//エフェクトデータの初期設定
@@ -202,13 +233,19 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 				partState[i].meshPart = mesh;
 				mesh->myPartState = &partState[i];
 				//使用するセルを調査する
-				
-
-
-
+				bool ret;
+				SsCellValue cellv;
+				if (ret = getFirstCell(p, cellv))
+				{
+					mesh->targetCell = cellv.cell;
+					mesh->targetTexture = cellv.texture;
+					//mesh->myPartState = partState[i];
+					mesh->makeMesh();
+				}
+				else {
+					//not found cell
+				}
 			}
-
-
 		}
 
 		sortList.push_back( &partState[i] );

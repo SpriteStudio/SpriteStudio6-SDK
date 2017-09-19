@@ -83,6 +83,7 @@ private:
 
     int		CalcAnimeLabel2Frame(const SsString& str, int offset, SsAnimation* Animation  );
 	int		findAnimetionLabel(const SsString& str, SsAnimation* Animation);
+	bool	getFirstCell(SsPart* part, SsCellValue& out);
 
 
 public:
