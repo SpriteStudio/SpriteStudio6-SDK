@@ -1,7 +1,7 @@
 #ifndef __SSPLAYER_MATRIX__
 #define __SSPLAYER_MATRIX__
 
-
+#include "sstypes.h"
 #include <memory>
 
 void	IdentityMatrix( float* matrix );
@@ -11,6 +11,10 @@ void	MultiplyMatrix(const float *m0, const float *m1, float *matrix);
 void    Matrix4RotationX( float* _matrix ,const float radians );
 void    Matrix4RotationY( float* _matrix ,const float radians );
 void    Matrix4RotationZ( float* _matrix ,const float radians );
+
+void	MatrixTransformVector3(float* _matrix, SsVector3& src, SsVector3& dst);
+
+
 
 inline	void	TranslationMatrixM(  float* _matrix , const float x , const float y , const float z )
 {

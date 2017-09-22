@@ -7,7 +7,7 @@
 #include "ssplayer_mesh.h"
 #include "ssplayer_macro.h"
 #include "ssplayer_matrix.h"
-
+#include "ssplayer_animedecode.h"
 
 
 void	SsMeshPart::makeMesh()
@@ -130,30 +130,100 @@ void	SsMeshPart::Cleanup()
 	myPartState = 0;
 }
 
+
+void    SsMeshPart::updateTransformMesh()
+{
+	float matrix[16];
+
+	for (int i = 0; i < ver_size; i++)
+	{
+		StBoneWeight& info = bindBoneInfo[i];
+
+		SsVector3 out;
+		SsVector3 outtotal;
+
+
+		if (info.bindBoneNum > 0 )
+		{
+			for (int n = 0; n < info.bindBoneNum; n++)
+			{
+				if (info.bone[n])
+				{
+					float w = info.weight[n] / 100.0f;
+					MatrixTransformVector3(info.bone[n]->matrix, info.offset[n], out);
+					out.x *= w;
+					out.y *= w;
+					out.z *= w;
+
+					outtotal.x += out.x;
+					outtotal.y += out.y;
+					outtotal.z += out.z;
+				}
+			}
+
+			draw_vertices[i * 3 + 0] = outtotal.x;
+			draw_vertices[i * 3 + 1] = outtotal.y;
+			draw_vertices[i * 3 + 2] = 0;
+		}
+	}
+}
+
 //-----------------------------------------------------------
 
-SsMeshAnimator::SsMeshAnimator()
+SsMeshAnimator::SsMeshAnimator() : bindAnime (0)
 {
 
 }
 
-void	SsMeshAnimator::setAnimeState(SsAnimeState* s)
+void	SsMeshAnimator::setAnimeDecoder(SsAnimeDecoder* s)
 {
+	bindAnime = s;
+}
+
+
+void	SsMeshAnimator::makeMeshBoneList()
+{
+	if (bindAnime == 0)return;
+	meshList.clear();
+	boneList.clear();
+	jointList.clear();
+
+
+	size_t num = bindAnime->getStateNum();
+	SsPartState* indexState = bindAnime->getPartState();
+	for (int i = 0; i < num; i++)
+	{
+		if (indexState[i].partType == SsPartType::mesh)
+		{
+			meshList.push_back(&indexState[i]);
+		}
+		if (indexState[i].partType == SsPartType::armature)
+		{
+			boneList.push_back(&indexState[i]);
+		}
+		if (indexState[i].partType == SsPartType::joint)
+		{
+			jointList.push_back(&indexState[i]);
+		}
+	}
+
+
+
 
 }
 
 void	SsMeshAnimator::update()
 {
+	if (bindAnime == 0)return;
+
+	foreach(std::vector<SsPartState*>, meshList, it)
+	{
+		SsPartState* state = (*it);
+
+		SsMeshPart* meshPart = (*it)->meshPart;
+		if (meshPart)
+			meshPart->updateTransformMesh();
+	}
+
 }
-
-void	SsMeshAnimator::draw() 
-{
-
-}
-
-void	SsMeshAnimator::modelLoad() 
-{
-
-}
-
 

@@ -96,12 +96,13 @@ public:
 		return &bindBoneInfo[index];
 	}
 
+	void    updateTransformMesh();            //再生時用　（バインドされたボーンに沿って変形を行う）
+
 /*
 	void	renderVertex();
 	void	renderMesh(float alpha, bool renderTexture);
 	void	renderBoneWeightColor(float alpha, bool renderTexture);
 	void	update_matrix(float * matrix);  //バインド前（セットアップモード用のマトリクスアップデート)
-	void    updateTransformMesh();            //再生時用　（バインドされたボーンに沿って変形を行う）
 
 	void		calcVerticesPos(SsAnimeState* state);
 	SsVector3   getWorldVertexPoint(int index) { return calc_world_vertices[index]; }
@@ -120,12 +121,13 @@ public:
 
 class SsPart;
 class SsMeshPart;
-class SsAnimeState;
+//class SsAnimeState;
 
 class   SsMeshAnimator
 {
 public:
-	SsAnimeState*	bindAnime;
+//	SsAnimeState*	bindAnime;
+	SsAnimeDecoder* bindAnime;
 
 	std::vector<SsPartState*>    	meshList;
 	std::vector<SsPartState*>    	boneList;
@@ -135,14 +137,15 @@ public:
 	SsMeshAnimator();
 	virtual ~SsMeshAnimator() {}
 
-	void	setAnimeState(SsAnimeState* s);
+	void	setAnimeDecoder(SsAnimeDecoder* s);
 
 	void	update();
-	void	draw();
-	void	modelLoad();
+	void	makeMeshBoneList();
+
 
 #if 0	//[editor]
-	void	makeMeshBoneList();
+	void	modelLoad();
+	void	draw();	//debug用
 	void	bind();
 	void	autocalc();
 #endif

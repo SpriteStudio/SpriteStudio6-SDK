@@ -60,4 +60,63 @@ std::string nomarizeFilename( std::string str );
 */
 bool checkFileVersion(std::string fileVersion, std::string nowVersion);
 
+
+
+class SsStringTokenizer
+{
+private:
+	std::vector<std::string> string_array;
+	int	tokenIndex;
+	int	tokennum;
+
+public:
+	SsStringTokenizer() {}
+	virtual ~SsStringTokenizer() {}
+
+	SsStringTokenizer(std::string src_str ,  char token ) {
+		split_string(src_str, token, string_array);
+		tokenIndex = 0;
+		tokennum = string_array.size();
+	}
+
+	bool	get(int* out)
+	{
+		if (isEnd()) return false;
+		std::string str = string_array[tokenIndex];
+		*out = atoi(str.c_str());
+		tokenIndex++;
+		return !isEnd();
+	}
+
+	bool	get(float* out)
+	{
+		if (isEnd()) return false;
+		std::string str = string_array[tokenIndex];
+		*out = atof(str.c_str());
+		tokenIndex++;
+		return !isEnd();
+	}
+
+	bool	get(std::string* str)
+	{
+		if (isEnd()) return false;
+		*str = string_array[tokenIndex];
+
+		tokenIndex++;
+		return !isEnd();
+	}
+
+	int		tokenNum()
+	{
+		return tokennum;
+	}
+
+	bool	isEnd()
+	{
+		return (tokennum <= tokenIndex);
+	}
+
+};
+
+
 #endif

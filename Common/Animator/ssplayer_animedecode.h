@@ -15,6 +15,7 @@
 
 class SsAnimeDecoder;
 class SsCelMapLinker;
+class SsMeshAnimator;
 
 
 //パーツとアニメを関連付ける
@@ -70,6 +71,10 @@ private:
 	bool			maskFuncFlag;						//マスク機能（初期化、描画）を有効にするか？インスタンスパーツ内のマスク対応
 	bool			maskParentSetting;					//親のマスク対象
 
+	size_t			stateNum;
+
+	SsMeshAnimator*	meshAnimator;
+
 
 private:
 	void	updateState( int nowTime , SsPart* part , SsPartAnime* part_anime , SsPartState* state );
@@ -108,6 +113,9 @@ public:
 	int		getAnimeTotalFrame() { return curAnimeTotalFrame; }
 	int		getAnimeFPS() {
 		return curAnimeFPS; }		
+
+	size_t	getStateNum() { return stateNum; }
+	SsPartState*  getPartState() { return partState; }
 
 
 	std::list<SsPartState*>&		getPartSortList(){return sortList;}

@@ -6,6 +6,7 @@
 #include "sstypes.h"
 #include <string>
 #include <vector>
+#include <map>
 
 using namespace tinyxml2;
 
@@ -78,6 +79,7 @@ public:
 
 	virtual bool	dc(const char* name, std::vector<SsPoint2>& list) = 0;
 	virtual bool	dc(const char* name, std::vector<SsTriangle>& list) = 0;
+	virtual bool	dc(const char* name, std::map<SsString, int>& _map) = 0;
 
 
 	virtual bool	dc_attr( const char* name , SsString& member ) = 0;
@@ -152,8 +154,14 @@ public:
 	virtual bool	dc(const char* name, std::vector<SsPoint2>& list);
 	virtual bool	dc(const char* name, std::vector<SsTriangle>& list);
 
+	virtual bool	dc(const char* name, std::map<SsString,int>& _map);
+
+
+
 	virtual bool	dc_attr( const char* name , SsString& member );
 	virtual bool	dc_attr( const char* name , int& member );
+
+
 
 
 	template<class myclass> bool	dc( const char* name , std::vector<myclass*>& list , const std::string key = "value" )
@@ -219,6 +227,7 @@ inline bool	__SSAR_DECLARE_LIST__( ISsXmlArchiver* ar , std::vector<myclass*>& l
 
 	return false;
 }
+
 
 #define	SSAR_DECLARE_LIST(t)  __SSAR_DECLARE_LIST__( ar , t , #t)
 #define	SSAR_DECLARE_LIST2(t,s)  __SSAR_DECLARE_LIST__( ar , t , s)

@@ -40,7 +40,8 @@ SsAnimeDecoder::SsAnimeDecoder() :
 	instancePartsHide(false),
 	seedOffset(0),
 	maskFuncFlag(true),
-	maskParentSetting(true)
+	maskParentSetting(true),
+	meshAnimator(0)
 	{
 	}
 
@@ -146,6 +147,7 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	partAnime.clear();
 	setupPartAnime.clear();
 	partStatesMask_.clear();
+	stateNum = partNum;
 
 	for ( size_t i = 0 ; i < partNum ; i++ ) 
 	{
@@ -239,7 +241,6 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 				{
 					mesh->targetCell = cellv.cell;
 					mesh->targetTexture = cellv.texture;
-					//mesh->myPartState = partState[i];
 					mesh->makeMesh();
 				}
 				else {
@@ -259,8 +260,12 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	curAnimeTotalFrame = anime->settings.frameCount;
 	curAnimeFPS = anime->settings.fps;
 
+	//メッシュアニメーションを初期化
+	meshAnimator = new SsMeshAnimator();
+	meshAnimator->setAnimeDecoder(this);
+	meshAnimator->makeMeshBoneList();
 
-
+	
 }
 
 
@@ -1341,6 +1346,11 @@ void	SsAnimeDecoder::update(float frameDelta)
 
 		cnt++;
 	}
+
+
+	if (meshAnimator)
+		meshAnimator->update();
+
 
 	sortList.sort(_ssPartStateLess);
 	partStatesMask_.sort(_ssPartStateLess);

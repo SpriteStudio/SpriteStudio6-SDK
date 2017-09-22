@@ -33,3 +33,57 @@ SsAnimation*	SsAnimePack::findAnimation(SsString& name)
 	}
 	return 0;
 }
+
+
+
+
+void	SsMeshBind::loader(ISsXmlArchiver* ar)
+{
+
+	SsString str = ar->getxml()->GetText();
+	
+	SsStringTokenizer tokenizer(str, ',');
+	
+	
+	for (int i = 0; i < tokenizer.tokenNum(); i++)
+	{
+		std::string getstr;
+		if (tokenizer.get(&getstr))
+		{
+			SsMeshBindInfo info;
+			info.fromString(getstr);
+			meshVerticesBindArray.push_back(info);
+		}
+	}
+
+
+
+}
+
+
+void	SsMeshBindInfo::fromString(SsString str)
+{
+
+	memset(weight, SSMESHPART_BONEMAX, sizeof(float));
+	memset(boneIndex, SSMESHPART_BONEMAX, sizeof(int));
+	bindBoneNum = 0;
+
+
+	SsStringTokenizer tokenizer(str, ' ');
+
+	bool ret = true;
+	int cnt = 0;
+
+	tokenizer.get(&bindBoneNum);
+
+
+	for (int i = 0; i < bindBoneNum; i++)
+	{
+		tokenizer.get(&boneIndex[i]);
+		tokenizer.get(&weight[i]);
+		tokenizer.get(&offset[i].x);
+		tokenizer.get(&offset[i].y);
+	}
+}
+
+

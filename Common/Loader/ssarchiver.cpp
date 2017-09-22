@@ -244,6 +244,28 @@ bool	SsXmlIArchiver::dc(const char* name, SsBoneBind& member)
 }
 */
 
+
+bool	SsXmlIArchiver::dc(const char* name, std::map<SsString, int>& _map)
+{
+	_map.clear();
+
+	XMLElement* e = getxml()->FirstChildElement(name);
+	e = e->FirstChildElement("item");
+
+	while (e)
+	{
+		std::string key = e->Attribute("key");
+		std::string val = e->GetText();
+
+		_map[key] = atoi(val.c_str());
+
+		e = e->NextSiblingElement();
+	}
+
+	return false;
+}
+
+
 bool	StringToTriangle(const std::string& str, SsTriangle& tri)
 {
 
