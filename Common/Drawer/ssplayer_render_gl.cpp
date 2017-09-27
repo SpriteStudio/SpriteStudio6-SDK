@@ -453,16 +453,62 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 
 	}
 
-	//WaitColor;
-	//ウェイトカラーの合成色を頂点カラーとして使用（パーセント円の流用
-	
-	for (size_t i = 0; i < mesh->ver_size ; i++)
+	SsPartState* state = mesh->myPartState;
+
+	// パーツカラーの指定
+	if (state->is_parts_color)
 	{
-		mesh->colors[i * 4 + 0] = 1.0f;
-		mesh->colors[i * 4 + 1] = 1.0f;
-		mesh->colors[i * 4 + 2] = 1.0f;
-		mesh->colors[i * 4 + 3] = alpha;
+
+		// パーツカラーがある時だけブレンド計算する
+		float setcol[4];
+		if (state->partsColorValue.target == SsColorBlendTarget::whole)
+		{
+			// 単色
+			const SsColorBlendValue& cbv = state->partsColorValue.color;
+			simpleblendColor_(setcol, state->partsColorValue.blendType, cbv, state->partsColorValue.target);
+			// α値のブレンド。常に乗算とする。
+			setcol[3] = blendColorValue_(SsBlendType::mix, cbv.rgba.a * alpha, 1.0f);
+		}
+		else
+		{
+			//4頂点はとりあえず左上を使う
+			const SsColorBlendValue& cbv = state->partsColorValue.colors[0];
+			simpleblendColor_(setcol, state->partsColorValue.blendType, cbv, state->partsColorValue.target);
+			// α値のブレンド。常に乗算とする。
+			setcol[3] = blendColorValue_(SsBlendType::mix, cbv.rgba.a * alpha, 1.0f);
+		}
+		for (size_t i = 0; i < mesh->ver_size; i++)
+		{
+			mesh->colors[i * 4 + 0] = setcol[0];
+			mesh->colors[i * 4 + 1] = setcol[1];
+			mesh->colors[i * 4 + 2] = setcol[2];
+			mesh->colors[i * 4 + 3] = alpha;
+		}
 	}
+	else {
+		//WaitColor;
+		//ウェイトカラーの合成色を頂点カラーとして使用（パーセント円の流用
+		for (size_t i = 0; i < mesh->ver_size; i++)
+		{
+
+			mesh->colors[i * 4 + 0] = 1.0f;
+			mesh->colors[i * 4 + 1] = 1.0f;
+			mesh->colors[i * 4 + 2] = 1.0f;
+			mesh->colors[i * 4 + 3] = alpha;
+		}
+
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
+		// αだけ合成
+		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
+		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+
+	}
+
 
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 	glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
