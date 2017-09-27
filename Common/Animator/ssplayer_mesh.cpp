@@ -142,27 +142,38 @@ void    SsMeshPart::updateTransformMesh()
 		SsVector3 out;
 		SsVector3 outtotal;
 
+		draw_vertices[i * 3 + 0] = outtotal.x;
+		draw_vertices[i * 3 + 1] = outtotal.y;
+		draw_vertices[i * 3 + 2] = 0;
 
 		if (info.bindBoneNum > 0 )
 		{
 			for (int n = 0; n < info.bindBoneNum; n++)
 			{
+				//outtotal.x = info.offset[n].x;
+				//outtotal.y = info.offset[n].y;
+				//outtotal.z = info.offset[n].z;
+
+#if 1
 				if (info.bone[n])
 				{
 					float w = info.weight[n] / 100.0f;
 					MatrixTransformVector3(info.bone[n]->matrix, info.offset[n], out);
 					out.x *= w;
 					out.y *= w;
-					out.z *= w;
+					//out.z *= w;
 
 					outtotal.x += out.x;
 					outtotal.y += out.y;
-					outtotal.z += out.z;
+					outtotal.z = 0;
+					//outtotal.z += out.z;
 				}
+#endif
+
 			}
 
-			draw_vertices[i * 3 + 0] = outtotal.x;
-			draw_vertices[i * 3 + 1] = outtotal.y;
+			draw_vertices[i * 3 + 0] = outtotal.x * 1.0f;
+			draw_vertices[i * 3 + 1] = outtotal.y * 1.0f;
 			draw_vertices[i * 3 + 2] = 0;
 		}
 	}

@@ -271,7 +271,7 @@ bool	StringToTriangle(const std::string& str, SsTriangle& tri)
 
 	std::vector<SsString>	str_list;
 	split_string(str, ' ', str_list);
-	if (str_list.size() < 4)
+	if (str_list.size() < 3)
 	{
 		return false;
 	}

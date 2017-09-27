@@ -698,7 +698,14 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 	state->masklimen = 0;
 	state->is_localAlpha = false;
 
-	
+	if (part->name == "bone_23") {
+		int a = 0;
+		a++;
+	}
+
+	state->position.x = part->bonePosition.x;
+	state->position.y = part->bonePosition.y;
+	state->rotation.z = part->boneRotation;
 
 	//セットアップデータをアニメーションデータ
 	int idx = 0;

@@ -20,6 +20,7 @@
 #include "ssplayer_shader_gl.h"
 
 #include "ssplayer_cellmap.h"
+#include "ssplayer_mesh.h"
 
 
 //ISsRenderer*	SsCurrentRenderer::m_currentrender = 0;
@@ -314,7 +315,7 @@ void	SsRenderGL::SetTexture( SsCellValue* cellvalue )
 	texturePixelSize.x = cellvalue->texture->getWidth();
 	texturePixelSize.y = cellvalue->texture->getHeight();
 
-	if (cell)
+	if (texture)
 	{
 		// テクスチャのサイズが2のべき乗かチェック
 		if ( texture->isPow2() )
@@ -410,6 +411,85 @@ void	SsRenderGL::execMask(SsPartState* state)
 		glDisable(GL_ALPHA_TEST);
 
 	}
+
+}
+
+void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
+{
+	glPushMatrix();
+	glLoadIdentity();
+
+
+
+	if (alpha == 0.0f)
+	{
+		return;
+	}
+
+	if (mesh->targetTexture)
+	{
+		bool texture_is_pow2;
+		int	gl_target;
+
+		// テクスチャのサイズが2のべき乗かチェック
+		if (mesh->targetTexture->isPow2())
+		{
+			// 2のべき乗
+			texture_is_pow2 = true;
+			gl_target = GL_TEXTURE_2D;
+		}
+		else
+		{
+			// 2のべき乗ではない:NPOTテクスチャ
+			texture_is_pow2 = false;
+			gl_target = GL_TEXTURE_RECTANGLE_ARB;
+		}
+
+
+		glEnable(gl_target);
+
+		SSTextureGL* tex_gl = (SSTextureGL*)mesh->targetTexture;
+		glBindTexture(gl_target, tex_gl->tex);
+
+	}
+
+	//WaitColor;
+	//ウェイトカラーの合成色を頂点カラーとして使用（パーセント円の流用
+	
+	for (size_t i = 0; i < mesh->ver_size ; i++)
+	{
+		mesh->colors[i * 4 + 0] = 1.0f;
+		mesh->colors[i * 4 + 1] = 1.0f;
+		mesh->colors[i * 4 + 2] = 1.0f;
+		mesh->colors[i * 4 + 3] = alpha;
+	}
+
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+	glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
+	// αだけ合成
+	glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+	glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+	glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	// UV 配列を指定する
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2, GL_FLOAT, 0, (GLvoid *)mesh->uvs);
+
+	glColorPointer(4, GL_FLOAT, 0, (GLvoid *)mesh->colors);
+
+	// 頂点バッファの設定
+	glVertexPointer(3, GL_FLOAT, 0, (GLvoid *)mesh->draw_vertices);
+
+//	glDrawElements(GL_TRIANGLES, mesh->tri_size * 3, GL_UNSIGNED_SHORT, mesh->indices);
+	glDrawElements(GL_TRIANGLES, mesh->tri_size * 3, GL_UNSIGNED_SHORT, mesh->indices);
+	glPopMatrix();
 
 }
 
@@ -639,6 +719,12 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	// αブレンドの設定
 	SetAlphaBlendMode( state->alphaBlendType );
 
+	//メッシュの場合描画
+	if (state->partType == SsPartType::mesh)
+	{
+		this->renderMesh(state->meshPart , alpha );
+		return;
+	}
 
 	// パーツカラーの指定
 	if (state->is_parts_color)

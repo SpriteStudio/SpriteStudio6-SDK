@@ -4,6 +4,8 @@
 #include "../Animator/ssplayer_render.h"
 
 struct SsPartState;
+class SsMeshPart;
+
 
 class SsRenderGL : public ISsRenderer
 {
@@ -31,7 +33,7 @@ public:
 	virtual void	enableMask(bool flag);
 
 
-
+	virtual void	renderMesh(SsMeshPart* mesh, float alpha);
 
 
 

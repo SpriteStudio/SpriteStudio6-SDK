@@ -27,7 +27,7 @@ struct StBoneWeight
 
 class SsMeshPart
 {
-private:
+public:
 
 
 	float			*vertices;			//[3 * 10];///< À•W
