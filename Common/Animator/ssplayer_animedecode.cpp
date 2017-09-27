@@ -83,7 +83,7 @@ bool	SsAnimeDecoder::getFirstCell(SsPart* part , SsCellValue& out)
 {
 	bool	retFlag = false;
 
-	SsPartAnime* setupAnime = partAnimeDic[part->name];
+	SsPartAnime* setupAnime = setupPartAnimeDic[part->name];
 	if (setupAnime && !setupAnime->attributes.empty())
 	{
 		SsAttributeList attList;
@@ -112,7 +112,7 @@ bool	SsAnimeDecoder::getFirstCell(SsPart* part , SsCellValue& out)
 }
 
 
-
+//void	SsAnimeDecoder::setAnimation(SsModel*	model, SsAnimation* anime, SsAnimePack *animepack, SsCellMapList* cellmap, SsProject* sspj )
 void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellMapList* cellmap , SsProject* sspj )
 {
 	//セルマップリストを取得
@@ -122,6 +122,8 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	//partStateをパーツ分作成する
 	partAnimeDic.clear();
 	setupPartAnimeDic.clear();
+
+	myModel = model;
 
 	//パーツの数
 	size_t panum = anime->partAnimes.size();
@@ -196,7 +198,7 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 				animedecoder->setMaskFuncFlag(false);					//マスク機能を無効にする
 				animedecoder->setMaskParentSetting(p->maskInfluence);	//親のマスク対象を設定する 
 
-				animedecoder->setAnimation( &refpack->Model , refanime , __cellmap , sspj );
+				animedecoder->setAnimation( &refpack->Model , refanime, __cellmap , sspj );
 				partState[i].refAnime = animedecoder;
 				//親子関係を付ける
 				animedecoder->partState[0].parent = &partState[i];

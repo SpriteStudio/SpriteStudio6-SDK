@@ -74,7 +74,7 @@ private:
 	size_t			stateNum;
 
 	SsMeshAnimator*	meshAnimator;
-
+	SsModel*		myModel;
 
 private:
 	void	updateState( int nowTime , SsPart* part , SsPartAnime* part_anime , SsPartState* state );
@@ -106,6 +106,7 @@ public:
 	virtual void	draw();
 
 	void	setAnimation( SsModel*	model , SsAnimation* anime , SsCellMapList* cellmap , SsProject* sspj=0 );
+//	void	setAnimation(SsModel*	model, SsAnimation* anime, SsAnimePack *animepack , SsCellMapList* cellmap, SsProject* sspj = 0);
 
 	void	setPlayFrame( float time ) { nowPlatTime = time; }
 	int		getAnimeStartFrame() { return curAnimeStartFrame; }
@@ -116,7 +117,7 @@ public:
 
 	size_t	getStateNum() { return stateNum; }
 	SsPartState*  getPartState() { return partState; }
-
+	SsModel*	getMyModel(){return myModel;}
 
 	std::list<SsPartState*>&		getPartSortList(){return sortList;}
 	std::vector<SsPartAndAnime>&	getPartAnime(){ return	partAnime; }

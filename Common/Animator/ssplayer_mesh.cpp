@@ -207,7 +207,7 @@ void	SsMeshAnimator::makeMeshBoneList()
 		}
 	}
 
-
+	modelLoad();
 
 
 }
@@ -227,3 +227,36 @@ void	SsMeshAnimator::update()
 
 }
 
+void	SsMeshAnimator::modelLoad()
+{
+	if (bindAnime == 0)return;
+
+	SsModel* model = bindAnime->getMyModel();
+
+
+	for (size_t i = 0; i < model->meshList.size(); i++)
+	{
+		std::vector<SsMeshBindInfo>& mvb = model->meshList[i]->meshVerticesBindArray;
+
+
+		for (size_t n = 0; n < mvb.size(); n++)
+		{
+			int bonenum = mvb[n].bindBoneNum;
+			SsPartState* target = this->meshList[i];
+			SsMeshPart*		meshPart = target->meshPart;
+
+			for (int l = 0; l < bonenum; l++)
+			{
+				meshPart->bindBoneInfo[n].weight[l] = mvb[n].weight[l];
+				meshPart->bindBoneInfo[n].offset[l] = mvb[n].offset[l];
+				int bi = mvb[n].boneIndex[l];
+				meshPart->bindBoneInfo[n].bone[l] = this->boneList[bi];
+			}
+			meshPart->bindBoneInfo[n].bindBoneNum = bonenum;
+
+		}
+
+	}
+
+
+}

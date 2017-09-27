@@ -47,12 +47,7 @@ private:
 	SsVector2*					update_vertices_outer;
 	size_t						outter_vertexnum;
 
-
 	std::vector<SsPartState*>   bindCandidateBoneList; //バインド候補[Editer]
-
-
-
-
 
 public:
 	StBoneWeight*   	bindBoneInfo;
@@ -125,8 +120,10 @@ class SsMeshPart;
 
 class   SsMeshAnimator
 {
+private:
+	void	modelLoad();
+
 public:
-//	SsAnimeState*	bindAnime;
 	SsAnimeDecoder* bindAnime;
 
 	std::vector<SsPartState*>    	meshList;
@@ -142,13 +139,6 @@ public:
 	void	update();
 	void	makeMeshBoneList();
 
-
-#if 0	//[editor]
-	void	modelLoad();
-	void	draw();	//debug用
-	void	bind();
-	void	autocalc();
-#endif
 
 };
 

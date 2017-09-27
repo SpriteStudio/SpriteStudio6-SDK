@@ -246,24 +246,6 @@ public:
 
 };
 
-/*
-class SerializeMap : public std::map<SsString, int>
-{
-private:
-
-public:
-
-	SerializeMap() {}
-	virtual ~SerializeMap() {}
-
-
-	SSSERIALIZE_BLOCK
-	{
-		//loader(ar);
-	}
-
-};
-*/
 
 //アニメーションを構成するパーツをリスト化したものです。
 class SsModel
