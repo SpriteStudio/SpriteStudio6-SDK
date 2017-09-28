@@ -5,9 +5,13 @@
 #include "ssarchiver.h"
 #include "ssattribute.h"
 
-#define SPRITESTUDIO6_SSAEVERSION "2.00.00"
+#define SPRITESTUDIO6_SSAEVERSION "2.00.01"
 
 class SsAnimation;
+
+
+
+
 
 /// アニメーション再生設定情報です。
 class SsAnimationSettings
@@ -91,14 +95,14 @@ public:
 	//--------------------------------------------------------------------------------------
 	//メッシュパーツパラメータ
 	//--------------------------------------------------------------------------------------
-	int						meshWeightType;	//!< ウェイトの種類
-	int						meshWeightStrong;//!< ウェイトの強さ
+	int						meshWeightType;	//!< ウェイトの種類[エディタ用]
+	int						meshWeightStrong;//!< ウェイトの強さ[エディタ用]
 
 	//--------------------------------------------------------------------------------------
 	//コンストレイントパーツパラメータ
 	//--------------------------------------------------------------------------------------
-	int						IKDepth;		//!< IK深度
-	bool					IKRotationArrow;//!< 回転方向
+	int							IKDepth;		//!< IK深度
+	SsIkRotationArrow::_enum	IKRotationArrow;//!< 回転方向
 
 public:
 	SsPart() : 
@@ -113,7 +117,7 @@ public:
 			meshWeightType = 0;
 			meshWeightStrong = 0;
 			IKDepth = 0;
-			IKRotationArrow = 0;
+			IKRotationArrow = SsIkRotationArrow::arrowfree;
 
 		
 			//memset( inheritRates , 0 , sizeof( float) * SsAttributeKind::num );
@@ -165,7 +169,7 @@ public:
 		SSAR_DECLARE( meshWeightType );
 		SSAR_DECLARE( meshWeightStrong );
 		SSAR_DECLARE( IKDepth );
-		SSAR_DECLARE( IKRotationArrow );
+		SSAR_DECLARE_ENUM( IKRotationArrow );
 
 		//継承率後に改良を実施
 		if ( ar->getType() == EnumSsArchiver::in )
@@ -189,12 +193,70 @@ public:
 	}
 };
 
+#define SSMESHPART_BONEMAX	(128)
+
+class SsMeshBindInfo
+{
+public:
+	int			weight[SSMESHPART_BONEMAX];
+	SsString	boneName[SSMESHPART_BONEMAX];
+	int			boneIndex[SSMESHPART_BONEMAX];
+	SsVector3   offset[SSMESHPART_BONEMAX];
+	int			bindBoneNum;
+
+	SsMeshBindInfo()
+	{
+		for (int i = 0; i < SSMESHPART_BONEMAX; i++)
+		{
+			weight[i] = 0;
+			boneName[i] = "";
+			boneIndex[i] = 0;
+			offset[i] = SsVector3(0, 0, 0);
+		}
+		bindBoneNum = 0;
+
+	}
+	virtual ~SsMeshBindInfo() {}
+
+	void	fromString(SsString str);
+
+};
+
+
+
+//メッシュ1枚毎の情報
+class  SsMeshBind 
+{
+public:
+	SsString     meshName;
+
+	std::vector<SsMeshBindInfo>   meshVerticesBindArray;
+
+public:
+	SsMeshBind() {}
+	virtual ~SsMeshBind() {}
+
+	void	loader(ISsXmlArchiver* ar);
+
+	SSSERIALIZE_BLOCK
+	{
+		loader(ar);
+	}
+
+
+};
+
+
 //アニメーションを構成するパーツをリスト化したものです。
 class SsModel
 {
 public:
 	std::vector<SsPart*>	partList;	//!<格納されているパーツのリスト
 	SsAnimation*			setupAnimation;	///< 参照するセットアップアニメ
+
+	std::vector<SsMeshBind*> 		meshList;
+	std::map<SsString,int>			boneList;		///<何に使っているか調査　要らなければ削除
+
 
 public:
 	SsModel(){}
@@ -207,7 +269,11 @@ public:
 	///シリアライズのための宣言です。
 	SSSERIALIZE_BLOCK
 	{
+		std::vector<SsString> tempMeshList;
+
 		SSAR_DECLARE_LIST( partList );
+		SSAR_DECLARE( boneList );
+		SSAR_DECLARE_LIST( meshList );
 		setupAnimation = NULL;
 	}
 };

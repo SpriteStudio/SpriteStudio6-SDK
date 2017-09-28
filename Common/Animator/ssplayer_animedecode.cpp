@@ -8,6 +8,7 @@
 #include "ssplayer_render.h"
 #include "ssplayer_effect.h"
 #include "ssplayer_effect2.h"
+#include "ssplayer_mesh.h"
 
 
 //stdでののforeach宣言　
@@ -39,7 +40,8 @@ SsAnimeDecoder::SsAnimeDecoder() :
 	instancePartsHide(false),
 	seedOffset(0),
 	maskFuncFlag(true),
-	maskParentSetting(true)
+	maskParentSetting(true),
+	meshAnimator(0)
 	{
 	}
 
@@ -77,7 +79,40 @@ void	SsAnimeDecoder::restart()
 
 }
 
+bool	SsAnimeDecoder::getFirstCell(SsPart* part , SsCellValue& out)
+{
+	bool	retFlag = false;
 
+	SsPartAnime* setupAnime = setupPartAnimeDic[part->name];
+	if (setupAnime && !setupAnime->attributes.empty())
+	{
+		SsAttributeList attList;
+		attList = setupAnime->attributes;
+
+		foreach(SsAttributeList, attList, e)
+		{
+			SsAttribute* attr = (*e);
+			switch (attr->tag)
+			{
+				case SsAttributeKind::cell:		///< 参照セル
+				{
+					SsGetKeyValue(0, attr, out);
+					retFlag = true;
+				}
+				break;
+				default:
+					break;
+			}
+		}
+
+	}
+
+	return retFlag;
+
+}
+
+
+//void	SsAnimeDecoder::setAnimation(SsModel*	model, SsAnimation* anime, SsAnimePack *animepack, SsCellMapList* cellmap, SsProject* sspj )
 void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellMapList* cellmap , SsProject* sspj )
 {
 	//セルマップリストを取得
@@ -87,6 +122,8 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	//partStateをパーツ分作成する
 	partAnimeDic.clear();
 	setupPartAnimeDic.clear();
+
+	myModel = model;
 
 	//パーツの数
 	size_t panum = anime->partAnimes.size();
@@ -112,6 +149,7 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	partAnime.clear();
 	setupPartAnime.clear();
 	partStatesMask_.clear();
+	stateNum = partNum;
 
 	for ( size_t i = 0 ; i < partNum ; i++ ) 
 	{
@@ -160,12 +198,10 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 				animedecoder->setMaskFuncFlag(false);					//マスク機能を無効にする
 				animedecoder->setMaskParentSetting(p->maskInfluence);	//親のマスク対象を設定する 
 
-				animedecoder->setAnimation( &refpack->Model , refanime , __cellmap , sspj );
+				animedecoder->setAnimation( &refpack->Model , refanime, __cellmap , sspj );
 				partState[i].refAnime = animedecoder;
 				//親子関係を付ける
 				animedecoder->partState[0].parent = &partState[i];
-				
-				
 			}
 
 			//エフェクトデータの初期設定
@@ -193,6 +229,26 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 			{
 				partStatesMask_.push_back( &partState[i]);
 			}
+
+			//メッシュパーツの追加
+			if (p->type == SsPartType::mesh)
+			{
+				SsMeshPart* mesh = new SsMeshPart();
+				partState[i].meshPart = mesh;
+				mesh->myPartState = &partState[i];
+				//使用するセルを調査する
+				bool ret;
+				SsCellValue cellv;
+				if (ret = getFirstCell(p, cellv))
+				{
+					mesh->targetCell = cellv.cell;
+					mesh->targetTexture = cellv.texture;
+					mesh->makeMesh();
+				}
+				else {
+					//not found cell
+				}
+			}
 		}
 
 		sortList.push_back( &partState[i] );
@@ -206,8 +262,12 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	curAnimeTotalFrame = anime->settings.frameCount;
 	curAnimeFPS = anime->settings.fps;
 
+	//メッシュアニメーションを初期化
+	meshAnimator = new SsMeshAnimator();
+	meshAnimator->setAnimeDecoder(this);
+	meshAnimator->makeMeshBoneList();
 
-
+	
 }
 
 
@@ -638,7 +698,14 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 	state->masklimen = 0;
 	state->is_localAlpha = false;
 
-	
+	if (part->name == "bone_23") {
+		int a = 0;
+		a++;
+	}
+
+	state->position.x = part->bonePosition.x;
+	state->position.y = part->bonePosition.y;
+	state->rotation.z = part->boneRotation;
 
 	//セットアップデータをアニメーションデータ
 	int idx = 0;
@@ -1288,6 +1355,11 @@ void	SsAnimeDecoder::update(float frameDelta)
 
 		cnt++;
 	}
+
+
+	if (meshAnimator)
+		meshAnimator->update();
+
 
 	sortList.sort(_ssPartStateLess);
 	partStatesMask_.sort(_ssPartStateLess);

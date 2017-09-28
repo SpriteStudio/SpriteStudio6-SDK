@@ -5,6 +5,8 @@
 SsPartState::SsPartState() : refAnime(0), index(-1), parent(nullptr), noCells(false), alphaBlendType(SsBlendType::invalid),	refEffect(0) {
 	init();
 	effectValue.attrInitialized = false;
+	meshPart = 0;
+
 }
 
 SsPartState::~SsPartState(){

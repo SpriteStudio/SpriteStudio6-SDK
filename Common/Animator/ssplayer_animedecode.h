@@ -15,6 +15,7 @@
 
 class SsAnimeDecoder;
 class SsCelMapLinker;
+class SsMeshAnimator;
 
 
 //パーツとアニメを関連付ける
@@ -70,6 +71,10 @@ private:
 	bool			maskFuncFlag;						//マスク機能（初期化、描画）を有効にするか？インスタンスパーツ内のマスク対応
 	bool			maskParentSetting;					//親のマスク対象
 
+	size_t			stateNum;
+
+	SsMeshAnimator*	meshAnimator;
+	SsModel*		myModel;
 
 private:
 	void	updateState( int nowTime , SsPart* part , SsPartAnime* part_anime , SsPartState* state );
@@ -83,6 +88,7 @@ private:
 
     int		CalcAnimeLabel2Frame(const SsString& str, int offset, SsAnimation* Animation  );
 	int		findAnimetionLabel(const SsString& str, SsAnimation* Animation);
+	bool	getFirstCell(SsPart* part, SsCellValue& out);
 
 
 public:
@@ -100,6 +106,7 @@ public:
 	virtual void	draw();
 
 	void	setAnimation( SsModel*	model , SsAnimation* anime , SsCellMapList* cellmap , SsProject* sspj=0 );
+//	void	setAnimation(SsModel*	model, SsAnimation* anime, SsAnimePack *animepack , SsCellMapList* cellmap, SsProject* sspj = 0);
 
 	void	setPlayFrame( float time ) { nowPlatTime = time; }
 	int		getAnimeStartFrame() { return curAnimeStartFrame; }
@@ -108,6 +115,9 @@ public:
 	int		getAnimeFPS() {
 		return curAnimeFPS; }		
 
+	size_t	getStateNum() { return stateNum; }
+	SsPartState*  getPartState() { return partState; }
+	SsModel*	getMyModel(){return myModel;}
 
 	std::list<SsPartState*>&		getPartSortList(){return sortList;}
 	std::vector<SsPartAndAnime>&	getPartAnime(){ return	partAnime; }

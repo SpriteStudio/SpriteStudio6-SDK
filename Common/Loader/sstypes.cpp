@@ -378,9 +378,9 @@ void 	__StringToEnum_( SsString n , SsRenderBlendType::_enum& out)
 }
 
 //---------------------------------------------------------------
-//相互変換 SsMeshDivType
+//相互変換 SsMeshDivType1
 SsString	__EnumToString_(SsMeshDivType::_enum n)
-{
+{ 
 	if (n == SsMeshDivType::unknown) return "unknown";
 	if (n == SsMeshDivType::polyline_base) return "polyline_base";
 	if (n == SsMeshDivType::boxdiv) return "boxdiv";
@@ -395,3 +395,25 @@ void 	__StringToEnum_(SsString n, SsMeshDivType::_enum& out)
 	if (n == "polyline_base") out = SsMeshDivType::polyline_base;
 	if (n == "boxdiv") out = SsMeshDivType::boxdiv;
 }
+
+//---------------------------------------------------------------
+//相互変換 SsIkRotationArrow
+SsString	__EnumToString_(SsIkRotationArrow::_enum n)
+{
+	if (n == SsIkRotationArrow::arrowfree) return "arrowfree";
+	if (n == SsIkRotationArrow::clockwise) return "clockwise";
+	if (n == SsIkRotationArrow::anticlockwise) return "anticlockwise";
+
+	return "unknown";
+}
+
+void 	__StringToEnum_(SsString n, SsIkRotationArrow::_enum& out)
+{
+	out = SsIkRotationArrow::arrowfree;
+	if (n == "arrowfree") out = SsIkRotationArrow::arrowfree;
+	if (n == "clockwise") out = SsIkRotationArrow::clockwise;
+	if (n == "anticlockwise") out = SsIkRotationArrow::anticlockwise;
+}
+
+
+

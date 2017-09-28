@@ -67,6 +67,8 @@ ADD_LIBRARY(ssAnimater
 ../Common/Animator/ssplayer_animedecode.h
 ../Common/Animator/ssplayer_effect2.cpp
 ../Common/Animator/ssplayer_effect2.h
+../Common/Animator/ssplayer_mesh.cpp
+../Common/Animator/ssplayer_mesh.h
 )
 
 

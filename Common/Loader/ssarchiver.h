@@ -6,6 +6,7 @@
 #include "sstypes.h"
 #include <string>
 #include <vector>
+#include <map>
 
 using namespace tinyxml2;
 
@@ -76,6 +77,9 @@ public:
 	virtual bool	dc( const char* name , SsCurve& member ) = 0;
 	virtual bool	dc( const char* name , SsXmlRangeValueConverter& member ) = 0;
 
+	virtual bool	dc(const char* name, std::vector<SsPoint2>& list) = 0;
+	virtual bool	dc(const char* name, std::vector<SsTriangle>& list) = 0;
+	virtual bool	dc(const char* name, std::map<SsString, int>& _map) = 0;
 
 
 	virtual bool	dc_attr( const char* name , SsString& member ) = 0;
@@ -132,6 +136,7 @@ public:
 	virtual bool	dc( const char* name , SsCurve& member );
 	virtual bool	dc( const char* name , SsTriangle& member);
 //	virtual bool	dc( const char* name , SsBoneBind& member);
+	
 	virtual bool	dc( const char* name , SsXmlRangeValueConverter& member )
 	{
 		XMLElement* e = getxml()->FirstChildElement( name );
@@ -146,9 +151,17 @@ public:
 		return member.inputString(str,str2);		
 	}
 
+	virtual bool	dc(const char* name, std::vector<SsPoint2>& list);
+	virtual bool	dc(const char* name, std::vector<SsTriangle>& list);
+
+	virtual bool	dc(const char* name, std::map<SsString,int>& _map);
+
+
 
 	virtual bool	dc_attr( const char* name , SsString& member );
 	virtual bool	dc_attr( const char* name , int& member );
+
+
 
 
 	template<class myclass> bool	dc( const char* name , std::vector<myclass*>& list , const std::string key = "value" )
@@ -215,6 +228,7 @@ inline bool	__SSAR_DECLARE_LIST__( ISsXmlArchiver* ar , std::vector<myclass*>& l
 	return false;
 }
 
+
 #define	SSAR_DECLARE_LIST(t)  __SSAR_DECLARE_LIST__( ar , t , #t)
 #define	SSAR_DECLARE_LIST2(t,s)  __SSAR_DECLARE_LIST__( ar , t , s)
 #define	SSAR_DECLARE_LISTEX(t,key)  __SSAR_DECLARE_LIST__( ar , t , #t , key )
@@ -255,6 +269,8 @@ inline bool	__SSAR_DECLARE_ATTRIBUTE_ENUM__( ISsXmlArchiver* ar ,myclass& type, 
 
 bool	StringToPoint2( const std::string& str , SsPoint2& point );
 bool	StringToIRect( const std::string& str , SsIRect& rect );
+bool	StringToTriangle(const std::string& str, SsTriangle& tri);
+
 
 
 ///SpriteStudio XMLデータ読み書きの初期化

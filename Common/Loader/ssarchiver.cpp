@@ -85,6 +85,49 @@ bool	SsXmlIArchiver::dc( const char* name , bool& member )
 	return false;
 }
 
+
+bool	SsXmlIArchiver::dc(const char* name, std::vector<SsPoint2>& list)
+{
+	AR_SELF_CHECK();
+	list.clear();
+	XMLElement* e = getxml()->FirstChildElement(name);
+	if (e == 0)return false;
+	e = e->FirstChildElement("value");
+	while (e)
+	{
+		const char* txt = e->GetText();
+		SsVector2 vec;
+		StringToPoint2(txt, vec);
+		list.push_back(vec);
+		//Winではsjisへ変換する
+		e = e->NextSiblingElement();
+	}
+
+	return true;
+
+}
+
+bool	SsXmlIArchiver::dc(const char* name, std::vector<SsTriangle>& list)
+{
+	AR_SELF_CHECK();
+	list.clear();
+	XMLElement* e = getxml()->FirstChildElement(name);
+	if (e == 0)return false;
+	e = e->FirstChildElement("value");
+	while (e)
+	{
+		const char* txt = e->GetText();
+		SsTriangle tri;
+		StringToTriangle(txt, tri);
+		list.push_back(tri);
+		//Winではsjisへ変換する
+		e = e->NextSiblingElement();
+	}
+
+	return true;
+
+}
+
 bool	SsXmlIArchiver::dc( const char* name , std::vector<SsString>& list )
 {
 	AR_SELF_CHECK();
@@ -154,6 +197,9 @@ bool	SsXmlIArchiver::dc(const char* name, SsTriangle& member)
 
 	if (e)
 	{
+
+		StringToTriangle(e->GetText(), member);
+/*
 		std::vector<SsString>	str_list;
 		split_string(e->GetText(), ' ', str_list);
 		if (str_list.size() < 4)
@@ -167,6 +213,7 @@ bool	SsXmlIArchiver::dc(const char* name, SsTriangle& member)
 
 			return true;
 		}
+*/
 	}
 	return false;
 }
@@ -196,6 +243,48 @@ bool	SsXmlIArchiver::dc(const char* name, SsBoneBind& member)
 	return false;
 }
 */
+
+
+bool	SsXmlIArchiver::dc(const char* name, std::map<SsString, int>& _map)
+{
+	_map.clear();
+
+	XMLElement* e = getxml()->FirstChildElement(name);
+	e = e->FirstChildElement("item");
+
+	while (e)
+	{
+		std::string key = e->Attribute("key");
+		std::string val = e->GetText();
+
+		_map[key] = atoi(val.c_str());
+
+		e = e->NextSiblingElement();
+	}
+
+	return false;
+}
+
+
+bool	StringToTriangle(const std::string& str, SsTriangle& tri)
+{
+
+	std::vector<SsString>	str_list;
+	split_string(str, ' ', str_list);
+	if (str_list.size() < 3)
+	{
+		return false;
+	}
+	else {
+		tri.idxPo1 = (int)atoi(str_list[0].c_str());
+		tri.idxPo2 = (int)atoi(str_list[1].c_str());
+		tri.idxPo3 = (int)atoi(str_list[2].c_str());
+
+		return true;
+	}
+	return true;
+}
+
 
 bool	StringToPoint2( const std::string& str , SsPoint2& point )
 {
