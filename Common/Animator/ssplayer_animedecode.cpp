@@ -1005,7 +1005,7 @@ void	SsAnimeDecoder::updateMatrix(SsPart* part , SsPartAnime* anime , SsPartStat
 		TranslationMatrixM( pmat , state->position.x, state->position.y, state->position.z );//
 		RotationXYZMatrixM( pmat , DegreeToRadian(state->rotation.x) , DegreeToRadian(state->rotation.y) , DegreeToRadian( state->rotation.z) );
 		float sx = state->scale.x;
-		float sy = state->scale.x;
+		float sy = state->scale.y;
 		if (matcnt > 0)
 		{
 			//ローカルスケールを適用する

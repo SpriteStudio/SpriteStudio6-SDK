@@ -459,7 +459,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			}
 			partData->add(Lump::s16Data(part->boundsType));
 			partData->add(Lump::s16Data(part->alphaBlendType));
-			//インスタンスアニメ名
+			partData->add(Lump::s16Data(0));	// reserved
+												//インスタンスアニメ名
 			if ( part->refAnime == "" )
 			{
 				const SsString str = "";
@@ -488,7 +489,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			partData->add(Lump::stringData(str));								//文字列
 
 			//ボーン情報
-			partData->add(Lump::s16Data(part->boneLength));
 			partData->add(Lump::floatData(part->bonePosition.x));
 			partData->add(Lump::floatData(part->bonePosition.y));
 			partData->add(Lump::floatData(part->boneRotation));
@@ -496,6 +496,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			partData->add(Lump::floatData(part->weightPosition.x));
 			partData->add(Lump::floatData(part->weightPosition.y));
 			partData->add(Lump::floatData(part->weightImpact));
+			partData->add(Lump::s16Data(part->boneLength));
 
 			//メッシュ情報
 			partData->add(Lump::s16Data(part->meshWeightType));
@@ -507,7 +508,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 			//マスク対象
 			partData->add(Lump::s16Data(part->maskInfluence));
-			partData->add(Lump::s16Data(0));	// reserved
 
 		}
 
