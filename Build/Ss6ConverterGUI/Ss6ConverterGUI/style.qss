@@ -1,0 +1,108 @@
+/* 全体の共通設定 */
+QWidget {
+   background-color: rgb(50,50,50);
+   border-color: rgb(27,27,27);
+   color: rgb(205,205,205);
+   font-size: 12px;
+}
+
+/* ボタンの共通設定 */
+QPushButton {
+    min-width: 3em;
+    min-height: 20px;
+    border-width: 2px;
+    border-color: rgb(205,205,205);
+    border-style: solid;
+    border-radius: 12px;
+}
+
+/* デフォルトで表示されるボタンの設定 */
+QPushButton[width="171"]{
+    border-radius: 15px;
+    margin: 5px;
+}
+
+/* マウスオーバー時の設定 */
+QPushButton:hover {
+    border-color: rgb(19,114,229);
+}
+
+/* ボタン押下時の設定 */
+QPushButton:pressed {
+    padding-left: 3px;
+    padding-top: 3px;
+}
+
+/* 無効ボタンの設定 */
+QPushButton:!enabled{
+    color: rgb(96,96,96);
+    border-color: rgb(96,96,96);
+}
+
+/* その他クラスの設定 */
+QComboBox, QLineEdit, QSpinBox, QTextEdit, QListView {
+    background-color: rbg(27,27,27);
+    selection-color: rgb(205,205,205);
+    selection-background-color: rgb(19,114,229);
+}
+
+QLineEdit {
+    border: none;
+}
+
+QLabel {
+    border: none;
+    padding: 0;
+    background: none;
+}
+
+QDialogButtonBox {
+    button-layout: 0;
+}
+
+/* チェックボックスの設定 */
+QCheckBox::indicator:unchecked {
+    image: url(:/images/checkbox_unchecked.png);
+}
+
+QCheckBox::indicator:unchecked:hover {
+    image: url(:/images/checkbox_unchecked.png);
+}
+
+QCheckBox::indicator:unchecked:pressed {
+    image: url(:/images/checkbox_unchecked.png);
+}
+
+QCheckBox::indicator:checked {
+    image: url(:/images/checkbox_checked.png);
+}
+
+QCheckBox::indicator:checked:hover {
+    image: url(:/images/checkbox_checked.png);
+}
+
+QCheckBox::indicator:checked:pressed {
+    image: url(:/images/checkbox_checked.png);
+}
+
+QCheckBox::indicator:indeterminate:hover {
+    image: url(:/images/checkbox_indeterminate_hover.png);
+}
+
+QCheckBox::indicator:indeterminate:pressed {
+    image: url(:/images/checkbox_indeterminate_pressed.png);
+}
+
+/* スクロールバーの設定 */
+QScrollBar {
+    border: 2px rgb(27,27,27);
+}
+
+QScrollBar::sub-page {
+    background: rgb(50,50,50);
+}
+
+QScrollBar::add-page {
+    background: rgb(50,50,50);
+}
+
