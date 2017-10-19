@@ -249,12 +249,28 @@ void	SsMeshAnimator::modelLoad()
 	{
 		std::vector<SsMeshBindInfo>& mvb = model->meshList[i]->meshVerticesBindArray;
 
+		{
+			SsPartState* target = this->meshList[i];
+			SsMeshPart*		meshPart = target->meshPart;
+			SsPart* pt = model->partList[target->index];	//fordebug
+			size_t psize = meshPart->targetCell->meshPointList.size();
+			//bindBoneInfo は　psiz分だけ生成されているので、mvb.size()が超えたら間違いがあると思われる
+			if (meshPart->ver_size < (int)mvb.size())
+			{
+				DEBUG_PRINTF("ver_sizeを超えている : %s ver_size:%d mvb.size:%d \n", pt->name.c_str(), meshPart->ver_size, (int)mvb.size());
+			}
+		}
 
 		for (size_t n = 0; n < mvb.size(); n++)
 		{
 			int bonenum = mvb[n].bindBoneNum;
 			SsPartState* target = this->meshList[i];
 			SsMeshPart*		meshPart = target->meshPart;
+
+			if (meshPart->ver_size <= (int)n)
+			{
+				continue;	//テスト
+			}
 
 			for (int l = 0; l < bonenum; l++)
 			{
