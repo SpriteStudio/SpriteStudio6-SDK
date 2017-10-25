@@ -1,6 +1,7 @@
-﻿#ifndef __RS_TASK__
+#ifndef __RS_TASK__
 #define __RS_TASK__
 
+#include <cstring>
 #include <vector>
 #include <list>
 

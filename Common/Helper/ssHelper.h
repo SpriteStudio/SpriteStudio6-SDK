@@ -1,8 +1,7 @@
-﻿#ifndef __GLHELPER__
+#ifndef __GLHELPER__
 #define __GLHELPER__
 
-#include "../loader/ssloader.h"
-
+#include "../Loader/ssloader.h"
 
 #include "sshObject.h"
 #include "sshTask.h"
@@ -11,6 +10,5 @@
 
 #include "XPFileOpenDlg.h"
 #include "DebugPrint.h"
-
 
 #endif

@@ -1,4 +1,4 @@
-﻿//
+//
 //	Windows / OSX　共通で呼び出せるファイル選択ダイアログライブラリ
 //
 //
@@ -19,7 +19,7 @@
 	#include <stdio.h>
 #endif
 
-#include "string"
+#include <cstring>
 
 bool XPFileOpenDlg::Show()
 {	

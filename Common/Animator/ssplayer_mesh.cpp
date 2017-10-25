@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <cstdlib>
 
-#include "../loader/ssloader.h"
+#include "../Loader/ssloader.h"
 
 #include "ssplayer_animedecode.h"
 #include "ssplayer_mesh.h"
@@ -12,7 +12,7 @@
 
 void	SsMeshPart::makeMesh()
 {
-	//ƒp[ƒcƒXƒe[ƒg‚Ì‰Šú‰»‚ÌÛ‚Éƒ^[ƒQƒbƒgƒZƒ‹‚ªì‚ç‚ê‚éA‚»‚ÌÛ‚Éƒ}ƒbƒv‚àƒRƒs[‚·‚éH
+	//ï¿½pï¿½[ï¿½cï¿½Xï¿½eï¿½[ï¿½gï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌÛ‚Éƒ^ï¿½[ï¿½Qï¿½bï¿½gï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ÌÛ‚Éƒ}ï¿½bï¿½vï¿½ï¿½Rï¿½sï¿½[ï¿½ï¿½ï¿½ï¿½H
 
 	size_t psize = targetCell->meshPointList.size();
 
@@ -29,8 +29,8 @@ void	SsMeshPart::makeMesh()
 
 	draw_vertices = new float[3 * psize];
 
-	vertices_outer = new SsVector2[3 * psize];// //ƒc[ƒ‹—p
-	update_vertices_outer = new SsVector2[3 * psize];// //ƒc[ƒ‹—p
+	vertices_outer = new SsVector2[3 * psize];// //ï¿½cï¿½[ï¿½ï¿½ï¿½p
+	update_vertices_outer = new SsVector2[3 * psize];// //ï¿½cï¿½[ï¿½ï¿½ï¿½p
 
 
 	vertices = new float[3 * psize];
@@ -43,7 +43,7 @@ void	SsMeshPart::makeMesh()
 	memset(bindBoneInfo, 0, sizeof(StBoneWeight) * psize);
 
 
-	SsVector2 offs; //’†‰›
+	SsVector2 offs; //ï¿½ï¿½ï¿½ï¿½
 	offs.x = (-targetCell->size.x / 2.0f);
 	offs.y = (targetCell->size.y / 2.0f);
 
@@ -254,10 +254,10 @@ void	SsMeshAnimator::modelLoad()
 			SsMeshPart*		meshPart = target->meshPart;
 			SsPart* pt = model->partList[target->index];	//fordebug
 			size_t psize = meshPart->targetCell->meshPointList.size();
-			//bindBoneInfo ‚Í@psiz•ª‚¾‚¯¶¬‚³‚ê‚Ä‚¢‚é‚Ì‚ÅAmvb.size()‚ª’´‚¦‚½‚çŠÔˆá‚¢‚ª‚ ‚é‚ÆŽv‚í‚ê‚é
+			//bindBoneInfo ï¿½Í@psizï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ì‚ÅAmvb.size()ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôˆá‚¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÆŽvï¿½ï¿½ï¿½ï¿½
 			if (meshPart->ver_size < (int)mvb.size())
 			{
-				DEBUG_PRINTF("ver_size‚ð’´‚¦‚Ä‚¢‚é : %s ver_size:%d mvb.size:%d \n", pt->name.c_str(), meshPart->ver_size, (int)mvb.size());
+				DEBUG_PRINTF("ver_sizeï¿½ð’´‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ : %s ver_size:%d mvb.size:%d \n", pt->name.c_str(), meshPart->ver_size, (int)mvb.size());
 			}
 		}
 
@@ -269,7 +269,7 @@ void	SsMeshAnimator::modelLoad()
 
 			if (meshPart->ver_size <= (int)n)
 			{
-				continue;	//ƒeƒXƒg
+				continue;	//ï¿½eï¿½Xï¿½g
 			}
 
 			for (int l = 0; l < bonenum; l++)
