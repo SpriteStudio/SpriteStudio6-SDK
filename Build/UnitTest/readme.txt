@@ -1,5 +1,5 @@
-���̃t�H���_�́H
-sspjlib�J���җp�̃t�H���_�ł��B
+﻿このフォルダは？
+sspjlib開発者用のフォルダです。
 
-sspjlib�̃��[�_�[�����̒P�̃e�X�g�p�t�@�C���Q���u����Ă��܂��B
+sspjlibのローダー部分の単体テスト用ファイル群が置かれています。
 

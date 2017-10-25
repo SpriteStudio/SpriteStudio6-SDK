@@ -1,4 +1,4 @@
-#ifndef __SSPLAYER_RENDER__
+﻿#ifndef __SSPLAYER_RENDER__
 #define __SSPLAYER_RENDER__
 
 

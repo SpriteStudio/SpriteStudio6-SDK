@@ -1,4 +1,4 @@
-//
+ï»¿//
 
 #define BOOST_PYTHON_STATIC_LIB
 #include    <stdio.h>
@@ -20,12 +20,12 @@ using namespace std;
 #include "sshTextureBMP.h"
 
 
-//Pythonƒ‚ƒWƒ…[ƒ‹‚Ìİ’è
+//Pythonãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®è¨­å®š
 BOOST_PYTHON_MODULE(SpriteStudio)
 {
 	using namespace boost::python;
 
-	//numpyƒ‚ƒWƒ…[ƒ‹‚ğg—p‚·‚é
+	//numpyãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚’ä½¿ç”¨ã™ã‚‹
 	numeric::array::set_module_and_type("numpy", "ndarray");
 
 	class_<std::vector<float> > ("PyVecFloat")
@@ -120,7 +120,7 @@ BOOST_PYTHON_MODULE(SpriteStudio)
 		;
 
 
-	//Šî–{“I‚ÉƒŠ[ƒhƒIƒ“ƒŠ[‚Å’è‹`‚µ‚Ä‚¨‚­
+	//åŸºæœ¬çš„ã«ãƒªãƒ¼ãƒ‰ã‚ªãƒ³ãƒªãƒ¼ã§å®šç¾©ã—ã¦ãŠã
 	class_<SsColor>("SsColor")
 		.def("toARGB" , &SsColor::toARGB )
 		.def_readonly("a", &SsColor::a)
@@ -163,7 +163,7 @@ BOOST_PYTHON_MODULE(SpriteStudio)
 		.def("colors" , &SsColorAnime::getColors , return_value_policy<reference_existing_object>())
 		;
 
-	//read only‚ÌƒvƒƒpƒeƒB‚Æ‚µ‚ÄƒCƒ“ƒ|[ƒg
+	//read onlyã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã¨ã—ã¦ã‚¤ãƒ³ãƒãƒ¼ãƒˆ
 	class_<SsCurve>("SsCurve")
 		.def_readonly("startTime", &SsCurve::startTime)
 		.def_readonly("startValue", &SsCurve::startValue)
@@ -282,14 +282,14 @@ int main(int argc, char* argv[])
 	SSTextureFactory*	texfactory = new SSTextureFactory( new SSTextureBMP() );
 
     if(PyImport_AppendInittab( "SpriteStudio", initSpriteStudio) == -1)
-        puts("helloƒ‚ƒWƒ…[ƒ‹‚ÌƒZƒbƒgƒAƒbƒv‚É¸”s");
+        puts("helloãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—ã«å¤±æ•—");
     
     Py_Initialize();
     
     handle<> main_module(borrowed( PyImport_AddModule("__main__") ));
     handle<> main_namespace(borrowed( PyModule_GetDict(main_module.get()) ));
     
-	//ˆø”‚É—^‚¦‚ç‚ê‚½PythonƒXƒNƒŠƒvƒgƒtƒ@ƒCƒ‹‚Ìƒ[ƒh
+	//å¼•æ•°ã«ä¸ãˆã‚‰ã‚ŒãŸPythonã‚¹ã‚¯ãƒªãƒ—ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ­ãƒ¼ãƒ‰
 	std::string filename = "";
 	filename = "testscript.py";	
 	if ( argc == 2 )
@@ -317,7 +317,7 @@ int main(int argc, char* argv[])
 		handle<>( PyRun_String( s, Py_file_input, main_namespace.get(), main_namespace.get()) );
 	}catch(error_already_set const &)
 	{
-		// ‰½‚ç‚©‚Ì•û–@‚Å—áŠO‚ğˆ—‚·‚é
+		// ä½•ã‚‰ã‹ã®æ–¹æ³•ã§ä¾‹å¤–ã‚’å‡¦ç†ã™ã‚‹
 		PyErr_Print();		
 	}
 

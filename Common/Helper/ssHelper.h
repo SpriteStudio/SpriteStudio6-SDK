@@ -1,4 +1,4 @@
-#ifndef __GLHELPER__
+﻿#ifndef __GLHELPER__
 #define __GLHELPER__
 
 #include "../Loader/ssloader.h"

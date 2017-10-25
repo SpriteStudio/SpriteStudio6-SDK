@@ -1,4 +1,4 @@
-/*! \mainpage 
+﻿/*! \mainpage 
  *
  * \section 初めに
  *
@@ -8,7 +8,7 @@
  * \section 本SDKの構成について
  * 本SDKは、下記のライブラリが含まれております。<br>
  * ・OPTPiX SpriteStudioのネイティブのファイルフォーマットである、sspj、ssae、ssceの読み込み用ライブラリ<br>
- * ・読み込んだデータの描画再生サンプル(簡易ビューア―)<br>
+ * ・読み込んだデータの描画再生サンプル(簡易ビューア—)<br>
  *
  * \section SpriteStudioのXMLデータ構造について
  *

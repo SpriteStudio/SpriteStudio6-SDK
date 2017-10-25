@@ -1,4 +1,4 @@
-#include "ssstring_uty.h"
+﻿#include "ssstring_uty.h"
 
 #ifdef _WIN32
 #include <direct.h>
