@@ -97,6 +97,13 @@ enum {
 	USER_DATA_FLAG_STRING	= 1 << 3
 };
 
+enum {
+	OUTPUT_FORMAT_FLAG_SSBP	= 1 << 0,
+	OUTPUT_FORMAT_FLAG_JSON	= 1 << 1,
+	OUTPUT_FORMAT_FLAG_MSGPACK	= 1 << 2,
+	OUTPUT_FORMAT_FLAG_CSOURCE	= 1 << 3
+};
+
 bool convert_error_exit = false;	//データにエラーがありコンバートを中止した
 
 
@@ -1377,7 +1384,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 
 
-void convertProject(const std::string& outPath, LumpExporter::StringEncoding encoding, const std::string& sspjPath, const std::string& imageBaseDir, const std::string& creatorComment)
+void convertProject(const std::string& outPath, LumpExporter::StringEncoding encoding, const std::string& sspjPath,
+	 const std::string& imageBaseDir, const std::string& creatorComment, const int outputFormat)
 {
 	SSTextureFactory texFactory(new SSTextureBMP());
 	std::cerr << sspjPath << "\n";
@@ -1396,14 +1404,31 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 	{
 		//データにエラーがありコンバートを中止した
 		//ファイルの出力を行なわない
+		std::cerr << "データにエラーがありコンバートを中止した \n ファイルの出力を行なわない \n";
 	}
 	else
 	{
 
 		std::fstream out;
 		out.open(outPath.c_str(), std::ios_base::binary | std::ios_base::out);
-		LumpExporter::saveBinary(out, encoding, lump, creatorComment);
 
+		if (outputFormat == OUTPUT_FORMAT_FLAG_JSON)
+		{
+			LumpExporter::saveJson(out, encoding, lump, creatorComment);
+		}
+		else if (outputFormat == OUTPUT_FORMAT_FLAG_MSGPACK)
+		{
+			LumpExporter::saveMsgpack(out, encoding, lump, creatorComment);
+		}
+		else if (outputFormat == OUTPUT_FORMAT_FLAG_CSOURCE)
+		{
+			LumpExporter::saveCSource(out, encoding, lump, creatorComment);
+		}
+		else
+		{
+			LumpExporter::saveBinary(out, encoding, lump, creatorComment);
+		}
+		
 	/////////////
 	#if 0
 		out.close();
@@ -1440,8 +1465,8 @@ APP_NAME " converter version " APP_VERSION "\n"
 "  -o      set output path.\n"
 //"  -e arg  Encoding of output file (UTF8/SJIS) default:UTF8\n"
 //"  -p arg  Specify image file load base path.\n"
+"  -f      set output format.\n"
 "\n";
-
 
 struct Options
 {
@@ -1454,6 +1479,7 @@ struct Options
 	std::string						imageBaseDir;
 	std::string						outputDir;
 
+	int								outputFormat;
 
 	Options()
 	: isHelp(false)
@@ -1534,6 +1560,15 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 
 		options.outputDir = args.next();
 	}
+	else if (opt == "-f")
+	{
+		if (!args.hasNext()) return false;
+
+		std::string outputFormat = args.next();
+		if (outputFormat == "json") options.outputFormat = OUTPUT_FORMAT_FLAG_JSON;
+		else if (outputFormat == "msgpack") options.outputFormat = OUTPUT_FORMAT_FLAG_MSGPACK;
+		else if (outputFormat == "c") options.outputFormat = OUTPUT_FORMAT_FLAG_CSOURCE;
+	}
 	else
 	{
 		// unknown
@@ -1551,7 +1586,8 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 	//オプションフラグの初期化
 	options.outputDir = "";
 	options.imageBaseDir = "";
-
+	options.outputFormat = 0;
+	
 	//引数解析
 	Options::StringList inList;
 	ArgumentPointer args(argc, argv);
@@ -1697,7 +1733,7 @@ int convertMain(int argc, const char * argv[])
 			std::cout << "Convert: " << sspjPath << " -> " << outPath << std::endl;
 		}
 		
-		convertProject(outPath, encoding, sspjPath, options.imageBaseDir, creatorComment);
+		convertProject(outPath, encoding, sspjPath, options.imageBaseDir, creatorComment, options.outputFormat);
 	}
 
 	if ( convert_error_exit == true )
