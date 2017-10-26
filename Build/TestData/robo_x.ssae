@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<SpriteStudioAnimePack version="1.00.01">
+<SpriteStudioAnimePack version="2.00.01">
 	<settings>
 		<fps>30</fps>
 		<frameCount>11</frameCount>
@@ -9,6 +9,9 @@
 		<bgColor>FF323232</bgColor>
 		<gridSize>32</gridSize>
 		<gridColor>FF808080</gridColor>
+		<ik_depth>3</ik_depth>
+		<startFrame>0</startFrame>
+		<endFrame>10</endFrame>
 		<outStartNum>0</outStartNum>
 	</settings>
 	<name>robo_x</name>
@@ -23,15 +26,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 3</name>
@@ -41,15 +49,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 2</name>
@@ -59,15 +72,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 1</name>
@@ -77,15 +95,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 7</name>
@@ -95,15 +118,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 8</name>
@@ -113,15 +141,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 9</name>
@@ -131,15 +164,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 7_1</name>
@@ -149,15 +187,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 8_1</name>
@@ -167,15 +210,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 9_1</name>
@@ -185,15 +233,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 4</name>
@@ -203,15 +256,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 5</name>
@@ -221,15 +279,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 6</name>
@@ -239,15 +302,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 4_1</name>
@@ -257,15 +325,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 5_1</name>
@@ -275,15 +348,20 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
 				<name>part 6_1</name>
@@ -293,22 +371,61 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
 			</value>
 		</partList>
+		<boneList />
+		<meshList />
 	</Model>
 	<cellmapNames>
 		<value>robo_01.ssce</value>
 	</cellmapNames>
 	<animeList>
+		<anime>
+			<name>Setup</name>
+			<overrideSettings>1</overrideSettings>
+			<settings>
+				<fps>30</fps>
+				<frameCount>1</frameCount>
+				<sortMode>prio</sortMode>
+				<canvasSize>320 320</canvasSize>
+				<pivot>0 0</pivot>
+				<bgColor>FF323232</bgColor>
+				<gridSize>32</gridSize>
+				<gridColor>FF808080</gridColor>
+				<ik_depth>3</ik_depth>
+				<startFrame>0</startFrame>
+				<endFrame>0</endFrame>
+				<outStartNum>0</outStartNum>
+			</settings>
+			<labels />
+			<isSetup>1</isSetup>
+			<partAnimes>
+				<partAnime>
+					<partName>robo_x</partName>
+					<attributes>
+						<attribute tag="HIDE">
+							<key time="0">
+								<value>0</value>
+							</key>
+						</attribute>
+					</attributes>
+				</partAnime>
+			</partAnimes>
+		</anime>
 		<anime>
 			<name>robo_x</name>
 			<overrideSettings>1</overrideSettings>
@@ -321,9 +438,13 @@
 				<bgColor>00000000</bgColor>
 				<gridSize>32</gridSize>
 				<gridColor>FF808080</gridColor>
+				<ik_depth>3</ik_depth>
+				<startFrame>0</startFrame>
+				<endFrame>19</endFrame>
 				<outStartNum>0</outStartNum>
 			</settings>
 			<labels />
+			<isSetup>0</isSetup>
 			<partAnimes>
 				<partAnime>
 					<partName>robo_x</partName>
