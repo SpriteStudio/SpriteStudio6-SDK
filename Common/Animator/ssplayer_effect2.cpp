@@ -38,26 +38,26 @@ double OutQuad(double t,double totaltime,double max ,double min )
 	return -max*t*(t-2)+min;
 }
 
-//���ݎ��Ԃ���Y�o�����ʒu��߂�
-//time�ϐ����狁�߂��鎮�Ƃ���
-//�p�[�e�B�N�����W�v�Z�̃R�A
+//現在時間から産出される位置を求める
+//time変数から求められる式とする
+//パーティクル座標計算のコア
 void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recalc )
 {
 	float _t = (float)(time - p->stime);
 	float _tm = (float)(_t - 1.0f );
-	float _t2 = _t * _t; //(�o�ߎ��Ԃ̓��)
+	float _t2 = _t * _t; //(経過時間の二乗)
 	float _life = (float)( p->lifetime - p->stime);
 
 	if ( _life == 0 ) return ;
 	float _lifeper = (float)( _t / _life );
 
 
-	//_t = 0���_�̒l����
-	//�V�[�h�l�ŌŒ艻����邱�Ƃ��O��
+	//_t = 0時点の値を作る
+	//シード値で固定化されることが前提
   	unsigned long pseed = seedList[p->id % seedTableLen];
 
 
-	//���g�̃V�[�h�l�A�G�~�b�^�[�̃V�[�h�l�A�e�p�[�e�B�N���̂h�c��V�[�h�l�Ƃ���
+	//自身のシード値、エミッターのシード値、親パーティクルのＩＤをシード値とする
 	rand.init_genrand(( pseed + emitterSeed + p->pid + seedOffset ));
 
 
@@ -67,7 +67,7 @@ void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recal
 
 
 
-	//�ڐ������x
+	//接線加速度
 	float addr = 0;
 	if ( particle.useTanAccel )
 	{
@@ -75,11 +75,11 @@ void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recal
 
 		float _speed = speed;
 		if ( _speed <= 0 )_speed = 0.1f;
-		//���ϊp���x��߂�
-		float l = _life * _speed * 0.2f; //�~�̔��a
+		//平均角速度を求める
+		float l = _life * _speed * 0.2f; //円の半径
 		float c = 3.14 * l;
 
-		//�ŉ~�� / �����x(pixel)
+		//最円周 / 加速度(pixel)
 		addr = ( accel / c ) * _t;
 	}
 
@@ -108,14 +108,14 @@ void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recal
 	}
 
 
-	//�d�͉����x�̌v�Z
+	//重力加速度の計算
 	if ( particle.useGravity )
 	{
 		x += (0.5 * particle.gravity.x * (_t2));
 		y += (0.5 * particle.gravity.y * (_t2));
 	}
 
-	//�����ʒu�I�t�Z�b�g
+	//初期位置オフセット
 	float ox,oy;
 	ox = oy = 0;
 	if ( particle.useOffset )
@@ -124,17 +124,17 @@ void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recal
 		oy = (particle.offset.y + (particle.offset2.y * rand.genrand_float32()));
 	}
 
-	//�p�x�����l
+	//角度初期値
 	p->rot = 0;
 	if ( particle.useRotation )
 	{
 		p->rot = particle.rotation + (rand.genrand_float32() * particle.rotation2);
 		float add = particle.rotationAdd + (rand.genrand_float32() * particle.rotationAdd2);
 
-		//�p�x�ω�
+		//角度変化
 		if ( particle.useRotationTrans )
 		{
-			//���B�܂ł̐�Ύ���
+			//到達までの絶対時間
 			float lastt = _life * particle.endLifeTimePer;
 
 			float addf = 0;
@@ -143,22 +143,22 @@ void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recal
 			  	float addrf =  (add * particle.rotationFactor) * _t;
 				p->rot+=addrf;
 			}else{
-				//1�t���[���ŉ��Z������
+				//1フレームで加算される量
 				addf = ( add * particle.rotationFactor - add ) / lastt;
 
-				//���܂莞��
+				//あまり時間
 				float mod_t = _t - lastt;
 				if ( mod_t < 0 ) mod_t = 0;
 
-				//���ݎ��ԁi�ŏI���ԂŃ��~�b�g
+				//現在時間（最終時間でリミット
 				float nowt = _t;
 				if ( nowt > lastt ) nowt = lastt;
 
-				//�ŏI�� + ���� x F / 2
+				//最終項 + 初項 x F / 2
 				float final_soul = add + addf * nowt;
 				float addrf = ( final_soul + add ) * (nowt+1.0f) / 2.0f;
 				addrf-=add;
-				addrf+= ( mod_t * ( final_soul ) ); //���܂�ƏI���̐ς���Z
+				addrf+= ( mod_t * ( final_soul ) ); //あまりと終項の積を加算
 				p->rot+=addrf;
 			}
 		}else{
@@ -166,7 +166,7 @@ void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recal
 		}
 	}
 
-	//�J���[�̏����l�A�J���[�̕ω�
+	//カラーの初期値、カラーの変化
 	p->color.a = 0xff;
 	p->color.r = 0xff;
 	p->color.g = 0xff;
@@ -225,7 +225,7 @@ void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recal
 	}
 
 
-	//�X�P�[�����O
+	//スケーリング
 	p->scale.x = 1.0f;
 	p->scale.y = 1.0f;
 	float scalefactor = 1.0f;
@@ -258,15 +258,15 @@ void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recal
 	p->scale.x*=scalefactor;
 	p->scale.y*=scalefactor;
 
-	p->x = x + ox + position.x;//�G�~�b�^����̃I�t�Z�b�g����Z
-	p->y = y + oy + position.y;//�G�~�b�^����̃I�t�Z�b�g����Z
+	p->x = x + ox + position.x;//エミッタからのオフセットを加算
+	p->y = y + oy + position.y;//エミッタからのオフセットを加算
 
 
-  	//�w��̓_�ւ悹��
+  	//指定の点へよせる
 	if ( particle.usePGravity )
 	{
 
-		//�����n�_����̋���
+		//生成地点からの距離
 		SsVector2 v = SsVector2(  particle.gravityPos.x - (ox + position.x) ,
                          particle.gravityPos.y - (oy + position.y) );
 
@@ -277,7 +277,7 @@ void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recal
 		float gp = particle.gravityPower;
 		if (gp > 0) {
 			SsVector2 v2 = SsVector2(p->x, p->y);
-			float len = v.length(); // �����ʒu����̋���
+			float len = v.length(); // 生成位置からの距離
 			float et = (len / gp)*0.90f;;
 
 			float _gt = _t;
@@ -301,8 +301,8 @@ void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recal
 		}
 		else {
 			nv = nv * gp * _t;
-			// �p���[�}�C�i�X�̏ꍇ�͒P���ɔ���������
-			// �����ɂ�錸���͂Ȃ�
+			// パワーマイナスの場合は単純に反発させる
+			// 距離による減衰はない
 			p->x += nv.x;
 			p->y += nv.y;
 		}
@@ -325,7 +325,7 @@ void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recal
 #endif
 	}
 
-    //�O�̃t���[������̕�������
+    //前のフレームからの方向を取る
 	p->direc = 0.0f;
 	if ( particle.useTurnDirec && recalc==false )
 	{
@@ -366,7 +366,7 @@ void	SsEffectEmitter::precalculate2()
 
 	if ( particleExistList == 0 )
 	{
-		particleExistList = new particleExistSt[emitter.emitmax]; //���݂��Ă���p�[�e�B�N��������v�Z�p�o�b�t�@
+		particleExistList = new particleExistSt[emitter.emitmax]; //存在しているパーティクルが入る計算用バッファ
 	}
 
 	memset( particleExistList , 0 , sizeof(particleExistSt) * emitter.emitmax );
@@ -424,7 +424,7 @@ void	SsEffectEmitter::precalculate2()
 
 	seedTableLen = particleListBufferSize * 3;
 	seedList = new unsigned long[seedTableLen];
-	//�e�p�[�e�B�N���h�c����Q�Ƃ���V�[�h�l��e�[�u���Ƃ��č쐬����
+	//各パーティクルＩＤから参照するシード値をテーブルとして作成する
 	for ( size_t i = 0 ; i < seedTableLen ; i++ )
 	{
     	seedList[i] = rand.genrand_uint32();
@@ -475,11 +475,11 @@ void SsEffectEmitter::updateEmitter( double _time , int slide )
 
 			if ( !this->emitter.Infinite )
 			{
-				if ( particleExistList[i].stime >= this->emitter.life ) //�G�~�b�^�[���I�����Ă���
+				if ( particleExistList[i].stime >= this->emitter.life ) //エミッターが終了している
 				{
-					particleExistList[i].exist = false;    //����ĂȂ�
+					particleExistList[i].exist = false;    //作られてない
 
-					//�ŏI�I�Ȓl�Ɍv�Z������ <-���O�v�Z���Ă����Ƃ�������E
+					//最終的な値に計算し直し <-事前計算しておくといいかも・
 					int t = this->emitter.life - _offsetPattern[i];
 					int loopnum = t / targetEP->cycle;
 
@@ -539,7 +539,7 @@ void	SsEffectRenderV2::drawSprite(
 	SsCurrentRenderer::getRender()->SetTexture( dispCell );
 
 
-	float		matrix[4 * 4];	///< �s��
+	float		matrix[4 * 4];	///< 行列
 	IdentityMatrix( matrix );
 
 	float parentAlpha = 1.0f;
@@ -623,17 +623,17 @@ void SsEffectRenderV2::particleDraw(SsEffectEmitter* e , double time , SsEffectE
 
 			if (parent)
 			{
-				//�e����`�悷��p�[�e�B�N���̏����ʒu�𒲂ׂ�
+				//親から描画するパーティクルの初期位置を調べる
 				pp.id = plp->id;
 				pp.stime = plp->stime;
 				pp.lifetime = plp->lifetime;
 				pp.pid = plp->pid;
-				//�p�[�e�B�N���������������Ԃ̐e�̈ʒu����
+				//パーティクルが発生した時間の親の位置を取る
 
 				int ptime = lp.stime + pp.stime;
 				if ( ptime > lp.lifetime ) ptime = lp.lifetime;
 
-				//�t�Z�̓f�o�b�O�����炢������Ȃ�
+				//逆算はデバッグしずらいかもしれない
 				parent->updateParticle( lp.stime + pp.stime , &pp);
 				e->position.x = pp.x;
 				e->position.y = pp.y;
@@ -663,14 +663,14 @@ void SsEffectRenderV2::particleDraw(SsEffectEmitter* e , double time , SsEffectE
 
 
 
-//�p�����[�^��R�s�[����
+//パラメータをコピーする
 void	SsEffectRenderV2::initEmitter( SsEffectEmitter* e , SsEffectNode* node)
 {
 
 	e->refData = node->GetMyBehavior();
 	e->refCell = e->refData->refCell;
 
-	//�Z���̏�����
+	//セルの初期化
 	SsCelMapLinker* link = this->curCellMapManager->getCellMapLink( e->refData->CellMapName );
 
 	if ( link )
@@ -703,7 +703,7 @@ void	SsEffectRenderV2::initEmitter( SsEffectEmitter* e , SsEffectNode* node)
 		}
 	}
 
-	e->emitter.life+= e->particle.delay;//�f�B���C�����Z
+	e->emitter.life+= e->particle.delay;//ディレイ分加算
 }
 
 
@@ -739,7 +739,7 @@ void	SsEffectRenderV2::update()
 
 	if ( !this->Infinite )
 	{
-		if ( this->isloop() ) //�������[�v�̏ꍇ
+		if ( this->isloop() ) //自動ループの場合
 		{
 			if ( nowFrame > getEffectTimeLength() )
 			{
@@ -771,7 +771,7 @@ void	SsEffectRenderV2::draw()
 
 		if ( e->_parent )
 		{
-			//�O���[�o���̎��ԂŌ��ݐe���ǂꂾ����������Ă���̂���`�F�b�N����
+			//グローバルの時間で現在親がどれだけ生成されているのかをチェックする
 			e->_parent->updateEmitter(targetFrame , 0);
 
 			int loopnum =  e->_parent->getParticleIDMax();
@@ -817,13 +817,13 @@ void    SsEffectRenderV2::reload()
 {
 	nowFrame = 0;
 
-    //update���K�v��
+    //updateが必要か
 	stop();
 	clearEmitterList();
 
 	SsEffectNode* root = this->effectData->GetRoot();
 
-    //this->effectData->updateNodeList();//�c�[������Ȃ��̂ŗv��Ȃ�
+    //this->effectData->updateNodeList();//ツールじゃないので要らない
     const std::vector<SsEffectNode*>& list = this->effectData->getNodeList();
 
 	layoutScale.x = (float)(this->effectData->layoutScaleX) / 100.0f;
@@ -833,8 +833,8 @@ void    SsEffectRenderV2::reload()
     memset( cnum , 0 , sizeof(int) * list.size() );
 
 	bool _Infinite = false;
-	//�p�����[�^��擾
-	//�ȑO�̃f�[�^�`������ϊ�
+	//パラメータを取得
+	//以前のデータ形式から変換
 	for ( size_t i = 0 ; i < list.size() ; i ++ )
 	{
 		SsEffectNode *node =  list[i];
@@ -842,10 +842,10 @@ void    SsEffectRenderV2::reload()
 		if ( node->GetType() == SsEffectNodeType::emmiter )
 		{
 			SsEffectEmitter* e = new SsEffectEmitter();
-			//�p�����[�^��R�s�[
+			//パラメータをコピー
 
 			e->_parentIndex = node->parentIndex;
-			//�q����͋��炭�p�[�e�B�N���Ȃ̂ŃG�~�b�^�ɕϊ�
+			//繋ぎ先は恐らくパーティクルなのでエミッタに変換
 			if ( e->_parentIndex != 0 )
 			{
 				e->_parentIndex = list[e->_parentIndex]->parentIndex;
@@ -856,10 +856,10 @@ void    SsEffectRenderV2::reload()
 			if ( cnum[e->_parentIndex] > 10 )
 			{
 				_isWarningData = true;
-				continue; //�q�P�O�m�[�h�\������
+				continue; //子１０ノード表示制限
 			}
 
-			//���}���΍�
+			//孫抑制対策
 			if ( e->_parentIndex != 0 )
 			{
 				int a = list[e->_parentIndex]->parentIndex;
@@ -877,7 +877,7 @@ void    SsEffectRenderV2::reload()
 			if ( e->emitter.Infinite ) _Infinite = true;
 		}else
 		{
-            //�G�~�b�^�[���m��q�������̂�
+            //エミッター同士を繋ぎたいので
 			this->emmiterList.push_back(0);
 		}
 	}
@@ -886,23 +886,23 @@ void    SsEffectRenderV2::reload()
 	Infinite = _Infinite;
 
 
-    //�e�q�֌W����
+    //親子関係整理
 
 
 	effectTimeLength = 0;
-	//���O�v�Z�v�Z  updateList�Ƀ��[�g�̎q��z�u���e�q�֌W���
+	//事前計算計算  updateListにルートの子を配置し親子関係を結ぶ
 	for ( size_t i = 0 ; i < this->emmiterList.size(); i++)
 	{
 		if (emmiterList[i] != 0 )
 		{
 			emmiterList[i]->uid = i;
 			//emmiterList[i]->precalculate();
-			emmiterList[i]->precalculate2(); //���[�v�Ή��`��
+			emmiterList[i]->precalculate2(); //ループ対応形式
 
 
 			int  pi =  emmiterList[i]->_parentIndex;
 
-			if ( emmiterList[i]->_parentIndex == 0 )  //���[�g����
+			if ( emmiterList[i]->_parentIndex == 0 )  //ルート直下
 			{
 				emmiterList[i]->_parent = 0;
 				emmiterList[i]->globaltime = emmiterList[i]->getTimeLength();
@@ -924,7 +924,7 @@ void    SsEffectRenderV2::reload()
 			}
 		}
 	}
-	//�v���C�I���e�B�\�[�g
+	//プライオリティソート
 	std::sort( updateList.begin() , updateList.end() , compare_priority );
 
 

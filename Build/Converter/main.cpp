@@ -12,6 +12,7 @@
 #include "ssplayer_animedecode.h"
 #include "ssHelper.h"
 #include "sshTextureBMP.h"
+#include "ssplayer_mesh.h"
 
 #include <string>
 #include <algorithm>
@@ -33,9 +34,10 @@ static const int DATA_VERSION_2         = 2;
 static const int DATA_VERSION_3         = 3;
 static const int DATA_VERSION_4			= 4;
 static const int DATA_VERSION_5			= 5;
+static const int DATA_VERSION_6			= 6;
 
 static const int DATA_ID				= 0x42505353;
-static const int CURRENT_DATA_VERSION	= DATA_VERSION_5;
+static const int CURRENT_DATA_VERSION	= DATA_VERSION_6;
 
 
 enum {
@@ -80,6 +82,11 @@ enum {
 
 
 	NUM_PART_FLAGS
+};
+
+enum {
+	PART_FLAG_MESHDATA			= 1 << 0,
+	NUM_PART_FLAGS2
 };
 
 enum {
@@ -192,7 +199,8 @@ struct PartInitialData
 {
 	int		sortedOrder;
 	int		index;
-	int		flags;
+	int		lowflag;
+	int		highflag;
 	int		cellIndex;
 	float	posX;
 	float	posY;
@@ -491,31 +499,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				const SsString str = part->refEffectName;
 				partData->add(Lump::stringData(str));							//文字列
 			}
-			//パーツカラー
+			//カラーラベル
 			const SsString str = part->colorLabel;
 			partData->add(Lump::stringData(str));								//文字列
 
-			//ボーン情報
-			partData->add(Lump::floatData(part->bonePosition.x));
-			partData->add(Lump::floatData(part->bonePosition.y));
-			partData->add(Lump::floatData(part->boneRotation));
-
-			partData->add(Lump::floatData(part->weightPosition.x));
-			partData->add(Lump::floatData(part->weightPosition.y));
-			partData->add(Lump::floatData(part->weightImpact));
-			partData->add(Lump::s16Data(part->boneLength));
-
-			//メッシュ情報
-			partData->add(Lump::s16Data(part->meshWeightType));
-			partData->add(Lump::s16Data(part->meshWeightStrong));
-
-			//コンストレイント情報
-			partData->add(Lump::s16Data(part->IKDepth));
-			partData->add(Lump::s16Data(part->IKRotationArrow));
-
 			//マスク対象
 			partData->add(Lump::s16Data(part->maskInfluence));
-
 		}
 
 		
@@ -561,6 +550,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				init.index = state->index;
 
 				int flags = 0;
+				int flags2 = 0;
 				if (state->hide)  flags |= PART_FLAG_INVISIBLE;
 				//イメージ反転を適用する
 				bool hFlip = state->hFlip ^ state->imageFlipH;
@@ -568,7 +558,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				if (hFlip) flags |= PART_FLAG_FLIP_H;
 				if (vFlip) flags |= PART_FLAG_FLIP_V;
 
-				init.flags = flags;
+				init.lowflag = flags;
+				init.highflag = flags2;
 
 				// cellIndex
 				int cellIndex = -1;
@@ -640,7 +631,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				initialDataArray->add(initialData);
 				initialData->add(Lump::s16Data(init.index));
 				initialData->add(Lump::s16Data(0)); //ダミーデータ
-				initialData->add(Lump::s32Data(init.flags));
+				initialData->add(Lump::s32Data(init.lowflag));
+				initialData->add(Lump::s32Data(init.highflag));
 				initialData->add(Lump::s16Data(init.priority));
 				initialData->add(Lump::s16Data(init.cellIndex));
 				initialData->add(Lump::s16Data(init.opacity));
@@ -679,9 +671,79 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				initialData->add(Lump::s32Data(init.effectValue_startTime));
 				initialData->add(Lump::floatData(init.effectValue_speed));
 				initialData->add(Lump::s32Data(init.effectValue_loopflag));
-
-
 			}
+
+			Lump* meshsDataUV = Lump::set("ss::ss_u16*[]", true);
+			{
+				decoder.setPlayFrame(0);
+				decoder.update();
+
+				foreach(std::vector<SsPartAndAnime>, decoder.getPartAnime(), it)
+				{
+					SsPart* part = it->first;
+					const SsPartState* state = findState(partList, part->arrayIndex);
+
+					//サイズ分のUV出力
+					Lump* meshData = Lump::set("ss::ss_u16*[]", true);
+					meshsDataUV->add(meshData);
+
+					//メッシュのサイズを書き出す
+					if (part->type == SsPartType::mesh)
+					{
+						int meshsize = state->meshPart->ver_size;
+						meshData->add(Lump::s32Data(meshsize));	//サイズ
+						int i;
+						for (i = 0; i < meshsize; i++)
+						{
+							float u = state->meshPart->uvs[i * 2 + 0];
+							float v = state->meshPart->uvs[i * 2 + 1];
+							meshData->add(Lump::floatData(u));
+							meshData->add(Lump::floatData(v));
+						}
+					}
+					else
+					{
+						meshData->add(Lump::s32Data(0));
+					}
+				}
+			}
+			Lump* meshsDataIndices = Lump::set("ss::ss_u16*[]", true);
+			{
+				decoder.setPlayFrame(0);
+				decoder.update();
+
+				foreach(std::vector<SsPartAndAnime>, decoder.getPartAnime(), it)
+				{
+					SsPart* part = it->first;
+					const SsPartState* state = findState(partList, part->arrayIndex);
+
+					//サイズ分のUV出力
+					Lump* meshData = Lump::set("ss::ss_u16*[]", true);
+					meshsDataIndices->add(meshData);
+
+					//メッシュのサイズを書き出す
+					if (part->type == SsPartType::mesh)
+					{
+						int tri_size = state->meshPart->tri_size;
+						meshData->add(Lump::s32Data(tri_size));	//サイズ
+						int i;
+						for (i = 0; i < tri_size; i++)
+						{
+							int po1 = (int)state->meshPart->indices[i * 3 + 0];
+							int po2 = (int)state->meshPart->indices[i * 3 + 1];
+							int po3 = (int)state->meshPart->indices[i * 3 + 2];
+							meshData->add(Lump::s32Data(po1));
+							meshData->add(Lump::s32Data(po2));
+							meshData->add(Lump::s32Data(po3));
+						}
+					}
+					else
+					{
+						meshData->add(Lump::s32Data(0));
+					}
+				}
+			}
+			
 
 
 			// フレーム毎データ
@@ -817,7 +879,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						}
 					}
 
-
 					// パーツカラー値を格納する必要があるかチェック
 					int cb_flags = 0;
 					if (state->is_parts_color)
@@ -871,6 +932,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						if (vt_flags) p_flags |= PART_FLAG_VERTEX_TRANSFORM;
 					}
 
+					int p_flags2 = 0;
+					//メッシュ情報を出力する必要があるかチェックする
+					if (state->partType == SsPartType::mesh)
+					{
+						p_flags2 |= PART_FLAG_MESHDATA;
+					}
 
 					
 
@@ -885,6 +952,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					frameData->add(Lump::s16Data(state->index));
 //					frameData->add(Lump::s16Data(0));				//32bitアライメント用ダミーデータ
 					frameData->add(Lump::s32Data(s_flags | p_flags));
+					frameData->add(Lump::s32Data(p_flags2));
 
 					if (p_flags & PART_FLAG_CELL_INDEX) frameData->add(Lump::s16Data(cellIndex));
 					if (p_flags & PART_FLAG_POSITION_X) frameData->add(Lump::floatData(state->position.x));
@@ -963,6 +1031,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 						if (cb_flags & VERTEX_FLAG_ONE)
 						{
+							frameData->add(Lump::floatData(state->partsColorValue.color.rate));
 							frameData->add(Lump::colorData(state->partsColorValue.color.rgba.toARGB()));
 						}
 						else
@@ -971,9 +1040,26 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							{
 								if (cb_flags & (1 << vtxNo))
 								{
+									frameData->add(Lump::floatData(state->partsColorValue.colors[vtxNo].rate));
 									frameData->add(Lump::colorData(state->partsColorValue.colors[vtxNo].rgba.toARGB()));
 								}
 							}
+						}
+					}
+					//メッシュ情報を出力する必要があるかチェックする
+					if (p_flags2 & PART_FLAG_MESHDATA)
+					{
+						//頂点情報を出力
+						int i;
+						int size = state->meshPart->ver_size;
+						for (i = 0; i < size; i++)
+						{
+							float mesh_x = state->meshPart->draw_vertices[i * 3 + 0];
+							float mesh_y = state->meshPart->draw_vertices[i * 3 + 1];
+							float mesh_z = state->meshPart->draw_vertices[i * 3 + 2];
+							frameData->add(Lump::floatData(mesh_x));		//x
+							frameData->add(Lump::floatData(mesh_y));		//y
+							frameData->add(Lump::floatData(mesh_z));		//z
 						}
 					}
 				}
@@ -1096,6 +1182,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			animeData->add(frameDataIndexArray);
 			animeData->add(hasUserData ? userDataIndexArray : Lump::s32Data(0));
 			animeData->add(hasLabelData ? LabelDataIndexArray : Lump::s32Data(0));
+			animeData->add(meshsDataUV);
+			animeData->add(meshsDataIndices);
 			animeData->add(Lump::s16Data(decoder.getAnimeStartFrame()));
 			animeData->add(Lump::s16Data(decoder.getAnimeEndFrame()));
 			animeData->add(Lump::s16Data(decoder.getAnimeTotalFrame()));
@@ -1385,7 +1473,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 
 void convertProject(const std::string& outPath, LumpExporter::StringEncoding encoding, const std::string& sspjPath,
-	 const std::string& imageBaseDir, const std::string& creatorComment, const int outputFormat)
+	const std::string& imageBaseDir, const std::string& creatorComment, const int outputFormat)
 {
 	SSTextureFactory texFactory(new SSTextureBMP());
 	std::cerr << sspjPath << "\n";
@@ -1450,7 +1538,7 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 
 
 
-#define APP_NAME		"Ss5Converter"
+#define APP_NAME		"Ss6Converter"
 #define APP_VERSION		"1.0.0 (Build: " __DATE__ " " __TIME__ ")"
 
 

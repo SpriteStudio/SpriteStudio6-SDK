@@ -7,12 +7,11 @@
 #include "ssplayer_mesh.h"
 #include "ssplayer_macro.h"
 #include "ssplayer_matrix.h"
-#include "ssplayer_animedecode.h"
 
 
 void	SsMeshPart::makeMesh()
 {
-	//�p�[�c�X�e�[�g�̏������̍ۂɃ^�[�Q�b�g�Z���������A���̍ۂɃ}�b�v��R�s�[����H
+	//パーツステートの初期化の際にターゲットセルが作られる、その際にマップもコピーする？
 
 	size_t psize = targetCell->meshPointList.size();
 
@@ -29,8 +28,8 @@ void	SsMeshPart::makeMesh()
 
 	draw_vertices = new float[3 * psize];
 
-	vertices_outer = new SsVector2[3 * psize];// //�c�[���p
-	update_vertices_outer = new SsVector2[3 * psize];// //�c�[���p
+	vertices_outer = new SsVector2[3 * psize];// //ツール用
+	update_vertices_outer = new SsVector2[3 * psize];// //ツール用
 
 
 	vertices = new float[3 * psize];
@@ -43,7 +42,7 @@ void	SsMeshPart::makeMesh()
 	memset(bindBoneInfo, 0, sizeof(StBoneWeight) * psize);
 
 
-	SsVector2 offs; //����
+	SsVector2 offs; //中央
 	offs.x = (-targetCell->size.x / 2.0f);
 	offs.y = (targetCell->size.y / 2.0f);
 
@@ -254,10 +253,10 @@ void	SsMeshAnimator::modelLoad()
 			SsMeshPart*		meshPart = target->meshPart;
 			SsPart* pt = model->partList[target->index];	//fordebug
 			size_t psize = meshPart->targetCell->meshPointList.size();
-			//bindBoneInfo �́@psiz��������������Ă���̂ŁAmvb.size()����������ԈႢ������Ǝv����
+			//bindBoneInfo は　psiz分だけ生成されているので、mvb.size()が超えたら間違いがあると思われる
 			if (meshPart->ver_size < (int)mvb.size())
 			{
-				DEBUG_PRINTF("ver_size�𒴂��Ă��� : %s ver_size:%d mvb.size:%d \n", pt->name.c_str(), meshPart->ver_size, (int)mvb.size());
+				DEBUG_PRINTF("ver_sizeを超えている : %s ver_size:%d mvb.size:%d \n", pt->name.c_str(), meshPart->ver_size, (int)mvb.size());
 			}
 		}
 
@@ -269,7 +268,7 @@ void	SsMeshAnimator::modelLoad()
 
 			if (meshPart->ver_size <= (int)n)
 			{
-				continue;	//�e�X�g
+				continue;	//テスト
 			}
 
 			for (int l = 0; l < bonenum; l++)

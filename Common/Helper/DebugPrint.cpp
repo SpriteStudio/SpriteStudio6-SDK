@@ -2,7 +2,10 @@
 #include "stdio.h"
 #include <string>
 #include <iostream>
-#include <stdarg.h>
+
+#ifdef __GNUC__
+	#include <stdarg.h>
+#endif
 
 #if _WIN32
 	#include <Windows.h>

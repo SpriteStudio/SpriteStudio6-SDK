@@ -19,7 +19,11 @@
 	#include <stdio.h>
 #endif
 
-#include <cstring>
+#ifdef __GNUC__
+	#include <cstring>
+#else
+	#include "string"
+#endif
 
 bool XPFileOpenDlg::Show()
 {	

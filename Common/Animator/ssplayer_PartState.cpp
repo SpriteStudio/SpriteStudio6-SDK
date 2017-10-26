@@ -89,7 +89,7 @@ void	SsPartState::init()
 	instanceValue.speed = 1.0f;
 	instanceValue.startFrame = 0;
 	instanceValue.endFrame = 0;
-//	instanceValue.liveFrame = 0.0f;	//���Z�l�Ȃ̂ŏ��������Ă͂����Ȃ�
+//	instanceValue.liveFrame = 0.0f;	//加算値なので初期化してはいけない
 	
 	masklimen = 0;
 

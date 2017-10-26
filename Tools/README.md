@@ -2,10 +2,10 @@
 
 SpriteStudio 6 で作成したデータを利用するためのルーツが含まれています。
 
-- Ss5Converter.zip
+- Ss6Converter.zip
   - sspjからssbpを作成するWindows用コンバータです。
 
-- Ss5Converter_Mac.zip
+- Ss6Converter_Mac.zip
   - sspjからssbpを作成するMac用コンバータです。
 
 - viewer_sample.zip
