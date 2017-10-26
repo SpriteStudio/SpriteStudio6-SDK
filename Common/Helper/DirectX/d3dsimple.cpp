@@ -1,19 +1,19 @@
-//#include "stdafx.h"
+ï»¿//#include "stdafx.h"
 #include <d3d9.h>
 #include "d3dsimple.h"
 
 
-//ƒXƒ^ƒeƒBƒbƒN•Ï”
+//ã‚¹ã‚¿ãƒ†ã‚£ãƒƒã‚¯å¤‰æ•°
 CDirectDrawSimple*	CDirectDrawSimple::myInst = 0;
 bool			CDirectDrawSimple::m_DeviceLost = false;
 
 static	bool	IntervalImmediate = false;
 
 /* ******************************************************** */
-//! DirectDraw‚ğ‰Šú‰»
+//! DirectDrawã‚’åˆæœŸåŒ–
 /*!
 
-@retval	¬”Û@i@TRUE , FALSE )
+@retval	æˆå¦ã€€ï¼ˆã€€TRUE , FALSE )
 
 */
 BOOL CDirectDrawSimple::Cleanup()
@@ -24,21 +24,21 @@ BOOL CDirectDrawSimple::Cleanup()
 	return TRUE;
 }
 /* ******************************************************** */
-//! DirectDrawì¬‚Ìƒpƒ‰ƒ[ƒ^‚ğì¬
+//! DirectDrawä½œæˆæ™‚ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ä½œæˆ
 /*!
 
 */
 void	CDirectDrawSimple::CreateCaps()
 {
 
-	// •\¦Œn‚ÌƒfƒoƒCƒX”\—Í‚ğæ“¾
+	// è¡¨ç¤ºç³»ã®ãƒ‡ãƒã‚¤ã‚¹èƒ½åŠ›ã‚’å–å¾—
 	D3DCAPS9	HardwareCaps;
 	HRESULT	hr = GetD3D()->GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &HardwareCaps);
 	if(0 != (HardwareCaps.PresentationIntervals & D3DPRESENT_INTERVAL_ONE))
-	{	/* DirectX‚ª‚’¼“¯Šú‚ğ©“®‚ÅŒ©‚é‚±‚Æ‚ª‰Â”\ */
-		IntervalImmediate = false;	/* ‚’¼“¯Šú‚ğDirectX‚É”C‚¹‚é */
-	} else {	/* DirectX‚ª‚’¼“¯Šú‚ğ©“®‚ÅŒ©‚é‚±‚Æ‚ª•s‰Â”\ */
-		IntervalImmediate = true;	/* ‚’¼“¯Šú‚ğ©‘O‚Ås‚¤ */
+	{	/* DirectXãŒå‚ç›´åŒæœŸã‚’è‡ªå‹•ã§è¦‹ã‚‹ã“ã¨ãŒå¯èƒ½ */
+		IntervalImmediate = false;	/* å‚ç›´åŒæœŸã‚’DirectXã«ä»»ã›ã‚‹ */
+	} else {	/* DirectXãŒå‚ç›´åŒæœŸã‚’è‡ªå‹•ã§è¦‹ã‚‹ã“ã¨ãŒä¸å¯èƒ½ */
+		IntervalImmediate = true;	/* å‚ç›´åŒæœŸã‚’è‡ªå‰ã§è¡Œã† */
 	}
 
 	::ZeroMemory(&m_d3dParam_window, sizeof(m_d3dParam_window));
@@ -76,7 +76,7 @@ void	CDirectDrawSimple::DeviceReset()
 	m_d3dParam_current.BackBufferWidth = m_dwWidth;
 	m_d3dParam_current.BackBufferHeight = m_dwHeight;
 
-	//æ“¾Ï‚İƒoƒbƒtƒ@‚ÌƒŠƒŠ[ƒX
+	//å–å¾—æ¸ˆã¿ãƒãƒƒãƒ•ã‚¡ã®ãƒªãƒªãƒ¼ã‚¹
 	SAFE_RELEASE( m_pBackBuffer );
 
 	HRESULT	hr = m_pd3dDev->TestCooperativeLevel();
@@ -139,7 +139,7 @@ void	CDirectDrawSimple::ChangeDisplayMode( DISPLAYMODE mode )
 		DeviceReset();
 
 		m_current_displaymode = mode;
-		//ƒEƒCƒ“ƒhƒE‚ÌˆÊ’uA‘å‚«‚³‚ğ’²®
+		//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ä½ç½®ã€å¤§ãã•ã‚’èª¿æ•´
 		if (mode == DISPLAYMODE_WINDOW)
 		{
 			SetWindowLong(m_hwnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
@@ -155,18 +155,18 @@ void	CDirectDrawSimple::ChangeDisplayMode( DISPLAYMODE mode )
 
 
 /* ******************************************************** */
-//! DirectDraw‚ğ‰Šú‰»
+//! DirectDrawã‚’åˆæœŸåŒ–
 /*!
 @param	HWND
-	ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
+	ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
 
 @param	ScreenWidth
-	ƒXƒNƒŠ[ƒ“…•½•ûŒüƒTƒCƒY
+	ã‚¹ã‚¯ãƒªãƒ¼ãƒ³æ°´å¹³æ–¹å‘ã‚µã‚¤ã‚º
 
 @param	ScreenHeight
-	ƒXƒNƒŠ[ƒ“‚’¼•ûŒüƒTƒCƒY
+	ã‚¹ã‚¯ãƒªãƒ¼ãƒ³å‚ç›´æ–¹å‘ã‚µã‚¤ã‚º
 
-@retval	¬”Û@i@TRUE , FALSE )
+@retval	æˆå¦ã€€ï¼ˆã€€TRUE , FALSE )
 
 */
 
@@ -176,7 +176,7 @@ BOOL CDirectDrawSimple::Create( void* hWnd , int ScreenWidth , int ScreenHeight 
 	m_dwHeight = ScreenHeight;
 
 	HWND WindowHandle = (HWND)hWnd ;
-	/* <<< DirectX9ƒCƒ“ƒ^ƒtƒF[ƒX‚Ìì¬ >>> */
+	/* <<< DirectX9ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹ã®ä½œæˆ >>> */
 	m_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
 	if ( m_pD3D == NULL ) return FALSE;
 	D3DDISPLAYMODE	d3ddm;
@@ -186,7 +186,7 @@ BOOL CDirectDrawSimple::Create( void* hWnd , int ScreenWidth , int ScreenHeight 
 	}
 
 	D3DCAPS9	caps;
-	// ƒfƒoƒCƒX‚Ì”\—Í‚ğæ“¾‚·‚é
+	// ãƒ‡ãƒã‚¤ã‚¹ã®èƒ½åŠ›ã‚’å–å¾—ã™ã‚‹
 	m_pD3D->GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps);
 
 
@@ -196,7 +196,7 @@ BOOL CDirectDrawSimple::Create( void* hWnd , int ScreenWidth , int ScreenHeight 
 //		m_VertexShaderVersion = 0;
 //		m_PixelShaderVersion = 0;
 
-	//ƒVƒF[ƒ_[ƒo[ƒWƒ‡ƒ“
+	//ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ãƒãƒ¼ã‚¸ãƒ§ãƒ³
 	if( m_VertexShaderVersion < D3DVS_VERSION( 2, 0) ) {}
 	if( m_PixelShaderVersion < D3DPS_VERSION( 2, 0) ) {}
 
@@ -213,7 +213,7 @@ BOOL CDirectDrawSimple::Create( void* hWnd , int ScreenWidth , int ScreenHeight 
 
 	D3DDEVTYPE	devType = D3DDEVTYPE_HAL;
 
-#if 1	/* MEMO: ƒhƒ‰ƒCƒo‚ÉƒŠƒ\[ƒXŠÇ—‚ğ”C‚¹‚é */
+#if 1	/* MEMO: ãƒ‰ãƒ©ã‚¤ãƒã«ãƒªã‚½ãƒ¼ã‚¹ç®¡ç†ã‚’ä»»ã›ã‚‹ */
 	m_Vertextype = D3DCREATE_MIXED_VERTEXPROCESSING;
 	if(FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, devType, WindowHandle,
 //									  D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &d3dParam, &m_pd3dDev)))
@@ -224,7 +224,7 @@ BOOL CDirectDrawSimple::Create( void* hWnd , int ScreenWidth , int ScreenHeight 
 		if(FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, devType, WindowHandle,
 										D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dParam_current, &m_pd3dDev)))
 		{
-			// ‘Ê–Ú‚È‚çƒ\ƒtƒgƒEƒFƒA‚Åˆ—‚·‚é
+			// é§„ç›®ãªã‚‰ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ã§å‡¦ç†ã™ã‚‹
 			m_Vertextype = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
 			if(FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, devType, WindowHandle,
 											D3DCREATE_SOFTWARE_VERTEXPROCESSING,
@@ -235,7 +235,7 @@ BOOL CDirectDrawSimple::Create( void* hWnd , int ScreenWidth , int ScreenHeight 
 			}
 		}
 	}
-#else	/* MEMO: DirectX‚Ìƒ}ƒl[ƒWƒƒ‚ÉƒŠƒ\[ƒXŠÇ—‚ğ”C‚¹‚é */
+#else	/* MEMO: DirectXã®ãƒãƒãƒ¼ã‚¸ãƒ£ã«ãƒªã‚½ãƒ¼ã‚¹ç®¡ç†ã‚’ä»»ã›ã‚‹ */
 	m_Vertextype = D3DCREATE_MIXED_VERTEXPROCESSING;
 	if(FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, devType, WindowHandle,
 //									  D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &d3dParam, &m_pd3dDev)))
@@ -246,7 +246,7 @@ BOOL CDirectDrawSimple::Create( void* hWnd , int ScreenWidth , int ScreenHeight 
 		if(FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, devType, WindowHandle,
 										D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_DISABLE_DRIVER_MANAGEMENT, &m_d3dParam_current, &m_pd3dDev)))
 		{
-			// ‘Ê–Ú‚È‚çƒ\ƒtƒgƒEƒFƒA‚Åˆ—‚·‚é
+			// é§„ç›®ãªã‚‰ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ã§å‡¦ç†ã™ã‚‹
 			m_Vertextype = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
 			if(FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, devType, WindowHandle,
 											D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_DISABLE_DRIVER_MANAGEMENT,
@@ -276,12 +276,12 @@ BOOL CDirectDrawSimple::Create( void* hWnd , int ScreenWidth , int ScreenHeight 
 	m_pd3dDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
 	m_pd3dDev->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-	m_pd3dDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);  //SRC‚Ìİ’è
-	m_pd3dDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);//DEST‚Ìİ’è
+	m_pd3dDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);  //SRCã®è¨­å®š
+	m_pd3dDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);//DESTã®è¨­å®š
 		
-	m_pd3dDev->SetSamplerState(0,D3DSAMP_MIPFILTER,D3DTEXF_NONE);	//mipmapØ‚è‘Ö‚¦‚Ìfilter
-	m_pd3dDev->SetSamplerState(0,D3DSAMP_MAGFILTER,D3DTEXF_POINT);	//Šg‘å‚Ìfilter
-	m_pd3dDev->SetSamplerState(0,D3DSAMP_MINFILTER,D3DTEXF_POINT);	//k¬‚Ìfilter
+	m_pd3dDev->SetSamplerState(0,D3DSAMP_MIPFILTER,D3DTEXF_NONE);	//mipmapåˆ‡ã‚Šæ›¿ãˆæ™‚ã®filter
+	m_pd3dDev->SetSamplerState(0,D3DSAMP_MAGFILTER,D3DTEXF_POINT);	//æ‹¡å¤§æ™‚ã®filter
+	m_pd3dDev->SetSamplerState(0,D3DSAMP_MINFILTER,D3DTEXF_POINT);	//ç¸®å°æ™‚ã®filter
 		
 //		m_pd3dDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
 //		m_pd3dDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
@@ -328,7 +328,7 @@ BOOL	CDirectDrawSimple::DeviceChk()
 	if (m_DeviceLost)
 	{
 		HRESULT hr;
-		Sleep(100); // 0.1•b‘Ò‚Â
+		Sleep(100); // 0.1ç§’å¾…ã¤
 
 		DeviceReset();
 
@@ -337,15 +337,15 @@ BOOL	CDirectDrawSimple::DeviceChk()
 		{
 			if (hr == D3DERR_DEVICELOST)
 			{
-				return TRUE; // ƒfƒoƒCƒX‚Í‚Ü‚¾¸‚í‚ê‚Ä‚¢‚é
+				return TRUE; // ãƒ‡ãƒã‚¤ã‚¹ã¯ã¾ã å¤±ã‚ã‚Œã¦ã„ã‚‹
 			}
-			return FALSE;	// ƒfƒoƒCƒX‚Ì•œŒ³‚É¸”s
+			return FALSE;	// ãƒ‡ãƒã‚¤ã‚¹ã®å¾©å…ƒã«å¤±æ•—
 		}
 
 		m_DeviceLost = false;
 		return TRUE;
 	}
-	return TRUE;	// ˆê‰TRUE‚ğ•Ô‚µ‚Ä‚¨‚­
+	return TRUE;	// ä¸€å¿œTRUEã‚’è¿”ã—ã¦ãŠã
 }
 
 HRESULT	CDirectDrawSimple::BeginScene()
@@ -362,15 +362,15 @@ HRESULT	CDirectDrawSimple::BeginScene()
 
 		return m_pd3dDev->BeginScene();
 	}else{
-		//‚¾‚ß‚¾‚Á‚½‚Æ‚«
+		//ã ã‚ã ã£ãŸã¨ã
 		if ( hr == D3DERR_DEVICELOST || hr == D3DERR_DEVICENOTRESET)
 		{
 			m_DeviceLost = true;
 			DeviceChk();
 			return S_FALSE;
 		}else{
-			//—\Šú‚¹‚ÊƒGƒ‰[
-			//CommonLib::ThrowErrorMessage( 0 , "DirectX : —\Šú‚¹‚ÊƒGƒ‰[\n" );
+			//äºˆæœŸã›ã¬ã‚¨ãƒ©ãƒ¼
+			//CommonLib::ThrowErrorMessage( 0 , "DirectX : äºˆæœŸã›ã¬ã‚¨ãƒ©ãƒ¼\n" );
 		}
 	}
 
@@ -386,17 +386,17 @@ HRESULT	CDirectDrawSimple::EndScene()
 
 	hr = m_pd3dDev->EndScene();
 
-	//ƒoƒbƒNƒoƒbƒtƒ@‚©‚çƒvƒ‰ƒCƒ}ƒŠƒoƒbƒtƒ@‚Ö“]‘—
+	//ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã‹ã‚‰ãƒ—ãƒ©ã‚¤ãƒãƒªãƒãƒƒãƒ•ã‚¡ã¸è»¢é€
 	if(true == IntervalImmediate)
-	{	/* ©‘O‚Å‚’¼“¯Šú‚ğŒ©‚éê‡ */
+	{	/* è‡ªå‰ã§å‚ç›´åŒæœŸã‚’è¦‹ã‚‹å ´åˆ */
 		D3DRASTER_STATUS	RasterStatus;
 		for( ; ; )
 		{
 			if( D3D_OK == m_pd3dDev->GetRasterStatus(0, &RasterStatus) )
-			{	/* æ“¾¬Œ÷ */
-				if(TRUE == RasterStatus.InVBlank)	break;	/* ƒ‹[ƒv‚©‚ç’Eo */
-				/* MEMO: ‚±‚±‚Å‘¼‚ÌƒXƒŒƒbƒh‚Éˆ—‚ğ‚ ‚¯‚æ‚¤‚Æ‚µ‚ÄSleep‚µ‚È‚¢‚±‚ÆB */
-				/*       ƒEƒBƒ“ƒhƒE‚ğì¬‚µ‚Ä‚¢‚éƒXƒŒƒbƒh‚È‚Ì‚ÅA‚±‚ÌƒXƒŒƒbƒh‚ªQ‚é‚ÆAWndProc‚Ü‚ÅQ‚Ä‚µ‚Ü‚¢Sleep‚µ‚Ä‚¢‚éŠÔƒƒbƒZ[ƒW‚ªˆ—‚³‚ê‚¸OS‘S‘Ì‚Ìˆ—‘¬“x‚Ü‚Å—‚¿‚é */
+			{	/* å–å¾—æˆåŠŸ */
+				if(TRUE == RasterStatus.InVBlank)	break;	/* ãƒ«ãƒ¼ãƒ—ã‹ã‚‰è„±å‡º */
+				/* MEMO: ã“ã“ã§ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ã«å‡¦ç†ã‚’ã‚ã‘ã‚ˆã†ã¨ã—ã¦Sleepã—ãªã„ã“ã¨ã€‚ */
+				/*       ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ä½œæˆã—ã¦ã„ã‚‹ã‚¹ãƒ¬ãƒƒãƒ‰ãªã®ã§ã€ã“ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒå¯ã‚‹ã¨ã€WndProcã¾ã§å¯ã¦ã—ã¾ã„Sleepã—ã¦ã„ã‚‹é–“ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒå‡¦ç†ã•ã‚ŒãšOSå…¨ä½“ã®å‡¦ç†é€Ÿåº¦ã¾ã§è½ã¡ã‚‹ */
 			}
 		}
 	}

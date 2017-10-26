@@ -1,4 +1,4 @@
-#ifndef PERF_H
+﻿#ifndef PERF_H
 #define PERF_H
 
 #include "nanovg.h"

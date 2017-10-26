@@ -1,4 +1,4 @@
-#ifndef __bind_ANIMEPACK__
+﻿#ifndef __bind_ANIMEPACK__
 #define __bind_ANIMEPACK__
 
 

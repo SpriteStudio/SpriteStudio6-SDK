@@ -1,4 +1,4 @@
-#include "../Loader/ssloader.h"
+ï»¿#include "../Loader/ssloader.h"
 #include "ssplayer_animedecode.h"
 #include "ssplayer_PartState.h"
 
@@ -89,7 +89,7 @@ void	SsPartState::init()
 	instanceValue.speed = 1.0f;
 	instanceValue.startFrame = 0;
 	instanceValue.endFrame = 0;
-//	instanceValue.liveFrame = 0.0f;	//‰ÁZ’l‚È‚Ì‚Å‰Šú‰»‚µ‚Ä‚Í‚¢‚¯‚È‚¢
+//	instanceValue.liveFrame = 0.0f;	//åŠ ç®—å€¤ãªã®ã§åˆæœŸåŒ–ã—ã¦ã¯ã„ã‘ãªã„
 	
 	masklimen = 0;
 
