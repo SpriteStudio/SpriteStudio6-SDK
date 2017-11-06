@@ -159,6 +159,7 @@
 		<value>imgflip.ssae</value>
 		<value>instance.ssae</value>
 		<value>instance_flag.ssae</value>
+		<value>iptype.ssae</value>
 		<value>loalpha.ssae</value>
 		<value>loscl.ssae</value>
 		<value>mask.ssae</value>
@@ -179,11 +180,11 @@
 	<effectFileNames>
 		<value>NewEffect.ssee</value>
 	</effectFileNames>
-	<lastAnimeFile>setupdata.ssae</lastAnimeFile>
+	<lastAnimeFile>hide.ssae</lastAnimeFile>
 	<lastAnimeName>anime_1</lastAnimeName>
 	<lastCellMapFile>color_bar.ssce</lastCellMapFile>
 	<lastEffectFile>NewEffect.ssee</lastEffectFile>
-	<lastCell>NewCell</lastCell>
-	<lastPart>NewCell_1</lastPart>
+	<lastCell>NewCell_2</lastCell>
+	<lastPart>NewCell_4</lastPart>
 	<setupmode>0</setupmode>
 </SpriteStudioProject>
