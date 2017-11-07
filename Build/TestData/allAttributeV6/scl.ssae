@@ -24,11 +24,7 @@
 				<parentIndex>-1</parentIndex>
 				<type>null</type>
 				<boundsType>none</boundsType>
-<<<<<<< HEAD:Build/TestData/sand.ssae
-				<inheritType>parent</inheritType>
-=======
 				<inheritType>self</inheritType>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/scl.ssae
 				<ineheritRates>
 					<ALPH>1</ALPH>
 					<IFLH>0</IFLH>
@@ -159,8 +155,6 @@
 				<expandChildren>1</expandChildren>
 				<refCellTag></refCellTag>
 				<maskInfluence>1</maskInfluence>
-<<<<<<< HEAD:Build/TestData/sand.ssae
-=======
 			</value>
 			<value>
 				<name>NewCell_5</name>
@@ -184,7 +178,6 @@
 				<expandChildren>1</expandChildren>
 				<refCellTag></refCellTag>
 				<maskInfluence>1</maskInfluence>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/scl.ssae
 			</value>
 		</partList>
 		<boneList />
@@ -196,41 +189,6 @@
 	<animeList>
 		<anime>
 			<name>Setup</name>
-<<<<<<< HEAD:Build/TestData/sand.ssae
-			<overrideSettings>1</overrideSettings>
-			<settings>
-				<fps>30</fps>
-				<frameCount>1</frameCount>
-				<sortMode>prio</sortMode>
-				<canvasSize>320 320</canvasSize>
-				<pivot>0 0</pivot>
-				<bgColor>FF323232</bgColor>
-				<gridSize>32</gridSize>
-				<gridColor>FF808080</gridColor>
-				<ik_depth>3</ik_depth>
-				<startFrame>0</startFrame>
-				<endFrame>0</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>1</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-			</partAnimes>
-		</anime>
-		<anime>
-			<name>base</name>
-=======
->>>>>>> origin/develop:Build/TestData/allAttributeV6/scl.ssae
 			<overrideSettings>1</overrideSettings>
 			<settings>
 				<fps>60</fps>
@@ -243,26 +201,6 @@
 				<gridColor>FF808080</gridColor>
 				<ik_depth>3</ik_depth>
 				<startFrame>0</startFrame>
-<<<<<<< HEAD:Build/TestData/sand.ssae
-				<endFrame>59</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>0</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell</partName>
-=======
 				<endFrame>0</endFrame>
 				<outStartNum>0</outStartNum>
 			</settings>
@@ -271,7 +209,6 @@
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/scl.ssae
 					<attributes>
 						<attribute tag="HIDE">
 							<key time="0">
@@ -399,45 +336,8 @@
 						</attribute>
 					</attributes>
 				</partAnime>
-<<<<<<< HEAD:Build/TestData/sand.ssae
-			</partAnimes>
-		</anime>
-		<anime>
-			<name>base_priority</name>
-			<overrideSettings>1</overrideSettings>
-			<settings>
-				<fps>30</fps>
-				<frameCount>90</frameCount>
-				<sortMode>prio</sortMode>
-				<canvasSize>320 320</canvasSize>
-				<pivot>0 0</pivot>
-				<bgColor>FF323232</bgColor>
-				<gridSize>32</gridSize>
-				<gridColor>FF808080</gridColor>
-				<ik_depth>3</ik_depth>
-				<startFrame>0</startFrame>
-				<endFrame>89</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>0</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell</partName>
-=======
 				<partAnime>
 					<partName>NewCell_2</partName>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/scl.ssae
 					<attributes>
 						<attribute tag="CELL">
 							<key time="0">

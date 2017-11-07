@@ -24,11 +24,7 @@
 				<parentIndex>-1</parentIndex>
 				<type>null</type>
 				<boundsType>none</boundsType>
-<<<<<<< HEAD:Build/TestData/robo_01.ssae
-				<inheritType>parent</inheritType>
-=======
 				<inheritType>self</inheritType>
->>>>>>> origin/develop:Build/TestData/allPartsV6/normal.ssae
 				<ineheritRates>
 					<ALPH>1</ALPH>
 					<IFLH>0</IFLH>
@@ -83,11 +79,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/robo_01.ssae
-				<alphaBlendType>mix</alphaBlendType>
-=======
 				<alphaBlendType>mul</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allPartsV6/normal.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -110,11 +102,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/robo_01.ssae
-				<alphaBlendType>mix</alphaBlendType>
-=======
 				<alphaBlendType>add</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allPartsV6/normal.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -137,11 +125,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/robo_01.ssae
-				<alphaBlendType>mix</alphaBlendType>
-=======
 				<alphaBlendType>sub</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allPartsV6/normal.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -164,11 +148,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/robo_01.ssae
-				<alphaBlendType>mix</alphaBlendType>
-=======
 				<alphaBlendType>mulalpha</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allPartsV6/normal.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -191,11 +171,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/robo_01.ssae
-				<alphaBlendType>mix</alphaBlendType>
-=======
 				<alphaBlendType>screen</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allPartsV6/normal.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -218,11 +194,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/robo_01.ssae
-				<alphaBlendType>mix</alphaBlendType>
-=======
 				<alphaBlendType>exclusion</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allPartsV6/normal.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -245,11 +217,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/robo_01.ssae
-				<alphaBlendType>mix</alphaBlendType>
-=======
 				<alphaBlendType>invert</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allPartsV6/normal.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -318,11 +286,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/robo_01.ssae
-				<alphaBlendType>mix</alphaBlendType>
-=======
 				<alphaBlendType>mul</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allPartsV6/normal.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -345,19 +309,13 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/robo_01.ssae
-				<alphaBlendType>mix</alphaBlendType>
-=======
 				<alphaBlendType>add</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allPartsV6/normal.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
 				<expandChildren>1</expandChildren>
 				<refCellTag></refCellTag>
 				<maskInfluence>1</maskInfluence>
-<<<<<<< HEAD:Build/TestData/robo_01.ssae
-=======
 			</value>
 			<value>
 				<name>NewCell_20</name>
@@ -473,7 +431,6 @@
 				<expandChildren>1</expandChildren>
 				<refCellTag></refCellTag>
 				<maskInfluence>1</maskInfluence>
->>>>>>> origin/develop:Build/TestData/allPartsV6/normal.ssae
 			</value>
 		</partList>
 		<boneList />
@@ -485,41 +442,6 @@
 	<animeList>
 		<anime>
 			<name>Setup</name>
-<<<<<<< HEAD:Build/TestData/robo_01.ssae
-			<overrideSettings>1</overrideSettings>
-			<settings>
-				<fps>30</fps>
-				<frameCount>1</frameCount>
-				<sortMode>prio</sortMode>
-				<canvasSize>320 320</canvasSize>
-				<pivot>0 0</pivot>
-				<bgColor>FF323232</bgColor>
-				<gridSize>32</gridSize>
-				<gridColor>FF808080</gridColor>
-				<ik_depth>3</ik_depth>
-				<startFrame>0</startFrame>
-				<endFrame>0</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>1</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>motion 1</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-			</partAnimes>
-		</anime>
-		<anime>
-			<name>motion 1</name>
-=======
->>>>>>> origin/develop:Build/TestData/allPartsV6/normal.ssae
 			<overrideSettings>1</overrideSettings>
 			<settings>
 				<fps>60</fps>
@@ -532,19 +454,11 @@
 				<gridColor>FF808080</gridColor>
 				<ik_depth>3</ik_depth>
 				<startFrame>0</startFrame>
-<<<<<<< HEAD:Build/TestData/robo_01.ssae
-				<endFrame>19</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>0</isSetup>
-=======
 				<endFrame>0</endFrame>
 				<outStartNum>0</outStartNum>
 			</settings>
 			<labels />
 			<isSetup>1</isSetup>
->>>>>>> origin/develop:Build/TestData/allPartsV6/normal.ssae
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>

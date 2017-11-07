@@ -24,11 +24,7 @@
 				<parentIndex>-1</parentIndex>
 				<type>null</type>
 				<boundsType>none</boundsType>
-<<<<<<< HEAD:Build/TestData/Accelerate.ssae
-				<inheritType>parent</inheritType>
-=======
 				<inheritType>self</inheritType>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/pos.ssae
 				<ineheritRates>
 					<ALPH>1</ALPH>
 					<IFLH>0</IFLH>
@@ -83,8 +79,6 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/Accelerate.ssae
-=======
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
@@ -131,7 +125,6 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/pos.ssae
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
@@ -139,8 +132,6 @@
 				<expandChildren>1</expandChildren>
 				<refCellTag></refCellTag>
 				<maskInfluence>1</maskInfluence>
-<<<<<<< HEAD:Build/TestData/Accelerate.ssae
-=======
 			</value>
 			<value>
 				<name>NewCell_4</name>
@@ -233,7 +224,6 @@
 				<expandChildren>1</expandChildren>
 				<refCellTag></refCellTag>
 				<maskInfluence>1</maskInfluence>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/pos.ssae
 			</value>
 		</partList>
 		<boneList />
@@ -245,7 +235,6 @@
 	<animeList>
 		<anime>
 			<name>Setup</name>
-<<<<<<< HEAD:Build/TestData/Accelerate.ssae
 			<overrideSettings>1</overrideSettings>
 			<settings>
 				<fps>30</fps>
@@ -266,61 +255,6 @@
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-			</partAnimes>
-		</anime>
-		<anime>
-			<name>accel</name>
-=======
->>>>>>> origin/develop:Build/TestData/allAttributeV6/pos.ssae
-			<overrideSettings>1</overrideSettings>
-			<settings>
-				<fps>30</fps>
-				<frameCount>1</frameCount>
-				<sortMode>prio</sortMode>
-				<canvasSize>320 320</canvasSize>
-				<pivot>0 0</pivot>
-				<bgColor>FF323232</bgColor>
-				<gridSize>32</gridSize>
-				<gridColor>FF808080</gridColor>
-				<ik_depth>3</ik_depth>
-				<startFrame>0</startFrame>
-<<<<<<< HEAD:Build/TestData/Accelerate.ssae
-				<endFrame>59</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>0</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell</partName>
-=======
-				<endFrame>0</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>1</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/pos.ssae
 					<attributes>
 						<attribute tag="HIDE">
 							<key time="0">
@@ -433,45 +367,8 @@
 						</attribute>
 					</attributes>
 				</partAnime>
-<<<<<<< HEAD:Build/TestData/Accelerate.ssae
-			</partAnimes>
-		</anime>
-		<anime>
-			<name>bezier</name>
-			<overrideSettings>1</overrideSettings>
-			<settings>
-				<fps>30</fps>
-				<frameCount>60</frameCount>
-				<sortMode>prio</sortMode>
-				<canvasSize>320 320</canvasSize>
-				<pivot>0 0</pivot>
-				<bgColor>FF323232</bgColor>
-				<gridSize>32</gridSize>
-				<gridColor>FF808080</gridColor>
-				<ik_depth>3</ik_depth>
-				<startFrame>0</startFrame>
-				<endFrame>59</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>0</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell</partName>
-=======
 				<partAnime>
 					<partName>NewCell_2</partName>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/pos.ssae
 					<attributes>
 						<attribute tag="CELL">
 							<key time="0">
@@ -542,45 +439,8 @@
 						</attribute>
 					</attributes>
 				</partAnime>
-<<<<<<< HEAD:Build/TestData/Accelerate.ssae
-			</partAnimes>
-		</anime>
-		<anime>
-			<name>decel</name>
-			<overrideSettings>1</overrideSettings>
-			<settings>
-				<fps>30</fps>
-				<frameCount>60</frameCount>
-				<sortMode>prio</sortMode>
-				<canvasSize>320 320</canvasSize>
-				<pivot>0 0</pivot>
-				<bgColor>FF323232</bgColor>
-				<gridSize>32</gridSize>
-				<gridColor>FF808080</gridColor>
-				<ik_depth>3</ik_depth>
-				<startFrame>0</startFrame>
-				<endFrame>59</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>0</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell</partName>
-=======
 				<partAnime>
 					<partName>NewCell_4</partName>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/pos.ssae
 					<attributes>
 						<attribute tag="CELL">
 							<key time="0">
@@ -658,45 +518,8 @@
 						</attribute>
 					</attributes>
 				</partAnime>
-<<<<<<< HEAD:Build/TestData/Accelerate.ssae
-			</partAnimes>
-		</anime>
-		<anime>
-			<name>elmite</name>
-			<overrideSettings>1</overrideSettings>
-			<settings>
-				<fps>30</fps>
-				<frameCount>60</frameCount>
-				<sortMode>prio</sortMode>
-				<canvasSize>320 320</canvasSize>
-				<pivot>0 0</pivot>
-				<bgColor>FF323232</bgColor>
-				<gridSize>32</gridSize>
-				<gridColor>FF808080</gridColor>
-				<ik_depth>3</ik_depth>
-				<startFrame>0</startFrame>
-				<endFrame>59</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>0</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell</partName>
-=======
 				<partAnime>
 					<partName>NewCell_5</partName>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/pos.ssae
 					<attributes>
 						<attribute tag="CELL">
 							<key time="0">

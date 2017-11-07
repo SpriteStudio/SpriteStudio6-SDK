@@ -24,11 +24,7 @@
 				<parentIndex>-1</parentIndex>
 				<type>null</type>
 				<boundsType>none</boundsType>
-<<<<<<< HEAD:Build/TestData/nullparts.ssae
-				<inheritType>parent</inheritType>
-=======
 				<inheritType>self</inheritType>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/cell.ssae
 				<ineheritRates>
 					<ALPH>1</ALPH>
 					<IFLH>0</IFLH>
@@ -49,32 +45,6 @@
 				<name>NewCell</name>
 				<arrayIndex>1</arrayIndex>
 				<parentIndex>0</parentIndex>
-<<<<<<< HEAD:Build/TestData/nullparts.ssae
-				<type>null</type>
-				<boundsType>none</boundsType>
-				<inheritType>parent</inheritType>
-				<ineheritRates>
-					<ALPH>1</ALPH>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
-					<FLPH>0</FLPH>
-					<FLPV>0</FLPV>
-					<HIDE>0</HIDE>
-				</ineheritRates>
-				<alphaBlendType>mix</alphaBlendType>
-				<show>1</show>
-				<locked>0</locked>
-				<expandAttribute>0</expandAttribute>
-				<expandChildren>1</expandChildren>
-				<refCellTag></refCellTag>
-				<maskInfluence>1</maskInfluence>
-			</value>
-			<value>
-				<name>NewCell</name>
-				<arrayIndex>2</arrayIndex>
-				<parentIndex>1</parentIndex>
-=======
->>>>>>> origin/develop:Build/TestData/allAttributeV6/cell.ssae
 				<type>normal</type>
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
@@ -84,11 +54,7 @@
 					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
-<<<<<<< HEAD:Build/TestData/nullparts.ssae
-					<HIDE>1</HIDE>
-=======
 					<HIDE>0</HIDE>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/cell.ssae
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
@@ -100,36 +66,8 @@
 			</value>
 			<value>
 				<name>NewCell_1</name>
-<<<<<<< HEAD:Build/TestData/nullparts.ssae
-				<arrayIndex>3</arrayIndex>
-				<parentIndex>2</parentIndex>
-				<type>normal</type>
-				<boundsType>none</boundsType>
-				<inheritType>parent</inheritType>
-				<ineheritRates>
-					<ALPH>1</ALPH>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
-					<FLPH>0</FLPH>
-					<FLPV>0</FLPV>
-					<HIDE>0</HIDE>
-				</ineheritRates>
-				<alphaBlendType>mix</alphaBlendType>
-				<show>1</show>
-				<locked>0</locked>
-				<expandAttribute>0</expandAttribute>
-				<expandChildren>1</expandChildren>
-				<refCellTag></refCellTag>
-				<maskInfluence>1</maskInfluence>
-			</value>
-			<value>
-				<name>NewCell_2</name>
-				<arrayIndex>4</arrayIndex>
-				<parentIndex>3</parentIndex>
-=======
 				<arrayIndex>2</arrayIndex>
 				<parentIndex>0</parentIndex>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/cell.ssae
 				<type>normal</type>
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
@@ -159,41 +97,6 @@
 	<animeList>
 		<anime>
 			<name>Setup</name>
-<<<<<<< HEAD:Build/TestData/nullparts.ssae
-			<overrideSettings>1</overrideSettings>
-			<settings>
-				<fps>30</fps>
-				<frameCount>1</frameCount>
-				<sortMode>prio</sortMode>
-				<canvasSize>320 320</canvasSize>
-				<pivot>0 0</pivot>
-				<bgColor>FF323232</bgColor>
-				<gridSize>32</gridSize>
-				<gridColor>FF808080</gridColor>
-				<ik_depth>3</ik_depth>
-				<startFrame>0</startFrame>
-				<endFrame>0</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>1</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-			</partAnimes>
-		</anime>
-		<anime>
-			<name>basic</name>
-=======
->>>>>>> origin/develop:Build/TestData/allAttributeV6/cell.ssae
 			<overrideSettings>1</overrideSettings>
 			<settings>
 				<fps>60</fps>
@@ -206,26 +109,6 @@
 				<gridColor>FF808080</gridColor>
 				<ik_depth>3</ik_depth>
 				<startFrame>0</startFrame>
-<<<<<<< HEAD:Build/TestData/nullparts.ssae
-				<endFrame>89</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>0</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>part_1</partName>
-=======
 				<endFrame>0</endFrame>
 				<outStartNum>0</outStartNum>
 			</settings>
@@ -234,7 +117,6 @@
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/cell.ssae
 					<attributes>
 						<attribute tag="HIDE">
 							<key time="0">

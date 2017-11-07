@@ -24,11 +24,7 @@
 				<parentIndex>-1</parentIndex>
 				<type>null</type>
 				<boundsType>none</boundsType>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-				<inheritType>parent</inheritType>
-=======
 				<inheritType>self</inheritType>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 				<ineheritRates>
 					<ALPH>1</ALPH>
 					<IFLH>0</IFLH>
@@ -56,15 +52,9 @@
 					<ALPH>1</ALPH>
 					<IFLH>0</IFLH>
 					<IFLV>0</IFLV>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-					<FLPH>1</FLPH>
-					<FLPV>1</FLPV>
-					<HIDE>1</HIDE>
-=======
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 				</ineheritRates>
 				<refEffectName>EffectParticlePointGravity_Position_x</refEffectName>
 				<alphaBlendType>mix</alphaBlendType>
@@ -90,10 +80,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-=======
 				<refEffectName>EffectParticlePointGravity_Position_y</refEffectName>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
@@ -117,10 +104,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-=======
 				<refEffectName>EffectParticlePointGravity_Power</refEffectName>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
@@ -137,18 +121,12 @@
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
 				<ineheritRates>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-					<ALPH>0</ALPH>
-=======
 					<ALPH>1</ALPH>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 					<IFLH>0</IFLH>
 					<IFLV>0</IFLV>
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-=======
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
@@ -172,7 +150,6 @@
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
@@ -262,15 +239,9 @@
 					<ALPH>1</ALPH>
 					<IFLH>0</IFLH>
 					<IFLV>0</IFLV>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-					<FLPH>1</FLPH>
-					<FLPV>1</FLPV>
-					<HIDE>1</HIDE>
-=======
 					<FLPH>0</FLPH>
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 				</ineheritRates>
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
@@ -279,8 +250,6 @@
 				<expandChildren>1</expandChildren>
 				<refCellTag></refCellTag>
 				<maskInfluence>1</maskInfluence>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-=======
 			</value>
 			<value>
 				<name>NewCell_2_6</name>
@@ -304,7 +273,6 @@
 				<expandChildren>1</expandChildren>
 				<refCellTag></refCellTag>
 				<maskInfluence>1</maskInfluence>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 			</value>
 		</partList>
 		<boneList />
@@ -315,43 +283,7 @@
 	</cellmapNames>
 	<animeList>
 		<anime>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-			<name>Setup</name>
-			<overrideSettings>1</overrideSettings>
-			<settings>
-				<fps>30</fps>
-				<frameCount>1</frameCount>
-				<sortMode>prio</sortMode>
-				<canvasSize>320 320</canvasSize>
-				<pivot>0 0</pivot>
-				<bgColor>FF323232</bgColor>
-				<gridSize>32</gridSize>
-				<gridColor>FF808080</gridColor>
-				<ik_depth>3</ik_depth>
-				<startFrame>0</startFrame>
-				<endFrame>0</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>1</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-			</partAnimes>
-		</anime>
-		<anime>
-			<name>base</name>
-=======
 			<name>Position_x</name>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 			<overrideSettings>1</overrideSettings>
 			<settings>
 				<fps>30</fps>
@@ -364,11 +296,7 @@
 				<gridColor>FF808080</gridColor>
 				<ik_depth>3</ik_depth>
 				<startFrame>0</startFrame>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-				<endFrame>10</endFrame>
-=======
 				<endFrame>59</endFrame>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 				<outStartNum>0</outStartNum>
 			</settings>
 			<labels />
@@ -376,19 +304,6 @@
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell_5</partName>
-=======
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 					<attributes>
 						<attribute tag="HIDE">
 							<key time="0">
@@ -522,19 +437,6 @@
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell_5</partName>
-=======
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 					<attributes>
 						<attribute tag="HIDE">
 							<key time="0">
@@ -660,11 +562,7 @@
 				<gridColor>FF808080</gridColor>
 				<ik_depth>3</ik_depth>
 				<startFrame>0</startFrame>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-				<endFrame>10</endFrame>
-=======
 				<endFrame>59</endFrame>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 				<outStartNum>0</outStartNum>
 			</settings>
 			<labels />
@@ -672,19 +570,6 @@
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>
-<<<<<<< HEAD:Build/TestData/inherit.ssae
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell_5</partName>
-=======
->>>>>>> origin/develop:Build/TestData/effect_allcheck/EffectParticlePointGravity.ssae
 					<attributes>
 						<attribute tag="HIDE">
 							<key time="0">

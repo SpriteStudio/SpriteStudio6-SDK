@@ -24,11 +24,7 @@
 				<parentIndex>-1</parentIndex>
 				<type>null</type>
 				<boundsType>none</boundsType>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-				<inheritType>parent</inheritType>
-=======
 				<inheritType>self</inheritType>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 				<ineheritRates>
 					<ALPH>1</ALPH>
 					<IFLH>0</IFLH>
@@ -60,10 +56,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-=======
 				<refEffectName>stop</refEffectName>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
@@ -87,10 +80,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-=======
 				<refEffectName>stop</refEffectName>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
@@ -234,10 +224,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-=======
 				<refEffectName>stop2</refEffectName>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
@@ -285,11 +272,7 @@
 			</partAnimes>
 		</anime>
 		<anime>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-			<name>rotation_base</name>
-=======
 			<name>add_alpha</name>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 			<overrideSettings>1</overrideSettings>
 			<settings>
 				<fps>30</fps>
@@ -310,19 +293,6 @@
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell</partName>
-=======
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 					<attributes>
 						<attribute tag="HIDE">
 							<key time="0">
@@ -456,19 +426,6 @@
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell</partName>
-=======
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 					<attributes>
 						<attribute tag="HIDE">
 							<key time="0">
@@ -540,19 +497,6 @@
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell</partName>
-=======
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 					<attributes>
 						<attribute tag="HIDE">
 							<key time="0">
@@ -663,45 +607,8 @@
 						</attribute>
 					</attributes>
 				</partAnime>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-			</partAnimes>
-		</anime>
-		<anime>
-			<name>rotation_parent_flip</name>
-			<overrideSettings>1</overrideSettings>
-			<settings>
-				<fps>30</fps>
-				<frameCount>120</frameCount>
-				<sortMode>prio</sortMode>
-				<canvasSize>320 320</canvasSize>
-				<pivot>0 0</pivot>
-				<bgColor>FF323232</bgColor>
-				<gridSize>32</gridSize>
-				<gridColor>FF808080</gridColor>
-				<ik_depth>3</ik_depth>
-				<startFrame>0</startFrame>
-				<endFrame>119</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>0</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell</partName>
-=======
 				<partAnime>
 					<partName>effect_3_1</partName>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 					<attributes>
 						<attribute tag="POSX">
 							<key time="0" ipType="linear">
@@ -818,11 +725,7 @@
 				<gridColor>FF808080</gridColor>
 				<ik_depth>3</ik_depth>
 				<startFrame>0</startFrame>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-				<endFrame>119</endFrame>
-=======
 				<endFrame>99</endFrame>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 				<outStartNum>0</outStartNum>
 			</settings>
 			<labels />
@@ -830,19 +733,6 @@
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell</partName>
-=======
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 					<attributes>
 						<attribute tag="HIDE">
 							<key time="0">
@@ -955,11 +845,7 @@
 				<gridColor>FF808080</gridColor>
 				<ik_depth>3</ik_depth>
 				<startFrame>0</startFrame>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-				<endFrame>119</endFrame>
-=======
 				<endFrame>59</endFrame>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 				<outStartNum>0</outStartNum>
 			</settings>
 			<labels />
@@ -967,19 +853,6 @@
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell</partName>
-=======
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 					<attributes>
 						<attribute tag="HIDE">
 							<key time="0">
@@ -1122,11 +995,7 @@
 				<gridColor>FF808080</gridColor>
 				<ik_depth>3</ik_depth>
 				<startFrame>0</startFrame>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-				<endFrame>119</endFrame>
-=======
 				<endFrame>59</endFrame>
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 				<outStartNum>0</outStartNum>
 			</settings>
 			<labels />
@@ -1134,19 +1003,6 @@
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>
-<<<<<<< HEAD:Build/TestData/rotation.ssae
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell</partName>
-=======
->>>>>>> origin/develop:Build/TestData/effect_allcheck/att.ssae
 					<attributes>
 						<attribute tag="HIDE">
 							<key time="0">

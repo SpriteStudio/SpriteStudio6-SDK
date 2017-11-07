@@ -24,11 +24,7 @@
 				<parentIndex>-1</parentIndex>
 				<type>null</type>
 				<boundsType>none</boundsType>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-				<inheritType>parent</inheritType>
-=======
 				<inheritType>self</inheritType>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 				<ineheritRates>
 					<ALPH>1</ALPH>
 					<IFLH>0</IFLH>
@@ -60,11 +56,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-				<alphaBlendType>mul</alphaBlendType>
-=======
 				<alphaBlendType>mix</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -87,11 +79,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-				<alphaBlendType>mul</alphaBlendType>
-=======
 				<alphaBlendType>mix</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -114,11 +102,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-				<alphaBlendType>add</alphaBlendType>
-=======
 				<alphaBlendType>mix</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -141,11 +125,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-				<alphaBlendType>sub</alphaBlendType>
-=======
 				<alphaBlendType>mix</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -168,11 +148,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-				<alphaBlendType>mul</alphaBlendType>
-=======
 				<alphaBlendType>mix</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -195,11 +171,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-				<alphaBlendType>add</alphaBlendType>
-=======
 				<alphaBlendType>mix</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -222,11 +194,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-				<alphaBlendType>mul</alphaBlendType>
-=======
 				<alphaBlendType>mix</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -249,11 +217,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-				<alphaBlendType>add</alphaBlendType>
-=======
 				<alphaBlendType>mix</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -276,11 +240,7 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-				<alphaBlendType>sub</alphaBlendType>
-=======
 				<alphaBlendType>mix</alphaBlendType>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 				<show>1</show>
 				<locked>0</locked>
 				<expandAttribute>0</expandAttribute>
@@ -303,32 +263,6 @@
 					<FLPV>0</FLPV>
 					<HIDE>0</HIDE>
 				</ineheritRates>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-				<alphaBlendType>sub</alphaBlendType>
-				<show>1</show>
-				<locked>0</locked>
-				<expandAttribute>0</expandAttribute>
-				<expandChildren>1</expandChildren>
-				<refCellTag></refCellTag>
-				<maskInfluence>1</maskInfluence>
-			</value>
-			<value>
-				<name>NewCell_7</name>
-				<arrayIndex>11</arrayIndex>
-				<parentIndex>0</parentIndex>
-				<type>normal</type>
-				<boundsType>none</boundsType>
-				<inheritType>parent</inheritType>
-				<ineheritRates>
-					<ALPH>1</ALPH>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
-					<FLPH>0</FLPH>
-					<FLPV>0</FLPV>
-					<HIDE>0</HIDE>
-				</ineheritRates>
-=======
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 				<alphaBlendType>mix</alphaBlendType>
 				<show>1</show>
 				<locked>0</locked>
@@ -338,38 +272,9 @@
 				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-				<name>NewCell_1_2</name>
-				<arrayIndex>12</arrayIndex>
-				<parentIndex>0</parentIndex>
-				<type>normal</type>
-				<boundsType>none</boundsType>
-				<inheritType>parent</inheritType>
-				<ineheritRates>
-					<ALPH>1</ALPH>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
-					<FLPH>0</FLPH>
-					<FLPV>0</FLPV>
-					<HIDE>0</HIDE>
-				</ineheritRates>
-				<alphaBlendType>add</alphaBlendType>
-				<show>1</show>
-				<locked>0</locked>
-				<expandAttribute>0</expandAttribute>
-				<expandChildren>1</expandChildren>
-				<refCellTag></refCellTag>
-				<maskInfluence>1</maskInfluence>
-			</value>
-			<value>
-				<name>NewCell_8</name>
-				<arrayIndex>13</arrayIndex>
-				<parentIndex>0</parentIndex>
-=======
 				<name>NewCell_13</name>
 				<arrayIndex>11</arrayIndex>
 				<parentIndex>10</parentIndex>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 				<type>normal</type>
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
@@ -388,32 +293,6 @@
 				<expandChildren>1</expandChildren>
 				<refCellTag></refCellTag>
 				<maskInfluence>1</maskInfluence>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-			</value>
-			<value>
-				<name>NewCell_8_1</name>
-				<arrayIndex>14</arrayIndex>
-				<parentIndex>0</parentIndex>
-				<type>normal</type>
-				<boundsType>none</boundsType>
-				<inheritType>parent</inheritType>
-				<ineheritRates>
-					<ALPH>1</ALPH>
-					<IFLH>0</IFLH>
-					<IFLV>0</IFLV>
-					<FLPH>0</FLPH>
-					<FLPV>0</FLPV>
-					<HIDE>0</HIDE>
-				</ineheritRates>
-				<alphaBlendType>sub</alphaBlendType>
-				<show>1</show>
-				<locked>0</locked>
-				<expandAttribute>0</expandAttribute>
-				<expandChildren>1</expandChildren>
-				<refCellTag></refCellTag>
-				<maskInfluence>1</maskInfluence>
-=======
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 			</value>
 		</partList>
 		<boneList />
@@ -425,41 +304,6 @@
 	<animeList>
 		<anime>
 			<name>Setup</name>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-			<overrideSettings>1</overrideSettings>
-			<settings>
-				<fps>30</fps>
-				<frameCount>1</frameCount>
-				<sortMode>prio</sortMode>
-				<canvasSize>320 320</canvasSize>
-				<pivot>0 0</pivot>
-				<bgColor>FF323232</bgColor>
-				<gridSize>32</gridSize>
-				<gridColor>FF808080</gridColor>
-				<ik_depth>3</ik_depth>
-				<startFrame>0</startFrame>
-				<endFrame>0</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>1</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-			</partAnimes>
-		</anime>
-		<anime>
-			<name>basic</name>
-=======
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 			<overrideSettings>1</overrideSettings>
 			<settings>
 				<fps>60</fps>
@@ -472,26 +316,6 @@
 				<gridColor>FF808080</gridColor>
 				<ik_depth>3</ik_depth>
 				<startFrame>0</startFrame>
-<<<<<<< HEAD:Build/TestData/blendmode.ssae
-				<endFrame>10</endFrame>
-				<outStartNum>0</outStartNum>
-			</settings>
-			<labels />
-			<isSetup>0</isSetup>
-			<partAnimes>
-				<partAnime>
-					<partName>root</partName>
-					<attributes>
-						<attribute tag="HIDE">
-							<key time="0">
-								<value>0</value>
-							</key>
-						</attribute>
-					</attributes>
-				</partAnime>
-				<partAnime>
-					<partName>NewCell_2</partName>
-=======
 				<endFrame>0</endFrame>
 				<outStartNum>0</outStartNum>
 			</settings>
@@ -500,7 +324,6 @@
 			<partAnimes>
 				<partAnime>
 					<partName>root</partName>
->>>>>>> origin/develop:Build/TestData/allAttributeV6/rot.ssae
 					<attributes>
 						<attribute tag="HIDE">
 							<key time="0">
