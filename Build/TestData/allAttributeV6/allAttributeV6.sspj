@@ -180,11 +180,11 @@
 	<effectFileNames>
 		<value>NewEffect.ssee</value>
 	</effectFileNames>
-	<lastAnimeFile>hide.ssae</lastAnimeFile>
+	<lastAnimeFile>userdata.ssae</lastAnimeFile>
 	<lastAnimeName>anime_1</lastAnimeName>
 	<lastCellMapFile>color_bar.ssce</lastCellMapFile>
 	<lastEffectFile>NewEffect.ssee</lastEffectFile>
-	<lastCell>NewCell_2</lastCell>
-	<lastPart>NewCell_4</lastPart>
+	<lastCell>NewCell</lastCell>
+	<lastPart>NewCell_2</lastPart>
 	<setupmode>0</setupmode>
 </SpriteStudioProject>
