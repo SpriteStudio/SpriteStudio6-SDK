@@ -233,11 +233,10 @@
 		<value>stop2.ssee</value>
 		<value>stop_add.ssee</value>
 	</effectFileNames>
-	<lastAnimeFile>EffectParticleElementRndSeedChange.ssae</lastAnimeFile>
-	<lastAnimeName>Seed_no</lastAnimeName>
+	<lastAnimeFile>att.ssae</lastAnimeFile>
+	<lastAnimeName>pos_y</lastAnimeName>
 	<lastCellMapFile>color_bar.ssce</lastCellMapFile>
 	<lastEffectFile>EffectParticleElementRndSeedChange_Seed_no.ssee</lastEffectFile>
 	<lastCell>NewCell_2</lastCell>
-	<lastPart>effect_3</lastPart>
 	<setupmode>0</setupmode>
 </SpriteStudioProject>
