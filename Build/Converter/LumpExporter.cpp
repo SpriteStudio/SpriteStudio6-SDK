@@ -451,15 +451,5 @@ void saveCSource(std::ostream& out, StringEncoding encoding, const Lump* lump, c
 	CSourceExporter::save(out, encoding, lump, "toplabel", creatorComment);
 }
 
-void saveJson(std::ostream& out, StringEncoding encoding, const Lump* lump, const std::string& creatorComment)
-{
-	BinaryExporter::save(out, encoding, lump, creatorComment);
-}
-
-void saveMsgpack(std::ostream& out, StringEncoding encoding, const Lump* lump, const std::string& creatorComment)
-{
-	BinaryExporter::save(out, encoding, lump, creatorComment);
-}
-
 }	// namespace LumpExporter
 
