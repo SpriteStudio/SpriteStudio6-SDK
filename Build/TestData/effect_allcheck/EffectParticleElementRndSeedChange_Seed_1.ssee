@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <SpriteStudioEffect version="2.00.00">
-	<name>EffectParticleElementRndSeedChange_Seed</name>
+	<name>EffectParticleElementRndSeedChange_Seed_1</name>
 	<exportPath></exportPath>
 	<effectData>
 		<lockRandSeed>31</lockRandSeed>
@@ -43,7 +43,7 @@
 						</value>
 						<value name="OverWriteSeed">
 							<name>OverWriteSeed</name>
-							<Seed>0</Seed>
+							<Seed>20</Seed>
 						</value>
 					</list>
 				</behavior>

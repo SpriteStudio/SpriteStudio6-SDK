@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <SpriteStudioEffect version="2.00.00">
-	<name>EffectParticleElementRndSeedChange_Seed</name>
+	<name>EffectParticleElementRndSeedChange_Seed_lock</name>
 	<exportPath></exportPath>
 	<effectData>
 		<lockRandSeed>31</lockRandSeed>
@@ -40,10 +40,6 @@
 							<lifespan value="30" subvalue="30" />
 							<angle>0</angle>
 							<angleVariance>360</angleVariance>
-						</value>
-						<value name="OverWriteSeed">
-							<name>OverWriteSeed</name>
-							<Seed>0</Seed>
 						</value>
 					</list>
 				</behavior>

@@ -186,6 +186,9 @@
 		<value>EffectParticleElementPosition_OffsetYMaxValue.ssee</value>
 		<value>EffectParticleElementPosition_OffsetYMinValue.ssee</value>
 		<value>EffectParticleElementRndSeedChange_Seed.ssee</value>
+		<value>EffectParticleElementRndSeedChange_Seed_1.ssee</value>
+		<value>EffectParticleElementRndSeedChange_Seed_lock.ssee</value>
+		<value>EffectParticleElementRndSeedChange_Seed_no.ssee</value>
 		<value>EffectParticleElementRotationTrans_EndLifeTimePer.ssee</value>
 		<value>EffectParticleElementRotationTrans_RotationFactor.ssee</value>
 		<value>EffectParticleElementRotation_RotationAddMaxValue.ssee</value>
@@ -230,11 +233,11 @@
 		<value>stop2.ssee</value>
 		<value>stop_add.ssee</value>
 	</effectFileNames>
-	<lastAnimeFile>seedLock.ssae</lastAnimeFile>
-	<lastAnimeName>lock</lastAnimeName>
+	<lastAnimeFile>EffectParticleElementRndSeedChange.ssae</lastAnimeFile>
+	<lastAnimeName>Seed_no</lastAnimeName>
 	<lastCellMapFile>color_bar.ssce</lastCellMapFile>
-	<lastEffectFile>effectscale_test2.ssee</lastEffectFile>
+	<lastEffectFile>EffectParticleElementRndSeedChange_Seed_no.ssee</lastEffectFile>
 	<lastCell>NewCell_2</lastCell>
-	<lastPart>root</lastPart>
+	<lastPart>effect_3</lastPart>
 	<setupmode>0</setupmode>
 </SpriteStudioProject>
