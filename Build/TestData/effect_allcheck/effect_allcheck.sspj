@@ -153,8 +153,10 @@
 		<value>EffectParticleElementTransSpeed.ssae</value>
 		<value>EffectParticlePointGravity.ssae</value>
 		<value>EffectParticleTurnToDirectionEnabled.ssae</value>
+		<value>SubEmitter.ssae</value>
 		<value>att.ssae</value>
 		<value>infinity_reverse.ssae</value>
+		<value>instance.ssae</value>
 		<value>layputscale.ssae</value>
 		<value>multicommand.ssae</value>
 		<value>scale.ssae</value>
@@ -186,6 +188,9 @@
 		<value>EffectParticleElementPosition_OffsetYMaxValue.ssee</value>
 		<value>EffectParticleElementPosition_OffsetYMinValue.ssee</value>
 		<value>EffectParticleElementRndSeedChange_Seed.ssee</value>
+		<value>EffectParticleElementRndSeedChange_Seed_1.ssee</value>
+		<value>EffectParticleElementRndSeedChange_Seed_lock.ssee</value>
+		<value>EffectParticleElementRndSeedChange_Seed_no.ssee</value>
 		<value>EffectParticleElementRotationTrans_EndLifeTimePer.ssee</value>
 		<value>EffectParticleElementRotationTrans_RotationFactor.ssee</value>
 		<value>EffectParticleElementRotation_RotationAddMaxValue.ssee</value>
@@ -215,6 +220,10 @@
 		<value>EffectParticlePointGravity_Power.ssee</value>
 		<value>EffectParticleTurnToDirectionEnabled_dirMax.ssee</value>
 		<value>EffectParticleTurnToDirectionEnabled_dirMin.ssee</value>
+		<value>SubEmitter_10ko.ssee</value>
+		<value>SubEmitter_Direction.ssee</value>
+		<value>SubEmitter_LifeTime.ssee</value>
+		<value>SubEmitter_Prio.ssee</value>
 		<value>dir_scale.ssee</value>
 		<value>effectscale_test.ssee</value>
 		<value>effectscale_test2.ssee</value>
@@ -230,11 +239,10 @@
 		<value>stop2.ssee</value>
 		<value>stop_add.ssee</value>
 	</effectFileNames>
-	<lastAnimeFile>seedLock.ssae</lastAnimeFile>
-	<lastAnimeName>lock</lastAnimeName>
+	<lastAnimeFile>EffectParticleElementBasic.ssae</lastAnimeFile>
+	<lastAnimeName>attimeCreate</lastAnimeName>
 	<lastCellMapFile>color_bar.ssce</lastCellMapFile>
-	<lastEffectFile>effectscale_test2.ssee</lastEffectFile>
-	<lastCell>NewCell_2</lastCell>
-	<lastPart>root</lastPart>
+	<lastEffectFile>SubEmitter_Prio.ssee</lastEffectFile>
+	<lastPart>effect_3</lastPart>
 	<setupmode>0</setupmode>
 </SpriteStudioProject>

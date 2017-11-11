@@ -287,7 +287,7 @@
 						<attribute tag="USER">
 							<key time="10">
 								<value>
-									<rect>10 10 10 10</rect>
+									<rect>10 20 30 40</rect>
 								</value>
 							</key>
 						</attribute>
@@ -332,7 +332,7 @@
 						<attribute tag="USER">
 							<key time="20">
 								<value>
-									<point>10 10</point>
+									<point>10 20</point>
 								</value>
 							</key>
 						</attribute>
