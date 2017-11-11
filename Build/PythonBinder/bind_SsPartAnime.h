@@ -1,4 +1,4 @@
-#ifndef __bind_SSPARTANIME__
+﻿#ifndef __bind_SSPARTANIME__
 #define __bind_SSPARTANIME__
 
 

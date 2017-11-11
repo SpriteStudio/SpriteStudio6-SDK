@@ -1,4 +1,4 @@
-#ifdef _WIN32
+ï»¿#ifdef _WIN32
 #include <d3d9.h>
 #include <math.h>
 #include <Windows.h>
@@ -118,7 +118,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 static void	update()
 {
 	//double time = glfwGetTime();
-	double delta = 0.033f; //‚ ‚Æ‚Å·‚µ‘Ö‚¦‚é
+	double delta = 0.033f; //ã‚ã¨ã§å·®ã—æ›¿ãˆã‚‹
 
 	task_manager_singleton::getinst()->exec_resist_tasks(delta);
 
@@ -152,10 +152,10 @@ extern HINSTANCE g_hInstance;
 int main(void)
 {
 
-	//ƒEƒCƒ“ƒhƒE‚Ì‰Šú‰»‚ğs‚¢‚Ü‚·B
+	//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®åˆæœŸåŒ–ã‚’è¡Œã„ã¾ã™ã€‚
 	InitWindow( g_hInstance , true );
 
-	//Direct3D‚Ì‰Šú‰»‚ğs‚¢‚Ü‚·B
+	//Direct3Dã®åˆæœŸåŒ–ã‚’è¡Œã„ã¾ã™ã€‚
 	CDirectDrawSimple CD3D(g_hWnd,640,480);
 	CD3D.SetBackGroundColor( 0 , 0 , 255 );
 

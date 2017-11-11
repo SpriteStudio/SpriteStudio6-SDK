@@ -1,12 +1,12 @@
-ƒRƒ“ƒo[ƒ^‚ð‘€ì‚·‚é‚½‚ß‚ÌGUIƒvƒƒOƒ‰ƒ€‚Å‚·B
-‚±‚ÌƒvƒƒOƒ‰ƒ€‚ÍQt@5.9.1@‚Åì¬‚³‚ê‚Ä‚¢‚Ü‚·B
+ï»¿ã‚³ãƒ³ãƒãƒ¼ã‚¿ã‚’æ“ä½œã™ã‚‹ãŸã‚ã®GUIãƒ—ãƒ­ã‚°ãƒ©ãƒ ã§ã™ã€‚
+ã“ã®ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã¯Qtã€€5.9.1ã€€ã§ä½œæˆã•ã‚Œã¦ã„ã¾ã™ã€‚
 
 
-Žg—p•û–@
+ä½¿ç”¨æ–¹æ³•
 	Ss6ConveterGUI.exe
 	Ss6Converter.exe
-	‚ð“¯‚¶ƒtƒHƒ‹ƒ_‚É”z’u‚µ‚Ä‚­‚¾‚³‚¢B
+	ã‚’åŒã˜ãƒ•ã‚©ãƒ«ãƒ€ã«é…ç½®ã—ã¦ãã ã•ã„ã€‚
 
-	sspjƒtƒ@ƒCƒ‹‚ð‘I‘ð‚µAConvetƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚Ä‚­‚¾‚³‚¢B
-	ƒRƒ“ƒo[ƒg‚É¬Œ÷‚·‚é‚ÆAstatus‚ªConvert Success!‚É•Ï‰»‚µAsspj‚Ì‚ ‚éƒtƒHƒ‹ƒ_‚Éssbp‚ªo—Í‚³‚ê‚Ü‚·B
+	sspjãƒ•ã‚¡ã‚¤ãƒ«ã‚’é¸æŠžã—ã€Convetãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ã¦ãã ã•ã„ã€‚
+	ã‚³ãƒ³ãƒãƒ¼ãƒˆã«æˆåŠŸã™ã‚‹ã¨ã€statusãŒConvert Success!ã«å¤‰åŒ–ã—ã€sspjã®ã‚ã‚‹ãƒ•ã‚©ãƒ«ãƒ€ã«ssbpãŒå‡ºåŠ›ã•ã‚Œã¾ã™ã€‚
 

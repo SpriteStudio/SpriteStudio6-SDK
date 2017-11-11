@@ -1,18 +1,18 @@
-### ���̃t�H���_�́H
-sspjlib�pPython�o�C���_�p�e�X�g�X�N���v�g���u����Ă��܂��B
-sspjlib�J���җp�̃t�H���_�ł��B
-�{�̑��J�X�^���C���|�[�^�A�J�X�^���G�N�X�|�[�^�@�\��
-��s����E���؂̂��߂̃��C�u�����ƂȂ�܂��B
+﻿### このフォルダは？
+sspjlib用Pythonバインダ用テストスクリプトが置かれています。
+sspjlib開発者用のフォルダです。
+本体側カスタムインポータ、カスタムエクスポータ機能の
+先行試作・検証のためのライブラリとなります。
 
 
-�Esstype.py
-SpriteStudio��sspj�Assce�Assae�`���̒萔��`�t�@�C���ł��A
+・sstype.py
+SpriteStudioのsspj、ssce、ssae形式の定数定義ファイルです、
 
-�Etestscript.py
-sspjlib�̃��[�_�[���g�p����sspj�t�@�C�������[�h���Aanimater��ʂ�
-�A�j���[�V�����f�[�^���擾����T���v���ł��B
+・testscript.py
+sspjlibのローダーを使用してsspjファイルをロードし、animaterを通し
+アニメーションデータを取得するサンプルです。
 
 
-�g�p�ɍۂ��Ă�Python 2.x�̃C���X�g�[�����K�v�ɂȂ�܂��B
-�J������Python2.7�ŊJ�����s���Ă��܂��B
+使用に際してはPython 2.xのインストールが必要になります。
+開発中はPython2.7で開発を行っています。
 

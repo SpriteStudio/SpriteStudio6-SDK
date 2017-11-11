@@ -1,4 +1,4 @@
-#ifndef __bind_SSXML__
+﻿#ifndef __bind_SSXML__
 #define __bind_SSXML__
 
 #include "package_SpriteStudio.h"
@@ -7,10 +7,10 @@
 
 
 
-//ssLoader�ɂ���N���X�̃��b�p�[�N���X��Python�ւ̎Q�Ɠn�����s���֌W���烉�b�s���O����
-//�f�[�^�̃X�N���v�g���ւ̎󂯓n���̂��ߊe�|�C���^��Bind_SsProject�ɂ���m_project�̃|�C���^�Q�ƂɂȂ�B
-//SSXML��������ꂽ�^�C�~���O�ł����̎Q�Ƃ�������d�g�݂Ƃ���B
-//�{���I�ɂ͏����Ȃ�����python�ł̗��p��K�؂ł͂��邪�A����^�C�~���O�̂킩��₷�����d�����Ă��̂悤�ɂ���B
+//ssLoaderにあるクラスのラッパークラスをPythonへの参照渡しを行う関係からラッピングする
+//データのスクリプト側への受け渡しのため各ポインタはBind_SsProjectにあるm_projectのポインタ参照になる。
+//SSXMLが解放されたタイミングでこれらの参照が消える仕組みとする。
+//本来的には消えない方がpythonでの利用上適切ではあるが、解放タイミングのわかりやすさを重視してこのようにする。
 class Bind_SsProjectSetting : public myPyBinder<SsProjectSetting>
 {
 public:
@@ -43,14 +43,14 @@ public:
 
 	void createAnimepack();
 
-	///<�v���W�F�N�g�Ɋi�[���ꂽ�A�j���[�V�����̃t�@�C�������擾����
+	///<プロジェクトに格納されたアニメーションのファイル数を取得する
 	int	getAnimePackNum(){ 
 		if ( m_project )
 			return m_project->getAnimePackNum();
 		return 0;
 	}
 
-	///<�v���W�F�N�g�Ɋi�[���ꂽ�Z���}�b�v�̃t�@�C�������擾����
+	///<プロジェクトに格納されたセルマップのファイル数を取得する
 	int	getCellMapNum(){ 
 		if ( m_project )
 			return m_project->getCellMapNum();

@@ -1,7 +1,7 @@
-#ifndef __ISSGraphTexture__
+ï»¿#ifndef __ISSGraphTexture__
 #define __ISSGraphTexture__
 
-// n‚ª2‚Ì‚×‚«æ‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN‚·‚é
+// nãŒ2ã®ã¹ãä¹—ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹
 inline bool SsUtTextureisPow2(int n)
 {
 	for (int i = 0; i < 16; i++)
