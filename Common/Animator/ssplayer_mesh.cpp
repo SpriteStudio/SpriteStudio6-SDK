@@ -1,4 +1,4 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <cstdlib>
 
 #include "../Loader/ssloader.h"
@@ -11,7 +11,7 @@
 
 void	SsMeshPart::makeMesh()
 {
-	//ƒp[ƒcƒXƒe[ƒg‚Ì‰Šú‰»‚ÌÛ‚Éƒ^[ƒQƒbƒgƒZƒ‹‚ªì‚ç‚ê‚éA‚»‚ÌÛ‚Éƒ}ƒbƒv‚àƒRƒs[‚·‚éH
+	//ãƒ‘ãƒ¼ãƒ„ã‚¹ãƒ†ãƒ¼ãƒˆã®åˆæœŸåŒ–ã®éš›ã«ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚»ãƒ«ãŒä½œã‚‰ã‚Œã‚‹ã€ãã®éš›ã«ãƒžãƒƒãƒ—ã‚‚ã‚³ãƒ”ãƒ¼ã™ã‚‹ï¼Ÿ
 
 	size_t psize = targetCell->meshPointList.size();
 
@@ -28,8 +28,8 @@ void	SsMeshPart::makeMesh()
 
 	draw_vertices = new float[3 * psize];
 
-	vertices_outer = new SsVector2[3 * psize];// //ƒc[ƒ‹—p
-	update_vertices_outer = new SsVector2[3 * psize];// //ƒc[ƒ‹—p
+	vertices_outer = new SsVector2[3 * psize];// //ãƒ„ãƒ¼ãƒ«ç”¨
+	update_vertices_outer = new SsVector2[3 * psize];// //ãƒ„ãƒ¼ãƒ«ç”¨
 
 
 	vertices = new float[3 * psize];
@@ -42,7 +42,7 @@ void	SsMeshPart::makeMesh()
 	memset(bindBoneInfo, 0, sizeof(StBoneWeight) * psize);
 
 
-	SsVector2 offs; //’†‰›
+	SsVector2 offs; //ä¸­å¤®
 	offs.x = (-targetCell->size.x / 2.0f);
 	offs.y = (targetCell->size.y / 2.0f);
 
@@ -253,10 +253,10 @@ void	SsMeshAnimator::modelLoad()
 			SsMeshPart*		meshPart = target->meshPart;
 			SsPart* pt = model->partList[target->index];	//fordebug
 			size_t psize = meshPart->targetCell->meshPointList.size();
-			//bindBoneInfo ‚Í@psiz•ª‚¾‚¯¶¬‚³‚ê‚Ä‚¢‚é‚Ì‚ÅAmvb.size()‚ª’´‚¦‚½‚çŠÔˆá‚¢‚ª‚ ‚é‚ÆŽv‚í‚ê‚é
+			//bindBoneInfo ã¯ã€€psizåˆ†ã ã‘ç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã®ã§ã€mvb.size()ãŒè¶…ãˆãŸã‚‰é–“é•ã„ãŒã‚ã‚‹ã¨æ€ã‚ã‚Œã‚‹
 			if (meshPart->ver_size < (int)mvb.size())
 			{
-				DEBUG_PRINTF("ver_size‚ð’´‚¦‚Ä‚¢‚é : %s ver_size:%d mvb.size:%d \n", pt->name.c_str(), meshPart->ver_size, (int)mvb.size());
+				DEBUG_PRINTF("ver_sizeã‚’è¶…ãˆã¦ã„ã‚‹ : %s ver_size:%d mvb.size:%d \n", pt->name.c_str(), meshPart->ver_size, (int)mvb.size());
 			}
 		}
 
@@ -268,7 +268,7 @@ void	SsMeshAnimator::modelLoad()
 
 			if (meshPart->ver_size <= (int)n)
 			{
-				continue;	//ƒeƒXƒg
+				continue;	//ãƒ†ã‚¹ãƒˆ
 			}
 
 			for (int l = 0; l < bonenum; l++)

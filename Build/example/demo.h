@@ -1,4 +1,4 @@
-#ifndef DEMO_H
+﻿#ifndef DEMO_H
 #define DEMO_H
 
 #include "nanovg.h"

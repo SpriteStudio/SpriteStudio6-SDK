@@ -1,4 +1,4 @@
-//
+ï»¿//
 #include "bind_SSXML.h"
 
 
@@ -89,7 +89,7 @@ bool Bind_SsProject::debug()
 //	puts( "SsProject");
 	if ( m_project )
 	{
-		//ƒAƒjƒƒpƒbƒN‚Ì”
+		//ã‚¢ãƒ‹ãƒ¡ãƒ‘ãƒƒã‚¯ã®æ•°
 		PYDEBUG_PRINTF( "AnimePack Num = %d" , m_project->getAnimePackNum() );
 		PYDEBUG_PRINTF( "CellMap Num = %d" , m_project->getCellMapNum() );
 

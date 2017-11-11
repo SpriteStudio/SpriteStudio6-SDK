@@ -1,46 +1,46 @@
-SpriteStudio python���W���[���d�l��
+﻿SpriteStudio pythonモジュール仕様書
 
-���K�{
+※必須
 import SpriteStudio
 
 #########################################################
 SSXML
 #########################################################
-��SSXML�I�u�W�F�N�g�̎擾 
-����
+■SSXMLオブジェクトの取得 
+命令
 	SSXML
-����
-	�Ȃ�
-�Ԓl
-	SSXML�I�u�W�F�N�g
+引数
+	なし
+返値
+	SSXMLオブジェクト
 
 	ssxml = SpriteStudio.SSXML()
 
 ---------------------------------------------------------
-��sspj�t�@�C���̓ǂݍ��� 
-����
+■sspjファイルの読み込み 
+命令
 	bool Load( filename )
 
-����
-	filename �t�@�C����
-�Ԓl
-	bool	����(True)/���s(False)
+引数
+	filename ファイル名
+返値
+	bool	成功(True)/失敗(False)
 
 
 	ssxml.Load("hoge.sspj")
-	������ True��Ԃ��B
+	成功時 Trueを返す。
 	
-	sspj�ŊǗ�����Ă���i���X�g������Ă���j
-	�t�@�C�����ǂݍ��݂��s���܂��B
+	sspjで管理されている（リスト化されている）
+	ファイルも読み込みを行います。
 	
 ---------------------------------------------------------
-��Project�I�u�W�F�N�g�̎擾 
-����
+■Projectオブジェクトの取得 
+命令
 	GetPrj
-����
-	�Ȃ�
-�Ԓl
-	Project�I�u�W�F�N�g
+引数
+	なし
+返値
+	Projectオブジェクト
 	
 	proj = ssxml.GetPrj()
 	
@@ -51,28 +51,28 @@ SSXML
 Project
 #########################################################
 
-���A�j���p�b�N�̐��𓾂� 
+■アニメパックの数を得る 
 	getAnimePackNum
 
 	num = proj.getAnimePackNum()
 
-	�A�j���p�b�N�Ƃ̓��f���i�p�[�c�̍\���j�ƃA�j���[�V������
-	�P�F���Ŋi�[����Ă���f�[�^�\���ł��B
-	�v���W�F�N�g�t�@�C���ɂ́A�A�j���p�b�N�������Ǘ��ł��܂��A
-	���̃A�j���p�b�N�̐��ʂ𓾂閽�߂ł��B
+	アニメパックとはモデル（パーツの構造）とアニメーションが
+	１：ｎで格納されているデータ構造です。
+	プロジェクトファイルには、アニメパックが複数管理できます、
+	そのアニメパックの数量を得る命令です。
 	
 ---------------------------------------------------------
 
-���A�j���p�b�N�f�[�^�𓾂�
-	AnimePack = AnimePackAt(index�ԍ�)
+■アニメパックデータを得る
+	AnimePack = AnimePackAt(index番号)
 	
-	�w�肳�ꂽ�C���f�b�N�X�Ɋi�[���ꂽ�A�j���p�b�N�f�[�^�𓾂܂�
-	AnimePack�I�u�W�F�N�g��Ԃ��܂��B
-	index�͈̔͂� 0�`getAnimePackNum()�Ŏ擾�ł�����-1�ł��B
+	指定されたインデックスに格納されたアニメパックデータを得ます
+	AnimePackオブジェクトを返します。
+	indexの範囲は 0〜getAnimePackNum()で取得できた数-1です。
 	
 ---------------------------------------------------------
 
-���Z���}�b�v�̐��𓾂� 
+■セルマップの数を得る 
 	getCellMapNum
 
 	num = proj.getCellMapNum()
@@ -81,12 +81,12 @@ Project
 #########################################################
 AnimePack
 #########################################################
-��AnimeDecoder�̎擾 
-����
+■AnimeDecoderの取得 
+命令
 	AnimeDecoder getAnimeDecoderByName( animename )
-����
-	�Ȃ�
-�Ԓl
+引数
+	なし
+返値
 	
 	
 	anime_decoder = animepack.getAnimeDecoderByName("motion 1")

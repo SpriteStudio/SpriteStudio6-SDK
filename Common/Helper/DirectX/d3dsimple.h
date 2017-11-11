@@ -1,4 +1,4 @@
-#ifndef __RS_DX9__
+ï»¿#ifndef __RS_DX9__
 #define __RS_DX9__
 
 //#include "Draw.h"
@@ -17,19 +17,19 @@
 
 
 #define		RELEASE(o)		if (o){o->Release();o=NULL;}
-#define		PI				(3.1415926f)		//!< ƒÎ
-#define		DEGtoRAD(deg)		((float)deg * 0.017453292f)	//!< ƒfƒOƒŠ[‚©‚çƒ‰ƒWƒAƒ“‚Ö
-#define		RADtoDEG(rad)		((float)rad * 57.29578049f)	//!< ƒ‰ƒWƒAƒ“‚©‚çƒfƒOƒŠ[‚Ö
-#define		SAFE_DELETE(p)			{ if(p){ delete (p); (p)=NULL; } }		//!< ƒƒ‚ƒŠ‚ð‰ð•ú
-#define		SAFE_DELETE_ARRAY(p)	{ if(p){ delete [](p); (p)=NULL; } }	//!< ”z—ñ‚Å‚Æ‚Á‚½ƒƒ‚ƒŠ‚ð‰ð•ú
-#define		SAFE_RELEASE(p)			{ if(p){ (p)->Release(); (p)=NULL; } }	//!< DXƒIƒuƒWƒFƒNƒg‚ð‰ð•ú
+#define		PI				(3.1415926f)		//!< Ï€
+#define		DEGtoRAD(deg)		((float)deg * 0.017453292f)	//!< ãƒ‡ã‚°ãƒªãƒ¼ã‹ã‚‰ãƒ©ã‚¸ã‚¢ãƒ³ã¸
+#define		RADtoDEG(rad)		((float)rad * 57.29578049f)	//!< ãƒ©ã‚¸ã‚¢ãƒ³ã‹ã‚‰ãƒ‡ã‚°ãƒªãƒ¼ã¸
+#define		SAFE_DELETE(p)			{ if(p){ delete (p); (p)=NULL; } }		//!< ãƒ¡ãƒ¢ãƒªã‚’è§£æ”¾
+#define		SAFE_DELETE_ARRAY(p)	{ if(p){ delete [](p); (p)=NULL; } }	//!< é…åˆ—ã§ã¨ã£ãŸãƒ¡ãƒ¢ãƒªã‚’è§£æ”¾
+#define		SAFE_RELEASE(p)			{ if(p){ (p)->Release(); (p)=NULL; } }	//!< DXã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è§£æ”¾
 
 
 //---------------------------------------------------------------------------------------------------------
 //
 //
 //---------------------------------------------------------------------------------------------------------
-typedef void (*CDirectDrawCALLBACK)();				//ƒnƒbƒVƒ…’lì¬ 	
+typedef void (*CDirectDrawCALLBACK)();				//ãƒãƒƒã‚·ãƒ¥å€¤ä½œæˆ 	
 
 class	IDirectDrawResourceManager
 {
@@ -61,7 +61,7 @@ public:
 			if((DWORD)0x7fffffff != valueNow)
 			{
 				if(m_valuePrevious[i] != valueNew)
-				{	/* ’l‚ª“¯‚¶Žž‚É‚Í‘‚«Š·‚¦‚È‚¢ */
+				{	/* å€¤ãŒåŒã˜æ™‚ã«ã¯æ›¸ãæ›ãˆãªã„ */
 //						hr = Device->SetRenderState((D3DRENDERSTATETYPE)i, valueNew);
 				}
 			}
@@ -92,9 +92,9 @@ class CDirectDrawSimple
 public:
 	enum DISPLAYMODE
 	{
-		DISPLAYMODE_NONE,		//!< ‚æ‚­‚í‚©‚ç‚È‚¢
-		DISPLAYMODE_WINDOW,		//!< ƒEƒCƒ“ƒhƒEƒ‚[ƒh
-		DISPLAYMODE_FULL,		//!< ƒtƒ‹ƒXƒNƒŠ[ƒ“ƒ‚[ƒh
+		DISPLAYMODE_NONE,		//!< ã‚ˆãã‚ã‹ã‚‰ãªã„
+		DISPLAYMODE_WINDOW,		//!< ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒ¢ãƒ¼ãƒ‰
+		DISPLAYMODE_FULL,		//!< ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ãƒ¢ãƒ¼ãƒ‰
 	};
 
 private:	

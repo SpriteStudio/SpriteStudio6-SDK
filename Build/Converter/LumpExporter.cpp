@@ -446,12 +446,10 @@ void saveBinary(std::ostream& out, StringEncoding encoding, const Lump* lump, co
 	BinaryExporter::save(out, encoding, lump, creatorComment);
 }
 
-void saveCSource(std::ostream& out, StringEncoding encoding, const Lump* lump, const std::string& topLabel, const std::string& creatorComment)
+void saveCSource(std::ostream& out, StringEncoding encoding, const Lump* lump, const std::string& creatorComment)
 {
-	CSourceExporter::save(out, encoding, lump, topLabel, creatorComment);
+	CSourceExporter::save(out, encoding, lump, "toplabel", creatorComment);
 }
-
-
 
 }	// namespace LumpExporter
 

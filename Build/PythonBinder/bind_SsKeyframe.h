@@ -1,4 +1,4 @@
-#ifndef __BIND_SSKYEFRAME__
+ï»¿#ifndef __BIND_SSKYEFRAME__
 #define __BIND_SSKYEFRAME__
 
 
@@ -10,7 +10,7 @@ private:
 	int			m_type;
 	SsValue*	m_value;
 
-	//\‘¢‘Ì‚É•ÏŠ·‚µ‚È‚­‚Ä‚Í‚¢‚¯‚È‚¢‚Ì‚ª‚¢‚­‚Â‚©
+	//æ§‹é€ ä½“ã«å¤‰æ›ã—ãªãã¦ã¯ã„ã‘ãªã„ã®ãŒã„ãã¤ã‹
 
 public:
 	void	setValue( SsValue* v ) { m_value = v ; }
@@ -42,7 +42,7 @@ public:
 	SsCurve&	getCurveParam(){ return bind_inst->curve; }
 
 	Bind_SsKeyValue&	getValue(){ 
-		m_tempValue.setType( m_attributeKind ); // Œ^•ÏŠ·‚ÉŽg—p
+		m_tempValue.setType( m_attributeKind ); // åž‹å¤‰æ›ã«ä½¿ç”¨
 		m_tempValue.setValue(&bind_inst->value);
 		return m_tempValue; }
 

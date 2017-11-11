@@ -3,7 +3,7 @@
 //--------------------------------------------------------
 
 #include "gtest/gtest.h"
-#include "../loader/ssloader_sspj.h"
+#include "../Loader/ssloader_sspj.h"
 
 // Loadのテスト
 TEST(ssloader_sspj_test,Load) {
