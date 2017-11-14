@@ -1,6 +1,10 @@
 ﻿#ifndef __RS_TASK__
 #define __RS_TASK__
 
+#ifdef __GNUC__
+	#include <cstring>
+#endif
+
 #include <vector>
 #include <list>
 

@@ -3,6 +3,9 @@
 #include <string>
 #include <iostream>
 
+#ifdef __GNUC__
+	#include <stdarg.h>
+#endif
 
 #if _WIN32
 	#include <Windows.h>

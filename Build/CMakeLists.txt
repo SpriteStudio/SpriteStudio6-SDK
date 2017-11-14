@@ -1,23 +1,22 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+﻿CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(sssdk)
 
-IF (WIN32)
-#SET(BOOST_ROOT "C:/boost-1_64_0")
-SET(BOOST_ROOT "C:/Boost/include/boost-1_64/")
-SET(BOOST_PYTHON_LIB "C:/Boost/lib" )
-SET(PYTHON_IHNCLUDE "C:/Python27/include")
+IF(WIN32)
+	#SET(BOOST_ROOT "C:/boost-1_64_0")
+	SET(BOOST_ROOT "C:/Boost/include/boost-1_64/")
+	SET(BOOST_PYTHON_LIB "C:/Boost/lib" )
+	SET(PYTHON_IHNCLUDE "C:/Python27/include")
 
-SET(PYTHON_LIB "C:/Python27/libs")
-ENDIF(WIN32)
+	SET(PYTHON_LIB "C:/Python27/libs")
+ELSEIF(APPLE)
+	SET(PYTHON_LIB "/usr/local/lib")
+ELSEIF(CMAKE_COMPILER_IS_GNUCXX)
+    ADD_DEFINITIONS(-std=gnu++14)
+ENDIF()
 
-IF(APPLE)
-SET(PYTHON_LIB "/usr/local/lib")
-ENDIF(APPLE)
+link_directories(${SEARCH_LIB} ${BOOST_PYTHON_LIB} ${PYTHON_LIB})
 
-link_directories(${SEARCH_LIB} ${BOOST_PYTHON_LIB} ${PYTHON_LIB}  )
-
-
-ADD_LIBRARY(ssloader 
+ADD_LIBRARY(ssLoader 
 ../Common/Loader/tinyxml2/tinyxml2.cpp 
 ../Common/Loader/babel/babel.cpp 
 ../Common/Loader/babel/babel.h 
@@ -71,7 +70,7 @@ ADD_LIBRARY(ssAnimater
 ../Common/Animator/ssplayer_mesh.h
 )
 
-
+IF(APPLE)
 ADD_LIBRARY(ssHelper
 ../Common/Helper/Win/WinMain.cpp
 ../Common/Helper/IsshTexture.cpp
@@ -90,6 +89,25 @@ ADD_LIBRARY(ssHelper
 ../Common/Helper/DebugPrint.cpp
 ../Common/Helper/MacOS/OSXFileOpen.h
 ../Common/Helper/MacOS/OSXFileOpen.mm)
+ELSE()
+ADD_LIBRARY(ssHelper
+../Common/Helper/Win/WinMain.cpp
+../Common/Helper/IsshTexture.cpp
+../Common/Helper/IsshTexture.h
+../Common/Helper/sshTextureBMP.cpp
+../Common/Helper/sshTextureBMP.h
+../Common/Helper/stb_image.c
+../Common/Helper/stb_image.h
+../Common/Helper/sshObject.h
+../Common/Helper/sshScene.cpp
+../Common/Helper/sshTask.cpp
+../Common/Helper/sshTask.h
+../Common/Helper/XPFileOpenDlg.h
+../Common/Helper/XPFileOpenDlg.cpp
+../Common/Helper/DebugPrint.h
+../Common/Helper/DebugPrint.cpp
+../Common/Helper/MacOS/OSXFileOpen.h)
+ENDIF()
 
 
 ADD_EXECUTABLE(viewer_sample_gl
@@ -175,25 +193,30 @@ ENDIF (WIN32)
 
 IF(WIN32)
 #	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /subsystem:windows")
-	SET(LINK_LIB1 "ssloader")
+	SET(LINK_LIB1 "ssLoader")
 	SET(LINK_LIB2 "ssAnimater")
 	SET(LINK_LIB3 "ssHelper")
 	SET(LINK_LIB4 "")
 
     ADD_DEFINITIONS(-D_WIN32 )
 	SET(SEARCH_LIB "" )
-ENDIF(WIN32)
-
-IF(APPLE)
+ELSEIF(APPLE)
 	SET(SEARCH_DIR "/usr/local/include" )
 	SET(SEARCH_LIB "/usr/local/lib" )
-	SET(LINK_LIB1 "ssloader")
+	SET(LINK_LIB1 "ssLoader")
 	SET(LINK_LIB2 "ssAnimater")
 	SET(LINK_LIB3 "ssHelper")	
 #	SET(LINK_LIB4 "libAntTweakBar.dylib libglfw3.a -framework OpenGL -framework AppKit -framework IOKit" )
 	SET(LINK_LIB4 "" )
 
     ADD_DEFINITIONS(-APPLE)
+ELSEIF(CMAKE_COMPILER_IS_GNUCXX)
+	SET(SEARCH_DIR "/usr/local/include" )
+	SET(SEARCH_LIB "/usr/local/lib" )
+	SET(LINK_LIB3 "ssLoader")
+	SET(LINK_LIB1 "ssAnimater")
+	SET(LINK_LIB2 "ssHelper")
+	SET(LINK_LIB4 "" )
 ENDIF()
 
 #link_directories( SEARCH_LIB )
