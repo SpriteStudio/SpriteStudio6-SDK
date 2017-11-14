@@ -1,4 +1,4 @@
-#ifndef __bind_SSPART__
+ï»¿#ifndef __bind_SSPART__
 #define __bind_SSPART__
 
 
@@ -16,7 +16,7 @@ public:
 
 	bool	debug();
 	
-	//SsPart‚Ìƒƒ“ƒo[‚ð‘€ì‚·‚é
+	//SsPartã®ãƒ¡ãƒ³ãƒãƒ¼ã‚’æ“ä½œã™ã‚‹
 	const char*	name(){ return bind_inst->name.c_str(); }
 	int			arrayIndex(){return bind_inst->arrayIndex; }
 	int			parentIndex(){return bind_inst->parentIndex; }

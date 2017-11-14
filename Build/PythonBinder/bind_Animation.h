@@ -1,4 +1,4 @@
-#ifndef __bind_ANIMATION__
+ï»¿#ifndef __bind_ANIMATION__
 #define __bind_ANIMATION__
 
 #include "package_SpriteStudio.h"
@@ -74,10 +74,10 @@ public:
 
 	//BIND_NEW_PROP_REF(	Bind_SsCellValue , cellValue );
 
-	//ˆÈ‰º‚Í•Ê“r
-//	SsCellValue		cellValue;		///< ƒZƒ‹ƒAƒjƒ‚Ì’l
-//	SsColorAnime	colorValue;		///< ƒJƒ‰[ƒAƒjƒ‚Ì’l
-//	SsVertexAnime	vertexValue;	///< ’¸“_ƒAƒjƒ‚Ì’l
+	//ä»¥ä¸‹ã¯åˆ¥é€”
+//	SsCellValue		cellValue;		///< ã‚»ãƒ«ã‚¢ãƒ‹ãƒ¡ã®å€¤
+//	SsColorAnime	colorValue;		///< ã‚«ãƒ©ãƒ¼ã‚¢ãƒ‹ãƒ¡ã®å€¤
+//	SsVertexAnime	vertexValue;	///< é ‚ç‚¹ã‚¢ãƒ‹ãƒ¡ã®å€¤
 
 };
 

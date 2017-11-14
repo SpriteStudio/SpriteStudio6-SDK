@@ -1,4 +1,4 @@
-// plistConverter.cpp : ƒRƒ“ƒ\[ƒ‹ ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌƒGƒ“ƒgƒŠ ƒ|ƒCƒ“ƒg‚ğ’è‹`‚µ‚Ü‚·B
+ï»¿// plistConverter.cpp : ã‚³ãƒ³ã‚½ãƒ¼ãƒ« ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¨ãƒ³ãƒˆãƒª ãƒã‚¤ãƒ³ãƒˆã‚’å®šç¾©ã—ã¾ã™ã€‚
 //
 
 #include "stdafx.h"
@@ -7,15 +7,15 @@ void gettexturesize(void);
 void getcelldata(void);
 void outputcelldata(void);
 
-bool err = false;	//ƒGƒ‰[‚ªo‚½‚çˆ—’†’f
+bool err = false;	//ã‚¨ãƒ©ãƒ¼ãŒå‡ºãŸã‚‰å‡¦ç†ä¸­æ–­
 std::string open_filename;
 std::string output_filename;
 bool option_offset = true;
 
-int tex_size_w = 0;	//ƒeƒNƒXƒ`ƒƒƒTƒCƒY
-int tex_size_h = 0;	//ƒeƒNƒXƒ`ƒƒƒTƒCƒY
+int tex_size_w = 0;	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚º
+int tex_size_h = 0;	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚º
 
-//ƒZƒ‹ƒf[ƒ^
+//ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿
 struct CELLDATA
 {
 	int x;
@@ -33,7 +33,7 @@ int cell_count = 0;
 
 int main(int argc, char* argv[])
 {
-	//ˆø”ƒ`ƒFƒbƒN
+	//å¼•æ•°ãƒã‚§ãƒƒã‚¯
 	int i;
 	bool ishelp = false;
 	int inputcount = 0;
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 		  || (strcmp(argv[i], "-H") == 0)
 		   )
 		{
-			//ƒwƒ‹ƒv•\¦
+			//ãƒ˜ãƒ«ãƒ—è¡¨ç¤º
 			ishelp = true;
 		}
 		else if (
@@ -72,15 +72,15 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
-	//Šg’£qƒ`ƒFƒbƒN
+	//æ‹¡å¼µå­ãƒã‚§ãƒƒã‚¯
 	if (open_filename.find(".plist") == std::string::npos)
 	{
-		err = true;	//ƒGƒ‰[‚ªo‚½‚çˆ—’†’f
+		err = true;	//ã‚¨ãƒ©ãƒ¼ãŒå‡ºãŸã‚‰å‡¦ç†ä¸­æ–­
 	}
 
 	if ( inputcount == 1 )
 	{
-		//o—Íƒtƒ@ƒCƒ‹–¼‚ªÈ—ª‚³‚ê‚Ä‚¢‚éê‡
+		//å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«åãŒçœç•¥ã•ã‚Œã¦ã„ã‚‹å ´åˆ
 		output_filename = open_filename.substr(0, open_filename.length() - 5);
 		output_filename = output_filename + "xml";
 	}
@@ -89,35 +89,35 @@ int main(int argc, char* argv[])
 
 	if (ishelp == true)
 	{
-		printf("‘æˆêˆø”Fplist‚ÌƒpƒX\r\n");
-		printf("‘æ“ñˆø”Fo—Íƒtƒ@ƒCƒ‹‚ÌƒpƒXiÈ—ª‰Âj\r\n");
-		printf("ƒIƒvƒVƒ‡ƒ“\r\n");
-		printf("-oFƒIƒtƒZƒbƒgo—Í‚È‚µ\r\n");
-		printf("-hFƒwƒ‹ƒv•\¦\r\n");
+		printf("ç¬¬ä¸€å¼•æ•°ï¼šplistã®ãƒ‘ã‚¹\r\n");
+		printf("ç¬¬äºŒå¼•æ•°ï¼šå‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ï¼ˆçœç•¥å¯ï¼‰\r\n");
+		printf("ã‚ªãƒ—ã‚·ãƒ§ãƒ³\r\n");
+		printf("-oï¼šã‚ªãƒ•ã‚»ãƒƒãƒˆå‡ºåŠ›ãªã—\r\n");
+		printf("-hï¼šãƒ˜ãƒ«ãƒ—è¡¨ç¤º\r\n");
 	}
 	else
 	{
 		if (err == false)
 		{
-			gettexturesize();	//ƒeƒNƒXƒ`ƒƒ‚ÌƒTƒCƒYæ“¾
-			getcelldata();		//ƒZƒ‹î•ñ‚Ìæ“¾
-			outputcelldata();	//ƒZƒ‹î•ñ‚Ì‘‚«o‚µ
+			gettexturesize();	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ã‚µã‚¤ã‚ºå–å¾—
+			getcelldata();		//ã‚»ãƒ«æƒ…å ±ã®å–å¾—
+			outputcelldata();	//ã‚»ãƒ«æƒ…å ±ã®æ›¸ãå‡ºã—
 		}
 	}
 
 	return 0;
 }
 
-//ƒeƒNƒXƒ`ƒƒƒTƒCƒY‚Ìæ“¾
+//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚ºã®å–å¾—
 void gettexturesize(void)
 {
 	FILE *fp;
 	char buf[1024];
-	// ƒtƒ@ƒCƒ‹‚ÌƒI[ƒvƒ“
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚ªãƒ¼ãƒ—ãƒ³
 	fopen_s(&fp, open_filename.c_str(), "r");
 	if (fp == NULL)
 	{
-		//ƒGƒ‰[
+		//ã‚¨ãƒ©ãƒ¼
 		printf("file open error!!\n");
 		err = true;
 	}
@@ -125,7 +125,7 @@ void gettexturesize(void)
 	{
 		int seq = 0;
 		int yomitobasi = 0;
-		//‚Ps’PˆÊ‚Å“Ç‚İo‚µ
+		//ï¼‘è¡Œå˜ä½ã§èª­ã¿å‡ºã—
 		while (fgets(buf, 1024, fp) != NULL)
 		{
 			std::string str(buf);
@@ -133,19 +133,19 @@ void gettexturesize(void)
 			switch( seq )
 			{
 			case 0:
-				//metadataƒ^ƒO‚ğ’T‚·
+				//metadataã‚¿ã‚°ã‚’æ¢ã™
 				{
 					unsigned int loc = str.find("metadata", 0);
 					if (loc != std::string::npos)
 					{
-						//Œ©‚Â‚©‚Á‚½
+						//è¦‹ã¤ã‹ã£ãŸ
 						seq++;
 						yomitobasi = 0;
 					}
 				}
 				break;
 			case 1:
-				//6s“Ç‚İ”ò‚Î‚·
+				//6è¡Œèª­ã¿é£›ã°ã™
 				yomitobasi++;
 				if (yomitobasi == 6 )
 				{
@@ -153,7 +153,7 @@ void gettexturesize(void)
 				}
 				break;
 			case 2:
-				//ƒTƒCƒY‚ğæ“¾‚·‚é
+				//ã‚µã‚¤ã‚ºã‚’å–å¾—ã™ã‚‹
 				unsigned int loc1 = str.find("{", 0);
 				unsigned int loc2 = str.find(",", 0);
 				unsigned int loc3 = str.find("}", 0);
@@ -163,31 +163,31 @@ void gettexturesize(void)
 				  && (loc3 != std::string::npos)
 				   )
 				{
-					//Œ©‚Â‚©‚Á‚½
-					//”’l‚ğæ“¾
+					//è¦‹ã¤ã‹ã£ãŸ
+					//æ•°å€¤ã‚’å–å¾—
 					std::string w = str.substr(loc1+1, loc2 - loc1-1);
 					std::string h = str.substr(loc2+1, loc3 - loc2-1);
 
-					tex_size_w = std::atoi(w.c_str());;	//ƒeƒNƒXƒ`ƒƒƒTƒCƒY
-					tex_size_h = std::atoi(h.c_str());;	//ƒeƒNƒXƒ`ƒƒƒTƒCƒY
+					tex_size_w = std::atoi(w.c_str());;	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚º
+					tex_size_h = std::atoi(h.c_str());;	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚º
 				}
 				break;
 			}
 		}
 	}
-	fclose(fp);	//ƒtƒ@ƒCƒ‹‚ÌƒNƒ[ƒY
+	fclose(fp);	//ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚¯ãƒ­ãƒ¼ã‚º
 }
 
-//ƒZƒ‹ƒf[ƒ^‚Ìæ“¾
+//ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã®å–å¾—
 void getcelldata(void)
 {
 	FILE *fp;
 	char buf[1024];
-	// ƒtƒ@ƒCƒ‹‚ÌƒI[ƒvƒ“
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚ªãƒ¼ãƒ—ãƒ³
 	fopen_s(&fp, open_filename.c_str(), "r");
 	if (fp == NULL)
 	{
-		//ƒGƒ‰[
+		//ã‚¨ãƒ©ãƒ¼
 		printf("file open error!!\n");
 		err = true;
 	}
@@ -196,7 +196,7 @@ void getcelldata(void)
 		cell_count = 0;
 		int seq = 0;
 		int yomitobasi = 0;
-		//‚Ps’PˆÊ‚Å“Ç‚İo‚µ
+		//ï¼‘è¡Œå˜ä½ã§èª­ã¿å‡ºã—
 		while (fgets(buf, 1024, fp) != NULL)
 		{
 			std::string str(buf);
@@ -204,19 +204,19 @@ void getcelldata(void)
 			switch (seq)
 			{
 			case 0:
-			//metadataƒ^ƒO‚ğ’T‚·
+			//metadataã‚¿ã‚°ã‚’æ¢ã™
 			{
 				unsigned int loc = str.find("<key>frame</key>", 0);
 				if (loc != std::string::npos)
 				{
-					//Œ©‚Â‚©‚Á‚½
+					//è¦‹ã¤ã‹ã£ãŸ
 					seq++;
 				}
 				break;
 			}
 			case 1:
 			{
-				//ƒTƒCƒY‚ğæ“¾‚·‚é
+				//ã‚µã‚¤ã‚ºã‚’å–å¾—ã™ã‚‹
 				unsigned int loc1 = str.find("{{", 0);
 				unsigned int loc2 = str.find(",", loc1 + 2);
 				unsigned int loc3 = str.find("},{", loc2 + 1);
@@ -230,36 +230,36 @@ void getcelldata(void)
 					&& (loc5 != std::string::npos)
 					)
 				{
-					//Œ©‚Â‚©‚Á‚½
-					//”’l‚ğæ“¾
+					//è¦‹ã¤ã‹ã£ãŸ
+					//æ•°å€¤ã‚’å–å¾—
 					std::string x = str.substr(loc1 + 2, loc2 - loc1 - 2);
 					std::string y = str.substr(loc2 + 1, loc3 - loc2 - 1);
 					std::string w = str.substr(loc3 + 3, loc4 - loc3 - 3);
 					std::string h = str.substr(loc4 + 1, loc5 - loc4 - 1);
 
-					celldata[cell_count].x = std::atoi(x.c_str());;	//ƒeƒNƒXƒ`ƒƒƒTƒCƒY
-					celldata[cell_count].y = std::atoi(y.c_str());;	//ƒeƒNƒXƒ`ƒƒƒTƒCƒY
-					celldata[cell_count].w = std::atoi(w.c_str());;	//ƒeƒNƒXƒ`ƒƒƒTƒCƒY
-					celldata[cell_count].h = std::atoi(h.c_str());;	//ƒeƒNƒXƒ`ƒƒƒTƒCƒY
+					celldata[cell_count].x = std::atoi(x.c_str());;	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚º
+					celldata[cell_count].y = std::atoi(y.c_str());;	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚º
+					celldata[cell_count].w = std::atoi(w.c_str());;	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚º
+					celldata[cell_count].h = std::atoi(h.c_str());;	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚º
 
 					seq++;
 				}
 				break;
 			}
 			case 2:
-			//ƒIƒtƒZƒbƒg‚ğæ“¾‚·‚é
+			//ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’å–å¾—ã™ã‚‹
 			{
 				unsigned int loc = str.find("<key>offset</key>", 0);
 				if (loc != std::string::npos)
 				{
-					//Œ©‚Â‚©‚Á‚½
+					//è¦‹ã¤ã‹ã£ãŸ
 					seq++;
 				}
 				break;
 			}
 			case 3:
 			{
-				//ƒIƒtƒZƒbƒg‚ğæ“¾‚·‚é
+				//ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’å–å¾—ã™ã‚‹
 				unsigned int loc1 = str.find("{", 0);
 				unsigned int loc2 = str.find(",", loc1 + 1);
 				unsigned int loc3 = str.find("}", loc2 + 1);
@@ -269,48 +269,48 @@ void getcelldata(void)
 					&& (loc3 != std::string::npos)
 					)
 				{
-					//Œ©‚Â‚©‚Á‚½
-					//”’l‚ğæ“¾
+					//è¦‹ã¤ã‹ã£ãŸ
+					//æ•°å€¤ã‚’å–å¾—
 					std::string x = str.substr(loc1 + 1, loc2 - loc1 - 1);
 					std::string y = str.substr(loc2 + 1, loc3 - loc2 - 1);
 
-					celldata[cell_count].offset_x = std::atoi(x.c_str());	//ƒeƒNƒXƒ`ƒƒƒTƒCƒY
-					celldata[cell_count].offset_y = std::atoi(y.c_str());	//ƒeƒNƒXƒ`ƒƒƒTƒCƒY
+					celldata[cell_count].offset_x = std::atoi(x.c_str());	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚º
+					celldata[cell_count].offset_y = std::atoi(y.c_str());	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚º
 
 					char name[128];
 					sprintf_s(name, 128, "frame%03d.png", cell_count);
-					celldata[cell_count].name = name;	//–¼‘O
+					celldata[cell_count].name = name;	//åå‰
 
 					cell_count++;
-					seq = 0;	//Ÿ‚Ìƒf[ƒ^‚ğì¬‚·‚é
+					seq = 0;	//æ¬¡ã®ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã™ã‚‹
 				}
 				break;
 			}
 			}
 		}
 	}
-	fclose(fp);	//ƒtƒ@ƒCƒ‹‚ÌƒNƒ[ƒY
+	fclose(fp);	//ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚¯ãƒ­ãƒ¼ã‚º
 }
 
-//ƒZƒ‹ƒf[ƒ^‚Ìo—Í
+//ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã®å‡ºåŠ›
 void outputcelldata(void)
 {
 	FILE *fp;
 	wchar_t buf[1024];
-	// ƒtƒ@ƒCƒ‹‚ÌƒI[ƒvƒ“
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚ªãƒ¼ãƒ—ãƒ³
 	fopen_s(&fp, output_filename.c_str(), "w,ccs=UTF-8");
 	if (fp == NULL)
 	{
-		//ƒGƒ‰[
+		//ã‚¨ãƒ©ãƒ¼
 		printf("file open error!!\n");
 		err = true;
 	}
 	if (err == false)
 	{
-		//ƒƒP[ƒ‹w’è
+		//ãƒ­ã‚±ãƒ¼ãƒ«æŒ‡å®š
 		setlocale(LC_ALL, "japanese");
 
-		//ƒwƒbƒ_o—Í
+		//ãƒ˜ãƒƒãƒ€å‡ºåŠ›
 		fputws(_T("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"), fp);
 		fputws(_T("<root version=\"1.0\">\n"), fp);
 
@@ -321,12 +321,12 @@ void outputcelldata(void)
 		int i;
 		for (i = 0; i < cell_count; i++ )
 		{
-			//•ÏŠ·
+			//å¤‰æ›
 			wchar_t	name[50];
 			size_t wLen = 0;
 			mbstowcs_s(&wLen, name, 20, celldata[i].name.c_str(), _TRUNCATE);
 
-			//ƒZƒ‹ƒf[ƒ^‚Ìo—Í
+			//ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã®å‡ºåŠ›
 			if (option_offset == false)
 			{
 				swprintf_s(buf, 1024, _T("    <texture filename=\"%s\" x=\"%d\" y=\"%d\" w=\"%d\" h=\"%d\" />\n"), name, celldata[i].x, celldata[i].y, celldata[i].w, celldata[i].h);
@@ -338,11 +338,11 @@ void outputcelldata(void)
 
 			fputws(buf, fp);
 		}
-		//ƒtƒbƒ_o—Í
+		//ãƒ•ãƒƒãƒ€å‡ºåŠ›
 		fputws(_T("  </textures>\n"), fp);
 		fputws(_T("</root>\n"), fp);
 		fputws(_T("\n"), fp);
 
 	}
-	fclose(fp);	//ƒtƒ@ƒCƒ‹‚ÌƒNƒ[ƒY
+	fclose(fp);	//ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚¯ãƒ­ãƒ¼ã‚º
 }

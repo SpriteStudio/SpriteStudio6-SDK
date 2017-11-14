@@ -1,4 +1,4 @@
-#include "perf.h"
+﻿#include "perf.h"
 #include <stdio.h>
 #include <string.h>
 #include <math.h>

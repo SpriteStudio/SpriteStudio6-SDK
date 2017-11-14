@@ -1,4 +1,4 @@
-//
+ï»¿//
 #include "package_SpriteStudio.h"
 #include "bind_AnimePack.h"
 #include "ssplayer_animedecode.h"
@@ -51,7 +51,7 @@ Bind_SsAnimeDecoder*	Bind_SsAnimePack::getAnimeDecoderByName( const char* animen
 				m_cellmap = new SsCellMapList();
 				m_cellmap->set( m_proj , m_animepack );
 
-				//ƒCƒ“ƒXƒ^ƒ“ƒX‚ÌŽõ–½ŠÇ—‚ðl‚¦‚é‚±‚Æ
+				//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®å¯¿å‘½ç®¡ç†ã‚’è€ƒãˆã‚‹ã“ã¨
 				SsAnimeDecoder* player = new SsAnimeDecoder();
 				ad->m_decoder = player;
 				player->setAnimation( model , anime , m_cellmap , this->m_proj );
@@ -79,7 +79,7 @@ Bind_SsAnimeDecoder*	Bind_SsAnimePack::getAnimeDecoderByIndex( int index )
 			m_cellmap = new SsCellMapList();
 			m_cellmap->set( m_proj , m_animepack );
 
-			//ƒCƒ“ƒXƒ^ƒ“ƒX‚ÌŽõ–½ŠÇ—‚ðl‚¦‚é‚±‚Æ
+			//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®å¯¿å‘½ç®¡ç†ã‚’è€ƒãˆã‚‹ã“ã¨
 			SsAnimeDecoder* player = new SsAnimeDecoder();
 			ad->m_decoder = player;
 			player->setAnimation( model , anime , m_cellmap , this->m_proj );

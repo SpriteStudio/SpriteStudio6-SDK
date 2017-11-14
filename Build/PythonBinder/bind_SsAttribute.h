@@ -1,4 +1,4 @@
-#ifndef __BIND_SSATTRIBUTE__
+﻿#ifndef __BIND_SSATTRIBUTE__
 #define __BIND_SSATTRIBUTE__
 
 
