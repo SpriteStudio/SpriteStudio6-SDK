@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>734</width>
-    <height>616</height>
+    <height>465</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QPushButton" name="pushButton_listclear">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>270</y>
-      <width>131</width>
-      <height>61</height>
+      <x>580</x>
+      <y>130</y>
+      <width>141</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -31,9 +31,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>40</y>
-      <width>51</width>
-      <height>31</height>
+      <y>30</y>
+      <width>101</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -46,10 +46,10 @@
    <widget class="QPushButton" name="pushButton_convert">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>270</y>
-      <width>131</width>
-      <height>61</height>
+      <x>580</x>
+      <y>250</y>
+      <width>141</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -59,10 +59,10 @@
    <widget class="QPushButton" name="pushButton_exit">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>540</y>
-      <width>131</width>
-      <height>61</height>
+      <x>580</x>
+      <y>420</y>
+      <width>141</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -73,9 +73,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>340</y>
-      <width>50</width>
-      <height>31</height>
+      <y>250</y>
+      <width>51</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -86,21 +86,21 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>380</y>
-      <width>50</width>
-      <height>31</height>
+      <y>280</y>
+      <width>71</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Error:</string>
+     <string>Log:</string>
     </property>
    </widget>
    <widget class="QTextBrowser" name="textBrowser_err">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>380</y>
-      <width>651</width>
+      <x>10</x>
+      <y>300</y>
+      <width>561</width>
       <height>151</height>
      </rect>
     </property>
@@ -112,8 +112,8 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>340</y>
-      <width>651</width>
+      <y>250</y>
+      <width>501</width>
       <height>31</height>
      </rect>
     </property>
@@ -124,10 +124,10 @@
    <widget class="QListWidget" name="listWidget">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>40</y>
-      <width>651</width>
-      <height>221</height>
+      <x>10</x>
+      <y>50</y>
+      <width>561</width>
+      <height>141</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -137,7 +137,7 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>10</x>
       <y>10</y>
       <width>631</width>
       <height>16</height>
@@ -150,10 +150,10 @@
    <widget class="QPushButton" name="pushButton_listload">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>270</y>
-      <width>131</width>
-      <height>61</height>
+      <x>580</x>
+      <y>90</y>
+      <width>141</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -163,14 +163,27 @@
    <widget class="QPushButton" name="pushButton_listsave">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>270</y>
-      <width>131</width>
-      <height>61</height>
+      <x>580</x>
+      <y>50</y>
+      <width>141</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
      <string>List Save</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBoxJsonOut">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>200</y>
+      <width>201</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Jsonファイルで出力する</string>
     </property>
    </widget>
   </widget>

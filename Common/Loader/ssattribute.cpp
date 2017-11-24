@@ -80,17 +80,22 @@ void	GetSsPartsColorValue( const SsKeyframe* key , SsPartsColorAnime& v )
 		SsHash rb = key->value["RB"].get<SsHash>();
 
 		ConvertStringToSsColor( lt["rgba"].get<SsString>() , v.colors[0].rgba);
+		v.colors[0].rate = lt["rate"].get<float>();
 
 		ConvertStringToSsColor( rt["rgba"].get<SsString>() , v.colors[1].rgba);
+		v.colors[1].rate = rt["rate"].get<float>();
 
 		ConvertStringToSsColor( lb["rgba"].get<SsString>() , v.colors[2].rgba);
+		v.colors[2].rate = lb["rate"].get<float>();
 
 		ConvertStringToSsColor( rb["rgba"].get<SsString>() , v.colors[3].rgba);
+		v.colors[3].rate = rb["rate"].get<float>();
 
 	}else{
 		SsHash color = key->value["color"].get<SsHash>();
 
 		ConvertStringToSsColor( color["rgba"].get<SsString>() , v.color.rgba);
+		v.color.rate = color["rate"].get<float>();
 	}
 
 }

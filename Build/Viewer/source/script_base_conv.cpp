@@ -1,4 +1,4 @@
-//
+ï»¿//
 
 #define BOOST_PYTHON_STATIC_LIB
 #include    <stdio.h>
@@ -57,14 +57,14 @@ BOOST_PYTHON_MODULE(SpriteStudio)
 int main(int argc, char* argv[])
 {
     if(PyImport_AppendInittab("SpriteStudio", initSpriteStudio) == -1)
-        puts("helloƒ‚ƒWƒ…[ƒ‹‚ÌƒZƒbƒgƒAƒbƒv‚É¸”s");
+        puts("helloãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—ã«å¤±æ•—");
     
     Py_Initialize();
     
     handle<> main_module(borrowed( PyImport_AddModule("__main__") ));
     handle<> main_namespace(borrowed( PyModule_GetDict(main_module.get()) ));
     
-	//ˆø”‚É—^‚¦‚ç‚ê‚½PythonƒXƒNƒŠƒvƒgƒtƒ@ƒCƒ‹‚Ìƒ[ƒh
+	//å¼•æ•°ã«ä¸ãˆã‚‰ã‚ŒãŸPythonã‚¹ã‚¯ãƒªãƒ—ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ­ãƒ¼ãƒ‰
 	std::string filename = argv[1];
 
 	ifstream	f_in( 

@@ -1,4 +1,4 @@
-#ifndef __BIND_CELLMAP__
+﻿#ifndef __BIND_CELLMAP__
 #define __BIND_CELLMAP__
 
 #include "package_SpriteStudio.h"

@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <time.h>   //時間
 
-#include "../loader/ssloader.h"
+#include "../Loader/ssloader.h"
 #include "ssplayer_animedecode.h"
 #include "ssplayer_matrix.h"
 #include "ssplayer_render.h"
@@ -370,7 +370,7 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 			//両方とも４頂点カラー
 			for (int i = 0; i < 4; i++)
 			{
-				v.colors[i].rate = 1.0f;
+				v.colors[i].rate = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rate, rightv.colors[i].rate, &curve), 0.0f, 1.0f);
 				v.colors[i].rgba.a = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.a, rightv.colors[i].rgba.a, &curve), 0.0f, 255.0f);
 				v.colors[i].rgba.r = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.r, rightv.colors[i].rgba.r, &curve), 0.0f, 255.0f);
 				v.colors[i].rgba.g = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.g, rightv.colors[i].rgba.g, &curve), 0.0f, 255.0f);
@@ -382,7 +382,7 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 			//左は４頂点、右は単色
 			for (int i = 0; i < 4; i++)
 			{
-				v.colors[i].rate = 1.0f;
+				v.colors[i].rate = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rate, rightv.color.rate, &curve), 0.0f, 1.0f);
 				v.colors[i].rgba.a = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.a, rightv.color.rgba.a, &curve), 0.0f, 255.0f);
 				v.colors[i].rgba.r = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.r, rightv.color.rgba.r, &curve), 0.0f, 255.0f);
 				v.colors[i].rgba.g = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.g, rightv.color.rgba.g, &curve), 0.0f, 255.0f);
@@ -397,7 +397,7 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 			//左は単色、右は４頂点カラー
 			for (int i = 0; i < 4; i++)
 			{
-				v.colors[i].rate = 1.0f;
+				v.colors[i].rate = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rate, rightv.colors[i].rate, &curve), 0.0f, 1.0f);
 				v.colors[i].rgba.a = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.a, rightv.colors[i].rgba.a, &curve), 0.0f, 255.0f);
 				v.colors[i].rgba.r = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.r, rightv.colors[i].rgba.r, &curve), 0.0f, 255.0f);
 				v.colors[i].rgba.g = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.g, rightv.colors[i].rgba.g, &curve), 0.0f, 255.0f);
@@ -407,7 +407,7 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 		else
 		{
 			//両方とも単色
-			v.color.rate = 1.0f;
+			v.color.rate = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rate, rightv.color.rate, &curve), 0.0f, 1.0f);
 			v.color.rgba.a = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.a, rightv.color.rgba.a, &curve), 0.0f, 255.0f);
 			v.color.rgba.r = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.r, rightv.color.rgba.r, &curve), 0.0f, 255.0f);
 			v.color.rgba.g = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.g, rightv.color.rgba.g, &curve), 0.0f, 255.0f);
@@ -697,11 +697,6 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 	bool hideTriger = false;
 	state->masklimen = 0;
 	state->is_localAlpha = false;
-
-	if (part->name == "bone_23") {
-		int a = 0;
-		a++;
-	}
 
 	state->position.x = part->bonePosition.x;
 	state->position.y = part->bonePosition.y;

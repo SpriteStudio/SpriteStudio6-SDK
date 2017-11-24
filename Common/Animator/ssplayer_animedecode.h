@@ -1,7 +1,7 @@
 #ifndef __SSPLAYER_ANIMEDECODE__
 #define __SSPLAYER_ANIMEDECODE__
 
-#include "../loader/ssloader.h"
+#include "../Loader/ssloader.h"
 #include "../Helper/ssHelper.h"
 
 

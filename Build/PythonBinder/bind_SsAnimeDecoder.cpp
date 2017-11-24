@@ -1,4 +1,4 @@
-//
+ï»¿//
 #include "bind_SsAnimeDecoder.h"
 
 
@@ -38,7 +38,7 @@ bool Bind_SsAnimeDecoder::debug()
 	{
 		PYDEBUG_PRINTF( "decoder:anime endframe = %d" , this->m_decoder->getAnimeEndFrame() );
 
-		//ƒf[ƒ^‚ğo‚µ‚Ä‚İ‚é
+		//ãƒ‡ãƒ¼ã‚¿ã‚’å‡ºã—ã¦ã¿ã‚‹
 		std::list<SsPartState*>& llist = this->m_decoder->getPartSortList();
 
 		PYDEBUG_PRINTF( "==position output test==");
@@ -50,7 +50,7 @@ bool Bind_SsAnimeDecoder::debug()
 			p_no++;
 		}
 			
-		//ƒp[ƒcî•ñ‚ÆƒAƒjƒî•ñ‚ªæ“¾‚Å‚«‚é
+		//ãƒ‘ãƒ¼ãƒ„æƒ…å ±ã¨ã‚¢ãƒ‹ãƒ¡æƒ…å ±ãŒå–å¾—ã§ãã‚‹
 		PYDEBUG_PRINTF( "==partAnime Check==");
 		std::vector<SsPartAndAnime>& partAnimeList = this->m_decoder->getPartAnime();
 

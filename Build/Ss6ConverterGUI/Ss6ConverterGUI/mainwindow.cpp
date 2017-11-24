@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 QString execPathStr;    //実行しているコンバータGUIのパス
@@ -24,10 +24,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(cnvProcess, SIGNAL(readyReadStandardError()), this, SLOT(processErrOutput()));
 
     //ウィンドウのタイトルをつける
-    setWindowTitle("Ss6Converter GUI Ver1.0.0");
+    setWindowTitle("Ss6Converter GUI Ver1.1.1");
 
     //ウィンドウサイズ固定
-    setFixedSize( QSize(734,616) );
+    setFixedSize( QSize(734,465) );
+
+    //Documentsのパスを取得
+    data_path = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    data_path += "/SpriteStudio/Ss6ConVerter";
+    QDir dir;
+    //設定ファイル保存用ディレクトリを作成
+    dir.mkpath(data_path);
 
     //スタイルシートを読み込む
     QFile file(":/style.qss");
@@ -63,11 +70,67 @@ void MainWindow::setText_to_List(QStringList list)
             }
         }
     }
+    loadConfig();
+}
+
+void MainWindow::loadConfig(void)
+{
+    QString fileName = data_path + "/config";
+    QString str;
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly))//読込のみでオープンできたかチェック
+    {
+        return;
+    }
+
+    int read_count = 0;
+    QTextStream in(&file);
+    while ( !in.atEnd() ) {
+        str = in.readLine();//1行読込
+
+        switch( read_count )
+        {
+        case 0:
+            if (str != "0")
+            {
+                ui->checkBoxJsonOut->setChecked(true);
+            }
+            else
+            {
+                ui->checkBoxJsonOut->setChecked(false);
+            }
+            break;
+        }
+
+        read_count++;
+    }
+}
+void MainWindow::saveConfig(void)
+{
+    QString fileName = data_path + "/config";
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::WriteOnly))//書込みのみでオープンできたかチェック
+    {
+        return;
+    }
+
+    QTextStream out(&file);
+    if ( ui->checkBoxJsonOut->checkState() == Qt::Checked )
+    {
+        out << "1" << endl;
+    }
+    else
+    {
+        out << "0" << endl;
+    }
 }
 
 void MainWindow::on_pushButton_exit_clicked()
 {
     //アプリケーションの終了
+    saveConfig();
     exit(0);
 }
 
@@ -134,8 +197,17 @@ void MainWindow::on_pushButton_convert_clicked()
         ui->textBrowser_err->setText(tr(""));           //エラー
         cnvOutputStr = "";
 
+        convert_exec = true;  //コンバート中か
+        saveConfig();
+        int i;
+        for ( i = 0; i < ui->listWidget->count(); i++ )
         {
-            QString fileName = ui->listWidget->item(convet_index)->text();
+            //進行状況表示
+            QString st = QString("Exec %1/%2").arg(i+1).arg(ui->listWidget->count());
+            ui->textBrowser_status->setText(st);     //ステータス
+
+            //コンバート引数作成
+            QString fileName = ui->listWidget->item(i)->text();
             //コンバータの起動
             if (fileName.isEmpty())
             {
@@ -160,13 +232,41 @@ void MainWindow::on_pushButton_convert_clicked()
                 execstr = str_current_path + "/Ss6Converter";
         #endif
                 str = execstr + " \"" + fileName + "\"";
+                //オプション引数
+                if( ui->checkBoxJsonOut->checkState() == Qt::Checked )
+                {
+                    str = str + " -f json";
+                }
+
                 cnvProcess->start(str); //パスと引数
 
                 button_enable(false);
                 convert_exec = true;  //コンバート中か
+
+                while ( 1 )
+                {
+                    QThread::sleep(1);  // Wait
+                    QCoreApplication::processEvents();
+                    if ( cnvProcess->state() != QProcess::Running )
+                    {
+//                        ui->textBrowser_status->setText(tr("Convert end"));
+                        break;
+                    }
+                }
+                QCoreApplication::processEvents();
                 convet_index++;
             }
         }
+        if ( convert_error == false )
+        {
+            ui->textBrowser_status->setText(tr("Convert Success!"));
+        }
+        else
+        {
+            ui->textBrowser_status->setText(tr("Error"));   //ステータス
+        }
+        button_enable( true );   //ボタン有効
+        convert_exec = false;  //コンバート中か
     }
 }
 
@@ -186,14 +286,22 @@ void MainWindow::processFinished( int exitCode, QProcess::ExitStatus exitStatus)
     if ( exitStatus == QProcess::CrashExit )
     {
 //        QMessageBox::warning( this, tr("Error"), tr("Crashed") );
-        cnvOutputStr = cnvOutputStr + "Error:" + ui->listWidget->item(convet_index-1)->text();
+        cnvOutputStr = cnvOutputStr + "Error:" + ui->listWidget->item(convet_index)->text();
+        ui->textBrowser_err->setText(cnvOutputStr);
         convert_error = true;
+        //カーソルを最終行へ移動
+        QScrollBar *sb = ui->textBrowser_err->verticalScrollBar();
+        sb->setValue(sb->maximum());
     }
     else if ( exitCode != 0 )
     {
 //        QMessageBox::warning( this, tr("Error"), tr("Failed") );
-        cnvOutputStr = cnvOutputStr + "Error:" + ui->listWidget->item(convet_index-1)->text();
+        cnvOutputStr = cnvOutputStr + "Error:" + ui->listWidget->item(convet_index)->text();
+        ui->textBrowser_err->setText(cnvOutputStr);
         convert_error = true;
+        //カーソルを最終行へ移動
+        QScrollBar *sb = ui->textBrowser_err->verticalScrollBar();
+        sb->setValue(sb->maximum());
     }
     else
     {
@@ -201,60 +309,6 @@ void MainWindow::processFinished( int exitCode, QProcess::ExitStatus exitStatus)
 //        ui->textBrowser_status->setText(tr("Convert Success!"));
 //    QMessageBox::information(this, tr("Ss6Converter"), tr("Convert success"));
     }
-
-    if (( ui->listWidget->count() > convet_index ))
-    {
-        QString st = QString("Exec %1/%2").arg(convet_index+1).arg(ui->listWidget->count());
-        ui->textBrowser_status->setText(st);     //ステータス
-        {
-            QString fileName = ui->listWidget->item(convet_index)->text();
-            //コンバータの起動
-            if (fileName.isEmpty())
-            {
-                //ファイル名なし
-            }
-            else
-            {
-                QString str;
-                QString execstr;
-
-        #ifdef Q_OS_WIN32
-                // Windows
-                execstr = "Ss6Converter.exe";
-        #else
-                // Mac
-                QDir dir = QDir(execPathStr);
-                dir.cd("..");
-                dir.cd("..");
-                dir.cd("..");
-                dir.cd("..");
-                QString str_current_path = dir.path();
-                execstr = str_current_path + "/Ss6Converter";
-        #endif
-                str = execstr + " \"" + fileName + "\"";
-                cnvProcess->start(str); //パスと引数
-
-                convet_index++;
-            }
-        }
-    }
-    else
-    {
-        button_enable(true);
-        convert_exec = false;  //コンバート中か
-        if ( convert_error == false )
-        {
-            ui->textBrowser_status->setText(tr("Convert Success!"));
-        }
-        else
-        {
-            ui->textBrowser_status->setText(tr("Error"));   //ステータス
-            ui->textBrowser_err->setText(cnvOutputStr);
-        }
-    }
-    //カーソルを最終行へ移動
-    QScrollBar *sb = ui->textBrowser_err->verticalScrollBar();
-    sb->setValue(sb->maximum());
 
 }
 

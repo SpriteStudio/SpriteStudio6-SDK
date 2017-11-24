@@ -1,4 +1,4 @@
-#ifndef __bind_ANIMESTATE__
+﻿#ifndef __bind_ANIMESTATE__
 #define __bind_ANIMESTATE__
 
 

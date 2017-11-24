@@ -1,4 +1,4 @@
-//
+﻿//
 #include "package_SpriteStudio.h"
 #include "bind_AnimePack.h"
 #include "ssplayer_animedecode.h"

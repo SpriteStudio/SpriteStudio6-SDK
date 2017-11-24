@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -10,6 +10,8 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QScrollBar>
+#include <QThread>
+#include <QDesktopServices>
 
 namespace Ui {
 class MainWindow;
@@ -37,6 +39,9 @@ private:
     Ui::MainWindow *ui;
     QProcess *cnvProcess;
     void button_enable(bool flag);
+    void loadConfig(void);
+    void saveConfig(void);
+    QString data_path;
 
 private slots:
     void processErrOutput();
