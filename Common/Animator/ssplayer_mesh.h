@@ -138,6 +138,7 @@ public:
 
 	void	update();
 	void	makeMeshBoneList();
+	void	copyToSsMeshPart(SsMeshBind* src, SsMeshPart* dst, std::vector<SsPartState*>& boneList);
 
 
 };

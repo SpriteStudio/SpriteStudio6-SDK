@@ -73,6 +73,10 @@ void	SsMeshPart::makeMesh()
 		colors[i * 4 + 3] = 1.0f;
 		uvs[i * 2 + 0] = (targetCell->pos.x + v.x) * uvpixel_x;
 		uvs[i * 2 + 1] = (targetCell->pos.y + v.y) * uvpixel_y;
+
+		draw_vertices[i * 3 + 0] = vertices[i * 3];
+		draw_vertices[i * 3 + 1] = vertices[i * 3 + 1];
+		draw_vertices[i * 3 + 2] = vertices[i * 3 + 2];
 	}
 
 	outter_vertexnum = targetCell->outerPoint.size();
@@ -142,46 +146,45 @@ void    SsMeshPart::updateTransformMesh()
 		SsVector3 out;
 		SsVector3 outtotal;
 
-		draw_vertices[i * 3 + 0] = outtotal.x;
-		draw_vertices[i * 3 + 1] = outtotal.y;
-		draw_vertices[i * 3 + 2] = 0;
 
-		if (info.bindBoneNum > 0 )
+		SsPartState* matrixState = myPartState;
+
+		if (info.bindBoneNum == 0)
 		{
+			this->isBind = false;
+
+
+			//MatrixTransformVector3(matrixState->matrix, info.offset[n], out);
+		}
+		else {
+			this->isBind = true;
 			for (int n = 0; n < info.bindBoneNum; n++)
 			{
-				//outtotal.x = info.offset[n].x;
-				//outtotal.y = info.offset[n].y;
-				//outtotal.z = info.offset[n].z;
-
-#if 1
 				if (info.bone[n])
 				{
+					if (info.bindBoneNum > 0) matrixState = info.bone[n];
 					float w = info.weight[n] / 100.0f;
-					MatrixTransformVector3(info.bone[n]->matrix, info.offset[n], out);
+					MatrixTransformVector3(matrixState->matrix, info.offset[n], out);
 					out.x *= w;
 					out.y *= w;
-					//out.z *= w;
 
 					outtotal.x += out.x;
 					outtotal.y += out.y;
 					outtotal.z = 0;
-					//outtotal.z += out.z;
 				}
-#endif
-
 			}
 
 			draw_vertices[i * 3 + 0] = outtotal.x * 1.0f;
 			draw_vertices[i * 3 + 1] = outtotal.y * 1.0f;
 			draw_vertices[i * 3 + 2] = 0;
 		}
+
 	}
 }
 
 //-----------------------------------------------------------
 
-SsMeshAnimator::SsMeshAnimator() : bindAnime (0)
+SsMeshAnimator::SsMeshAnimator() : bindAnime(0)
 {
 
 }
@@ -238,32 +241,62 @@ void	SsMeshAnimator::update()
 
 }
 
+
+void	SsMeshAnimator::copyToSsMeshPart(SsMeshBind* src , SsMeshPart* dst , std::vector<SsPartState*>& boneList )
+{
+
+	int bnum = (int)boneList.size();
+	bool isbind = false;	//バインドするボーンが存在するか？
+
+
+
+	for (size_t i = 0; i < src->meshVerticesBindArray.size(); i++)
+	{
+		SsMeshBindInfo & bi = src->meshVerticesBindArray[i];
+
+		if (dst->getVertexNum() > (int) i)
+		{
+			int cntBone = 0;
+			for (int n = 0; n < bi.bindBoneNum; n++)
+			{
+				dst->bindBoneInfo[i].offset[n] = bi.offset[n];
+				dst->bindBoneInfo[i].weight[n] = bi.weight[n];
+
+				//
+				if (bnum > bi.boneIndex[n])
+				{
+					dst->bindBoneInfo[i].bone[n] = boneList[bi.boneIndex[n]];
+					isbind = true;	//バインドするボーンがある
+					cntBone++;
+				}
+
+			}
+			dst->bindBoneInfo[i].bindBoneNum = cntBone;
+
+		}
+
+
+	}
+
+
+}
+
+
 void	SsMeshAnimator::modelLoad()
 {
 	if (bindAnime == 0)return;
+	if (meshList.empty()) return;
+	if (boneList.empty()) return;
+	if (jointList.empty()) return;
+
 
 	SsModel* model = bindAnime->getMyModel();
 
-
-	for (size_t i = 0; i < model->meshList.size(); i++)
+	if (meshList.size() == model->meshList.size() )
 	{
-		std::vector<SsMeshBindInfo>& mvb = model->meshList[i]->meshVerticesBindArray;
-
-
-		for (size_t n = 0; n < mvb.size(); n++)
+		for (size_t i = 0; i < model->meshList.size(); i++)
 		{
-			int bonenum = mvb[n].bindBoneNum;
-			SsPartState* target = this->meshList[i];
-			SsMeshPart*		meshPart = target->meshPart;
-
-			for (int l = 0; l < bonenum; l++)
-			{
-				meshPart->bindBoneInfo[n].weight[l] = mvb[n].weight[l];
-				meshPart->bindBoneInfo[n].offset[l] = mvb[n].offset[l];
-				int bi = mvb[n].boneIndex[l];
-				meshPart->bindBoneInfo[n].bone[l] = this->boneList[bi];
-			}
-			meshPart->bindBoneInfo[n].bindBoneNum = bonenum;
+			copyToSsMeshPart(model->meshList[i], meshList[i]->meshPart, boneList);
 
 		}
 

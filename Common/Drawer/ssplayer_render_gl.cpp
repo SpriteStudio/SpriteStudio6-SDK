@@ -417,14 +417,22 @@ void	SsRenderGL::execMask(SsPartState* state)
 void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 {
 	glPushMatrix();
-	glLoadIdentity();
-
-
 
 	if (alpha == 0.0f)
 	{
 		return;
 	}
+
+	glMatrixMode(GL_MODELVIEW);
+	if (mesh->isBind)
+	{
+		//glLoadMatrixf(mesh->myPartState->matrix);
+		glLoadMatrixf(mesh->myPartState->matrixLocal);
+	}
+	else {
+		glLoadIdentity();
+	}
+
 
 	if (mesh->targetTexture)
 	{
