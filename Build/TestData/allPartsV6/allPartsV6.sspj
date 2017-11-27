@@ -163,9 +163,9 @@
 		<value>NewEffect.ssee</value>
 	</effectFileNames>
 	<lastAnimeFile>mesh.ssae</lastAnimeFile>
-	<lastAnimeName>Setup</lastAnimeName>
+	<lastAnimeName>anime_1</lastAnimeName>
 	<lastCellMapFile>color_bar.ssce</lastCellMapFile>
 	<lastEffectFile>NewEffect.ssee</lastEffectFile>
 	<lastCell>NewCell_17</lastCell>
-	<setupmode>1</setupmode>
+	<setupmode>0</setupmode>
 </SpriteStudioProject>
