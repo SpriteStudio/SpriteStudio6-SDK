@@ -427,10 +427,10 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 	if (mesh->isBind)
 	{
 		//glLoadMatrixf(mesh->myPartState->matrix);
-		glLoadMatrixf(mesh->myPartState->matrixLocal);
+		glLoadIdentity();
 	}
 	else {
-		glLoadIdentity();
+		glLoadMatrixf(mesh->myPartState->matrixLocal);
 	}
 
 

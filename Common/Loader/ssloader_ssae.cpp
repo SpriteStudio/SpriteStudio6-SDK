@@ -64,8 +64,8 @@ void	SsMeshBind::loader(ISsXmlArchiver* ar)
 void	SsMeshBindInfo::fromString(SsString str)
 {
 
-	memset(weight, SSMESHPART_BONEMAX, sizeof(float));
-	memset(boneIndex, SSMESHPART_BONEMAX, sizeof(int));
+	memset(weight, 0, SSMESHPART_BONEMAX *  sizeof(float));
+	memset(boneIndex, 0 , SSMESHPART_BONEMAX * sizeof(int));
 	bindBoneNum = 0;
 
 
