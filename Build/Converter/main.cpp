@@ -423,7 +423,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			//全角チェック
 			if (isZenkaku(&cell->name) == true)
 			{
-				std::cerr << "エラー：セルに全角が使用されている: " << cellMap->name << "\n";
+				std::cerr << "エラー：セルに全角が使用されている: " << cell->name << "\n";
 				convert_error_exit = true;	//エラーが発生コンバート失敗
 			}
 		}
