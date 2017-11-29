@@ -183,7 +183,8 @@ int main(void)
 	glfwWindowHint(GLFW_STENCIL_BITS, 1);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(800, 600, "Sprite Studio Viewer Sample", NULL, NULL);
+	std::string wt = SPRITESTUDIOSDK_VERSION;
+    window = glfwCreateWindow(800, 600, wt.c_str(), NULL, NULL);
     if (!window)
     {
         glfwTerminate();

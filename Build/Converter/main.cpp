@@ -37,9 +37,10 @@ static const int DATA_VERSION_3         = 3;
 static const int DATA_VERSION_4			= 4;
 static const int DATA_VERSION_5			= 5;
 static const int DATA_VERSION_6			= 6;
+static const int DATA_VERSION_7			= 7;
 
 static const int DATA_ID				= 0x42505353;
-static const int CURRENT_DATA_VERSION	= DATA_VERSION_6;
+static const int CURRENT_DATA_VERSION	= DATA_VERSION_7;
 
 
 enum {
@@ -285,6 +286,14 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 	Lump* topLump = Lump::set("ss::ProjectData", true);
 	ssjson.clear();
 
+	if (checkFileVersion(proj->version, SPRITESTUDIO6_SSPJVERSION) == false)
+	{
+		std::cerr << "エラー：SpriteStudio Ver.5のプロジェクトは使用できません。\n";
+		std::cerr << "SpriteStudio Ver.6で保存する必要があります。\n";
+		convert_error_exit = true;	//エラーが発生コンバート失敗
+	}
+
+
 	topLump->add(Lump::s32Data(DATA_ID));
 	ssjson.insert(std::make_pair("dataId", picojson::value((double)DATA_ID)));
 	
@@ -365,7 +374,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		//全角チェック
 		if ( isZenkaku( &cellMap->name ) == true )
 		{
-			std::cerr << "エラー：全角が使用されている: " << cellMap->name << "\n";
+			std::cerr << "エラー：セルマップに全角が使用されている: " << cellMap->name << "\n";
 			convert_error_exit = true;	//エラーが発生コンバート失敗
 		}
 
@@ -410,6 +419,13 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			c.insert(std::make_pair("v2", picojson::value(v2)));
 
 			ssjson_cell.push_back(picojson::value(c));
+
+			//全角チェック
+			if (isZenkaku(&cell->name) == true)
+			{
+				std::cerr << "エラー：セルに全角が使用されている: " << cellMap->name << "\n";
+				convert_error_exit = true;	//エラーが発生コンバート失敗
+			}
 		}
 	}
 	ssjson.insert(std::make_pair("cells", picojson::value(ssjson_cell)));
@@ -442,7 +458,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		//全角チェック
 		if ( isZenkaku( &animePack->name ) == true )
 		{
-			std::cerr << "エラー：全角が使用されている: " << animePack->name << "\n";
+			std::cerr << "エラー：ファイル名に全角が使用されている: " << animePack->name << "\n";
 			convert_error_exit = true;	//エラーが発生コンバート失敗
 		}
 		animePackData->add(partDataArray);
@@ -469,7 +485,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			//全角チェック
 			if ( isZenkaku( &part->name ) == true )
 			{
-				std::cerr << "エラー：全角が使用されている: " << part->name << "\n";
+				std::cerr << "エラー：パーツ名に全角が使用されている: " << part->name << "\n";
 				convert_error_exit = true;	//エラーが発生コンバート失敗
 			}
 			partData->add(Lump::s16Data(part->arrayIndex));
@@ -808,6 +824,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					if (part->type == SsPartType::mesh)
 					{
 						int meshsize = state->meshPart->ver_size;
+						meshData->add(Lump::s32Data((int)state->meshPart->isBind));	//バインドの有無
 						meshData->add(Lump::s32Data(meshsize));	//サイズ
 						ms2.push_back(picojson::value((double)meshsize));
 						int i;
@@ -1439,7 +1456,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				//全角チェック
 				if ( isZenkaku( &str ) == true )
 				{
-					std::cerr << "エラー：全角が使用されている: " << str << "\n";
+					std::cerr << "エラー：ラベルに全角が使用されている: " << str << "\n";
 					convert_error_exit = true;	//エラーが発生コンバート失敗
 				}
 
@@ -1863,7 +1880,14 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 	Lump* lump;
 	try
 	{
-		lump = parseParts(proj, imageBaseDir);
+		if (proj)
+		{
+			lump = parseParts(proj, imageBaseDir);
+		}
+		else
+		{
+			convert_error_exit = true;	//エラーが発生
+		}
 	}
 	catch (...)
 	{
@@ -1874,7 +1898,7 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 	{
 		//データにエラーがありコンバートを中止した
 		//ファイルの出力を行なわない
-		std::cerr << "データにエラーがありコンバートを中止した \n ファイルの出力を行なわない \n";
+		std::cerr << "データにエラーがありコンバートを中止しました \n";
 	}
 	else
 	{
