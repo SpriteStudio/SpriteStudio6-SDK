@@ -122,7 +122,7 @@ public:
 	std::list<SsPartState*>&		getPartSortList(){return sortList;}
 	std::vector<SsPartAndAnime>&	getPartAnime(){ return	partAnime; }
 	
-	template<typename mytype> int	SsGetKeyValue( int time , SsAttribute* attr , mytype&  value );
+	template<typename mytype> int	SsGetKeyValue( SsPart* part, int time , SsAttribute* attr , mytype&  value );
 	template<typename mytype> void	SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , mytype& v );
 	void	SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsCellValue& v );
 	void	SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsPartsColorAnime& v );

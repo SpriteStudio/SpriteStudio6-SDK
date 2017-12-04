@@ -825,6 +825,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					{
 						int meshsize = state->meshPart->ver_size;
 						meshData->add(Lump::s32Data((int)state->meshPart->isBind));	//バインドの有無
+						ms2.push_back(picojson::value((double)(int)state->meshPart->isBind));
 						meshData->add(Lump::s32Data(meshsize));	//サイズ
 						ms2.push_back(picojson::value((double)meshsize));
 						int i;
