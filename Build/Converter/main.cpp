@@ -890,6 +890,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						meshData->add(Lump::s32Data(0));
 						ms2.push_back(picojson::value(0.0));
 					}
+					ms.push_back(picojson::value(ms2));
 				}
 				a2.insert(std::make_pair("meshsDataIndices", picojson::value(ms)));
 			}
