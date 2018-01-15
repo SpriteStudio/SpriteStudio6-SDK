@@ -115,6 +115,9 @@ bool	SsAnimeDecoder::getFirstCell(SsPart* part , SsCellValue& out)
 //void	SsAnimeDecoder::setAnimation(SsModel*	model, SsAnimation* anime, SsAnimePack *animepack, SsCellMapList* cellmap, SsProject* sspj )
 void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellMapList* cellmap , SsProject* sspj )
 {
+	//プロジェクト情報の保存
+	project = sspj;
+
 	//セルマップリストを取得
 	curCellMapManager = cellmap;
 	curAnimation = anime;
@@ -1133,8 +1136,17 @@ void	SsAnimeDecoder::updateVertices(SsPart* part , SsPartAnime* anime , SsPartSt
 	//SsPoint2 * vtxOfs = vertexValue.offsets;
 	for (int i = 0; i < 4; ++i)
 	{
-		state->vertices[i * 3]		= vtxPosX[i] + (float)vtxOfs->x;
-		state->vertices[i * 3 + 1]	= vtxPosY[i] + (float)vtxOfs->y;
+		const SsProjectSetting projsetting = project->getProjectSetting();
+		if (projsetting.vertexAnimeFloat != 0 )	//頂点変形を少数で行う
+		{
+			state->vertices[i * 3] = vtxPosX[i] + (float)vtxOfs->x;
+			state->vertices[i * 3 + 1] = vtxPosY[i] + (float)vtxOfs->y;
+		}
+		else
+		{
+			state->vertices[i * 3] = vtxPosX[i] + (int)vtxOfs->x;
+			state->vertices[i * 3 + 1] = vtxPosY[i] + (int)vtxOfs->y;
+		}
 		state->vertices[i * 3 + 2]	= 0;
 
 		++vtxOfs;

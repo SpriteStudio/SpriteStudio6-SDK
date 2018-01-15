@@ -38,9 +38,10 @@ static const int DATA_VERSION_4			= 4;
 static const int DATA_VERSION_5			= 5;
 static const int DATA_VERSION_6			= 6;
 static const int DATA_VERSION_7			= 7;
+static const int DATA_VERSION_8			= 8;
 
 static const int DATA_ID				= 0x42505353;
-static const int CURRENT_DATA_VERSION	= DATA_VERSION_7;
+static const int CURRENT_DATA_VERSION	= DATA_VERSION_8;
 
 
 enum {
@@ -1074,11 +1075,27 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					{
 						for (int vtxNo = 0; vtxNo < 4; vtxNo++)
 						{
-							// 小数点以下切り捨てで
-							if ((int)state->vertexValue.offsets[vtxNo].x != 0
-							 || (int)state->vertexValue.offsets[vtxNo].y != 0)
+							if (proj->settings.vertexAnimeFloat != 0)
 							{
-								vt_flags |= 1 << vtxNo;
+								// 小数対応
+								if (
+								     ( state->vertexValue.offsets[vtxNo].x != 0.0f )
+								  || ( state->vertexValue.offsets[vtxNo].y != 0.0f)
+								   )
+								{
+									vt_flags |= 1 << vtxNo;
+								}
+							}
+							else
+							{
+								// 小数点以下切り捨てで
+								if (
+								     ( (int)state->vertexValue.offsets[vtxNo].x != 0 )
+								  || ( (int)state->vertexValue.offsets[vtxNo].y != 0 )
+								   )
+								{
+									vt_flags |= 1 << vtxNo;
+								}
 							}
 						}
 
@@ -1283,10 +1300,21 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						{
 							if (vt_flags & (1 << vtxNo))
 							{
-								frameData->add(Lump::s16Data((int)state->vertexValue.offsets[vtxNo].x));
-								fs2.push_back(picojson::value((double)(int)state->vertexValue.offsets[vtxNo].x));
-								frameData->add(Lump::s16Data((int)state->vertexValue.offsets[vtxNo].y));
-								fs2.push_back(picojson::value((double)(int)state->vertexValue.offsets[vtxNo].y));
+								if (proj->settings.vertexAnimeFloat != 0)
+								{
+									//頂点変形の少数対応
+									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].x));
+									fs2.push_back(picojson::value((double)state->vertexValue.offsets[vtxNo].x));
+									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].y));
+									fs2.push_back(picojson::value((double)state->vertexValue.offsets[vtxNo].y));
+								}
+								else
+								{
+									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].x));
+									fs2.push_back(picojson::value((double)(int)state->vertexValue.offsets[vtxNo].x));
+									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].y));
+									fs2.push_back(picojson::value((double)(int)state->vertexValue.offsets[vtxNo].y));
+								}
 							}
 						}
 					}

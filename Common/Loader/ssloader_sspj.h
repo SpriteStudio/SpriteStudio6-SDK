@@ -39,8 +39,12 @@ public:
 	SsTexWrapMode::_enum		wrapMode;					//!< テクスチャのラップモード
 	SsTexFilterMode::_enum		filterMode;					//!< テクスチャのフィルタモード
 
+	int							vertexAnimeFloat;			//!< 頂点変形アトリビュートの少数対応
 
-	SsProjectSetting() {}
+	SsProjectSetting() 
+	{
+		vertexAnimeFloat = false;							//!< SpriteStudio6.1以前のデータの場合は存在しないのでOFFを初期値とする
+	}
 	
 	///シリアライズのための宣言です。
 	SSSERIALIZE_BLOCK
@@ -54,7 +58,8 @@ public:
 		SSAR_DECLARE(queryExportBaseDirectory);
 		SSAR_DECLARE_ENUM( wrapMode );
 		SSAR_DECLARE_ENUM( filterMode );
-		
+		SSAR_DECLARE_ENUM(vertexAnimeFloat);
+
 	}
 };
 

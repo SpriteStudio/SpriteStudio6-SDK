@@ -42,6 +42,9 @@ public:
 
 private:
 
+	///プロジェクト情報
+	SsProject* project;
+		
 	///パーツ情報とパーツアニメーションを結びつけアレイにしたもの
 	std::vector<SsPartAndAnime>		partAnime;
 	std::vector<SsPartAndAnime>		setupPartAnime;		///セットアップデータ
@@ -112,8 +115,7 @@ public:
 	int		getAnimeStartFrame() { return curAnimeStartFrame; }
 	int		getAnimeEndFrame() { return curAnimeEndFrame; }
 	int		getAnimeTotalFrame() { return curAnimeTotalFrame; }
-	int		getAnimeFPS() {
-		return curAnimeFPS; }		
+	int		getAnimeFPS() {	return curAnimeFPS; }		
 
 	size_t	getStateNum() { return stateNum; }
 	SsPartState*  getPartState() { return partState; }
