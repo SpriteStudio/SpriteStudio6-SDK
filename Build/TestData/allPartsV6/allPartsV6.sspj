@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<SpriteStudioProject version="2.00.00">
+<SpriteStudioProject version="2.00.01">
 	<name>allPartsV6</name>
 	<exportPath></exportPath>
 	<settings>
@@ -125,6 +125,7 @@
 		<convertImageToPMA>0</convertImageToPMA>
 		<blendImageAsPMA>0</blendImageAsPMA>
 		<unpremultiplyAlpha>0</unpremultiplyAlpha>
+		<vertexAnimeFloat>1</vertexAnimeFloat>
 	</settings>
 	<animeSettings>
 		<fps>60</fps>
@@ -168,4 +169,5 @@
 	<lastEffectFile>NewEffect.ssee</lastEffectFile>
 	<lastCell>NewCell_17</lastCell>
 	<setupmode>0</setupmode>
+	<expandAnimation />
 </SpriteStudioProject>
