@@ -12,7 +12,6 @@
 
 
 //stdでののforeach宣言　
-#define USE_TRIANGLE_FIN (0)
 
 //乱数シードに利用するユニークIDを作成します。
 int seedMakeID = 123456;
@@ -1093,7 +1092,7 @@ void	SsAnimeDecoder::updateVertices(SsPart* part , SsPartAnime* anime , SsPartSt
 	//きれいな頂点変形に対応
 #if USE_TRIANGLE_FIN
 
-	if ( state->is_color_blend || state->is_vertex_transform )
+	if ( state->is_parts_color || state->is_vertex_transform )
 	{
 
 		SsVector2	vertexCoordinateLU = SsVector2( sx + (float)vtxOfs[0].x , sy + (float)vtxOfs[0].y );// : 左上頂点座標（ピクセル座標系）
