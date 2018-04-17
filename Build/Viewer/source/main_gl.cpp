@@ -16,11 +16,12 @@
 
 
 #ifdef _WIN32
-#pragma comment(lib, "glew32.lib")
 
 #ifdef _DEBUG
+#pragma comment(lib, "glew32d.lib")
 #pragma comment(lib, "glfw3d.lib")
 #else
+#pragma comment(lib, "glew32.lib")
 #pragma comment(lib, "glfw3.lib")
 #endif
 #pragma comment(lib, "opengl32.lib")
