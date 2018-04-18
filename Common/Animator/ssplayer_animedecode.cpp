@@ -133,11 +133,14 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 		partAnimeDic[panime->partName] = panime;
 	}
 	//セットアップデータの作成
-	panum = model->setupAnimation->partAnimes.size();
-	for (size_t i = 0; i < panum; i++)
+	if (model->setupAnimation)
 	{
-		SsPartAnime* panime = model->setupAnimation->partAnimes[i];
-		setupPartAnimeDic[panime->partName] = panime;
+		panum = model->setupAnimation->partAnimes.size();
+		for (size_t i = 0; i < panum; i++)
+		{
+			SsPartAnime* panime = model->setupAnimation->partAnimes[i];
+			setupPartAnimeDic[panime->partName] = panime;
+		}
 	}
 
 	//パーツとパーツアニメを関連付ける

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="pETMlY" name="SSViewer2" displaySplashScreen="1" reportAppUsage="1"
+              splashScreenColour="Dark" projectType="guiapp" version="1.0.0"
+              bundleIdentifier="com.yourcompany.NewProject" includeBinaryInAppConfig="1"
+              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.0"
+              headerPath="">
+  <MAINGROUP id="PqiQba" name="SSViewer2">
+    <GROUP id="{9D43D578-FD48-58A0-B214-36284BAFD7DC}" name="Source">
+      <FILE id="mjf9fG" name="SsProject.cpp" compile="1" resource="0" file="Source/SsProject.cpp"/>
+      <FILE id="y9e5p8" name="SsProject.h" compile="0" resource="0" file="Source/SsProject.h"/>
+      <FILE id="yheWXH" name="Animationcontroller.cpp" compile="1" resource="0"
+            file="Source/Animationcontroller.cpp"/>
+      <FILE id="EZX30l" name="Animationcontroller.h" compile="0" resource="0"
+            file="Source/Animationcontroller.h"/>
+      <GROUP id="{4203E8DF-D14A-779D-3C86-CEF513B8E5C6}" name="SDKs">
+        <GROUP id="{CA9C878F-47ED-13F2-0E5F-0771FE249849}" name="Animator">
+          <FILE id="Bb5E3q" name="ISsEffectRender.h" compile="0" resource="0"
+                file="../../Common/Animator/ISsEffectRender.h"/>
+          <FILE id="OG73CO" name="MersenneTwister.h" compile="0" resource="0"
+                file="../../Common/Animator/MersenneTwister.h"/>
+          <FILE id="FDVZFP" name="ssplayer_animedecode.cpp" compile="1" resource="0"
+                file="../../Common/Animator/ssplayer_animedecode.cpp"/>
+          <FILE id="c119bR" name="ssplayer_animedecode.h" compile="0" resource="0"
+                file="../../Common/Animator/ssplayer_animedecode.h"/>
+          <FILE id="ZXYEep" name="ssplayer_cellmap.cpp" compile="1" resource="0"
+                file="../../Common/Animator/ssplayer_cellmap.cpp"/>
+          <FILE id="NtThhE" name="ssplayer_cellmap.h" compile="0" resource="0"
+                file="../../Common/Animator/ssplayer_cellmap.h"/>
+          <FILE id="zCGEgn" name="ssplayer_effect.cpp" compile="1" resource="0"
+                file="../../Common/Animator/ssplayer_effect.cpp"/>
+          <FILE id="Lab01L" name="ssplayer_effect.h" compile="0" resource="0"
+                file="../../Common/Animator/ssplayer_effect.h"/>
+          <FILE id="fJhGfv" name="ssplayer_effect2.cpp" compile="1" resource="0"
+                file="../../Common/Animator/ssplayer_effect2.cpp"/>
+          <FILE id="RIXYsq" name="ssplayer_effect2.h" compile="0" resource="0"
+                file="../../Common/Animator/ssplayer_effect2.h"/>
+          <FILE id="Nbuh25" name="ssplayer_effectfunction.cpp" compile="1" resource="0"
+                file="../../Common/Animator/ssplayer_effectfunction.cpp"/>
+          <FILE id="B97ZLh" name="ssplayer_effectfunction.h" compile="0" resource="0"
+                file="../../Common/Animator/ssplayer_effectfunction.h"/>
+          <FILE id="tPS4H2" name="ssplayer_macro.h" compile="0" resource="0"
+                file="../../Common/Animator/ssplayer_macro.h"/>
+          <FILE id="gzENql" name="ssplayer_matrix.cpp" compile="1" resource="0"
+                file="../../Common/Animator/ssplayer_matrix.cpp"/>
+          <FILE id="s4xpuJ" name="ssplayer_matrix.h" compile="0" resource="0"
+                file="../../Common/Animator/ssplayer_matrix.h"/>
+          <FILE id="mJWfXO" name="ssplayer_mesh.cpp" compile="1" resource="0"
+                file="../../Common/Animator/ssplayer_mesh.cpp"/>
+          <FILE id="LJUcKM" name="ssplayer_mesh.h" compile="0" resource="0" file="../../Common/Animator/ssplayer_mesh.h"/>
+          <FILE id="FPMZVB" name="ssplayer_PartState.cpp" compile="1" resource="0"
+                file="../../Common/Animator/ssplayer_PartState.cpp"/>
+          <FILE id="HlzDvk" name="ssplayer_PartState.h" compile="0" resource="0"
+                file="../../Common/Animator/ssplayer_PartState.h"/>
+          <FILE id="K3nQ8o" name="ssplayer_render.cpp" compile="1" resource="0"
+                file="../../Common/Animator/ssplayer_render.cpp"/>
+          <FILE id="HFfCbX" name="ssplayer_render.h" compile="0" resource="0"
+                file="../../Common/Animator/ssplayer_render.h"/>
+          <FILE id="xMJuvM" name="ssplayer_types.h" compile="0" resource="0"
+                file="../../Common/Animator/ssplayer_types.h"/>
+          <FILE id="Cjh6oB" name="xorshift32.h" compile="0" resource="0" file="../../Common/Animator/xorshift32.h"/>
+        </GROUP>
+        <GROUP id="{C678D3BC-214F-846A-5218-FE4DA497A73E}" name="Drawer">
+          <GROUP id="{1DD98E2E-B09C-F8A3-93F1-9D964103B687}" name="GLSL">
+            <FILE id="j5kRuY" name="sprite.fs" compile="0" resource="1" file="../../Common/Drawer/GLSL/sprite.fs"/>
+            <FILE id="DURMZR" name="sprite.vs" compile="0" resource="1" file="../../Common/Drawer/GLSL/sprite.vs"/>
+            <FILE id="KGBcbV" name="sprite_pot.fs" compile="0" resource="1" file="../../Common/Drawer/GLSL/sprite_pot.fs"/>
+          </GROUP>
+          <FILE id="KDUNB6" name="ssplayer_render_gl.cpp" compile="1" resource="0"
+                file="../../Common/Drawer/ssplayer_render_gl.cpp"/>
+          <FILE id="Onvx0N" name="ssplayer_render_gl.h" compile="0" resource="0"
+                file="../../Common/Drawer/ssplayer_render_gl.h"/>
+          <FILE id="G790Id" name="ssplayer_shader_gl.cpp" compile="1" resource="0"
+                file="../../Common/Drawer/ssplayer_shader_gl.cpp"/>
+          <FILE id="jFfYoa" name="ssplayer_shader_gl.h" compile="0" resource="0"
+                file="../../Common/Drawer/ssplayer_shader_gl.h"/>
+        </GROUP>
+        <GROUP id="{70FA9544-6A59-DBD3-4850-937375833A84}" name="Helper">
+          <GROUP id="{C6E6990A-142A-81E3-099A-E9FD5A5B038A}" name="OpenGL">
+            <FILE id="bQ7xG2" name="SSTextureGL.cpp" compile="1" resource="0" file="../../Common/Helper/OpenGL/SSTextureGL.cpp"/>
+            <FILE id="hXajwn" name="SSTextureGL.h" compile="0" resource="0" file="../../Common/Helper/OpenGL/SSTextureGL.h"/>
+          </GROUP>
+          <FILE id="VLlfcP" name="DebugPrint.cpp" compile="1" resource="0" file="../../Common/Helper/DebugPrint.cpp"/>
+          <FILE id="dmoqYP" name="DebugPrint.h" compile="0" resource="0" file="../../Common/Helper/DebugPrint.h"/>
+          <FILE id="PwM39V" name="IsshTexture.cpp" compile="1" resource="0" file="../../Common/Helper/IsshTexture.cpp"/>
+          <FILE id="MQkQWy" name="IsshTexture.h" compile="0" resource="0" file="../../Common/Helper/IsshTexture.h"/>
+          <FILE id="yW5SLK" name="ssHelper.h" compile="0" resource="0" file="../../Common/Helper/ssHelper.h"/>
+          <FILE id="cJgPgm" name="sshObject.cpp" compile="1" resource="0" file="../../Common/Helper/sshObject.cpp"/>
+          <FILE id="PATnVr" name="sshObject.h" compile="0" resource="0" file="../../Common/Helper/sshObject.h"/>
+          <FILE id="CX4FR1" name="sshScene.cpp" compile="1" resource="0" file="../../Common/Helper/sshScene.cpp"/>
+          <FILE id="sIqdJe" name="sshScene.h" compile="0" resource="0" file="../../Common/Helper/sshScene.h"/>
+          <FILE id="qp9gKt" name="sshTask.cpp" compile="1" resource="0" file="../../Common/Helper/sshTask.cpp"/>
+          <FILE id="hMPLJr" name="sshTask.h" compile="0" resource="0" file="../../Common/Helper/sshTask.h"/>
+          <FILE id="mfh4kp" name="sshTextureBMP.cpp" compile="1" resource="0"
+                file="../../Common/Helper/sshTextureBMP.cpp"/>
+          <FILE id="ngIKfq" name="sshTextureBMP.h" compile="0" resource="0" file="../../Common/Helper/sshTextureBMP.h"/>
+          <FILE id="Jro4Pb" name="stb_image.c" compile="1" resource="0" file="../../Common/Helper/stb_image.c"/>
+          <FILE id="mCrhMT" name="stb_image.h" compile="0" resource="0" file="../../Common/Helper/stb_image.h"/>
+          <FILE id="c9M0Xi" name="XPFileOpenDlg.cpp" compile="1" resource="0"
+                file="../../Common/Helper/XPFileOpenDlg.cpp"/>
+          <FILE id="FuIBdn" name="XPFileOpenDlg.h" compile="0" resource="0" file="../../Common/Helper/XPFileOpenDlg.h"/>
+        </GROUP>
+        <GROUP id="{656FD655-C189-73D9-8DDC-EE997AFB15AF}" name="Loader">
+          <GROUP id="{8CA7D934-1BA2-8B1B-A6D9-505F32BF24D9}" name="babel">
+            <FILE id="Iz5ucM" name="apple.csv" compile="0" resource="1" file="../../Common/Loader/babel/apple.csv"/>
+            <FILE id="WF2HIu" name="babel.cpp" compile="1" resource="0" file="../../Common/Loader/babel/babel.cpp"/>
+            <FILE id="HL0i2m" name="babel.h" compile="0" resource="0" file="../../Common/Loader/babel/babel.h"/>
+            <FILE id="cAgvpO" name="c932-uni.dat" compile="0" resource="1" file="../../Common/Loader/babel/c932-uni.dat"/>
+            <FILE id="FS6YNV" name="cp932.csv" compile="0" resource="1" file="../../Common/Loader/babel/cp932.csv"/>
+            <FILE id="T1qJYN" name="euc-scr.dat" compile="0" resource="1" file="../../Common/Loader/babel/euc-scr.dat"/>
+            <FILE id="dJf67Q" name="euc-sjis.dat" compile="0" resource="1" file="../../Common/Loader/babel/euc-sjis.dat"/>
+            <FILE id="cHmmpN" name="euc-uni.csv" compile="0" resource="1" file="../../Common/Loader/babel/euc-uni.csv"/>
+            <FILE id="X2DmT3" name="euc2-uni.dat" compile="0" resource="1" file="../../Common/Loader/babel/euc2-uni.dat"/>
+            <FILE id="QGB0SH" name="euc3-uni.dat" compile="0" resource="1" file="../../Common/Loader/babel/euc3-uni.dat"/>
+            <FILE id="Uh9nSB" name="scoremap.csv" compile="0" resource="1" file="../../Common/Loader/babel/scoremap.csv"/>
+            <FILE id="fhUHQR" name="sjis-euc.csv" compile="0" resource="1" file="../../Common/Loader/babel/sjis-euc.csv"/>
+            <FILE id="BmWjYr" name="sjis-euc.dat" compile="0" resource="1" file="../../Common/Loader/babel/sjis-euc.dat"/>
+            <FILE id="ZxHWEv" name="sjis-scr.dat" compile="0" resource="1" file="../../Common/Loader/babel/sjis-scr.dat"/>
+            <FILE id="RSpoPG" name="uni-c932.dat" compile="0" resource="1" file="../../Common/Loader/babel/uni-c932.dat"/>
+            <FILE id="qmI0TF" name="uni-euc.dat" compile="0" resource="1" file="../../Common/Loader/babel/uni-euc.dat"/>
+            <FILE id="ppnqaJ" name="uni-scr.dat" compile="0" resource="1" file="../../Common/Loader/babel/uni-scr.dat"/>
+            <FILE id="QfCR6N" name="uni-utc.dat" compile="0" resource="1" file="../../Common/Loader/babel/uni-utc.dat"/>
+            <FILE id="cwCSb1" name="utc-uni.dat" compile="0" resource="1" file="../../Common/Loader/babel/utc-uni.dat"/>
+            <FILE id="mWM6P0" name="utc.csv" compile="0" resource="1" file="../../Common/Loader/babel/utc.csv"/>
+          </GROUP>
+          <GROUP id="{B85DCC7B-1842-C5D1-9DC8-F92CD30E79AA}" name="tinyxml2">
+            <FILE id="CgfS4E" name="tinyxml2.cpp" compile="1" resource="0" file="../../Common/Loader/tinyxml2/tinyxml2.cpp"/>
+            <FILE id="PzdR1X" name="tinyxml2.h" compile="0" resource="0" file="../../Common/Loader/tinyxml2/tinyxml2.h"/>
+          </GROUP>
+          <FILE id="y27LBs" name="ssarchiver.cpp" compile="1" resource="0" file="../../Common/Loader/ssarchiver.cpp"/>
+          <FILE id="Lv2t7N" name="ssarchiver.h" compile="0" resource="0" file="../../Common/Loader/ssarchiver.h"/>
+          <FILE id="bJqP6m" name="ssattribute.cpp" compile="1" resource="0" file="../../Common/Loader/ssattribute.cpp"/>
+          <FILE id="qQlOxj" name="ssattribute.h" compile="0" resource="0" file="../../Common/Loader/ssattribute.h"/>
+          <FILE id="NDBjsG" name="SsEffectBehavior.cpp" compile="1" resource="0"
+                file="../../Common/Loader/SsEffectBehavior.cpp"/>
+          <FILE id="SQZnj2" name="SsEffectBehavior.h" compile="0" resource="0"
+                file="../../Common/Loader/SsEffectBehavior.h"/>
+          <FILE id="ty0ZK3" name="SsEffectElement.cpp" compile="1" resource="0"
+                file="../../Common/Loader/SsEffectElement.cpp"/>
+          <FILE id="lEYZ0r" name="SsEffectElement.h" compile="0" resource="0"
+                file="../../Common/Loader/SsEffectElement.h"/>
+          <FILE id="L3OGYT" name="ssInterpolation.cpp" compile="1" resource="0"
+                file="../../Common/Loader/ssInterpolation.cpp"/>
+          <FILE id="UK7LJJ" name="ssInterpolation.h" compile="0" resource="0"
+                file="../../Common/Loader/ssInterpolation.h"/>
+          <FILE id="e4NUdX" name="ssloader.h" compile="0" resource="0" file="../../Common/Loader/ssloader.h"/>
+          <FILE id="WKwEDp" name="ssloader_ssae.cpp" compile="1" resource="0"
+                file="../../Common/Loader/ssloader_ssae.cpp"/>
+          <FILE id="M6BBea" name="ssloader_ssae.h" compile="0" resource="0" file="../../Common/Loader/ssloader_ssae.h"/>
+          <FILE id="RVSlv3" name="ssloader_ssce.cpp" compile="1" resource="0"
+                file="../../Common/Loader/ssloader_ssce.cpp"/>
+          <FILE id="qpEc66" name="ssloader_ssce.h" compile="0" resource="0" file="../../Common/Loader/ssloader_ssce.h"/>
+          <FILE id="GK11A4" name="ssloader_ssee.cpp" compile="1" resource="0"
+                file="../../Common/Loader/ssloader_ssee.cpp"/>
+          <FILE id="M5sUhv" name="ssloader_ssee.h" compile="0" resource="0" file="../../Common/Loader/ssloader_ssee.h"/>
+          <FILE id="bOCIyg" name="ssloader_sspj.cpp" compile="1" resource="0"
+                file="../../Common/Loader/ssloader_sspj.cpp"/>
+          <FILE id="UL613C" name="ssloader_sspj.h" compile="0" resource="0" file="../../Common/Loader/ssloader_sspj.h"/>
+          <FILE id="ZoNT8H" name="ssstring_uty.cpp" compile="1" resource="0"
+                file="../../Common/Loader/ssstring_uty.cpp"/>
+          <FILE id="rPOPIV" name="ssstring_uty.h" compile="0" resource="0" file="../../Common/Loader/ssstring_uty.h"/>
+          <FILE id="XLnsUi" name="sstypes.cpp" compile="1" resource="0" file="../../Common/Loader/sstypes.cpp"/>
+          <FILE id="cJtg3a" name="sstypes.h" compile="0" resource="0" file="../../Common/Loader/sstypes.h"/>
+          <FILE id="VFkBfI" name="ssvalue.cpp" compile="1" resource="0" file="../../Common/Loader/ssvalue.cpp"/>
+          <FILE id="BHdNfT" name="ssvalue.h" compile="0" resource="0" file="../../Common/Loader/ssvalue.h"/>
+        </GROUP>
+      </GROUP>
+      <FILE id="PHQ573" name="MainComponent.cpp" compile="1" resource="0"
+            file="Source/MainComponent.cpp"/>
+      <FILE id="iXDnD3" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="VlcLF5" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" enablePluginBinaryCopyStep="1" isDebug="1" optimisation="1"
+                       linkTimeOptimisation="0" targetName="NewProject"/>
+        <CONFIGURATION name="Release" enablePluginBinaryCopyStep="1" isDebug="0" optimisation="3"
+                       linkTimeOptimisation="1" targetName="NewProject"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_video" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="D:/JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+    <VS2017 targetFolder="Builds/VisualStudio2017" windowsTargetPlatformVersion="10.0.16299.0">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
+                       linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="NewProject"
+                       libraryPath="$(SolutionDir)\..\..\lib" headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;&#10;"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
+                       linkTimeOptimisation="1" isDebug="0" optimisation="3" targetName="NewProject"
+                       libraryPath="$(SolutionDir)\..\..\lib" headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;&#10;"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_video" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="D:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="D:/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2017>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <JUCEOPTIONS/>
+</JUCERPROJECT>

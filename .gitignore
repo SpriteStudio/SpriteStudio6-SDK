@@ -69,5 +69,11 @@ Build/ssHelper.dir/
 Build/ssloader.dir/
 Build/viewer_sample_dx9.dir/
 Build/viewer_sample_gl.dir/
-Build/
 *.log
+Build/*.dll
+Build/*.lib
+Build/*.exe
+Build/.vs/
+Build/RelWithDebInfo/
+Build/Ss6Converter.dir/
+Build/Viewer2/Builds/VisualStudio2017/.vs/

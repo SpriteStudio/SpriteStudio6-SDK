@@ -250,6 +250,7 @@ bool	SsXmlIArchiver::dc(const char* name, std::map<SsString, int>& _map)
 	_map.clear();
 
 	XMLElement* e = getxml()->FirstChildElement(name);
+	if (e == 0)return false;
 	e = e->FirstChildElement("item");
 
 	while (e)
