@@ -19,7 +19,6 @@
 *.suo
 *.vcproj.*
 AntTweakBar.dll
-glew32.dll
 
 CMakeCache.txt
 CMakeFiles
@@ -70,10 +69,3 @@ Build/ssloader.dir/
 Build/viewer_sample_dx9.dir/
 Build/viewer_sample_gl.dir/
 *.log
-Build/*.dll
-Build/*.lib
-Build/*.exe
-Build/.vs/
-Build/RelWithDebInfo/
-Build/Ss6Converter.dir/
-Build/Viewer2/Builds/VisualStudio2017/.vs/
