@@ -17,9 +17,9 @@ struct SsPartState
 {
 	int				index;				///パーツのインデックスと一対一になるID
 
-	float			vertices[3 * 5];	///< 座標
-	float			colors[4 * 4];		///< カラー (４頂点分）
-	float			uvs[2 * 5];			///< UV		(４隅＋中央)
+	float			vertices[3 * 10];	///< 座標
+	float			colors[4 * 10];		///< カラー (４頂点分）
+	float			uvs[2 * 10];		///< UV		(４隅＋中央)
 	float			matrix[4 * 4];		///< 行列
 	float			matrixLocal[4 * 4];	///< ローカル行列
 

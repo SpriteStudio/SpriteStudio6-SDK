@@ -2,7 +2,7 @@
 PROJECT(sssdk)
 
 IF(WIN32)
-    #環境で変えてくださいね
+	#環境により変更してください
 	#SET(BOOST_ROOT "C:/boost-1_64_0")
 	#SET(BOOST_ROOT "C:/Boost/include/boost-1_64/")
 	#SET(BOOST_PYTHON_LIB "C:/Boost/lib" )

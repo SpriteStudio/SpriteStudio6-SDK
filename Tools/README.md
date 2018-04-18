@@ -13,7 +13,3 @@ SpriteStudio 6 で作成したデータを利用するためのルーツが含�
 
 - viewer_sample_Mac.zip
   - SDKを利用したsspjからアニメを再生するMac版ビュワーです。
-
-- plistConverter.zip
-  - SpriteStudio 6 SDKから出力したスプライトシート(plist)をC#等で利用しやすいxml形式に変換するコンバータです。
-

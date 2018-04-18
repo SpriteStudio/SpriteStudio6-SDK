@@ -37,9 +37,11 @@ static const int DATA_VERSION_3         = 3;
 static const int DATA_VERSION_4			= 4;
 static const int DATA_VERSION_5			= 5;
 static const int DATA_VERSION_6			= 6;
+static const int DATA_VERSION_7			= 7;
+static const int DATA_VERSION_8			= 8;
 
 static const int DATA_ID				= 0x42505353;
-static const int CURRENT_DATA_VERSION	= DATA_VERSION_6;
+static const int CURRENT_DATA_VERSION	= DATA_VERSION_8;
 
 
 enum {
@@ -285,6 +287,15 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 	Lump* topLump = Lump::set("ss::ProjectData", true);
 	ssjson.clear();
 
+	if (checkFileVersion(proj->version, SPRITESTUDIO6_SSPJVERSION) == false)
+	{
+		std::cerr << "エラー：SpriteStudio Ver.5のプロジェクトは使用できません。\n";
+		std::cerr << "SpriteStudio Ver.6.xで保存する必要があります。\n";
+		convert_error_exit = true;	//エラーが発生コンバート失敗
+		return 0;
+	}
+
+
 	topLump->add(Lump::s32Data(DATA_ID));
 	ssjson.insert(std::make_pair("dataId", picojson::value((double)DATA_ID)));
 	
@@ -325,8 +336,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 	//セルマップ警告
 	if (proj->cellmapList.size() == 0)
 	{
-		std::cerr << "警告：セルマップが存在しない" << "\n";
+		std::cerr << "警告：セルマップが存在しません。" << "\n";
 		convert_error_exit = true;	//エラーが発生コンバート失敗
+		return 0;
 	}
 	// セルの情報
 	picojson::array ssjson_cell;
@@ -365,10 +377,17 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		//全角チェック
 		if ( isZenkaku( &cellMap->name ) == true )
 		{
-			std::cerr << "エラー：全角が使用されている: " << cellMap->name << "\n";
+			std::cerr << "エラー：セルマップに全角が使用されています。半角英数でリネームしてください。: " << cellMap->name << "\n";
 			convert_error_exit = true;	//エラーが発生コンバート失敗
 		}
 
+		if (cellMap->cells.size() == 0)
+		{
+			//セルマップにセルが１つも登録されていない場合はエラーにする
+			std::cerr << "エラー：セルマップにセルが存在しません。セルを１つ以上作成してください。: " << cellMap->name << "\n";
+			convert_error_exit = true;	//エラーが発生コンバート失敗
+			return 0;
+		}
 		for (size_t cellIndex = 0; cellIndex < cellMap->cells.size(); cellIndex++)
 		{
 			const SsCell* cell = cellMap->cells[cellIndex];
@@ -410,6 +429,14 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			c.insert(std::make_pair("v2", picojson::value(v2)));
 
 			ssjson_cell.push_back(picojson::value(c));
+
+			//全角チェック
+			if (isZenkaku(&cell->name) == true)
+			{
+				std::cerr << "エラー：セルに全角が使用されています。半角英数でリネームしてください。: " << cell->name << "\n";
+				convert_error_exit = true;	//エラーが発生コンバート失敗
+				return 0;
+			}
 		}
 	}
 	ssjson.insert(std::make_pair("cells", picojson::value(ssjson_cell)));
@@ -418,8 +445,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 	//アニメーション警告
 	if (proj->animeList.size() == 0)
 	{
-		std::cerr << "警告：アニメーションが存在しない" << "\n";
+		std::cerr << "警告：アニメーションが存在しません" << "\n";
 		convert_error_exit = true;	//エラーが発生コンバート失敗
+		return 0;
 	}
 	picojson::array ssjson_anime;
 	// パーツ、アニメ情報
@@ -442,8 +470,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		//全角チェック
 		if ( isZenkaku( &animePack->name ) == true )
 		{
-			std::cerr << "エラー：全角が使用されている: " << animePack->name << "\n";
+			std::cerr << "エラー：ファイル名に全角が使用されています。半角英数でリネームしてください。: " << animePack->name << "\n";
 			convert_error_exit = true;	//エラーが発生コンバート失敗
+			return 0;
 		}
 		animePackData->add(partDataArray);
 		animePackData->add(animeDataArray);
@@ -469,8 +498,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			//全角チェック
 			if ( isZenkaku( &part->name ) == true )
 			{
-				std::cerr << "エラー：全角が使用されている: " << part->name << "\n";
+				std::cerr << "エラー：パーツ名に全角が使用されています。半角英数でリネームしてください。: " << part->name << "\n";
 				convert_error_exit = true;	//エラーが発生コンバート失敗
+				return 0;
 			}
 			partData->add(Lump::s16Data(part->arrayIndex));
 			p.insert(std::make_pair("index", picojson::value((double)part->arrayIndex)));
@@ -501,7 +531,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					{
 						partData->add(Lump::s16Data(SsPartType::null));
 						p.insert(std::make_pair("type", picojson::value()));
-						std::cerr << "ワーニング：参照のないインスタンスパーツがある: " << animePack->name << ".ssae " << part->name << "\n";
+						std::cerr << "警告：参照のないインスタンスパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
 					}
 					else
 					{
@@ -517,7 +547,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					partData->add(Lump::s16Data(SsPartType::null));
 					p.insert(std::make_pair("type", picojson::value()));
 					//未実装　ワーニングを表示しNULLパーツにする
-					std::cerr << "ワーニング：参照のないエフェクトパーツがある: " << animePack->name << ".ssae " << part->name << "\n";
+					std::cerr << "警告：参照のないエフェクトパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
 				}
 				else
 				{
@@ -527,7 +557,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				break;
 			default:
 				//未対応パーツ　ワーニングを表示しNULLパーツにする
-				std::cerr << "ワーニング：未対応のパーツ種別が使われている: " << animePack->name << ".ssae " << part->name << "\n";
+				std::cerr << "警告：未対応のパーツ種別が使われています: " << animePack->name << ".ssae " << part->name << "\n";
 				partData->add(Lump::s16Data(SsPartType::null));
 				p.insert(std::make_pair("type", picojson::value()));
 				break;
@@ -808,6 +838,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					if (part->type == SsPartType::mesh)
 					{
 						int meshsize = state->meshPart->ver_size;
+						meshData->add(Lump::s32Data((int)state->meshPart->isBind));	//バインドの有無
+						ms2.push_back(picojson::value((double)(int)state->meshPart->isBind));
 						meshData->add(Lump::s32Data(meshsize));	//サイズ
 						ms2.push_back(picojson::value((double)meshsize));
 						int i;
@@ -872,6 +904,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						meshData->add(Lump::s32Data(0));
 						ms2.push_back(picojson::value(0.0));
 					}
+					ms.push_back(picojson::value(ms2));
 				}
 				a2.insert(std::make_pair("meshsDataIndices", picojson::value(ms)));
 			}
@@ -1055,11 +1088,27 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					{
 						for (int vtxNo = 0; vtxNo < 4; vtxNo++)
 						{
-							// 小数点以下切り捨てで
-							if ((int)state->vertexValue.offsets[vtxNo].x != 0
-							 || (int)state->vertexValue.offsets[vtxNo].y != 0)
+							if (proj->settings.vertexAnimeFloat != 0)
 							{
-								vt_flags |= 1 << vtxNo;
+								// 小数対応
+								if (
+								     ( state->vertexValue.offsets[vtxNo].x != 0.0f )
+								  || ( state->vertexValue.offsets[vtxNo].y != 0.0f)
+								   )
+								{
+									vt_flags |= 1 << vtxNo;
+								}
+							}
+							else
+							{
+								// 小数点以下切り捨てで
+								if (
+								     ( (int)state->vertexValue.offsets[vtxNo].x != 0 )
+								  || ( (int)state->vertexValue.offsets[vtxNo].y != 0 )
+								   )
+								{
+									vt_flags |= 1 << vtxNo;
+								}
 							}
 						}
 
@@ -1264,10 +1313,21 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						{
 							if (vt_flags & (1 << vtxNo))
 							{
-								frameData->add(Lump::s16Data((int)state->vertexValue.offsets[vtxNo].x));
-								fs2.push_back(picojson::value((double)(int)state->vertexValue.offsets[vtxNo].x));
-								frameData->add(Lump::s16Data((int)state->vertexValue.offsets[vtxNo].y));
-								fs2.push_back(picojson::value((double)(int)state->vertexValue.offsets[vtxNo].y));
+								if (proj->settings.vertexAnimeFloat != 0)
+								{
+									//頂点変形の少数対応
+									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].x));
+									fs2.push_back(picojson::value((double)state->vertexValue.offsets[vtxNo].x));
+									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].y));
+									fs2.push_back(picojson::value((double)state->vertexValue.offsets[vtxNo].y));
+								}
+								else
+								{
+									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].x));
+									fs2.push_back(picojson::value((double)(int)state->vertexValue.offsets[vtxNo].x));
+									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].y));
+									fs2.push_back(picojson::value((double)(int)state->vertexValue.offsets[vtxNo].y));
+								}
 							}
 						}
 					}
@@ -1439,8 +1499,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				//全角チェック
 				if ( isZenkaku( &str ) == true )
 				{
-					std::cerr << "エラー：全角が使用されている: " << str << "\n";
+					std::cerr << "エラー：ラベルに全角が使用されています。半角英数でリネームしてください。: " << str << "\n";
 					convert_error_exit = true;	//エラーが発生コンバート失敗
+					return 0;
 				}
 
 //				labelData->add(Lump::s16Data((int)str.length()));				//文字列のサイズ
@@ -1834,7 +1895,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				case SsEffectFunctionType::Base:
 				default:
 					//未使用のコマンドが含まれている
-					std::cerr << "ワーニング：未使用のエフェクトコマンドが含まれている \n";
+					std::cerr << "警告：未使用のエフェクトコマンドが含まれています。 \n";
 					break;
 				}
 				cs.push_back(picojson::value(c));
@@ -1863,7 +1924,14 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 	Lump* lump;
 	try
 	{
-		lump = parseParts(proj, imageBaseDir);
+		if (proj)
+		{
+			lump = parseParts(proj, imageBaseDir);
+		}
+		else
+		{
+			convert_error_exit = true;	//エラーが発生
+		}
 	}
 	catch (...)
 	{
@@ -1874,7 +1942,7 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 	{
 		//データにエラーがありコンバートを中止した
 		//ファイルの出力を行なわない
-		std::cerr << "データにエラーがありコンバートを中止した \n ファイルの出力を行なわない \n";
+		std::cerr << "データにエラーがありコンバートを中止しました \n";
 	}
 	else
 	{

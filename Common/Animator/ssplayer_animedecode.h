@@ -18,6 +18,11 @@ class SsCelMapLinker;
 class SsMeshAnimator;
 
 
+//きれいな頂点変形に対応する場合は1にする。
+//４ポリゴンで変形します。
+//0の場合はZ型の２ポリゴンで変形します。
+#define USE_TRIANGLE_FIN (1)
+
 //パーツとアニメを関連付ける
 typedef std::pair<SsPart*,SsPartAnime*>	SsPartAndAnime;
 
@@ -42,6 +47,9 @@ public:
 
 private:
 
+	///プロジェクト情報
+	SsProject* project;
+		
 	///パーツ情報とパーツアニメーションを結びつけアレイにしたもの
 	std::vector<SsPartAndAnime>		partAnime;
 	std::vector<SsPartAndAnime>		setupPartAnime;		///セットアップデータ
@@ -112,8 +120,7 @@ public:
 	int		getAnimeStartFrame() { return curAnimeStartFrame; }
 	int		getAnimeEndFrame() { return curAnimeEndFrame; }
 	int		getAnimeTotalFrame() { return curAnimeTotalFrame; }
-	int		getAnimeFPS() {
-		return curAnimeFPS; }		
+	int		getAnimeFPS() {	return curAnimeFPS; }		
 
 	size_t	getStateNum() { return stateNum; }
 	SsPartState*  getPartState() { return partState; }
@@ -122,7 +129,7 @@ public:
 	std::list<SsPartState*>&		getPartSortList(){return sortList;}
 	std::vector<SsPartAndAnime>&	getPartAnime(){ return	partAnime; }
 	
-	template<typename mytype> int	SsGetKeyValue( int time , SsAttribute* attr , mytype&  value );
+	template<typename mytype> int	SsGetKeyValue( SsPart* part, int time , SsAttribute* attr , mytype&  value );
 	template<typename mytype> void	SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , mytype& v );
 	void	SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsCellValue& v );
 	void	SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsPartsColorAnime& v );

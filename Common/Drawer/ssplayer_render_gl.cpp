@@ -25,8 +25,6 @@
 
 //ISsRenderer*	SsCurrentRenderer::m_currentrender = 0;
 
-
-
 #define PROGRAMABLE_SHADER_ON (0)
 
 static const char* glshader_sprite_vs = 
@@ -708,6 +706,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 
 		int order = ( state->hFlip == true ? 1 : 0 ) + ( state->vFlip == true ? 1 :0 ) * 2;
 		float	uvs[10];
+		memset(uvs, 0, sizeof(float) * 10);
 		const int * uvorder = &sUvOrders[order][0];
 		for (int i = 0; i < 4; ++i)
 		{
@@ -720,8 +719,8 @@ void	SsRenderGL::renderPart( SsPartState* state )
 
 #if USE_TRIANGLE_FIN
 				//きれいな頂点変形への対応
-				uvs[4 * 2] += state->uvs[idx * 2];
-				uvs[4 * 2 + 1] += state->uvs[idx * 2 + 1];
+				uvs[4 * 2] += uvs[idx * 2];
+				uvs[4 * 2 + 1] += uvs[idx * 2 + 1];
 #endif
 			}
 			else
@@ -731,8 +730,8 @@ void	SsRenderGL::renderPart( SsPartState* state )
 
 #if USE_TRIANGLE_FIN
 				//きれいな頂点変形への対応
-				uvs[4 * 2] += state->uvs[idx * 2];
-				uvs[4 * 2 + 1] += state->uvs[idx * 2 + 1];
+				uvs[4 * 2] += uvs[idx * 2];
+				uvs[4 * 2 + 1] += uvs[idx * 2 + 1];
 #endif
 			}
 			++uvorder;
@@ -826,22 +825,22 @@ void	SsRenderGL::renderPart( SsPartState* state )
 			for (int i = 0; i < 4; i++)
 			{
 				int idx = i * 4;
-				a += colors[idx++];
-				r += colors[idx++];
-				g += colors[idx++];
-				b += colors[idx++];
+				a += state->colors[idx++];
+				r += state->colors[idx++];
+				g += state->colors[idx++];
+				b += state->colors[idx++];
 				rate += rates[i];
-		}
+			}
 
 			//きれいな頂点変形への対応
 			vertexID[4 * 2] = 4;
 			vertexID[4 * 2 + 1] = 4;
 
 			int idx = 4 * 4;
-			colors[idx++] = a / 4.0f;
-			colors[idx++] = r / 4.0f;
-			colors[idx++] = g / 4.0f;
-			colors[idx++] = b / 4.0f;
+			state->colors[idx++] = a / 4.0f;
+			state->colors[idx++] = r / 4.0f;
+			state->colors[idx++] = g / 4.0f;
+			state->colors[idx++] = b / 4.0f;
 			rates[4] = rate / 4.0f;
 #endif
 		}
@@ -886,7 +885,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 		//セルが無いので描画を行わない
 	}else{
 #if USE_TRIANGLE_FIN
-		if ( state->is_vertex_transform || state->is_color_blend )
+		if ( state->is_vertex_transform || state->is_parts_color)
 		{
 			static const GLubyte indices[] = { 4 , 3, 1, 0, 2 , 3};
 			glDrawElements(GL_TRIANGLE_FAN, 6, GL_UNSIGNED_BYTE, indices);

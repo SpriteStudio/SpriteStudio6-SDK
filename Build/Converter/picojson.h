@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2009-2010 Cybozu Labs, Inc.
  * Copyright 2011-2014 Kazuho Oku
  * All rights reserved.
@@ -229,6 +229,7 @@ inline value::value(int64_t i) : type_(int64_type), u_() {
 
 inline value::value(double n) : type_(number_type), u_() {
   if (
+#ifdef _WIN32
 #ifdef _MSC_VER
       !_finite(n)
 #elif __cplusplus >= 201103L || !(defined(isnan) && defined(isinf))
@@ -236,7 +237,10 @@ inline value::value(double n) : type_(number_type), u_() {
 #else
       isnan(n) || isinf(n)
 #endif
-          ) {
+#else
+      isnan(n) || isinf(n)
+#endif
+      ) {
     throw std::overflow_error("");
   }
   u_.number_ = n;

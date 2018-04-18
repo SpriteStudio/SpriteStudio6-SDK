@@ -12,7 +12,6 @@
 
 
 //stdでののforeach宣言　
-#define USE_TRIANGLE_FIN (0)
 
 //乱数シードに利用するユニークIDを作成します。
 int seedMakeID = 123456;
@@ -96,7 +95,7 @@ bool	SsAnimeDecoder::getFirstCell(SsPart* part , SsCellValue& out)
 			{
 				case SsAttributeKind::cell:		///< 参照セル
 				{
-					SsGetKeyValue(0, attr, out);
+					SsGetKeyValue(part, 0, attr, out);
 					retFlag = true;
 				}
 				break;
@@ -115,6 +114,9 @@ bool	SsAnimeDecoder::getFirstCell(SsPart* part , SsCellValue& out)
 //void	SsAnimeDecoder::setAnimation(SsModel*	model, SsAnimation* anime, SsAnimePack *animepack, SsCellMapList* cellmap, SsProject* sspj )
 void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellMapList* cellmap , SsProject* sspj )
 {
+	//プロジェクト情報の保存
+	project = sspj;
+
 	//セルマップリストを取得
 	curCellMapManager = cellmap;
 	curAnimation = anime;
@@ -575,7 +577,7 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 
 
 
-template<typename mytype> int	SsAnimeDecoder::SsGetKeyValue( int time , SsAttribute* attr , mytype&  value )
+template<typename mytype> int	SsAnimeDecoder::SsGetKeyValue(SsPart* part, int time , SsAttribute* attr , mytype&  value )
 {
 	int	useTime = 0;
 
@@ -590,7 +592,30 @@ template<typename mytype> int	SsAnimeDecoder::SsGetKeyValue( int time , SsAttrib
 	//無い場合は、最初のキーを採用する
 	if ( lkey == 0 )
 	{
-		lkey =  attr->firstKey();
+		if (curAnimation->isSetup == false)
+		{
+			//セットアップアニメから先頭キーを取得する
+			SsPartAnime* setupAnime = setupPartAnimeDic[part->name];
+			if ((setupAnime) && (!setupAnime->attributes.empty()))
+			{
+				SsAttributeList attList;
+				attList = setupAnime->attributes;
+				foreach(SsAttributeList, attList, e)
+				{
+					SsAttribute* setupattr = (*e);
+					if (setupattr->tag == attr->tag)
+					{
+						lkey = setupattr->firstKey();
+						break;
+					}
+				}
+			}
+		}
+		if (lkey == 0 )	//セットアップデータにキーが無い
+		{
+			lkey = attr->firstKey();	//現在のアニメの先頭キーを設定する
+		}
+
 		SsInterpolationValue( time , lkey , 0 , value );
 
 		useTime = lkey->time;
@@ -746,59 +771,59 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 					break;
 				case SsAttributeKind::cell:		///< 参照セル
 					{
-						SsGetKeyValue( nowTime , attr , state->cellValue );
+						SsGetKeyValue( part, nowTime , attr , state->cellValue );
 						state->noCells = false;
 					}
 					break;
 				case SsAttributeKind::posx:		///< 位置.X
-					SsGetKeyValue( nowTime , attr , state->position.x );
+					SsGetKeyValue( part, nowTime , attr , state->position.x );
 					break;
 				case SsAttributeKind::posy:		///< 位置.Y
-					SsGetKeyValue( nowTime , attr , state->position.y );
+					SsGetKeyValue( part, nowTime , attr , state->position.y );
 					break;
 				case SsAttributeKind::posz:		///< 位置.Z
-					SsGetKeyValue( nowTime , attr , state->position.z );
+					SsGetKeyValue( part, nowTime , attr , state->position.z );
 					break;
 				case SsAttributeKind::rotx:		///< 回転.X
-					SsGetKeyValue( nowTime , attr , state->rotation.x );
+					SsGetKeyValue( part, nowTime , attr , state->rotation.x );
 					break;
 				case SsAttributeKind::roty:		///< 回転.Y
-					SsGetKeyValue( nowTime , attr , state->rotation.y );
+					SsGetKeyValue( part, nowTime , attr , state->rotation.y );
 					break;
 				case SsAttributeKind::rotz:		///< 回転.Z
-					SsGetKeyValue( nowTime , attr , state->rotation.z );
+					SsGetKeyValue( part, nowTime , attr , state->rotation.z );
 					break;
 				case SsAttributeKind::sclx:		///< スケール.X
-					SsGetKeyValue( nowTime , attr , state->scale.x );
+					SsGetKeyValue( part, nowTime , attr , state->scale.x );
 					break;
 				case SsAttributeKind::scly:		///< スケール.Y
-					SsGetKeyValue( nowTime , attr , state->scale.y );
+					SsGetKeyValue( part, nowTime , attr , state->scale.y );
 					break;
 				case SsAttributeKind::losclx:	///< ローカルスケール.X
-					SsGetKeyValue( nowTime , attr , state->localscale.x);
+					SsGetKeyValue( part, nowTime , attr , state->localscale.x);
 					break;
 				case SsAttributeKind::loscly:	///< ローカルスケール.X
-					SsGetKeyValue( nowTime , attr , state->localscale.y);
+					SsGetKeyValue( part, nowTime , attr , state->localscale.y);
 					break;
 				case SsAttributeKind::alpha:	///< 不透明度
-					SsGetKeyValue( nowTime , attr , state->alpha);
+					SsGetKeyValue( part, nowTime , attr , state->alpha);
 					break;
 				case SsAttributeKind::loalpha:	///< ローカル不透明度
-					SsGetKeyValue( nowTime , attr , state->localalpha);
+					SsGetKeyValue( part, nowTime , attr , state->localalpha);
 					state->is_localAlpha = true;
 					break;
 				case SsAttributeKind::prio:		///< 優先度
-					SsGetKeyValue( nowTime , attr , state->prio );
+					SsGetKeyValue( part, nowTime , attr , state->prio );
 					break;
 //				case SsAttributeKind::fliph:	///< 左右反転(セルの原点を軸にする) Ver6非対応
-//					SsGetKeyValue( nowTime , attr , state->hFlip );
+//					SsGetKeyValue( part, nowTime , attr , state->hFlip );
 //					break;
 //				case SsAttributeKind::flipv:	///< 上下反転(セルの原点を軸にする) Ver6非対応
-//					SsGetKeyValue( nowTime , attr , state->vFlip );
+//					SsGetKeyValue( part, nowTime , attr , state->vFlip );
 //					break;
 				case SsAttributeKind::hide:		///< 非表示
 					{
-						int useTime = SsGetKeyValue( nowTime , attr , state->hide );
+						int useTime = SsGetKeyValue( part, nowTime , attr , state->hide );
 						// 非表示キーがないか、先頭の非表示キーより手前の場合は常に非表示にする。
 						//セットアップによってhidekey_findがあった場合は強制非表示にしない
 						if ( ( useTime > nowTime ) && ( hidekey_find == false ) )
@@ -813,66 +838,66 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 					}
 					break;
 				case SsAttributeKind::partsColor:
-					SsGetKeyValue( nowTime , attr , state->partsColorValue);
+					SsGetKeyValue( part, nowTime , attr , state->partsColorValue);
 					state->is_parts_color = true;
 					break;
 //				case SsAttributeKind::color:	///< カラーブレンド  Ver6非対応
-//					SsGetKeyValue( nowTime , attr , state->colorValue );
+//					SsGetKeyValue( part, nowTime , attr , state->colorValue );
 //					state->is_color_blend = true;
 //					break;
 				case SsAttributeKind::vertex:	///< 頂点変形
-					SsGetKeyValue( nowTime , attr , state->vertexValue );
+					SsGetKeyValue( part, nowTime , attr , state->vertexValue );
 					state->is_vertex_transform = true;
 					break;
 				case SsAttributeKind::pivotx:	///< 原点オフセット.X
-					SsGetKeyValue( nowTime , attr , state->pivotOffset.x );
+					SsGetKeyValue( part, nowTime , attr , state->pivotOffset.x );
 					break;
 				case SsAttributeKind::pivoty:	///< 原点オフセット.Y
-					SsGetKeyValue( nowTime , attr , state->pivotOffset.y );
+					SsGetKeyValue( part, nowTime , attr , state->pivotOffset.y );
 					break;
 //				case SsAttributeKind::anchorx:	///< アンカーポイント.X Ver6非対応
-//					SsGetKeyValue( nowTime , attr , state->anchor.x );
+//					SsGetKeyValue( part, nowTime , attr , state->anchor.x );
 //					break;
 //				case SsAttributeKind::anchory:	///< アンカーポイント.Y Ver6非対応
-//					SsGetKeyValue( nowTime , attr , state->anchor.y );
+//					SsGetKeyValue( part, nowTime , attr , state->anchor.y );
 //					break;
 				case SsAttributeKind::sizex:	///< 表示サイズ.X
-					SsGetKeyValue( nowTime , attr , state->size.x );
+					SsGetKeyValue( part, nowTime , attr , state->size.x );
 					size_x_key_find = true;
 					break;
 				case SsAttributeKind::sizey:	///< 表示サイズ.Y
-					SsGetKeyValue( nowTime , attr , state->size.y );
+					SsGetKeyValue( part, nowTime , attr , state->size.y );
 					size_y_key_find = true;
 					break;
 				case SsAttributeKind::imgfliph:	///< イメージ左右反転(常にイメージの中央を原点とする)
-					SsGetKeyValue( nowTime , attr , state->imageFlipH );
+					SsGetKeyValue( part, nowTime , attr , state->imageFlipH );
 					break;
 				case SsAttributeKind::imgflipv:	///< イメージ上下反転(常にイメージの中央を原点とする)
-					SsGetKeyValue( nowTime , attr , state->imageFlipV );
+					SsGetKeyValue( part, nowTime , attr , state->imageFlipV );
 					break;
 				case SsAttributeKind::uvtx:		///< UVアニメ.移動.X
-					SsGetKeyValue( nowTime , attr , state->uvTranslate.x );
+					SsGetKeyValue( part, nowTime , attr , state->uvTranslate.x );
 					break;
 				case SsAttributeKind::uvty:		///< UVアニメ.移動.Y
-					SsGetKeyValue( nowTime , attr , state->uvTranslate.y );
+					SsGetKeyValue( part, nowTime , attr , state->uvTranslate.y );
 					break;
 				case SsAttributeKind::uvrz:		///< UVアニメ.回転
-					SsGetKeyValue( nowTime , attr , state->uvRotation );
+					SsGetKeyValue( part, nowTime , attr , state->uvRotation );
 					break;
 				case SsAttributeKind::uvsx:		///< UVアニメ.スケール.X
-					SsGetKeyValue( nowTime , attr , state->uvScale.x );
+					SsGetKeyValue( part, nowTime , attr , state->uvScale.x );
 					break;
 				case SsAttributeKind::uvsy:		///< UVアニメ.スケール.Y
-					SsGetKeyValue( nowTime , attr , state->uvScale.y );
+					SsGetKeyValue( part, nowTime , attr , state->uvScale.y );
 					break;
 				case SsAttributeKind::boundr:	///< 当たり判定用の半径
-					SsGetKeyValue( nowTime , attr , state->boundingRadius );
+					SsGetKeyValue( part, nowTime , attr , state->boundingRadius );
 					break;
 				case SsAttributeKind::user:		///< Ver.4 互換ユーザーデータ
 					break;
 				case SsAttributeKind::instance:	///インスタンスパラメータ
 					{
-						int t = SsGetKeyValue( nowTime , attr , state->instanceValue );
+						int t = SsGetKeyValue( part, nowTime , attr , state->instanceValue );
 						//先頭にキーが無い場合
 						if ( t  > nowTime )
 						{
@@ -884,7 +909,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 				case SsAttributeKind::effect:
 					{
 
-						int t = SsGetKeyValue( nowTime , attr , state->effectValue );
+						int t = SsGetKeyValue( part, nowTime , attr , state->effectValue );
 
 						//先頭にキーが無い場合
 						if ( t > nowTime )
@@ -903,7 +928,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 					}
 					break;
 				case SsAttributeKind::mask:
-					SsGetKeyValue(nowTime, attr, state->masklimen);
+					SsGetKeyValue( part, nowTime, attr, state->masklimen);
 					break;
 
 			}
@@ -1070,7 +1095,7 @@ void	SsAnimeDecoder::updateVertices(SsPart* part , SsPartAnime* anime , SsPartSt
 	//きれいな頂点変形に対応
 #if USE_TRIANGLE_FIN
 
-	if ( state->is_color_blend || state->is_vertex_transform )
+	if ( state->is_parts_color || state->is_vertex_transform )
 	{
 
 		SsVector2	vertexCoordinateLU = SsVector2( sx + (float)vtxOfs[0].x , sy + (float)vtxOfs[0].y );// : 左上頂点座標（ピクセル座標系）
@@ -1113,8 +1138,17 @@ void	SsAnimeDecoder::updateVertices(SsPart* part , SsPartAnime* anime , SsPartSt
 	//SsPoint2 * vtxOfs = vertexValue.offsets;
 	for (int i = 0; i < 4; ++i)
 	{
-		state->vertices[i * 3]		= vtxPosX[i] + (float)vtxOfs->x;
-		state->vertices[i * 3 + 1]	= vtxPosY[i] + (float)vtxOfs->y;
+		const SsProjectSetting projsetting = project->getProjectSetting();
+		if (projsetting.vertexAnimeFloat != 0 )	//頂点変形を少数で行う
+		{
+			state->vertices[i * 3] = vtxPosX[i] + (float)vtxOfs->x;
+			state->vertices[i * 3 + 1] = vtxPosY[i] + (float)vtxOfs->y;
+		}
+		else
+		{
+			state->vertices[i * 3] = vtxPosX[i] + (int)vtxOfs->x;
+			state->vertices[i * 3 + 1] = vtxPosY[i] + (int)vtxOfs->y;
+		}
 		state->vertices[i * 3 + 2]	= 0;
 
 		++vtxOfs;
