@@ -200,11 +200,13 @@
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="NewProject"
-                       libraryPath="$(SolutionDir)\..\..\lib" headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;&#10;"/>
+                       libraryPath="$(SolutionDir)\..\..\lib" headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;&#10;"
+                       defines="/wd 4819" warningsAreErrors="0"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="1" isDebug="0" optimisation="3" targetName="NewProject"
-                       libraryPath="$(SolutionDir)\..\..\lib" headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;&#10;"/>
+                       libraryPath="$(SolutionDir)\..\..\lib" headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;&#10;"
+                       defines="/wd 4819"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="D:/JUCE/modules"/>

@@ -1,4 +1,4 @@
-#ifndef __SSEFFECTELEMENT__
+﻿#ifndef __SSEFFECTELEMENT__
 #define __SSEFFECTELEMENT__
 
 
@@ -168,7 +168,7 @@ public:
 
 	virtual SSSERIALIZE_BLOCK
 	{
-
+		ar = ar;
 	}
 
 };

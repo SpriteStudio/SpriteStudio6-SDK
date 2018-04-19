@@ -1,6 +1,6 @@
-#ifndef __SSTYPES__
+﻿#ifndef __SSTYPES__
 #define __SSTYPES__
-
+#pragma warning(disable : 4819)
 #include <stdlib.h>
 #include <string>
 #include <vector>
@@ -327,7 +327,7 @@ typedef SsTColor<u32> SsColor;
 typedef SsTColor<u8> SsU8Color;
 
 struct ToLower {
-    char operator()(char c) { return tolower(c); }
+    char operator()(char c) { return (char)tolower(c); }
 };
 ///与えられた文字列をカラー値に変換するための関数
 inline void	ConvertStringToSsColor( const std::string& str , SsColor& out)
