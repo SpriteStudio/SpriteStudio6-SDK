@@ -1,4 +1,4 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <cstdlib>
 
 #include "../loader/ssloader.h"
@@ -12,7 +12,7 @@
 
 void	SsMeshPart::makeMesh()
 {
-	//ƒp[ƒcƒXƒe[ƒg‚Ì‰Šú‰»‚ÌÛ‚Éƒ^[ƒQƒbƒgƒZƒ‹‚ªì‚ç‚ê‚éA‚»‚ÌÛ‚Éƒ}ƒbƒv‚àƒRƒs[‚·‚éH
+	//ãƒ‘ãƒ¼ãƒ„ã‚¹ãƒ†ãƒ¼ãƒˆã®åˆæœŸåŒ–ã®éš›ã«ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚»ãƒ«ãŒä½œã‚‰ã‚Œã‚‹ã€ãã®éš›ã«ãƒãƒƒãƒ—ã‚‚ã‚³ãƒ”ãƒ¼ã™ã‚‹ï¼Ÿ
 
 	size_t psize = targetCell->meshPointList.size();
 
@@ -29,8 +29,8 @@ void	SsMeshPart::makeMesh()
 
 	draw_vertices = new float[3 * psize];
 
-	vertices_outer = new SsVector2[3 * psize];// //ƒc[ƒ‹—p
-	update_vertices_outer = new SsVector2[3 * psize];// //ƒc[ƒ‹—p
+	vertices_outer = new SsVector2[3 * psize];// //ãƒ„ãƒ¼ãƒ«ç”¨
+	update_vertices_outer = new SsVector2[3 * psize];// //ãƒ„ãƒ¼ãƒ«ç”¨
 
 
 	vertices = new float[3 * psize];
@@ -43,7 +43,7 @@ void	SsMeshPart::makeMesh()
 	memset(bindBoneInfo, 0, sizeof(StBoneWeight) * psize);
 
 
-	SsVector2 offs; //’†‰›
+	SsVector2 offs; //ä¸­å¤®
 	offs.x = (-targetCell->size.x / 2.0f);
 	offs.y = (targetCell->size.y / 2.0f);
 
@@ -246,7 +246,7 @@ void	SsMeshAnimator::copyToSsMeshPart(SsMeshBind* src , SsMeshPart* dst , std::v
 {
 
 	int bnum = (int)boneList.size();
-	bool isbind = false;	//ƒoƒCƒ“ƒh‚·‚éƒ{[ƒ“‚ª‘¶İ‚·‚é‚©H
+	bool isbind = false;	//ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹ãƒœãƒ¼ãƒ³ãŒå­˜åœ¨ã™ã‚‹ã‹ï¼Ÿ
 
 
 
@@ -266,7 +266,7 @@ void	SsMeshAnimator::copyToSsMeshPart(SsMeshBind* src , SsMeshPart* dst , std::v
 				if (bnum > bi.boneIndex[n])
 				{
 					dst->bindBoneInfo[i].bone[n] = boneList[bi.boneIndex[n]];
-					isbind = true;	//ƒoƒCƒ“ƒh‚·‚éƒ{[ƒ“‚ª‚ ‚é
+					isbind = true;	//ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹ãƒœãƒ¼ãƒ³ãŒã‚ã‚‹
 					cntBone++;
 				}
 

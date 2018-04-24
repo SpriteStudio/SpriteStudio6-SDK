@@ -1,4 +1,4 @@
-#include "ssarchiver.h"
+﻿#include "ssarchiver.h"
 #include "ssstring_uty.h"
 
 bool	SsXmlIArchiver::dc_attr( const char* name , SsString& member )

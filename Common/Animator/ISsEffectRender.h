@@ -1,4 +1,4 @@
-#ifndef __ISSEFFECTRENDER__
+ï»¿#ifndef __ISSEFFECTRENDER__
 #define __ISSEFFECTRENDER__
 
 
@@ -10,7 +10,7 @@ class ISsEffectRenderer
 public:
 	bool				usePreMultiTexture;
 
-	//Ä¶§Œä—p
+	//å†ç”Ÿåˆ¶å¾¡ç”¨
 	bool			m_isPlay;
 	bool			m_isPause;
 	bool			m_isLoop;
