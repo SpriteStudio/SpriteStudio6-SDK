@@ -1,4 +1,4 @@
-/*
+﻿/*
   ==============================================================================
 
     renderAnimation.cpp
@@ -50,12 +50,13 @@ SSAnimationController::~SSAnimationController()
 }
 
 SSAnimationController::SSAnimationController()
-	: m_player(0) , m_cellmap(0), isReset(false)
+	: m_player(0) , m_cellmap(0), isReset(false), fileLoadTriger(false)
 {
 
 	m_player = new SsAnimeDecoder();
 	m_cellmap = new SsCellMapList();
 	myInst = this;
+
 
 	currentFrame = 0;
 	stopTimer();
@@ -127,6 +128,26 @@ void	SSAnimationController::drawMain()
 		SSTextureFactory*	texfactory = new SSTextureFactory(new SSTextureGL());
 	}
 
+	if (fileLoadTriger)
+	{
+		int packIndex = 0;
+		int animeIndex = 0;
+
+		SsAnimePackList alist = currentProj->getAnimePackList();
+		SsAnimePack* animepack = alist[packIndex];
+		SsModel* model = &animepack->Model;
+		SsAnimation* anime = animepack->animeList[animeIndex];
+		currentAnimePack = animepack;
+
+		m_cellmap->set(currentProj, currentAnimePack);
+		m_player->setAnimation(model, anime, m_cellmap, currentProj);
+		m_player->setPlayFrame(0);
+		play();
+		isReset = true;
+		fileLoadTriger = false;
+	}
+
+
 	if (isReset)
 	{
 		m_cellmap->set(currentProj, currentAnimePack);
@@ -148,26 +169,16 @@ void	SSAnimationController::drawMain()
 void	SSAnimationController::loadListener(SsProject* pj)
 {
 
-	int packIndex = 0;
-	int animeIndex = 0;
 
 	if (pj->getAnimePackList().size() == 0) return;
-
+#if 0
 	SsAnimePackList alist = pj->getAnimePackList();
-
-	SsAnimePack* animepack = alist[packIndex];
-	
+	SsAnimePack* animepack = alist[packIndex];	
 	SsModel* model = &animepack->Model;
-
 	SsAnimation* anime = animepack->animeList[animeIndex];
-
+#endif
 	currentProj = pj;
-	currentAnimePack = animepack;
-	isReset = true;
-
-	m_player->setAnimation(model, anime, m_cellmap, pj);
-	m_player->setPlayFrame(0);
-	play();
+	fileLoadTriger = true;
 
 
 	//ビュー系のアップデートを登録できるように修正する予定

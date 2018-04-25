@@ -1,4 +1,4 @@
-/*
+﻿/*
   ==============================================================================
 
     renderAnimation.h
@@ -59,9 +59,13 @@ private:
 	SsAnimePack*	currentAnimePack;
 
 	double				currentFrame;
+	bool	fileLoadTriger;
 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SSAnimationController)
+
+
+
 
 };
 

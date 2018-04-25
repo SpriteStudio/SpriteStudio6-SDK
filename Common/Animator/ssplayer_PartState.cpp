@@ -2,7 +2,8 @@
 #include "ssplayer_animedecode.h"
 #include "ssplayer_PartState.h"
 
-SsPartState::SsPartState() : refAnime(0), index(-1), parent(nullptr), noCells(false), alphaBlendType(SsBlendType::invalid),	refEffect(0) {
+SsPartState::SsPartState() : refAnime(0), index(-1), parent(nullptr), noCells(false), alphaBlendType(SsBlendType::invalid),	refEffect(0) , 	meshPart(0)
+{
 	init();
 	effectValue.attrInitialized = false;
 	meshPart = 0;
@@ -92,7 +93,6 @@ void	SsPartState::init()
 //	instanceValue.liveFrame = 0.0f;	//加算値なので初期化してはいけない
 	
 	masklimen = 0;
-
 //	partType = SsPartType::normal;
 //	maskInfluence = false;
 

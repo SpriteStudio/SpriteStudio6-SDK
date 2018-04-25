@@ -414,7 +414,10 @@ void	SsRenderGL::execMask(SsPartState* state)
 
 void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 {
+	if (mesh == 0)return;
+	
 	glPushMatrix();
+
 
 	if (alpha == 0.0f)
 	{
