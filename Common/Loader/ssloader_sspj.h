@@ -1,6 +1,7 @@
 ﻿#ifndef __SSLOADER_SSPJ__
 #define __SSLOADER_SSPJ__
 
+#pragma warning(disable : 4819) //
 
 #include "sstypes.h"
 #include "ssarchiver.h"

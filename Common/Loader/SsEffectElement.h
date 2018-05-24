@@ -168,7 +168,7 @@ public:
 
 	virtual SSSERIALIZE_BLOCK
 	{
-
+		ar = ar;
 	}
 
 };

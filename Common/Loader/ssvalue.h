@@ -311,7 +311,7 @@ template <> inline bool SsValue::is<SsHash>() const {
 
 
 
-static  SsValue	SsValueSeriarizer__MakeValue( const char* v )
+inline static  SsValue	SsValueSeriarizer__MakeValue( const char* v )
 {
     std::string temp = v;
 	bool is_priod;

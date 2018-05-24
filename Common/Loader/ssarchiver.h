@@ -168,7 +168,7 @@ public:
 	{
 		list.clear();
 		XMLElement* e = getxml()->FirstChildElement( name );
-
+		if (e == 0)return false;
 		if ( key != "" )
 			e = e->FirstChildElement( key.c_str() );
 

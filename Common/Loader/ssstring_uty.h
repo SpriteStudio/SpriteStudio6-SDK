@@ -76,7 +76,7 @@ public:
 	SsStringTokenizer(std::string src_str ,  char token ) {
 		split_string(src_str, token, string_array);
 		tokenIndex = 0;
-		tokennum = string_array.size();
+		tokennum = (int)string_array.size();
 	}
 
 	bool	get(int* out)
@@ -92,7 +92,7 @@ public:
 	{
 		if (isEnd()) return false;
 		std::string str = string_array[tokenIndex];
-		*out = atof(str.c_str());
+		*out = (float)atof(str.c_str());
 		tokenIndex++;
 		return !isEnd();
 	}

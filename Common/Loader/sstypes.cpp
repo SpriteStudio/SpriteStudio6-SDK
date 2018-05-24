@@ -5,12 +5,12 @@
 //相互変換 SsPartType
 SsString	__EnumToString_( SsPartType::_enum n )
 {
-	if ( SsPartType::invalid ) return "invalid";
-	if ( SsPartType::null ) return "null";
-	if ( SsPartType::normal ) return "normal";
-	if ( SsPartType::text ) return "text";
-	if ( SsPartType::instance ) return "instance";
-	if ( SsPartType::effect ) return "effect";
+	if ( SsPartType::invalid == n ) return "invalid";
+	if ( SsPartType::null == n) return "null";
+	if ( SsPartType::normal == n) return "normal";
+	if ( SsPartType::text == n) return "text";
+	if ( SsPartType::instance == n) return "instance";
+	if ( SsPartType::effect == n) return "effect";
 
 
 	if (SsPartType::armature) return "armature";
@@ -51,9 +51,9 @@ void 	__StringToEnum_( SsString n , SsPartType::_enum& out)
 //相互変換 SsPartsSortMode
 SsString	__EnumToString_( SsPartsSortMode::_enum n )
 {
-	if ( SsPartsSortMode::invalid ) return "invalid";
-	if ( SsPartsSortMode::prio ) return "prio";
-	if ( SsPartsSortMode::z ) return "z";
+	if ( SsPartsSortMode::invalid == n) return "invalid";
+	if ( SsPartsSortMode::prio == n) return "prio";
+	if ( SsPartsSortMode::z == n) return "z";
 	return "invalid";	
 }
 
@@ -69,13 +69,13 @@ void	__StringToEnum_( SsString n , SsPartsSortMode::_enum &out )
 //相互変換 SsBoundsType
 SsString	__EnumToString_( SsBoundsType::_enum n )
 {
-	if ( SsBoundsType::invalid ) return "invalid";
-	if ( SsBoundsType::none ) return "none";
-	if ( SsBoundsType::quad ) return "quad";
-	if ( SsBoundsType::aabb ) return "aabb";
+	if ( SsBoundsType::invalid == n) return "invalid";
+	if ( SsBoundsType::none == n) return "none";
+	if ( SsBoundsType::quad == n) return "quad";
+	if ( SsBoundsType::aabb == n) return "aabb";
 	if ( SsBoundsType::circle ) return "circle";
-	if ( SsBoundsType::circle_smin ) return "circle_smin";
-	if ( SsBoundsType::circle_smax ) return "circle_smax";
+	if ( SsBoundsType::circle_smin == n) return "circle_smin";
+	if ( SsBoundsType::circle_smax == n) return "circle_smax";
 	return "invalid";	
 }
 
@@ -96,9 +96,9 @@ void	__StringToEnum_( SsString n , SsBoundsType::_enum &out )
 //相互変換 SsBoundsType
 SsString	__EnumToString_( SsInheritType::_enum n )
 {
-	if ( SsInheritType::invalid ) return "invalid";
-	if ( SsInheritType::parent ) return "parent";
-	if ( SsInheritType::self ) return "self";
+	if ( SsInheritType::invalid == n) return "invalid";
+	if ( SsInheritType::parent == n) return "parent";
+	if ( SsInheritType::self == n) return "self";
 	return "invalid";	
 }
 
@@ -115,15 +115,15 @@ void	__StringToEnum_( SsString n , SsInheritType::_enum &out )
 //相互変換 SsBlendType
 SsString	__EnumToString_( SsBlendType::_enum n )
 {
-	if ( SsBlendType::invalid ) return "invalid";
-	if ( SsBlendType::mix ) return "mix";
-	if ( SsBlendType::mul ) return "mul";
-	if ( SsBlendType::add ) return "add";
-	if ( SsBlendType::sub ) return "sub";
-	if ( SsBlendType::mulalpha ) return "mulalpha";
-	if ( SsBlendType::screen ) return "screen";
-	if ( SsBlendType::exclusion ) return "exclusion";
-	if ( SsBlendType::invert ) return "invert";
+	if ( SsBlendType::invalid == n) return "invalid";
+	if ( SsBlendType::mix == n) return "mix";
+	if ( SsBlendType::mul == n) return "mul";
+	if ( SsBlendType::add == n) return "add";
+	if ( SsBlendType::sub == n) return "sub";
+	if ( SsBlendType::mulalpha == n) return "mulalpha";
+	if ( SsBlendType::screen == n) return "screen";
+	if ( SsBlendType::exclusion == n) return "exclusion";
+	if ( SsBlendType::invert == n) return "invert";
 
 	return "invalid";	
 }
@@ -149,13 +149,13 @@ void	__StringToEnum_( SsString n , SsBlendType::_enum &out )
 //相互変換 SsInterpolationType
 SsString	__EnumToString_( SsInterpolationType::_enum n )
 {
-	if ( SsInterpolationType::invalid )		return "invalid";
-	if ( SsInterpolationType::none )		return "none";
-	if ( SsInterpolationType::linear )		return "linear";
-	if ( SsInterpolationType::hermite )		return "hermite";
-	if ( SsInterpolationType::bezier )		return "bezier";
-	if ( SsInterpolationType::acceleration ) return "acceleration";
-	if ( SsInterpolationType::deceleration ) return "deceleration";
+	if ( SsInterpolationType::invalid == n)		return "invalid";
+	if ( SsInterpolationType::none == n)		return "none";
+	if ( SsInterpolationType::linear == n)		return "linear";
+	if ( SsInterpolationType::hermite == n)		return "hermite";
+	if ( SsInterpolationType::bezier == n)		return "bezier";
+	if ( SsInterpolationType::acceleration == n) return "acceleration";
+	if ( SsInterpolationType::deceleration == n) return "deceleration";
 
 	return "none";	
 }
@@ -176,10 +176,10 @@ void	__StringToEnum_( SsString n , SsInterpolationType::_enum &out )
 //相互変換 SsTexWrapMode
 SsString	__EnumToString_( SsTexWrapMode::_enum n )
 {
-	if ( SsTexWrapMode::invalid )		return "invalid";
-	if ( SsTexWrapMode::clamp )		return "clamp";
-	if ( SsTexWrapMode::repeat )		return "repeat";
-	if ( SsTexWrapMode::mirror )		return "mirror";
+	if ( SsTexWrapMode::invalid == n)		return "invalid";
+	if ( SsTexWrapMode::clamp == n)		return "clamp";
+	if ( SsTexWrapMode::repeat == n)		return "repeat";
+	if ( SsTexWrapMode::mirror == n)		return "mirror";
 
 	return "invalid";	
 }
@@ -198,9 +198,9 @@ void	__StringToEnum_( SsString n , SsTexWrapMode::_enum &out )
 //相互変換 SsTexFilterMode
 SsString	__EnumToString_( SsTexFilterMode::_enum n )
 {
-	if ( SsTexFilterMode::invalid )		return "invalid";
-	if ( SsTexFilterMode::nearlest )		return "nearlest";
-	if ( SsTexFilterMode::linear )		return "linear";
+	if ( SsTexFilterMode::invalid == n)		return "invalid";
+	if ( SsTexFilterMode::nearlest == n)		return "nearlest";
+	if ( SsTexFilterMode::linear == n)		return "linear";
 
 	return "invalid";	
 }
@@ -218,9 +218,9 @@ void	__StringToEnum_( SsString n , SsTexFilterMode::_enum &out )
 //相互変換 SsTexFilterMode
 SsString	__EnumToString_( SsColorBlendTarget::_enum n )
 {
-	if ( SsColorBlendTarget::invalid )		return "invalid";
-	if ( SsColorBlendTarget::whole )		return "whole";
-	if ( SsColorBlendTarget::vertex )		return "vertex";
+	if ( SsColorBlendTarget::invalid == n)		return "invalid";
+	if ( SsColorBlendTarget::whole == n)		return "whole";
+	if ( SsColorBlendTarget::vertex == n)		return "vertex";
 
 	return "invalid";	
 }
@@ -238,45 +238,45 @@ void	__StringToEnum_( SsString n , SsColorBlendTarget::_enum &out )
 //相互変換 SsAttributeKind
 SsString	__EnumToString_( SsAttributeKind::_enum n )
 {
-	if ( SsAttributeKind::invalid )		return "invalid";
-	if ( SsAttributeKind::cell )		return "CELL";
-	if ( SsAttributeKind::posx )		return "POSX";
-	if ( SsAttributeKind::posy )		return "POSY";
-	if ( SsAttributeKind::posz )		return "POSZ";
-	if ( SsAttributeKind::rotx )		return "ROTX";
-	if ( SsAttributeKind::roty )		return "ROTY";
-	if ( SsAttributeKind::rotz )		return "ROTZ";
-	if ( SsAttributeKind::sclx )		return "SCLX";
-	if ( SsAttributeKind::scly )		return "SCLY";
-	if ( SsAttributeKind::losclx )		return "LSCX";
-	if ( SsAttributeKind::loscly )		return "LSCY";
-	if ( SsAttributeKind::alpha )		return "ALPH";
-	if ( SsAttributeKind::loalpha )		return "LALP";
-	if ( SsAttributeKind::prio )		return "PRIO";
-	if ( SsAttributeKind::fliph )		return "FLPH";
-	if ( SsAttributeKind::flipv )		return "FLPV";
-	if ( SsAttributeKind::hide )		return "HIDE";
-	if ( SsAttributeKind::partsColor )	return "PCOL";
-	if ( SsAttributeKind::color )		return "VCOL";
-	if ( SsAttributeKind::vertex )		return "VERT";
-	if ( SsAttributeKind::pivotx )		return "PVTX";
-	if ( SsAttributeKind::pivoty )		return "PVTY";
-	if ( SsAttributeKind::anchorx )		return "ANCX";
-	if ( SsAttributeKind::anchory )		return "ANCY";
-	if ( SsAttributeKind::sizex )		return "SIZX";
-	if ( SsAttributeKind::sizey )		return "SIZY";
-	if ( SsAttributeKind::imgfliph )	return "IFLH";
-	if ( SsAttributeKind::imgflipv )	return "IFLV";
-	if ( SsAttributeKind::uvtx )		return "UVTX";
-	if ( SsAttributeKind::uvty )		return "UVTY";
-	if ( SsAttributeKind::uvrz )		return "UVRZ";
-	if ( SsAttributeKind::uvsx )		return "UVSX";
-	if ( SsAttributeKind::uvsy )		return "UVSY";
-	if ( SsAttributeKind::mask )		return "MASK";
-	if ( SsAttributeKind::boundr )		return "BNDR";
-	if ( SsAttributeKind::user )		return "USER";
-	if ( SsAttributeKind::instance )    return "IPRM";
-	if ( SsAttributeKind::mask)    return "MASK";
+	if ( SsAttributeKind::invalid == n)		return "invalid";
+	if ( SsAttributeKind::cell == n)		return "CELL";
+	if ( SsAttributeKind::posx == n)		return "POSX";
+	if ( SsAttributeKind::posy == n)		return "POSY";
+	if ( SsAttributeKind::posz == n)		return "POSZ";
+	if ( SsAttributeKind::rotx == n)		return "ROTX";
+	if ( SsAttributeKind::roty == n)		return "ROTY";
+	if ( SsAttributeKind::rotz == n)		return "ROTZ";
+	if ( SsAttributeKind::sclx == n)		return "SCLX";
+	if ( SsAttributeKind::scly == n)		return "SCLY";
+	if ( SsAttributeKind::losclx == n)		return "LSCX";
+	if ( SsAttributeKind::loscly == n)		return "LSCY";
+	if ( SsAttributeKind::alpha == n)		return "ALPH";
+	if ( SsAttributeKind::loalpha == n)		return "LALP";
+	if ( SsAttributeKind::prio == n)		return "PRIO";
+	if ( SsAttributeKind::fliph == n)		return "FLPH";
+	if ( SsAttributeKind::flipv == n)		return "FLPV";
+	if ( SsAttributeKind::hide == n)		return "HIDE";
+	if ( SsAttributeKind::partsColor == n)	return "PCOL";
+	if ( SsAttributeKind::color == n)		return "VCOL";
+	if ( SsAttributeKind::vertex == n)		return "VERT";
+	if ( SsAttributeKind::pivotx == n)		return "PVTX";
+	if ( SsAttributeKind::pivoty == n)		return "PVTY";
+	if ( SsAttributeKind::anchorx == n)		return "ANCX";
+	if ( SsAttributeKind::anchory == n)		return "ANCY";
+	if ( SsAttributeKind::sizex == n)		return "SIZX";
+	if ( SsAttributeKind::sizey == n)		return "SIZY";
+	if ( SsAttributeKind::imgfliph == n)	return "IFLH";
+	if ( SsAttributeKind::imgflipv == n)	return "IFLV";
+	if ( SsAttributeKind::uvtx == n)		return "UVTX";
+	if ( SsAttributeKind::uvty == n)		return "UVTY";
+	if ( SsAttributeKind::uvrz == n)		return "UVRZ";
+	if ( SsAttributeKind::uvsx == n)		return "UVSX";
+	if ( SsAttributeKind::uvsy == n)		return "UVSY";
+	if ( SsAttributeKind::mask == n)		return "MASK";
+	if ( SsAttributeKind::boundr == n)		return "BNDR";
+	if ( SsAttributeKind::user == n)		return "USER";
+	if ( SsAttributeKind::instance == n)    return "IPRM";
+	if ( SsAttributeKind::mask == n)    return "MASK";
 	
 
 

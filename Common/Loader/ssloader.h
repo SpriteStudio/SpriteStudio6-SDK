@@ -1,4 +1,6 @@
-﻿/*! \mainpage 
+﻿#pragma warning(disable : 4819)
+
+/*! \mainpage 
  *
  * \section 初めに
  *
@@ -124,7 +126,9 @@
 #include "ssInterpolation.h"
 
 //SDKを更新する場合はバージョン番号を変更してください
-#define SPRITESTUDIOSDK_VERSION "SpriteStudio 6 SDK Version 1.3.2"
+#define SPRITESTUDIOSDK_VERSION "SpriteStudio 6 SDK Version 1.3.3"
+
+
 
 
 #endif

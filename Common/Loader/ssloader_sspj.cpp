@@ -22,7 +22,7 @@ SsString	SsProject::getSsaeBasepath()
 
 SsString	SsProject::getSseeBasepath()
 { 
-	return getFullPath( m_proj_filepath , settings.animeBaseDirectory );
+	return getFullPath( m_proj_filepath , settings.effectBaseDirectory);
 }
 
 
