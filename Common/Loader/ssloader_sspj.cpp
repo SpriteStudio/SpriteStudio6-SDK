@@ -22,7 +22,7 @@ SsString	SsProject::getSsaeBasepath()
 
 SsString	SsProject::getSseeBasepath()
 { 
-	return getFullPath( m_proj_filepath , settings.animeBaseDirectory );
+	return getFullPath( m_proj_filepath , settings.effectBaseDirectory);
 }
 
 
@@ -100,7 +100,6 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 		std::string project_filepath = path2dir( filename );
 		proj->setFilepath( project_filepath );
 
-//		if (1)
 		if ( checkFileVersion(proj->version, SPRITESTUDIO6_SSPJVERSION) == false )
 		{
 			DEBUG_PRINTF("Project load error : %s", project_filepath.c_str());
@@ -116,8 +115,7 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 			SsString ssaepath = proj->getAnimePackFilePath(i);
 			SsAnimePack* anime = ssloader_ssae::Load( ssaepath );
 
-//			if (1)
-			if ( ( anime ) && ( checkFileVersion(anime->version, SPRITESTUDIO6_SSAEVERSION) == true ) )
+			if ( ( anime ) && ( checkFileVersion(anime->version, SPRITESTUDIO6_SSAEVERSION) == true ) ) 
 			{
 				proj->animeList.push_back( anime );
 			}else{
