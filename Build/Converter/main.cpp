@@ -602,7 +602,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 			//マスク対象
 			partData->add(Lump::s16Data(part->maskInfluence));
-			p.insert(std::make_pair("colorLabel", picojson::value((double)part->maskInfluence)));
+			p.insert(std::make_pair("maskInfluence", picojson::value((double)part->maskInfluence)));
 
 			ps.push_back(picojson::value(p));
 		}
