@@ -39,9 +39,10 @@ static const int DATA_VERSION_5			= 5;
 static const int DATA_VERSION_6			= 6;
 static const int DATA_VERSION_7			= 7;
 static const int DATA_VERSION_8			= 8;
+static const int DATA_VERSION_9			= 9;
 
 static const int DATA_ID				= 0x42505353;
-static const int CURRENT_DATA_VERSION	= DATA_VERSION_8;
+static const int CURRENT_DATA_VERSION	= DATA_VERSION_9;
 
 
 enum {
@@ -413,7 +414,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			cellData->add(Lump::s16Data(0));	// reserved
 			cellData->add(Lump::floatData(cell->pivot.x));
 			c.insert(std::make_pair("pivot_x", picojson::value(cell->pivot.x)));
-			cellData->add(Lump::floatData(-cell->pivot.y));
+			cellData->add(Lump::floatData(cell->pivot.y));
 			c.insert(std::make_pair("pivot_y", picojson::value(cell->pivot.y)));
 			float u1 = cell->pos.x / cellMap->pixelSize.x;
 			float v1 = cell->pos.y / cellMap->pixelSize.y;
