@@ -1474,17 +1474,41 @@ void	SsAnimeDecoder::draw()
 	{
 		SsPartState* state = (*e);
 
+		if (state->partType == SsPartType::mask)
+		{
+			//マスクパーツ
+
+			//非表示の場合でもマスクの場合は処理をしなくてはならない
+			//マスクはパーツの描画より先に奥のマスクパーツから順にマスクを作成していく必要があるため
+			//通常パーツの描画順と同じ箇所で非表示によるスキップを行うとマスクのバッファがクリアされずに、
+			//マスクが手前の優先度に影響するようになってしまう。
+			if (maskFuncFlag == true) //マスク機能が有効（インスタンスのソースアニメではない）
+			{
+				SsCurrentRenderer::getRender()->clearMask();
+				mask_index++;	//0番は処理しないので先にインクメントする
+
+				for (size_t i = mask_index; i < maskIndexList.size(); i++)
+				{
+					SsPartState * ps2 = maskIndexList[i];
+					if (!ps2->hide)
+					{
+						SsCurrentRenderer::getRender()->renderPart(ps2);
+					}
+				}
+			}
+		}
+
 		if ( state->hide )continue;
 
 		if ( state->refAnime )
 		{
-
+			//インスタンスパーツ
 			SsCurrentRenderer::getRender()->execMask(state);
-
 			state->refAnime->draw();
 		}
 		else if ( state->refEffect )
 		{
+			//エフェクトパーツ
 			SsCurrentRenderer::getRender()->execMask(state);
 
 			//Ver6 ローカルスケール対応
@@ -1505,25 +1529,9 @@ void	SsAnimeDecoder::draw()
 			memcpy(state->matrix, mattemp, sizeof(mattemp));						//継承用マトリクスを戻す
 			state->alpha = orgAlpha;
 		}
-		else if ( state->partType == SsPartType::mask )
+		else if (state->partType != SsPartType::mask)
 		{
-			if (maskFuncFlag == true) //マスク機能が有効（インスタンスのソースアニメではない）
-			{
-				SsCurrentRenderer::getRender()->clearMask();
-				mask_index++;	//0番は処理しないので先にインクメントする
-
-				for (size_t i = mask_index; i < maskIndexList.size(); i++)
-				{
-					SsPartState * ps2 = maskIndexList[i];
-					if (!ps2->hide)
-					{
-						SsCurrentRenderer::getRender()->renderPart(ps2);
-					}
-				}
-			}
-		}
-		else
-		{
+			//通常パーツ
 			SsCurrentRenderer::getRender()->renderPart(state);
 		}
 	}
