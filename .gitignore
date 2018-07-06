@@ -12,6 +12,9 @@
 *.la
 *.a
 
+# macos
+.DS_Store
+
 # Viusal C
 *.vcproj
 *.ncb
