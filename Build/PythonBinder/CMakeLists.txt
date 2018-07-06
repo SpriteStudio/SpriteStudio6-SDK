@@ -39,6 +39,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Loader)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Animator)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper)
 
+Depends_Lib()
+
 add_executable(scriptbase_converter ${scriptbase_converter_SRCS} ${scriptbase_converter_HEADERS})
 target_link_libraries(scriptbase_converter ssLoader)
 target_link_libraries(scriptbase_converter ssAnimater)
