@@ -50,6 +50,8 @@ ELSEIF(CMAKE_COMPILER_IS_GNUCXX)
     ADD_DEFINITIONS(-std=gnu++14)
 ENDIF()
 
+enable_testing()
+
 # viewer_sample_gl and viewer_sample_dx9
 add_subdirectory(Viewer)
 

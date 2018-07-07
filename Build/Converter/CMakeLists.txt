@@ -32,3 +32,8 @@ add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS})
 target_link_libraries(Ss6Converter ssLoader)
 target_link_libraries(Ss6Converter ssAnimater)
 target_link_libraries(Ss6Converter ssHelper)
+
+enable_testing()
+add_test(NAME allAttributeV6 COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter ${CMAKE_CURRENT_SOURCE_DIR}/../TestData/allAttributeV6/allAttributeV6.sspj)
+add_test(NAME allPartsV6 COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter ${CMAKE_CURRENT_SOURCE_DIR}/../TestData/allPartsV6/allPartsV6.sspj)
+add_test(NAME effect_allcheck COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter ${CMAKE_CURRENT_SOURCE_DIR}/../TestData/effect_allcheck/effect_allcheck.sspj)

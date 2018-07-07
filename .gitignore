@@ -32,6 +32,8 @@ glfw-3.2.1.bin.WIN32/
 glfw-3.2.1.bin.WIN64.zip
 glfw-3.2.1.bin.WIN64/
 
+*.ssbp
+
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
