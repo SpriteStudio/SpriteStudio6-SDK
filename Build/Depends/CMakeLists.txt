@@ -1,7 +1,4 @@
 macro(Depends_Lib DEPSDIR)
-    if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
-        set(DEPSDIR "/usr/local/opt") # homebrew prefix
-    endif()
     message(${DEPSDIR})
 
     # glew include directories
@@ -12,7 +9,7 @@ macro(Depends_Lib DEPSDIR)
             include_directories(${DEPSDIR}/glew-2.1.0/include)
         endif()
     endif()
-    ## glfw3 library directories
+    ## glew library directories
     if (DEFINED $ENV{GLEW_LIB_PATH})
         set(GLEW_LIB_PATH $ENV{GLEW_LIB_PATH})
     else()
@@ -34,6 +31,8 @@ macro(Depends_Lib DEPSDIR)
         elseif(WIN64)
             set(GLFW_LIB_ARCH 64)
             include_directories(${DEPSDIR}/glfw-3.2.1.bin.WIN${GLFW_LIB_ARCH}/include)
+        elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+            include_directories(${DEPSDIR}/glfw/include)
         endif()
     endif()
     ## glfw3 library directories
@@ -43,6 +42,8 @@ macro(Depends_Lib DEPSDIR)
         # TODO: change msvc version
         if(MSVC)
             set(GLFW_LIB_PATH ${DEPSDIR}/glfw-3.2.1.bin.WIN${GLFW_LIB_ARCH}/lib-vc2015)
+        elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+            set(GLFW_LIB_PATH ${DEPSDIR}/glfw/lib)
         endif()
     endif()
     link_directories(${GLFW_LIB_PATH})
@@ -53,6 +54,8 @@ macro(Depends_Lib DEPSDIR)
     else()
         if(MSVC)
             include_directories(${DEPSDIR}/AntTweakBar/include)
+        elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+            include_directories(${DEPSDIR}/anttweakbar/include)
         endif()
     endif()
     # anttweakbar library directories
@@ -66,6 +69,8 @@ macro(Depends_Lib DEPSDIR)
             # don't consider ARM yet.
             set(ANTTWEAKBAR_LIB_PATH ${DEPSDIR}/AntTweakBar/lib)
             set(ANTTWEAKBAR_LIB_ARCH 64)
+        elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+            set(ANTTWEAKBAR_LIB_PATH ${DEPSDIR}/anttweakbar/lib)
         endif()
     endif()
     link_directories(${ANTTWEAKBAR_LIB_PATH})
