@@ -51,7 +51,7 @@ ELSEIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF()
 
 enable_testing()
-add_subdirectory(UnitTest)
+# add_subdirectory(UnitTest)
 
 # viewer_sample_gl and viewer_sample_dx9
 add_subdirectory(Viewer)
