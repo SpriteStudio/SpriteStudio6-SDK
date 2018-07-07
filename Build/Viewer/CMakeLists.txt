@@ -2,6 +2,27 @@ cmake_minimum_required(VERSION 3.11)
 
 project(viewer_sample)
 
+# command options
+option(ENABLE_CCACHE "Enable ccache?" ON)
+# enable ccache
+find_program(CCACHE_EXE ccache)
+if(CCACHE_EXE)
+    if(ENABLE_CCACHE)
+        message(STATUS "Enable ccache")
+        if(CMAKE_C_COMPILER_LAUNCHER)
+            set(CMAKE_C_COMPILER_LAUNCHER "${CMAKE_C_COMPILER_LAUNCHER}" "${CCACHE_EXE}")
+        else()
+            set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_EXE}")
+        endif()
+        if(CMAKE_CXX_COMPILER_LAUNCHER)
+            set(CMAKE_CXX_COMPILER_LAUNCHER "${CMAKE_CXX_COMPILER_LAUNCHER}" "${CCACHE_EXE}")
+        else()
+            set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_EXE}")
+        endif()
+    endif()
+endif()
+
+
 if(NOT TARGET ssHelper)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common viewer_sample_Common)
 endif()
