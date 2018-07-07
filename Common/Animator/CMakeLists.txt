@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.11)
 
 project(ssAnimater)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 set(ssAnimater_SRCS
     ssplayer_cellmap.cpp
     ssplayer_PartState.cpp

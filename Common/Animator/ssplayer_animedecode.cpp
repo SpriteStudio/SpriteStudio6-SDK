@@ -9,7 +9,7 @@
 #include "ssplayer_effect.h"
 #include "ssplayer_effect2.h"
 #include "ssplayer_mesh.h"
-
+#include "ssInterpolation.h"
 
 //stdでののforeach宣言　
 
