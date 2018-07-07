@@ -47,7 +47,12 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Animator)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
 
-Depends_Lib(${CMAKE_CURRENT_SOURCE_DIR}/../Depends)
+if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+    set(DEPSDIR "/usr/local/opt" FORCE) # homebrew prefix
+else()
+    set(DEPSDIR ${CMAKE_CURRENT_SOURCE_DIR}/../Depends)
+endif()
+Depends_Lib(${DEPSDIR})
 
 add_executable(viewer_sample_gl ${viewer_sample_common_SRCS}
                                 ${viewer_sample_common_HEADERS}
@@ -57,12 +62,26 @@ add_executable(viewer_sample_gl ${viewer_sample_common_SRCS}
 target_link_libraries(viewer_sample_gl ssLoader)
 target_link_libraries(viewer_sample_gl ssAnimater)
 target_link_libraries(viewer_sample_gl ssHelper)
+
 if(MSVC)
     target_link_libraries(viewer_sample_gl AntTweakBar${ANTTWEAKBAR_LIB_ARCH}.lib)
     target_link_libraries(viewer_sample_gl glew32.lib)
     target_link_libraries(viewer_sample_gl glfw3.lib)
-endif()
 
+    SET_TARGET_PROPERTIES (viewer_sample_gl PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
+    SET_TARGET_PROPERTIES (viewer_sample_gl PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
+    SET_TARGET_PROPERTIES (viewer_sample_gl PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows")
+    SET_TARGET_PROPERTIES (viewer_sample_gl PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows")
+    ADD_DEFINITIONS(/D_WIN32)
+
+elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+    target_link_libraries(viewer_sample_gl AntTweakBar)
+    target_link_libraries(viewer_sample_gl glfw.3)
+    target_link_libraries(viewer_sample_gl "-framework OpenGL")
+    target_link_libraries(viewer_sample_gl "-framework AppKit")
+    target_link_libraries(viewer_sample_gl "-framework IOKit")
+    ADD_DEFINITIONS(-DAPPLE)
+endif()
 
 #if(MSVC)
 #    add_executable(viewer_sample_dx9 ${viewer_sample_common_SRCS}
@@ -71,20 +90,10 @@ endif()
 #                                     ${viewer_sample_dx9_HEADERS}
 #                                     )
 #endif()
-
-if(WIN32)
-    SET_TARGET_PROPERTIES (viewer_sample_gl PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
-    SET_TARGET_PROPERTIES (viewer_sample_gl PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
-    SET_TARGET_PROPERTIES (viewer_sample_gl PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows")
-    SET_TARGET_PROPERTIES (viewer_sample_gl PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows")
-
+#if(WIN32)
+#    ADD_DEFINITIONS(/D_WIN32)
 #    SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
 #    SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
 #    SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows")
 #    SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows")
-    ADD_DEFINITIONS(/D_WIN32)
-elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
-    SET(LINK_LIB4 "-lAntTweakBar -lglfw.3 -framework OpenGL -framework AppKit -framework IOKit" )
-    ADD_DEFINITIONS(-APPLE)
-    target_link_libraries(viewer_sample_gl ${LINK_LIB4})
-endif()
+#endif()
