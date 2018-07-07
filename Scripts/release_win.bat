@@ -5,7 +5,7 @@ set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
 set TOOLSDIR=%BASEDIR%\Tools
 set QT_PREFIX=C:\Qt\5.11.1\msvc2017_64
-set VCVARSALL="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"
+set VCDIR=C:\Program Files (x86)\Microsoft Visual Studio\2017
 @echo on
 
 cd "%BUILDDIR%\Converter"
@@ -15,6 +15,14 @@ cd build
 cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Release .. || exit /b 1
 cmake --build . --target ALL_BUILD -- /p:Configuration=Release || exit /b 1
 ctest -C Release .
+
+if exist "%VCDIR%\Enterprise" (
+    set VCVARSALL="%VCDIR%\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
+) else if exist "%VCDIR%\Professional" (
+    set VCVARSALL="%VCDIR%\Professional\VC\Auxiliary\Build\vcvarsall.bat"
+) else (
+    set VCVARSALL="%VCDIR%\Community\VC\Auxiliary\Build\vcvarsall.bat"
+)
 
 call %VCVARSALL% x64
 cd "%BUILDDIR%\Ss6ConverterGUI\Ss6ConverterGUI"
