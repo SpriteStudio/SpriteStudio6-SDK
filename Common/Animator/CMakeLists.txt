@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.11)
 
-project(ssAnimater)
+project(ssAnimator)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(ssAnimater_SRCS
+set(ssAnimator_SRCS
     ssplayer_cellmap.cpp
     ssplayer_PartState.cpp
     ssplayer_render.cpp
@@ -17,7 +17,7 @@ set(ssAnimater_SRCS
     ssplayer_mesh.cpp
 )
 
-set(ssAnimater_HEADERS
+set(ssAnimator_HEADERS
     ssplayer_types.h
     ssplayer_cellmap.h
     ssplayer_PartState.h
@@ -35,4 +35,4 @@ set(ssAnimater_HEADERS
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../Loader)
 
-add_library(ssAnimater ${ssAnimater_SRCS} ${ssAnimater_HEADERS})
+add_library(ssAnimator ${ssAnimator_SRCS} ${ssAnimator_HEADERS})

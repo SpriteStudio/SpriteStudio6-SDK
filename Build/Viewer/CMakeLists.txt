@@ -84,7 +84,7 @@ add_executable(viewer_sample_gl ${viewer_sample_common_SRCS}
                                 ${viewer_sample_gl_HEADERS}
                                 )
 target_link_libraries(viewer_sample_gl ssLoader)
-target_link_libraries(viewer_sample_gl ssAnimater)
+target_link_libraries(viewer_sample_gl ssAnimator)
 target_link_libraries(viewer_sample_gl ssHelper)
 
 if(MSVC)

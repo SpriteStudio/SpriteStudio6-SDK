@@ -55,7 +55,7 @@ endif()
 
 add_executable(UnitTest ${UnitTest_SRCS} ${UnitTest_HEADERS})
 target_link_libraries(UnitTest ssLoader)
-target_link_libraries(UnitTest ssAnimater)
+target_link_libraries(UnitTest ssAnimator)
 target_link_libraries(UnitTest ssHelper)
 
 enable_testing()
