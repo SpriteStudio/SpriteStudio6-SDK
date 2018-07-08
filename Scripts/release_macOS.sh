@@ -1,12 +1,5 @@
 #!/bin/sh -e
 
-if [ -z ${QT_PREFIX+x} ]; then
-    QT_PREFIX=${HOME}/Qt/5.11.1/clang_64
-    if [ ! -d $QT_PREFIX ]; then
-        QT_PREFIX=/usr/local/opt/qt
-    fi
-fi
-
 SCRIPTDIR=`dirname $0`
 SCRIPTDIR=`cd $SCRIPTDIR && pwd -P`
 BASEDIR=${SCRIPTDIR}/..
@@ -16,30 +9,9 @@ BUILDDIR=`cd ${BUILDDIR} && pwd -P`
 TOOLSDIR=${BASEDIR}/Tools
 TOOLSDIR=`cd ${TOOLSDIR} && pwd -P`
 
-pushd ${BUILDDIR}
 
-# Build Converter
-pushd Converter
-/bin/rm -rf build
-/bin/mkdir build
-pushd build
-cmake -DENABLE_CCACHE=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=x86_64 ..
-make -j4
-ctest .
-popd > /dev/null # build
-popd > /dev/null # Converter
-
-pushd Ss6ConverterGUI/Ss6ConverterGUI
-if [ -f Makefile ]; then
-    make distclean
-fi
-${QT_PREFIX}/bin/qmake Release=1 Ss6ConverterGUI.pro
-make -j4
-${QT_PREFIX}/bin/macdeployqt Ss6ConverterGUI.app
-popd > /dev/null # Ss6ConverterGUI/Ss6ConverterGUI/
-
-popd > /dev/null # ${BUILDDIR}
-
+${SCRIPTDIR}/build_converter_macos.sh Release
+${SCRIPTDIR}/build_convertergui_macos.sh Release
 
 pushd ${BASEDIR}
 /bin/rm -f Ss6Converter_Mac.dmg
