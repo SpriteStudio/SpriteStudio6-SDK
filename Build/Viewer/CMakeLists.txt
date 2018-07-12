@@ -73,9 +73,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
 
 if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
     set(DEPSDIR "/usr/local/opt" FORCE) # homebrew prefix
-else()
+elseif(MSVC)
     set(DEPSDIR ${CMAKE_CURRENT_SOURCE_DIR}/../Depends)
 endif()
+
 Depends_Lib(${DEPSDIR})
 
 add_executable(viewer_sample_gl ${viewer_sample_common_SRCS}
@@ -107,17 +108,25 @@ elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
     ADD_DEFINITIONS(-DAPPLE)
 endif()
 
-#if(MSVC)
-#    add_executable(viewer_sample_dx9 ${viewer_sample_common_SRCS}
-#                                     ${viewer_sample_common_HEADERS}
-#                                     ${viewer_sample_dx9_SRCS}
-#                                     ${viewer_sample_dx9_HEADERS}
-#                                     )
-#endif()
-#if(WIN32)
-#    ADD_DEFINITIONS(/D_WIN32)
-#    SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
-#    SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
-#    SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows")
-#    SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows")
-#endif()
+
+if(MSVC)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+    include(FindDirectX)
+    if(NOT ("${DirectX_BIN_SEARCH_PATH}" STREQUAL ""))
+        add_executable(viewer_sample_dx9 ${viewer_sample_common_SRCS}
+                                         ${viewer_sample_common_HEADERS}
+                                         ${viewer_sample_dx9_SRCS}
+                                         ${viewer_sample_dx9_HEADERS}
+                                         )
+        target_link_libraries(viewer_sample_dx9 ssLoader)
+        target_link_libraries(viewer_sample_dx9 ssAnimator)
+        target_link_libraries(viewer_sample_dx9 ssHelper)
+                                         
+        target_link_libraries(viewer_sample_dx9 AntTweakBar${ANTTWEAKBAR_LIB_ARCH}.lib)
+
+        SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
+        SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
+        SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows")
+        SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows")
+    endif()
+endif()
