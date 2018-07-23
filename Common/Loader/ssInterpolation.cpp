@@ -121,6 +121,17 @@ static float hermite_(float start, float end, float time, const SsCurve * c)
 	return result;
 }
 
+
+/// SsVector2 のメンバ全体の補間
+SsVector2	SsInterpolate(SsInterpolationType::_enum ipType, float time, SsVector2 start, SsVector2 end, const SsCurve * curve)
+{
+	SsVector2 out;
+	out.x = SsInterpolate(ipType, time, start.x, end.x, curve);
+	out.y = SsInterpolate(ipType, time, start.y, end.y, curve);
+
+	return(out);
+}
+
 //----------------------------------------------------------------------------
 /**
 	タイプを指定して補間する

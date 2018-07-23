@@ -17,6 +17,7 @@ inline bool SsNeedsCurveParams(SsInterpolationType::_enum type)
 }
 
 ///カーブパラメータ、補完方法により保管された値を生成する
+SsVector2	SsInterpolate(SsInterpolationType::_enum ipType, float time, SsVector2 start, SsVector2 end, const SsCurve * curve);
 float	SsInterpolate(SsInterpolationType::_enum type, float time, float start, float end, const SsCurve * curve);
 
 #endif

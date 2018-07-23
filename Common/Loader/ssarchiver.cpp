@@ -266,7 +266,6 @@ bool	SsXmlIArchiver::dc(const char* name, std::map<SsString, int>& _map)
 	return false;
 }
 
-
 bool	StringToTriangle(const std::string& str, SsTriangle& tri)
 {
 
@@ -325,7 +324,6 @@ bool	StringToIRect( const std::string& str , SsIRect& rect )
 
 	return true;
 }
-
 
 void	SsArchiverInit()
 {

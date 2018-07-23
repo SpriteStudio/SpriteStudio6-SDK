@@ -157,7 +157,6 @@ public:
 	virtual bool	dc(const char* name, std::map<SsString,int>& _map);
 
 
-
 	virtual bool	dc_attr( const char* name , SsString& member );
 	virtual bool	dc_attr( const char* name , int& member );
 
@@ -270,7 +269,6 @@ inline bool	__SSAR_DECLARE_ATTRIBUTE_ENUM__( ISsXmlArchiver* ar ,myclass& type, 
 bool	StringToPoint2( const std::string& str , SsPoint2& point );
 bool	StringToIRect( const std::string& str , SsIRect& rect );
 bool	StringToTriangle(const std::string& str, SsTriangle& tri);
-
 
 
 ///SpriteStudio XMLデータ読み書きの初期化

@@ -543,6 +543,54 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 }
 
 
+void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, const SsKeyframe* rightkey, SsDeformAttr& v)
+{
+	if (rightkey == 0)
+	{
+		GetSsDeformAnime(leftkey, v);
+		return;
+	}
+
+	SsInterpolationType::_enum ipType = leftkey->ipType;
+	const SsCurve curve = leftkey->curve;
+	SsDeformAttr startValue;
+	SsDeformAttr endValue;
+
+	GetSsDeformAnime(leftkey, startValue);
+	GetSsDeformAnime(rightkey, endValue);
+
+
+	//スタートとエンドの頂点数を比較し、多い方に合わせる(足りない部分は0とみなす)
+	int numPoints = std::max(static_cast<int>(startValue.verticeChgList.size()), static_cast<int>(endValue.verticeChgList.size()));
+
+	std::vector<SsVector2> start = startValue.verticeChgList;
+	//start.resize(numPoints);
+	for (int i = start.size(); i < numPoints; i++)
+	{
+		start.push_back(SsVector2(0, 0));
+	}
+
+	std::vector<SsVector2> end = endValue.verticeChgList;
+	//end.resize(numPoints);
+	for (int i = end.size(); i < numPoints; i++)
+	{
+		end.push_back(SsVector2(0, 0));
+	}
+
+	//SsDebugPrint("start : %d, end : %d", start.size(), end.size());
+
+	for (int i = 0; i < numPoints; i++)
+	{
+		SsVector2 outVec;
+
+		outVec = SsInterpolate(ipType, time, start[i], end[i], &curve);
+		v.verticeChgList.push_back(outVec);
+
+	}
+
+
+}
+
 
 //float , int , bool基本型はこれで値の補間を行う
 template<typename mytype>
@@ -929,6 +977,9 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 					break;
 				case SsAttributeKind::mask:
 					SsGetKeyValue( part, nowTime, attr, state->masklimen);
+					break;
+				case SsAttributeKind::deform:
+					SsGetKeyValue(part, nowTime, attr, state->deformValue);
 					break;
 
 			}
