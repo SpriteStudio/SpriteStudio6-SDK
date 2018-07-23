@@ -48,31 +48,60 @@ enum{
 
 
 
-inline float blendColorValue_(SsBlendType::_enum type, u8 color8, float rate)
+//6.2対応
+//パーツカラー、ミックス、頂点
+/// カラー値を byte(0~255) -> float(0.0~1.0) に変換する。
+inline float __fastcall floatFromByte_(u8 color8)
 {
-	float c = static_cast<float>(color8) / 255.f;
-	return c;
+	return static_cast<float>(color8) / 255.f;
 }
 
+/// RGBA の各値を byte(0~255) -> float(0.0~1.0) に変換し、配列 dest の[0,1,2,3] に設定する。
+inline void __fastcall rgbaByteToFloat_(float* dest, const SsColorBlendValue& src)
+{
+	const SsColor* srcColor = &src.rgba;
+
+	dest[0] = floatFromByte_(srcColor->r);
+	dest[1] = floatFromByte_(srcColor->g);
+	dest[2] = floatFromByte_(srcColor->b);
+	dest[3] = floatFromByte_(srcColor->a);
+}
+
+/// // RGB=100%テクスチャ、A=テクスチャｘ頂点カラーの設定にする。
+static void __fastcall setupTextureCombinerTo_NoBlendRGB_MultiplyAlpha_()
+{
+	// カラーは１００％テクスチャ
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+	glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
+	// αだけ合成
+	glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+	glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+	glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+}
+
+
 /**
-パーツカラー用
-ブレンドタイプに応じたテクスチャコンバイナの設定を行う
-http://www.opengl.org/sdk/docs/man/xhtml/glTexEnv.xml
+ブレンドタイプに応じたテクスチャコンバイナの設定を行う (パーツカラー用)
 
-ミックスのみコンスタント値を使う。
-他は事前に頂点カラーに対してブレンド率を掛けておく事でαも含めてブレンドに対応している。
+rateOrAlpha		ミックス時のみ参照される。単色では Rate に、頂点単位では Alpha になる。
+target			ミックス時のみ参照される。
 
-TODO: シェーダを用意すると少し速くなるかもしれない
+参考：http://www.opengl.org/sdk/docs/man/xhtml/glTexEnv.xml
 */
-static void setupPartsColorTextureCombiner(SsBlendType::_enum type, float rate, SsColorBlendTarget::_enum target)
+static void __fastcall setupSimpleTextureCombiner_for_PartsColor_(SsBlendType::_enum type, float rateOrAlpha, SsColorBlendTarget::_enum target)
 {
 	//static const float oneColor[4] = {1.f,1.f,1.f,1.f};
-	float constColor[4] = { 0.5f,0.5f,0.5f,rate };
+	float constColor[4] = { 0.5f,0.5f,0.5f,rateOrAlpha };
 	static const GLuint funcs[] = { GL_INTERPOLATE, GL_MODULATE, GL_ADD, GL_SUBTRACT };
 	GLuint func = funcs[(int)type];
 	GLuint srcRGB = GL_TEXTURE0;
 	GLuint dstRGB = GL_PRIMARY_COLOR;
 
+	// true:  頂点αをブレンドする。
+	// false: constColor のαをブレンドする。
 	bool combineAlpha = true;
 
 	switch (type)
@@ -131,24 +160,22 @@ static void setupPartsColorTextureCombiner(SsBlendType::_enum type, float rate, 
 	}
 	else
 	{
+#if 1
+		// 浮いた const 値を頂点αの代わりにブレンドする。v6.2.0+ 2018/06/21 endo
+		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_CONSTANT);
+		glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, constColor);
+		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+#else
 		// ミックス＋頂点単位の場合αブレンドはできない。
 		// αはテクスチャを100%使えれば最高だが、そうはいかない。
 		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
 		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
 		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+#endif
 	}
-}
-
-inline void simpleblendColor_(float * dest, SsBlendType::_enum blendType, const SsColorBlendValue& color, SsColorBlendTarget::_enum target)
-{
-	const SsColor * srcColor = &color.rgba;
-	float rate = color.rate;
-
-	setupPartsColorTextureCombiner(blendType, rate, target);
-
-	dest[0] = blendColorValue_(blendType, srcColor->r, rate);
-	dest[1] = blendColorValue_(blendType, srcColor->g, rate);
-	dest[2] = blendColorValue_(blendType, srcColor->b, rate);
 }
 
 void	SsRenderGL::initialize()
@@ -412,6 +439,37 @@ void	SsRenderGL::execMask(SsPartState* state)
 
 }
 
+/**
+中央頂点(index=4)のRGBA%値の計算
+
+[in/out] colors, rates の [0~3] の平均値を [4] に入れる。
+*/
+inline void __fastcall calcCenterVertexColor(float* colors, float* rates, float* vertexID)
+{
+	float a, r, g, b, rate;
+	a = r = g = b = rate = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		int idx = i * 4;
+		a += colors[idx++];
+		r += colors[idx++];
+		g += colors[idx++];
+		b += colors[idx++];
+		rate += rates[i];
+	}
+
+	//きれいな頂点変形への対応
+	vertexID[4 * 2] = 4;
+	vertexID[4 * 2 + 1] = 4;
+
+	int idx = 4 * 4;
+	colors[idx++] = a / 4.0f;
+	colors[idx++] = r / 4.0f;
+	colors[idx++] = g / 4.0f;
+	colors[idx++] = b / 4.0f;
+	rates[4] = rate / 4.0f;
+}
+
 void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 {
 	if (mesh == 0)return;
@@ -474,24 +532,27 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 		{
 			// 単色
 			const SsColorBlendValue& cbv = state->partsColorValue.color;
-			simpleblendColor_(setcol, state->partsColorValue.blendType, cbv, state->partsColorValue.target);
-			// α値のブレンド。常に乗算とする。
-			setcol[3] = blendColorValue_(SsBlendType::mix, cbv.rgba.a * alpha, 1.0f);
+			setupSimpleTextureCombiner_for_PartsColor_(state->partsColorValue.blendType, cbv.rate, state->partsColorValue.target);
+			rgbaByteToFloat_(setcol, cbv);
 		}
 		else
 		{
-			//4頂点はとりあえず左上を使う
+			//4頂点はとりあえず左上のRGBAと Rate 
 			const SsColorBlendValue& cbv = state->partsColorValue.colors[0];
-			simpleblendColor_(setcol, state->partsColorValue.blendType, cbv, state->partsColorValue.target);
-			// α値のブレンド。常に乗算とする。
-			setcol[3] = blendColorValue_(SsBlendType::mix, cbv.rgba.a * alpha, 1.0f);
+			// コンバイナの設定は常に単色として行う。
+			setupSimpleTextureCombiner_for_PartsColor_(state->partsColorValue.blendType, cbv.rate, SsColorBlendTarget::whole);
+			rgbaByteToFloat_(setcol, cbv);
+			if (state->partsColorValue.blendType == SsBlendType::mix)
+			{
+				setcol[3] = 1; // ミックス-頂点単位では A に Rate が入っておりアルファは無効なので1にしておく。
+			}
 		}
 		for (size_t i = 0; i < mesh->ver_size; i++)
 		{
 			mesh->colors[i * 4 + 0] = setcol[0];
 			mesh->colors[i * 4 + 1] = setcol[1];
 			mesh->colors[i * 4 + 2] = setcol[2];
-			mesh->colors[i * 4 + 3] = alpha;
+			mesh->colors[i * 4 + 3] = setcol[3] *alpha; // 不透明度を適用する。
 		}
 	}
 	else {
@@ -774,14 +835,15 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	if (state->is_parts_color)
 	{
 		partsColorEnabled = true;
+		//6.2対応　パーツカラー、頂点、ミックス時に不透明度を適用する
 		// パーツカラーがある時だけブレンド計算する
 		if (state->partsColorValue.target == SsColorBlendTarget::whole)
 		{
 			// 単色
 			const SsColorBlendValue& cbv = state->partsColorValue.color;
-			simpleblendColor_(state->colors, state->partsColorValue.blendType, cbv, state->partsColorValue.target);
-			// α値のブレンド。常に乗算とする。
-			state->colors[3] = blendColorValue_(SsBlendType::mix, cbv.rgba.a * alpha, 1.0f);
+			setupSimpleTextureCombiner_for_PartsColor_(state->partsColorValue.blendType, cbv.rate, state->partsColorValue.target);
+			rgbaByteToFloat_(state->colors, cbv);
+			state->colors[0 + 3] *= alpha; // 不透明度を掛ける
 			rates[0] = 1.0f;
 			vertexID[0] = 0;
 
@@ -790,61 +852,41 @@ void	SsRenderGL::renderPart( SsPartState* state )
 			{
 				memcpy(state->colors + i * 4, state->colors, sizeof(state->colors[0]) * 4);
 				rates[i] = 1.0f;
-				vertexID[i*2] = 0;
-				vertexID[i*2+1] = 0;
+				vertexID[i * 2] = 0;
+				vertexID[i * 2 + 1] = 0;
 				//vertexID[i] = 0;
 			}
-
 		}
 		else
 		{
+			// 頂点単位
+			setupSimpleTextureCombiner_for_PartsColor_(state->partsColorValue.blendType, alpha, state->partsColorValue.target); // ミックス用に const に不透明度を入れておく。
+
+			for (int i = 0; i < 4; ++i)
+			{
+				const SsColorBlendValue& cbv = state->partsColorValue.colors[i];
+				rgbaByteToFloat_(state->colors + i * 4, cbv);
+
+				// 不透明度も掛ける (ミックスの場合、Rate として扱われるので不透明度を掛けてはいけない)
+				if (state->partsColorValue.blendType != SsBlendType::mix)
+				{
+					state->colors[i * 4 + 3] *= alpha;
+				}
+				rates[i] = 1.0f;
+				vertexID[i * 2] = i;
+				vertexID[i * 2 + 1] = i;
+			}
+
+#if USE_TRIANGLE_FIN
+			// 中央頂点(index=4)のRGBA%値の計算
+			calcCenterVertexColor(state->colors, rates, vertexID);
+#else
+			// クリアしとく
 			state->colors[4 * 4 + 0] = 0;
 			state->colors[4 * 4 + 1] = 0;
 			state->colors[4 * 4 + 2] = 0;
 			state->colors[4 * 4 + 3] = 0;
 			rates[4] = 0;
-
-			// 頂点単位
-
-			// α値のブレンド。常に乗算とする。
-//			float alpha = _alpha;
-
-			for (int i = 0; i < 4; ++i)
-			{
-				// RGB値の事前ブレンド
-				const SsColorBlendValue& cbv = state->partsColorValue.colors[i];
-				simpleblendColor_(state->colors + i * 4, state->partsColorValue.blendType, cbv, state->partsColorValue.target);
-
-				state->colors[i * 4 + 3] = blendColorValue_(SsBlendType::mix, cbv.rgba.a * alpha, 1.0f);
-				rates[i] = 1.0f;
-				vertexID[i * 2] = i;
-				vertexID[i * 2 + 1] = i;
-
-			}
-
-#if USE_TRIANGLE_FIN
-			float a, r, g, b, rate;
-			a = r = g = b = rate = 0;
-			for (int i = 0; i < 4; i++)
-			{
-				int idx = i * 4;
-				a += state->colors[idx++];
-				r += state->colors[idx++];
-				g += state->colors[idx++];
-				b += state->colors[idx++];
-				rate += rates[i];
-			}
-
-			//きれいな頂点変形への対応
-			vertexID[4 * 2] = 4;
-			vertexID[4 * 2 + 1] = 4;
-
-			int idx = 4 * 4;
-			state->colors[idx++] = a / 4.0f;
-			state->colors[idx++] = r / 4.0f;
-			state->colors[idx++] = g / 4.0f;
-			state->colors[idx++] = b / 4.0f;
-			rates[4] = rate / 4.0f;
 #endif
 		}
 	}
