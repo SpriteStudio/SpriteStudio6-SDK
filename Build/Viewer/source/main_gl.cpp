@@ -180,7 +180,7 @@ int main(void)
 
     /* Create a windowed mode window and its OpenGL context */
 	std::string wt = SPRITESTUDIOSDK_VERSION;
-    window = glfwCreateWindow(800, 600, wt.c_str(), NULL, NULL);
+    window = glfwCreateWindow(1280, 720, wt.c_str(), NULL, NULL);
     if (!window)
     {
         glfwTerminate();
