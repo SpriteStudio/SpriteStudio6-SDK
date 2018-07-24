@@ -40,9 +40,10 @@ static const int DATA_VERSION_6			= 6;
 static const int DATA_VERSION_7			= 7;
 static const int DATA_VERSION_8			= 8;
 static const int DATA_VERSION_9			= 9;
+static const int DATA_VERSION_10		= 10;
 
 static const int DATA_ID				= 0x42505353;
-static const int CURRENT_DATA_VERSION	= DATA_VERSION_9;
+static const int CURRENT_DATA_VERSION	= DATA_VERSION_10;
 
 
 enum {

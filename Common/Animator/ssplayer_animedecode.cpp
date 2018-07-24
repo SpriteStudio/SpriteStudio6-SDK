@@ -154,6 +154,8 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	partAnime.clear();
 	setupPartAnime.clear();
 	partStatesMask_.clear();
+	//マスクがあるアニメーションからないアニメーションに切り替えいた場合にdrawで無効なマスクのパーツステートを参照してしまうためクリアを追加
+	maskIndexList.clear();	
 	stateNum = partNum;
 
 	for ( size_t i = 0 ; i < partNum ; i++ ) 
