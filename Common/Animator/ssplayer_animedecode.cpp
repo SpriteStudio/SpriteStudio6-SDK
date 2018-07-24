@@ -545,20 +545,33 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 
 void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, const SsKeyframe* rightkey, SsDeformAttr& v)
 {
+	v.verticeChgList.clear();
+
 	if (rightkey == 0)
 	{
 		GetSsDeformAnime(leftkey, v);
 		return;
 	}
 
-	SsInterpolationType::_enum ipType = leftkey->ipType;
-	const SsCurve curve = leftkey->curve;
 	SsDeformAttr startValue;
 	SsDeformAttr endValue;
 
 	GetSsDeformAnime(leftkey, startValue);
 	GetSsDeformAnime(rightkey, endValue);
 
+	int range = rightkey->time - leftkey->time;
+	float now = (float)(time - leftkey->time) / range;
+
+	SsCurve curve;
+	curve = leftkey->curve;
+	if (leftkey->ipType == SsInterpolationType::bezier)
+	{
+		// ベジェのみキーの開始・終了時間が必要
+		curve.startKeyTime = leftkey->time;
+		curve.endKeyTime = rightkey->time;
+	}
+
+	float rate = SsInterpolate(leftkey->ipType, now, 0.0f, 1.0f, &curve);
 
 	//スタートとエンドの頂点数を比較し、多い方に合わせる(足りない部分は0とみなす)
 	int numPoints = std::max(static_cast<int>(startValue.verticeChgList.size()), static_cast<int>(endValue.verticeChgList.size()));
@@ -583,7 +596,7 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 	{
 		SsVector2 outVec;
 
-		outVec = SsInterpolate(ipType, time, start[i], end[i], &curve);
+		outVec = SsInterpolate(SsInterpolationType::linear, rate, start[i], end[i], 0);
 		v.verticeChgList.push_back(outVec);
 
 	}
@@ -773,6 +786,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 	bool hideTriger = false;
 	state->masklimen = 0;
 	state->is_localAlpha = false;
+	state->is_defrom = false;
 
 	state->position.x = part->bonePosition.x;
 	state->position.y = part->bonePosition.y;
@@ -979,6 +993,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 					SsGetKeyValue( part, nowTime, attr, state->masklimen);
 					break;
 				case SsAttributeKind::deform:
+					state->is_defrom = true;
 					SsGetKeyValue(part, nowTime, attr, state->deformValue);
 					break;
 

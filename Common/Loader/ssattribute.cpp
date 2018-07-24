@@ -288,17 +288,20 @@ void	GetSsDeformAnime(const SsKeyframe* key, SsDeformAttr& v)
 		int cnt = 0;
 		for (int i = 0; i < svsize; i++)
 		{
-			int idx = (int)atoi(str_list[1 + (cnt * 3)].c_str());		//index
-			float x = (float)atof(str_list[2 + (cnt * 3)].c_str());	//x
-			float y = (float)atof(str_list[3 + (cnt * 3)].c_str());	//y
-
-
 			SsVector2 param(0, 0);
-			if (i == idx)
+			if (cnt < datasize)
 			{
-				param.x = x;
-				param.y = y;
-				cnt++;
+				int idx = (int)atoi(str_list[1 + (cnt * 3)].c_str());		//index
+				float x = (float)atof(str_list[2 + (cnt * 3)].c_str());	//x
+				float y = (float)atof(str_list[3 + (cnt * 3)].c_str());	//y
+
+
+				if (i == idx)
+				{
+					param.x = x;
+					param.y = y;
+					cnt++;
+				}
 			}
 			v.verticeChgList.push_back(param);
 		}
