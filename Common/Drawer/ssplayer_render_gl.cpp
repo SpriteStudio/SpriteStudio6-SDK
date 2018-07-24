@@ -892,19 +892,12 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	}
 	else
 	{
+		// パーツカラー無し
 		for (int i = 0; i < 5; ++i)
 			state->colors[i * 4 + 3] = alpha;
 
-		// カラーは１００％テクスチャ
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
-		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
-		// αだけ合成
-		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
-		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
-		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+		// RGB=100%テクスチャ、A=テクスチャｘ頂点カラーの設定にする。
+		setupTextureCombinerTo_NoBlendRGB_MultiplyAlpha_();
 	}
 
 
