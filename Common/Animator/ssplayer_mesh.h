@@ -40,16 +40,12 @@ public:
 	int				ver_size;
 	float			*draw_vertices;		//[3 * 10];///< 座標
 
-	std::vector<SsVector3>		calc_world_vertices;
-
 	float			*offset_world_vertices;	// 描画に使われるデフォームアトリビュート
 											
 	//ツール用テンポラリワーク [editer]
 	SsVector2*					vertices_outer;
 	SsVector2*					update_vertices_outer;
 	size_t						outter_vertexnum;
-
-	std::vector<SsPartState*>   bindCandidateBoneList; //バインド候補[Editer]
 
 public:
 	StBoneWeight*   	bindBoneInfo;
@@ -96,9 +92,9 @@ public:
 	void    updateTransformMesh();            //再生時用　（バインドされたボーンに沿って変形を行う）
 
 	//デフォーム関連
-	SsVector3 SsMeshPart::getOffsetWorldVerticesFromKey(int index);
-	void	SsMeshPart::setOffsetWorldVertices(int index, const SsVector3 & v);
-	SsVector2 SsMeshPart::getOffsetLocalVertices(int index);
+	SsVector3	getOffsetWorldVerticesFromKey(int index);
+	void		setOffsetWorldVertices(int index, const SsVector3 & v);
+	SsVector2	getOffsetLocalVertices(int index);
 
 /*
 	void	renderVertex();

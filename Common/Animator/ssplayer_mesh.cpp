@@ -229,8 +229,6 @@ void    SsMeshPart::updateTransformMesh()
 				mtx.pushMatrix(myPartState->matrix);
 				mtx.TransformVector3(outtotal, out);
 
-				calc_world_vertices.push_back(out);
-
 				outtotal = out;
 			}
 
