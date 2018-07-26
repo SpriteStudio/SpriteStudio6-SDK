@@ -92,9 +92,9 @@ public:
 	void    updateTransformMesh();            //再生時用　（バインドされたボーンに沿って変形を行う）
 
 	//デフォーム関連
-	SsVector3	getOffsetWorldVerticesFromKey(int index);
-	void		setOffsetWorldVertices(int index, const SsVector3 & v);
-	SsVector2	getOffsetLocalVertices(int index);
+	SsVector3 getOffsetWorldVerticesFromKey(int index);
+	void	setOffsetWorldVertices(int index, const SsVector3 & v);
+	SsVector2 getOffsetLocalVertices(int index);
 
 /*
 	void	renderVertex();

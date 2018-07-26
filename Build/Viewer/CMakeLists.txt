@@ -2,6 +2,30 @@ cmake_minimum_required(VERSION 3.11)
 
 project(viewer_sample)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# command options
+option(ENABLE_CCACHE "Enable ccache?" ON)
+# enable ccache
+find_program(CCACHE_EXE ccache)
+if(CCACHE_EXE)
+    if(ENABLE_CCACHE)
+        message(STATUS "Enable ccache")
+        if(CMAKE_C_COMPILER_LAUNCHER)
+            set(CMAKE_C_COMPILER_LAUNCHER "${CMAKE_C_COMPILER_LAUNCHER}" "${CCACHE_EXE}")
+        else()
+            set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_EXE}")
+        endif()
+        if(CMAKE_CXX_COMPILER_LAUNCHER)
+            set(CMAKE_CXX_COMPILER_LAUNCHER "${CMAKE_CXX_COMPILER_LAUNCHER}" "${CCACHE_EXE}")
+        else()
+            set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_EXE}")
+        endif()
+    endif()
+endif()
+
+
 if(NOT TARGET ssHelper)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common viewer_sample_Common)
 endif()
@@ -47,7 +71,13 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Animator)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
 
-Depends_Lib(${CMAKE_CURRENT_SOURCE_DIR}/../Depends)
+if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+    set(DEPSDIR "/usr/local/opt" FORCE) # homebrew prefix
+elseif(MSVC)
+    set(DEPSDIR ${CMAKE_CURRENT_SOURCE_DIR}/../Depends)
+endif()
+
+Depends_Lib(${DEPSDIR})
 
 add_executable(viewer_sample_gl ${viewer_sample_common_SRCS}
                                 ${viewer_sample_common_HEADERS}
@@ -55,36 +85,48 @@ add_executable(viewer_sample_gl ${viewer_sample_common_SRCS}
                                 ${viewer_sample_gl_HEADERS}
                                 )
 target_link_libraries(viewer_sample_gl ssLoader)
-target_link_libraries(viewer_sample_gl ssAnimater)
+target_link_libraries(viewer_sample_gl ssAnimator)
 target_link_libraries(viewer_sample_gl ssHelper)
+
 if(MSVC)
     target_link_libraries(viewer_sample_gl AntTweakBar${ANTTWEAKBAR_LIB_ARCH}.lib)
     target_link_libraries(viewer_sample_gl glew32.lib)
     target_link_libraries(viewer_sample_gl glfw3.lib)
-endif()
 
-
-#if(MSVC)
-#    add_executable(viewer_sample_dx9 ${viewer_sample_common_SRCS}
-#                                     ${viewer_sample_common_HEADERS}
-#                                     ${viewer_sample_dx9_SRCS}
-#                                     ${viewer_sample_dx9_HEADERS}
-#                                     )
-#endif()
-
-if(WIN32)
     SET_TARGET_PROPERTIES (viewer_sample_gl PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
     SET_TARGET_PROPERTIES (viewer_sample_gl PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
     SET_TARGET_PROPERTIES (viewer_sample_gl PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows")
     SET_TARGET_PROPERTIES (viewer_sample_gl PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows")
-
-#    SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
-#    SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
-#    SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows")
-#    SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows")
     ADD_DEFINITIONS(/D_WIN32)
+
 elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
-    SET(LINK_LIB4 "-lAntTweakBar -lglfw.3 -framework OpenGL -framework AppKit -framework IOKit" )
-    ADD_DEFINITIONS(-APPLE)
-    target_link_libraries(viewer_sample_gl ${LINK_LIB4})
+    target_link_libraries(viewer_sample_gl AntTweakBar)
+    target_link_libraries(viewer_sample_gl glfw.3)
+    target_link_libraries(viewer_sample_gl "-framework OpenGL")
+    target_link_libraries(viewer_sample_gl "-framework AppKit")
+    target_link_libraries(viewer_sample_gl "-framework IOKit")
+    ADD_DEFINITIONS(-DAPPLE)
+endif()
+
+
+if(MSVC)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+    include(FindDirectX)
+    if(NOT ("${DirectX_BIN_SEARCH_PATH}" STREQUAL ""))
+        add_executable(viewer_sample_dx9 ${viewer_sample_common_SRCS}
+                                         ${viewer_sample_common_HEADERS}
+                                         ${viewer_sample_dx9_SRCS}
+                                         ${viewer_sample_dx9_HEADERS}
+                                         )
+        target_link_libraries(viewer_sample_dx9 ssLoader)
+        target_link_libraries(viewer_sample_dx9 ssAnimator)
+        target_link_libraries(viewer_sample_dx9 ssHelper)
+                                         
+        target_link_libraries(viewer_sample_dx9 AntTweakBar${ANTTWEAKBAR_LIB_ARCH}.lib)
+
+        SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
+        SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
+        SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows")
+        SET_TARGET_PROPERTIES (viewer_sample_dx9 PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows")
+    endif()
 endif()

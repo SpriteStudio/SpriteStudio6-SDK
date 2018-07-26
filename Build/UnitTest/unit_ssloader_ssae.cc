@@ -3,7 +3,7 @@
 //--------------------------------------------------------
 
 #include "gtest/gtest.h"
-#include "../loader/ssloader_ssae.h"
+#include "../Loader/ssloader_ssae.h"
 
 // Loadのテスト
 TEST(ssloader_ssae_test,Load) {

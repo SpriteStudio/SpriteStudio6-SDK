@@ -43,5 +43,5 @@ Depends_Lib()
 
 add_executable(scriptbase_converter ${scriptbase_converter_SRCS} ${scriptbase_converter_HEADERS})
 target_link_libraries(scriptbase_converter ssLoader)
-target_link_libraries(scriptbase_converter ssAnimater)
+target_link_libraries(scriptbase_converter ssAnimator)
 target_link_libraries(scriptbase_converter ssHelper)
