@@ -566,6 +566,7 @@ namespace SsAttributeKind
 		user,		///< [USER]ユーザーデータ
 		instance,	///< [IPRM]インスタンスパーツパラメータ
 		effect,		///< [EFCT]エフェクトパラメータ
+		deform,		///< [DEFM]デフォーム用パラメータ
 		num,
 	};
 };
@@ -845,5 +846,51 @@ struct SsBoneBind
 };
 
 typedef std::vector<SsBoneBind> SsBoneBindArray;
+
+
+class SsDeformAttr
+{
+public:
+	std::vector<SsVector2> verticeChgList;
+
+	SsDeformAttr()
+	{
+		verticeChgList.clear();
+	}
+	SsDeformAttr(const SsDeformAttr& rhs)
+	{
+		*this = rhs;
+	}
+
+	bool	operator ==(const SsDeformAttr& r) const;
+	bool	operator !=(const SsDeformAttr& r) const
+	{
+		return !(*this == r);
+	}
+
+	bool	operator ==(int n) const { return false; }
+	bool	operator !=(int n) const { return false; }
+
+	SsDeformAttr		operator +(const SsDeformAttr& rhs) const
+	{
+		return SsDeformAttr(rhs);
+	}
+
+	SsDeformAttr		operator *(const SsDeformAttr& rhs) const
+	{
+		return SsDeformAttr(rhs);
+	}
+
+	SsDeformAttr		operator /(const SsDeformAttr& rhs) const
+	{
+		return SsDeformAttr(rhs);
+	}
+
+	virtual	SsString	ToString() const { return "SsDeformAttr" /* todo パラメータ出力*/; }
+	virtual	operator SsString() const { return ToString(); }
+
+
+};
+
 
 #endif

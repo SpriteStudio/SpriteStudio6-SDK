@@ -66,6 +66,100 @@ inline	void	RotationXYZMatrixM(  float* _matrix , const float x , const float y 
 }
 
 
+class SsOpenGLMatrix
+{
+public:
+	float _matrix[16];
+
+
+public:
+	SsOpenGLMatrix()
+	{
+		identityMatrix();
+	}
+	SsOpenGLMatrix(float* src)
+	{
+		identityMatrix();
+		pushMatrix(src);
+	}
+	virtual ~SsOpenGLMatrix() {}
+
+	//単位行列の作成
+	void	identityMatrix();
+
+
+	void	popMatrix(float* dst);
+	void	pushMatrix(float* src);
+
+
+	inline void	Scaling(const float x, const float y, const float z)
+	{
+		SsOpenGLMatrix m;
+		m.setScaleMatrix(x, y, z);
+		this->multiply(m, *this);
+	}
+
+	inline	void	Translation(const float x, const float y, const float z)
+	{
+		SsOpenGLMatrix m;
+		m.setTranslationMatrix(x, y, z);
+		this->multiply(m, *this);
+	}
+
+
+	void	setScaleMatrix(const float x, const float y, const float z);
+	void    setTranslationMatrix(const float x, const float y, const float z);
+	void 	multiply(SsOpenGLMatrix& m1, SsOpenGLMatrix& m2);
+
+	// 4x4の逆行列の計算
+	void	inverseMatrix();
+
+
+	float 	getPositionX() { return _matrix[12]; }
+	float 	getPositionY() { return _matrix[12 + 1]; }
+
+	void  	TransformVector3(SsVector3& in, SsVector3& out);
+//	void  	TransformVector4(SsVector4& src, SsVector4& dst);
+
+
+
+	inline void RotationXYZ(const float x, const float y, const float z)
+	{
+		SsOpenGLMatrix mx;
+
+		if (x != 0.0f)
+		{
+			SsOpenGLMatrix mx;
+			SsOpenGLMatrix temp(this->_matrix);
+			mx.Matrix4RotationX(x);
+			this->multiply(mx, temp);
+		}
+
+		if (y != 0.0f)
+		{
+			SsOpenGLMatrix my;
+			SsOpenGLMatrix temp(this->_matrix);
+			my.Matrix4RotationY(y);
+			this->multiply(my, temp);
+		}
+
+		if (z != 0.0f)
+		{
+			SsOpenGLMatrix mz;
+			SsOpenGLMatrix temp(this->_matrix);
+			mz.Matrix4RotationZ(z);
+			this->multiply(mz, temp);
+		}
+	}
+
+	void    Matrix4RotationX(const float radians);
+	void    Matrix4RotationY(const float radians);
+	void    Matrix4RotationZ(const float radians);
+private:
+
+
+};
+
 
 #endif
 

@@ -1,6 +1,7 @@
 ﻿#include "ssloader.h"
 #include "sstypes.h"
 #include "ssattribute.h"
+#include "../Helper/DebugPrint.h"
 
 
 
@@ -153,7 +154,6 @@ void	GetSsVertexAnime( const SsKeyframe* key , SsVertexAnime& v )
 
 }
 
-
 void	GetSsRefCell( const SsKeyframe* key , SsRefCell& v )
 {
 	int id = key->value["mapId"].get<int>();
@@ -267,3 +267,49 @@ void	GetSsInstparamAnime( const SsKeyframe* key , SsInstanceAttr& v )
 	v.loopflag = iflags;
 
 }
+
+//デフォームアニメデータの取得
+void	GetSsDeformAnime(const SsKeyframe* key, SsDeformAttr& v)
+{
+	const int& svsize = key->value["vsize"].get<int>();
+	const SsString& sVchg = key->value["vchg"].get<SsString>();
+
+	v.verticeChgList.clear();
+
+	std::vector<SsString>	str_list;
+	split_string(sVchg, ' ', str_list);
+	if (str_list.size() < 1)
+	{
+	}
+	else
+	{
+		//移動していいない点は出力されていない
+		int datasize = (int)atoi(str_list[0].c_str());		//データ数
+		int cnt = 0;
+		for (int i = 0; i < svsize; i++)
+		{
+			SsVector2 param(0, 0);
+			if (cnt < datasize)
+			{
+				int idx = (int)atoi(str_list[1 + (cnt * 3)].c_str());		//index
+				float x = (float)atof(str_list[2 + (cnt * 3)].c_str());	//x
+				float y = (float)atof(str_list[3 + (cnt * 3)].c_str());	//y
+
+
+				if (i == idx)
+				{
+					param.x = x;
+					param.y = y;
+					cnt++;
+				}
+			}
+			v.verticeChgList.push_back(param);
+		}
+		if (cnt != datasize)
+		{
+			//データがおかしいのでは？
+			DEBUG_PRINTF("Deform Attr Data Error");
+		}
+	}
+}
+

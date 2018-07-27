@@ -1,7 +1,7 @@
 ﻿#ifndef __GLHELPER__
 #define __GLHELPER__
 
-#include "../loader/ssloader.h"
+#include "../Loader/ssloader.h"
 
 
 #include "sshObject.h"

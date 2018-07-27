@@ -12,6 +12,9 @@
 *.la
 *.a
 
+# macos
+.DS_Store
+
 # Viusal C
 *.vcproj
 *.ncb
@@ -19,6 +22,17 @@
 *.suo
 *.vcproj.*
 AntTweakBar.dll
+
+AntTweakBar/
+AntTweakBar_116.zip
+glew-2.1.0-win32.zip
+glew-2.1.0/
+glfw-3.2.1.bin.WIN32.zip
+glfw-3.2.1.bin.WIN32/
+glfw-3.2.1.bin.WIN64.zip
+glfw-3.2.1.bin.WIN64/
+
+*.ssbp
 
 CMakeCache.txt
 CMakeFiles

@@ -9,7 +9,7 @@
 #include "ssplayer_effect.h"
 #include "ssplayer_effect2.h"
 #include "ssplayer_mesh.h"
-
+#include "ssInterpolation.h"
 
 //stdでののforeach宣言　
 
@@ -154,6 +154,8 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	partAnime.clear();
 	setupPartAnime.clear();
 	partStatesMask_.clear();
+	//マスクがあるアニメーションからないアニメーションに切り替えいた場合にdrawで無効なマスクのパーツステートを参照してしまうためクリアを追加
+	maskIndexList.clear();	
 	stateNum = partNum;
 
 	for ( size_t i = 0 ; i < partNum ; i++ ) 
@@ -543,6 +545,67 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 }
 
 
+void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, const SsKeyframe* rightkey, SsDeformAttr& v)
+{
+	v.verticeChgList.clear();
+
+	if (rightkey == 0)
+	{
+		GetSsDeformAnime(leftkey, v);
+		return;
+	}
+
+	SsDeformAttr startValue;
+	SsDeformAttr endValue;
+
+	GetSsDeformAnime(leftkey, startValue);
+	GetSsDeformAnime(rightkey, endValue);
+
+	int range = rightkey->time - leftkey->time;
+	float now = (float)(time - leftkey->time) / range;
+
+	SsCurve curve;
+	curve = leftkey->curve;
+	if (leftkey->ipType == SsInterpolationType::bezier)
+	{
+		// ベジェのみキーの開始・終了時間が必要
+		curve.startKeyTime = leftkey->time;
+		curve.endKeyTime = rightkey->time;
+	}
+
+	float rate = SsInterpolate(leftkey->ipType, now, 0.0f, 1.0f, &curve);
+
+	//スタートとエンドの頂点数を比較し、多い方に合わせる(足りない部分は0とみなす)
+	int numPoints = std::max(static_cast<int>(startValue.verticeChgList.size()), static_cast<int>(endValue.verticeChgList.size()));
+
+	std::vector<SsVector2> start = startValue.verticeChgList;
+	//start.resize(numPoints);
+	for (int i = start.size(); i < numPoints; i++)
+	{
+		start.push_back(SsVector2(0, 0));
+	}
+
+	std::vector<SsVector2> end = endValue.verticeChgList;
+	//end.resize(numPoints);
+	for (int i = end.size(); i < numPoints; i++)
+	{
+		end.push_back(SsVector2(0, 0));
+	}
+
+	//SsDebugPrint("start : %d, end : %d", start.size(), end.size());
+
+	for (int i = 0; i < numPoints; i++)
+	{
+		SsVector2 outVec;
+
+		outVec = SsInterpolate(SsInterpolationType::linear, rate, start[i], end[i], 0);
+		v.verticeChgList.push_back(outVec);
+
+	}
+
+
+}
+
 
 //float , int , bool基本型はこれで値の補間を行う
 template<typename mytype>
@@ -725,6 +788,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 	bool hideTriger = false;
 	state->masklimen = 0;
 	state->is_localAlpha = false;
+	state->is_defrom = false;
 
 	state->position.x = part->bonePosition.x;
 	state->position.y = part->bonePosition.y;
@@ -929,6 +993,10 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 					break;
 				case SsAttributeKind::mask:
 					SsGetKeyValue( part, nowTime, attr, state->masklimen);
+					break;
+				case SsAttributeKind::deform:
+					state->is_defrom = true;
+					SsGetKeyValue(part, nowTime, attr, state->deformValue);
 					break;
 
 			}
@@ -1474,17 +1542,42 @@ void	SsAnimeDecoder::draw()
 	{
 		SsPartState* state = (*e);
 
+		if (state->partType == SsPartType::mask)
+		{
+			//マスクパーツ
+
+			//6.2対応
+			//非表示の場合でもマスクの場合は処理をしなくてはならない
+			//マスクはパーツの描画より先に奥のマスクパーツから順にマスクを作成していく必要があるため
+			//通常パーツの描画順と同じ箇所で非表示によるスキップを行うとマスクのバッファがクリアされずに、
+			//マスクが手前の優先度に影響するようになってしまう。
+			if (maskFuncFlag == true) //マスク機能が有効（インスタンスのソースアニメではない）
+			{
+				SsCurrentRenderer::getRender()->clearMask();
+				mask_index++;	//0番は処理しないので先にインクメントする
+
+				for (size_t i = mask_index; i < maskIndexList.size(); i++)
+				{
+					SsPartState * ps2 = maskIndexList[i];
+					if (!ps2->hide)
+					{
+						SsCurrentRenderer::getRender()->renderPart(ps2);
+					}
+				}
+			}
+		}
+
 		if ( state->hide )continue;
 
 		if ( state->refAnime )
 		{
-
+			//インスタンスパーツ
 			SsCurrentRenderer::getRender()->execMask(state);
-
 			state->refAnime->draw();
 		}
 		else if ( state->refEffect )
 		{
+			//エフェクトパーツ
 			SsCurrentRenderer::getRender()->execMask(state);
 
 			//Ver6 ローカルスケール対応
@@ -1505,25 +1598,9 @@ void	SsAnimeDecoder::draw()
 			memcpy(state->matrix, mattemp, sizeof(mattemp));						//継承用マトリクスを戻す
 			state->alpha = orgAlpha;
 		}
-		else if ( state->partType == SsPartType::mask )
+		else if (state->partType != SsPartType::mask)
 		{
-			if (maskFuncFlag == true) //マスク機能が有効（インスタンスのソースアニメではない）
-			{
-				SsCurrentRenderer::getRender()->clearMask();
-				mask_index++;	//0番は処理しないので先にインクメントする
-
-				for (size_t i = mask_index; i < maskIndexList.size(); i++)
-				{
-					SsPartState * ps2 = maskIndexList[i];
-					if (!ps2->hide)
-					{
-						SsCurrentRenderer::getRender()->renderPart(ps2);
-					}
-				}
-			}
-		}
-		else
-		{
+			//通常パーツ
 			SsCurrentRenderer::getRender()->renderPart(state);
 		}
 	}

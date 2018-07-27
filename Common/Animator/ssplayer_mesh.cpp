@@ -1,7 +1,7 @@
 ﻿#include <stdio.h>
 #include <cstdlib>
 
-#include "../loader/ssloader.h"
+#include "../Loader/ssloader.h"
 
 #include "ssplayer_animedecode.h"
 #include "ssplayer_mesh.h"
@@ -26,8 +26,10 @@ void	SsMeshPart::makeMesh()
 	if (vertices_outer) delete[]vertices_outer;
 	if (bindBoneInfo) delete[]bindBoneInfo;
 	if (weightColors) delete[]weightColors;
+	if (offset_world_vertices) delete[] offset_world_vertices;
 
 	draw_vertices = new float[3 * psize];
+	offset_world_vertices = new float[3 * psize];
 
 	vertices_outer = new SsVector2[3 * psize];// //ツール用
 	update_vertices_outer = new SsVector2[3 * psize];// //ツール用
@@ -65,7 +67,9 @@ void	SsMeshPart::makeMesh()
 		vertices[i * 3 + 0] = v.x + offs.x;
 		vertices[i * 3 + 1] = -v.y + offs.y;
 		vertices[i * 3 + 2] = 0;
-
+		offset_world_vertices[i * 3 + 0] = 0;
+		offset_world_vertices[i * 3 + 1] = 0;
+		offset_world_vertices[i * 3 + 2] = 0;
 
 		colors[i * 4 + 0] = 1.0f;
 		colors[i * 4 + 1] = 1.0f;
@@ -131,6 +135,9 @@ void	SsMeshPart::Cleanup()
 	if (bindBoneInfo) delete[] bindBoneInfo;
 	bindBoneInfo = 0;
 
+	if (offset_world_vertices) delete[] offset_world_vertices;
+	offset_world_vertices = 0;
+
 	myPartState = 0;
 }
 
@@ -138,7 +145,6 @@ void	SsMeshPart::Cleanup()
 void    SsMeshPart::updateTransformMesh()
 {
 	float matrix[16];
-
 	for (int i = 0; i < ver_size; i++)
 	{
 		StBoneWeight& info = bindBoneInfo[i];
@@ -149,14 +155,41 @@ void    SsMeshPart::updateTransformMesh()
 
 		SsPartState* matrixState = myPartState;
 
+		//デフォームアトリビュートを使用している
+		if (myPartState->is_defrom == true)
+		{
+			// キーからデフォームアトリビュートを取り出して
+			SsVector3 offset(0, 0, 0);
+
+			int size1 = (int)myPartState->deformValue.verticeChgList.size();
+			int size2 = (int)getVertexNum();
+			if (size1 == size2)
+			{
+				// キーからデフォームアトリビュートを取り出して
+				offset = getOffsetWorldVerticesFromKey(i);
+			}
+			// 描画用デフォームアトリビュートを更新
+			setOffsetWorldVertices(i, offset);
+		}
+
+
 		if (info.bindBoneNum == 0)
 		{
+			//バインドされていないメッシュの場合
+
 			this->isBind = false;
-
-
 			//MatrixTransformVector3(matrixState->matrix, info.offset[n], out);
+
+			//デフォームオフセットを加える
+			if(myPartState->is_defrom == true )
+			{ 
+				draw_vertices[i * 3 + 0] = vertices[i * 3 + 0] + getOffsetLocalVertices(i).x;
+				draw_vertices[i * 3 + 1] = vertices[i * 3 + 1] + getOffsetLocalVertices(i).y;
+				draw_vertices[i * 3 + 2] = 0;
+			}
 		}
-		else {
+		else 
+		{
 			this->isBind = true;
 			for (int n = 0; n < info.bindBoneNum; n++)
 			{
@@ -173,6 +206,31 @@ void    SsMeshPart::updateTransformMesh()
 					outtotal.z = 0;
 				}
 			}
+			//デフォームオフセットを加える
+			if (myPartState->is_defrom == true)
+			{
+				SsOpenGLMatrix mtx;
+
+				// ボーンにより影響を受けた座標(ローカル座標)
+				SsVector3   out;
+				mtx.pushMatrix(myPartState->matrix);
+				mtx.inverseMatrix();
+				mtx.TransformVector3(outtotal, out);
+
+				// デフォームによる影響(ローカル座標)
+				SsVector3   vec;
+				vec.x = getOffsetLocalVertices(i).x;
+				vec.y = getOffsetLocalVertices(i).y;
+				vec.z = 0.0f;
+
+				outtotal = SsVector3(out.x + vec.x, out.y + vec.y, out.z + vec.z);
+
+				// ワールド座標に変換
+				mtx.pushMatrix(myPartState->matrix);
+				mtx.TransformVector3(outtotal, out);
+
+				outtotal = out;
+			}
 
 			draw_vertices[i * 3 + 0] = outtotal.x * 1.0f;
 			draw_vertices[i * 3 + 1] = outtotal.y * 1.0f;
@@ -180,6 +238,90 @@ void    SsMeshPart::updateTransformMesh()
 		}
 
 	}
+}
+
+// デフォームアトリビュート
+// ワールド座標を取得
+SsVector3 SsMeshPart::getOffsetWorldVerticesFromKey(int index)
+{
+	SsVector3 out1, out2;
+
+	{
+		SsOpenGLMatrix mtx;
+		SsVector3   vec;
+		vec.x = vertices[index * 3 + 0] + myPartState->deformValue.verticeChgList[index].x;
+		vec.y = vertices[index * 3 + 1] + myPartState->deformValue.verticeChgList[index].y;
+		vec.z = 0.0f;
+
+		mtx.pushMatrix(myPartState->matrix);
+		mtx.TransformVector3(vec, out1);
+	}
+
+	{
+		SsOpenGLMatrix mtx;
+		SsVector3   vec;
+		vec.x = vertices[index * 3 + 0];
+		vec.y = vertices[index * 3 + 1];
+		vec.z = 0.0f;
+
+		mtx.pushMatrix(myPartState->matrix);
+		mtx.TransformVector3(vec, out2);
+	}
+
+
+	SsVector3 offset;
+
+	offset.x = out1.x - out2.x;
+	offset.y = out1.y - out2.y;
+	offset.z = out1.z - out2.z;
+
+	return offset;
+}
+
+// デフォームアトリビュート取得
+// ワールド座標を設定（バインドがある場合）
+void	SsMeshPart::setOffsetWorldVertices(int index, const SsVector3 & v)
+{
+	offset_world_vertices[index * 3 + 0] = v.x;
+	offset_world_vertices[index * 3 + 1] = v.y;
+	offset_world_vertices[index * 3 + 2] = v.z;
+}
+
+// デフォームアトリビュート取得
+// ローカル座標系を取得（バインドがない場合）
+SsVector2 SsMeshPart::getOffsetLocalVertices(int index)
+{
+	SsVector3 out1, out2;
+
+	{
+		SsOpenGLMatrix mtx;
+		SsVector3   vec;
+		vec.x = vertices[index * 3 + 0];
+		vec.y = vertices[index * 3 + 1];
+		vec.z = 0.0f;
+
+		mtx.pushMatrix(myPartState->matrix);
+		mtx.TransformVector3(vec, out1);
+	}
+
+	{
+		SsOpenGLMatrix mtx;
+		SsVector3   vec;
+		vec.x = out1.x + offset_world_vertices[index * 3 + 0];
+		vec.y = out1.y + offset_world_vertices[index * 3 + 1];
+		vec.z = out1.z + offset_world_vertices[index * 3 + 2];
+
+		mtx.pushMatrix(myPartState->matrix);
+		mtx.inverseMatrix();
+		mtx.TransformVector3(vec, out2);
+	}
+
+	SsVector2 offset;
+
+	offset.x = out2.x - vertices[index * 3 + 0];
+	offset.y = out2.y - vertices[index * 3 + 1];
+
+	return offset;
 }
 
 //-----------------------------------------------------------
