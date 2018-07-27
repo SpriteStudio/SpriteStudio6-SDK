@@ -30,6 +30,10 @@
 
 #include "picojson.h"
 
+#include "flatbuffers/flatbuffers.h"
+#include "flatbuffers/util.h"
+#include "ssfb_generated.h"
+
 
 static const int DATA_VERSION_1			= 1;
 static const int DATA_VERSION_2         = 2;
@@ -113,7 +117,8 @@ enum {
 enum {
 	OUTPUT_FORMAT_FLAG_SSBP	= 1 << 0,
 	OUTPUT_FORMAT_FLAG_JSON	= 1 << 1,
-	OUTPUT_FORMAT_FLAG_CSOURCE	= 1 << 2
+	OUTPUT_FORMAT_FLAG_CSOURCE	= 1 << 2,
+	OUTPUT_FORMAT_FLAG_SSFB	= 1 << 3,
 };
 
 bool convert_error_exit = false;	//データにエラーがありコンバートを中止した
@@ -276,6 +281,8 @@ bool isZenkaku( const SsString* str )
 }
 
 static picojson::object ssjson;
+static flatbuffers::Offset<ss::ssfb::ProjectData> ssfbProjectData;
+static flatbuffers::FlatBufferBuilder ssfbBuilder;
 
 static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 {
@@ -285,6 +292,11 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 	std::cerr << "convert start!" << "\n";
 
 	CellList* cellList = makeCellList(proj);
+
+	flatbuffers::Offset<flatbuffers::String> ssfbImageBaseDir;
+	std::vector<flatbuffers::Offset<ss::ssfb::Cell>> ssfbCells;
+	std::vector<flatbuffers::Offset<ss::ssfb::AnimePackData>> ssfbAnimePacks;
+	std::vector<flatbuffers::Offset<ss::ssfb::EffectFile>> ssfbEffectFileList;
 
 	Lump* topLump = Lump::set("ss::ProjectData", true);
 	ssjson.clear();
@@ -297,26 +309,27 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		return 0;
 	}
 
-
 	topLump->add(Lump::s32Data(DATA_ID));
 	ssjson.insert(std::make_pair("dataId", picojson::value((double)DATA_ID)));
-	
+
 	topLump->add(Lump::s32Data(CURRENT_DATA_VERSION));
 	ssjson.insert(std::make_pair("version", picojson::value((double)CURRENT_DATA_VERSION)));
-	
+
 	//4互換設定の出力
 	topLump->add(Lump::s32Data(0));
 	ssjson.insert(std::make_pair("flags", picojson::value(0.0)));
-	
+
 	if (imageBaseDir.length() > 0)
 	{
 		topLump->add(Lump::stringData(imageBaseDir));
 		ssjson.insert(std::make_pair("imageBaseDir", picojson::value(imageBaseDir)));
+		ssfbImageBaseDir = ssfbBuilder.CreateString(imageBaseDir);
 	}
 	else
 	{
 		topLump->add(Lump::s32Data(0));
 		ssjson.insert(std::make_pair("imageBaseDir", picojson::value()));
+		ssfbImageBaseDir = ssfbBuilder.CreateString("");
 	}
 
 	Lump* cellsData = Lump::set("ss::Cell[]", true);
@@ -334,7 +347,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 	
 	topLump->add(Lump::s16Data((int)proj->effectfileList.size()));
 	ssjson.insert(std::make_pair("numEffectFileList", picojson::value((double)proj->effectfileList.size())));
-	
+
 	//セルマップ警告
 	if (proj->cellmapList.size() == 0)
 	{
@@ -348,33 +361,44 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 	{
 		const SsCellMap* cellMap = proj->cellmapList[mapIndex];
 		picojson::object cm;
-		
+		flatbuffers::Offset<ss::ssfb::CellMap> ssfbCellMap;
+
 		Lump* cellMapData = Lump::set("ss::CellMap", true);
 		cellMapData->add(Lump::stringData(cellMap->name));
 		cm.insert(std::make_pair("name", picojson::value(cellMap->name)));
+		auto ssfbCellMapName = ssfbBuilder.CreateString(cellMap->name);
 		cellMapData->add(Lump::stringData(cellMap->imagePath));
 		cm.insert(std::make_pair("imagePath", picojson::value(cellMap->imagePath)));
-		
+		auto ssfbCellMapImagePath = ssfbBuilder.CreateString(cellMap->imagePath);
+
 		cellMapData->add(Lump::s16Data((int)mapIndex));
 		cm.insert(std::make_pair("index", picojson::value((double)(int)mapIndex)));
+		short wrapMode;
+		short filterMode;
 		if (cellMap->overrideTexSettings == true )							///< テクスチャ設定をプロジェクトの設定ではなく下記設定を使う
 		{
 			//個別の設定を使う
 			cellMapData->add(Lump::s16Data(cellMap->wrapMode));				///< テクスチャのラップモード
 			cm.insert(std::make_pair("wrapmode", picojson::value((double)cellMap->wrapMode)));
+			wrapMode = cellMap->wrapMode;
 			cellMapData->add(Lump::s16Data(cellMap->filterMode));			///< テクスチャのフィルタモード
 			cm.insert(std::make_pair("filtermode", picojson::value((double)cellMap->filterMode)));
+			filterMode = cellMap->filterMode;
 		}
 		else
 		{
 			//プロジェクトの設定を使う
 			cellMapData->add(Lump::s16Data(proj->settings.wrapMode));		///< テクスチャのラップモード
 			cm.insert(std::make_pair("wrapmode", picojson::value((double)proj->settings.wrapMode)));
+			wrapMode = proj->settings.wrapMode;
 			cellMapData->add(Lump::s16Data(proj->settings.filterMode));		///< テクスチャのフィルタモード
 			cm.insert(std::make_pair("filtermode", picojson::value((double)proj->settings.filterMode)));
+			filterMode = proj->settings.filterMode;
 		}
 		cellMapData->add(Lump::s16Data(0));	// reserved
 
+		ssfbCellMap = ss::ssfb::CreateCellMap(ssfbBuilder, ssfbCellMapName, ssfbCellMapName,
+											  static_cast<int16_t>(mapIndex), wrapMode, filterMode);
 
 		//全角チェック
 		if ( isZenkaku( &cellMap->name ) == true )
@@ -400,8 +424,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			
 			cellData->add(Lump::stringData(cell->name));
 			c.insert(std::make_pair("name", picojson::value(cell->name)));
+			auto ssfbCellName = ssfbBuilder.CreateString(cell->name);
 			cellData->add(cellMapData);
 			c.insert(std::make_pair("cellMap", picojson::value(cm)));
+
 			cellData->add(Lump::s16Data((int)cellIndex));
 			c.insert(std::make_pair("indexInCellMap", picojson::value((double)(int)cellIndex)));
 			cellData->add(Lump::s16Data((int)cell->pos.x));
@@ -432,6 +458,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 			ssjson_cell.push_back(picojson::value(c));
 
+			auto ssfbCell = ss::ssfb::CreateCell(ssfbBuilder, ssfbCellName, ssfbCellMap,
+					cellIndex, cell->pos.x, cell->pos.y, cell->size.x, cell->size.y,
+					cell->pivot.x, cell->pivot.y, u1, v1, u2, v2);
+
+			ssfbCells.push_back(ssfbCell);
+
 			//全角チェック
 			if (isZenkaku(&cell->name) == true)
 			{
@@ -442,7 +474,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		}
 	}
 	ssjson.insert(std::make_pair("cells", picojson::value(ssjson_cell)));
-	
 
 	//アニメーション警告
 	if (proj->animeList.size() == 0)
@@ -462,13 +493,14 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		Lump* animePackData = Lump::set("ss::AnimePackData");
 		packDataArray->add(animePackData);
 		picojson::object a;
-		
+
 		Lump* partDataArray = Lump::set("ss::PartData[]", true);
 		Lump* animeDataArray = Lump::set("ss::AnimationData[]", true);
 
 		animePackData->add(Lump::stringData(animePack->name));
 		a.insert(std::make_pair("name", picojson::value(animePack->name)));
-		
+		auto ssfbAnimePackDataName = ssfbBuilder.CreateString(animePack->name);
+
 		//全角チェック
 		if ( isZenkaku( &animePack->name ) == true )
 		{
@@ -484,6 +516,14 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		a.insert(std::make_pair("numAnimations", picojson::value((double)animePack->animeList.size())));
 
 		picojson::array ps;
+		std::vector<flatbuffers::Offset<ss::ssfb::PartData>> ssfbParts;
+		std::vector<flatbuffers::Offset<ss::ssfb::AnimationData>> ssfbAnimations;
+		std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> ssfbMeshsDataUV;
+		std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> ssfbMeshsDataIndices;
+		std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> ssfbFrameData;
+		std::vector<flatbuffers::Offset<ss::ssfb::userDataPerFrame>> ssfbUserData;
+		std::vector<flatbuffers::Offset<ss::ssfb::labelDataItem>> ssfbLabelData;
+
 		// パーツ情報（モデル）の出力
 		for (int partIndex = 0; partIndex < (int)model.partList.size(); partIndex++)
 		{
@@ -493,10 +533,11 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			Lump* partData = Lump::set("ss::PartData");
 			partDataArray->add(partData);
 			picojson::object p;
-			
+
 			partData->add(Lump::stringData(part->name));
 			p.insert(std::make_pair("name", picojson::value(part->name)));
-			
+			auto ssfbPartDataName = ssfbBuilder.CreateString(part->name);
+
 			//全角チェック
 			if ( isZenkaku( &part->name ) == true )
 			{
@@ -508,6 +549,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			p.insert(std::make_pair("index", picojson::value((double)part->arrayIndex)));
 			partData->add(Lump::s16Data(part->parentIndex));
 			p.insert(std::make_pair("parentIndex", picojson::value((double)part->parentIndex)));
+
+			ss::ssfb::SsPartType ssfbSsPartType;
 			//5.5対応5.3.5に無いパーツ種別がある場合ワーニングを表示する
 			switch (part->type)
 			{
@@ -521,6 +564,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			case SsPartType::mesh:			// 6.0メッシュパーツ
 				partData->add(Lump::s16Data(part->type));
 				p.insert(std::make_pair("type", picojson::value((double)part->type)));
+				ssfbSsPartType = (ss::ssfb::SsPartType)part->type;
 				break;
 			case SsPartType::instance:		// インスタンス。他アニメ、パーツへの参照。シーン編集モードの代替になるもの
 				//参照アニメのポインタが無い場合はNULLパーツになる。
@@ -533,12 +577,14 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					{
 						partData->add(Lump::s16Data(SsPartType::null));
 						p.insert(std::make_pair("type", picojson::value()));
+						ssfbSsPartType = ss::ssfb::SsPartType::SsPartType_Nulltype;
 						std::cerr << "警告：参照のないインスタンスパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
 					}
 					else
 					{
 						partData->add(Lump::s16Data(part->type));
 						p.insert(std::make_pair("type", picojson::value((double)part->type)));
+						ssfbSsPartType = (ss::ssfb::SsPartType)part->type;
 					}
 				}
 				break;
@@ -548,6 +594,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				{
 					partData->add(Lump::s16Data(SsPartType::null));
 					p.insert(std::make_pair("type", picojson::value()));
+					ssfbSsPartType = ss::ssfb::SsPartType::SsPartType_Nulltype;
 					//未実装　ワーニングを表示しNULLパーツにする
 					std::cerr << "警告：参照のないエフェクトパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
 				}
@@ -555,6 +602,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				{
 					partData->add(Lump::s16Data(part->type));
 					p.insert(std::make_pair("type", picojson::value((double)part->type)));
+					ssfbSsPartType = (ss::ssfb::SsPartType)part->type;
 				}
 				break;
 			default:
@@ -562,6 +610,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				std::cerr << "警告：未対応のパーツ種別が使われています: " << animePack->name << ".ssae " << part->name << "\n";
 				partData->add(Lump::s16Data(SsPartType::null));
 				p.insert(std::make_pair("type", picojson::value()));
+				ssfbSsPartType = ss::ssfb::SsPartType::SsPartType_Nulltype;
 				break;
 			}
 			partData->add(Lump::s16Data(part->boundsType));
@@ -569,13 +618,16 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			partData->add(Lump::s16Data(part->alphaBlendType));
 			p.insert(std::make_pair("alphaBlendType", picojson::value((double)part->alphaBlendType)));
 			partData->add(Lump::s16Data(0));	// reserved
-												//インスタンスアニメ名
+
+			flatbuffers::Offset<flatbuffers::String> ssfbRefAnime;
+			//インスタンスアニメ名
 			if ( part->refAnime == "" )
 			{
 				const SsString str = "";
 //				partData->add(Lump::s16Data((int)str.length()));				//文字列のサイズ
 				partData->add(Lump::stringData(str));							//文字列
 				p.insert(std::make_pair("refname", picojson::value(str)));
+				ssfbRefAnime = ssfbBuilder.CreateString(str);
 			}
 			else
 			{
@@ -583,33 +635,45 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 //				partData->add(Lump::s16Data((int)str.length()));				//文字列のサイズ
 				partData->add(Lump::stringData(str));							//文字列
 				p.insert(std::make_pair("refname", picojson::value(str)));
+				ssfbRefAnime = ssfbBuilder.CreateString(str);
 			}
+			flatbuffers::Offset<flatbuffers::String> ssfbRefEffectName;
 			//エフェクト名
 			if (part->refEffectName == "")
 			{
 				const SsString str = "";
 				partData->add(Lump::stringData(str));							//文字列
 				p.insert(std::make_pair("effectfilename", picojson::value(str)));
+				ssfbRefEffectName = ssfbBuilder.CreateString(str);
 			}
 			else
 			{
 				const SsString str = part->refEffectName;
 				partData->add(Lump::stringData(str));							//文字列
 				p.insert(std::make_pair("effectfilename", picojson::value(str)));
+				ssfbRefEffectName = ssfbBuilder.CreateString(str);
 			}
 			//カラーラベル
 			const SsString str = part->colorLabel;
 			partData->add(Lump::stringData(str));								//文字列
 			p.insert(std::make_pair("colorLabel", picojson::value(str)));
+			auto ssfbColorLabel = ssfbBuilder.CreateString(str);
 
 			//マスク対象
 			partData->add(Lump::s16Data(part->maskInfluence));
 			p.insert(std::make_pair("maskInfluence", picojson::value((double)part->maskInfluence)));
 
 			ps.push_back(picojson::value(p));
+
+			auto ssfbPartDataItem = ss::ssfb::CreatePartData(ssfbBuilder, ssfbPartDataName,
+															 static_cast<int16_t>(part->arrayIndex),
+															 static_cast<int16_t>(part->parentIndex),
+															 ssfbSsPartType, part->boundsType, part->alphaBlendType, ssfbRefAnime, ssfbRefAnime, ssfbColorLabel,
+															 static_cast<int16_t>(part->maskInfluence));
+			ssfbParts.push_back(ssfbPartDataItem);
 		}
 		a.insert(std::make_pair("parts", picojson::value(ps)));
-		
+
 		// アニメ情報の出力
 		SsCellMapList* cellMapList = new SsCellMapList();	// SsAnimeDecoderのデストラクタで破棄される
 		SsAnimeDecoder decoder;
@@ -642,6 +706,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			Lump* initialDataArray = Lump::set("ss::AnimationInitialData[]", true);
 			int sortedOrder = 0;
 			picojson::array is;
+			std::vector<flatbuffers::Offset<ss::ssfb::AnimationInitialData>> ssfbDefaultData;
 			foreach(std::vector<SsPartAndAnime>, decoder.getPartAnime(), it)
 			{
 				SsPart* part = it->first;
@@ -815,11 +880,21 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				i.insert(std::make_pair("effectValue_speed", picojson::value(init.effectValue_speed)));
 				initialData->add(Lump::s32Data(init.effectValue_loopflag));
 				i.insert(std::make_pair("effectValue_loopflag", picojson::value((double)init.effectValue_loopflag)));
-				
+
 				is.push_back(picojson::value(i));
+
+				auto item = ss::ssfb::CreateAnimationInitialData(ssfbBuilder, init.index,
+						init.lowflag, init.highflag, init.priority, init.cellIndex, init.opacity, init.localopacity, init.masklimen,
+						init.posX, init.posY, init.posZ, init.pivotX, init.pivotY, init.rotationX, init.rotationY, init.rotationZ,
+						init.scaleX, init.scaleY, init.localscaleX, init.localscaleY, init.size_X, init.size_Y,
+						init.uv_move_X, init.uv_move_Y, init.uv_rotation, init.uv_scale_X, init.uv_scale_Y, init.boundingRadius,
+						init.instanceValue_curKeyframe, init.instanceValue_startFrame, init.instanceValue_endFrame, init.instanceValue_loopNum,
+						init.instanceValue_speed, init.instanceValue_loopflag,
+						init.effectValue_curKeyframe, init.effectValue_startTime, init.effectValue_speed, init.effectValue_loopflag);
+				ssfbDefaultData.push_back(item);
 			}
 			a2.insert(std::make_pair("defaultData", picojson::value(is)));
-			
+
 			Lump* meshsDataUV = Lump::set("ss::ss_u16*[]", true);
 			{
 				decoder.setPlayFrame(0);
@@ -835,15 +910,18 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					Lump* meshData = Lump::set("ss::ss_u16*[]", true);
 					meshsDataUV->add(meshData);
 					picojson::array ms2;
-					
+					std::vector<float> ssfbUV;
+
 					//メッシュのサイズを書き出す
 					if (part->type == SsPartType::mesh)
 					{
 						int meshsize = state->meshPart->ver_size;
 						meshData->add(Lump::s32Data((int)state->meshPart->isBind));	//バインドの有無
 						ms2.push_back(picojson::value((double)(int)state->meshPart->isBind));
+						ssfbUV.push_back((float)(int)state->meshPart->isBind);
 						meshData->add(Lump::s32Data(meshsize));	//サイズ
 						ms2.push_back(picojson::value((double)meshsize));
+						ssfbUV.push_back(meshsize);
 						int i;
 						for (i = 0; i < meshsize; i++)
 						{
@@ -851,18 +929,26 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							float v = state->meshPart->uvs[i * 2 + 1];
 							meshData->add(Lump::floatData(u));
 							ms2.push_back(picojson::value(u));
+							ssfbUV.push_back(u);
 							meshData->add(Lump::floatData(v));
 							ms2.push_back(picojson::value(v));
+							ssfbUV.push_back(v);
 						}
 					}
 					else
 					{
 						meshData->add(Lump::s32Data(0));
 						ms2.push_back(picojson::value(0.0));
+						ssfbUV.push_back(0);
 					}
 					ms.push_back(picojson::value(ms2));
+
+					auto serializeSsfbUV = ssfbBuilder.CreateVector(ssfbUV);
+					auto item = ss::ssfb::CreatemeshDataUV(ssfbBuilder, serializeSsfbUV);
+					ssfbMeshsDataUV.push_back(item);
 				}
 				a2.insert(std::make_pair("meshsDataUV", picojson::value(ms)));
+
 			}
 
 			Lump* meshsDataIndices = Lump::set("ss::ss_u16*[]", true);
@@ -870,7 +956,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				decoder.setPlayFrame(0);
 				decoder.update();
 				picojson::array ms;
-				
+
 				foreach(std::vector<SsPartAndAnime>, decoder.getPartAnime(), it)
 				{
 					SsPart* part = it->first;
@@ -880,13 +966,15 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					Lump* meshData = Lump::set("ss::ss_u16*[]", true);
 					meshsDataIndices->add(meshData);
 					picojson::array ms2;
-					
+					std::vector<float> ssfbIndices;
+
 					//メッシュのサイズを書き出す
 					if (part->type == SsPartType::mesh)
 					{
 						int tri_size = state->meshPart->tri_size;
 						meshData->add(Lump::s32Data(tri_size));	//サイズ
 						ms2.push_back(picojson::value((double)tri_size));
+						ssfbIndices.push_back(tri_size);
 						int i;
 						for (i = 0; i < tri_size; i++)
 						{
@@ -895,27 +983,35 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							int po3 = (int)state->meshPart->indices[i * 3 + 2];
 							meshData->add(Lump::s32Data(po1));
 							ms2.push_back(picojson::value((double)po1));
+							ssfbIndices.push_back(po1);
 							meshData->add(Lump::s32Data(po2));
 							ms2.push_back(picojson::value((double)po2));
+							ssfbIndices.push_back(po2);
 							meshData->add(Lump::s32Data(po3));
 							ms2.push_back(picojson::value((double)po3));
+							ssfbIndices.push_back(po3);
 						}
 					}
 					else
 					{
 						meshData->add(Lump::s32Data(0));
 						ms2.push_back(picojson::value(0.0));
+						ssfbIndices.push_back(0);
 					}
 					ms.push_back(picojson::value(ms2));
+
+					auto serializeSsfbIndices = ssfbBuilder.CreateVector(ssfbIndices);
+					auto item = ss::ssfb::CreatemeshDataIndices(ssfbBuilder, serializeSsfbIndices);
+					ssfbMeshsDataIndices.push_back(item);
 				}
 				a2.insert(std::make_pair("meshsDataIndices", picojson::value(ms)));
 			}
-			
 
 
 			// フレーム毎データ
 			picojson::array fs;
 			Lump* frameDataIndexArray = Lump::set("ss::ss_u16*[]", true);
+
 			for (int frame = 0; frame < decoder.getAnimeTotalFrame(); frame++)
 			{
 				// パラメータを計算し更新する
@@ -940,6 +1036,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				Lump* frameData = Lump::set("ss::ss_u16[]", true);
 				frameDataIndexArray->add(frameData);
 				picojson::array fs2;
+				std::vector<float> ssfbFrameData2;
 				
 				Lump* frameFlag = Lump::s16Data(0);
 //				frameData->add(frameFlag);
@@ -1136,141 +1233,169 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					outPartsCount++;
 					frameData->add(Lump::s16Data(state->index));
 					fs2.push_back(picojson::value((double)state->index));
+					ssfbFrameData2.push_back(state->index);
 //					frameData->add(Lump::s16Data(0));				//32bitアライメント用ダミーデータ
 					frameData->add(Lump::s32Data(s_flags | p_flags));
 					fs2.push_back(picojson::value((double)(s_flags | p_flags)));
+					ssfbFrameData2.push_back(s_flags | p_flags);
 					frameData->add(Lump::s32Data(p_flags2));
 					fs2.push_back(picojson::value((double)p_flags2));
+					ssfbFrameData2.push_back(p_flags2);
 					
 					if (p_flags & PART_FLAG_CELL_INDEX)
 					{
 						frameData->add(Lump::s16Data(cellIndex));
 						fs2.push_back(picojson::value((double)cellIndex));
+						ssfbFrameData2.push_back(cellIndex);
 					}
 					if (p_flags & PART_FLAG_POSITION_X)
 					{
 						frameData->add(Lump::floatData(state->position.x));
 						fs2.push_back(picojson::value(state->position.x));
+						ssfbFrameData2.push_back(state->position.x);
 					}
 					if (p_flags & PART_FLAG_POSITION_Y)
 					{
 						frameData->add(Lump::floatData(state->position.y));
 						fs2.push_back(picojson::value(state->position.y));
+						ssfbFrameData2.push_back(state->position.y);
 					}
 					if (p_flags & PART_FLAG_POSITION_Z)
 					{
 						frameData->add(Lump::floatData(state->position.z));
 						fs2.push_back(picojson::value(state->position.z));
+						ssfbFrameData2.push_back(state->position.z);
 					}
 
 					if (p_flags & PART_FLAG_PIVOT_X)
 					{
 						frameData->add(Lump::floatData(pivot.x));
 						fs2.push_back(picojson::value(pivot.x));
+						ssfbFrameData2.push_back(pivot.x);
 					}
 					if (p_flags & PART_FLAG_PIVOT_Y)
 					{
 						frameData->add(Lump::floatData(pivot.y));
 						fs2.push_back(picojson::value(pivot.y));
+						ssfbFrameData2.push_back(pivot.y);
 					}
 					if (p_flags & PART_FLAG_ROTATIONX)
 					{
 						frameData->add(Lump::floatData(state->rotation.x));	// degree
 						fs2.push_back(picojson::value(state->rotation.x));
+						ssfbFrameData2.push_back(state->rotation.x);
 					}
 					if (p_flags & PART_FLAG_ROTATIONY)
 					{
 						frameData->add(Lump::floatData(state->rotation.y));	// degree
 						fs2.push_back(picojson::value(state->rotation.y));
+						ssfbFrameData2.push_back(state->rotation.y);
 					}
 					if (p_flags & PART_FLAG_ROTATIONZ)
 					{
 						frameData->add(Lump::floatData(state->rotation.z));	// degree
 						fs2.push_back(picojson::value(state->rotation.z));
+						ssfbFrameData2.push_back(state->rotation.z);
 					}
 					if (p_flags & PART_FLAG_SCALE_X)
 					{
 						frameData->add(Lump::floatData(state->scale.x));
 						fs2.push_back(picojson::value(state->scale.x));
+						ssfbFrameData2.push_back(state->scale.x);
 					}
 					if (p_flags & PART_FLAG_SCALE_Y)
 					{
 						frameData->add(Lump::floatData(state->scale.y));
 						fs2.push_back(picojson::value(state->scale.y));
+						ssfbFrameData2.push_back(state->scale.y);
 					}
 					if (p_flags & PART_FLAG_LOCALSCALE_X)
 					{
 						frameData->add(Lump::floatData(state->localscale.x));
 						fs2.push_back(picojson::value(state->localscale.x));
+						ssfbFrameData2.push_back(state->localscale.x);
 					}
 					if (p_flags & PART_FLAG_LOCALSCALE_Y)
 					{
 						frameData->add(Lump::floatData(state->localscale.y));
 						fs2.push_back(picojson::value(state->localscale.y));
+						ssfbFrameData2.push_back(state->localscale.y);
 					}
 					if (p_flags & PART_FLAG_OPACITY)
 					{
 						frameData->add(Lump::s16Data((int)(state->alpha * 255)));
 						fs2.push_back(picojson::value((double)(int)(state->alpha * 255)));
+						ssfbFrameData2.push_back(state->alpha * 255);
 					}
 					if (p_flags & PART_FLAG_LOCALOPACITY)
 					{
 						frameData->add(Lump::s16Data((int)(state->localalpha * 255)));
 						fs2.push_back(picojson::value((double)(int)(state->localalpha * 255)));
+						ssfbFrameData2.push_back(state->localalpha * 255);
 					}
 
 					if (p_flags & PART_FLAG_SIZE_X)
 					{
 						frameData->add(Lump::floatData(state->size.x));
 						fs2.push_back(picojson::value(state->size.x));
+						ssfbFrameData2.push_back(state->size.x);
 					}
 					if (p_flags & PART_FLAG_SIZE_Y)
 					{
 						frameData->add(Lump::floatData(state->size.y));
 						fs2.push_back(picojson::value(state->size.y));
+						ssfbFrameData2.push_back(state->size.y);
 					}
 
 					if (p_flags & PART_FLAG_U_MOVE)
 					{
 						frameData->add(Lump::floatData(state->uvTranslate.x));
 						fs2.push_back(picojson::value(state->uvTranslate.x));
+						ssfbFrameData2.push_back(state->uvTranslate.x);
 					}
 					if (p_flags & PART_FLAG_V_MOVE)
 					{
 						frameData->add(Lump::floatData(state->uvTranslate.y));
 						fs2.push_back(picojson::value(state->uvTranslate.y));
+						ssfbFrameData2.push_back(state->uvTranslate.y);
 					}
 					if (p_flags & PART_FLAG_UV_ROTATION)
 					{
 						frameData->add(Lump::floatData(state->uvRotation));
 						fs2.push_back(picojson::value(state->uvRotation));
+						ssfbFrameData2.push_back(state->uvRotation);
 					}
 					if (p_flags & PART_FLAG_U_SCALE)
 					{
 						frameData->add(Lump::floatData(state->uvScale.x));
 						fs2.push_back(picojson::value(state->uvScale.x));
+						ssfbFrameData2.push_back(state->uvScale.x);
 					}
 					if (p_flags & PART_FLAG_V_SCALE)
 					{
 						frameData->add(Lump::floatData(state->uvScale.y));
 						fs2.push_back(picojson::value(state->uvScale.y));
+						ssfbFrameData2.push_back(state->uvScale.y);
 					}
 
 					if (p_flags & PART_FLAG_BOUNDINGRADIUS)
 					{
 						frameData->add(Lump::floatData(state->boundingRadius));
 						fs2.push_back(picojson::value(state->boundingRadius));
+						ssfbFrameData2.push_back(state->boundingRadius);
 					}
 
 					if (p_flags & PART_FLAG_MASK)
 					{
 						frameData->add(Lump::s16Data(state->masklimen));
 						fs2.push_back(picojson::value((double)state->masklimen));
+						ssfbFrameData2.push_back(state->masklimen);
 					}
 					if (p_flags & PART_FLAG_PRIORITY)
 					{
 						frameData->add(Lump::s16Data(state->prio));
 						fs2.push_back(picojson::value((double)state->prio));
+						ssfbFrameData2.push_back(state->prio);
 					}
 
 					//インスタンス情報出力
@@ -1278,28 +1403,38 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					{
 						frameData->add(Lump::s32Data(state->instanceValue.curKeyframe));
 						fs2.push_back(picojson::value((double)state->instanceValue.curKeyframe));
+						ssfbFrameData2.push_back(state->instanceValue.curKeyframe);
 						frameData->add(Lump::s32Data(state->instanceValue.startFrame));
 						fs2.push_back(picojson::value((double)state->instanceValue.startFrame));
+						ssfbFrameData2.push_back(state->instanceValue.startFrame);
 						frameData->add(Lump::s32Data(state->instanceValue.endFrame));
 						fs2.push_back(picojson::value((double)state->instanceValue.endFrame));
+						ssfbFrameData2.push_back(state->instanceValue.endFrame);
 						frameData->add(Lump::s32Data(state->instanceValue.loopNum));
 						fs2.push_back(picojson::value((double)state->instanceValue.loopNum));
+						ssfbFrameData2.push_back(state->instanceValue.loopNum);
 						frameData->add(Lump::floatData(state->instanceValue.speed));
 						fs2.push_back(picojson::value(state->instanceValue.speed));
+						ssfbFrameData2.push_back(state->instanceValue.speed);
 						frameData->add(Lump::s32Data(state->instanceValue.loopflag));
 						fs2.push_back(picojson::value((double)state->instanceValue.loopflag));
+						ssfbFrameData2.push_back(state->instanceValue.loopflag);
 					}
 					//エフェクト情報出力
 					if (p_flags & PART_FLAG_EFFECT_KEYFRAME)
 					{
 						frameData->add(Lump::s32Data(state->effectValue.curKeyframe));	//キー配置フレーム
 						fs2.push_back(picojson::value((double)state->effectValue.curKeyframe));
+						ssfbFrameData2.push_back(state->effectValue.curKeyframe);
 						frameData->add(Lump::s32Data(state->effectValue.startTime));	//開始フレーム
 						fs2.push_back(picojson::value((double)state->effectValue.startTime));
+						ssfbFrameData2.push_back(state->effectValue.startTime);
 						frameData->add(Lump::floatData(state->effectValue.speed));		//再生速度
 						fs2.push_back(picojson::value(state->effectValue.speed));
+						ssfbFrameData2.push_back(state->effectValue.speed);
 						frameData->add(Lump::s32Data(state->effectValue.loopflag));		//独立動作
 						fs2.push_back(picojson::value((double)state->effectValue.loopflag));
+						ssfbFrameData2.push_back(state->effectValue.loopflag);
 					}
 
 
@@ -1309,6 +1444,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						// どの頂点のオフセット値が格納されているかのフラグ
 						frameData->add(Lump::s16Data(vt_flags));
 						fs2.push_back(picojson::value((double)vt_flags));
+						ssfbFrameData2.push_back(vt_flags);
 						
 						// 各頂点のオフセット値
 						for (int vtxNo = 0; vtxNo < 4; vtxNo++)
@@ -1320,15 +1456,19 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 									//頂点変形の少数対応
 									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].x));
 									fs2.push_back(picojson::value((double)state->vertexValue.offsets[vtxNo].x));
+									ssfbFrameData2.push_back(state->vertexValue.offsets[vtxNo].x);
 									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].y));
 									fs2.push_back(picojson::value((double)state->vertexValue.offsets[vtxNo].y));
+									ssfbFrameData2.push_back(state->vertexValue.offsets[vtxNo].y);
 								}
 								else
 								{
 									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].x));
 									fs2.push_back(picojson::value((double)(int)state->vertexValue.offsets[vtxNo].x));
+									ssfbFrameData2.push_back((int)state->vertexValue.offsets[vtxNo].x);
 									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].y));
 									fs2.push_back(picojson::value((double)(int)state->vertexValue.offsets[vtxNo].y));
+									ssfbFrameData2.push_back((int)state->vertexValue.offsets[vtxNo].y);
 								}
 							}
 						}
@@ -1341,13 +1481,16 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						int typeAndFlags = (int)state->partsColorValue.blendType | (cb_flags << 8);
 						frameData->add(Lump::s16Data(typeAndFlags));
 						fs2.push_back(picojson::value((double)typeAndFlags));
+						ssfbFrameData2.push_back(typeAndFlags);
 						
 						if (cb_flags & VERTEX_FLAG_ONE)
 						{
 							frameData->add(Lump::floatData(state->partsColorValue.color.rate));
 							fs2.push_back(picojson::value(state->partsColorValue.color.rate));
+							ssfbFrameData2.push_back(state->partsColorValue.color.rate);
 							frameData->add(Lump::colorData(state->partsColorValue.color.rgba.toARGB()));
 							fs2.push_back(picojson::value((double)state->partsColorValue.color.rgba.toARGB()));
+							ssfbFrameData2.push_back(state->partsColorValue.color.rgba.toARGB());
 						}
 						else
 						{
@@ -1357,8 +1500,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								{
 									frameData->add(Lump::floatData(state->partsColorValue.colors[vtxNo].rate));
 									fs2.push_back(picojson::value(state->partsColorValue.colors[vtxNo].rate));
+									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rate);
 									frameData->add(Lump::colorData(state->partsColorValue.colors[vtxNo].rgba.toARGB()));
 									fs2.push_back(picojson::value((double)state->partsColorValue.colors[vtxNo].rgba.toARGB()));
+									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rgba.toARGB());
 								}
 							}
 						}
@@ -1376,10 +1521,13 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							float mesh_z = state->meshPart->draw_vertices[i * 3 + 2];
 							frameData->add(Lump::floatData(mesh_x));		//x
 							fs2.push_back(picojson::value(mesh_x));
+							ssfbFrameData2.push_back(mesh_x);
 							frameData->add(Lump::floatData(mesh_y));		//y
 							fs2.push_back(picojson::value(mesh_y));
+							ssfbFrameData2.push_back(mesh_y);
 							frameData->add(Lump::floatData(mesh_z));		//z
 							fs2.push_back(picojson::value(mesh_z));
+							ssfbFrameData2.push_back(mesh_z);
 						}
 					}
 				}
@@ -1388,32 +1536,41 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				frameFlag->data.i = outPartsCount | (prioChanged ? 0x8000 : 0);
 
 				fs.push_back(picojson::value(fs2));
+
+				auto serializeSsfbFrameData2 = ssfbBuilder.CreateVector(ssfbFrameData2);
+				auto item = ss::ssfb::CreateframeDataIndex(ssfbBuilder, serializeSsfbFrameData2);
+				ssfbFrameData.push_back(item);
 			}
 			a2.insert(std::make_pair("frameData", picojson::value(fs)));
-			
-			
+
 			// ユーザーデータ
 			Lump* userDataIndexArray = Lump::set("ss::ss_u16*[]", true);
 			bool hasUserData = false;
 
 			picojson::array us;
+
 			for (int frame = 0; frame < decoder.getAnimeTotalFrame(); frame++)
 			{
 				Lump* userData = Lump::set("ss::ss_u16[]", true);
 				int partsCount = 0;
 				picojson::array us2;
-				
+
+				std::vector<flatbuffers::Offset<ss::ssfb::userDataItem>> ssfbUserDataItemData;
+
 				foreach(std::vector<SsPartAndAnime>, decoder.getPartAnime(), it)
 				{
 					SsPart* part = it->first;
 					SsPartAnime* partAnime = it->second;
 					if (!partAnime) continue;
-					
+
 					foreach(SsAttributeList, partAnime->attributes, attrIt)
 					{
 						SsAttribute* attr = *attrIt;
 						if (attr->tag != SsAttributeKind::user) continue;
-						
+
+						std::vector<flatbuffers::Offset<void>> ssfbDataArray;
+						std::vector<uint8_t> ssfbDataArrayType;
+
 						// このフレームのデータを含む?
 						if (attr->key_dic.find(frame) != attr->key_dic.end())
 						{
@@ -1434,11 +1591,15 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							us2.push_back(picojson::value((double)flags));
 							userData->add(Lump::s16Data(part->arrayIndex));
 							us2.push_back(picojson::value((double)part->arrayIndex));
-							
+
 							if (udat.useInteger)
 							{
 								userData->add(Lump::s32Data(udat.integer));
 								us2.push_back(picojson::value((double)udat.integer));
+
+								auto item = ss::ssfb::CreateuserDataInteger(ssfbBuilder, udat.integer);
+								ssfbDataArray.push_back(item.Union());
+								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_INTEGER);
 							}
 							if (udat.useRect)
 							{
@@ -1450,6 +1611,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								us2.push_back(picojson::value((double)udat.rect.w));
 								userData->add(Lump::s32Data(udat.rect.h));
 								us2.push_back(picojson::value((double)udat.rect.h));
+
+								auto item = ss::ssfb::CreateuserDataRect(ssfbBuilder, udat.rect.x, udat.rect.y, udat.rect.w, udat.rect.h);
+								ssfbDataArray.push_back(item.Union());
+								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_RECT);
 							}
 							if (udat.usePoint)
 							{
@@ -1457,6 +1622,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								us2.push_back(picojson::value((double)(int)udat.point.x));
 								userData->add(Lump::s32Data((int)udat.point.y));
 								us2.push_back(picojson::value((double)(int)udat.point.y));
+
+								auto item = ss::ssfb::CreateuserDataPoint(ssfbBuilder,
+                                                                          static_cast<int32_t>(udat.point.x),
+                                                                          static_cast<int32_t>(udat.point.y));
+								ssfbDataArray.push_back(item.Union());
+								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_POINT);
 							}
 							if (udat.useString)
 							{
@@ -1465,7 +1636,20 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								us2.push_back(picojson::value((double)(int)str.length()));
 								userData->add(Lump::stringData(str));
 								us2.push_back(picojson::value(str));
+
+								auto ssfbStr = ssfbBuilder.CreateString(str);
+								auto item = ss::ssfb::CreateuserDataString(ssfbBuilder, str.length(), ssfbStr);
+								ssfbDataArray.push_back(item.Union());
+								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_STRING);
 							}
+
+							auto serializeSsfbDataArrayType = ssfbBuilder.CreateVector(ssfbDataArrayType);
+							auto serializeSsfbDataArray = ssfbBuilder.CreateVector(ssfbDataArray);
+							auto item = ss::ssfb::CreateuserDataItem(ssfbBuilder, static_cast<int16_t>(flags),
+                                                                     static_cast<int16_t>(part->arrayIndex),
+                                                                     serializeSsfbDataArrayType,
+                                                                     serializeSsfbDataArray);
+							ssfbUserDataItemData.push_back(item);
 						}
 					}
 				}
@@ -1475,6 +1659,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					userData->addFirst(Lump::s16Data(partsCount));
 					us2.insert(us2.begin(), picojson::value((double)partsCount));
 					userDataIndexArray->add(userData);
+
+					auto serializeSsfbUserDataItemData = ssfbBuilder.CreateVector(ssfbUserDataItemData);
+					auto item = ss::ssfb::CreateuserDataPerFrame(ssfbBuilder, static_cast<int16_t>(frame), serializeSsfbUserDataItemData);
+					ssfbUserData.push_back(item);
 				}
 				else
 				{
@@ -1484,7 +1672,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				us.push_back(picojson::value(us2));
 			}
 			a2.insert(std::make_pair("userData", picojson::value(us)));
-			
+
 
 			// ラベルデータ
 			Lump* LabelDataIndexArray = Lump::set("ss::ss_u16*[]", true);
@@ -1495,7 +1683,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			{
 				Lump* labelData = Lump::set("ss::ss_u16[]", true);
 				picojson::array ls2;
-				
+
 				SsString str;
 				str = anime->labels[label_idx]->name;
 				//全角チェック
@@ -1509,6 +1697,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 //				labelData->add(Lump::s16Data((int)str.length()));				//文字列のサイズ
 				labelData->add(Lump::stringData(str));							//文字列
 				ls2.push_back(picojson::value(str));
+				auto ssfbLabelDataItemName = ssfbBuilder.CreateString(str);
 				labelData->add(Lump::s16Data(anime->labels[label_idx]->time));	//設定されたフレーム
 				ls2.push_back(picojson::value((double)anime->labels[label_idx]->time));
 				hasLabelData = true;
@@ -1516,8 +1705,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				LabelDataIndexArray->add(labelData);
 
 				ls.push_back(picojson::value(ls2));
+
+				auto item = ss::ssfb::CreatelabelDataItem(ssfbBuilder, ssfbLabelDataItemName, anime->labels[label_idx]->time);
+				ssfbLabelData.push_back(item);
 			}
 			a2.insert(std::make_pair("labelData", picojson::value(ls)));
+
 			if ( hasLabelData == false )
 			{
 				LabelDataIndexArray->add(Lump::s32Data(0));
@@ -1525,6 +1718,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			
 			animeData->add(Lump::stringData(anime->name));
 			a2.insert(std::make_pair("name", picojson::value(anime->name)));
+			auto ssfbAnimationDataName = ssfbBuilder.CreateString(anime->name);
 			animeData->add(initialDataArray);
 			animeData->add(frameDataIndexArray);
 			animeData->add(hasUserData ? userDataIndexArray : Lump::s32Data(0));
@@ -1550,14 +1744,39 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			a2.insert(std::make_pair("canvasPvotX", picojson::value(anime->settings.pivot.x)));
 			animeData->add(Lump::floatData(anime->settings.pivot.y));			//基準枠位置
 			a2.insert(std::make_pair("canvasPvotY", picojson::value(anime->settings.pivot.y)));
-			
+
 			as.push_back(picojson::value(a2));
+
+			auto serializeSsfbDefaultData = ssfbBuilder.CreateVector(ssfbDefaultData);
+			auto serializeSsfbMeshsDataUV = ssfbBuilder.CreateVector(ssfbMeshsDataUV);
+			auto serializeSsfbMeshsDataIndices = ssfbBuilder.CreateVector(ssfbMeshsDataIndices);
+			auto serializeSsfbFrameData = ssfbBuilder.CreateVector(ssfbFrameData);
+			auto serializeSsfbUserData = ssfbBuilder.CreateVector(ssfbUserData);
+			auto serializeSsfbLabelData = ssfbBuilder.CreateVector(ssfbLabelData);
+
+			auto item = ss::ssfb::CreateAnimationData(ssfbBuilder, ssfbAnimationDataName,
+													  serializeSsfbDefaultData, serializeSsfbFrameData, serializeSsfbUserData,
+													  serializeSsfbLabelData, serializeSsfbMeshsDataUV, serializeSsfbMeshsDataIndices,
+													  static_cast<int16_t>(decoder.getAnimeStartFrame()),
+													  static_cast<int16_t>(decoder.getAnimeEndFrame()),
+													  static_cast<int16_t>(decoder.getAnimeTotalFrame()),
+													  static_cast<int16_t>(anime->settings.fps),
+													  static_cast<int16_t>(label_idx),
+													  static_cast<int16_t>(anime->settings.canvasSize.x),
+													  static_cast<int16_t>(anime->settings.canvasSize.y),
+													  anime->settings.pivot.x, anime->settings.pivot.y);
+			ssfbAnimations.push_back(item);
 		}
 		a.insert(std::make_pair("animations", picojson::value(as)));
 		ssjson_anime.push_back(picojson::value(a));
+
+		auto serializeSsfbParts = ssfbBuilder.CreateVector(ssfbParts);
+		auto serializeSsfbAnimations = ssfbBuilder.CreateVector(ssfbAnimations);
+		auto ssfbAnimePackData = ss::ssfb::CreateAnimePackData(ssfbBuilder, ssfbAnimePackDataName, serializeSsfbParts, serializeSsfbAnimations);
+		ssfbAnimePacks.push_back(ssfbAnimePackData);
 	}
 	ssjson.insert(std::make_pair("animePacks", picojson::value(ssjson_anime)));
-	
+
 	picojson::array ssjson_effect;
 	//エフェクトデータ
 	for (int effectIndex = 0; effectIndex < (int)proj->effectfileList.size(); effectIndex++)
@@ -1569,31 +1788,34 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		const SsEffectFile* effectfile = proj->effectfileList[effectIndex];
 		effectFile->add(Lump::stringData(effectfile->name));				//エフェクト名
 		e.insert(std::make_pair("name", picojson::value(effectfile->name)));
+		auto ssfbEffectFileName = ssfbBuilder.CreateString(effectfile->name);
 
 		const SsEffectModel *effectmodel = &effectfile->effectData;
 		effectFile->add(Lump::s16Data(effectmodel->fps));					//FPS
 		e.insert(std::make_pair("fps", picojson::value((double)(effectmodel->fps))));
-		
+
 		effectFile->add(Lump::s16Data(effectmodel->isLockRandSeed));		//乱数を固定するかどうか
 		e.insert(std::make_pair("isLockRandSeed", picojson::value((double)(effectmodel->isLockRandSeed))));
-		
+
 		effectFile->add(Lump::s16Data(effectmodel->lockRandSeed));			//固定する場合の乱数の種
 		e.insert(std::make_pair("LockRandSeed", picojson::value((double)(effectmodel->lockRandSeed))));
-		
+
 		effectFile->add(Lump::s16Data(effectmodel->layoutScaleX));			//レイアウトスケールX
 		e.insert(std::make_pair("layoutScaleX", picojson::value((double)(effectmodel->layoutScaleX))));
-		
+
 		effectFile->add(Lump::s16Data(effectmodel->layoutScaleY));			//レイアウトスケールY
 		e.insert(std::make_pair("layoutScaleY", picojson::value((double)(effectmodel->layoutScaleY))));
-		
+
 																			//エフェクトノードの出力
 		effectFile->add(Lump::s16Data((int)effectmodel->nodeList.size()));	//エフェクトノード数
 		e.insert(std::make_pair("numNodeList", picojson::value((double)(effectmodel->nodeList.size()))));
+
 
 		Lump* effectNodeArray = Lump::set("ss::EffectNode[]", true);
 		effectFile->add(effectNodeArray);									//ノード配列
 
 		picojson::array ns;
+		std::vector<flatbuffers::Offset<ss::ssfb::EffectNode>> ssfbEffectNode;
 		for (size_t nodeindex = 0; nodeindex < effectmodel->nodeList.size(); nodeindex++)
 		{
 			//エフェクトノードを追加
@@ -1635,13 +1857,15 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			effectNode->add(effectBehaviorArray);			//コマンドパラメータ配列
 
 			picojson::array cs;
+			std::vector<flatbuffers::Offset<void>> ssfbEffectNodeBehavior;
+			std::vector<uint8_t> ssfbEffectNodeBehaviorType;
 			//コマンドパラメータ
 			for (size_t plistindex = 0; plistindex < behavior.plist.size(); plistindex++)
 			{
 				Lump* effectBehavior = Lump::set("ss::ss_u16[]", true);
 				effectBehaviorArray->add(effectBehavior);
 				picojson::object c;
-				
+
 				SsEffectElementBase *elementbase = behavior.plist[plistindex];
 				SsEffectFunctionType::enum_ myType = elementbase->myType;
 				effectBehavior->add(Lump::s32Data(myType));	//コマンドタイプ
@@ -1690,6 +1914,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					c.insert(std::make_pair("angle", picojson::value(angle)));
 					effectBehavior->add(Lump::floatData(angleVariance));		//射出方向範囲
 					c.insert(std::make_pair("angleVariance", picojson::value(angleVariance)));
+
+					auto item = ss::ssfb::CreateEffectParticleElementBasic(ssfbBuilder, myType, priority,
+							maximumParticle, attimeCreate, interval, lifetime,
+							speedMinValue, speedMaxValue, lifespanMinValue, lifespanMaxValue, angle, angleVariance);
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::RndSeedChange:
@@ -1699,6 +1929,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					int		Seed = element->Seed;
 					effectBehavior->add(Lump::s32Data(Seed));					//上書きする値
 					c.insert(std::make_pair("Seed", picojson::value((double)Seed)));
+
+					auto item = ss::ssfb::CreateEffectParticleElementRndSeedChange(ssfbBuilder, Seed);
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::Delay:
@@ -1708,6 +1942,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					int		DelayTime = element->DelayTime;
 					effectBehavior->add(Lump::s32Data(DelayTime));				//遅延時間
 					c.insert(std::make_pair("DelayTime", picojson::value((double)DelayTime)));
+
+					auto item = ss::ssfb::CreateEffectParticleElementDelay(ssfbBuilder, DelayTime);
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::Gravity:
@@ -1719,6 +1957,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					c.insert(std::make_pair("Gravity_x", picojson::value(Gravity.x)));
 					effectBehavior->add(Lump::floatData(Gravity.y));				//Y方向の重力
 					c.insert(std::make_pair("Gravity_y", picojson::value(Gravity.y)));
+
+					auto item = ss::ssfb::CreateEffectParticleElementGravity(ssfbBuilder, Gravity.x, Gravity.y);
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::Position:
@@ -1735,6 +1977,11 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					c.insert(std::make_pair("OffsetYMinValue", picojson::value(OffsetY.getMinValue())));
 					effectBehavior->add(Lump::floatData(OffsetY.getMaxValue()));				//X座標に加算最大
 					c.insert(std::make_pair("OffsetYMaxValue", picojson::value(OffsetY.getMaxValue())));
+
+					auto item = ss::ssfb::CreateEffectParticleElementPosition(ssfbBuilder,
+							OffsetX.getMinValue(), OffsetX.getMaxValue(), OffsetY.getMinValue(), OffsetY.getMaxValue());
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::Rotation:
@@ -1751,6 +1998,11 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					c.insert(std::make_pair("RotationAddMinValue", picojson::value(RotationAdd.getMinValue())));
 					effectBehavior->add(Lump::floatData(RotationAdd.getMaxValue()));			//角度初期加算値最大
 					c.insert(std::make_pair("RotationAddMaxValue", picojson::value(RotationAdd.getMaxValue())));
+
+					auto item = ss::ssfb::CreateEffectParticleElementRotation(ssfbBuilder,
+							Rotation.getMinValue(), Rotation.getMaxValue(), RotationAdd.getMinValue(), RotationAdd.getMaxValue());
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::TransRotation:
@@ -1763,6 +2015,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					c.insert(std::make_pair("RotationFactor", picojson::value(RotationFactor)));
 					effectBehavior->add(Lump::floatData(EndLifeTimePer));					//到達時間
 					c.insert(std::make_pair("EndLifeTimePer", picojson::value(EndLifeTimePer)));
+
+					auto item = ss::ssfb::CreateEffectParticleElementRotationTrans(ssfbBuilder, RotationFactor, EndLifeTimePer);
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::TransSpeed:
@@ -1774,6 +2030,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					c.insert(std::make_pair("SpeedMinValue", picojson::value(Speed.getMinValue())));
 					effectBehavior->add(Lump::floatData(Speed.getMaxValue()));				//速度目標値最大
 					c.insert(std::make_pair("SpeedMaxValue", picojson::value(Speed.getMaxValue())));
+
+					auto item = ss::ssfb::CreateEffectParticleElementTransSpeed(ssfbBuilder, Speed.getMinValue(), Speed.getMaxValue());
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::TangentialAcceleration:
@@ -1781,10 +2041,15 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					//接線加速度
 					ParticleElementTangentialAcceleration *element = (ParticleElementTangentialAcceleration*)elementbase;
 					f32VValue	Acceleration = element->Acceleration;
+
 					effectBehavior->add(Lump::floatData(Acceleration.getMinValue()));		//設定加速度最小
 					c.insert(std::make_pair("AccelerationMinValue", picojson::value(Acceleration.getMinValue())));
 					effectBehavior->add(Lump::floatData(Acceleration.getMaxValue()));		//設定加速度最大
 					c.insert(std::make_pair("AccelerationMaxValue", picojson::value(Acceleration.getMaxValue())));
+
+					auto item = ss::ssfb::CreateEffectParticleElementTangentialAcceleration(ssfbBuilder, Acceleration.getMinValue(), Acceleration.getMaxValue());
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::InitColor:
@@ -1796,6 +2061,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					c.insert(std::make_pair("ColorMinValue", picojson::value((double)Color.getMinValue().toARGB())));
 					effectBehavior->add(Lump::s32Data(Color.getMaxValue().toARGB()));		//設定カラー最大
 					c.insert(std::make_pair("ColorMaxValue", picojson::value((double)Color.getMaxValue().toARGB())));
+
+					auto item = ss::ssfb::CreateEffectParticleElementInitColor(ssfbBuilder, Color.getMinValue().toARGB(), Color.getMaxValue().toARGB());
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::TransColor:
@@ -1807,6 +2076,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					c.insert(std::make_pair("ColorMinValue", picojson::value((double)Color.getMinValue().toARGB())));
 					effectBehavior->add(Lump::s32Data(Color.getMaxValue().toARGB()));		//設定カラー最大
 					c.insert(std::make_pair("ColorMaxValue", picojson::value((double)Color.getMaxValue().toARGB())));
+
+					auto item = ss::ssfb::CreateEffectParticleElementTransColor(ssfbBuilder, Color.getMinValue().toARGB(), Color.getMaxValue().toARGB());
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::AlphaFade:
@@ -1818,6 +2091,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					c.insert(std::make_pair("disprangeMinValue", picojson::value(disprange.getMinValue())));
 					effectBehavior->add(Lump::floatData(disprange.getMaxValue()));			//表示区間終了
 					c.insert(std::make_pair("disprangeMaxValue", picojson::value(disprange.getMaxValue())));
+
+					auto item = ss::ssfb::CreateEffectParticleElementAlphaFade(ssfbBuilder, disprange.getMinValue(), disprange.getMaxValue());
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::Size:
@@ -1839,6 +2116,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					c.insert(std::make_pair("ScaleFactorMinValue", picojson::value(ScaleFactor.getMinValue())));
 					effectBehavior->add(Lump::floatData(ScaleFactor.getMaxValue()));			//倍率最大
 					c.insert(std::make_pair("ScaleFactorMaxValue", picojson::value(ScaleFactor.getMaxValue())));
+
+					auto item = ss::ssfb::CreateEffectParticleElementSize(ssfbBuilder,
+							SizeX.getMinValue(), SizeX.getMaxValue(), SizeY.getMinValue(), SizeY.getMaxValue(),
+							ScaleFactor.getMinValue(), ScaleFactor.getMaxValue());
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::TransSize:
@@ -1860,6 +2143,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					c.insert(std::make_pair("ScaleFactorMinValue", picojson::value(ScaleFactor.getMinValue())));
 					effectBehavior->add(Lump::floatData(ScaleFactor.getMaxValue()));			//倍率最大
 					c.insert(std::make_pair("ScaleFactorMaxValue", picojson::value(ScaleFactor.getMaxValue())));
+
+					auto item = ss::ssfb::CreateEffectParticleElementTransSize(ssfbBuilder, SizeX.getMinValue(), SizeX.getMaxValue(),
+							SizeY.getMinValue(), SizeY.getMaxValue(),
+							ScaleFactor.getMinValue(), ScaleFactor.getMaxValue());
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::PointGravity:
@@ -1874,6 +2163,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					c.insert(std::make_pair("Position_y", picojson::value(Position.y)));
 					effectBehavior->add(Lump::floatData(Power));							//パワー
 					c.insert(std::make_pair("Power", picojson::value(Power)));
+
+					auto item = ss::ssfb::CreateEffectParticlePointGravity(ssfbBuilder, Position.x, Position.y, Power);
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::TurnToDirectionEnabled:
@@ -1883,6 +2176,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					//コマンドがあれば有効
 					effectBehavior->add(Lump::floatData(element->Rotation));				//方向オフセット
 					c.insert(std::make_pair("Rotation", picojson::value(element->Rotation)));
+
+					auto item = ss::ssfb::CreateEffectParticleTurnToDirectionEnabled(ssfbBuilder, element->Rotation);
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::InfiniteEmitEnabled:
@@ -1892,6 +2189,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					//コマンドがあれば有効
 					effectBehavior->add(Lump::s32Data(1));									//ダミーデータ
 					c.insert(std::make_pair("flag", picojson::value(1.0)));
+
+					auto item = ss::ssfb::CreateEffectParticleInfiniteEmitEnabled(ssfbBuilder, 1.0);
+					ssfbEffectNodeBehavior.push_back(item.Union());
+					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::Base:
@@ -1904,11 +2205,44 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			}
 			n.insert(std::make_pair("Behavior", picojson::value(cs)));
 			ns.push_back(picojson::value(n));
+
+			auto serializeSsfbEffectNodeBehaviorType = ssfbBuilder.CreateVector(ssfbEffectNodeBehaviorType);
+			auto serializeSsfbEffectNodeBehavior = ssfbBuilder.CreateVector(ssfbEffectNodeBehavior);
+			auto ssfbEffectNodeItem = ss::ssfb::CreateEffectNode(ssfbBuilder,
+									   static_cast<int16_t>(arrayIndex),
+									   static_cast<int16_t>(parentIndex),
+									   type,
+									   static_cast<int16_t>(cellIndex),
+									   blendType,
+									   static_cast<int16_t>(ssfbEffectNodeBehavior.size()),
+									   serializeSsfbEffectNodeBehaviorType,
+									   serializeSsfbEffectNodeBehavior);
+			ssfbEffectNode.push_back(ssfbEffectNodeItem);
 		}
 		e.insert(std::make_pair("effectNode", picojson::value(ns)));
 		ssjson_effect.push_back(picojson::value(e));
+
+		auto serializeSsfbEffectNode = ssfbBuilder.CreateVector(ssfbEffectNode);
+		auto ssfbEffectFile = ss::ssfb::CreateEffectFile(ssfbBuilder, ssfbEffectFileName,
+				effectmodel->fps, effectmodel->isLockRandSeed, effectmodel->lockRandSeed,
+				effectmodel->layoutScaleX, effectmodel->layoutScaleY,
+				ssfbEffectNode.size(),serializeSsfbEffectNode);
+		ssfbEffectFileList.push_back(ssfbEffectFile);
 	}
 	ssjson.insert(std::make_pair("effectFileList", picojson::value(ssjson_effect)));
+
+	auto serializeSsfbCells = ssfbBuilder.CreateVector(ssfbCells);
+	auto serializeSsfbAnimePackData = ssfbBuilder.CreateVector(ssfbAnimePacks);
+	auto serializeSsfbEffectFileList = ssfbBuilder.CreateVector(ssfbEffectFileList);
+	ssfbProjectData = ss::ssfb::CreateProjectData(ssfbBuilder, DATA_ID, CURRENT_DATA_VERSION, 0,
+			ssfbImageBaseDir,
+			serializeSsfbCells,
+			serializeSsfbAnimePackData,
+			serializeSsfbEffectFileList,
+			static_cast<int16_t>(ssfbCells.size()),
+			static_cast<int16_t>(ssfbAnimePacks.size()),
+			static_cast<int16_t>(ssfbEffectFileList.size()));
+	ssfbBuilder.Finish(ssfbProjectData);
 
 	std::cerr << "convert end" << "\n";
 
@@ -1962,12 +2296,19 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 			out.open((outPath + ".c").c_str(), std::ios_base::out);
 			LumpExporter::saveCSource(out, encoding, lump, "topLabel", creatorComment);
 		}
+		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
+		{
+			flatbuffers::SaveFile(std::string(outPath + ".ssfb").c_str(),
+								  reinterpret_cast<const char *>(ssfbBuilder.GetBufferPointer()),
+								  ssfbBuilder.GetSize(),
+								  true);
+		}
 		else
 		{
 			out.open(outPath.c_str(), std::ios_base::binary | std::ios_base::out);
 			LumpExporter::saveBinary(out, encoding, lump, creatorComment);
 		}
-		
+
 	/////////////
 	#if 0
 		out.close();
@@ -2106,6 +2447,7 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		std::string outputFormat = args.next();
 		if (outputFormat == "json") options.outputFormat = OUTPUT_FORMAT_FLAG_JSON;
 		else if (outputFormat == "c") options.outputFormat = OUTPUT_FORMAT_FLAG_CSOURCE;
+		else if (outputFormat == "ssfb") options.outputFormat = OUTPUT_FORMAT_FLAG_SSFB;
 	}
 	else
 	{

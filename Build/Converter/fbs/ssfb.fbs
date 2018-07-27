@@ -1,0 +1,394 @@
+namespace ss.ssfb;
+
+file_identifier "SSFB";
+
+// Animation Part Type
+enum SsPartType : byte {
+    Invalid = -1,
+    Nulltype = 0,
+    Normal,
+    Text,
+    Instance,
+    Armature,
+    Effect,
+    Mesh,
+    Movenode,
+    Constraint,
+    Mask,
+    Joint,
+    Bonepoint,
+}
+
+enum PART_FLAG : int (bit_flags) {
+    INVISIBLE,
+	FLIP_H,
+	FLIP_V,
+	CELL_INDEX,
+	POSITION_X,
+	POSITION_Y,
+	POSITION_Z,
+	PIVOT_X,
+	PIVOT_Y,
+	ROTATIONX,
+	ROTATIONY,
+	ROTATIONZ,
+	SCALE_X,
+	SCALE_Y,
+	LOCALSCALE_X,
+	LOCALSCALE_Y,
+	OPACITY,
+	LOCALOPACITY,
+	PARTS_COLOR,
+	VERTEX_TRANSFORM,
+	SIZE_X,
+	SIZE_Y,
+	U_MOVE,
+	V_MOVE,
+	UV_ROTATION,
+	U_SCALE,
+	V_SCALE,
+	BOUNDINGRADIUS,
+	MASK,
+	PRIORITY,
+	INSTANCE_KEYFRAME,
+	EFFECT_KEYFRAME,
+}
+
+enum PART_FLAG2 : int (bit_flags) {
+    MESHDATA,
+}
+
+enum VERTEX_FLAG : int (bit_flags) {
+    LT,
+    RT,
+    LB,	
+    RB,	
+    ONE,
+}
+
+enum USER_DATA_FLAG : int (bit_flags) {
+	INTEGER,
+	RECT,
+	POINT,
+	STRING,
+}
+
+table EffectParticleInfiniteEmitEnabled {
+    flag : int;
+}
+
+table EffectParticleTurnToDirectionEnabled {
+    Rotation : float;
+}
+
+table EffectParticlePointGravity {
+    Position_x : float;
+    Position_y : float;
+    Power : float;
+}
+
+table EffectParticleElementTransSize {
+    SizeXMinValue : float;
+    SizeXMaxValue : float;
+    SizeYMinValue : float;
+    SizeYMaxValue : float;
+    ScaleFactorMinValue : float;
+    ScaleFactorMaxValue : float;
+}
+
+table EffectParticleElementSize {
+    SizeXMinValue : float;
+    SizeXMaxValue : float;
+    SizeYMinValue : float;
+    SizeYMaxValue : float;
+    ScaleFactorMinValue : float;
+    ScaleFactorMaxValue : float;
+}
+
+table EffectParticleElementAlphaFade {
+    disprangeMinValue : float;
+    disprangeMaxValue : float;
+}
+
+table EffectParticleElementTransColor {
+    ColorMinValue : uint;
+    ColorMaxValue : uint;
+}
+
+table EffectParticleElementInitColor {
+    ColorMinValue : uint;
+    ColorMaxValue : uint;
+}
+
+table EffectParticleElementTangentialAcceleration {
+    AccelerationMinValue : float;
+    AccelerationMaxValue : float;
+}
+
+table EffectParticleElementTransSpeed {
+	SpeedMinValue : float;
+	SpeedMaxValue : float;
+}
+
+table EffectParticleElementRotationTrans {
+    RotationFactor : float;
+    EndLifeTimePer : float;
+}
+
+table EffectParticleElementRotation {
+    RotationMinValue : float;
+    RotationMaxValue : float;
+    RotationAddMinValue : float;
+    RotationAddMaxValue : float;
+}
+
+table EffectParticleElementPosition {
+    OffsetXMinValue : float;
+    OffsetXMaxValue : float;
+    OffsetYMinValue : float;
+    OffsetYMaxValue : float;
+}
+
+table EffectParticleElementGravity {
+    Gravity_x : float;
+    Gravity_y : float;
+}
+
+table EffectParticleElementDelay {
+    DelayTime : int;
+}
+
+table EffectParticleElementRndSeedChange {
+    Seed : int;
+}
+
+table EffectParticleElementBasic {
+    SsEffectFunctionType : int;
+    
+    priority : int;
+    maximumParticle : int;
+    attimeCreate : int;
+    interval : int;
+    lifetime : int;
+    speedMinValue : float;
+    speedMaxValue : float;
+    lifespanMinValue : int;
+    lifespanMaxValue : int;
+    angle : float;
+    angleVariance : float;
+}
+
+union EffectNodeBehavior {
+    EffectParticleElementBasic,
+    EffectParticleElementRndSeedChange,
+    EffectParticleElementDelay,
+    EffectParticleElementGravity,
+    EffectParticleElementPosition,
+    EffectParticleElementRotation,
+    EffectParticleElementRotationTrans,
+    EffectParticleElementTransSpeed,
+    EffectParticleElementTangentialAcceleration,
+    EffectParticleElementInitColor,
+    EffectParticleElementTransColor,
+    EffectParticleElementAlphaFade,
+    EffectParticleElementSize,
+    EffectParticleElementTransSize,
+    EffectParticlePointGravity,
+    EffectParticleTurnToDirectionEnabled,
+    EffectParticleInfiniteEmitEnabled,
+}
+
+table EffectNode {
+    arrayIndex : short;
+    parentIndex : short;
+    type : short;
+    cellIndex : short;	
+    blendType : short;
+    numBehavior : short;
+    Behavior : [EffectNodeBehavior];
+}
+
+table EffectFile {
+    name : string;
+    fps : short;
+    isLockRandSeed : short;
+    lockRandSeed : short;
+    layoutScaleX : short;
+    layoutScaleY : short;
+    numNodeList : short;
+    effectNode : [EffectNode];
+}
+
+table CellMap {
+    name : string;
+    imagePath : string;
+    index : short;
+    wrapmode : short;
+    filtermode : short;
+}
+
+table Cell {
+    name : string;
+    cellMap : CellMap;
+    indexInCellMap : short;
+    x : short;
+    y : short;
+    width : short;
+    height : short;
+    pivot_x : float;
+    pivot_y : float;
+    u1 : float;
+    v1 : float;
+    u2 : float;
+    v2 : float;
+}
+
+table meshDataUV {
+    uv : [float];
+}
+table meshDataIndices {
+    indices : [float];
+}
+
+table frameDataIndex {
+    data : [float];
+}
+
+table userDataInteger {
+    integer : int;
+}
+
+table userDataRect {
+    x : int;
+    y : int;
+    w : int;
+    h : int;
+}
+
+table userDataPoint {
+    x : int;
+    y : int;
+}
+
+table userDataString {
+    length : int;
+    data : string;
+}
+
+union userDataValue { 
+    userDataInteger,
+    userDataRect,
+    userDataPoint,
+    userDataString,
+}
+
+table userDataItem {
+    flags : short;
+    arrayIndex : short;
+    data : [userDataValue];
+}
+
+table userDataPerFrame {
+    frameIndex : short;
+    data : [userDataItem];
+}
+
+table labelDataItem {
+    label : string;
+    frameIndex : short;
+}
+
+table AnimationData {
+    name : string;
+    defaultData : [AnimationInitialData];
+    frameData : [frameDataIndex];
+    userData : [userDataPerFrame];
+    labelData : [labelDataItem];
+    meshsDataUV : [meshDataUV];
+    meshsDataIndices : [meshDataIndices];
+    startFrames : short;
+    endFrames : short;
+    totalFrames : short;
+    fps : short;
+    labelNum : short;
+    canvasSizeW : short;
+    canvasSizeH : short;
+    canvasPvotX : float;
+    canvasPvotY : float;
+}
+
+table AnimationInitialData {
+    index : short;
+    lowflag : int;
+    highflag : int;
+    priority : short;
+    cellIndex : short;
+    opacity : short;
+    localopacity : short;
+    masklimen : short;
+    positionX : float;
+    positionY : float;
+    positionZ : float;
+    pivotX : float;
+    pivotY : float;
+    rotationX : float;
+    rotationY : float;
+    rotationZ : float;
+    scaleX : float;
+    scaleY : float;
+    localscaleX : float;
+    localscaleY : float;
+    size_X : float;
+    size_Y : float;
+    uv_move_X : float;
+    uv_move_Y : float;
+    uv_rotation : float;
+    uv_scale_X : float;
+    uv_scale_Y : float;
+    boundingRadius : float;
+    instanceValue_curKeyframe : int;
+    instanceValue_startFrame : int;
+    instanceValue_endFrame : int;
+    instanceValue_loopNum : int;
+    instanceValue_speed : float;
+    instanceValue_loopflag : int;
+    effectValue_curKeyframe : int;
+    effectValue_startTime : int;
+    effectValue_speed : float;
+    effectValue_loopflag : int;
+}
+
+
+table PartData {
+    name : string;
+    index : short;
+    parentIndex : short;
+    type : SsPartType;
+    boundsType : short;
+    alphaBlendType : short;
+    refname : string;
+    effectfilename : string;
+    colorLabel : string;
+    maskInfluence : short;    
+}
+
+table AnimePackData {
+    name : string;
+    parts : [PartData];
+    animations : [AnimationData];
+}
+
+table ProjectData {
+    dataId : uint;
+    version : uint;
+    flags : uint;
+    imageBaseDir : string;
+    cells : [Cell];
+    animePacks : [AnimePackData];
+    effectFileList : [EffectFile];
+    numCells : short;
+    numAnimePacks : short;
+    numEffectFileList : short;
+}
+
+root_type ProjectData;
