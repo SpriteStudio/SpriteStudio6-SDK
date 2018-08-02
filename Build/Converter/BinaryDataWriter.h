@@ -50,4 +50,5 @@ private:
 	ReferenceMapType	_referenceMap;
 };
 
+
 #endif /* defined(__BinaryDataWriter__) */

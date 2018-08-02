@@ -34,14 +34,17 @@ public:
 		LumpSet*		p;
 	} data;
 
+	std::string name;
+	Lump* parent;
 
-	static Lump* s16Data(int value);
-	static Lump* s32Data(int value);
-	static Lump* floatData(float value);
-	static Lump* colorData(int color);
-	static Lump* stringData(const std::string& value);
+	static Lump* s16Data(int value, std::string name = "");
+	static Lump* s32Data(int value, std::string name = "");
+	static Lump* floatData(float value, std::string name = "");
+	static Lump* colorData(int color, std::string name = "");
+	static Lump* stringData(const std::string& value, std::string name = "");
+	void namechack( void );
 
-	static Lump* set(const std::string& className, bool isReference = false);
+	static Lump* set(const std::string& className, bool isReference = false, std::string name = "");
 
 	void add(Lump* lump);
 	void addFirst(Lump* lump);

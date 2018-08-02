@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <cstdarg>
 #include "babel/babel.h"
+#include "picojson.h"
 
 
 namespace LumpExporter {
@@ -438,6 +439,204 @@ private:
 };
 
 
+class JsonExporter
+{
+public:
+	static void save(std::ostream& out, StringEncoding encoding, const Lump* lump,  const std::string& creatorComment)
+	{
+		JsonExporter* exporter = new JsonExporter();
+		exporter->m_encoding = encoding;
+
+		exporter->ssjson.clear();
+		exporter->ssjson.insert(std::make_pair("creatorComment", picojson::value(creatorComment)));
+
+		exporter->writeReferenceLumpSet(out, lump, exporter->ssjson);
+
+		out << picojson::value(exporter->ssjson);
+
+		delete exporter;
+	}
+
+private:
+	picojson::object ssjson;
+
+	typedef std::map<const void*, std::string> LabelMapType;
+
+	LabelMapType	m_labelMap;
+	StringEncoding	m_encoding;
+	std::string		m_topLabel;
+
+
+	void writeStrings(std::ostream& out, const Lump* lump)
+	{
+		const LumpSet* lset = lump->data.p;
+
+		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
+		{
+			const Lump* child = *it;
+			if (child->type == Lump::SET)
+			{
+				writeStrings(out, child);
+			}
+		}
+
+		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
+		{
+			const Lump* child = *it;
+			if (child->type == Lump::STRING)
+			{
+				if (m_labelMap.find(child) == m_labelMap.end())
+				{
+					std::string label = format("label_%04d", m_labelMap.size());
+					m_labelMap[child] = label;
+
+					std::string str = encode(*child->data.s, m_encoding);
+				}
+			}
+		}
+	}
+
+
+	union MixType
+	{
+		int i;
+		float f;
+	};
+
+	void writeLumpSetBlock(std::ostream& out, const Lump* lump, picojson::object& ssjson)
+	{
+		const LumpSet* lset = lump->data.p;
+
+		// ノーマルのデータ構造
+		if (lset->arrayType == LumpSet::NO_ARRAY || lset->arrayType == LumpSet::ARRAY)
+		{
+			picojson::array arrayjson;
+			arrayjson.clear();
+
+			bool second = false;
+			for (LumpSet::SetType::const_iterator it = lset->set.begin();
+				it != lset->set.end(); it++)
+			{
+
+				const Lump* child = *it;
+
+				switch (child->type)
+				{
+				case Lump::S16:
+				case Lump::S32:
+				case Lump::COLOR:
+					if (lset->arrayType == LumpSet::ARRAY)
+					{
+						arrayjson.push_back(picojson::value((double)child->data.i));
+					}
+					else
+					{
+						ssjson.insert(std::make_pair(child->name, picojson::value((double)child->data.i)));
+					}
+					break;
+				case Lump::FLOAT:
+					if (lset->arrayType == LumpSet::ARRAY)
+					{
+						arrayjson.push_back(picojson::value((double)child->data.f));
+					}
+					else
+					{
+						ssjson.insert(std::make_pair(child->name, picojson::value((double)child->data.f)));
+					}
+					break;
+				case Lump::STRING:
+					if (lset->arrayType == LumpSet::ARRAY)
+					{
+						arrayjson.push_back(picojson::value(child->data.s->c_str()));
+					}
+					else
+					{
+						ssjson.insert(std::make_pair(child->name, picojson::value(child->data.s->c_str())));
+					}
+					break;
+				case Lump::SET:
+
+					if (lset->arrayType == LumpSet::ARRAY)
+					{
+						picojson::object json;
+						json.clear();
+						writeLumpSetBlock(out, child, json);
+						arrayjson.push_back(picojson::value(json));
+					}
+					else
+					{
+						writeLumpSetBlock(out, child, ssjson);
+					}
+
+					break;
+				default:
+					assert(false);
+					break;
+				}
+
+			}
+			if (lset->arrayType == LumpSet::ARRAY)
+			{
+				ssjson.insert(std::make_pair(lump->name, picojson::value(arrayjson)));
+			}
+		}
+
+		// u16型の配列
+		else if (lset->arrayType == LumpSet::U16_ARRAY)
+		{
+			picojson::array arrayjson;
+			arrayjson.clear();
+
+			bool second = false;
+			for (LumpSet::SetType::const_iterator it = lset->set.begin();
+				it != lset->set.end(); it++)
+			{
+				const Lump* child = *it;
+
+				switch (child->type)
+				{
+				case Lump::S16:
+				case Lump::S32:
+				case Lump::COLOR:
+					arrayjson.push_back(picojson::value((double)child->data.i));
+					break;
+				case Lump::FLOAT:
+					arrayjson.push_back(picojson::value((double)child->data.f));
+					break;
+				case Lump::STRING:
+					break;
+				case Lump::SET:
+					// Not support
+					assert(false);
+					break;
+				default:
+					assert(false);
+					break;
+				}
+			}
+			ssjson.insert(std::make_pair(lump->name, picojson::value(arrayjson)));
+		}
+	}
+
+
+	void writeReferenceLumpSet(std::ostream& out, const Lump* lump, picojson::object& ssjson, int callDepth = 0 )
+	{
+		const LumpSet* lset = lump->data.p;
+
+		if (lset->isReference)
+		{
+			if (m_labelMap.find(lump) == m_labelMap.end())
+			{
+				std::string label = format("label_%04d", m_labelMap.size());
+				m_labelMap[lump] = label;
+
+				writeLumpSetBlock(out, lump, ssjson);
+			}
+		}
+	}
+
+};
+
 
 
 
@@ -451,6 +650,10 @@ void saveCSource(std::ostream& out, StringEncoding encoding, const Lump* lump, c
 	CSourceExporter::save(out, encoding, lump, topLabel, creatorComment);
 }
 
+void saveJson(std::ostream& out, StringEncoding encoding, const Lump* lump, const std::string& creatorComment)
+{
+	JsonExporter::save(out, encoding, lump, creatorComment);
+}
 
 
 }	// namespace LumpExporter
