@@ -1230,170 +1230,171 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 //					}
 					
 					// パーツの座標値、回転、スケールなどを出力する
+					std::string tagname = "part_" + std::to_string(outPartsCount) + "_";
 					outPartsCount++;
-					frameData->add(Lump::s16Data(state->index));
+					frameData->add(Lump::s16Data(state->index, tagname + "index"));
 					fs2.push_back(picojson::value((double)state->index));
 					ssfbFrameData2.push_back(state->index);
 //					frameData->add(Lump::s16Data(0));				//32bitアライメント用ダミーデータ
-					frameData->add(Lump::s32Data(s_flags | p_flags));
+					frameData->add(Lump::s32Data(s_flags | p_flags, tagname + "flag1"));
 					fs2.push_back(picojson::value((double)(s_flags | p_flags)));
 					ssfbFrameData2.push_back(s_flags | p_flags);
-					frameData->add(Lump::s32Data(p_flags2));
+					frameData->add(Lump::s32Data(p_flags2, tagname + "flag2"));
 					fs2.push_back(picojson::value((double)p_flags2));
 					ssfbFrameData2.push_back(p_flags2);
 					
 					if (p_flags & PART_FLAG_CELL_INDEX)
 					{
-						frameData->add(Lump::s16Data(cellIndex));
+						frameData->add(Lump::s16Data(cellIndex, tagname + "cellIndex"));
 						fs2.push_back(picojson::value((double)cellIndex));
 						ssfbFrameData2.push_back(cellIndex);
 					}
 					if (p_flags & PART_FLAG_POSITION_X)
 					{
-						frameData->add(Lump::floatData(state->position.x));
+						frameData->add(Lump::floatData(state->position.x, tagname + "position_x"));
 						fs2.push_back(picojson::value(state->position.x));
 						ssfbFrameData2.push_back(state->position.x);
 					}
 					if (p_flags & PART_FLAG_POSITION_Y)
 					{
-						frameData->add(Lump::floatData(state->position.y));
+						frameData->add(Lump::floatData(state->position.y, tagname + "position_y"));
 						fs2.push_back(picojson::value(state->position.y));
 						ssfbFrameData2.push_back(state->position.y);
 					}
 					if (p_flags & PART_FLAG_POSITION_Z)
 					{
-						frameData->add(Lump::floatData(state->position.z));
+						frameData->add(Lump::floatData(state->position.z, tagname + "position_z"));
 						fs2.push_back(picojson::value(state->position.z));
 						ssfbFrameData2.push_back(state->position.z);
 					}
 
 					if (p_flags & PART_FLAG_PIVOT_X)
 					{
-						frameData->add(Lump::floatData(pivot.x));
+						frameData->add(Lump::floatData(pivot.x, tagname + "pivot_x"));
 						fs2.push_back(picojson::value(pivot.x));
 						ssfbFrameData2.push_back(pivot.x);
 					}
 					if (p_flags & PART_FLAG_PIVOT_Y)
 					{
-						frameData->add(Lump::floatData(pivot.y));
+						frameData->add(Lump::floatData(pivot.y, tagname + "pivot_y"));
 						fs2.push_back(picojson::value(pivot.y));
 						ssfbFrameData2.push_back(pivot.y);
 					}
 					if (p_flags & PART_FLAG_ROTATIONX)
 					{
-						frameData->add(Lump::floatData(state->rotation.x));	// degree
+						frameData->add(Lump::floatData(state->rotation.x, tagname + "rotation_x"));	// degree
 						fs2.push_back(picojson::value(state->rotation.x));
 						ssfbFrameData2.push_back(state->rotation.x);
 					}
 					if (p_flags & PART_FLAG_ROTATIONY)
 					{
-						frameData->add(Lump::floatData(state->rotation.y));	// degree
+						frameData->add(Lump::floatData(state->rotation.y, tagname + "rotation_y"));	// degree
 						fs2.push_back(picojson::value(state->rotation.y));
 						ssfbFrameData2.push_back(state->rotation.y);
 					}
 					if (p_flags & PART_FLAG_ROTATIONZ)
 					{
-						frameData->add(Lump::floatData(state->rotation.z));	// degree
+						frameData->add(Lump::floatData(state->rotation.z, tagname + "rotation_z"));	// degree
 						fs2.push_back(picojson::value(state->rotation.z));
 						ssfbFrameData2.push_back(state->rotation.z);
 					}
 					if (p_flags & PART_FLAG_SCALE_X)
 					{
-						frameData->add(Lump::floatData(state->scale.x));
+						frameData->add(Lump::floatData(state->scale.x, tagname + "scale_x"));
 						fs2.push_back(picojson::value(state->scale.x));
 						ssfbFrameData2.push_back(state->scale.x);
 					}
 					if (p_flags & PART_FLAG_SCALE_Y)
 					{
-						frameData->add(Lump::floatData(state->scale.y));
+						frameData->add(Lump::floatData(state->scale.y, tagname + "scale_y"));
 						fs2.push_back(picojson::value(state->scale.y));
 						ssfbFrameData2.push_back(state->scale.y);
 					}
 					if (p_flags & PART_FLAG_LOCALSCALE_X)
 					{
-						frameData->add(Lump::floatData(state->localscale.x));
+						frameData->add(Lump::floatData(state->localscale.x, tagname + "localscale_x"));
 						fs2.push_back(picojson::value(state->localscale.x));
 						ssfbFrameData2.push_back(state->localscale.x);
 					}
 					if (p_flags & PART_FLAG_LOCALSCALE_Y)
 					{
-						frameData->add(Lump::floatData(state->localscale.y));
+						frameData->add(Lump::floatData(state->localscale.y, tagname + "localscale_y"));
 						fs2.push_back(picojson::value(state->localscale.y));
 						ssfbFrameData2.push_back(state->localscale.y);
 					}
 					if (p_flags & PART_FLAG_OPACITY)
 					{
-						frameData->add(Lump::s16Data((int)(state->alpha * 255)));
+						frameData->add(Lump::s16Data((int)(state->alpha * 255), tagname + "alpha"));
 						fs2.push_back(picojson::value((double)(int)(state->alpha * 255)));
 						ssfbFrameData2.push_back(state->alpha * 255);
 					}
 					if (p_flags & PART_FLAG_LOCALOPACITY)
 					{
-						frameData->add(Lump::s16Data((int)(state->localalpha * 255)));
+						frameData->add(Lump::s16Data((int)(state->localalpha * 255), tagname + "localalpha"));
 						fs2.push_back(picojson::value((double)(int)(state->localalpha * 255)));
 						ssfbFrameData2.push_back(state->localalpha * 255);
 					}
 
 					if (p_flags & PART_FLAG_SIZE_X)
 					{
-						frameData->add(Lump::floatData(state->size.x));
+						frameData->add(Lump::floatData(state->size.x, tagname + "size_x"));
 						fs2.push_back(picojson::value(state->size.x));
 						ssfbFrameData2.push_back(state->size.x);
 					}
 					if (p_flags & PART_FLAG_SIZE_Y)
 					{
-						frameData->add(Lump::floatData(state->size.y));
+						frameData->add(Lump::floatData(state->size.y, tagname + "size_y"));
 						fs2.push_back(picojson::value(state->size.y));
 						ssfbFrameData2.push_back(state->size.y);
 					}
 
 					if (p_flags & PART_FLAG_U_MOVE)
 					{
-						frameData->add(Lump::floatData(state->uvTranslate.x));
+						frameData->add(Lump::floatData(state->uvTranslate.x, tagname + "uvTranslate.x"));
 						fs2.push_back(picojson::value(state->uvTranslate.x));
 						ssfbFrameData2.push_back(state->uvTranslate.x);
 					}
 					if (p_flags & PART_FLAG_V_MOVE)
 					{
-						frameData->add(Lump::floatData(state->uvTranslate.y));
+						frameData->add(Lump::floatData(state->uvTranslate.y, tagname + "uvTranslate.y"));
 						fs2.push_back(picojson::value(state->uvTranslate.y));
 						ssfbFrameData2.push_back(state->uvTranslate.y);
 					}
 					if (p_flags & PART_FLAG_UV_ROTATION)
 					{
-						frameData->add(Lump::floatData(state->uvRotation));
+						frameData->add(Lump::floatData(state->uvRotation, tagname + "uvRotation"));
 						fs2.push_back(picojson::value(state->uvRotation));
 						ssfbFrameData2.push_back(state->uvRotation);
 					}
 					if (p_flags & PART_FLAG_U_SCALE)
 					{
-						frameData->add(Lump::floatData(state->uvScale.x));
+						frameData->add(Lump::floatData(state->uvScale.x, tagname + "uvScale_x"));
 						fs2.push_back(picojson::value(state->uvScale.x));
 						ssfbFrameData2.push_back(state->uvScale.x);
 					}
 					if (p_flags & PART_FLAG_V_SCALE)
 					{
-						frameData->add(Lump::floatData(state->uvScale.y));
+						frameData->add(Lump::floatData(state->uvScale.y, tagname + "uvScale_y"));
 						fs2.push_back(picojson::value(state->uvScale.y));
 						ssfbFrameData2.push_back(state->uvScale.y);
 					}
 
 					if (p_flags & PART_FLAG_BOUNDINGRADIUS)
 					{
-						frameData->add(Lump::floatData(state->boundingRadius));
+						frameData->add(Lump::floatData(state->boundingRadius, tagname + "boundingRadius"));
 						fs2.push_back(picojson::value(state->boundingRadius));
 						ssfbFrameData2.push_back(state->boundingRadius);
 					}
 
 					if (p_flags & PART_FLAG_MASK)
 					{
-						frameData->add(Lump::s16Data(state->masklimen));
+						frameData->add(Lump::s16Data(state->masklimen, tagname + "masklimen"));
 						fs2.push_back(picojson::value((double)state->masklimen));
 						ssfbFrameData2.push_back(state->masklimen);
 					}
 					if (p_flags & PART_FLAG_PRIORITY)
 					{
-						frameData->add(Lump::s16Data(state->prio));
+						frameData->add(Lump::s16Data(state->prio, tagname + "prio"));
 						fs2.push_back(picojson::value((double)state->prio));
 						ssfbFrameData2.push_back(state->prio);
 					}
@@ -1401,38 +1402,38 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					//インスタンス情報出力
 					if (p_flags & PART_FLAG_INSTANCE_KEYFRAME)
 					{
-						frameData->add(Lump::s32Data(state->instanceValue.curKeyframe));
+						frameData->add(Lump::s32Data(state->instanceValue.curKeyframe, tagname + "instanceValue_curKeyframe"));
 						fs2.push_back(picojson::value((double)state->instanceValue.curKeyframe));
 						ssfbFrameData2.push_back(state->instanceValue.curKeyframe);
-						frameData->add(Lump::s32Data(state->instanceValue.startFrame));
+						frameData->add(Lump::s32Data(state->instanceValue.startFrame, tagname + "instanceValue_startFrame"));
 						fs2.push_back(picojson::value((double)state->instanceValue.startFrame));
 						ssfbFrameData2.push_back(state->instanceValue.startFrame);
-						frameData->add(Lump::s32Data(state->instanceValue.endFrame));
+						frameData->add(Lump::s32Data(state->instanceValue.endFrame, tagname + "instanceValue_endFrame"));
 						fs2.push_back(picojson::value((double)state->instanceValue.endFrame));
 						ssfbFrameData2.push_back(state->instanceValue.endFrame);
-						frameData->add(Lump::s32Data(state->instanceValue.loopNum));
+						frameData->add(Lump::s32Data(state->instanceValue.loopNum, tagname + "instanceValue_loopNum"));
 						fs2.push_back(picojson::value((double)state->instanceValue.loopNum));
 						ssfbFrameData2.push_back(state->instanceValue.loopNum);
-						frameData->add(Lump::floatData(state->instanceValue.speed));
+						frameData->add(Lump::floatData(state->instanceValue.speed, tagname + "instanceValue_speed"));
 						fs2.push_back(picojson::value(state->instanceValue.speed));
 						ssfbFrameData2.push_back(state->instanceValue.speed);
-						frameData->add(Lump::s32Data(state->instanceValue.loopflag));
+						frameData->add(Lump::s32Data(state->instanceValue.loopflag, tagname + "instanceValue_loopflag"));
 						fs2.push_back(picojson::value((double)state->instanceValue.loopflag));
 						ssfbFrameData2.push_back(state->instanceValue.loopflag);
 					}
 					//エフェクト情報出力
 					if (p_flags & PART_FLAG_EFFECT_KEYFRAME)
 					{
-						frameData->add(Lump::s32Data(state->effectValue.curKeyframe));	//キー配置フレーム
+						frameData->add(Lump::s32Data(state->effectValue.curKeyframe, tagname + "effectValue_curKeyframe"));	//キー配置フレーム
 						fs2.push_back(picojson::value((double)state->effectValue.curKeyframe));
 						ssfbFrameData2.push_back(state->effectValue.curKeyframe);
-						frameData->add(Lump::s32Data(state->effectValue.startTime));	//開始フレーム
+						frameData->add(Lump::s32Data(state->effectValue.startTime, tagname + "effectValue_startTime"));	//開始フレーム
 						fs2.push_back(picojson::value((double)state->effectValue.startTime));
 						ssfbFrameData2.push_back(state->effectValue.startTime);
-						frameData->add(Lump::floatData(state->effectValue.speed));		//再生速度
+						frameData->add(Lump::floatData(state->effectValue.speed, tagname + "effectValue_speed"));		//再生速度
 						fs2.push_back(picojson::value(state->effectValue.speed));
 						ssfbFrameData2.push_back(state->effectValue.speed);
-						frameData->add(Lump::s32Data(state->effectValue.loopflag));		//独立動作
+						frameData->add(Lump::s32Data(state->effectValue.loopflag, tagname + "effectValue_loopflag"));		//独立動作
 						fs2.push_back(picojson::value((double)state->effectValue.loopflag));
 						ssfbFrameData2.push_back(state->effectValue.loopflag);
 					}
@@ -1451,22 +1452,24 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						{
 							if (vt_flags & (1 << vtxNo))
 							{
+								std::string tagname_x = tagname + "vertexValue.offsets_" + std::to_string(vtxNo) + "_x";
+								std::string tagname_y = tagname + "vertexValue.offsets_" + std::to_string(vtxNo) + "_x";
 								if (proj->settings.vertexAnimeFloat != 0)
 								{
 									//頂点変形の少数対応
-									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].x));
+									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].x, tagname_x));
 									fs2.push_back(picojson::value((double)state->vertexValue.offsets[vtxNo].x));
 									ssfbFrameData2.push_back(state->vertexValue.offsets[vtxNo].x);
-									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].y));
+									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].y, tagname_y));
 									fs2.push_back(picojson::value((double)state->vertexValue.offsets[vtxNo].y));
 									ssfbFrameData2.push_back(state->vertexValue.offsets[vtxNo].y);
 								}
 								else
 								{
-									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].x));
+									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].x, tagname_x));
 									fs2.push_back(picojson::value((double)(int)state->vertexValue.offsets[vtxNo].x));
 									ssfbFrameData2.push_back((int)state->vertexValue.offsets[vtxNo].x);
-									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].y));
+									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].y, tagname_y));
 									fs2.push_back(picojson::value((double)(int)state->vertexValue.offsets[vtxNo].y));
 									ssfbFrameData2.push_back((int)state->vertexValue.offsets[vtxNo].y);
 								}
@@ -1485,10 +1488,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						
 						if (cb_flags & VERTEX_FLAG_ONE)
 						{
-							frameData->add(Lump::floatData(state->partsColorValue.color.rate));
+							frameData->add(Lump::floatData(state->partsColorValue.color.rate, tagname + "partsColorValue_color_rate"));
 							fs2.push_back(picojson::value(state->partsColorValue.color.rate));
 							ssfbFrameData2.push_back(state->partsColorValue.color.rate);
-							frameData->add(Lump::colorData(state->partsColorValue.color.rgba.toARGB()));
+							frameData->add(Lump::colorData(state->partsColorValue.color.rgba.toARGB(), tagname + "partsColorValue_color_rgba"));
 							fs2.push_back(picojson::value((double)state->partsColorValue.color.rgba.toARGB()));
 							ssfbFrameData2.push_back(state->partsColorValue.color.rgba.toARGB());
 						}
@@ -1496,12 +1499,14 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						{
 							for (int vtxNo = 0; vtxNo < 4; vtxNo++)
 							{
+								std::string tagname_rate = tagname + "partsColorValue_colors_" + std::to_string(vtxNo) + "_rate";
+								std::string tagname_rgba = tagname + "partsColorValue_colors_" + std::to_string(vtxNo) + "_rgba";
 								if (cb_flags & (1 << vtxNo))
 								{
-									frameData->add(Lump::floatData(state->partsColorValue.colors[vtxNo].rate));
+									frameData->add(Lump::floatData(state->partsColorValue.colors[vtxNo].rate, tagname_rate));
 									fs2.push_back(picojson::value(state->partsColorValue.colors[vtxNo].rate));
 									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rate);
-									frameData->add(Lump::colorData(state->partsColorValue.colors[vtxNo].rgba.toARGB()));
+									frameData->add(Lump::colorData(state->partsColorValue.colors[vtxNo].rgba.toARGB(), tagname_rgba));
 									fs2.push_back(picojson::value((double)state->partsColorValue.colors[vtxNo].rgba.toARGB()));
 									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rgba.toARGB());
 								}
@@ -1516,16 +1521,20 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						int size = state->meshPart->ver_size;
 						for (i = 0; i < size; i++)
 						{
+							std::string tagname_mesh_x = tagname + "mesh_" + std::to_string(size) + "_x";
+							std::string tagname_mesh_y = tagname + "mesh_" + std::to_string(size) + "_y";
+							std::string tagname_mesh_z = tagname + "mesh_" + std::to_string(size) + "_z";
+
 							float mesh_x = state->meshPart->draw_vertices[i * 3 + 0];
 							float mesh_y = state->meshPart->draw_vertices[i * 3 + 1];
 							float mesh_z = state->meshPart->draw_vertices[i * 3 + 2];
-							frameData->add(Lump::floatData(mesh_x));		//x
+							frameData->add(Lump::floatData(mesh_x, tagname_mesh_x));		//x
 							fs2.push_back(picojson::value(mesh_x));
 							ssfbFrameData2.push_back(mesh_x);
-							frameData->add(Lump::floatData(mesh_y));		//y
+							frameData->add(Lump::floatData(mesh_y, tagname_mesh_y));		//y
 							fs2.push_back(picojson::value(mesh_y));
 							ssfbFrameData2.push_back(mesh_y);
-							frameData->add(Lump::floatData(mesh_z));		//z
+							frameData->add(Lump::floatData(mesh_z, tagname_mesh_z));		//z
 							fs2.push_back(picojson::value(mesh_z));
 							ssfbFrameData2.push_back(mesh_z);
 						}
@@ -1587,14 +1596,14 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							if (udat.usePoint)   flags |= USER_DATA_FLAG_POINT;
 							if (udat.useString)  flags |= USER_DATA_FLAG_STRING;
 
-							userData->add(Lump::s16Data(flags));
+							userData->add(Lump::s16Data(flags, "flags"));
 							us2.push_back(picojson::value((double)flags));
-							userData->add(Lump::s16Data(part->arrayIndex));
+							userData->add(Lump::s16Data(part->arrayIndex, "arrayIndex"));
 							us2.push_back(picojson::value((double)part->arrayIndex));
 
 							if (udat.useInteger)
 							{
-								userData->add(Lump::s32Data(udat.integer));
+								userData->add(Lump::s32Data(udat.integer, "integer"));
 								us2.push_back(picojson::value((double)udat.integer));
 
 								auto item = ss::ssfb::CreateuserDataInteger(ssfbBuilder, udat.integer);
@@ -1603,13 +1612,13 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							}
 							if (udat.useRect)
 							{
-								userData->add(Lump::s32Data(udat.rect.x));
+								userData->add(Lump::s32Data(udat.rect.x, "rect_x"));
 								us2.push_back(picojson::value((double)udat.rect.x));
-								userData->add(Lump::s32Data(udat.rect.y));
+								userData->add(Lump::s32Data(udat.rect.y, "rect_y"));
 								us2.push_back(picojson::value((double)udat.rect.y));
-								userData->add(Lump::s32Data(udat.rect.w));
+								userData->add(Lump::s32Data(udat.rect.w, "rect_w"));
 								us2.push_back(picojson::value((double)udat.rect.w));
-								userData->add(Lump::s32Data(udat.rect.h));
+								userData->add(Lump::s32Data(udat.rect.h, "rect_h"));
 								us2.push_back(picojson::value((double)udat.rect.h));
 
 								auto item = ss::ssfb::CreateuserDataRect(ssfbBuilder, udat.rect.x, udat.rect.y, udat.rect.w, udat.rect.h);
@@ -1618,9 +1627,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							}
 							if (udat.usePoint)
 							{
-								userData->add(Lump::s32Data((int)udat.point.x));
+								userData->add(Lump::s32Data((int)udat.point.x, "point_x"));
 								us2.push_back(picojson::value((double)(int)udat.point.x));
-								userData->add(Lump::s32Data((int)udat.point.y));
+								userData->add(Lump::s32Data((int)udat.point.y, "point_y"));
 								us2.push_back(picojson::value((double)(int)udat.point.y));
 
 								auto item = ss::ssfb::CreateuserDataPoint(ssfbBuilder,
@@ -1632,9 +1641,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							if (udat.useString)
 							{
 								const SsString& str = udat.string;
-								userData->add(Lump::s16Data((int)str.length()));
+								userData->add(Lump::s16Data((int)str.length(), "str_length"));
 								us2.push_back(picojson::value((double)(int)str.length()));
-								userData->add(Lump::stringData(str));
+								userData->add(Lump::stringData(str, "str"));
 								us2.push_back(picojson::value(str));
 
 								auto ssfbStr = ssfbBuilder.CreateString(str);
@@ -1695,10 +1704,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				}
 
 //				labelData->add(Lump::s16Data((int)str.length()));				//文字列のサイズ
-				labelData->add(Lump::stringData(str));							//文字列
+				labelData->add(Lump::stringData(str, "str"));							//文字列
 				ls2.push_back(picojson::value(str));
 				auto ssfbLabelDataItemName = ssfbBuilder.CreateString(str);
-				labelData->add(Lump::s16Data(anime->labels[label_idx]->time));	//設定されたフレーム
+				labelData->add(Lump::s16Data(anime->labels[label_idx]->time, "time"));	//設定されたフレーム
 				ls2.push_back(picojson::value((double)anime->labels[label_idx]->time));
 				hasLabelData = true;
 

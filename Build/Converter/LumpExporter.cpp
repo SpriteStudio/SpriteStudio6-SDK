@@ -587,7 +587,9 @@ private:
 			picojson::array arrayjson;
 			arrayjson.clear();
 
-			bool second = false;
+			picojson::object json;
+			json.clear();
+
 			for (LumpSet::SetType::const_iterator it = lset->set.begin();
 				it != lset->set.end(); it++)
 			{
@@ -599,9 +601,11 @@ private:
 				case Lump::S32:
 				case Lump::COLOR:
 					arrayjson.push_back(picojson::value((double)child->data.i));
+//					json.insert(std::make_pair(child->name, picojson::value((double)child->data.i)));
 					break;
 				case Lump::FLOAT:
 					arrayjson.push_back(picojson::value((double)child->data.f));
+//					json.insert(std::make_pair(child->name, picojson::value((double)child->data.f)));
 					break;
 				case Lump::STRING:
 					break;
@@ -613,8 +617,10 @@ private:
 					assert(false);
 					break;
 				}
+//				arrayjson.push_back(picojson::value(json));
 			}
 			ssjson.insert(std::make_pair(lump->name, picojson::value(arrayjson)));
+//			ssjson.insert(std::make_pair(lump->name, picojson::value(json)));
 		}
 	}
 
