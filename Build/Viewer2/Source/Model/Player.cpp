@@ -7,7 +7,9 @@
 
   ==============================================================================
 */
+#define GLEW_STATIC
 #include <GL/glew.h>
+#pragma comment(lib, "libglew32d.lib")
 
 #include "ssHelper.h"
 #include "ssplayer_animedecode.h"

@@ -1,14 +1,4 @@
-﻿#ifndef _WIN32
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <OpenGL/glext.h>
-#else
-#pragma warning( disable : 4819 )  
-#include <GL/glew.h>
-#include <GL/GL.h>
-#pragma comment(lib,"glew32.lib")
-#endif
-
+﻿#include <GL/glew.h>
 #include "Controller/MainComponent.h"
 #include "Model/Player.h"
 #include "View/DocumentView3D.h"
