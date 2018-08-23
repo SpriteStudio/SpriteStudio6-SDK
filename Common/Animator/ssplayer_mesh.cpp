@@ -59,7 +59,13 @@ void	SsMeshPart::makeMesh()
 
 	float uvpixel_x = 1.0f / txsizew;
 	float uvpixel_y = 1.0f / txsizeh;
-
+	
+	//べき乗でないテクスチャはUVをピクセルにしなくてはならない
+	if (this->targetTexture->isPow2() == false )
+	{
+		uvpixel_x = 1.0f;
+		uvpixel_y = 1.0f;
+	}
 
 	for (size_t i = 0; i < targetCell->meshPointList.size(); i++)
 	{
