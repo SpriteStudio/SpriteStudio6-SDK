@@ -49,6 +49,14 @@ void DocumentView3D::render()
 	glEnable(GL_DEPTH_TEST);
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
+	// キューに積まれた処理を実行
+	auto*	requestQueue = Player::get()->getRequestQueue();
+	while (!requestQueue->empty())
+	{
+		requestQueue->front()->execute();
+		requestQueue->pop();
+	}
+
 	//描画
 	Player::drawAnime();
 }

@@ -7,6 +7,9 @@
               headerPath="">
   <MAINGROUP id="PqiQba" name="SSViewer2">
     <GROUP id="{9D43D578-FD48-58A0-B214-36284BAFD7DC}" name="Source">
+      <GROUP id="{00065373-894A-966A-3963-C2D1D1578C85}" name="Lib">
+        <FILE id="fnCvZv" name="glew.c" compile="1" resource="0" file="lib/glew-2.1.0/src/glew.c"/>
+      </GROUP>
       <GROUP id="{E355B13C-7B29-798E-114E-961791C52FCA}" name="Controller">
         <FILE id="A9X1mt" name="Main.cpp" compile="1" resource="0" file="Source/Controller/Main.cpp"/>
         <FILE id="rBDXo9" name="MainComponent.cpp" compile="1" resource="0"
@@ -108,9 +111,6 @@
           <FILE id="ngIKfq" name="sshTextureBMP.h" compile="0" resource="0" file="../../Common/Helper/sshTextureBMP.h"/>
           <FILE id="Jro4Pb" name="stb_image.c" compile="1" resource="0" file="../../Common/Helper/stb_image.c"/>
           <FILE id="mCrhMT" name="stb_image.h" compile="0" resource="0" file="../../Common/Helper/stb_image.h"/>
-          <FILE id="c9M0Xi" name="XPFileOpenDlg.cpp" compile="1" resource="0"
-                file="../../Common/Helper/XPFileOpenDlg.cpp"/>
-          <FILE id="FuIBdn" name="XPFileOpenDlg.h" compile="0" resource="0" file="../../Common/Helper/XPFileOpenDlg.h"/>
         </GROUP>
         <GROUP id="{656FD655-C189-73D9-8DDC-EE997AFB15AF}" name="Loader">
           <GROUP id="{8CA7D934-1BA2-8B1B-A6D9-505F32BF24D9}" name="babel">
@@ -183,11 +183,9 @@
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" enablePluginBinaryCopyStep="1" isDebug="1" optimisation="1"
-                       linkTimeOptimisation="0" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../../../Build/Viewer2/Source&#10;../../lib/win"
-                       libraryPath="../../lib"/>
+                       linkTimeOptimisation="0" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../../../Build/Viewer2/Source&#10;../../lib/glew-2.1.0/include"/>
         <CONFIGURATION name="Release" enablePluginBinaryCopyStep="1" isDebug="0" optimisation="3"
-                       linkTimeOptimisation="1" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../../../Build/Viewer2/Source&#10;../../lib/win"
-                       libraryPath="../../lib"/>
+                       linkTimeOptimisation="1" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../../../Build/Viewer2/Source&#10;../../lib/glew-2.1.0/include"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="D:/JUCE/modules"/>
@@ -210,13 +208,12 @@
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="Viewer2"
-                       headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;..\..\lib\win"
-                       warningsAreErrors="0" libraryPath="..\..\lib"/>
+                       headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;..\..\lib\glew-2.1.0\include"
+                       warningsAreErrors="0"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="1" isDebug="0" optimisation="3" targetName="Viewer2"
-                       headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;..\..\lib\win"
-                       libraryPath="..\..\lib"/>
+                       headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;..\..\lib\glew-2.1.0\include"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="D:/JUCE/modules"/>

@@ -13,12 +13,16 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ssHelper.h"
 #include "ssplayer_animedecode.h"
+#include <queue>
 
 class SsProject;
 class SsAnimePack;
 class SsAnimeDecoder;
 class SsCellMapList;
 class SSTextureFactory;
+class IRequest;
+class RequestSetProj;
+class RequestSetAnime;
 
 class Player : public juce::HighResolutionTimer
 {
@@ -64,34 +68,26 @@ class Player : public juce::HighResolutionTimer
 	class StatePlaying : public State
 	{
 	public:
-		static	StatePlaying *	get();
+		StatePlaying() {};
 		void	start(Player * p) override {}
 		void	loadProj(Player * p, const String & name) override {}
 		void	loadAnime(Player * p, int packIndex, int animeIndex) override {}
-		void	onEnter(Player * p) override;
-		void	onLeave(Player * p) override;
-	private:
-		static StatePlaying *	myInst;
-		StatePlaying() {};
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StatePlaying)
 	};
 
 	class StatePaused : public State
 	{
 	public:
-		static	StatePaused *	get();
+		StatePaused() {};
 		void	stop(Player * p) override {}
 		void	hiResTimerCallback(Player * p) override {}
-	private:
-		static StatePaused *	myInst;
-		StatePaused() {};
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StatePaused)
 	};
 
 	class StateLoading : public State
 	{
 	public:
-		static	StateLoading *	get();
+		StateLoading() {};
 		void	start(Player * p) override {}
 		void	stop(Player * p) override {}
 		void	reset(Player * p) override {}
@@ -99,24 +95,18 @@ class Player : public juce::HighResolutionTimer
 		void	draw(Player * p) {};
 		void	loadProj(Player * p, const String & name) override {}
 		void	loadAnime(Player * p, int packIndex, int animeIndex) override {}
-	private:
-		static StateLoading *	myInst;
-		StateLoading() {};
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StateLoading)
 	};
 
 	class StateInitial : public State
 	{
 	public:
-		static	StateInitial *	get();
+		StateInitial() {};
 		void	start(Player * p) override {}
 		void	stop(Player * p) override {}
 		void	reset(Player * p) override {}
 		void	hiResTimerCallback(Player * p) override {}
 		void	draw(Player * p) {};
-	private:
-		static StateInitial *	myInst;
-		StateInitial() {};
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StateInitial)
 	};
 
@@ -130,16 +120,43 @@ public:
 	void	stop();
 	void	reset();
 	void	loadProj(const String & name);
+	void	setProj();
 	void	loadAnime(int packIndex, int animeIndex);
+	void	setAnime();
 	void	initGL();
+	void	putRequest(IRequest* request);
+	std::queue<IRequest*>*	getRequestQueue();
+	std::queue<IRequest*>	requestQueue;
+	ScopedPointer<RequestSetProj>	requestSetProj;
+	ScopedPointer<RequestSetAnime>	requestSetAnime;
 	State *	getState();
 	static void	drawAnime();
 
 	// アニメーションの状態
-	ScopedPointer<SsProject>		currentProj = nullptr;
+	ScopedPointer<StatePlaying>		statePlaying;
+	ScopedPointer<StatePaused>		statePaused;
+	ScopedPointer<StateLoading>		stateLoading;
+	ScopedPointer<StateInitial>		stateInitial;
+	ScopedPointer<SsProject>		currentProj;
+	ScopedPointer<SsAnimeDecoder>	decoder;
+	ScopedPointer<SSTextureFactory>	texfactory;
 	SsAnimePack *					animePack = nullptr;
-	ScopedPointer<SsAnimeDecoder>	decoder = nullptr;
 	SsCellMapList *					cellmap = nullptr;
-	SSTextureFactory *				texfactory = nullptr;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Player)
+};
+
+class IRequest
+{
+public:
+	virtual void execute() = 0;
+};
+
+class RequestSetProj: public IRequest
+{
+	virtual void execute() override;
+};
+
+class RequestSetAnime : public IRequest
+{
+	virtual void execute() override;
 };

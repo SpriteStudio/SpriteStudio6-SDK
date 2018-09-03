@@ -43,6 +43,8 @@ MainContentComponent::~MainContentComponent()
 	delete ViewerMainWindow::get();
 	// モデルの解体
 	delete Player::get();
+
+	myInst = nullptr;
 }
 
 

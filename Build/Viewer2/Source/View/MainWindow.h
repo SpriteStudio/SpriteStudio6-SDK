@@ -61,6 +61,7 @@ private:
 	State		state;
 	ScopedPointer<ViewerTreeViewItem>	rootItem;
 
+	bool			sliderShouldRebuild(const int min, const int max);
 	void			buildSlider();
 	void			buildTreeView();
 	void			buildPropertyPanel();

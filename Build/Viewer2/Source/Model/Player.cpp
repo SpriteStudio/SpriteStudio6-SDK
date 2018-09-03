@@ -9,7 +9,6 @@
 */
 #define GLEW_STATIC
 #include <GL/glew.h>
-#pragma comment(lib, "libglew32d.lib")
 
 #include "ssHelper.h"
 #include "ssplayer_animedecode.h"
@@ -38,11 +37,7 @@ Value	Player::State::loop;
 Player::~Player()
 {
 	stopTimer();
-
-	delete StatePlaying::get();
-	delete StatePaused::get();
-	delete StateLoading::get();
-	delete StateInitial::get();
+	myInst = nullptr;
 }
 
 Player * Player::get()
@@ -80,7 +75,15 @@ Player::Player()
 	currentState->fps.addListener(view);
 	currentState->loop.addListener(view);
 
-	currentState = StateInitial::get();
+	requestSetProj = new RequestSetProj();
+	requestSetAnime = new RequestSetAnime();
+
+	statePlaying = new StatePlaying();
+	statePaused = new StatePaused();
+	stateLoading = new StateLoading();
+	stateInitial = new StateInitial();
+
+	currentState = stateInitial;
 
 	stopTimer();
 }
@@ -135,9 +138,32 @@ void Player::loadProj(const String & name)
 	currentState->loadProj(this, name);
 }
 
+void Player::setProj()
+{
+}
+
 void Player::loadAnime(int packIndex, int animeIndex)
 {
 	currentState->loadAnime(this, packIndex, animeIndex);
+}
+
+void Player::setAnime()
+{
+	cellmap->set(currentProj, animePack);// この関数はGLのスレッドでやらないとだめ!!
+
+	SsModel* model = &animePack->Model;
+	SsAnimation * anime = animePack->animeList[(int)currentState->animeIndex.getValue()];
+
+	decoder->setAnimation(model, anime, cellmap, currentProj);// この関数はGLのスレッドでやらないとだめ!!
+
+	int startFrame	= static_cast<int>(decoder->getAnimeStartFrame());
+	int endFrame	= static_cast<int>(decoder->getAnimeEndFrame());
+	int fps			= static_cast<int>(decoder->getAnimeFPS());
+	currentState->length		= endFrame;
+	currentState->startFrame	= startFrame;
+	currentState->frame			= startFrame;
+	currentState->endFrame		= endFrame;
+	currentState->fps			= fps;
 }
 
 void Player::initGL()
@@ -150,27 +176,17 @@ void Player::initGL()
 #endif
 
 	SsCurrentRenderer::SetCurrentRender(new SsRenderGL());
-	if (texfactory)
-	{
-		delete texfactory;
-	}
 	texfactory = new SSTextureFactory(new SSTextureGL());
+}
 
-	cellmap->set(currentProj, animePack);
+void Player::putRequest(IRequest * request)
+{
+	requestQueue.push(request);
+}
 
-	SsModel* model = &animePack->Model;
-	SsAnimation * anime = animePack->animeList[(int)currentState->animeIndex.getValue()];
-
-	decoder->setAnimation(model, anime, cellmap, currentProj);
-
-	int startFrame	= static_cast<int>(decoder->getAnimeStartFrame());
-	int endFrame	= static_cast<int>(decoder->getAnimeEndFrame());
-	int fps			= static_cast<int>(decoder->getAnimeFPS());
-	currentState->length		= endFrame;
-	currentState->startFrame	= startFrame;
-	currentState->frame			= startFrame;
-	currentState->endFrame		= endFrame;
-	currentState->fps			= fps;
+std::queue<IRequest*>* Player::getRequestQueue()
+{
+	return &requestQueue;
 }
 
 Player::State * Player::getState()
@@ -202,7 +218,7 @@ void Player::changeState(State * newState)
 //--------------------------------------------------------------------
 void Player::State::start(Player * p)
 {
-	changeState(p, StatePlaying::get());
+	changeState(p, p->statePlaying);
 
 	float fps = p->currentState->fps.getValue();
 	p->startTimer((int)(1000.0f / std::max(fps, 1.0f)));
@@ -212,7 +228,7 @@ void Player::State::stop(Player * p)
 {
 	p->stopTimer();
 
-	changeState(p, StatePaused::get());
+	changeState(p, p->statePaused);
 }
 
 void Player::State::reset(Player * p)
@@ -220,7 +236,7 @@ void Player::State::reset(Player * p)
 	p->stopTimer();
 	p->currentState->frame = (int)p->currentState->startFrame.getValue();
 
-	changeState(p, StatePaused::get());
+	changeState(p, p->statePaused);
 }
 
 void Player::State::hiResTimerCallback(Player * p)
@@ -240,7 +256,7 @@ void Player::State::draw(Player * p)
 
 void Player::State::loadProj(Player * p, const String & name)
 {
-	changeState(p, StateLoading::get());
+	changeState(p, p->stateLoading);
 
 	// 文字コード変換
 	std::string fileName = babel::auto_translate<>(name.toStdString());
@@ -254,7 +270,7 @@ void Player::State::loadProj(Player * p, const String & name)
 			"File Open Failed",
 			"File Open Failed : " + name);
 
-		changeState(p, StateInitial::get());
+		changeState(p, p->stateInitial);
 		return;
 	}
 
@@ -265,12 +281,15 @@ void Player::State::loadProj(Player * p, const String & name)
 
 	p->currentProj = proj;
 
-	changeState(p, StateInitial::get());
+	// GLのスレッドにリクエスト
+	p->putRequest(p->requestSetProj);
+
+	changeState(p, p->stateInitial);
 }
 
 void Player::State::loadAnime(Player * p, int packIndex, int animeIndex)
 {
-	changeState(p, StateLoading::get());
+	changeState(p, p->stateLoading);
 
 	p->currentState->packIndex = packIndex;
 	p->currentState->animeIndex = animeIndex;
@@ -282,11 +301,10 @@ void Player::State::loadAnime(Player * p, int packIndex, int animeIndex)
 
 	p->currentState->animeName	= anime->name.c_str();
 
-	auto * view = ViewerMainWindow::get();
-	view->buildGL();
-	view->resized();
+	// GLのスレッドにリクエスト
+	p->putRequest(p->requestSetAnime);
 
-	changeState(p, StatePaused::get());
+	changeState(p, p->statePaused);
 }
 
 void Player::State::changeState(Player * p, State * newState)
@@ -294,70 +312,12 @@ void Player::State::changeState(Player * p, State * newState)
 	p->currentState = newState;
 }
 
-//--------------------------------------------------------------------
-//
-// 再生中
-//
-//--------------------------------------------------------------------
-Player::StatePlaying * Player::StatePlaying::myInst = nullptr;
-Player::StatePlaying * Player::StatePlaying::get()
+void RequestSetProj::execute()
 {
-	if (myInst == nullptr)
-	{
-		myInst = new StatePlaying();
-	}
-	return myInst;
+	Player::get()->setProj();
 }
 
-void Player::StatePlaying::onEnter(Player * p)
+void RequestSetAnime::execute()
 {
-}
-
-void Player::StatePlaying::onLeave(Player * p)
-{
-}
-
-//--------------------------------------------------------------------
-//
-// 停止中
-//
-//--------------------------------------------------------------------
-Player::StatePaused * Player::StatePaused::myInst = nullptr;
-Player::StatePaused * Player::StatePaused::get()
-{
-	if (myInst == nullptr)
-	{
-		myInst = new StatePaused();
-	}
-	return myInst;
-}
-
-//--------------------------------------------------------------------
-//
-// ロード中
-//
-//--------------------------------------------------------------------
-Player::StateLoading * Player::StateLoading::myInst = nullptr;
-Player::StateLoading * Player::StateLoading::get()
-{
-	if (myInst == nullptr)
-	{
-		myInst = new StateLoading();
-	}
-	return myInst;
-}
-
-//--------------------------------------------------------------------
-//
-// 初期状態
-//
-//--------------------------------------------------------------------
-Player::StateInitial * Player::StateInitial::myInst = nullptr;
-Player::StateInitial * Player::StateInitial::get()
-{
-	if (myInst == nullptr)
-	{
-		myInst = new StateInitial();
-	}
-	return myInst;
+	Player::get()->setAnime();
 }

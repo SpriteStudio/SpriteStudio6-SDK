@@ -6,6 +6,7 @@
 ViewerMainWindow::ViewerMainWindow()
 {
 	myInst = this;
+	colourSelectorWindow = nullptr;
 
 	state.frame = 0;
 	state.startFrame = 0;
@@ -28,10 +29,10 @@ ViewerMainWindow::ViewerMainWindow()
 
 ViewerMainWindow::~ViewerMainWindow()
 {
-	if (colourSelectorWindow)
-	{
-		delete colourSelectorWindow;
-	}
+	delete colourSelectorWindow;
+	colourSelectorWindow = nullptr;
+
+	myInst = nullptr;
 }
 
 ViewerMainWindow * ViewerMainWindow::myInst = nullptr;
@@ -82,6 +83,8 @@ void ViewerMainWindow::build()
 	buildControlPanel();
 	// サイドパネルの作成
 	buildSidePanel();
+	// GLウィンドウの作成
+	buildGL();
 }
 
 void ViewerMainWindow::buildControlPanel()
@@ -213,14 +216,13 @@ void ViewerMainWindow::valueChanged(Value & value)
 	auto * view = ViewerMainWindow::get();
 	auto * model = Player::get();
 
+	//------------------------
 	// モデルが変更された場合
+	//------------------------
 	if (value.refersToSameSourceAs(model->getState()->startFrame))
 	{
-		int startFrame_model	= model->getState()->startFrame.getValue();
-		int startFrame_view		= view->getState()->startFrame.getValue();
-		int endFrame_view		= view->getState()->endFrame.getValue();
-		if (startFrame_model < startFrame_view||
-			startFrame_model > endFrame_view)
+		// startFrameが変更された場合の処理
+		if (sliderShouldRebuild((int)value.getValue(), view->getState()->endFrame.getValue()))
 		{
 			buildControlPanel();
 			resized();
@@ -230,11 +232,8 @@ void ViewerMainWindow::valueChanged(Value & value)
 	else
 	if (value.refersToSameSourceAs(model->getState()->endFrame))
 	{
-		int endFrame_model	= model->getState()->endFrame.getValue();
-		int endFrame_view	= view->getState()->endFrame.getValue();
-		int startFrame_view	= view->getState()->startFrame.getValue();
-		if (endFrame_model > endFrame_view||
-			endFrame_model < startFrame_view)
+		// endFrameが変更された場合の処理
+		if (sliderShouldRebuild(view->getState()->startFrame.getValue(),(int)value.getValue()))
 		{
 			buildControlPanel();
 			resized();
@@ -244,6 +243,7 @@ void ViewerMainWindow::valueChanged(Value & value)
 	else
 	if (value.refersToSameSourceAs(model->getState()->length))
 	{
+		// lengthが変更された場合の処理
 		buildControlPanel();
 		resized();
 		view->getState()->length = (int)value.getValue();
@@ -251,21 +251,27 @@ void ViewerMainWindow::valueChanged(Value & value)
 	else
 	if (value.refersToSameSourceAs(model->getState()->fps))
 	{
+		// fpsが変更された場合の処理
 		view->getState()->fps = (int)value.getValue();
 	}
 	else
 	if (value.refersToSameSourceAs(model->getState()->frame))
 	{
+		// frameが変更された場合の処理
 		view->getState()->frame = (int)value.getValue();
 	}
 	else
 	if (value.refersToSameSourceAs(model->getState()->animeName))
 	{
+		// animeNameが変更された場合の処理
 	}
 
+	//------------------------
 	// ビューが変更された場合
+	//------------------------
 	if (value.refersToSameSourceAs(view->getState()->endFrame))
 	{
+		// endFrameが変更された場合の処理
 		if (!view->getState()->endFrame.getValue().isInt())
 		{
 			view->getState()->endFrame = (int)value.getValue();
@@ -324,6 +330,23 @@ void ViewerMainWindow::menuItemSelected(int menuItemID, int)
 			openColourSelectorWindow();
 		}
 		break;
+	}
+}
+
+bool ViewerMainWindow::sliderShouldRebuild(const int min, const int max)
+{
+	int startFrame	= getState()->startFrame.getValue();
+	int endFrame	= getState()->endFrame.getValue();
+	if (min < startFrame ||
+		min > endFrame ||
+		max < startFrame ||
+		max > endFrame)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 
