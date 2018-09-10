@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <iostream>
 
 #ifndef _WIN32
 #include <sys/stat.h>
@@ -123,6 +124,12 @@ enum {
 
 bool convert_error_exit = false;	//データにエラーがありコンバートを中止した
 
+union converter32 {
+	int i;
+	unsigned int ui;
+	float f;
+};
+converter32 c32;
 
 
 typedef std::map<const SsCell*, int> CellList;
@@ -397,7 +404,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		}
 		cellMapData->add(Lump::s16Data(0, "reserved"));	// reserved
 
-		ssfbCellMap = ss::ssfb::CreateCellMap(ssfbBuilder, ssfbCellMapName, ssfbCellMapName,
+		ssfbCellMap = ss::ssfb::CreateCellMap(ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath,
 											  static_cast<int16_t>(mapIndex), wrapMode, filterMode);
 
 		//全角チェック
@@ -1238,10 +1245,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 //					frameData->add(Lump::s16Data(0));				//32bitアライメント用ダミーデータ
 					frameData->add(Lump::s32Data(s_flags | p_flags, tagname + "flag1"));
 					fs2.push_back(picojson::value((double)(s_flags | p_flags)));
-					ssfbFrameData2.push_back(s_flags | p_flags);
+					c32.ui = s_flags | p_flags;
+					ssfbFrameData2.push_back(c32.f);
 					frameData->add(Lump::s32Data(p_flags2, tagname + "flag2"));
 					fs2.push_back(picojson::value((double)p_flags2));
-					ssfbFrameData2.push_back(p_flags2);
+					c32.ui = p_flags2;
+					ssfbFrameData2.push_back(c32.f);
 					
 					if (p_flags & PART_FLAG_CELL_INDEX)
 					{
@@ -1404,38 +1413,46 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					{
 						frameData->add(Lump::s32Data(state->instanceValue.curKeyframe, tagname + "instanceValue_curKeyframe"));
 						fs2.push_back(picojson::value((double)state->instanceValue.curKeyframe));
-						ssfbFrameData2.push_back(state->instanceValue.curKeyframe);
+						c32.i = state->instanceValue.curKeyframe;
+						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::s32Data(state->instanceValue.startFrame, tagname + "instanceValue_startFrame"));
 						fs2.push_back(picojson::value((double)state->instanceValue.startFrame));
-						ssfbFrameData2.push_back(state->instanceValue.startFrame);
+						c32.i = state->instanceValue.startFrame;
+						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::s32Data(state->instanceValue.endFrame, tagname + "instanceValue_endFrame"));
 						fs2.push_back(picojson::value((double)state->instanceValue.endFrame));
-						ssfbFrameData2.push_back(state->instanceValue.endFrame);
+						c32.i = state->instanceValue.endFrame;
+						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::s32Data(state->instanceValue.loopNum, tagname + "instanceValue_loopNum"));
 						fs2.push_back(picojson::value((double)state->instanceValue.loopNum));
-						ssfbFrameData2.push_back(state->instanceValue.loopNum);
+						c32.i = state->instanceValue.loopNum;
+						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::floatData(state->instanceValue.speed, tagname + "instanceValue_speed"));
 						fs2.push_back(picojson::value(state->instanceValue.speed));
 						ssfbFrameData2.push_back(state->instanceValue.speed);
 						frameData->add(Lump::s32Data(state->instanceValue.loopflag, tagname + "instanceValue_loopflag"));
 						fs2.push_back(picojson::value((double)state->instanceValue.loopflag));
-						ssfbFrameData2.push_back(state->instanceValue.loopflag);
+						c32.i = state->instanceValue.loopflag;
+						ssfbFrameData2.push_back(c32.f);
 					}
 					//エフェクト情報出力
 					if (p_flags & PART_FLAG_EFFECT_KEYFRAME)
 					{
 						frameData->add(Lump::s32Data(state->effectValue.curKeyframe, tagname + "effectValue_curKeyframe"));	//キー配置フレーム
 						fs2.push_back(picojson::value((double)state->effectValue.curKeyframe));
-						ssfbFrameData2.push_back(state->effectValue.curKeyframe);
+						c32.i = state->effectValue.curKeyframe;
+						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::s32Data(state->effectValue.startTime, tagname + "effectValue_startTime"));	//開始フレーム
 						fs2.push_back(picojson::value((double)state->effectValue.startTime));
-						ssfbFrameData2.push_back(state->effectValue.startTime);
+						c32.i = state->effectValue.startTime;
+						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::floatData(state->effectValue.speed, tagname + "effectValue_speed"));		//再生速度
 						fs2.push_back(picojson::value(state->effectValue.speed));
 						ssfbFrameData2.push_back(state->effectValue.speed);
 						frameData->add(Lump::s32Data(state->effectValue.loopflag, tagname + "effectValue_loopflag"));		//独立動作
 						fs2.push_back(picojson::value((double)state->effectValue.loopflag));
-						ssfbFrameData2.push_back(state->effectValue.loopflag);
+						c32.i = state->effectValue.loopflag;
+						ssfbFrameData2.push_back(c32.f);
 					}
 
 
@@ -1493,7 +1510,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							ssfbFrameData2.push_back(state->partsColorValue.color.rate);
 							frameData->add(Lump::colorData(state->partsColorValue.color.rgba.toARGB(), tagname + "partsColorValue_color_rgba"));
 							fs2.push_back(picojson::value((double)state->partsColorValue.color.rgba.toARGB()));
-							ssfbFrameData2.push_back(state->partsColorValue.color.rgba.toARGB());
+							ssfbFrameData2.push_back((state->partsColorValue.color.rgba.toARGB() & 0xffff0000) >> 16);
+							ssfbFrameData2.push_back(state->partsColorValue.color.rgba.toARGB() & 0xffff);
 						}
 						else
 						{
@@ -1508,7 +1526,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rate);
 									frameData->add(Lump::colorData(state->partsColorValue.colors[vtxNo].rgba.toARGB(), tagname_rgba));
 									fs2.push_back(picojson::value((double)state->partsColorValue.colors[vtxNo].rgba.toARGB()));
-									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rgba.toARGB());
+									ssfbFrameData2.push_back((state->partsColorValue.colors[vtxNo].rgba.toARGB() & 0xffff0000) >> 16);
+									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rgba.toARGB() & 0xffff);
 								}
 							}
 						}
