@@ -565,10 +565,19 @@ private:
 					}
 					else
 					{
-						picojson::object json;
-						json.clear();
-						writeLumpSetBlock(out, child, json);
-						ssjson.insert(std::make_pair(child->name, picojson::value(picojson::value(json))));
+						const LumpSet* clset = child->data.p;
+						if (clset->arrayType == LumpSet::ARRAY)
+						{
+							//子供が配列の場合はそのまま出力する
+							writeLumpSetBlock(out, child, ssjson);
+						}
+						else
+						{
+							picojson::object json;
+							json.clear();
+							writeLumpSetBlock(out, child, json);
+							ssjson.insert(std::make_pair(child->name, picojson::value(picojson::value(json))));
+						}
 					}
 
 					break;
