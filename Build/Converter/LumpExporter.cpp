@@ -565,7 +565,10 @@ private:
 					}
 					else
 					{
-						writeLumpSetBlock(out, child, ssjson);
+						picojson::object json;
+						json.clear();
+						writeLumpSetBlock(out, child, json);
+						ssjson.insert(std::make_pair(child->name, picojson::value(picojson::value(json))));
 					}
 
 					break;
