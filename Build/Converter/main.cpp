@@ -289,6 +289,8 @@ bool isZenkaku( const SsString* str )
 static flatbuffers::Offset<ss::ssfb::ProjectData> ssfbProjectData;
 static flatbuffers::FlatBufferBuilder ssfbBuilder;
 
+static std::vector<int16_t> s_frameIndexVec;
+
 static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 {
 //	static SsPartStateLess _ssPartStateLess;
@@ -1492,6 +1494,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				{
 					userData->addFirst(Lump::s16Data(partsCount));
 					userDataIndexArray->add(userData);
+					s_frameIndexVec.push_back(frame);
 
 					auto serializeSsfbUserDataItemData = ssfbBuilder.CreateVector(ssfbUserDataItemData);
 					auto item = ss::ssfb::CreateuserDataPerFrame(ssfbBuilder, static_cast<int16_t>(frame), serializeSsfbUserDataItemData);
@@ -2028,10 +2031,15 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{
+		    /*
 			flatbuffers::SaveFile(std::string(outPath + ".ssfb").c_str(),
 								  reinterpret_cast<const char *>(ssfbBuilder.GetBufferPointer()),
 								  ssfbBuilder.GetSize(),
 								  true);
+          */
+
+			out.open((outPath + ".ssfb").c_str(), std::ios_base::binary | std::ios_base::out);
+            LumpExporter::saveSsfb(out, encoding, lump, creatorComment, s_frameIndexVec);
 		}
 		else
 		{
