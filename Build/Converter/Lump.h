@@ -7,6 +7,8 @@
 
 #include <vector>
 #include <string>
+#include <functional>
+#include <cstdint>
 
 
 class LumpSet;
@@ -42,6 +44,10 @@ public:
 	static Lump* floatData(float value, std::string name = "");
 	static Lump* colorData(int color, std::string name = "");
 	static Lump* stringData(const std::string& value, std::string name = "");
+	static Lump* findLump(const Lump* lump, std::string name);
+	// Tree
+	// static std::vector<Lump*> filterTree(Lump *root, const std::function<bool(Lump *)> &callback);
+	// static void walkTree(const Lump *root, const std::function<void(const Lump *)> &callback);
 	void namechack( void );
 
 	static Lump* set(const std::string& className, bool isReference = false, std::string name = "");
@@ -49,6 +55,9 @@ public:
 	void add(Lump* lump);
 	void addFirst(Lump* lump);
 	size_t count() const;
+	Lump* getChild(std::size_t idx);
+    std::vector<Lump*> getChildren() const;
+    Lump* findChild(const std::function<bool(const Lump *)> &compCallback);
 
 	~Lump();
 
@@ -77,6 +86,9 @@ public:
 
 	LumpSet(const std::string& className, ArrayType arrayType, bool isReference);
 	~LumpSet();
+
+	Lump* getChild(std::size_t idx);
+	Lump* findChild(const std::function<bool(const Lump *)> &compCallback);
 };
 
 
