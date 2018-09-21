@@ -279,6 +279,9 @@ void Player::State::loadProj(Player * p, const String & name)
 		return;
 	}
 
+	// 最近開いたファイルリストに追加
+	ViewerMainWindow::get()->addRecentlyOpenedFile(File(fileName));
+
 	p->currentProj = proj;
 
 	// GLのスレッドにリクエスト

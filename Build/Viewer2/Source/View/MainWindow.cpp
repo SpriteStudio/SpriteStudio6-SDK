@@ -21,7 +21,6 @@ ViewerMainWindow::ViewerMainWindow()
 	state.frame.addListener(controller);
 	state.fps.addListener(controller);
 	state.loop.addListener(controller);
-
 	state.endFrame.addListener(this);
 
 	build();
@@ -29,6 +28,12 @@ ViewerMainWindow::ViewerMainWindow()
 
 ViewerMainWindow::~ViewerMainWindow()
 {
+	// 最近開いたファイルリストを保存
+	auto * controller = MainContentComponent::get();
+	String fileList = recentlyOpenedFilesList.toString();
+	controller->getProperties().setValue("RecentlyOpenedFilesList", fileList);
+	controller->getProperties().save();
+
 	delete colourSelectorWindow;
 	colourSelectorWindow = nullptr;
 
@@ -77,14 +82,24 @@ void ViewerMainWindow::resized()
 
 void ViewerMainWindow::build()
 {
-    //メニューバーの作成
-	addAndMakeVisible(menuBar = new MenuBarComponent(this));
+    // メニューバーの作成
+	buildMenuBar();
 	// コントロールパネルの作成
 	buildControlPanel();
 	// サイドパネルの作成
 	buildSidePanel();
 	// GLウィンドウの作成
 	buildGL();
+}
+
+void ViewerMainWindow::buildMenuBar()
+{
+	addAndMakeVisible(menuBar = new MenuBarComponent(this));
+
+	auto * controller = MainContentComponent::get();
+	String fileList = controller->getProperties().getValue("RecentlyOpenedFilesList");
+	recentlyOpenedFilesList.restoreFromString(fileList);
+	recentlyOpenedFilesList.setMaxNumberOfItems(10);
 }
 
 void ViewerMainWindow::buildControlPanel()
@@ -184,6 +199,11 @@ void ViewerMainWindow::setBackGroundColour(const Colour & c)
 	}
 }
 
+void ViewerMainWindow::addRecentlyOpenedFile(const File & proj)
+{
+	recentlyOpenedFilesList.addFile(proj);
+}
+
 void ViewerMainWindow::paint (Graphics& g)
 {
 }
@@ -196,17 +216,21 @@ StringArray ViewerMainWindow::getMenuBarNames()
 PopupMenu ViewerMainWindow::getMenuForIndex(int menuIndex, const String &)
 {
 	PopupMenu menu;
+	PopupMenu subMenu;
 
 	if (menuIndex == 0)
 	{
 		menu.addItem(3000, "Open", true, false);
 		menu.addSeparator();
-		menu.addItem(3001, "Exit", true, false);
+		recentlyOpenedFilesList.createPopupMenuItems(subMenu, 3010, true, true);
+		menu.addSubMenu("Open Recent", subMenu);
+		menu.addSeparator();
+		menu.addItem(3020, "Exit", true, false);
 	}
 	else
 	if(menuIndex == 1)
 	{
-		menu.addItem(3002, "BackGroundColor", true, false);
+		menu.addItem(3100, "BackGroundColor", true, false);
 	}
 	return menu;
 }
@@ -320,16 +344,26 @@ void ViewerMainWindow::menuItemSelected(int menuItemID, int)
 			}
 		}
 		break;
-		case 3001:
+		case 3020:
 		{
             JUCEApplication::getInstance()->systemRequestedQuit();
 		}
 		break;
-		case 3002:
+		case 3100:
 		{
 			openColourSelectorWindow();
 		}
 		break;
+	}
+
+	if (3010 <= menuItemID && 3019 >= menuItemID)
+	{
+		String fn = recentlyOpenedFilesList.getFile(menuItemID - 3010).getFullPathName();
+		Player::get()->loadProj(fn);
+
+		// ツリービューを作成
+		buildSidePanel();
+		resized();
 	}
 }
 

@@ -14,7 +14,7 @@
 MainContentComponent* MainContentComponent::myInst = nullptr;
 
 //==============================================================================
-MainContentComponent::MainContentComponent()
+MainContentComponent::MainContentComponent() : properties(getPropertyFileOptions())
 {
 	myInst = this;
 
@@ -168,6 +168,11 @@ void MainContentComponent::resized()
 {
 	auto * mainWindow = ViewerMainWindow::get();
 	mainWindow->setBounds(getLocalBounds());
+}
+
+PropertiesFile & MainContentComponent::getProperties()
+{
+	return properties;
 }
 
 

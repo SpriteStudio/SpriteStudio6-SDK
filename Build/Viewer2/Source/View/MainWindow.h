@@ -22,11 +22,13 @@ public:
 	PopupMenu	getMenuForIndex(int menuIndex, const String& /*menuName*/) override;
 	void		valueChanged(Value & value) override;
 	void		build();
+	void		buildMenuBar();
 	void		buildControlPanel();
 	void		buildSidePanel();
 	void		buildGL();
 	void		openColourSelectorWindow();
 	void		setBackGroundColour(const Colour & c);
+	void		addRecentlyOpenedFile(const File & proj);
 	struct State
 	{
 		Value	frame;
@@ -57,6 +59,8 @@ private:
 	// レイアウト
 	ScopedPointer<Component>		controlPanel;
 	ScopedPointer<ConcertinaPanel>	sidePanel;
+	// 最近開いたファイルリスト
+	RecentlyOpenedFilesList			recentlyOpenedFilesList;
 	// ビューの状態
 	State		state;
 	ScopedPointer<ViewerTreeViewItem>	rootItem;
