@@ -140,6 +140,12 @@ void Player::loadProj(const String & name)
 
 void Player::setProj()
 {
+	//プロジェクトセット時？
+	cellmap->preloadTexture(currentProj);
+
+	//終了時に以下を呼びたい
+	//cellmap->preloadTexture();
+
 }
 
 void Player::loadAnime(int packIndex, int animeIndex)

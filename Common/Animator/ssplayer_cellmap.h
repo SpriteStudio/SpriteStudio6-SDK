@@ -41,8 +41,11 @@ public:
 		CellDic.clear();
 
 		if (tex)
+		{
 			SSTextureFactory::releaseTexture(tex);
 			//delete tex;
+			tex = 0;
+		}
 	}
 
 	SsCell*	findCell( const SsString& name ){ return CellDic[name]; }
@@ -100,6 +103,8 @@ public:
 		return CellMapList[index];
 	}
 	
+	bool preloadTexture(SsProject* proj);
+	bool unloadTexture(SsProject* proj = 0);
 
 };
 

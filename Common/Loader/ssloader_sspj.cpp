@@ -127,6 +127,8 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 			}
 		}
 
+		std::map<std::string, std::string> textures;
+
 		//セルマップリストを元に読み込みます。
 		for ( size_t i = 0 ;i < proj->getCellMapNum() ; i++ )
 		{
@@ -135,6 +137,9 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 			SsCellMap* cell = ssloader_ssce::Load( sscepath );
 			cell->loadFilepath = proj->getCelMapFileOriginalPath(i);
 			proj->cellmapList.push_back(cell);
+
+			//セルマップリストからテクスチャを取得
+			textures[cell->imagePath] = sscepath;
 /*
 			if ( ( cell ) && (checkFileVersion(cell->version, SPRITESTUDIO6_SSCEVERSION) == true) )
 			{
@@ -148,6 +153,13 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 				return 0;
 			}
 */
+		}
+
+		//テクスチャリストを保存
+		proj->textureList.clear();
+		for (auto i = textures.begin(); i != textures.end(); i++)
+		{
+			proj->textureList.push_back(i->first);
 		}
 
 		for ( size_t i = 0 ;i < proj->getEffectFileNum() ; i++ )

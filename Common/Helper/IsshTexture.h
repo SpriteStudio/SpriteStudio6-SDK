@@ -82,6 +82,14 @@ public:
 
 	static void	releaseTexture(ISSTexture* tex);
 
+	//参照ポインタを関係なしに強制的に削除する
+	static void releaseTextureForced(ISSTexture* tex);
+	static void	releaseTextureForced(SsString filePath);
+
+	static bool	isExist(SsString filePath);
+	static bool	isExist(ISSTexture* texture);
+
+	static void releaseAllTexture();
 
 };
 
