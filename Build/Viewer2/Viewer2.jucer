@@ -183,9 +183,9 @@
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" enablePluginBinaryCopyStep="1" isDebug="1" optimisation="1"
-                       linkTimeOptimisation="0" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../../../Build/Viewer2/Source&#10;../../lib/glew-2.1.0/include"/>
+                       linkTimeOptimisation="0" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../Source&#10;../../lib/glew-2.1.0/include"/>
         <CONFIGURATION name="Release" enablePluginBinaryCopyStep="1" isDebug="0" optimisation="3"
-                       linkTimeOptimisation="1" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../../../Build/Viewer2/Source&#10;../../lib/glew-2.1.0/include"/>
+                       linkTimeOptimisation="1" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../Source&#10;../../lib/glew-2.1.0/include"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="D:/JUCE/modules"/>
