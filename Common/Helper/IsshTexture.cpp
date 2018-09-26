@@ -1,4 +1,4 @@
-﻿#include "sstypes.h"
+﻿#include "../Loader/sstypes.h"
 #include "IsshTexture.h"
 #include "../Helper/DebugPrint.h"
 

@@ -1,7 +1,7 @@
 ﻿#ifndef __ISSGraphTexture__
 #define __ISSGraphTexture__
 
-#include <sstypes.h>
+#include "../Loader/sstypes.h"
 #include <map>
 
 
