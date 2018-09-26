@@ -74,6 +74,7 @@ public:
 	{
 		if ( m_texture_base_class )
 			delete m_texture_base_class;
+		m_myInst = 0;
 	}
 
 	static bool	isExist(){ return m_myInst != 0; }
