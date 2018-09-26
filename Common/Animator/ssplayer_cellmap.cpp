@@ -149,8 +149,6 @@ SsCelMapLinker*	SsCellMapList::getCellMapLink( const SsString& name )
 				return itr->second;
 			}
 		}
-
-
 	}
 
 	return 0;
