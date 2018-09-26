@@ -13,16 +13,13 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ssHelper.h"
 #include "ssplayer_animedecode.h"
-#include <queue>
+#include "ssplayer_render_gl.h"
 
 class SsProject;
 class SsAnimePack;
 class SsAnimeDecoder;
 class SsCellMapList;
 class SSTextureFactory;
-class IRequest;
-class RequestSetProj;
-class RequestSetAnime;
 
 class Player : public juce::HighResolutionTimer
 {
@@ -120,15 +117,11 @@ public:
 	void	stop();
 	void	reset();
 	void	loadProj(const String & name);
-	void	setProj();
+	void	preloadTexture();
+	void	unloadTexture();
 	void	loadAnime(int packIndex, int animeIndex);
-	void	setAnime();
+	void	setAnime(int packIndex, int animeIndex);
 	void	initGL();
-	void	putRequest(IRequest* request);
-	std::queue<IRequest*>*	getRequestQueue();
-	std::queue<IRequest*>	requestQueue;
-	ScopedPointer<RequestSetProj>	requestSetProj;
-	ScopedPointer<RequestSetAnime>	requestSetAnime;
 	State *	getState();
 	static void	drawAnime();
 
@@ -140,23 +133,11 @@ public:
 	ScopedPointer<SsProject>		currentProj;
 	ScopedPointer<SsAnimeDecoder>	decoder;
 	ScopedPointer<SSTextureFactory>	texfactory;
-	SsAnimePack *					animePack = nullptr;
+	ScopedPointer<SsRenderGL>		rendererGL;
 	SsCellMapList *					cellmap = nullptr;
+
+	friend class AsyncAnimeLoader;
+	friend class AsyncProjectLoader;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Player)
-};
-
-class IRequest
-{
-public:
-	virtual void execute() = 0;
-};
-
-class RequestSetProj: public IRequest
-{
-	virtual void execute() override;
-};
-
-class RequestSetAnime : public IRequest
-{
-	virtual void execute() override;
 };

@@ -3,11 +3,10 @@
 #include "Model/Player.h"
 #include "View/DocumentView3D.h"
 #include "View/MainWindow.h"
+#include "ssplayer_shader_gl.h"
 
 DocumentView3D::DocumentView3D()
 {
-	//普通に子として配置したコンポーネントは通常通り描画されるらしい
-//	addAndMakeVisible(commandPanel = new DocumentView3DCommandPanel());
 	setSize(800, 600);
 	backGroundColour = Colours::black;
 }
@@ -24,6 +23,7 @@ void DocumentView3D::initialise()
 
 void DocumentView3D::shutdown()
 {
+	SSOpenGLShaderMan::Destory();
 }
 
 void DocumentView3D::render()
@@ -48,14 +48,6 @@ void DocumentView3D::render()
 	glDisable(GL_STENCIL_TEST);
 	glEnable(GL_DEPTH_TEST);
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-	// キューに積まれた処理を実行
-	auto*	requestQueue = Player::get()->getRequestQueue();
-	while (!requestQueue->empty())
-	{
-		requestQueue->front()->execute();
-		requestQueue->pop();
-	}
 
 	//描画
 	Player::drawAnime();

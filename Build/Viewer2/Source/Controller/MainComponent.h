@@ -14,11 +14,12 @@ class AnimeState;
 
 enum CommandIDs
 {
-	START= 1,
+	OPEN=1,
+	START,
 	STOP,
 	RESET,
-	LOAD_PROJECT,
 	LOAD_ANIME,
+	EXIT,
 };
 
 //==============================================================================
@@ -45,8 +46,6 @@ public:
 	void	valueChanged(Value & value) override;
 	void	resized() override;
 	PropertiesFile &	getProperties();
-
-	//ボタンのコマンドマネージャー
 	ApplicationCommandManager	commandManager;
 private:
 	static MainContentComponent *	myInst;

@@ -20,6 +20,7 @@
 #include "Model/Player.h"
 #include "View/DocumentView3D.h"
 #include "View/MainWindow.h"
+#include "Loader.h"
 #include <algorithm>
 #include "babel/babel.h"
 
@@ -74,9 +75,6 @@ Player::Player()
 	currentState->frame.addListener(view);
 	currentState->fps.addListener(view);
 	currentState->loop.addListener(view);
-
-	requestSetProj = new RequestSetProj();
-	requestSetAnime = new RequestSetAnime();
 
 	statePlaying = new StatePlaying();
 	statePaused = new StatePaused();
@@ -138,14 +136,28 @@ void Player::loadProj(const String & name)
 	currentState->loadProj(this, name);
 }
 
-void Player::setProj()
+void Player::preloadTexture()
 {
-	//プロジェクトセット時？
-	cellmap->preloadTexture(currentProj);
+	// GLのスレッドにリクエスト
+	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
+	{
+		if (currentProj)
+		{
+			cellmap->preloadTexture(currentProj);
+		}
+	}, true);
+}
 
-	//終了時に以下を呼びたい
-	//cellmap->preloadTexture();
-
+void Player::unloadTexture()
+{
+	// GLのスレッドにリクエスト
+	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
+	{
+		if (currentProj)
+		{
+			cellmap->unloadTexture(currentProj);
+		}
+	}, true);
 }
 
 void Player::loadAnime(int packIndex, int animeIndex)
@@ -153,23 +165,20 @@ void Player::loadAnime(int packIndex, int animeIndex)
 	currentState->loadAnime(this, packIndex, animeIndex);
 }
 
-void Player::setAnime()
+void Player::setAnime(int packIndex, int animeIndex)
 {
-	cellmap->set(currentProj, animePack);// この関数はGLのスレッドでやらないとだめ!!
+	// GLのスレッドにリクエスト
+	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
+	{
+		SsAnimePackList alist = currentProj->getAnimePackList();
+		SsAnimePack * animePack = alist[packIndex];
 
-	SsModel* model = &animePack->Model;
-	SsAnimation * anime = animePack->animeList[(int)currentState->animeIndex.getValue()];
+		SsAnimation * anime = animePack->animeList[animeIndex];
 
-	decoder->setAnimation(model, anime, cellmap, currentProj);// この関数はGLのスレッドでやらないとだめ!!
-
-	int startFrame	= static_cast<int>(decoder->getAnimeStartFrame());
-	int endFrame	= static_cast<int>(decoder->getAnimeEndFrame());
-	int fps			= static_cast<int>(decoder->getAnimeFPS());
-	currentState->length		= endFrame;
-	currentState->startFrame	= startFrame;
-	currentState->frame			= startFrame;
-	currentState->endFrame		= endFrame;
-	currentState->fps			= fps;
+		SsModel* model = &animePack->Model;
+		cellmap->set(currentProj, animePack);
+		decoder->setAnimation(model, anime, cellmap,currentProj);
+	}, true);
 }
 
 void Player::initGL()
@@ -181,18 +190,9 @@ void Player::initGL()
 	GLenum err = glewInit();
 #endif
 
-	SsCurrentRenderer::SetCurrentRender(new SsRenderGL());
+	rendererGL = new SsRenderGL();
+	SsCurrentRenderer::SetCurrentRender(rendererGL);
 	texfactory = new SSTextureFactory(new SSTextureGL());
-}
-
-void Player::putRequest(IRequest * request)
-{
-	requestQueue.push(request);
-}
-
-std::queue<IRequest*>* Player::getRequestQueue()
-{
-	return &requestQueue;
 }
 
 Player::State * Player::getState()
@@ -262,71 +262,19 @@ void Player::State::draw(Player * p)
 
 void Player::State::loadProj(Player * p, const String & name)
 {
-	changeState(p, p->stateLoading);
-
-	// 文字コード変換
-	std::string fileName = babel::auto_translate<>(name.toStdString());
-	
-	auto * proj = ssloader_sspj::Load(fileName);
-
-	if (!proj)
-	{
-		AlertWindow::showMessageBoxAsync(
-			AlertWindow::InfoIcon,
-			"File Open Failed",
-			"File Open Failed : " + name);
-
-		changeState(p, p->stateInitial);
-		return;
-	}
-
-	if (proj->getAnimePackList().size() == 0)
-	{
-		return;
-	}
-
-	// 最近開いたファイルリストに追加
-	ViewerMainWindow::get()->addRecentlyOpenedFile(File(fileName));
-
-	p->currentProj = proj;
-
-	// GLのスレッドにリクエスト
-	p->putRequest(p->requestSetProj);
-
-	changeState(p, p->stateInitial);
+	auto* projectLoader = new AsyncProjectLoader();
+	projectLoader->setProjectName(name);
+	projectLoader->launchThread();
 }
 
 void Player::State::loadAnime(Player * p, int packIndex, int animeIndex)
 {
-	changeState(p, p->stateLoading);
-
-	p->currentState->packIndex = packIndex;
-	p->currentState->animeIndex = animeIndex;
-
-	SsAnimePackList alist = p->currentProj->getAnimePackList();
-	//アニメパックを選択
-	p->animePack = alist[(int)p->currentState->packIndex.getValue()];
-	SsAnimation * anime = p->animePack->animeList[(int)p->currentState->animeIndex.getValue()];
-
-	p->currentState->animeName	= anime->name.c_str();
-
-	// GLのスレッドにリクエスト
-	p->putRequest(p->requestSetAnime);
-
-	changeState(p, p->statePaused);
+	auto* asyncAnimeLoader = new AsyncAnimeLoader();
+	asyncAnimeLoader->setAnimeIndex(packIndex, animeIndex);
+	asyncAnimeLoader->launchThread();
 }
 
 void Player::State::changeState(Player * p, State * newState)
 {
 	p->currentState = newState;
-}
-
-void RequestSetProj::execute()
-{
-	Player::get()->setProj();
-}
-
-void RequestSetAnime::execute()
-{
-	Player::get()->setAnime();
 }

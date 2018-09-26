@@ -25,6 +25,8 @@
         <FILE id="Xwd2br" name="MainWindow.h" compile="0" resource="0" file="Source/View/MainWindow.h"/>
       </GROUP>
       <GROUP id="{56D53228-497C-677A-33EC-8A3F2EFB2FC4}" name="Model">
+        <FILE id="T43tzy" name="Loader.cpp" compile="1" resource="0" file="Source/Model/Loader.cpp"/>
+        <FILE id="eS16Hf" name="Loader.h" compile="0" resource="0" file="Source/Model/Loader.h"/>
         <FILE id="L11Y5p" name="Player.cpp" compile="1" resource="0" file="Source/Model/Player.cpp"/>
         <FILE id="ZZ5ff3" name="Player.h" compile="0" resource="0" file="Source/Model/Player.h"/>
       </GROUP>

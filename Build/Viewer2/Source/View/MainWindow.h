@@ -29,6 +29,7 @@ public:
 	void		openColourSelectorWindow();
 	void		setBackGroundColour(const Colour & c);
 	void		addRecentlyOpenedFile(const File & proj);
+	OpenGLContext &	getOpenGLContext();
 	struct State
 	{
 		Value	frame;
@@ -37,6 +38,8 @@ public:
 		Value	length;
 		Value	fps;
 		Value	loop;
+		Value	packIndex;
+		Value	animeIndex;
 	};
 	State *	getState();
     //==============================================================================
@@ -63,7 +66,7 @@ private:
 	RecentlyOpenedFilesList			recentlyOpenedFilesList;
 	// ビューの状態
 	State		state;
-	ScopedPointer<ViewerTreeViewItem>	rootItem;
+	ViewerTreeViewItem *			rootItem;
 
 	bool			sliderShouldRebuild(const int min, const int max);
 	void			buildSlider();
@@ -81,7 +84,6 @@ class ViewerTreeViewItem :	public TreeViewItem,
 public:
 	ViewerTreeViewItem(ValueTree t);
 	~ViewerTreeViewItem();
-	String	getUniqueName() const override;
 	bool	mightContainSubItems() override;
 	void	paintItem(Graphics& g, int width, int height) override;
 	void	itemOpennessChanged(bool isNowOpen) override;

@@ -34,6 +34,15 @@ ViewerMainWindow::~ViewerMainWindow()
 	controller->getProperties().setValue("RecentlyOpenedFilesList", fileList);
 	controller->getProperties().save();
 
+	// 最後に読み込んだテクスチャの開放
+	Player::get()->unloadTexture();
+
+
+	if (animeTreeView)
+	{
+		animeTreeView->deleteRootItem();
+	}
+
 	delete colourSelectorWindow;
 	colourSelectorWindow = nullptr;
 
@@ -104,11 +113,6 @@ void ViewerMainWindow::buildMenuBar()
 
 void ViewerMainWindow::buildControlPanel()
 {
-	if (controlPanel)
-	{
-		removeChildComponent(controlPanel);
-	}
-
 	// ボタンの作成
 	auto * cm = &MainContentComponent::get()->commandManager;
 
@@ -146,11 +150,6 @@ void ViewerMainWindow::buildControlPanel()
 
 void ViewerMainWindow::buildSidePanel()
 {
-	if (sidePanel)
-	{
-		removeChildComponent(sidePanel);
-	}
-
 	sidePanel = new ConcertinaPanel();
 
 	// ツリービューの作成
@@ -170,10 +169,6 @@ void ViewerMainWindow::buildSidePanel()
 
 void ViewerMainWindow::buildGL()
 {
-	if (opengl)
-	{
-		removeChildComponent(opengl);
-	}
 	opengl = new DocumentView3D();
 	addAndMakeVisible(opengl);
 }
@@ -204,6 +199,11 @@ void ViewerMainWindow::addRecentlyOpenedFile(const File & proj)
 	recentlyOpenedFilesList.addFile(proj);
 }
 
+OpenGLContext & ViewerMainWindow::getOpenGLContext()
+{
+	return opengl->openGLContext;
+}
+
 void ViewerMainWindow::paint (Graphics& g)
 {
 }
@@ -217,15 +217,16 @@ PopupMenu ViewerMainWindow::getMenuForIndex(int menuIndex, const String &)
 {
 	PopupMenu menu;
 	PopupMenu subMenu;
+	auto * cm = &MainContentComponent::get()->commandManager;
 
 	if (menuIndex == 0)
 	{
-		menu.addItem(3000, "Open", true, false);
+		menu.addCommandItem(cm, CommandIDs::OPEN);
 		menu.addSeparator();
 		recentlyOpenedFilesList.createPopupMenuItems(subMenu, 3010, true, true);
 		menu.addSubMenu("Open Recent", subMenu);
 		menu.addSeparator();
-		menu.addItem(3020, "Exit", true, false);
+		menu.addCommandItem(cm, CommandIDs::EXIT);
 	}
 	else
 	if(menuIndex == 1)
@@ -288,6 +289,8 @@ void ViewerMainWindow::valueChanged(Value & value)
 	if (value.refersToSameSourceAs(model->getState()->animeName))
 	{
 		// animeNameが変更された場合の処理
+		buildControlPanel();
+		resized();
 	}
 
 	//------------------------
@@ -325,30 +328,6 @@ void ViewerMainWindow::menuItemSelected(int menuItemID, int)
 
 	switch (menuItemID)
 	{
-		case 3000:
-		{
-			FileChooser fc("Choose a file to open...",
-				File::getCurrentWorkingDirectory(),
-				"*.sspj",
-				false);
-
-			
-			if (fc.browseForMultipleFilesToOpen())
-			{
-				juce::String fn = fc.getResults().getReference(0).getFullPathName();
-				Player::get()->loadProj(fn);
-
-				// ツリービューを作成
-				buildSidePanel();
-				resized();
-			}
-		}
-		break;
-		case 3020:
-		{
-            JUCEApplication::getInstance()->systemRequestedQuit();
-		}
-		break;
 		case 3100:
 		{
 			openColourSelectorWindow();
@@ -358,12 +337,9 @@ void ViewerMainWindow::menuItemSelected(int menuItemID, int)
 
 	if (3010 <= menuItemID && 3019 >= menuItemID)
 	{
-		String fn = recentlyOpenedFilesList.getFile(menuItemID - 3010).getFullPathName();
+		int index = menuItemID - 3010;
+		String fn = recentlyOpenedFilesList.getFile(index).getFullPathName();
 		Player::get()->loadProj(fn);
-
-		// ツリービューを作成
-		buildSidePanel();
-		resized();
 	}
 }
 
@@ -462,6 +438,10 @@ ValueTree ViewerMainWindow::createTree()
 
 void ViewerMainWindow::buildTreeView()
 {
+	if (animeTreeView)
+	{
+		animeTreeView->deleteRootItem();
+	}
 	ValueTree root = createTree();
 	rootItem = new ViewerTreeViewItem(root);
 	animeTreeView = new TreeView();
@@ -494,11 +474,6 @@ ViewerTreeViewItem::~ViewerTreeViewItem()
 {
 }
 
-String ViewerTreeViewItem::getUniqueName() const
-{
-	return tree["name"].toString();
-}
-
 bool ViewerTreeViewItem::mightContainSubItems()
 {
 	return tree.getNumChildren() > 0;
@@ -520,10 +495,11 @@ void ViewerTreeViewItem::itemOpennessChanged(bool isNowOpen)
 
 void ViewerTreeViewItem::itemClicked(const MouseEvent & e)
 {
+	ViewerMainWindow::get()->getState()->packIndex = getPackIndex();
+	ViewerMainWindow::get()->getState()->animeIndex = getAnimeIndex();
 	//コマンドを発行
 	ApplicationCommandTarget::InvocationInfo info(CommandIDs::LOAD_ANIME);
-	info.originatingComponent = this;
-	MainContentComponent::get()->invoke(info, false);
+	MainContentComponent::get()->commandManager.invoke(info, true);
 }
 
 int ViewerTreeViewItem::getPackIndex()
