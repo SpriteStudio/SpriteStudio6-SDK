@@ -612,7 +612,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			auto ssfbPartDataItem = ss::ssfb::CreatePartData(ssfbBuilder, ssfbPartDataName,
 															 static_cast<int16_t>(part->arrayIndex),
 															 static_cast<int16_t>(part->parentIndex),
-															 ssfbSsPartType, part->boundsType, part->alphaBlendType, ssfbRefAnime, ssfbRefAnime, ssfbColorLabel,
+															 ssfbSsPartType, part->boundsType, part->alphaBlendType, ssfbRefAnime, ssfbRefEffectName, ssfbColorLabel,
 															 static_cast<int16_t>(part->maskInfluence));
 			ssfbParts.push_back(ssfbPartDataItem);
 		}
@@ -1115,10 +1115,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 //					frameData->add(Lump::s16Data(0));				//32bitアライメント用ダミーデータ
 					frameData->add(Lump::s32Data(s_flags | p_flags, tagname + "flag1"));
 					c32.ui = s_flags | p_flags;
-					ssfbFrameData2.push_back(c32.f);
+					ssfbFrameData2.push_back(c32.ui);
 					frameData->add(Lump::s32Data(p_flags2, tagname + "flag2"));
 					c32.ui = p_flags2;
-					ssfbFrameData2.push_back(c32.f);
+					ssfbFrameData2.push_back(c32.ui);
 					
 					if (p_flags & PART_FLAG_CELL_INDEX)
 					{
