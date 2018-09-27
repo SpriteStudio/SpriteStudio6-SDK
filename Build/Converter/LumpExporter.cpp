@@ -742,7 +742,7 @@ private:
             auto filterMode = GETS16(cellMapVec[4]);
             // 5:reserved(s16)
 
-            ssfbCellMap = ss::ssfb::CreateCellMap(m_ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath, mapIndex, wrapMode, filterMode);
+			ssfbCellMap = ss::ssfb::CreateCellMap(m_ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath, mapIndex, wrapMode, filterMode);
 
 			auto indexInCellMap = GETS16(cellItemVec[2]);
 			auto x = GETS16(cellItemVec[3]);
@@ -903,18 +903,18 @@ private:
 						switch (frameDataItem->type) {
 							case Lump::DataType::S16:
 								// TODO: int16_t の型を float vector に格納しているため修正する
-								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
+								ssfbFrameData2.push_back(GETS16(frameDataItem));
 								break;
 							case Lump::DataType::S32:
 								// TODO: int32_t の型を float vector に格納しているため修正する
-								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
+								ssfbFrameData2.push_back(GETS32(frameDataItem));
 								break;
 							case Lump::DataType::FLOAT:
 								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
 								break;
 							case Lump::DataType::COLOR:
 								// TODO: int32_t(color) の型を float vector に格納しているため修正する
-								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
+								ssfbFrameData2.push_back(GETS32(frameDataItem));
 								break;
 							default:
 								break;
@@ -1022,7 +1022,16 @@ private:
 				for(auto meshDataUVItem : meshDataUVVec) {
 					auto frameDataVec = meshDataUVItem->getChildren();
 					for(auto frameDataItem : frameDataVec) {
-						ssfbUV.push_back(GETFLOAT(frameDataItem));
+						switch (frameDataItem->type) {
+						case Lump::DataType::S32:
+							ssfbUV.push_back(GETS32(frameDataItem));
+							break;
+						case Lump::DataType::FLOAT:
+							ssfbUV.push_back(GETFLOAT(frameDataItem));
+							break;
+						default:
+							break;
+						}
 					}
 
 					auto serializeSsfbUV = m_ssfbBuilder.CreateVector(ssfbUV);
@@ -1038,7 +1047,7 @@ private:
 				for(auto meshsDataIndicesItem : meshsDataIndicesVec) {
 					auto meshsDataVec = meshsDataIndicesItem->getChildren();
 					for(auto meshDataItem : meshsDataVec) {
-						ssfbIndices.push_back(GETFLOAT(meshDataItem));
+						ssfbIndices.push_back(GETS32(meshDataItem));
 					}
 
 					auto serializeSsfbIndices = m_ssfbBuilder.CreateVector(ssfbIndices);
