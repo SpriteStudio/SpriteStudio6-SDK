@@ -93,6 +93,62 @@ Lump* Lump::stringData(const std::string& value, std::string name)
 	return v;
 }
 
+Lump *Lump::findLump(const Lump *lump, std::string name)
+{
+	Lump *found = nullptr;
+	if(lump == nullptr || name == "")
+		return nullptr;
+
+	if(lump->name == name) {
+		found = const_cast<Lump *>(lump);
+	} else {
+		if (lump->type == Lump::DataType::SET) {
+			const LumpSet *lset = lump->data.p;
+			for (auto child : lset->set) {
+				found = findLump(child, name);
+				if(found != nullptr)
+					break;
+			}
+		}
+	}
+	return found;
+}
+
+/*
+std::vector<Lump *> Lump::filterTree(Lump *root, const std::function<bool(Lump *)> &callback)
+{
+	std::vector<Lump*> lumpVec;
+
+	bool ret = callback(root);
+	if(ret) {
+		lumpVec.push_back(root);
+	}
+
+	if(root->type == Lump::DataType::SET) {
+		LumpSet* lset = root->data.p;
+		for (auto child : lset->set) {
+			std::vector<Lump*> childLumpSet = Lump::filterTree(child, callback);
+			lumpVec.insert(lumpVec.end(), childLumpSet.begin(), childLumpSet.end());
+		}
+	}
+
+	return lumpVec;
+}
+
+void Lump::walkTree(const Lump *root, const std::function<void(const Lump *)> &callback)
+{
+	callback(root);
+
+	if(root->type == Lump::DataType::SET) {
+		LumpSet* lset = root->data.p;
+		for (auto child : lset->set) {
+			std::vector<Lump*> childLumpSet;
+			walkTree(child, callback);
+		}
+	}
+}
+*/
+
 void Lump::namechack( void )
 {
 /*
@@ -167,8 +223,21 @@ size_t Lump::count() const
 	return static_cast<int>(data.p->set.size());
 }
 
+Lump *Lump::getChild(std::size_t idx)
+{
+    assert(type == SET);
+    return data.p->getChild(idx);
+}
 
+std::vector<Lump *> Lump::getChildren() const {
+    assert(type == SET);
+    return data.p->set;
+}
 
+Lump *Lump::findChild(const std::function<bool(const Lump *)> &compCallback) {
+	assert(type == SET);
+	return data.p->findChild(compCallback);
+}
 
 LumpSet::LumpSet(const std::string& className, ArrayType arrayType, bool isReference)
 	: className(className)
@@ -183,6 +252,25 @@ LumpSet::~LumpSet()
 		Lump* lump = *it;
 		delete lump;
 	}
+}
+
+Lump *LumpSet::getChild(std::size_t idx) {
+    return this->set[idx];
+}
+
+Lump *LumpSet::findChild(const std::function<bool(const Lump *)> &compCallback) {
+	Lump *findLump = nullptr;
+	if(compCallback == nullptr)
+		return findLump;
+
+	for(auto lump : this->set) {
+		bool ret = compCallback(lump);
+		if(ret) {
+			findLump = lump;
+			break;
+		}
+	}
+	return findLump;
 }
 
 

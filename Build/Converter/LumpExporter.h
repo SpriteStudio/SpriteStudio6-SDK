@@ -22,6 +22,9 @@ namespace LumpExporter {
 	void saveCSource(std::ostream& out, StringEncoding encoding, const Lump* lump, const std::string& topLabel, const std::string& creatorComment);
 
 	void saveJson(std::ostream& out, StringEncoding encoding, const Lump* lump, const std::string& creatorComment);
+
+	void saveSsfb(std::ostream &out, StringEncoding encoding, const Lump *lump, const std::string &creatorComment,
+					  const std::vector<int16_t> &frameIndexVec);
 }
 
 #endif /* defined(__LumpExporter__) */

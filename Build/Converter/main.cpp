@@ -29,9 +29,6 @@
 #include "FileUtil.h"
 #include "SsPlayerConverter.h"
 
-#include "flatbuffers/flatbuffers.h"
-#include "flatbuffers/util.h"
-#include "ssfb_generated.h"
 
 
 static const int DATA_VERSION_1			= 1;
@@ -286,8 +283,7 @@ bool isZenkaku( const SsString* str )
 	return( rc );
 }
 
-static flatbuffers::Offset<ss::ssfb::ProjectData> ssfbProjectData;
-static flatbuffers::FlatBufferBuilder ssfbBuilder;
+static std::vector<int16_t> s_frameIndexVec;
 
 static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 {
@@ -297,11 +293,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 	std::cerr << "convert start!" << "\n";
 
 	CellList* cellList = makeCellList(proj);
-
-	flatbuffers::Offset<flatbuffers::String> ssfbImageBaseDir;
-	std::vector<flatbuffers::Offset<ss::ssfb::Cell>> ssfbCells;
-	std::vector<flatbuffers::Offset<ss::ssfb::AnimePackData>> ssfbAnimePacks;
-	std::vector<flatbuffers::Offset<ss::ssfb::EffectFile>> ssfbEffectFileList;
 
 	Lump* topLump = Lump::set("ss::ProjectData", true, "ProjectData");
 
@@ -323,12 +314,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 	if (imageBaseDir.length() > 0)
 	{
 		topLump->add(Lump::stringData(imageBaseDir, "imageBaseDir"));
-		ssfbImageBaseDir = ssfbBuilder.CreateString(imageBaseDir);
 	}
 	else
 	{
 		topLump->add(Lump::stringData("", "imageBaseDir"));
-		ssfbImageBaseDir = ssfbBuilder.CreateString("");
 	}
 
 	Lump* cellsData = Lump::set("ss::Cell[]", true, "Cell");
@@ -355,13 +344,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 	for (size_t mapIndex = 0; mapIndex < proj->cellmapList.size(); mapIndex++)
 	{
 		const SsCellMap* cellMap = proj->cellmapList[mapIndex];
-		flatbuffers::Offset<ss::ssfb::CellMap> ssfbCellMap;
 
 		Lump* cellMapData = Lump::set("ss::CellMap", true, "CellMap");
 		cellMapData->add(Lump::stringData(cellMap->name, "name"));
-		auto ssfbCellMapName = ssfbBuilder.CreateString(cellMap->name);
 		cellMapData->add(Lump::stringData(cellMap->imagePath, "imagePath"));
-		auto ssfbCellMapImagePath = ssfbBuilder.CreateString(cellMap->imagePath);
 
 		cellMapData->add(Lump::s16Data((int)mapIndex, "index"));
 		short wrapMode;
@@ -384,8 +370,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		}
 		cellMapData->add(Lump::s16Data(0, "reserved"));	// reserved
 
-		ssfbCellMap = ss::ssfb::CreateCellMap(ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath,
-											  static_cast<int16_t>(mapIndex), wrapMode, filterMode);
 
 		//全角チェック
 		if ( isZenkaku( &cellMap->name ) == true )
@@ -409,7 +393,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			cellsData->add(cellData);
 			
 			cellData->add(Lump::stringData(cell->name, "name"));
-			auto ssfbCellName = ssfbBuilder.CreateString(cell->name);
 			cellData->add(cellMapData);
 
 			cellData->add(Lump::s16Data((int)cellIndex, "indexInCellMap"));
@@ -428,12 +411,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			cellData->add(Lump::floatData(v1, "v1"));
 			cellData->add(Lump::floatData(u2, "u2"));			//テクスチャのサイズを出力
 			cellData->add(Lump::floatData(v2, "v2"));
-
-			auto ssfbCell = ss::ssfb::CreateCell(ssfbBuilder, ssfbCellName, ssfbCellMap,
-					cellIndex, cell->pos.x, cell->pos.y, cell->size.x, cell->size.y,
-					cell->pivot.x, cell->pivot.y, u1, v1, u2, v2);
-
-			ssfbCells.push_back(ssfbCell);
 
 			//全角チェック
 			if (isZenkaku(&cell->name) == true)
@@ -466,7 +443,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		Lump* animeDataArray = Lump::set("ss::AnimationData[]", true, "AnimationData");
 
 		animePackData->add(Lump::stringData(animePack->name, "name"));
-		auto ssfbAnimePackDataName = ssfbBuilder.CreateString(animePack->name);
 
 		//全角チェック
 		if ( isZenkaku( &animePack->name ) == true )
@@ -480,14 +456,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		animePackData->add(Lump::s16Data((int)model.partList.size(), "numParts"));
 		animePackData->add(Lump::s16Data((int)animePack->animeList.size(), "numAnimations"));
 
-		std::vector<flatbuffers::Offset<ss::ssfb::PartData>> ssfbParts;
-		std::vector<flatbuffers::Offset<ss::ssfb::AnimationData>> ssfbAnimations;
-		std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> ssfbMeshsDataUV;
-		std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> ssfbMeshsDataIndices;
-		std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> ssfbFrameData;
-		std::vector<flatbuffers::Offset<ss::ssfb::userDataPerFrame>> ssfbUserData;
-		std::vector<flatbuffers::Offset<ss::ssfb::labelDataItem>> ssfbLabelData;
-
 		// パーツ情報（モデル）の出力
 		for (int partIndex = 0; partIndex < (int)model.partList.size(); partIndex++)
 		{
@@ -498,7 +466,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			partDataArray->add(partData);
 
 			partData->add(Lump::stringData(part->name, "name"));
-			auto ssfbPartDataName = ssfbBuilder.CreateString(part->name);
 
 			//全角チェック
 			if ( isZenkaku( &part->name ) == true )
@@ -510,7 +477,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			partData->add(Lump::s16Data(part->arrayIndex, "index"));
 			partData->add(Lump::s16Data(part->parentIndex, "parentIndex"));
 
-			ss::ssfb::SsPartType ssfbSsPartType;
 			//5.5対応5.3.5に無いパーツ種別がある場合ワーニングを表示する
 			switch (part->type)
 			{
@@ -523,7 +489,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			case SsPartType::armature:		// 6.0ボーンパーツ
 			case SsPartType::mesh:			// 6.0メッシュパーツ
 				partData->add(Lump::s16Data(part->type, "type"));
-				ssfbSsPartType = (ss::ssfb::SsPartType)part->type;
 				break;
 			case SsPartType::instance:		// インスタンス。他アニメ、パーツへの参照。シーン編集モードの代替になるもの
 				//参照アニメのポインタが無い場合はNULLパーツになる。
@@ -535,13 +500,11 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					if (refanime == NULL)
 					{
 						partData->add(Lump::s16Data(SsPartType::null, "type"));
-						ssfbSsPartType = ss::ssfb::SsPartType::SsPartType_Nulltype;
 						std::cerr << "警告：参照のないインスタンスパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
 					}
 					else
 					{
 						partData->add(Lump::s16Data(part->type, "type"));
-						ssfbSsPartType = (ss::ssfb::SsPartType)part->type;
 					}
 				}
 				break;
@@ -550,71 +513,54 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				if (part->refEffectName == "")
 				{
 					partData->add(Lump::s16Data(SsPartType::null, "type"));
-					ssfbSsPartType = ss::ssfb::SsPartType::SsPartType_Nulltype;
 					//未実装　ワーニングを表示しNULLパーツにする
 					std::cerr << "警告：参照のないエフェクトパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
 				}
 				else
 				{
 					partData->add(Lump::s16Data(part->type, "type"));
-					ssfbSsPartType = (ss::ssfb::SsPartType)part->type;
 				}
 				break;
 			default:
 				//未対応パーツ　ワーニングを表示しNULLパーツにする
 				std::cerr << "警告：未対応のパーツ種別が使われています: " << animePack->name << ".ssae " << part->name << "\n";
 				partData->add(Lump::s16Data(SsPartType::null, "type"));
-				ssfbSsPartType = ss::ssfb::SsPartType::SsPartType_Nulltype;
 				break;
 			}
 			partData->add(Lump::s16Data(part->boundsType, "boundsType"));
 			partData->add(Lump::s16Data(part->alphaBlendType, "alphaBlendType"));
 			partData->add(Lump::s16Data(0, "reserved"));	// reserved
 
-			flatbuffers::Offset<flatbuffers::String> ssfbRefAnime;
 			//インスタンスアニメ名
 			if ( part->refAnime == "" )
 			{
 				const SsString str = "";
 //				partData->add(Lump::s16Data((int)str.length()));				//文字列のサイズ
 				partData->add(Lump::stringData(str, "refname"));							//文字列
-				ssfbRefAnime = ssfbBuilder.CreateString(str);
 			}
 			else
 			{
 				const SsString str = part->refAnimePack + "/" + part->refAnime;
 //				partData->add(Lump::s16Data((int)str.length()));				//文字列のサイズ
 				partData->add(Lump::stringData(str, "refname"));							//文字列
-				ssfbRefAnime = ssfbBuilder.CreateString(str);
 			}
-			flatbuffers::Offset<flatbuffers::String> ssfbRefEffectName;
 			//エフェクト名
 			if (part->refEffectName == "")
 			{
 				const SsString str = "";
 				partData->add(Lump::stringData(str, "effectfilename"));							//文字列
-				ssfbRefEffectName = ssfbBuilder.CreateString(str);
 			}
 			else
 			{
 				const SsString str = part->refEffectName;
 				partData->add(Lump::stringData(str, "effectfilename"));							//文字列
-				ssfbRefEffectName = ssfbBuilder.CreateString(str);
 			}
 			//カラーラベル
 			const SsString str = part->colorLabel;
 			partData->add(Lump::stringData(str, "colorLabel"));								//文字列
-			auto ssfbColorLabel = ssfbBuilder.CreateString(str);
 
 			//マスク対象
 			partData->add(Lump::s16Data(part->maskInfluence, "maskInfluence"));
-
-			auto ssfbPartDataItem = ss::ssfb::CreatePartData(ssfbBuilder, ssfbPartDataName,
-															 static_cast<int16_t>(part->arrayIndex),
-															 static_cast<int16_t>(part->parentIndex),
-															 ssfbSsPartType, part->boundsType, part->alphaBlendType, ssfbRefAnime, ssfbRefAnime, ssfbColorLabel,
-															 static_cast<int16_t>(part->maskInfluence));
-			ssfbParts.push_back(ssfbPartDataItem);
 		}
 
 		// アニメ情報の出力
@@ -646,7 +592,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 			Lump* initialDataArray = Lump::set("ss::AnimationInitialData[]", true, "AnimationInitialData");
 			int sortedOrder = 0;
-			std::vector<flatbuffers::Offset<ss::ssfb::AnimationInitialData>> ssfbDefaultData;
 			foreach(std::vector<SsPartAndAnime>, decoder.getPartAnime(), it)
 			{
 				SsPart* part = it->first;
@@ -781,16 +726,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				initialData->add(Lump::s32Data(init.effectValue_startTime, "effectValue_startTime"));
 				initialData->add(Lump::floatData(init.effectValue_speed, "effectValue_speed"));
 				initialData->add(Lump::s32Data(init.effectValue_loopflag, "effectValue_loopflag"));
-
-				auto item = ss::ssfb::CreateAnimationInitialData(ssfbBuilder, init.index,
-						init.lowflag, init.highflag, init.priority, init.cellIndex, init.opacity, init.localopacity, init.masklimen,
-						init.posX, init.posY, init.posZ, init.pivotX, init.pivotY, init.rotationX, init.rotationY, init.rotationZ,
-						init.scaleX, init.scaleY, init.localscaleX, init.localscaleY, init.size_X, init.size_Y,
-						init.uv_move_X, init.uv_move_Y, init.uv_rotation, init.uv_scale_X, init.uv_scale_Y, init.boundingRadius,
-						init.instanceValue_curKeyframe, init.instanceValue_startFrame, init.instanceValue_endFrame, init.instanceValue_loopNum,
-						init.instanceValue_speed, init.instanceValue_loopflag,
-						init.effectValue_curKeyframe, init.effectValue_startTime, init.effectValue_speed, init.effectValue_loopflag);
-				ssfbDefaultData.push_back(item);
 			}
 
 			Lump* meshsDataUV = Lump::set("ss::ss_u16*[]", true, "meshsDataUV");
@@ -806,36 +741,26 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					//サイズ分のUV出力
 					Lump* meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
 					meshsDataUV->add(meshData);
-					std::vector<float> ssfbUV;
 
 					//メッシュのサイズを書き出す
 					if (part->type == SsPartType::mesh)
 					{
 						int meshsize = state->meshPart->ver_size;
 						meshData->add(Lump::s32Data((int)state->meshPart->isBind, "isBind"));	//バインドの有無
-						ssfbUV.push_back((float)(int)state->meshPart->isBind);
 						meshData->add(Lump::s32Data(meshsize, "meshsize"));	//サイズ
-						ssfbUV.push_back(meshsize);
 						int i;
 						for (i = 0; i < meshsize; i++)
 						{
 							float u = state->meshPart->uvs[i * 2 + 0];
 							float v = state->meshPart->uvs[i * 2 + 1];
 							meshData->add(Lump::floatData(u, "u"));
-							ssfbUV.push_back(u);
 							meshData->add(Lump::floatData(v, "v"));
-							ssfbUV.push_back(v);
 						}
 					}
 					else
 					{
 						meshData->add(Lump::s32Data(0, "isBind"));
-						ssfbUV.push_back(0);
 					}
-
-					auto serializeSsfbUV = ssfbBuilder.CreateVector(ssfbUV);
-					auto item = ss::ssfb::CreatemeshDataUV(ssfbBuilder, serializeSsfbUV);
-					ssfbMeshsDataUV.push_back(item);
 				}
 
 			}
@@ -853,14 +778,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					//サイズ分のUV出力
 					Lump* meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
 					meshsDataIndices->add(meshData);
-					std::vector<float> ssfbIndices;
 
 					//メッシュのサイズを書き出す
 					if (part->type == SsPartType::mesh)
 					{
 						int tri_size = state->meshPart->tri_size;
 						meshData->add(Lump::s32Data(tri_size, "tri_size"));	//サイズ
-						ssfbIndices.push_back(tri_size);
 						int i;
 						for (i = 0; i < tri_size; i++)
 						{
@@ -868,22 +791,14 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							int po2 = (int)state->meshPart->indices[i * 3 + 1];
 							int po3 = (int)state->meshPart->indices[i * 3 + 2];
 							meshData->add(Lump::s32Data(po1, "po1"));
-							ssfbIndices.push_back(po1);
 							meshData->add(Lump::s32Data(po2, "po2"));
-							ssfbIndices.push_back(po2);
 							meshData->add(Lump::s32Data(po3, "po3"));
-							ssfbIndices.push_back(po3);
 						}
 					}
 					else
 					{
 						meshData->add(Lump::s32Data(0, "tri_size"));
-						ssfbIndices.push_back(0);
 					}
-
-					auto serializeSsfbIndices = ssfbBuilder.CreateVector(ssfbIndices);
-					auto item = ss::ssfb::CreatemeshDataIndices(ssfbBuilder, serializeSsfbIndices);
-					ssfbMeshsDataIndices.push_back(item);
 				}
 			}
 
@@ -914,8 +829,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				// パーツごとのデータを出力する
 				Lump* frameData = Lump::set("ss::ss_u16[]", true, "frameData");
 				frameDataIndexArray->add(frameData);
-				std::vector<float> ssfbFrameData2;
-				
+
 				Lump* frameFlag = Lump::s16Data(0, "frameFlag");
 //				frameData->add(frameFlag);
 
@@ -1111,144 +1025,116 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					std::string tagname = "part_" + std::to_string(outPartsCount) + "_";
 					outPartsCount++;
 					frameData->add(Lump::s16Data(state->index, tagname + "index"));
-					ssfbFrameData2.push_back(state->index);
 //					frameData->add(Lump::s16Data(0));				//32bitアライメント用ダミーデータ
 					frameData->add(Lump::s32Data(s_flags | p_flags, tagname + "flag1"));
 					c32.ui = s_flags | p_flags;
-					ssfbFrameData2.push_back(c32.f);
 					frameData->add(Lump::s32Data(p_flags2, tagname + "flag2"));
 					c32.ui = p_flags2;
-					ssfbFrameData2.push_back(c32.f);
-					
+
 					if (p_flags & PART_FLAG_CELL_INDEX)
 					{
 						frameData->add(Lump::s16Data(cellIndex, tagname + "cellIndex"));
-						ssfbFrameData2.push_back(cellIndex);
 					}
 					if (p_flags & PART_FLAG_POSITION_X)
 					{
 						frameData->add(Lump::floatData(state->position.x, tagname + "position_x"));
-						ssfbFrameData2.push_back(state->position.x);
 					}
 					if (p_flags & PART_FLAG_POSITION_Y)
 					{
 						frameData->add(Lump::floatData(state->position.y, tagname + "position_y"));
-						ssfbFrameData2.push_back(state->position.y);
 					}
 					if (p_flags & PART_FLAG_POSITION_Z)
 					{
 						frameData->add(Lump::floatData(state->position.z, tagname + "position_z"));
-						ssfbFrameData2.push_back(state->position.z);
 					}
 
 					if (p_flags & PART_FLAG_PIVOT_X)
 					{
 						frameData->add(Lump::floatData(pivot.x, tagname + "pivot_x"));
-						ssfbFrameData2.push_back(pivot.x);
 					}
 					if (p_flags & PART_FLAG_PIVOT_Y)
 					{
 						frameData->add(Lump::floatData(pivot.y, tagname + "pivot_y"));
-						ssfbFrameData2.push_back(pivot.y);
 					}
 					if (p_flags & PART_FLAG_ROTATIONX)
 					{
 						frameData->add(Lump::floatData(state->rotation.x, tagname + "rotation_x"));	// degree
-						ssfbFrameData2.push_back(state->rotation.x);
 					}
 					if (p_flags & PART_FLAG_ROTATIONY)
 					{
 						frameData->add(Lump::floatData(state->rotation.y, tagname + "rotation_y"));	// degree
-						ssfbFrameData2.push_back(state->rotation.y);
 					}
 					if (p_flags & PART_FLAG_ROTATIONZ)
 					{
 						frameData->add(Lump::floatData(state->rotation.z, tagname + "rotation_z"));	// degree
-						ssfbFrameData2.push_back(state->rotation.z);
 					}
 					if (p_flags & PART_FLAG_SCALE_X)
 					{
 						frameData->add(Lump::floatData(state->scale.x, tagname + "scale_x"));
-						ssfbFrameData2.push_back(state->scale.x);
 					}
 					if (p_flags & PART_FLAG_SCALE_Y)
 					{
 						frameData->add(Lump::floatData(state->scale.y, tagname + "scale_y"));
-						ssfbFrameData2.push_back(state->scale.y);
 					}
 					if (p_flags & PART_FLAG_LOCALSCALE_X)
 					{
 						frameData->add(Lump::floatData(state->localscale.x, tagname + "localscale_x"));
-						ssfbFrameData2.push_back(state->localscale.x);
 					}
 					if (p_flags & PART_FLAG_LOCALSCALE_Y)
 					{
 						frameData->add(Lump::floatData(state->localscale.y, tagname + "localscale_y"));
-						ssfbFrameData2.push_back(state->localscale.y);
 					}
 					if (p_flags & PART_FLAG_OPACITY)
 					{
 						frameData->add(Lump::s16Data((int)(state->alpha * 255), tagname + "alpha"));
-						ssfbFrameData2.push_back(state->alpha * 255);
 					}
 					if (p_flags & PART_FLAG_LOCALOPACITY)
 					{
 						frameData->add(Lump::s16Data((int)(state->localalpha * 255), tagname + "localalpha"));
-						ssfbFrameData2.push_back(state->localalpha * 255);
 					}
 
 					if (p_flags & PART_FLAG_SIZE_X)
 					{
 						frameData->add(Lump::floatData(state->size.x, tagname + "size_x"));
-						ssfbFrameData2.push_back(state->size.x);
 					}
 					if (p_flags & PART_FLAG_SIZE_Y)
 					{
 						frameData->add(Lump::floatData(state->size.y, tagname + "size_y"));
-						ssfbFrameData2.push_back(state->size.y);
 					}
 
 					if (p_flags & PART_FLAG_U_MOVE)
 					{
 						frameData->add(Lump::floatData(state->uvTranslate.x, tagname + "uvTranslate.x"));
-						ssfbFrameData2.push_back(state->uvTranslate.x);
 					}
 					if (p_flags & PART_FLAG_V_MOVE)
 					{
 						frameData->add(Lump::floatData(state->uvTranslate.y, tagname + "uvTranslate.y"));
-						ssfbFrameData2.push_back(state->uvTranslate.y);
 					}
 					if (p_flags & PART_FLAG_UV_ROTATION)
 					{
 						frameData->add(Lump::floatData(state->uvRotation, tagname + "uvRotation"));
-						ssfbFrameData2.push_back(state->uvRotation);
 					}
 					if (p_flags & PART_FLAG_U_SCALE)
 					{
 						frameData->add(Lump::floatData(state->uvScale.x, tagname + "uvScale_x"));
-						ssfbFrameData2.push_back(state->uvScale.x);
 					}
 					if (p_flags & PART_FLAG_V_SCALE)
 					{
 						frameData->add(Lump::floatData(state->uvScale.y, tagname + "uvScale_y"));
-						ssfbFrameData2.push_back(state->uvScale.y);
 					}
 
 					if (p_flags & PART_FLAG_BOUNDINGRADIUS)
 					{
 						frameData->add(Lump::floatData(state->boundingRadius, tagname + "boundingRadius"));
-						ssfbFrameData2.push_back(state->boundingRadius);
 					}
 
 					if (p_flags & PART_FLAG_MASK)
 					{
 						frameData->add(Lump::s16Data(state->masklimen, tagname + "masklimen"));
-						ssfbFrameData2.push_back(state->masklimen);
 					}
 					if (p_flags & PART_FLAG_PRIORITY)
 					{
 						frameData->add(Lump::s16Data(state->prio, tagname + "prio"));
-						ssfbFrameData2.push_back(state->prio);
 					}
 
 					//インスタンス情報出力
@@ -1256,36 +1142,26 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					{
 						frameData->add(Lump::s32Data(state->instanceValue.curKeyframe, tagname + "instanceValue_curKeyframe"));
 						c32.i = state->instanceValue.curKeyframe;
-						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::s32Data(state->instanceValue.startFrame, tagname + "instanceValue_startFrame"));
 						c32.i = state->instanceValue.startFrame;
-						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::s32Data(state->instanceValue.endFrame, tagname + "instanceValue_endFrame"));
 						c32.i = state->instanceValue.endFrame;
-						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::s32Data(state->instanceValue.loopNum, tagname + "instanceValue_loopNum"));
 						c32.i = state->instanceValue.loopNum;
-						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::floatData(state->instanceValue.speed, tagname + "instanceValue_speed"));
-						ssfbFrameData2.push_back(state->instanceValue.speed);
 						frameData->add(Lump::s32Data(state->instanceValue.loopflag, tagname + "instanceValue_loopflag"));
 						c32.i = state->instanceValue.loopflag;
-						ssfbFrameData2.push_back(c32.f);
 					}
 					//エフェクト情報出力
 					if (p_flags & PART_FLAG_EFFECT_KEYFRAME)
 					{
 						frameData->add(Lump::s32Data(state->effectValue.curKeyframe, tagname + "effectValue_curKeyframe"));	//キー配置フレーム
 						c32.i = state->effectValue.curKeyframe;
-						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::s32Data(state->effectValue.startTime, tagname + "effectValue_startTime"));	//開始フレーム
 						c32.i = state->effectValue.startTime;
-						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::floatData(state->effectValue.speed, tagname + "effectValue_speed"));		//再生速度
-						ssfbFrameData2.push_back(state->effectValue.speed);
 						frameData->add(Lump::s32Data(state->effectValue.loopflag, tagname + "effectValue_loopflag"));		//独立動作
 						c32.i = state->effectValue.loopflag;
-						ssfbFrameData2.push_back(c32.f);
 					}
 
 
@@ -1294,8 +1170,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					{
 						// どの頂点のオフセット値が格納されているかのフラグ
 						frameData->add(Lump::s16Data(vt_flags));
-						ssfbFrameData2.push_back(vt_flags);
-						
+
 						// 各頂点のオフセット値
 						for (int vtxNo = 0; vtxNo < 4; vtxNo++)
 						{
@@ -1307,16 +1182,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								{
 									//頂点変形の少数対応
 									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].x, tagname_x));
-									ssfbFrameData2.push_back(state->vertexValue.offsets[vtxNo].x);
 									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].y, tagname_y));
-									ssfbFrameData2.push_back(state->vertexValue.offsets[vtxNo].y);
 								}
 								else
 								{
 									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].x, tagname_x));
-									ssfbFrameData2.push_back((int)state->vertexValue.offsets[vtxNo].x);
 									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].y, tagname_y));
-									ssfbFrameData2.push_back((int)state->vertexValue.offsets[vtxNo].y);
 								}
 							}
 						}
@@ -1328,15 +1199,11 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						// ブレンド方法と、単色もしくはどの頂点に対するカラー値が格納されているかをu16にまとめる
 						int typeAndFlags = (int)state->partsColorValue.blendType | (cb_flags << 8);
 						frameData->add(Lump::s16Data(typeAndFlags));
-						ssfbFrameData2.push_back(typeAndFlags);
-						
+
 						if (cb_flags & VERTEX_FLAG_ONE)
 						{
 							frameData->add(Lump::floatData(state->partsColorValue.color.rate, tagname + "partsColorValue_color_rate"));
-							ssfbFrameData2.push_back(state->partsColorValue.color.rate);
 							frameData->add(Lump::colorData(state->partsColorValue.color.rgba.toARGB(), tagname + "partsColorValue_color_rgba"));
-							ssfbFrameData2.push_back((state->partsColorValue.color.rgba.toARGB() & 0xffff0000) >> 16);
-							ssfbFrameData2.push_back(state->partsColorValue.color.rgba.toARGB() & 0xffff);
 						}
 						else
 						{
@@ -1347,10 +1214,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								if (cb_flags & (1 << vtxNo))
 								{
 									frameData->add(Lump::floatData(state->partsColorValue.colors[vtxNo].rate, tagname_rate));
-									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rate);
 									frameData->add(Lump::colorData(state->partsColorValue.colors[vtxNo].rgba.toARGB(), tagname_rgba));
-									ssfbFrameData2.push_back((state->partsColorValue.colors[vtxNo].rgba.toARGB() & 0xffff0000) >> 16);
-									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rgba.toARGB() & 0xffff);
 								}
 							}
 						}
@@ -1371,22 +1235,14 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							float mesh_y = state->meshPart->draw_vertices[i * 3 + 1];
 							float mesh_z = state->meshPart->draw_vertices[i * 3 + 2];
 							frameData->add(Lump::floatData(mesh_x, tagname_mesh_x));		//x
-							ssfbFrameData2.push_back(mesh_x);
 							frameData->add(Lump::floatData(mesh_y, tagname_mesh_y));		//y
-							ssfbFrameData2.push_back(mesh_y);
 							frameData->add(Lump::floatData(mesh_z, tagname_mesh_z));		//z
-							ssfbFrameData2.push_back(mesh_z);
 						}
 					}
 				}
 				
 				// 出力されたパーツ数と、描画順の変更があるかのフラグ
 				frameFlag->data.i = outPartsCount | (prioChanged ? 0x8000 : 0);
-
-
-				auto serializeSsfbFrameData2 = ssfbBuilder.CreateVector(ssfbFrameData2);
-				auto item = ss::ssfb::CreateframeDataIndex(ssfbBuilder, serializeSsfbFrameData2);
-				ssfbFrameData.push_back(item);
 			}
 
 			// ユーザーデータ
@@ -1398,8 +1254,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				Lump* userData = Lump::set("ss::ss_u16[]", true, "userData");
 				int partsCount = 0;
 
-				std::vector<flatbuffers::Offset<ss::ssfb::userDataItem>> ssfbUserDataItemData;
-
 				foreach(std::vector<SsPartAndAnime>, decoder.getPartAnime(), it)
 				{
 					SsPart* part = it->first;
@@ -1410,9 +1264,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					{
 						SsAttribute* attr = *attrIt;
 						if (attr->tag != SsAttributeKind::user) continue;
-
-						std::vector<flatbuffers::Offset<void>> ssfbDataArray;
-						std::vector<uint8_t> ssfbDataArrayType;
 
 						// このフレームのデータを含む?
 						if (attr->key_dic.find(frame) != attr->key_dic.end())
@@ -1436,10 +1287,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							if (udat.useInteger)
 							{
 								userData->add(Lump::s32Data(udat.integer, "integer"));
-
-								auto item = ss::ssfb::CreateuserDataInteger(ssfbBuilder, udat.integer);
-								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_INTEGER);
 							}
 							if (udat.useRect)
 							{
@@ -1447,41 +1294,18 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								userData->add(Lump::s32Data(udat.rect.y, "rect_y"));
 								userData->add(Lump::s32Data(udat.rect.w, "rect_w"));
 								userData->add(Lump::s32Data(udat.rect.h, "rect_h"));
-
-								auto item = ss::ssfb::CreateuserDataRect(ssfbBuilder, udat.rect.x, udat.rect.y, udat.rect.w, udat.rect.h);
-								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_RECT);
 							}
 							if (udat.usePoint)
 							{
 								userData->add(Lump::s32Data((int)udat.point.x, "point_x"));
 								userData->add(Lump::s32Data((int)udat.point.y, "point_y"));
-
-								auto item = ss::ssfb::CreateuserDataPoint(ssfbBuilder,
-                                                                          static_cast<int32_t>(udat.point.x),
-                                                                          static_cast<int32_t>(udat.point.y));
-								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_POINT);
 							}
 							if (udat.useString)
 							{
 								const SsString& str = udat.string;
 								userData->add(Lump::s16Data((int)str.length(), "str_length"));
 								userData->add(Lump::stringData(str, "str"));
-
-								auto ssfbStr = ssfbBuilder.CreateString(str);
-								auto item = ss::ssfb::CreateuserDataString(ssfbBuilder, str.length(), ssfbStr);
-								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_STRING);
 							}
-
-							auto serializeSsfbDataArrayType = ssfbBuilder.CreateVector(ssfbDataArrayType);
-							auto serializeSsfbDataArray = ssfbBuilder.CreateVector(ssfbDataArray);
-							auto item = ss::ssfb::CreateuserDataItem(ssfbBuilder, static_cast<int16_t>(flags),
-                                                                     static_cast<int16_t>(part->arrayIndex),
-                                                                     serializeSsfbDataArrayType,
-                                                                     serializeSsfbDataArray);
-							ssfbUserDataItemData.push_back(item);
 						}
 					}
 				}
@@ -1490,10 +1314,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				{
 					userData->addFirst(Lump::s16Data(partsCount));
 					userDataIndexArray->add(userData);
-
-					auto serializeSsfbUserDataItemData = ssfbBuilder.CreateVector(ssfbUserDataItemData);
-					auto item = ss::ssfb::CreateuserDataPerFrame(ssfbBuilder, static_cast<int16_t>(frame), serializeSsfbUserDataItemData);
-					ssfbUserData.push_back(item);
+					s_frameIndexVec.push_back(frame);
 				}
 				else
 				{
@@ -1523,14 +1344,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 //				labelData->add(Lump::s16Data((int)str.length()));				//文字列のサイズ
 				labelData->add(Lump::stringData(str, "str"));							//文字列
-				auto ssfbLabelDataItemName = ssfbBuilder.CreateString(str);
 				labelData->add(Lump::s16Data(anime->labels[label_idx]->time, "time"));	//設定されたフレーム
 				hasLabelData = true;
 
 				LabelDataIndexArray->add(labelData);
-
-				auto item = ss::ssfb::CreatelabelDataItem(ssfbBuilder, ssfbLabelDataItemName, anime->labels[label_idx]->time);
-				ssfbLabelData.push_back(item);
 			}
 
 			if ( hasLabelData == false )
@@ -1539,7 +1356,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			}
 			
 			animeData->add(Lump::stringData(anime->name, "name"));
-			auto ssfbAnimationDataName = ssfbBuilder.CreateString(anime->name);
 			animeData->add(initialDataArray);
 			animeData->add(frameDataIndexArray);
 			animeData->add(hasUserData ? userDataIndexArray : Lump::s32Data(0, "userDataIndexArray"));
@@ -1556,32 +1372,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			animeData->add(Lump::s16Data(0, "reserved"));									//ダミーデータ
 			animeData->add(Lump::floatData(anime->settings.pivot.x, "canvasPvotX"));			//基準枠位置
 			animeData->add(Lump::floatData(anime->settings.pivot.y, "canvasPvotY"));			//基準枠位置
-
-			auto serializeSsfbDefaultData = ssfbBuilder.CreateVector(ssfbDefaultData);
-			auto serializeSsfbMeshsDataUV = ssfbBuilder.CreateVector(ssfbMeshsDataUV);
-			auto serializeSsfbMeshsDataIndices = ssfbBuilder.CreateVector(ssfbMeshsDataIndices);
-			auto serializeSsfbFrameData = ssfbBuilder.CreateVector(ssfbFrameData);
-			auto serializeSsfbUserData = ssfbBuilder.CreateVector(ssfbUserData);
-			auto serializeSsfbLabelData = ssfbBuilder.CreateVector(ssfbLabelData);
-
-			auto item = ss::ssfb::CreateAnimationData(ssfbBuilder, ssfbAnimationDataName,
-													  serializeSsfbDefaultData, serializeSsfbFrameData, serializeSsfbUserData,
-													  serializeSsfbLabelData, serializeSsfbMeshsDataUV, serializeSsfbMeshsDataIndices,
-													  static_cast<int16_t>(decoder.getAnimeStartFrame()),
-													  static_cast<int16_t>(decoder.getAnimeEndFrame()),
-													  static_cast<int16_t>(decoder.getAnimeTotalFrame()),
-													  static_cast<int16_t>(anime->settings.fps),
-													  static_cast<int16_t>(label_idx),
-													  static_cast<int16_t>(anime->settings.canvasSize.x),
-													  static_cast<int16_t>(anime->settings.canvasSize.y),
-													  anime->settings.pivot.x, anime->settings.pivot.y);
-			ssfbAnimations.push_back(item);
 		}
-
-		auto serializeSsfbParts = ssfbBuilder.CreateVector(ssfbParts);
-		auto serializeSsfbAnimations = ssfbBuilder.CreateVector(ssfbAnimations);
-		auto ssfbAnimePackData = ss::ssfb::CreateAnimePackData(ssfbBuilder, ssfbAnimePackDataName, serializeSsfbParts, serializeSsfbAnimations);
-		ssfbAnimePacks.push_back(ssfbAnimePackData);
 	}
 
 	//エフェクトデータ
@@ -1592,7 +1383,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 		const SsEffectFile* effectfile = proj->effectfileList[effectIndex];
 		effectFile->add(Lump::stringData(effectfile->name, "name"));				//エフェクト名
-		auto ssfbEffectFileName = ssfbBuilder.CreateString(effectfile->name);
 
 		const SsEffectModel *effectmodel = &effectfile->effectData;
 		effectFile->add(Lump::s16Data(effectmodel->fps, "fps"));					//FPS
@@ -1612,7 +1402,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		Lump* effectNodeArray = Lump::set("ss::EffectNode[]", true, "EffectNodeArray");
 		effectFile->add(effectNodeArray);									//ノード配列
 
-		std::vector<flatbuffers::Offset<ss::ssfb::EffectNode>> ssfbEffectNode;
 		for (size_t nodeindex = 0; nodeindex < effectmodel->nodeList.size(); nodeindex++)
 		{
 			//エフェクトノードを追加
@@ -1646,8 +1435,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			Lump* effectBehaviorArray = Lump::set("ss::ss_u16*[]", true, "effectBehaviorArray");
 			effectNode->add(effectBehaviorArray);			//コマンドパラメータ配列
 
-			std::vector<flatbuffers::Offset<void>> ssfbEffectNodeBehavior;
-			std::vector<uint8_t> ssfbEffectNodeBehaviorType;
 			//コマンドパラメータ
 			for (size_t plistindex = 0; plistindex < behavior.plist.size(); plistindex++)
 			{
@@ -1690,12 +1477,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					effectBehavior->add(Lump::s32Data(lifespanMaxValue, "lifespanMaxValue"));		//パーティクル生存時間最大
 					effectBehavior->add(Lump::floatData(angle, "angle"));				//射出方向
 					effectBehavior->add(Lump::floatData(angleVariance, "angleVariance"));		//射出方向範囲
-
-					auto item = ss::ssfb::CreateEffectParticleElementBasic(ssfbBuilder, myType, priority,
-							maximumParticle, attimeCreate, interval, lifetime,
-							speedMinValue, speedMaxValue, lifespanMinValue, lifespanMaxValue, angle, angleVariance);
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::RndSeedChange:
@@ -1704,10 +1485,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					ParticleElementRndSeedChange *element = (ParticleElementRndSeedChange*)elementbase;
 					int		Seed = element->Seed;
 					effectBehavior->add(Lump::s32Data(Seed, "Seed"));					//上書きする値
-
-					auto item = ss::ssfb::CreateEffectParticleElementRndSeedChange(ssfbBuilder, Seed);
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::Delay:
@@ -1716,10 +1493,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					ParticleElementDelay *element = (ParticleElementDelay*)elementbase;
 					int		DelayTime = element->DelayTime;
 					effectBehavior->add(Lump::s32Data(DelayTime, "DelayTime"));				//遅延時間
-
-					auto item = ss::ssfb::CreateEffectParticleElementDelay(ssfbBuilder, DelayTime);
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::Gravity:
@@ -1729,10 +1502,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					SsVector2   Gravity = element->Gravity;
 					effectBehavior->add(Lump::floatData(Gravity.x, "Gravity_x"));				//X方向の重力
 					effectBehavior->add(Lump::floatData(Gravity.y, "Gravity_y"));				//Y方向の重力
-
-					auto item = ss::ssfb::CreateEffectParticleElementGravity(ssfbBuilder, Gravity.x, Gravity.y);
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::Position:
@@ -1745,11 +1514,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					effectBehavior->add(Lump::floatData(OffsetX.getMaxValue(), "OffsetXMaxValue"));				//X座標に加算最大
 					effectBehavior->add(Lump::floatData(OffsetY.getMinValue(), "OffsetYMinValue"));				//X座標に加算最小
 					effectBehavior->add(Lump::floatData(OffsetY.getMaxValue(), "OffsetYMaxValue"));				//X座標に加算最大
-
-					auto item = ss::ssfb::CreateEffectParticleElementPosition(ssfbBuilder,
-							OffsetX.getMinValue(), OffsetX.getMaxValue(), OffsetY.getMinValue(), OffsetY.getMaxValue());
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::Rotation:
@@ -1762,11 +1526,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					effectBehavior->add(Lump::floatData(Rotation.getMaxValue(), "RotationMaxValue"));			//角度初期値最大
 					effectBehavior->add(Lump::floatData(RotationAdd.getMinValue(), "RotationAddMinValue"));			//角度初期加算値最小
 					effectBehavior->add(Lump::floatData(RotationAdd.getMaxValue(), "RotationAddMaxValue"));			//角度初期加算値最大
-
-					auto item = ss::ssfb::CreateEffectParticleElementRotation(ssfbBuilder,
-							Rotation.getMinValue(), Rotation.getMaxValue(), RotationAdd.getMinValue(), RotationAdd.getMaxValue());
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::TransRotation:
@@ -1777,10 +1536,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					float	EndLifeTimePer = element->EndLifeTimePer;
 					effectBehavior->add(Lump::floatData(RotationFactor, "RotationFactor"));					//角度目標加算値
 					effectBehavior->add(Lump::floatData(EndLifeTimePer, "EndLifeTimePer"));					//到達時間
-
-					auto item = ss::ssfb::CreateEffectParticleElementRotationTrans(ssfbBuilder, RotationFactor, EndLifeTimePer);
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::TransSpeed:
@@ -1790,10 +1545,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					f32VValue	Speed = element->Speed;
 					effectBehavior->add(Lump::floatData(Speed.getMinValue(), "SpeedMinValue"));				//速度目標値最小
 					effectBehavior->add(Lump::floatData(Speed.getMaxValue(), "SpeedMaxValue"));				//速度目標値最大
-
-					auto item = ss::ssfb::CreateEffectParticleElementTransSpeed(ssfbBuilder, Speed.getMinValue(), Speed.getMaxValue());
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::TangentialAcceleration:
@@ -1804,10 +1555,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 					effectBehavior->add(Lump::floatData(Acceleration.getMinValue(), "AccelerationMinValue"));		//設定加速度最小
 					effectBehavior->add(Lump::floatData(Acceleration.getMaxValue(), "AccelerationMaxValue"));		//設定加速度最大
-
-					auto item = ss::ssfb::CreateEffectParticleElementTangentialAcceleration(ssfbBuilder, Acceleration.getMinValue(), Acceleration.getMaxValue());
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::InitColor:
@@ -1817,10 +1564,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					SsU8cVValue Color = element->Color;
 					effectBehavior->add(Lump::s32Data(Color.getMinValue().toARGB(), "ColorMinValue"));		//設定カラー最小
 					effectBehavior->add(Lump::s32Data(Color.getMaxValue().toARGB(), "ColorMaxValue"));		//設定カラー最大
-
-					auto item = ss::ssfb::CreateEffectParticleElementInitColor(ssfbBuilder, Color.getMinValue().toARGB(), Color.getMaxValue().toARGB());
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::TransColor:
@@ -1830,10 +1573,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					SsU8cVValue Color = element->Color;
 					effectBehavior->add(Lump::s32Data(Color.getMinValue().toARGB(), "ColorMinValue"));		//設定カラー最小
 					effectBehavior->add(Lump::s32Data(Color.getMaxValue().toARGB(), "ColorMaxValue"));		//設定カラー最大
-
-					auto item = ss::ssfb::CreateEffectParticleElementTransColor(ssfbBuilder, Color.getMinValue().toARGB(), Color.getMaxValue().toARGB());
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::AlphaFade:
@@ -1843,10 +1582,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					f32VValue  disprange = element->disprange; // mnagaku 頭小文字
 					effectBehavior->add(Lump::floatData(disprange.getMinValue(), "disprangeMinValue"));			//表示区間開始
 					effectBehavior->add(Lump::floatData(disprange.getMaxValue(), "disprangeMaxValue"));			//表示区間終了
-
-					auto item = ss::ssfb::CreateEffectParticleElementAlphaFade(ssfbBuilder, disprange.getMinValue(), disprange.getMaxValue());
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::Size:
@@ -1862,12 +1597,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					effectBehavior->add(Lump::floatData(SizeY.getMaxValue(), "SizeYMaxValue"));				//高さ倍率最大
 					effectBehavior->add(Lump::floatData(ScaleFactor.getMinValue(), "ScaleFactorMinValue"));			//倍率最小
 					effectBehavior->add(Lump::floatData(ScaleFactor.getMaxValue(), "ScaleFactorMaxValue"));			//倍率最大
-
-					auto item = ss::ssfb::CreateEffectParticleElementSize(ssfbBuilder,
-							SizeX.getMinValue(), SizeX.getMaxValue(), SizeY.getMinValue(), SizeY.getMaxValue(),
-							ScaleFactor.getMinValue(), ScaleFactor.getMaxValue());
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::TransSize:
@@ -1883,12 +1612,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					effectBehavior->add(Lump::floatData(SizeY.getMaxValue(), "SizeYMaxValue"));				//高さ倍率最大
 					effectBehavior->add(Lump::floatData(ScaleFactor.getMinValue(), "ScaleFactorMinValue"));			//倍率最小
 					effectBehavior->add(Lump::floatData(ScaleFactor.getMaxValue(), "ScaleFactorMaxValue"));			//倍率最大
-
-					auto item = ss::ssfb::CreateEffectParticleElementTransSize(ssfbBuilder, SizeX.getMinValue(), SizeX.getMaxValue(),
-							SizeY.getMinValue(), SizeY.getMaxValue(),
-							ScaleFactor.getMinValue(), ScaleFactor.getMaxValue());
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::PointGravity:
@@ -1900,10 +1623,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					effectBehavior->add(Lump::floatData(Position.x, "Position_x"));						//重力点X
 					effectBehavior->add(Lump::floatData(Position.y, "Position_y"));						//重力点Y
 					effectBehavior->add(Lump::floatData(Power, "Power"));							//パワー
-
-					auto item = ss::ssfb::CreateEffectParticlePointGravity(ssfbBuilder, Position.x, Position.y, Power);
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::TurnToDirectionEnabled:
@@ -1912,10 +1631,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					ParticleTurnToDirectionEnabled *element = (ParticleTurnToDirectionEnabled*)elementbase;
 					//コマンドがあれば有効
 					effectBehavior->add(Lump::floatData(element->Rotation, "Rotation"));				//方向オフセット
-
-					auto item = ss::ssfb::CreateEffectParticleTurnToDirectionEnabled(ssfbBuilder, element->Rotation);
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::InfiniteEmitEnabled:
@@ -1924,10 +1639,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					ParticleInfiniteEmitEnabled *element = (ParticleInfiniteEmitEnabled*)elementbase;
 					//コマンドがあれば有効
 					effectBehavior->add(Lump::s32Data(1, "flag"));									//ダミーデータ
-
-					auto item = ss::ssfb::CreateEffectParticleInfiniteEmitEnabled(ssfbBuilder, 1.0);
-					ssfbEffectNodeBehavior.push_back(item.Union());
-					ssfbEffectNodeBehaviorType.push_back(myType);
 					break;
 				}
 				case SsEffectFunctionType::Base:
@@ -1937,41 +1648,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					break;
 				}
 			}
-
-			auto serializeSsfbEffectNodeBehaviorType = ssfbBuilder.CreateVector(ssfbEffectNodeBehaviorType);
-			auto serializeSsfbEffectNodeBehavior = ssfbBuilder.CreateVector(ssfbEffectNodeBehavior);
-			auto ssfbEffectNodeItem = ss::ssfb::CreateEffectNode(ssfbBuilder,
-									   static_cast<int16_t>(arrayIndex),
-									   static_cast<int16_t>(parentIndex),
-									   type,
-									   static_cast<int16_t>(cellIndex),
-									   blendType,
-									   static_cast<int16_t>(ssfbEffectNodeBehavior.size()),
-									   serializeSsfbEffectNodeBehaviorType,
-									   serializeSsfbEffectNodeBehavior);
-			ssfbEffectNode.push_back(ssfbEffectNodeItem);
 		}
-
-		auto serializeSsfbEffectNode = ssfbBuilder.CreateVector(ssfbEffectNode);
-		auto ssfbEffectFile = ss::ssfb::CreateEffectFile(ssfbBuilder, ssfbEffectFileName,
-				effectmodel->fps, effectmodel->isLockRandSeed, effectmodel->lockRandSeed,
-				effectmodel->layoutScaleX, effectmodel->layoutScaleY,
-				ssfbEffectNode.size(),serializeSsfbEffectNode);
-		ssfbEffectFileList.push_back(ssfbEffectFile);
 	}
-
-	auto serializeSsfbCells = ssfbBuilder.CreateVector(ssfbCells);
-	auto serializeSsfbAnimePackData = ssfbBuilder.CreateVector(ssfbAnimePacks);
-	auto serializeSsfbEffectFileList = ssfbBuilder.CreateVector(ssfbEffectFileList);
-	ssfbProjectData = ss::ssfb::CreateProjectData(ssfbBuilder, DATA_ID, CURRENT_DATA_VERSION, 0,
-			ssfbImageBaseDir,
-			serializeSsfbCells,
-			serializeSsfbAnimePackData,
-			serializeSsfbEffectFileList,
-			static_cast<int16_t>(ssfbCells.size()),
-			static_cast<int16_t>(ssfbAnimePacks.size()),
-			static_cast<int16_t>(ssfbEffectFileList.size()));
-	ssfbBuilder.Finish(ssfbProjectData);
 
 	std::cerr << "convert end" << "\n";
 
@@ -2026,10 +1704,8 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{
-			flatbuffers::SaveFile(std::string(outPath + ".ssfb").c_str(),
-								  reinterpret_cast<const char *>(ssfbBuilder.GetBufferPointer()),
-								  ssfbBuilder.GetSize(),
-								  true);
+			out.open((outPath + ".ssfb").c_str(), std::ios_base::binary | std::ios_base::out);
+            LumpExporter::saveSsfb(out, encoding, lump, creatorComment, s_frameIndexVec);
 		}
 		else
 		{
