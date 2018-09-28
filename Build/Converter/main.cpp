@@ -1115,10 +1115,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 //					frameData->add(Lump::s16Data(0));				//32bitアライメント用ダミーデータ
 					frameData->add(Lump::s32Data(s_flags | p_flags, tagname + "flag1"));
 					c32.ui = s_flags | p_flags;
-					ssfbFrameData2.push_back(c32.ui);
+					//intで出力すると上位ビットが立った場合に丸めが発生するので、floatで出力し、プレイヤーではbitを整数で扱う事になる
+					ssfbFrameData2.push_back(c32.f);	
 					frameData->add(Lump::s32Data(p_flags2, tagname + "flag2"));
 					c32.ui = p_flags2;
-					ssfbFrameData2.push_back(c32.ui);
+					//intで出力すると上位ビットが立った場合に丸めが発生するので、floatで出力し、プレイヤーではbitを整数で扱う事になる
+					ssfbFrameData2.push_back(c32.f);
 					
 					if (p_flags & PART_FLAG_CELL_INDEX)
 					{
