@@ -896,34 +896,38 @@ private:
 				auto frameDataIndexArrayVec = ssAnimationDataVec[2]->getChildren();
 
 				// TODO: 複数の型を float vector に格納しているため修正する
-				std::vector<float> ssfbFrameData2;
 				for(auto frameDataIndexArrayItem : frameDataIndexArrayVec) {
 					auto frameDataVec = frameDataIndexArrayItem->getChildren();
+
+					std::vector<float> ssfbFrameData2;
 					for(auto frameDataItem : frameDataVec) {
 						switch (frameDataItem->type) {
 							case Lump::DataType::S16:
 								// TODO: int16_t の型を float vector に格納しているため修正する
-								ssfbFrameData2.push_back(GETS16(frameDataItem));
+								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
+//								ssfbFrameData2.push_back(GETS16(frameDataItem));
 								break;
 							case Lump::DataType::S32:
 								// TODO: int32_t の型を float vector に格納しているため修正する
-								ssfbFrameData2.push_back(GETS32(frameDataItem));
+								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
+//								ssfbFrameData2.push_back(GETS32(frameDataItem));
 								break;
 							case Lump::DataType::FLOAT:
 								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
 								break;
 							case Lump::DataType::COLOR:
 								// TODO: int32_t(color) の型を float vector に格納しているため修正する
-								ssfbFrameData2.push_back(GETS32(frameDataItem));
+								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
+//								ssfbFrameData2.push_back(GETS32(frameDataItem));
 								break;
 							default:
 								break;
 						}
 					}
+					auto serializeSsfbFrameData2 = m_ssfbBuilder.CreateVector(ssfbFrameData2);
+					auto item = ss::ssfb::CreateframeDataIndex(m_ssfbBuilder, serializeSsfbFrameData2);
+					ssfbFrameData.push_back(item);
 				}
-				auto serializeSsfbFrameData2 = m_ssfbBuilder.CreateVector(ssfbFrameData2);
-				auto item = ss::ssfb::CreateframeDataIndex(m_ssfbBuilder, serializeSsfbFrameData2);
-				ssfbFrameData.push_back(item);
 			}
 			// 3:userDataIndexArray
 			std::vector<flatbuffers::Offset<ss::ssfb::userDataPerFrame>> ssfbUserData;
