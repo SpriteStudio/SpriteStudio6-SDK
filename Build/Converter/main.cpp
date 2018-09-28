@@ -2031,12 +2031,10 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{
-		    /*
-			flatbuffers::SaveFile(std::string(outPath + ".ssfb").c_str(),
+			flatbuffers::SaveFile(std::string(outPath + ".orig.ssfb").c_str(),
 								  reinterpret_cast<const char *>(ssfbBuilder.GetBufferPointer()),
 								  ssfbBuilder.GetSize(),
 								  true);
-          */
 
 			out.open((outPath + ".ssfb").c_str(), std::ios_base::binary | std::ios_base::out);
             LumpExporter::saveSsfb(out, encoding, lump, creatorComment, s_frameIndexVec);
