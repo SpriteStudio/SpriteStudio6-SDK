@@ -739,8 +739,8 @@ private:
 		auto cellsVec = cellsLump->getChildren();
 		for(auto cellItem : cellsVec) {
 			auto cellItemVec = cellItem->getChildren();
-			auto ssfbCellName = GETSSFBSTRING(m_ssfbBuilder, cellItemVec[0], m_encoding);
 			auto ssfbCellMap = createCellMap(cellItemVec[1]);
+			auto ssfbCellName = GETSSFBSTRING(m_ssfbBuilder, cellItemVec[0], m_encoding);
 
 			auto indexInCellMap = GETS16(cellItemVec[2]);
 			auto x = GETS16(cellItemVec[3]);
