@@ -711,6 +711,16 @@ private:
 	std::vector<flatbuffers::Offset<ss::ssfb::AnimePackData>> m_ssfbAnimePacks;
 	std::vector<flatbuffers::Offset<ss::ssfb::EffectFile>> m_ssfbEffectFileList;
 
+	struct CellMapPrimitive {
+        std::string name;
+        std::string imagePath;
+        int16_t mapIndex;
+        int16_t wrapMode;
+        int16_t filterMode;
+	};
+	std::vector<std::shared_ptr<struct CellMapPrimitive>> m_cellMaps;
+	std::vector<flatbuffers::Offset<ss::ssfb::CellMap>> m_ssfbCellMaps;
+
 	void createHeader()
 	{
 		auto rootChildVec = m_root->getChildren();
@@ -728,21 +738,9 @@ private:
 
 		auto cellsVec = cellsLump->getChildren();
 		for(auto cellItem : cellsVec) {
-            flatbuffers::Offset<ss::ssfb::CellMap> ssfbCellMap;
-
 			auto cellItemVec = cellItem->getChildren();
 			auto ssfbCellName = GETSSFBSTRING(m_ssfbBuilder, cellItemVec[0], m_encoding);
-
-            auto cellMapVec = cellItemVec[1]->getChildren();
-            // CellMap
-            auto ssfbCellMapName = GETSSFBSTRING(m_ssfbBuilder, cellMapVec[0], m_encoding);
-            auto ssfbCellMapImagePath = GETSSFBSTRING(m_ssfbBuilder, cellMapVec[1], m_encoding);
-            auto mapIndex = GETS16(cellMapVec[2]);
-            auto wrapMode = GETS16(cellMapVec[3]);
-            auto filterMode = GETS16(cellMapVec[4]);
-            // 5:reserved(s16)
-
-			ssfbCellMap = ss::ssfb::CreateCellMap(m_ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath, mapIndex, wrapMode, filterMode);
+			auto ssfbCellMap = createCellMap(cellItemVec[1]);
 
 			auto indexInCellMap = GETS16(cellItemVec[2]);
 			auto x = GETS16(cellItemVec[3]);
@@ -763,6 +761,55 @@ private:
 			m_ssfbCells.push_back(ssfbCell);
 		}
 	}
+
+    flatbuffers::Offset<ss::ssfb::CellMap> createCellMap(const Lump *lump)
+    {
+        flatbuffers::Offset<ss::ssfb::CellMap> cellMap;
+
+        auto cellMapVec = lump->getChildren();
+
+        std::shared_ptr<struct CellMapPrimitive> cellMapPrimitive(new struct CellMapPrimitive);
+        cellMapPrimitive->name = GETSTRING(cellMapVec[0], m_encoding);
+        cellMapPrimitive->imagePath = GETSTRING(cellMapVec[1], m_encoding);
+        cellMapPrimitive->mapIndex = GETS16(cellMapVec[2]);
+        cellMapPrimitive->wrapMode = GETS16(cellMapVec[3]);
+        cellMapPrimitive->filterMode = GETS16(cellMapVec[4]);
+        // 5:reserved(s16)
+
+        // search same cellMap from cellMap caches.
+        auto result = std::find_if(m_cellMaps.begin(), m_cellMaps.end(), [&cellMapPrimitive](std::shared_ptr<struct CellMapPrimitive> item) {
+            if(cellMapPrimitive->name != item->name)
+                return false;
+            if(cellMapPrimitive->imagePath != item->imagePath)
+                return false;
+            if(cellMapPrimitive->mapIndex != item->mapIndex)
+                return false;
+            if(cellMapPrimitive->wrapMode != item->wrapMode)
+                return false;
+            if(cellMapPrimitive->filterMode != item->filterMode)
+                return false;
+
+            return true;
+        });
+        if (result == m_cellMaps.end()) {
+            // not found
+
+            // create ssfb cellMap
+            auto ssfbCellMapName = m_ssfbBuilder.CreateString(cellMapPrimitive->name);
+            auto ssfbCellMapImagePath = m_ssfbBuilder.CreateString(cellMapPrimitive->imagePath);
+            cellMap = ss::ssfb::CreateCellMap(m_ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath,
+                                              cellMapPrimitive->mapIndex, cellMapPrimitive->wrapMode, cellMapPrimitive->filterMode);
+            // cache ssfb cellMap
+            m_cellMaps.push_back(cellMapPrimitive);
+            m_ssfbCellMaps.push_back(cellMap);
+        } else {
+            // found
+            auto idx = std::distance(m_cellMaps.begin(), result);
+            cellMap = m_ssfbCellMaps[idx];
+        }
+
+        return cellMap;
+    }
 
 	void createAnimePacks()
 	{
