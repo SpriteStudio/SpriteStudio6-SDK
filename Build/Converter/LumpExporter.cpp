@@ -1366,26 +1366,26 @@ private:
 						default:
 							break;
 					}
-					auto serializeSsfbEffectNodeBehaviorType = m_ssfbBuilder.CreateVector(ssfbEffectNodeBehaviorType);
-					auto serializeSsfbEffectNodeBehavior = m_ssfbBuilder.CreateVector(ssfbEffectNodeBehavior);
-					auto ssfbEffectNodeItem = ss::ssfb::CreateEffectNode(m_ssfbBuilder,
-																		 static_cast<int16_t>(arrayIndex),
-																		 static_cast<int16_t>(parentIndex),
-																		 type,
-																		 static_cast<int16_t>(cellIndex),
-																		 blendType,
-																		 static_cast<int16_t>(ssfbEffectNodeBehavior.size()),
-																		 serializeSsfbEffectNodeBehaviorType,
-																		 serializeSsfbEffectNodeBehavior);
-					ssfbEffectNode.push_back(ssfbEffectNodeItem);
 				}
-				auto serializeSsfbEffectNode = m_ssfbBuilder.CreateVector(ssfbEffectNode);
-				auto ssfbEffectFile = ss::ssfb::CreateEffectFile(m_ssfbBuilder, ssfbEffectFileName,
-																 fps, isLockRandSeed, LockRandSeed,
-																 layoutScaleX, layoutScaleY,
-																 numBehavior,serializeSsfbEffectNode);
-				m_ssfbEffectFileList.push_back(ssfbEffectFile);
+				auto serializeSsfbEffectNodeBehaviorType = m_ssfbBuilder.CreateVector(ssfbEffectNodeBehaviorType);
+				auto serializeSsfbEffectNodeBehavior = m_ssfbBuilder.CreateVector(ssfbEffectNodeBehavior);
+				auto ssfbEffectNodeItem = ss::ssfb::CreateEffectNode(m_ssfbBuilder,
+																	static_cast<int16_t>(arrayIndex),
+																	static_cast<int16_t>(parentIndex),
+																	type,
+																	static_cast<int16_t>(cellIndex),
+																	blendType,
+																	static_cast<int16_t>(ssfbEffectNodeBehavior.size()),
+																	serializeSsfbEffectNodeBehaviorType,
+																	serializeSsfbEffectNodeBehavior);
+				ssfbEffectNode.push_back(ssfbEffectNodeItem);
 			}
+			auto serializeSsfbEffectNode = m_ssfbBuilder.CreateVector(ssfbEffectNode);
+			auto ssfbEffectFile = ss::ssfb::CreateEffectFile(m_ssfbBuilder, ssfbEffectFileName,
+                                                             fps, isLockRandSeed, LockRandSeed,
+                                                             layoutScaleX, layoutScaleY,
+                                                             ssfbEffectNode.size(), serializeSsfbEffectNode);
+			m_ssfbEffectFileList.push_back(ssfbEffectFile);
 		}
 	}
 
