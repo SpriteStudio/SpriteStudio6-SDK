@@ -936,6 +936,48 @@ private:
 					ssfbDefaultData.push_back(item);
 				}
 			}
+
+			// 5:meshDataUV
+			std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> ssfbMeshsDataUV;
+			{
+				auto meshDataUVVec = ssAnimationDataVec[5]->getChildren();
+				for(auto meshDataUVItem : meshDataUVVec) {
+				    std::vector<float> ssfbUV;
+					auto frameDataVec = meshDataUVItem->getChildren();
+					for(auto frameDataItem : frameDataVec) {
+						switch (frameDataItem->type) {
+						case Lump::DataType::S32:
+							ssfbUV.push_back(GETS32(frameDataItem));
+							break;
+						case Lump::DataType::FLOAT:
+							ssfbUV.push_back(GETFLOAT(frameDataItem));
+							break;
+						default:
+							break;
+						}
+					}
+
+					auto serializeSsfbUV = m_ssfbBuilder.CreateVector(ssfbUV);
+					auto item = ss::ssfb::CreatemeshDataUV(m_ssfbBuilder, serializeSsfbUV);
+					ssfbMeshsDataUV.push_back(item);
+				}
+			}
+			// 6:meshsDataIndices
+			std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> ssfbMeshsDataIndices;
+			{
+				auto meshsDataIndicesVec = ssAnimationDataVec[6]->getChildren();
+				for(auto meshsDataIndicesItem : meshsDataIndicesVec) {
+				    std::vector<float> ssfbIndices;
+					auto meshsDataVec = meshsDataIndicesItem->getChildren();
+					for(auto meshDataItem : meshsDataVec) {
+						ssfbIndices.push_back(GETS32(meshDataItem));
+					}
+
+					auto serializeSsfbIndices = m_ssfbBuilder.CreateVector(ssfbIndices);
+					auto item = ss::ssfb::CreatemeshDataIndices(m_ssfbBuilder, serializeSsfbIndices);
+					ssfbMeshsDataIndices.push_back(item);
+				}
+			}
 			// 2:frameDataIndexArray
 			std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> ssfbFrameData;
 			{
@@ -1064,47 +1106,6 @@ private:
 				}
 			}
 
-			// 5:meshDataUV
-			std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> ssfbMeshsDataUV;
-			{
-				auto meshDataUVVec = ssAnimationDataVec[5]->getChildren();
-				std::vector<float> ssfbUV;
-				for(auto meshDataUVItem : meshDataUVVec) {
-					auto frameDataVec = meshDataUVItem->getChildren();
-					for(auto frameDataItem : frameDataVec) {
-						switch (frameDataItem->type) {
-						case Lump::DataType::S32:
-							ssfbUV.push_back(GETS32(frameDataItem));
-							break;
-						case Lump::DataType::FLOAT:
-							ssfbUV.push_back(GETFLOAT(frameDataItem));
-							break;
-						default:
-							break;
-						}
-					}
-
-					auto serializeSsfbUV = m_ssfbBuilder.CreateVector(ssfbUV);
-					auto item = ss::ssfb::CreatemeshDataUV(m_ssfbBuilder, serializeSsfbUV);
-					ssfbMeshsDataUV.push_back(item);
-				}
-			}
-			// 6:meshsDataIndices
-			std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> ssfbMeshsDataIndices;
-			{
-				auto meshsDataIndicesVec = ssAnimationDataVec[6]->getChildren();
-				std::vector<float> ssfbIndices;
-				for(auto meshsDataIndicesItem : meshsDataIndicesVec) {
-					auto meshsDataVec = meshsDataIndicesItem->getChildren();
-					for(auto meshDataItem : meshsDataVec) {
-						ssfbIndices.push_back(GETS32(meshDataItem));
-					}
-
-					auto serializeSsfbIndices = m_ssfbBuilder.CreateVector(ssfbIndices);
-					auto item = ss::ssfb::CreatemeshDataIndices(m_ssfbBuilder, serializeSsfbIndices);
-					ssfbMeshsDataIndices.push_back(item);
-				}
-			}
 			auto ssfbAnimationDataName = GETSSFBSTRING(m_ssfbBuilder, ssAnimationDataVec[0], m_encoding);
 			auto startFrames = GETS16(ssAnimationDataVec[7]);
 			auto endFrames = GETS16(ssAnimationDataVec[8]);
