@@ -876,7 +876,6 @@ private:
 		for(auto animationDataItem : animationDataVec) {
 			auto ssAnimationDataVec = animationDataItem->getChildren();
 
-			auto ssfbAnimationDataName = GETSSFBSTRING(m_ssfbBuilder, ssAnimationDataVec[0], m_encoding);
 			// 1:AnimationInitialData
 			std::vector<flatbuffers::Offset<ss::ssfb::AnimationInitialData>> ssfbDefaultData;
 			{
@@ -1106,6 +1105,7 @@ private:
 					ssfbMeshsDataIndices.push_back(item);
 				}
 			}
+			auto ssfbAnimationDataName = GETSSFBSTRING(m_ssfbBuilder, ssAnimationDataVec[0], m_encoding);
 			auto startFrames = GETS16(ssAnimationDataVec[7]);
 			auto endFrames = GETS16(ssAnimationDataVec[8]);
 			auto totalFrames = GETS16(ssAnimationDataVec[9]);
