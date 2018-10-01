@@ -484,11 +484,6 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 		std::vector<flatbuffers::Offset<ss::ssfb::PartData>> ssfbParts;
 		std::vector<flatbuffers::Offset<ss::ssfb::AnimationData>> ssfbAnimations;
-		std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> ssfbMeshsDataUV;
-		std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> ssfbMeshsDataIndices;
-		std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> ssfbFrameData;
-		std::vector<flatbuffers::Offset<ss::ssfb::userDataPerFrame>> ssfbUserData;
-		std::vector<flatbuffers::Offset<ss::ssfb::labelDataItem>> ssfbLabelData;
 
 		// パーツ情報（モデル）の出力
 		for (int partIndex = 0; partIndex < (int)model.partList.size(); partIndex++)
@@ -626,6 +621,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 		for (int animeIndex = 0; animeIndex < (int)animePack->animeList.size(); animeIndex++)
 		{
+			std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> ssfbMeshsDataUV;
+			std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> ssfbMeshsDataIndices;
+			std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> ssfbFrameData;
+			std::vector<flatbuffers::Offset<ss::ssfb::userDataPerFrame>> ssfbUserData;
+			std::vector<flatbuffers::Offset<ss::ssfb::labelDataItem>> ssfbLabelData;
+
 			SsAnimePack* animePack = proj->getAnimePackList()[packIndex];
 			SsModel* model = &animePack->Model;
 			SsAnimation* anime = animePack->animeList[animeIndex];
