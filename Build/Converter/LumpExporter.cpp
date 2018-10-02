@@ -1022,13 +1022,12 @@ private:
 			{
 				if(ssAnimationDataVec[3]->type == Lump::DataType::SET) {
 
-					std::vector<flatbuffers::Offset<ss::ssfb::userDataItem>> ssfbUserDataItemData;
-
 					auto userDataIndexArrayVec = ssAnimationDataVec[3]->getChildren();
 					for(auto userDataIndexArrayItem : userDataIndexArrayVec) {
 						if(userDataIndexArrayItem->type != Lump::DataType::SET) {
 							continue;
 						}
+						std::vector<flatbuffers::Offset<ss::ssfb::userDataItem>> ssfbUserDataItemData;
 
 						std::vector<flatbuffers::Offset<void>> ssfbDataArray;
 						std::vector<uint8_t> ssfbDataArrayType;
