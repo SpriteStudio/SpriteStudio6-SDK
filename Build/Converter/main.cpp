@@ -1340,8 +1340,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							frameData->add(Lump::floatData(state->partsColorValue.color.rate, tagname + "partsColorValue_color_rate"));
 							ssfbFrameData2.push_back(state->partsColorValue.color.rate);
 							frameData->add(Lump::colorData(state->partsColorValue.color.rgba.toARGB(), tagname + "partsColorValue_color_rgba"));
-							ssfbFrameData2.push_back((state->partsColorValue.color.rgba.toARGB() & 0xffff0000) >> 16);
-							ssfbFrameData2.push_back(state->partsColorValue.color.rgba.toARGB() & 0xffff);
+							ssfbFrameData2.push_back(state->partsColorValue.color.rgba.toARGB());
+							// ssfbFrameData2.push_back((state->partsColorValue.color.rgba.toARGB() & 0xffff0000) >> 16);
+							// ssfbFrameData2.push_back(state->partsColorValue.color.rgba.toARGB() & 0xffff);
 						}
 						else
 						{
@@ -1354,8 +1355,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 									frameData->add(Lump::floatData(state->partsColorValue.colors[vtxNo].rate, tagname_rate));
 									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rate);
 									frameData->add(Lump::colorData(state->partsColorValue.colors[vtxNo].rgba.toARGB(), tagname_rgba));
-									ssfbFrameData2.push_back((state->partsColorValue.colors[vtxNo].rgba.toARGB() & 0xffff0000) >> 16);
-									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rgba.toARGB() & 0xffff);
+									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rgba.toARGB());
+									// ssfbFrameData2.push_back((state->partsColorValue.colors[vtxNo].rgba.toARGB() & 0xffff0000) >> 16);
+									// ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rgba.toARGB() & 0xffff);
 								}
 							}
 						}
