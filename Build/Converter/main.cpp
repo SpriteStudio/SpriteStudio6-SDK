@@ -1446,7 +1446,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 								auto item = ss::ssfb::CreateuserDataInteger(ssfbBuilder, udat.integer);
 								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_INTEGER);
+								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataInteger);
 							}
 							if (udat.useRect)
 							{
@@ -1457,7 +1457,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 								auto item = ss::ssfb::CreateuserDataRect(ssfbBuilder, udat.rect.x, udat.rect.y, udat.rect.w, udat.rect.h);
 								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_RECT);
+								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataRect);
 							}
 							if (udat.usePoint)
 							{
@@ -1468,7 +1468,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
                                                                           static_cast<int32_t>(udat.point.x),
                                                                           static_cast<int32_t>(udat.point.y));
 								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_POINT);
+								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataPoint);
 							}
 							if (udat.useString)
 							{
@@ -1479,7 +1479,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								auto ssfbStr = ssfbBuilder.CreateString(str);
 								auto item = ss::ssfb::CreateuserDataString(ssfbBuilder, str.length(), ssfbStr);
 								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_STRING);
+								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataString);
 							}
 
 							auto serializeSsfbDataArrayType = ssfbBuilder.CreateVector(ssfbDataArrayType);

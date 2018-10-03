@@ -721,6 +721,14 @@ private:
 	std::vector<std::shared_ptr<struct CellMapPrimitive>> m_cellMaps;
 	std::vector<flatbuffers::Offset<ss::ssfb::CellMap>> m_ssfbCellMaps;
 
+
+	enum {
+		USER_DATA_FLAG_INTEGER	= 1 << 0,
+		USER_DATA_FLAG_RECT	= 1 << 1,
+		USER_DATA_FLAG_POINT	= 1 << 2,
+		USER_DATA_FLAG_STRING	= 1 << 3
+	};
+
 	void createHeader()
 	{
 		auto rootChildVec = m_root->getChildren();
@@ -1038,13 +1046,13 @@ private:
 						for(int i=0; i<num; i++) {
 							auto flags = GETS16(userDataIndexArrayItemVec[idx++]);
 							auto arrayIndex = GETS16(userDataIndexArrayItemVec[idx++]);
-							if(flags & (int16_t)(ss::ssfb::USER_DATA_FLAG::USER_DATA_FLAG_INTEGER)) {
+							if(flags & (int16_t)(USER_DATA_FLAG_INTEGER)) {
 								auto integer = GETS32(userDataIndexArrayItemVec[idx++]);
 								auto item = ss::ssfb::CreateuserDataInteger(m_ssfbBuilder, integer);
 								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_INTEGER);
+								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataInteger);
 							}
-							if(flags & (int16_t)(ss::ssfb::USER_DATA_FLAG::USER_DATA_FLAG_RECT)) {
+							if(flags & (int16_t)USER_DATA_FLAG_RECT) {
 								auto rect_x = GETS32(userDataIndexArrayItemVec[idx++]);
 								auto rect_y = GETS32(userDataIndexArrayItemVec[idx++]);
 								auto rect_w = GETS32(userDataIndexArrayItemVec[idx++]);
@@ -1052,24 +1060,24 @@ private:
 
 								auto item = ss::ssfb::CreateuserDataRect(m_ssfbBuilder, rect_x, rect_y, rect_w, rect_h);
 								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_RECT);
+								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataRect);
 							}
-							if(flags & (int16_t)(ss::ssfb::USER_DATA_FLAG::USER_DATA_FLAG_POINT)) {
+							if(flags & (int16_t)(USER_DATA_FLAG_POINT)) {
 								auto point_x = GETS32(userDataIndexArrayItemVec[idx++]);
 								auto point_y = GETS32(userDataIndexArrayItemVec[idx++]);
 
 								auto item = ss::ssfb::CreateuserDataPoint(m_ssfbBuilder, point_x, point_y);
 								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_POINT);
+								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataPoint);
 
 							}
-							if(flags & (int16_t)(ss::ssfb::USER_DATA_FLAG::USER_DATA_FLAG_STRING)) {
+							if(flags & (int16_t)(USER_DATA_FLAG_STRING)) {
 								auto str_length = GETS16(userDataIndexArrayItemVec[idx++]);
 								auto ssfbStr = GETSSFBSTRING(m_ssfbBuilder, userDataIndexArrayItemVec[idx++], m_encoding);
 
 								auto item = ss::ssfb::CreateuserDataString(m_ssfbBuilder, str_length, ssfbStr);
 								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::USER_DATA_FLAG_STRING);
+								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataString);
 							}
 
 							auto serializeSsfbDataArrayType = m_ssfbBuilder.CreateVector(ssfbDataArrayType);

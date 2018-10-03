@@ -293,45 +293,6 @@ inline const char *EnumNameVERTEX_FLAG(VERTEX_FLAG e) {
   return EnumNamesVERTEX_FLAG()[index];
 }
 
-enum USER_DATA_FLAG {
-  USER_DATA_FLAG_INTEGER = 1,
-  USER_DATA_FLAG_RECT = 2,
-  USER_DATA_FLAG_POINT = 4,
-  USER_DATA_FLAG_STRING = 8,
-  USER_DATA_FLAG_NONE = 0,
-  USER_DATA_FLAG_ANY = 15
-};
-
-inline const USER_DATA_FLAG (&EnumValuesUSER_DATA_FLAG())[4] {
-  static const USER_DATA_FLAG values[] = {
-    USER_DATA_FLAG_INTEGER,
-    USER_DATA_FLAG_RECT,
-    USER_DATA_FLAG_POINT,
-    USER_DATA_FLAG_STRING
-  };
-  return values;
-}
-
-inline const char * const *EnumNamesUSER_DATA_FLAG() {
-  static const char * const names[] = {
-    "INTEGER",
-    "RECT",
-    "",
-    "POINT",
-    "",
-    "",
-    "",
-    "STRING",
-    nullptr
-  };
-  return names;
-}
-
-inline const char *EnumNameUSER_DATA_FLAG(USER_DATA_FLAG e) {
-  const size_t index = static_cast<int>(e) - static_cast<int>(USER_DATA_FLAG_INTEGER);
-  return EnumNamesUSER_DATA_FLAG()[index];
-}
-
 enum EffectNodeBehavior {
   EffectNodeBehavior_NONE = 0,
   EffectNodeBehavior_EffectParticleElementBasic = 1,

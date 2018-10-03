@@ -66,13 +66,6 @@ enum VERTEX_FLAG : int (bit_flags) {
     ONE,
 }
 
-enum USER_DATA_FLAG : int (bit_flags) {
-	INTEGER,
-	RECT,
-	POINT,
-	STRING,
-}
-
 table EffectParticleInfiniteEmitEnabled {
     flag : int;
 }
