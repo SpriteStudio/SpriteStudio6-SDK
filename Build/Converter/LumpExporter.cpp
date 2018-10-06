@@ -661,6 +661,7 @@ private:
 
 #define GETS16(l) (int16_t)(l->data.i)
 #define GETS32(l) (int32_t)(l->data.i)
+#define GETU32(l) (uint32_t)(l->data.i)
 #define GETFLOAT(l) (float)(l->data.f)
 #define GETSTRING(l, enc) encode(*l->data.s, enc)
 #define GETSSFBSTRING(builder, l, enc) builder.CreateString(GETSTRING(l, enc))
@@ -1013,7 +1014,11 @@ private:
 								break;
 							case Lump::DataType::COLOR:
 								// TODO: int32_t(color) の型を float vector に格納しているため修正する
-								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
+								{
+									auto rgba = GETU32(frameDataItem);
+									ssfbFrameData2.push_back((rgba & 0xffff0000) >> 16);
+									ssfbFrameData2.push_back(rgba & 0xffff);
+								}
 //								ssfbFrameData2.push_back(GETS32(frameDataItem));
 								break;
 							default:
@@ -1419,6 +1424,7 @@ private:
 };
 #undef GETS16
 #undef GETS32
+#undef GETU32
 #undef GETFLOAT
 #undef GETSTRING
 #undef GETSSFBSTRING
