@@ -253,8 +253,21 @@ union meshDataUVValue {
     meshDataUVEmpty,
 }
 
-table meshDataIndices {
-    indices : [float];
+// meshDataIndices
+table meshDataIndicesItem {
+    tri_size : int;
+    po1 : [int];
+    po2 : [int];
+    po3 : [int];
+}
+
+table meshDataIndicesEmpty {
+    tri_size : int; // always 0
+}
+
+union meshDataIndicesValue {
+    meshDataIndicesItem,
+    meshDataIndicesEmpty,
 }
 
 table frameDataIndex {
@@ -312,7 +325,7 @@ table AnimationData {
     userData : [userDataPerFrame];
     labelData : [labelDataItem];
     meshsDataUV : [meshDataUVValue];
-    meshsDataIndices : [meshDataIndices];
+    meshsDataIndices : [meshDataIndicesValue];
     startFrames : short;
     endFrames : short;
     totalFrames : short;

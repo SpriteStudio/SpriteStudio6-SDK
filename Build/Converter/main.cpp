@@ -623,7 +623,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		{
 			std::vector<uint8_t> ssfbMeshsDataUVType;
 			std::vector<flatbuffers::Offset<void>> ssfbMeshsDataUV;
-			std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> ssfbMeshsDataIndices;
+			std::vector<uint8_t> ssfbMeshsDataIndicesType;
+			std::vector<flatbuffers::Offset<void>> ssfbMeshsDataIndices;
 			std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> ssfbFrameData;
 			std::vector<flatbuffers::Offset<ss::ssfb::userDataPerFrame>> ssfbUserData;
 			std::vector<flatbuffers::Offset<ss::ssfb::labelDataItem>> ssfbLabelData;
@@ -870,6 +871,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						int tri_size = state->meshPart->tri_size;
 						meshData->add(Lump::s32Data(tri_size, "tri_size"));	//サイズ
 						ssfbIndices.push_back(tri_size);
+						std::vector<int32_t> po1Vec;
+						std::vector<int32_t> po2Vec;
+						std::vector<int32_t> po3Vec;
 						int i;
 						for (i = 0; i < tri_size; i++)
 						{
@@ -877,22 +881,26 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							int po2 = (int)state->meshPart->indices[i * 3 + 1];
 							int po3 = (int)state->meshPart->indices[i * 3 + 2];
 							meshData->add(Lump::s32Data(po1, "po1"));
-							ssfbIndices.push_back(po1);
+							po1Vec.push_back(po1);
 							meshData->add(Lump::s32Data(po2, "po2"));
-							ssfbIndices.push_back(po2);
+							po2Vec.push_back(po2);
 							meshData->add(Lump::s32Data(po3, "po3"));
-							ssfbIndices.push_back(po3);
+							po3Vec.push_back(po3);
 						}
+						auto serializeSsfbPo1Vec = ssfbBuilder.CreateVector(po1Vec);
+						auto serializeSsfbPo2Vec = ssfbBuilder.CreateVector(po2Vec);
+						auto serializeSsfbPo3Vec = ssfbBuilder.CreateVector(po3Vec);
+						auto item = ss::ssfb::CreatemeshDataIndicesItem(ssfbBuilder, tri_size, serializeSsfbPo1Vec, serializeSsfbPo2Vec, serializeSsfbPo3Vec);
+						ssfbMeshsDataIndices.push_back(item.Union());
+						ssfbMeshsDataIndicesType.push_back(ss::ssfb::meshDataIndicesValue_meshDataIndicesItem);
 					}
 					else
 					{
 						meshData->add(Lump::s32Data(0, "tri_size"));
-						ssfbIndices.push_back(0);
+						auto item = ss::ssfb::CreatemeshDataIndicesEmpty(ssfbBuilder, 0);
+						ssfbMeshsDataIndices.push_back(item.Union());
+						ssfbMeshsDataIndicesType.push_back(ss::ssfb::meshDataIndicesValue_meshDataIndicesEmpty);
 					}
-
-					auto serializeSsfbIndices = ssfbBuilder.CreateVector(ssfbIndices);
-					auto item = ss::ssfb::CreatemeshDataIndices(ssfbBuilder, serializeSsfbIndices);
-					ssfbMeshsDataIndices.push_back(item);
 				}
 			}
 
@@ -1572,6 +1580,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			auto serializeSsfbDefaultData = ssfbBuilder.CreateVector(ssfbDefaultData);
 			auto serializeSsfbMeshsDataUVType = ssfbBuilder.CreateVector(ssfbMeshsDataUVType);
 			auto serializeSsfbMeshsDataUV = ssfbBuilder.CreateVector(ssfbMeshsDataUV);
+			auto serializeSsfbMeshsDataIndicesType = ssfbBuilder.CreateVector(ssfbMeshsDataIndicesType);
 			auto serializeSsfbMeshsDataIndices = ssfbBuilder.CreateVector(ssfbMeshsDataIndices);
 			auto serializeSsfbFrameData = ssfbBuilder.CreateVector(ssfbFrameData);
 			auto serializeSsfbUserData = ssfbBuilder.CreateVector(ssfbUserData);
@@ -1579,7 +1588,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 			auto item = ss::ssfb::CreateAnimationData(ssfbBuilder, ssfbAnimationDataName,
 													  serializeSsfbDefaultData, serializeSsfbFrameData, serializeSsfbUserData,
-													  serializeSsfbLabelData, serializeSsfbMeshsDataUVType, serializeSsfbMeshsDataUV, serializeSsfbMeshsDataIndices,
+													  serializeSsfbLabelData, serializeSsfbMeshsDataUVType, serializeSsfbMeshsDataUV, serializeSsfbMeshsDataIndicesType, serializeSsfbMeshsDataIndices,
 													  static_cast<int16_t>(decoder.getAnimeStartFrame()),
 													  static_cast<int16_t>(decoder.getAnimeEndFrame()),
 													  static_cast<int16_t>(decoder.getAnimeTotalFrame()),
