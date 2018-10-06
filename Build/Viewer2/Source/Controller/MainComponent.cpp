@@ -25,13 +25,15 @@ MainContentComponent::MainContentComponent() : properties(getPropertyFileOptions
 	getLookAndFeel().setDefaultSansSerifTypefaceName("YuGothic");
 #endif
 
+	commandManager.registerAllCommandsForTarget(this);
+
 	setSize(1200, 800); //てきとう
 
 	// babelを初期化
 	babel::init_babel();
 
 	// モデルの作成
-	auto * animePlayer = Player::get();
+	//Player::get();
 	// ビューの作成
 	auto * mainWindow = ViewerMainWindow::get();
 	addAndMakeVisible(mainWindow);
@@ -57,20 +59,29 @@ void MainContentComponent::getCommandInfo(CommandID commandID, ApplicationComman
 {
 	switch (commandID)
 	{
+	case CommandIDs::OPEN:
+		result.setActive(true);
+		result.shortName = "Open";
+		break;
 	case CommandIDs::START:
 		result.setActive(true);
+		result.shortName = "Start";
 		break;
 	case CommandIDs::STOP:
 		result.setActive(true);
+		result.shortName = "Stop";
 		break;
 	case CommandIDs::RESET:
 		result.setActive(true);
-		break;
-	case CommandIDs::LOAD_PROJECT:
-		result.setActive(true);
+		result.shortName = "Reset";
 		break;
 	case CommandIDs::LOAD_ANIME:
 		result.setActive(true);
+		result.shortName = "Load anime";
+		break;
+	case CommandIDs::EXIT:
+		result.setActive(true);
+		result.shortName = "Exit";
 		break;
 	default:
 		break;
@@ -81,11 +92,12 @@ void MainContentComponent::getAllCommands(Array<CommandID>& c)
 {
 	Array<CommandID> commands
 	{
+		CommandIDs::OPEN,
 		CommandIDs::START,
 		CommandIDs::STOP,
 		CommandIDs::RESET,
-		CommandIDs::LOAD_PROJECT,
 		CommandIDs::LOAD_ANIME,
+		CommandIDs::EXIT,
 	};
 
 	c.addArray(commands);
@@ -96,6 +108,17 @@ bool MainContentComponent::perform(const InvocationInfo & info)
 	auto * animePlayer = Player::get();
 	switch (info.commandID)
 	{
+	case CommandIDs::OPEN:
+	{
+		FileChooser fc("Choose a file to open...", File::getCurrentWorkingDirectory(), "*.sspj", false);
+		if (fc.browseForMultipleFilesToOpen())
+		{
+			juce::String fn = fc.getResults().getReference(0).getFullPathName();
+			// プロジェクトを読み込み
+			animePlayer->loadProj(fn);
+		}
+		break;
+	}
 	case CommandIDs::START:
 		animePlayer->play();
 		break;
@@ -106,26 +129,25 @@ bool MainContentComponent::perform(const InvocationInfo & info)
 		animePlayer->reset();
 		break;
 	case CommandIDs::LOAD_ANIME:
+	{
+		int packIndex = ViewerMainWindow::get()->getState()->packIndex.getValue();
+		int animeIndex = ViewerMainWindow::get()->getState()->animeIndex.getValue();
+		if (packIndex < 0 || animeIndex < 0)
 		{
-			auto *	animeTree = dynamic_cast<ViewerTreeViewItem*>(info.originatingComponent);
-			if (animeTree)
-			{
-				int packIndex = animeTree->getPackIndex();
-				int animeIndex = animeTree->getAnimeIndex();
-				if (packIndex < 0 || animeIndex < 0)
-				{
-					break;
-				}
-				//アニメーションを読み込み
-				animePlayer->loadAnime(packIndex, animeIndex);
-			}
+			break;
 		}
+		//アニメーションを読み込み
+		animePlayer->loadAnime(packIndex, animeIndex);
 		break;
+	}
+	case CommandIDs::EXIT:
+	{
+		JUCEApplication::getInstance()->systemRequestedQuit();
+		break;
+	}
 	default:
 		return false;
 	}
-
-	repaint();
 	return true;
 }
 

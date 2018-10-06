@@ -172,6 +172,7 @@
 		<value>boundr.ssae</value>
 		<value>cell.ssae</value>
 		<value>deform.ssae</value>
+		<value>deform_bone.ssae</value>
 		<value>effect.ssae</value>
 		<value>hide.ssae</value>
 		<value>imgflip.ssae</value>
@@ -198,11 +199,11 @@
 	<effectFileNames>
 		<value>NewEffect.ssee</value>
 	</effectFileNames>
-	<lastAnimeFile>deform.ssae</lastAnimeFile>
+	<lastAnimeFile>partsColor.ssae</lastAnimeFile>
 	<lastAnimeName>anime_1</lastAnimeName>
-	<lastPart>NewCell_17</lastPart>
+	<lastPart></lastPart>
 	<lastCellMapFile>color_bar.ssce</lastCellMapFile>
-	<lastCell>NewCell_17</lastCell>
+	<lastCell>NewCell_9</lastCell>
 	<lastEffectFile>NewEffect.ssee</lastEffectFile>
 	<setupmode>0</setupmode>
 	<expandAnimation />
