@@ -236,9 +236,23 @@ table Cell {
     v2 : float;
 }
 
-table meshDataUV {
-    uv : [float];
+// meshDataUV
+table meshDataUVItem {
+    isBind : int;
+    meshSize : int;
+    u : [float];
+    v : [float];
 }
+
+table meshDataUVEmpty {
+    isBind : int; // always 0
+}
+
+union meshDataUVValue {
+    meshDataUVItem,
+    meshDataUVEmpty,
+}
+
 table meshDataIndices {
     indices : [float];
 }
@@ -297,7 +311,7 @@ table AnimationData {
     frameData : [frameDataIndex];
     userData : [userDataPerFrame];
     labelData : [labelDataItem];
-    meshsDataUV : [meshDataUV];
+    meshsDataUV : [meshDataUVValue];
     meshsDataIndices : [meshDataIndices];
     startFrames : short;
     endFrames : short;

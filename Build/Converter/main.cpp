@@ -621,7 +621,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 		for (int animeIndex = 0; animeIndex < (int)animePack->animeList.size(); animeIndex++)
 		{
-			std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> ssfbMeshsDataUV;
+			std::vector<uint8_t> ssfbMeshsDataUVType;
+			std::vector<flatbuffers::Offset<void>> ssfbMeshsDataUV;
 			std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> ssfbMeshsDataIndices;
 			std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> ssfbFrameData;
 			std::vector<flatbuffers::Offset<ss::ssfb::userDataPerFrame>> ssfbUserData;
@@ -809,36 +810,41 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					//サイズ分のUV出力
 					Lump* meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
 					meshsDataUV->add(meshData);
-					std::vector<float> ssfbUV;
 
 					//メッシュのサイズを書き出す
 					if (part->type == SsPartType::mesh)
 					{
 						int meshsize = state->meshPart->ver_size;
 						meshData->add(Lump::s32Data((int)state->meshPart->isBind, "isBind"));	//バインドの有無
-						ssfbUV.push_back((float)(int)state->meshPart->isBind);
+						auto isBind =  (int32_t)state->meshPart->isBind;
 						meshData->add(Lump::s32Data(meshsize, "meshsize"));	//サイズ
-						ssfbUV.push_back(meshsize);
+
+						std::vector<float> uVec;
+						std::vector<float> vVec;
 						int i;
 						for (i = 0; i < meshsize; i++)
 						{
 							float u = state->meshPart->uvs[i * 2 + 0];
 							float v = state->meshPart->uvs[i * 2 + 1];
 							meshData->add(Lump::floatData(u, "u"));
-							ssfbUV.push_back(u);
+							uVec.push_back(u);
 							meshData->add(Lump::floatData(v, "v"));
-							ssfbUV.push_back(v);
+							vVec.push_back(v);
 						}
+
+						auto serializeSsfbU = ssfbBuilder.CreateVector(uVec);
+						auto serializeSsfbV = ssfbBuilder.CreateVector(vVec);
+						auto item = ss::ssfb::CreatemeshDataUVItem(ssfbBuilder, isBind, meshsize, serializeSsfbU, serializeSsfbV);
+						ssfbMeshsDataUV.push_back(item.Union());
+						ssfbMeshsDataUVType.push_back(ss::ssfb::meshDataUVValue_meshDataUVItem);
 					}
 					else
 					{
 						meshData->add(Lump::s32Data(0, "isBind"));
-						ssfbUV.push_back(0);
+						auto item = ss::ssfb::CreatemeshDataUVEmpty(ssfbBuilder, 0);
+						ssfbMeshsDataUV.push_back(item.Union());
+						ssfbMeshsDataUVType.push_back(ss::ssfb::meshDataUVValue_meshDataUVEmpty);
 					}
-
-					auto serializeSsfbUV = ssfbBuilder.CreateVector(ssfbUV);
-					auto item = ss::ssfb::CreatemeshDataUV(ssfbBuilder, serializeSsfbUV);
-					ssfbMeshsDataUV.push_back(item);
 				}
 
 			}
@@ -1564,6 +1570,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			animeData->add(Lump::floatData(anime->settings.pivot.y, "canvasPvotY"));			//基準枠位置
 
 			auto serializeSsfbDefaultData = ssfbBuilder.CreateVector(ssfbDefaultData);
+			auto serializeSsfbMeshsDataUVType = ssfbBuilder.CreateVector(ssfbMeshsDataUVType);
 			auto serializeSsfbMeshsDataUV = ssfbBuilder.CreateVector(ssfbMeshsDataUV);
 			auto serializeSsfbMeshsDataIndices = ssfbBuilder.CreateVector(ssfbMeshsDataIndices);
 			auto serializeSsfbFrameData = ssfbBuilder.CreateVector(ssfbFrameData);
@@ -1572,7 +1579,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 			auto item = ss::ssfb::CreateAnimationData(ssfbBuilder, ssfbAnimationDataName,
 													  serializeSsfbDefaultData, serializeSsfbFrameData, serializeSsfbUserData,
-													  serializeSsfbLabelData, serializeSsfbMeshsDataUV, serializeSsfbMeshsDataIndices,
+													  serializeSsfbLabelData, serializeSsfbMeshsDataUVType, serializeSsfbMeshsDataUV, serializeSsfbMeshsDataIndices,
 													  static_cast<int16_t>(decoder.getAnimeStartFrame()),
 													  static_cast<int16_t>(decoder.getAnimeEndFrame()),
 													  static_cast<int16_t>(decoder.getAnimeTotalFrame()),

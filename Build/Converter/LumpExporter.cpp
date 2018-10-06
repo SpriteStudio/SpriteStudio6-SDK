@@ -947,28 +947,39 @@ private:
 			}
 
 			// 5:meshDataUV
-			std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> ssfbMeshsDataUV;
+			std::vector<uint8_t> ssfbMeshsDataUVType;
+			std::vector<flatbuffers::Offset<void>> ssfbMeshsDataUV;
 			{
 				auto meshDataUVVec = ssAnimationDataVec[5]->getChildren();
 				for(auto meshDataUVItem : meshDataUVVec) {
-				    std::vector<float> ssfbUV;
 					auto frameDataVec = meshDataUVItem->getChildren();
-					for(auto frameDataItem : frameDataVec) {
-						switch (frameDataItem->type) {
-						case Lump::DataType::S32:
-							ssfbUV.push_back(GETS32(frameDataItem));
-							break;
-						case Lump::DataType::FLOAT:
-							ssfbUV.push_back(GETFLOAT(frameDataItem));
-							break;
-						default:
-							break;
-						}
-					}
 
-					auto serializeSsfbUV = m_ssfbBuilder.CreateVector(ssfbUV);
-					auto item = ss::ssfb::CreatemeshDataUV(m_ssfbBuilder, serializeSsfbUV);
-					ssfbMeshsDataUV.push_back(item);
+					auto isBind = GETS32(frameDataVec[0]);
+					if(frameDataVec.size() == 1) {
+						// empty
+						auto item = ss::ssfb::CreatemeshDataUVEmpty(m_ssfbBuilder, isBind);
+						ssfbMeshsDataUV.push_back(item.Union());
+						ssfbMeshsDataUVType.push_back(ss::ssfb::meshDataUVValue_meshDataUVEmpty);
+					} else {
+						auto meshsize = GETS32(frameDataVec[1]);
+
+						std::vector<float> uVec;
+						std::vector<float> vVec;
+						int idx = 2;
+						for (int i = 0; i < meshsize; i++)
+						{
+							auto u = GETFLOAT(frameDataVec[idx + 0]);
+							auto v = GETFLOAT(frameDataVec[idx + 1]);
+							uVec.push_back(u);
+							vVec.push_back(v);
+							idx += 2;
+						}
+						auto serializeSsfbU = m_ssfbBuilder.CreateVector(uVec);
+						auto serializeSsfbV = m_ssfbBuilder.CreateVector(vVec);
+						auto item = ss::ssfb::CreatemeshDataUVItem(m_ssfbBuilder, isBind, meshsize, serializeSsfbU, serializeSsfbV);
+						ssfbMeshsDataUV.push_back(item.Union());
+						ssfbMeshsDataUVType.push_back(ss::ssfb::meshDataUVValue_meshDataUVItem);
+					}
 				}
 			}
 			// 6:meshsDataIndices
@@ -1131,6 +1142,7 @@ private:
 			auto canvasPvotY = GETFLOAT(ssAnimationDataVec[16]);
 
 			auto serializeSsfbDefaultData = m_ssfbBuilder.CreateVector(ssfbDefaultData);
+			auto serializeSsfbMeshsDataUVType = m_ssfbBuilder.CreateVector(ssfbMeshsDataUVType);
 			auto serializeSsfbMeshsDataUV = m_ssfbBuilder.CreateVector(ssfbMeshsDataUV);
 			auto serializeSsfbMeshsDataIndices = m_ssfbBuilder.CreateVector(ssfbMeshsDataIndices);
 
@@ -1140,7 +1152,7 @@ private:
 
             auto item = ss::ssfb::CreateAnimationData(m_ssfbBuilder, ssfbAnimationDataName,
                                                       serializeSsfbDefaultData, serializeSsfbFrameData, serializeSsfbUserData,
-                                                      serializeSsfbLabelData, serializeSsfbMeshsDataUV, serializeSsfbMeshsDataIndices,
+                                                      serializeSsfbLabelData, serializeSsfbMeshsDataUVType, serializeSsfbMeshsDataUV, serializeSsfbMeshsDataIndices,
                                                       startFrames, endFrames, totalFrames, fps, labelNum, canvasSizeW, canvasSizeH, canvasPvotX, canvasPvotY);
 
             ssfbAnimationDataList.push_back(item);
