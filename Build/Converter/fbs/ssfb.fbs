@@ -270,8 +270,28 @@ union meshDataIndicesValue {
     meshDataIndicesEmpty,
 }
 
+// frameDataIndex
+table frameDataIndexS16 {
+    data : short;
+}
+table frameDataIndexS32 {
+    data : int;
+}
+table frameDataIndexFLOAT {
+    data : float;
+}
+table frameDataIndexCOLOR {
+    data : uint;
+}
+union frameDataIndexValue {
+    frameDataIndexS16,
+    frameDataIndexS32,
+    frameDataIndexFLOAT,
+    frameDataIndexCOLOR,
+}
+
 table frameDataIndex {
-    data : [float];
+    data : [frameDataIndexValue];
 }
 
 table userDataInteger {

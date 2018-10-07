@@ -1024,37 +1024,45 @@ private:
 				for(auto frameDataIndexArrayItem : frameDataIndexArrayVec) {
 					auto frameDataVec = frameDataIndexArrayItem->getChildren();
 
-					std::vector<float> ssfbFrameData2;
+					std::vector<uint8_t> ssfbFrameData2Type;
+					std::vector<flatbuffers::Offset<void>> ssfbFrameData2;
 					for(auto frameDataItem : frameDataVec) {
 						switch (frameDataItem->type) {
 							case Lump::DataType::S16:
-								// TODO: int16_t の型を float vector に格納しているため修正する
-								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
-//								ssfbFrameData2.push_back(GETS16(frameDataItem));
+							{
+								auto item = ss::ssfb::CreateframeDataIndexS16(m_ssfbBuilder, GETS16(frameDataItem));
+								ssfbFrameData2.push_back(item.Union());
+								ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS16);
+							}
 								break;
 							case Lump::DataType::S32:
-								// TODO: int32_t の型を float vector に格納しているため修正する
-								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
-//								ssfbFrameData2.push_back(GETS32(frameDataItem));
+							{
+								auto item = ss::ssfb::CreateframeDataIndexS32(m_ssfbBuilder, GETS32(frameDataItem));
+								ssfbFrameData2.push_back(item.Union());
+								ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS32);
+							}
 								break;
 							case Lump::DataType::FLOAT:
-								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
+							{
+								auto item = ss::ssfb::CreateframeDataIndexFLOAT(m_ssfbBuilder, GETFLOAT(frameDataItem));
+								ssfbFrameData2.push_back(item.Union());
+								ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+							}
 								break;
 							case Lump::DataType::COLOR:
-								// TODO: int32_t(color) の型を float vector に格納しているため修正する
-								{
-									auto rgba = GETU32(frameDataItem);
-									ssfbFrameData2.push_back((rgba & 0xffff0000) >> 16);
-									ssfbFrameData2.push_back(rgba & 0xffff);
-								}
-//								ssfbFrameData2.push_back(GETS32(frameDataItem));
+							{
+								auto item = ss::ssfb::CreateframeDataIndexCOLOR(m_ssfbBuilder, GETU32(frameDataItem));
+								ssfbFrameData2.push_back(item.Union());
+								ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexCOLOR);
+							}
 								break;
 							default:
 								break;
 						}
 					}
+					auto serializeSsfbFrameData2Type = m_ssfbBuilder.CreateVector(ssfbFrameData2Type);
 					auto serializeSsfbFrameData2 = m_ssfbBuilder.CreateVector(ssfbFrameData2);
-					auto item = ss::ssfb::CreateframeDataIndex(m_ssfbBuilder, serializeSsfbFrameData2);
+					auto item = ss::ssfb::CreateframeDataIndex(m_ssfbBuilder, serializeSsfbFrameData2Type, serializeSsfbFrameData2);
 					ssfbFrameData.push_back(item);
 				}
 			}
