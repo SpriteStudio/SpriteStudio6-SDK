@@ -236,15 +236,62 @@ table Cell {
     v2 : float;
 }
 
-table meshDataUV {
-    uv : [float];
+// meshDataUV
+table meshDataUVItem {
+    isBind : int;
+    meshSize : int;
+    u : [float];
+    v : [float];
 }
-table meshDataIndices {
-    indices : [float];
+
+table meshDataUVEmpty {
+    isBind : int; // always 0
+}
+
+union meshDataUVValue {
+    meshDataUVItem,
+    meshDataUVEmpty,
+}
+
+// meshDataIndices
+table meshDataIndicesItem {
+    tri_size : int;
+    po1 : [int];
+    po2 : [int];
+    po3 : [int];
+}
+
+table meshDataIndicesEmpty {
+    tri_size : int; // always 0
+}
+
+union meshDataIndicesValue {
+    meshDataIndicesItem,
+    meshDataIndicesEmpty,
+}
+
+// frameDataIndex
+table frameDataIndexS16 {
+    data : short;
+}
+table frameDataIndexS32 {
+    data : int;
+}
+table frameDataIndexFLOAT {
+    data : float;
+}
+table frameDataIndexCOLOR {
+    data : uint;
+}
+union frameDataIndexValue {
+    frameDataIndexS16,
+    frameDataIndexS32,
+    frameDataIndexFLOAT,
+    frameDataIndexCOLOR,
 }
 
 table frameDataIndex {
-    data : [float];
+    data : [frameDataIndexValue];
 }
 
 table userDataInteger {
@@ -297,8 +344,8 @@ table AnimationData {
     frameData : [frameDataIndex];
     userData : [userDataPerFrame];
     labelData : [labelDataItem];
-    meshsDataUV : [meshDataUV];
-    meshsDataIndices : [meshDataIndices];
+    meshsDataUV : [meshDataUVValue];
+    meshsDataIndices : [meshDataIndicesValue];
     startFrames : short;
     endFrames : short;
     totalFrames : short;

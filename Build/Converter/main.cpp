@@ -621,8 +621,10 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 		for (int animeIndex = 0; animeIndex < (int)animePack->animeList.size(); animeIndex++)
 		{
-			std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> ssfbMeshsDataUV;
-			std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> ssfbMeshsDataIndices;
+			std::vector<uint8_t> ssfbMeshsDataUVType;
+			std::vector<flatbuffers::Offset<void>> ssfbMeshsDataUV;
+			std::vector<uint8_t> ssfbMeshsDataIndicesType;
+			std::vector<flatbuffers::Offset<void>> ssfbMeshsDataIndices;
 			std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> ssfbFrameData;
 			std::vector<flatbuffers::Offset<ss::ssfb::userDataPerFrame>> ssfbUserData;
 			std::vector<flatbuffers::Offset<ss::ssfb::labelDataItem>> ssfbLabelData;
@@ -809,36 +811,41 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					//サイズ分のUV出力
 					Lump* meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
 					meshsDataUV->add(meshData);
-					std::vector<float> ssfbUV;
 
 					//メッシュのサイズを書き出す
 					if (part->type == SsPartType::mesh)
 					{
 						int meshsize = state->meshPart->ver_size;
 						meshData->add(Lump::s32Data((int)state->meshPart->isBind, "isBind"));	//バインドの有無
-						ssfbUV.push_back((float)(int)state->meshPart->isBind);
+						auto isBind =  (int32_t)state->meshPart->isBind;
 						meshData->add(Lump::s32Data(meshsize, "meshsize"));	//サイズ
-						ssfbUV.push_back(meshsize);
+
+						std::vector<float> uVec;
+						std::vector<float> vVec;
 						int i;
 						for (i = 0; i < meshsize; i++)
 						{
 							float u = state->meshPart->uvs[i * 2 + 0];
 							float v = state->meshPart->uvs[i * 2 + 1];
 							meshData->add(Lump::floatData(u, "u"));
-							ssfbUV.push_back(u);
+							uVec.push_back(u);
 							meshData->add(Lump::floatData(v, "v"));
-							ssfbUV.push_back(v);
+							vVec.push_back(v);
 						}
+
+						auto serializeSsfbU = ssfbBuilder.CreateVector(uVec);
+						auto serializeSsfbV = ssfbBuilder.CreateVector(vVec);
+						auto item = ss::ssfb::CreatemeshDataUVItem(ssfbBuilder, isBind, meshsize, serializeSsfbU, serializeSsfbV);
+						ssfbMeshsDataUV.push_back(item.Union());
+						ssfbMeshsDataUVType.push_back(ss::ssfb::meshDataUVValue_meshDataUVItem);
 					}
 					else
 					{
 						meshData->add(Lump::s32Data(0, "isBind"));
-						ssfbUV.push_back(0);
+						auto item = ss::ssfb::CreatemeshDataUVEmpty(ssfbBuilder, 0);
+						ssfbMeshsDataUV.push_back(item.Union());
+						ssfbMeshsDataUVType.push_back(ss::ssfb::meshDataUVValue_meshDataUVEmpty);
 					}
-
-					auto serializeSsfbUV = ssfbBuilder.CreateVector(ssfbUV);
-					auto item = ss::ssfb::CreatemeshDataUV(ssfbBuilder, serializeSsfbUV);
-					ssfbMeshsDataUV.push_back(item);
 				}
 
 			}
@@ -864,6 +871,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						int tri_size = state->meshPart->tri_size;
 						meshData->add(Lump::s32Data(tri_size, "tri_size"));	//サイズ
 						ssfbIndices.push_back(tri_size);
+						std::vector<int32_t> po1Vec;
+						std::vector<int32_t> po2Vec;
+						std::vector<int32_t> po3Vec;
 						int i;
 						for (i = 0; i < tri_size; i++)
 						{
@@ -871,22 +881,26 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							int po2 = (int)state->meshPart->indices[i * 3 + 1];
 							int po3 = (int)state->meshPart->indices[i * 3 + 2];
 							meshData->add(Lump::s32Data(po1, "po1"));
-							ssfbIndices.push_back(po1);
+							po1Vec.push_back(po1);
 							meshData->add(Lump::s32Data(po2, "po2"));
-							ssfbIndices.push_back(po2);
+							po2Vec.push_back(po2);
 							meshData->add(Lump::s32Data(po3, "po3"));
-							ssfbIndices.push_back(po3);
+							po3Vec.push_back(po3);
 						}
+						auto serializeSsfbPo1Vec = ssfbBuilder.CreateVector(po1Vec);
+						auto serializeSsfbPo2Vec = ssfbBuilder.CreateVector(po2Vec);
+						auto serializeSsfbPo3Vec = ssfbBuilder.CreateVector(po3Vec);
+						auto item = ss::ssfb::CreatemeshDataIndicesItem(ssfbBuilder, tri_size, serializeSsfbPo1Vec, serializeSsfbPo2Vec, serializeSsfbPo3Vec);
+						ssfbMeshsDataIndices.push_back(item.Union());
+						ssfbMeshsDataIndicesType.push_back(ss::ssfb::meshDataIndicesValue_meshDataIndicesItem);
 					}
 					else
 					{
 						meshData->add(Lump::s32Data(0, "tri_size"));
-						ssfbIndices.push_back(0);
+						auto item = ss::ssfb::CreatemeshDataIndicesEmpty(ssfbBuilder, 0);
+						ssfbMeshsDataIndices.push_back(item.Union());
+						ssfbMeshsDataIndicesType.push_back(ss::ssfb::meshDataIndicesValue_meshDataIndicesEmpty);
 					}
-
-					auto serializeSsfbIndices = ssfbBuilder.CreateVector(ssfbIndices);
-					auto item = ss::ssfb::CreatemeshDataIndices(ssfbBuilder, serializeSsfbIndices);
-					ssfbMeshsDataIndices.push_back(item);
 				}
 			}
 
@@ -917,8 +931,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				// パーツごとのデータを出力する
 				Lump* frameData = Lump::set("ss::ss_u16[]", true, "frameData");
 				frameDataIndexArray->add(frameData);
-				std::vector<float> ssfbFrameData2;
-				
+				std::vector<uint8_t> ssfbFrameData2Type;
+				std::vector<flatbuffers::Offset<void>> ssfbFrameData2;
+
 				Lump* frameFlag = Lump::s16Data(0, "frameFlag");
 //				frameData->add(frameFlag);
 
@@ -1114,183 +1129,325 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					std::string tagname = "part_" + std::to_string(outPartsCount) + "_";
 					outPartsCount++;
 					frameData->add(Lump::s16Data(state->index, tagname + "index"));
-					ssfbFrameData2.push_back(state->index);
+					{
+						auto item = ss::ssfb::CreateframeDataIndexS16(ssfbBuilder, static_cast<int16_t>(state->index));
+						ssfbFrameData2.push_back(item.Union());
+						ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS16);
+					}
 //					frameData->add(Lump::s16Data(0));				//32bitアライメント用ダミーデータ
 					frameData->add(Lump::s32Data(s_flags | p_flags, tagname + "flag1"));
-					c32.ui = s_flags | p_flags;
-					//intで出力すると上位ビットが立った場合に丸めが発生するので、floatで出力し、プレイヤーではbitを整数で扱う事になる
-					ssfbFrameData2.push_back(c32.f);	
+					{
+						// TODO: float にすべき？
+						auto item = ss::ssfb::CreateframeDataIndexS32(ssfbBuilder, s_flags | p_flags);
+						ssfbFrameData2.push_back(item.Union());
+						ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS32);
+					}
 					frameData->add(Lump::s32Data(p_flags2, tagname + "flag2"));
-					c32.ui = p_flags2;
-					//intで出力すると上位ビットが立った場合に丸めが発生するので、floatで出力し、プレイヤーではbitを整数で扱う事になる
-					ssfbFrameData2.push_back(c32.f);
-					
+					{
+						// TODO: float にすべき？
+						auto item = ss::ssfb::CreateframeDataIndexS32(ssfbBuilder, p_flags2);
+						ssfbFrameData2.push_back(item.Union());
+						ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS32);
+					}
+
 					if (p_flags & PART_FLAG_CELL_INDEX)
 					{
 						frameData->add(Lump::s16Data(cellIndex, tagname + "cellIndex"));
-						ssfbFrameData2.push_back(cellIndex);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS16(ssfbBuilder, static_cast<int16_t>(cellIndex));
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS16);
+						}
 					}
 					if (p_flags & PART_FLAG_POSITION_X)
 					{
 						frameData->add(Lump::floatData(state->position.x, tagname + "position_x"));
-						ssfbFrameData2.push_back(state->position.x);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->position.x);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_POSITION_Y)
 					{
 						frameData->add(Lump::floatData(state->position.y, tagname + "position_y"));
-						ssfbFrameData2.push_back(state->position.y);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->position.y);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_POSITION_Z)
 					{
 						frameData->add(Lump::floatData(state->position.z, tagname + "position_z"));
-						ssfbFrameData2.push_back(state->position.z);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->position.z);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 
 					if (p_flags & PART_FLAG_PIVOT_X)
 					{
 						frameData->add(Lump::floatData(pivot.x, tagname + "pivot_x"));
-						ssfbFrameData2.push_back(pivot.x);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, pivot.x);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_PIVOT_Y)
 					{
 						frameData->add(Lump::floatData(pivot.y, tagname + "pivot_y"));
-						ssfbFrameData2.push_back(pivot.y);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, pivot.y);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_ROTATIONX)
 					{
 						frameData->add(Lump::floatData(state->rotation.x, tagname + "rotation_x"));	// degree
-						ssfbFrameData2.push_back(state->rotation.x);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->rotation.x);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_ROTATIONY)
 					{
 						frameData->add(Lump::floatData(state->rotation.y, tagname + "rotation_y"));	// degree
-						ssfbFrameData2.push_back(state->rotation.y);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->rotation.y);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_ROTATIONZ)
 					{
 						frameData->add(Lump::floatData(state->rotation.z, tagname + "rotation_z"));	// degree
-						ssfbFrameData2.push_back(state->rotation.z);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->rotation.z);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_SCALE_X)
 					{
 						frameData->add(Lump::floatData(state->scale.x, tagname + "scale_x"));
-						ssfbFrameData2.push_back(state->scale.x);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->scale.x);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_SCALE_Y)
 					{
 						frameData->add(Lump::floatData(state->scale.y, tagname + "scale_y"));
-						ssfbFrameData2.push_back(state->scale.y);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->scale.y);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_LOCALSCALE_X)
 					{
 						frameData->add(Lump::floatData(state->localscale.x, tagname + "localscale_x"));
-						ssfbFrameData2.push_back(state->localscale.x);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->localscale.x);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_LOCALSCALE_Y)
 					{
 						frameData->add(Lump::floatData(state->localscale.y, tagname + "localscale_y"));
-						ssfbFrameData2.push_back(state->localscale.y);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->localscale.y);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_OPACITY)
 					{
 						frameData->add(Lump::s16Data((int)(state->alpha * 255), tagname + "alpha"));
-						ssfbFrameData2.push_back(state->alpha * 255);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS16(ssfbBuilder, static_cast<uint16_t>((int)(state->alpha * 255)));
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS16);
+						}
 					}
 					if (p_flags & PART_FLAG_LOCALOPACITY)
 					{
 						frameData->add(Lump::s16Data((int)(state->localalpha * 255), tagname + "localalpha"));
-						ssfbFrameData2.push_back(state->localalpha * 255);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS16(ssfbBuilder, static_cast<uint16_t>((int)(state->localalpha * 255)));
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS16);
+						}
 					}
 
 					if (p_flags & PART_FLAG_SIZE_X)
 					{
 						frameData->add(Lump::floatData(state->size.x, tagname + "size_x"));
-						ssfbFrameData2.push_back(state->size.x);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->size.x);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_SIZE_Y)
 					{
 						frameData->add(Lump::floatData(state->size.y, tagname + "size_y"));
-						ssfbFrameData2.push_back(state->size.y);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->size.y);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 
 					if (p_flags & PART_FLAG_U_MOVE)
 					{
 						frameData->add(Lump::floatData(state->uvTranslate.x, tagname + "uvTranslate.x"));
-						ssfbFrameData2.push_back(state->uvTranslate.x);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->uvTranslate.x);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_V_MOVE)
 					{
 						frameData->add(Lump::floatData(state->uvTranslate.y, tagname + "uvTranslate.y"));
-						ssfbFrameData2.push_back(state->uvTranslate.y);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->uvTranslate.y);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_UV_ROTATION)
 					{
 						frameData->add(Lump::floatData(state->uvRotation, tagname + "uvRotation"));
-						ssfbFrameData2.push_back(state->uvRotation);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->uvRotation);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_U_SCALE)
 					{
 						frameData->add(Lump::floatData(state->uvScale.x, tagname + "uvScale_x"));
-						ssfbFrameData2.push_back(state->uvScale.x);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->uvScale.x);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 					if (p_flags & PART_FLAG_V_SCALE)
 					{
 						frameData->add(Lump::floatData(state->uvScale.y, tagname + "uvScale_y"));
-						ssfbFrameData2.push_back(state->uvScale.y);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->uvScale.y);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 
 					if (p_flags & PART_FLAG_BOUNDINGRADIUS)
 					{
 						frameData->add(Lump::floatData(state->boundingRadius, tagname + "boundingRadius"));
-						ssfbFrameData2.push_back(state->boundingRadius);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->boundingRadius);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 					}
 
 					if (p_flags & PART_FLAG_MASK)
 					{
 						frameData->add(Lump::s16Data(state->masklimen, tagname + "masklimen"));
-						ssfbFrameData2.push_back(state->masklimen);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS16(ssfbBuilder, static_cast<int16_t>(state->masklimen));
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS16);
+						}
 					}
 					if (p_flags & PART_FLAG_PRIORITY)
 					{
 						frameData->add(Lump::s16Data(state->prio, tagname + "prio"));
-						ssfbFrameData2.push_back(state->prio);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS16(ssfbBuilder, static_cast<int16_t>(state->prio));
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS16);
+						}
 					}
 
 					//インスタンス情報出力
 					if (p_flags & PART_FLAG_INSTANCE_KEYFRAME)
 					{
 						frameData->add(Lump::s32Data(state->instanceValue.curKeyframe, tagname + "instanceValue_curKeyframe"));
-						c32.i = state->instanceValue.curKeyframe;
-						ssfbFrameData2.push_back(c32.f);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS32(ssfbBuilder, state->instanceValue.curKeyframe);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS32);
+						}
 						frameData->add(Lump::s32Data(state->instanceValue.startFrame, tagname + "instanceValue_startFrame"));
-						c32.i = state->instanceValue.startFrame;
-						ssfbFrameData2.push_back(c32.f);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS32(ssfbBuilder, state->instanceValue.startFrame);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS32);
+						}
 						frameData->add(Lump::s32Data(state->instanceValue.endFrame, tagname + "instanceValue_endFrame"));
-						c32.i = state->instanceValue.endFrame;
-						ssfbFrameData2.push_back(c32.f);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS32(ssfbBuilder, state->instanceValue.endFrame);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS32);
+						}
 						frameData->add(Lump::s32Data(state->instanceValue.loopNum, tagname + "instanceValue_loopNum"));
-						c32.i = state->instanceValue.loopNum;
-						ssfbFrameData2.push_back(c32.f);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS32(ssfbBuilder, state->instanceValue.loopNum);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS32);
+						}
 						frameData->add(Lump::floatData(state->instanceValue.speed, tagname + "instanceValue_speed"));
-						ssfbFrameData2.push_back(state->instanceValue.speed);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->instanceValue.speed);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 						frameData->add(Lump::s32Data(state->instanceValue.loopflag, tagname + "instanceValue_loopflag"));
-						c32.i = state->instanceValue.loopflag;
-						ssfbFrameData2.push_back(c32.f);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS32(ssfbBuilder, state->instanceValue.loopflag);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS32);
+						}
 					}
 					//エフェクト情報出力
 					if (p_flags & PART_FLAG_EFFECT_KEYFRAME)
 					{
 						frameData->add(Lump::s32Data(state->effectValue.curKeyframe, tagname + "effectValue_curKeyframe"));	//キー配置フレーム
-						c32.i = state->effectValue.curKeyframe;
-						ssfbFrameData2.push_back(c32.f);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS32(ssfbBuilder, state->effectValue.curKeyframe);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS32);
+						}
 						frameData->add(Lump::s32Data(state->effectValue.startTime, tagname + "effectValue_startTime"));	//開始フレーム
-						c32.i = state->effectValue.startTime;
-						ssfbFrameData2.push_back(c32.f);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS32(ssfbBuilder, state->effectValue.startTime);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS32);
+						}
 						frameData->add(Lump::floatData(state->effectValue.speed, tagname + "effectValue_speed"));		//再生速度
-						ssfbFrameData2.push_back(state->effectValue.speed);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->effectValue.speed);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+						}
 						frameData->add(Lump::s32Data(state->effectValue.loopflag, tagname + "effectValue_loopflag"));		//独立動作
-						c32.i = state->effectValue.loopflag;
-						ssfbFrameData2.push_back(c32.f);
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS32(ssfbBuilder, state->effectValue.loopflag);
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS32);
+						}
 					}
 
 
@@ -1299,8 +1456,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					{
 						// どの頂点のオフセット値が格納されているかのフラグ
 						frameData->add(Lump::s16Data(vt_flags));
-						ssfbFrameData2.push_back(vt_flags);
-						
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS16(ssfbBuilder, static_cast<int16_t>(vt_flags));
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS16);
+						}
+
 						// 各頂点のオフセット値
 						for (int vtxNo = 0; vtxNo < 4; vtxNo++)
 						{
@@ -1312,16 +1473,32 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								{
 									//頂点変形の少数対応
 									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].x, tagname_x));
-									ssfbFrameData2.push_back(state->vertexValue.offsets[vtxNo].x);
+									{
+										auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->vertexValue.offsets[vtxNo].x);
+										ssfbFrameData2.push_back(item.Union());
+										ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+									}
 									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].y, tagname_y));
-									ssfbFrameData2.push_back(state->vertexValue.offsets[vtxNo].y);
+									{
+										auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->vertexValue.offsets[vtxNo].y);
+										ssfbFrameData2.push_back(item.Union());
+										ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+									}
 								}
 								else
 								{
 									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].x, tagname_x));
-									ssfbFrameData2.push_back((int)state->vertexValue.offsets[vtxNo].x);
+									{
+										auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, (int)state->vertexValue.offsets[vtxNo].x);
+										ssfbFrameData2.push_back(item.Union());
+										ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+									}
 									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].y, tagname_y));
-									ssfbFrameData2.push_back((int)state->vertexValue.offsets[vtxNo].y);
+									{
+										auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, (int)state->vertexValue.offsets[vtxNo].y);
+										ssfbFrameData2.push_back(item.Union());
+										ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+									}
 								}
 							}
 						}
@@ -1333,15 +1510,26 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						// ブレンド方法と、単色もしくはどの頂点に対するカラー値が格納されているかをu16にまとめる
 						int typeAndFlags = (int)state->partsColorValue.blendType | (cb_flags << 8);
 						frameData->add(Lump::s16Data(typeAndFlags));
-						ssfbFrameData2.push_back(typeAndFlags);
-						
+						{
+							auto item = ss::ssfb::CreateframeDataIndexS16(ssfbBuilder, static_cast<int16_t>(typeAndFlags));
+							ssfbFrameData2.push_back(item.Union());
+							ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS16);
+						}
+
 						if (cb_flags & VERTEX_FLAG_ONE)
 						{
 							frameData->add(Lump::floatData(state->partsColorValue.color.rate, tagname + "partsColorValue_color_rate"));
-							ssfbFrameData2.push_back(state->partsColorValue.color.rate);
+							{
+								auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->partsColorValue.color.rate);
+								ssfbFrameData2.push_back(item.Union());
+								ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+							}
 							frameData->add(Lump::colorData(state->partsColorValue.color.rgba.toARGB(), tagname + "partsColorValue_color_rgba"));
-							ssfbFrameData2.push_back((state->partsColorValue.color.rgba.toARGB() & 0xffff0000) >> 16);
-							ssfbFrameData2.push_back(state->partsColorValue.color.rgba.toARGB() & 0xffff);
+							{
+								auto item = ss::ssfb::CreateframeDataIndexCOLOR(ssfbBuilder, state->partsColorValue.color.rgba.toARGB());
+								ssfbFrameData2.push_back(item.Union());
+								ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexCOLOR);
+							}
 						}
 						else
 						{
@@ -1352,10 +1540,17 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								if (cb_flags & (1 << vtxNo))
 								{
 									frameData->add(Lump::floatData(state->partsColorValue.colors[vtxNo].rate, tagname_rate));
-									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rate);
+									{
+										auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, state->partsColorValue.colors[vtxNo].rate);
+										ssfbFrameData2.push_back(item.Union());
+										ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+									}
 									frameData->add(Lump::colorData(state->partsColorValue.colors[vtxNo].rgba.toARGB(), tagname_rgba));
-									ssfbFrameData2.push_back((state->partsColorValue.colors[vtxNo].rgba.toARGB() & 0xffff0000) >> 16);
-									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rgba.toARGB() & 0xffff);
+									{
+										auto item = ss::ssfb::CreateframeDataIndexCOLOR(ssfbBuilder, state->partsColorValue.colors[vtxNo].rgba.toARGB());
+										ssfbFrameData2.push_back(item.Union());
+										ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexCOLOR);
+									}
 								}
 							}
 						}
@@ -1376,11 +1571,23 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							float mesh_y = state->meshPart->draw_vertices[i * 3 + 1];
 							float mesh_z = state->meshPart->draw_vertices[i * 3 + 2];
 							frameData->add(Lump::floatData(mesh_x, tagname_mesh_x));		//x
-							ssfbFrameData2.push_back(mesh_x);
+							{
+								auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, mesh_x);
+								ssfbFrameData2.push_back(item.Union());
+								ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+							}
 							frameData->add(Lump::floatData(mesh_y, tagname_mesh_y));		//y
-							ssfbFrameData2.push_back(mesh_y);
+							{
+								auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, mesh_y);
+								ssfbFrameData2.push_back(item.Union());
+								ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+							}
 							frameData->add(Lump::floatData(mesh_z, tagname_mesh_z));		//z
-							ssfbFrameData2.push_back(mesh_z);
+							{
+								auto item = ss::ssfb::CreateframeDataIndexFLOAT(ssfbBuilder, mesh_z);
+								ssfbFrameData2.push_back(item.Union());
+								ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+							}
 						}
 					}
 				}
@@ -1389,8 +1596,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				frameFlag->data.i = outPartsCount | (prioChanged ? 0x8000 : 0);
 
 
+				auto serializeSsfbFrameData2Type = ssfbBuilder.CreateVector(ssfbFrameData2Type);
 				auto serializeSsfbFrameData2 = ssfbBuilder.CreateVector(ssfbFrameData2);
-				auto item = ss::ssfb::CreateframeDataIndex(ssfbBuilder, serializeSsfbFrameData2);
+				auto item = ss::ssfb::CreateframeDataIndex(ssfbBuilder, serializeSsfbFrameData2Type, serializeSsfbFrameData2);
 				ssfbFrameData.push_back(item);
 			}
 
@@ -1564,7 +1772,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			animeData->add(Lump::floatData(anime->settings.pivot.y, "canvasPvotY"));			//基準枠位置
 
 			auto serializeSsfbDefaultData = ssfbBuilder.CreateVector(ssfbDefaultData);
+			auto serializeSsfbMeshsDataUVType = ssfbBuilder.CreateVector(ssfbMeshsDataUVType);
 			auto serializeSsfbMeshsDataUV = ssfbBuilder.CreateVector(ssfbMeshsDataUV);
+			auto serializeSsfbMeshsDataIndicesType = ssfbBuilder.CreateVector(ssfbMeshsDataIndicesType);
 			auto serializeSsfbMeshsDataIndices = ssfbBuilder.CreateVector(ssfbMeshsDataIndices);
 			auto serializeSsfbFrameData = ssfbBuilder.CreateVector(ssfbFrameData);
 			auto serializeSsfbUserData = ssfbBuilder.CreateVector(ssfbUserData);
@@ -1572,7 +1782,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 
 			auto item = ss::ssfb::CreateAnimationData(ssfbBuilder, ssfbAnimationDataName,
 													  serializeSsfbDefaultData, serializeSsfbFrameData, serializeSsfbUserData,
-													  serializeSsfbLabelData, serializeSsfbMeshsDataUV, serializeSsfbMeshsDataIndices,
+													  serializeSsfbLabelData, serializeSsfbMeshsDataUVType, serializeSsfbMeshsDataUV, serializeSsfbMeshsDataIndicesType, serializeSsfbMeshsDataIndices,
 													  static_cast<int16_t>(decoder.getAnimeStartFrame()),
 													  static_cast<int16_t>(decoder.getAnimeEndFrame()),
 													  static_cast<int16_t>(decoder.getAnimeTotalFrame()),

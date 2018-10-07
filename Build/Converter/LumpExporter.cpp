@@ -947,44 +947,72 @@ private:
 			}
 
 			// 5:meshDataUV
-			std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> ssfbMeshsDataUV;
+			std::vector<uint8_t> ssfbMeshsDataUVType;
+			std::vector<flatbuffers::Offset<void>> ssfbMeshsDataUV;
 			{
 				auto meshDataUVVec = ssAnimationDataVec[5]->getChildren();
 				for(auto meshDataUVItem : meshDataUVVec) {
-				    std::vector<float> ssfbUV;
 					auto frameDataVec = meshDataUVItem->getChildren();
-					for(auto frameDataItem : frameDataVec) {
-						switch (frameDataItem->type) {
-						case Lump::DataType::S32:
-							ssfbUV.push_back(GETS32(frameDataItem));
-							break;
-						case Lump::DataType::FLOAT:
-							ssfbUV.push_back(GETFLOAT(frameDataItem));
-							break;
-						default:
-							break;
-						}
-					}
 
-					auto serializeSsfbUV = m_ssfbBuilder.CreateVector(ssfbUV);
-					auto item = ss::ssfb::CreatemeshDataUV(m_ssfbBuilder, serializeSsfbUV);
-					ssfbMeshsDataUV.push_back(item);
+					auto isBind = GETS32(frameDataVec[0]);
+					if(frameDataVec.size() == 1) {
+						// empty
+						auto item = ss::ssfb::CreatemeshDataUVEmpty(m_ssfbBuilder, isBind);
+						ssfbMeshsDataUV.push_back(item.Union());
+						ssfbMeshsDataUVType.push_back(ss::ssfb::meshDataUVValue_meshDataUVEmpty);
+					} else {
+						auto meshsize = GETS32(frameDataVec[1]);
+
+						std::vector<float> uVec;
+						std::vector<float> vVec;
+						int idx = 2;
+						for (int i = 0; i < meshsize; i++)
+						{
+							auto u = GETFLOAT(frameDataVec[idx + 0]);
+							auto v = GETFLOAT(frameDataVec[idx + 1]);
+							uVec.push_back(u);
+							vVec.push_back(v);
+							idx += 2;
+						}
+						auto serializeSsfbU = m_ssfbBuilder.CreateVector(uVec);
+						auto serializeSsfbV = m_ssfbBuilder.CreateVector(vVec);
+						auto item = ss::ssfb::CreatemeshDataUVItem(m_ssfbBuilder, isBind, meshsize, serializeSsfbU, serializeSsfbV);
+						ssfbMeshsDataUV.push_back(item.Union());
+						ssfbMeshsDataUVType.push_back(ss::ssfb::meshDataUVValue_meshDataUVItem);
+					}
 				}
 			}
 			// 6:meshsDataIndices
-			std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> ssfbMeshsDataIndices;
+			std::vector<uint8_t> ssfbMeshsDataIndicesType;
+			std::vector<flatbuffers::Offset<void>> ssfbMeshsDataIndices;
 			{
 				auto meshsDataIndicesVec = ssAnimationDataVec[6]->getChildren();
 				for(auto meshsDataIndicesItem : meshsDataIndicesVec) {
-				    std::vector<float> ssfbIndices;
 					auto meshsDataVec = meshsDataIndicesItem->getChildren();
-					for(auto meshDataItem : meshsDataVec) {
-						ssfbIndices.push_back(GETS32(meshDataItem));
-					}
 
-					auto serializeSsfbIndices = m_ssfbBuilder.CreateVector(ssfbIndices);
-					auto item = ss::ssfb::CreatemeshDataIndices(m_ssfbBuilder, serializeSsfbIndices);
-					ssfbMeshsDataIndices.push_back(item);
+					auto tri_size = GETS32(meshsDataVec[0]);
+					if(meshsDataVec.size() == 1) {
+						// empty
+						auto item = ss::ssfb::CreatemeshDataIndicesEmpty(m_ssfbBuilder, tri_size);
+						ssfbMeshsDataIndices.push_back(item.Union());
+						ssfbMeshsDataIndicesType.push_back(ss::ssfb::meshDataIndicesValue_meshDataIndicesEmpty);
+					} else {
+						std::vector<int32_t> po1Vec;
+						std::vector<int32_t> po2Vec;
+						std::vector<int32_t> po3Vec;
+						int idx = 1;
+						for(int i=0; i<tri_size; i++) {
+							po1Vec.push_back(GETS32(meshsDataVec[idx++]));
+							po2Vec.push_back(GETS32(meshsDataVec[idx++]));
+							po3Vec.push_back(GETS32(meshsDataVec[idx++]));
+						}
+						auto serializeSsfbPo1Vec = m_ssfbBuilder.CreateVector(po1Vec);
+						auto serializeSsfbPo2Vec = m_ssfbBuilder.CreateVector(po2Vec);
+						auto serializeSsfbPo3Vec = m_ssfbBuilder.CreateVector(po3Vec);
+						auto item = ss::ssfb::CreatemeshDataIndicesItem(m_ssfbBuilder, tri_size, serializeSsfbPo1Vec, serializeSsfbPo2Vec, serializeSsfbPo3Vec);
+						ssfbMeshsDataIndices.push_back(item.Union());
+						ssfbMeshsDataIndicesType.push_back(ss::ssfb::meshDataIndicesValue_meshDataIndicesItem);
+					}
 				}
 			}
 			// 2:frameDataIndexArray
@@ -996,37 +1024,45 @@ private:
 				for(auto frameDataIndexArrayItem : frameDataIndexArrayVec) {
 					auto frameDataVec = frameDataIndexArrayItem->getChildren();
 
-					std::vector<float> ssfbFrameData2;
+					std::vector<uint8_t> ssfbFrameData2Type;
+					std::vector<flatbuffers::Offset<void>> ssfbFrameData2;
 					for(auto frameDataItem : frameDataVec) {
 						switch (frameDataItem->type) {
 							case Lump::DataType::S16:
-								// TODO: int16_t の型を float vector に格納しているため修正する
-								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
-//								ssfbFrameData2.push_back(GETS16(frameDataItem));
+							{
+								auto item = ss::ssfb::CreateframeDataIndexS16(m_ssfbBuilder, GETS16(frameDataItem));
+								ssfbFrameData2.push_back(item.Union());
+								ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS16);
+							}
 								break;
 							case Lump::DataType::S32:
-								// TODO: int32_t の型を float vector に格納しているため修正する
-								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
-//								ssfbFrameData2.push_back(GETS32(frameDataItem));
+							{
+								auto item = ss::ssfb::CreateframeDataIndexS32(m_ssfbBuilder, GETS32(frameDataItem));
+								ssfbFrameData2.push_back(item.Union());
+								ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexS32);
+							}
 								break;
 							case Lump::DataType::FLOAT:
-								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
+							{
+								auto item = ss::ssfb::CreateframeDataIndexFLOAT(m_ssfbBuilder, GETFLOAT(frameDataItem));
+								ssfbFrameData2.push_back(item.Union());
+								ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexFLOAT);
+							}
 								break;
 							case Lump::DataType::COLOR:
-								// TODO: int32_t(color) の型を float vector に格納しているため修正する
-								{
-									auto rgba = GETU32(frameDataItem);
-									ssfbFrameData2.push_back((rgba & 0xffff0000) >> 16);
-									ssfbFrameData2.push_back(rgba & 0xffff);
-								}
-//								ssfbFrameData2.push_back(GETS32(frameDataItem));
+							{
+								auto item = ss::ssfb::CreateframeDataIndexCOLOR(m_ssfbBuilder, GETU32(frameDataItem));
+								ssfbFrameData2.push_back(item.Union());
+								ssfbFrameData2Type.push_back(ss::ssfb::frameDataIndexValue_frameDataIndexCOLOR);
+							}
 								break;
 							default:
 								break;
 						}
 					}
+					auto serializeSsfbFrameData2Type = m_ssfbBuilder.CreateVector(ssfbFrameData2Type);
 					auto serializeSsfbFrameData2 = m_ssfbBuilder.CreateVector(ssfbFrameData2);
-					auto item = ss::ssfb::CreateframeDataIndex(m_ssfbBuilder, serializeSsfbFrameData2);
+					auto item = ss::ssfb::CreateframeDataIndex(m_ssfbBuilder, serializeSsfbFrameData2Type, serializeSsfbFrameData2);
 					ssfbFrameData.push_back(item);
 				}
 			}
@@ -1131,7 +1167,9 @@ private:
 			auto canvasPvotY = GETFLOAT(ssAnimationDataVec[16]);
 
 			auto serializeSsfbDefaultData = m_ssfbBuilder.CreateVector(ssfbDefaultData);
+			auto serializeSsfbMeshsDataUVType = m_ssfbBuilder.CreateVector(ssfbMeshsDataUVType);
 			auto serializeSsfbMeshsDataUV = m_ssfbBuilder.CreateVector(ssfbMeshsDataUV);
+			auto serializeSsfbMeshsDataIndicesType = m_ssfbBuilder.CreateVector(ssfbMeshsDataIndicesType);
 			auto serializeSsfbMeshsDataIndices = m_ssfbBuilder.CreateVector(ssfbMeshsDataIndices);
 
             auto serializeSsfbFrameData = m_ssfbBuilder.CreateVector(ssfbFrameData);
@@ -1140,7 +1178,7 @@ private:
 
             auto item = ss::ssfb::CreateAnimationData(m_ssfbBuilder, ssfbAnimationDataName,
                                                       serializeSsfbDefaultData, serializeSsfbFrameData, serializeSsfbUserData,
-                                                      serializeSsfbLabelData, serializeSsfbMeshsDataUV, serializeSsfbMeshsDataIndices,
+                                                      serializeSsfbLabelData, serializeSsfbMeshsDataUVType, serializeSsfbMeshsDataUV, serializeSsfbMeshsDataIndicesType, serializeSsfbMeshsDataIndices,
                                                       startFrames, endFrames, totalFrames, fps, labelNum, canvasSizeW, canvasSizeH, canvasPvotX, canvasPvotY);
 
             ssfbAnimationDataList.push_back(item);

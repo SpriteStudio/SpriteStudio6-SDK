@@ -51,9 +51,21 @@ struct CellMap;
 
 struct Cell;
 
-struct meshDataUV;
+struct meshDataUVItem;
 
-struct meshDataIndices;
+struct meshDataUVEmpty;
+
+struct meshDataIndicesItem;
+
+struct meshDataIndicesEmpty;
+
+struct frameDataIndexS16;
+
+struct frameDataIndexS32;
+
+struct frameDataIndexFLOAT;
+
+struct frameDataIndexCOLOR;
 
 struct frameDataIndex;
 
@@ -444,6 +456,161 @@ template<> struct EffectNodeBehaviorTraits<EffectParticleInfiniteEmitEnabled> {
 
 bool VerifyEffectNodeBehavior(flatbuffers::Verifier &verifier, const void *obj, EffectNodeBehavior type);
 bool VerifyEffectNodeBehaviorVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
+
+enum meshDataUVValue {
+  meshDataUVValue_NONE = 0,
+  meshDataUVValue_meshDataUVItem = 1,
+  meshDataUVValue_meshDataUVEmpty = 2,
+  meshDataUVValue_MIN = meshDataUVValue_NONE,
+  meshDataUVValue_MAX = meshDataUVValue_meshDataUVEmpty
+};
+
+inline const meshDataUVValue (&EnumValuesmeshDataUVValue())[3] {
+  static const meshDataUVValue values[] = {
+    meshDataUVValue_NONE,
+    meshDataUVValue_meshDataUVItem,
+    meshDataUVValue_meshDataUVEmpty
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesmeshDataUVValue() {
+  static const char * const names[] = {
+    "NONE",
+    "meshDataUVItem",
+    "meshDataUVEmpty",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNamemeshDataUVValue(meshDataUVValue e) {
+  const size_t index = static_cast<int>(e);
+  return EnumNamesmeshDataUVValue()[index];
+}
+
+template<typename T> struct meshDataUVValueTraits {
+  static const meshDataUVValue enum_value = meshDataUVValue_NONE;
+};
+
+template<> struct meshDataUVValueTraits<meshDataUVItem> {
+  static const meshDataUVValue enum_value = meshDataUVValue_meshDataUVItem;
+};
+
+template<> struct meshDataUVValueTraits<meshDataUVEmpty> {
+  static const meshDataUVValue enum_value = meshDataUVValue_meshDataUVEmpty;
+};
+
+bool VerifymeshDataUVValue(flatbuffers::Verifier &verifier, const void *obj, meshDataUVValue type);
+bool VerifymeshDataUVValueVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
+
+enum meshDataIndicesValue {
+  meshDataIndicesValue_NONE = 0,
+  meshDataIndicesValue_meshDataIndicesItem = 1,
+  meshDataIndicesValue_meshDataIndicesEmpty = 2,
+  meshDataIndicesValue_MIN = meshDataIndicesValue_NONE,
+  meshDataIndicesValue_MAX = meshDataIndicesValue_meshDataIndicesEmpty
+};
+
+inline const meshDataIndicesValue (&EnumValuesmeshDataIndicesValue())[3] {
+  static const meshDataIndicesValue values[] = {
+    meshDataIndicesValue_NONE,
+    meshDataIndicesValue_meshDataIndicesItem,
+    meshDataIndicesValue_meshDataIndicesEmpty
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesmeshDataIndicesValue() {
+  static const char * const names[] = {
+    "NONE",
+    "meshDataIndicesItem",
+    "meshDataIndicesEmpty",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNamemeshDataIndicesValue(meshDataIndicesValue e) {
+  const size_t index = static_cast<int>(e);
+  return EnumNamesmeshDataIndicesValue()[index];
+}
+
+template<typename T> struct meshDataIndicesValueTraits {
+  static const meshDataIndicesValue enum_value = meshDataIndicesValue_NONE;
+};
+
+template<> struct meshDataIndicesValueTraits<meshDataIndicesItem> {
+  static const meshDataIndicesValue enum_value = meshDataIndicesValue_meshDataIndicesItem;
+};
+
+template<> struct meshDataIndicesValueTraits<meshDataIndicesEmpty> {
+  static const meshDataIndicesValue enum_value = meshDataIndicesValue_meshDataIndicesEmpty;
+};
+
+bool VerifymeshDataIndicesValue(flatbuffers::Verifier &verifier, const void *obj, meshDataIndicesValue type);
+bool VerifymeshDataIndicesValueVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
+
+enum frameDataIndexValue {
+  frameDataIndexValue_NONE = 0,
+  frameDataIndexValue_frameDataIndexS16 = 1,
+  frameDataIndexValue_frameDataIndexS32 = 2,
+  frameDataIndexValue_frameDataIndexFLOAT = 3,
+  frameDataIndexValue_frameDataIndexCOLOR = 4,
+  frameDataIndexValue_MIN = frameDataIndexValue_NONE,
+  frameDataIndexValue_MAX = frameDataIndexValue_frameDataIndexCOLOR
+};
+
+inline const frameDataIndexValue (&EnumValuesframeDataIndexValue())[5] {
+  static const frameDataIndexValue values[] = {
+    frameDataIndexValue_NONE,
+    frameDataIndexValue_frameDataIndexS16,
+    frameDataIndexValue_frameDataIndexS32,
+    frameDataIndexValue_frameDataIndexFLOAT,
+    frameDataIndexValue_frameDataIndexCOLOR
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesframeDataIndexValue() {
+  static const char * const names[] = {
+    "NONE",
+    "frameDataIndexS16",
+    "frameDataIndexS32",
+    "frameDataIndexFLOAT",
+    "frameDataIndexCOLOR",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameframeDataIndexValue(frameDataIndexValue e) {
+  const size_t index = static_cast<int>(e);
+  return EnumNamesframeDataIndexValue()[index];
+}
+
+template<typename T> struct frameDataIndexValueTraits {
+  static const frameDataIndexValue enum_value = frameDataIndexValue_NONE;
+};
+
+template<> struct frameDataIndexValueTraits<frameDataIndexS16> {
+  static const frameDataIndexValue enum_value = frameDataIndexValue_frameDataIndexS16;
+};
+
+template<> struct frameDataIndexValueTraits<frameDataIndexS32> {
+  static const frameDataIndexValue enum_value = frameDataIndexValue_frameDataIndexS32;
+};
+
+template<> struct frameDataIndexValueTraits<frameDataIndexFLOAT> {
+  static const frameDataIndexValue enum_value = frameDataIndexValue_frameDataIndexFLOAT;
+};
+
+template<> struct frameDataIndexValueTraits<frameDataIndexCOLOR> {
+  static const frameDataIndexValue enum_value = frameDataIndexValue_frameDataIndexCOLOR;
+};
+
+bool VerifyframeDataIndexValue(flatbuffers::Verifier &verifier, const void *obj, frameDataIndexValue type);
+bool VerifyframeDataIndexValueVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
 
 enum userDataValue {
   userDataValue_NONE = 0,
@@ -2108,115 +2275,437 @@ inline flatbuffers::Offset<Cell> CreateCellDirect(
       v2);
 }
 
-struct meshDataUV FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct meshDataUVItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
-    VT_UV = 4
+    VT_ISBIND = 4,
+    VT_MESHSIZE = 6,
+    VT_U = 8,
+    VT_V = 10
   };
-  const flatbuffers::Vector<float> *uv() const {
-    return GetPointer<const flatbuffers::Vector<float> *>(VT_UV);
+  int32_t isBind() const {
+    return GetField<int32_t>(VT_ISBIND, 0);
+  }
+  int32_t meshSize() const {
+    return GetField<int32_t>(VT_MESHSIZE, 0);
+  }
+  const flatbuffers::Vector<float> *u() const {
+    return GetPointer<const flatbuffers::Vector<float> *>(VT_U);
+  }
+  const flatbuffers::Vector<float> *v() const {
+    return GetPointer<const flatbuffers::Vector<float> *>(VT_V);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyOffset(verifier, VT_UV) &&
-           verifier.Verify(uv()) &&
+           VerifyField<int32_t>(verifier, VT_ISBIND) &&
+           VerifyField<int32_t>(verifier, VT_MESHSIZE) &&
+           VerifyOffset(verifier, VT_U) &&
+           verifier.Verify(u()) &&
+           VerifyOffset(verifier, VT_V) &&
+           verifier.Verify(v()) &&
            verifier.EndTable();
   }
 };
 
-struct meshDataUVBuilder {
+struct meshDataUVItemBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_uv(flatbuffers::Offset<flatbuffers::Vector<float>> uv) {
-    fbb_.AddOffset(meshDataUV::VT_UV, uv);
+  void add_isBind(int32_t isBind) {
+    fbb_.AddElement<int32_t>(meshDataUVItem::VT_ISBIND, isBind, 0);
   }
-  explicit meshDataUVBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  void add_meshSize(int32_t meshSize) {
+    fbb_.AddElement<int32_t>(meshDataUVItem::VT_MESHSIZE, meshSize, 0);
+  }
+  void add_u(flatbuffers::Offset<flatbuffers::Vector<float>> u) {
+    fbb_.AddOffset(meshDataUVItem::VT_U, u);
+  }
+  void add_v(flatbuffers::Offset<flatbuffers::Vector<float>> v) {
+    fbb_.AddOffset(meshDataUVItem::VT_V, v);
+  }
+  explicit meshDataUVItemBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  meshDataUVBuilder &operator=(const meshDataUVBuilder &);
-  flatbuffers::Offset<meshDataUV> Finish() {
+  meshDataUVItemBuilder &operator=(const meshDataUVItemBuilder &);
+  flatbuffers::Offset<meshDataUVItem> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<meshDataUV>(end);
+    auto o = flatbuffers::Offset<meshDataUVItem>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<meshDataUV> CreatemeshDataUV(
+inline flatbuffers::Offset<meshDataUVItem> CreatemeshDataUVItem(
     flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<float>> uv = 0) {
-  meshDataUVBuilder builder_(_fbb);
-  builder_.add_uv(uv);
+    int32_t isBind = 0,
+    int32_t meshSize = 0,
+    flatbuffers::Offset<flatbuffers::Vector<float>> u = 0,
+    flatbuffers::Offset<flatbuffers::Vector<float>> v = 0) {
+  meshDataUVItemBuilder builder_(_fbb);
+  builder_.add_v(v);
+  builder_.add_u(u);
+  builder_.add_meshSize(meshSize);
+  builder_.add_isBind(isBind);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<meshDataUV> CreatemeshDataUVDirect(
+inline flatbuffers::Offset<meshDataUVItem> CreatemeshDataUVItemDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<float> *uv = nullptr) {
-  return ss::ssfb::CreatemeshDataUV(
+    int32_t isBind = 0,
+    int32_t meshSize = 0,
+    const std::vector<float> *u = nullptr,
+    const std::vector<float> *v = nullptr) {
+  return ss::ssfb::CreatemeshDataUVItem(
       _fbb,
-      uv ? _fbb.CreateVector<float>(*uv) : 0);
+      isBind,
+      meshSize,
+      u ? _fbb.CreateVector<float>(*u) : 0,
+      v ? _fbb.CreateVector<float>(*v) : 0);
 }
 
-struct meshDataIndices FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct meshDataUVEmpty FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
-    VT_INDICES = 4
+    VT_ISBIND = 4
   };
-  const flatbuffers::Vector<float> *indices() const {
-    return GetPointer<const flatbuffers::Vector<float> *>(VT_INDICES);
+  int32_t isBind() const {
+    return GetField<int32_t>(VT_ISBIND, 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyOffset(verifier, VT_INDICES) &&
-           verifier.Verify(indices()) &&
+           VerifyField<int32_t>(verifier, VT_ISBIND) &&
            verifier.EndTable();
   }
 };
 
-struct meshDataIndicesBuilder {
+struct meshDataUVEmptyBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_indices(flatbuffers::Offset<flatbuffers::Vector<float>> indices) {
-    fbb_.AddOffset(meshDataIndices::VT_INDICES, indices);
+  void add_isBind(int32_t isBind) {
+    fbb_.AddElement<int32_t>(meshDataUVEmpty::VT_ISBIND, isBind, 0);
   }
-  explicit meshDataIndicesBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit meshDataUVEmptyBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  meshDataIndicesBuilder &operator=(const meshDataIndicesBuilder &);
-  flatbuffers::Offset<meshDataIndices> Finish() {
+  meshDataUVEmptyBuilder &operator=(const meshDataUVEmptyBuilder &);
+  flatbuffers::Offset<meshDataUVEmpty> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<meshDataIndices>(end);
+    auto o = flatbuffers::Offset<meshDataUVEmpty>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<meshDataIndices> CreatemeshDataIndices(
+inline flatbuffers::Offset<meshDataUVEmpty> CreatemeshDataUVEmpty(
     flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<float>> indices = 0) {
-  meshDataIndicesBuilder builder_(_fbb);
-  builder_.add_indices(indices);
+    int32_t isBind = 0) {
+  meshDataUVEmptyBuilder builder_(_fbb);
+  builder_.add_isBind(isBind);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<meshDataIndices> CreatemeshDataIndicesDirect(
+struct meshDataIndicesItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_TRI_SIZE = 4,
+    VT_PO1 = 6,
+    VT_PO2 = 8,
+    VT_PO3 = 10
+  };
+  int32_t tri_size() const {
+    return GetField<int32_t>(VT_TRI_SIZE, 0);
+  }
+  const flatbuffers::Vector<int32_t> *po1() const {
+    return GetPointer<const flatbuffers::Vector<int32_t> *>(VT_PO1);
+  }
+  const flatbuffers::Vector<int32_t> *po2() const {
+    return GetPointer<const flatbuffers::Vector<int32_t> *>(VT_PO2);
+  }
+  const flatbuffers::Vector<int32_t> *po3() const {
+    return GetPointer<const flatbuffers::Vector<int32_t> *>(VT_PO3);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int32_t>(verifier, VT_TRI_SIZE) &&
+           VerifyOffset(verifier, VT_PO1) &&
+           verifier.Verify(po1()) &&
+           VerifyOffset(verifier, VT_PO2) &&
+           verifier.Verify(po2()) &&
+           VerifyOffset(verifier, VT_PO3) &&
+           verifier.Verify(po3()) &&
+           verifier.EndTable();
+  }
+};
+
+struct meshDataIndicesItemBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_tri_size(int32_t tri_size) {
+    fbb_.AddElement<int32_t>(meshDataIndicesItem::VT_TRI_SIZE, tri_size, 0);
+  }
+  void add_po1(flatbuffers::Offset<flatbuffers::Vector<int32_t>> po1) {
+    fbb_.AddOffset(meshDataIndicesItem::VT_PO1, po1);
+  }
+  void add_po2(flatbuffers::Offset<flatbuffers::Vector<int32_t>> po2) {
+    fbb_.AddOffset(meshDataIndicesItem::VT_PO2, po2);
+  }
+  void add_po3(flatbuffers::Offset<flatbuffers::Vector<int32_t>> po3) {
+    fbb_.AddOffset(meshDataIndicesItem::VT_PO3, po3);
+  }
+  explicit meshDataIndicesItemBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  meshDataIndicesItemBuilder &operator=(const meshDataIndicesItemBuilder &);
+  flatbuffers::Offset<meshDataIndicesItem> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<meshDataIndicesItem>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<meshDataIndicesItem> CreatemeshDataIndicesItem(
     flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<float> *indices = nullptr) {
-  return ss::ssfb::CreatemeshDataIndices(
+    int32_t tri_size = 0,
+    flatbuffers::Offset<flatbuffers::Vector<int32_t>> po1 = 0,
+    flatbuffers::Offset<flatbuffers::Vector<int32_t>> po2 = 0,
+    flatbuffers::Offset<flatbuffers::Vector<int32_t>> po3 = 0) {
+  meshDataIndicesItemBuilder builder_(_fbb);
+  builder_.add_po3(po3);
+  builder_.add_po2(po2);
+  builder_.add_po1(po1);
+  builder_.add_tri_size(tri_size);
+  return builder_.Finish();
+}
+
+inline flatbuffers::Offset<meshDataIndicesItem> CreatemeshDataIndicesItemDirect(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    int32_t tri_size = 0,
+    const std::vector<int32_t> *po1 = nullptr,
+    const std::vector<int32_t> *po2 = nullptr,
+    const std::vector<int32_t> *po3 = nullptr) {
+  return ss::ssfb::CreatemeshDataIndicesItem(
       _fbb,
-      indices ? _fbb.CreateVector<float>(*indices) : 0);
+      tri_size,
+      po1 ? _fbb.CreateVector<int32_t>(*po1) : 0,
+      po2 ? _fbb.CreateVector<int32_t>(*po2) : 0,
+      po3 ? _fbb.CreateVector<int32_t>(*po3) : 0);
+}
+
+struct meshDataIndicesEmpty FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_TRI_SIZE = 4
+  };
+  int32_t tri_size() const {
+    return GetField<int32_t>(VT_TRI_SIZE, 0);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int32_t>(verifier, VT_TRI_SIZE) &&
+           verifier.EndTable();
+  }
+};
+
+struct meshDataIndicesEmptyBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_tri_size(int32_t tri_size) {
+    fbb_.AddElement<int32_t>(meshDataIndicesEmpty::VT_TRI_SIZE, tri_size, 0);
+  }
+  explicit meshDataIndicesEmptyBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  meshDataIndicesEmptyBuilder &operator=(const meshDataIndicesEmptyBuilder &);
+  flatbuffers::Offset<meshDataIndicesEmpty> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<meshDataIndicesEmpty>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<meshDataIndicesEmpty> CreatemeshDataIndicesEmpty(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    int32_t tri_size = 0) {
+  meshDataIndicesEmptyBuilder builder_(_fbb);
+  builder_.add_tri_size(tri_size);
+  return builder_.Finish();
+}
+
+struct frameDataIndexS16 FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_DATA = 4
+  };
+  int16_t data() const {
+    return GetField<int16_t>(VT_DATA, 0);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int16_t>(verifier, VT_DATA) &&
+           verifier.EndTable();
+  }
+};
+
+struct frameDataIndexS16Builder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_data(int16_t data) {
+    fbb_.AddElement<int16_t>(frameDataIndexS16::VT_DATA, data, 0);
+  }
+  explicit frameDataIndexS16Builder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  frameDataIndexS16Builder &operator=(const frameDataIndexS16Builder &);
+  flatbuffers::Offset<frameDataIndexS16> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<frameDataIndexS16>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<frameDataIndexS16> CreateframeDataIndexS16(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    int16_t data = 0) {
+  frameDataIndexS16Builder builder_(_fbb);
+  builder_.add_data(data);
+  return builder_.Finish();
+}
+
+struct frameDataIndexS32 FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_DATA = 4
+  };
+  int32_t data() const {
+    return GetField<int32_t>(VT_DATA, 0);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int32_t>(verifier, VT_DATA) &&
+           verifier.EndTable();
+  }
+};
+
+struct frameDataIndexS32Builder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_data(int32_t data) {
+    fbb_.AddElement<int32_t>(frameDataIndexS32::VT_DATA, data, 0);
+  }
+  explicit frameDataIndexS32Builder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  frameDataIndexS32Builder &operator=(const frameDataIndexS32Builder &);
+  flatbuffers::Offset<frameDataIndexS32> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<frameDataIndexS32>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<frameDataIndexS32> CreateframeDataIndexS32(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    int32_t data = 0) {
+  frameDataIndexS32Builder builder_(_fbb);
+  builder_.add_data(data);
+  return builder_.Finish();
+}
+
+struct frameDataIndexFLOAT FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_DATA = 4
+  };
+  float data() const {
+    return GetField<float>(VT_DATA, 0.0f);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<float>(verifier, VT_DATA) &&
+           verifier.EndTable();
+  }
+};
+
+struct frameDataIndexFLOATBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_data(float data) {
+    fbb_.AddElement<float>(frameDataIndexFLOAT::VT_DATA, data, 0.0f);
+  }
+  explicit frameDataIndexFLOATBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  frameDataIndexFLOATBuilder &operator=(const frameDataIndexFLOATBuilder &);
+  flatbuffers::Offset<frameDataIndexFLOAT> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<frameDataIndexFLOAT>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<frameDataIndexFLOAT> CreateframeDataIndexFLOAT(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    float data = 0.0f) {
+  frameDataIndexFLOATBuilder builder_(_fbb);
+  builder_.add_data(data);
+  return builder_.Finish();
+}
+
+struct frameDataIndexCOLOR FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_DATA = 4
+  };
+  uint32_t data() const {
+    return GetField<uint32_t>(VT_DATA, 0);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint32_t>(verifier, VT_DATA) &&
+           verifier.EndTable();
+  }
+};
+
+struct frameDataIndexCOLORBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_data(uint32_t data) {
+    fbb_.AddElement<uint32_t>(frameDataIndexCOLOR::VT_DATA, data, 0);
+  }
+  explicit frameDataIndexCOLORBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  frameDataIndexCOLORBuilder &operator=(const frameDataIndexCOLORBuilder &);
+  flatbuffers::Offset<frameDataIndexCOLOR> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<frameDataIndexCOLOR>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<frameDataIndexCOLOR> CreateframeDataIndexCOLOR(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    uint32_t data = 0) {
+  frameDataIndexCOLORBuilder builder_(_fbb);
+  builder_.add_data(data);
+  return builder_.Finish();
 }
 
 struct frameDataIndex FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
-    VT_DATA = 4
+    VT_DATA_TYPE = 4,
+    VT_DATA = 6
   };
-  const flatbuffers::Vector<float> *data() const {
-    return GetPointer<const flatbuffers::Vector<float> *>(VT_DATA);
+  const flatbuffers::Vector<uint8_t> *data_type() const {
+    return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_DATA_TYPE);
+  }
+  const flatbuffers::Vector<flatbuffers::Offset<void>> *data() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<void>> *>(VT_DATA);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
+           VerifyOffset(verifier, VT_DATA_TYPE) &&
+           verifier.Verify(data_type()) &&
            VerifyOffset(verifier, VT_DATA) &&
            verifier.Verify(data()) &&
+           VerifyframeDataIndexValueVector(verifier, data(), data_type()) &&
            verifier.EndTable();
   }
 };
@@ -2224,7 +2713,10 @@ struct frameDataIndex FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct frameDataIndexBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_data(flatbuffers::Offset<flatbuffers::Vector<float>> data) {
+  void add_data_type(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data_type) {
+    fbb_.AddOffset(frameDataIndex::VT_DATA_TYPE, data_type);
+  }
+  void add_data(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> data) {
     fbb_.AddOffset(frameDataIndex::VT_DATA, data);
   }
   explicit frameDataIndexBuilder(flatbuffers::FlatBufferBuilder &_fbb)
@@ -2241,18 +2733,22 @@ struct frameDataIndexBuilder {
 
 inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(
     flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<float>> data = 0) {
+    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data_type = 0,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> data = 0) {
   frameDataIndexBuilder builder_(_fbb);
   builder_.add_data(data);
+  builder_.add_data_type(data_type);
   return builder_.Finish();
 }
 
 inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndexDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<float> *data = nullptr) {
+    const std::vector<uint8_t> *data_type = nullptr,
+    const std::vector<flatbuffers::Offset<void>> *data = nullptr) {
   return ss::ssfb::CreateframeDataIndex(
       _fbb,
-      data ? _fbb.CreateVector<float>(*data) : 0);
+      data_type ? _fbb.CreateVector<uint8_t>(*data_type) : 0,
+      data ? _fbb.CreateVector<flatbuffers::Offset<void>>(*data) : 0);
 }
 
 struct userDataInteger FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -2693,17 +3189,19 @@ struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_FRAMEDATA = 8,
     VT_USERDATA = 10,
     VT_LABELDATA = 12,
-    VT_MESHSDATAUV = 14,
-    VT_MESHSDATAINDICES = 16,
-    VT_STARTFRAMES = 18,
-    VT_ENDFRAMES = 20,
-    VT_TOTALFRAMES = 22,
-    VT_FPS = 24,
-    VT_LABELNUM = 26,
-    VT_CANVASSIZEW = 28,
-    VT_CANVASSIZEH = 30,
-    VT_CANVASPVOTX = 32,
-    VT_CANVASPVOTY = 34
+    VT_MESHSDATAUV_TYPE = 14,
+    VT_MESHSDATAUV = 16,
+    VT_MESHSDATAINDICES_TYPE = 18,
+    VT_MESHSDATAINDICES = 20,
+    VT_STARTFRAMES = 22,
+    VT_ENDFRAMES = 24,
+    VT_TOTALFRAMES = 26,
+    VT_FPS = 28,
+    VT_LABELNUM = 30,
+    VT_CANVASSIZEW = 32,
+    VT_CANVASSIZEH = 34,
+    VT_CANVASPVOTX = 36,
+    VT_CANVASPVOTY = 38
   };
   const flatbuffers::String *name() const {
     return GetPointer<const flatbuffers::String *>(VT_NAME);
@@ -2720,11 +3218,17 @@ struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::Vector<flatbuffers::Offset<labelDataItem>> *labelData() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<labelDataItem>> *>(VT_LABELDATA);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<meshDataUV>> *meshsDataUV() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<meshDataUV>> *>(VT_MESHSDATAUV);
+  const flatbuffers::Vector<uint8_t> *meshsDataUV_type() const {
+    return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_MESHSDATAUV_TYPE);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<meshDataIndices>> *meshsDataIndices() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<meshDataIndices>> *>(VT_MESHSDATAINDICES);
+  const flatbuffers::Vector<flatbuffers::Offset<void>> *meshsDataUV() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<void>> *>(VT_MESHSDATAUV);
+  }
+  const flatbuffers::Vector<uint8_t> *meshsDataIndices_type() const {
+    return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_MESHSDATAINDICES_TYPE);
+  }
+  const flatbuffers::Vector<flatbuffers::Offset<void>> *meshsDataIndices() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<void>> *>(VT_MESHSDATAINDICES);
   }
   int16_t startFrames() const {
     return GetField<int16_t>(VT_STARTFRAMES, 0);
@@ -2769,12 +3273,16 @@ struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffset(verifier, VT_LABELDATA) &&
            verifier.Verify(labelData()) &&
            verifier.VerifyVectorOfTables(labelData()) &&
+           VerifyOffset(verifier, VT_MESHSDATAUV_TYPE) &&
+           verifier.Verify(meshsDataUV_type()) &&
            VerifyOffset(verifier, VT_MESHSDATAUV) &&
            verifier.Verify(meshsDataUV()) &&
-           verifier.VerifyVectorOfTables(meshsDataUV()) &&
+           VerifymeshDataUVValueVector(verifier, meshsDataUV(), meshsDataUV_type()) &&
+           VerifyOffset(verifier, VT_MESHSDATAINDICES_TYPE) &&
+           verifier.Verify(meshsDataIndices_type()) &&
            VerifyOffset(verifier, VT_MESHSDATAINDICES) &&
            verifier.Verify(meshsDataIndices()) &&
-           verifier.VerifyVectorOfTables(meshsDataIndices()) &&
+           VerifymeshDataIndicesValueVector(verifier, meshsDataIndices(), meshsDataIndices_type()) &&
            VerifyField<int16_t>(verifier, VT_STARTFRAMES) &&
            VerifyField<int16_t>(verifier, VT_ENDFRAMES) &&
            VerifyField<int16_t>(verifier, VT_TOTALFRAMES) &&
@@ -2806,10 +3314,16 @@ struct AnimationDataBuilder {
   void add_labelData(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<labelDataItem>>> labelData) {
     fbb_.AddOffset(AnimationData::VT_LABELDATA, labelData);
   }
-  void add_meshsDataUV(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<meshDataUV>>> meshsDataUV) {
+  void add_meshsDataUV_type(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> meshsDataUV_type) {
+    fbb_.AddOffset(AnimationData::VT_MESHSDATAUV_TYPE, meshsDataUV_type);
+  }
+  void add_meshsDataUV(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> meshsDataUV) {
     fbb_.AddOffset(AnimationData::VT_MESHSDATAUV, meshsDataUV);
   }
-  void add_meshsDataIndices(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<meshDataIndices>>> meshsDataIndices) {
+  void add_meshsDataIndices_type(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> meshsDataIndices_type) {
+    fbb_.AddOffset(AnimationData::VT_MESHSDATAINDICES_TYPE, meshsDataIndices_type);
+  }
+  void add_meshsDataIndices(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> meshsDataIndices) {
     fbb_.AddOffset(AnimationData::VT_MESHSDATAINDICES, meshsDataIndices);
   }
   void add_startFrames(int16_t startFrames) {
@@ -2858,8 +3372,10 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationData(
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<frameDataIndex>>> frameData = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<userDataPerFrame>>> userData = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<labelDataItem>>> labelData = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<meshDataUV>>> meshsDataUV = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<meshDataIndices>>> meshsDataIndices = 0,
+    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> meshsDataUV_type = 0,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> meshsDataUV = 0,
+    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> meshsDataIndices_type = 0,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> meshsDataIndices = 0,
     int16_t startFrames = 0,
     int16_t endFrames = 0,
     int16_t totalFrames = 0,
@@ -2873,7 +3389,9 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationData(
   builder_.add_canvasPvotY(canvasPvotY);
   builder_.add_canvasPvotX(canvasPvotX);
   builder_.add_meshsDataIndices(meshsDataIndices);
+  builder_.add_meshsDataIndices_type(meshsDataIndices_type);
   builder_.add_meshsDataUV(meshsDataUV);
+  builder_.add_meshsDataUV_type(meshsDataUV_type);
   builder_.add_labelData(labelData);
   builder_.add_userData(userData);
   builder_.add_frameData(frameData);
@@ -2896,8 +3414,10 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationDataDirect(
     const std::vector<flatbuffers::Offset<frameDataIndex>> *frameData = nullptr,
     const std::vector<flatbuffers::Offset<userDataPerFrame>> *userData = nullptr,
     const std::vector<flatbuffers::Offset<labelDataItem>> *labelData = nullptr,
-    const std::vector<flatbuffers::Offset<meshDataUV>> *meshsDataUV = nullptr,
-    const std::vector<flatbuffers::Offset<meshDataIndices>> *meshsDataIndices = nullptr,
+    const std::vector<uint8_t> *meshsDataUV_type = nullptr,
+    const std::vector<flatbuffers::Offset<void>> *meshsDataUV = nullptr,
+    const std::vector<uint8_t> *meshsDataIndices_type = nullptr,
+    const std::vector<flatbuffers::Offset<void>> *meshsDataIndices = nullptr,
     int16_t startFrames = 0,
     int16_t endFrames = 0,
     int16_t totalFrames = 0,
@@ -2914,8 +3434,10 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationDataDirect(
       frameData ? _fbb.CreateVector<flatbuffers::Offset<frameDataIndex>>(*frameData) : 0,
       userData ? _fbb.CreateVector<flatbuffers::Offset<userDataPerFrame>>(*userData) : 0,
       labelData ? _fbb.CreateVector<flatbuffers::Offset<labelDataItem>>(*labelData) : 0,
-      meshsDataUV ? _fbb.CreateVector<flatbuffers::Offset<meshDataUV>>(*meshsDataUV) : 0,
-      meshsDataIndices ? _fbb.CreateVector<flatbuffers::Offset<meshDataIndices>>(*meshsDataIndices) : 0,
+      meshsDataUV_type ? _fbb.CreateVector<uint8_t>(*meshsDataUV_type) : 0,
+      meshsDataUV ? _fbb.CreateVector<flatbuffers::Offset<void>>(*meshsDataUV) : 0,
+      meshsDataIndices_type ? _fbb.CreateVector<uint8_t>(*meshsDataIndices_type) : 0,
+      meshsDataIndices ? _fbb.CreateVector<flatbuffers::Offset<void>>(*meshsDataIndices) : 0,
       startFrames,
       endFrames,
       totalFrames,
@@ -3820,6 +4342,101 @@ inline bool VerifyEffectNodeBehaviorVector(flatbuffers::Verifier &verifier, cons
   for (flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
     if (!VerifyEffectNodeBehavior(
         verifier,  values->Get(i), types->GetEnum<EffectNodeBehavior>(i))) {
+      return false;
+    }
+  }
+  return true;
+}
+
+inline bool VerifymeshDataUVValue(flatbuffers::Verifier &verifier, const void *obj, meshDataUVValue type) {
+  switch (type) {
+    case meshDataUVValue_NONE: {
+      return true;
+    }
+    case meshDataUVValue_meshDataUVItem: {
+      auto ptr = reinterpret_cast<const meshDataUVItem *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    case meshDataUVValue_meshDataUVEmpty: {
+      auto ptr = reinterpret_cast<const meshDataUVEmpty *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    default: return false;
+  }
+}
+
+inline bool VerifymeshDataUVValueVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types) {
+  if (!values || !types) return !values && !types;
+  if (values->size() != types->size()) return false;
+  for (flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
+    if (!VerifymeshDataUVValue(
+        verifier,  values->Get(i), types->GetEnum<meshDataUVValue>(i))) {
+      return false;
+    }
+  }
+  return true;
+}
+
+inline bool VerifymeshDataIndicesValue(flatbuffers::Verifier &verifier, const void *obj, meshDataIndicesValue type) {
+  switch (type) {
+    case meshDataIndicesValue_NONE: {
+      return true;
+    }
+    case meshDataIndicesValue_meshDataIndicesItem: {
+      auto ptr = reinterpret_cast<const meshDataIndicesItem *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    case meshDataIndicesValue_meshDataIndicesEmpty: {
+      auto ptr = reinterpret_cast<const meshDataIndicesEmpty *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    default: return false;
+  }
+}
+
+inline bool VerifymeshDataIndicesValueVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types) {
+  if (!values || !types) return !values && !types;
+  if (values->size() != types->size()) return false;
+  for (flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
+    if (!VerifymeshDataIndicesValue(
+        verifier,  values->Get(i), types->GetEnum<meshDataIndicesValue>(i))) {
+      return false;
+    }
+  }
+  return true;
+}
+
+inline bool VerifyframeDataIndexValue(flatbuffers::Verifier &verifier, const void *obj, frameDataIndexValue type) {
+  switch (type) {
+    case frameDataIndexValue_NONE: {
+      return true;
+    }
+    case frameDataIndexValue_frameDataIndexS16: {
+      auto ptr = reinterpret_cast<const frameDataIndexS16 *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    case frameDataIndexValue_frameDataIndexS32: {
+      auto ptr = reinterpret_cast<const frameDataIndexS32 *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    case frameDataIndexValue_frameDataIndexFLOAT: {
+      auto ptr = reinterpret_cast<const frameDataIndexFLOAT *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    case frameDataIndexValue_frameDataIndexCOLOR: {
+      auto ptr = reinterpret_cast<const frameDataIndexCOLOR *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    default: return false;
+  }
+}
+
+inline bool VerifyframeDataIndexValueVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types) {
+  if (!values || !types) return !values && !types;
+  if (values->size() != types->size()) return false;
+  for (flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
+    if (!VerifyframeDataIndexValue(
+        verifier,  values->Get(i), types->GetEnum<frameDataIndexValue>(i))) {
       return false;
     }
   }
