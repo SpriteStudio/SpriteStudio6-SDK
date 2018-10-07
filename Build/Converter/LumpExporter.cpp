@@ -1223,8 +1223,8 @@ private:
 							break;
 						}
 						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementGravity: {
-							auto Gravity_x = GETS32(effectBehaviorArrayItemVec[1]);
-							auto Gravity_y = GETS32(effectBehaviorArrayItemVec[2]);
+							auto Gravity_x = GETFLOAT(effectBehaviorArrayItemVec[1]);
+							auto Gravity_y = GETFLOAT(effectBehaviorArrayItemVec[2]);
 
 							auto item = ss::ssfb::CreateEffectParticleElementGravity(m_ssfbBuilder, Gravity_x , Gravity_y);
 							ssfbEffectNodeBehavior.push_back(item.Union());
