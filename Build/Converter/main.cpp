@@ -1194,12 +1194,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					if (p_flags & PART_FLAG_OPACITY)
 					{
 						frameData->add(Lump::s16Data((int)(state->alpha * 255), tagname + "alpha"));
-						ssfbFrameData2.push_back(state->alpha * 255);
+						ssfbFrameData2.push_back((int)(state->alpha * 255));
 					}
 					if (p_flags & PART_FLAG_LOCALOPACITY)
 					{
 						frameData->add(Lump::s16Data((int)(state->localalpha * 255), tagname + "localalpha"));
-						ssfbFrameData2.push_back(state->localalpha * 255);
+						ssfbFrameData2.push_back((int)(state->localalpha * 255));
 					}
 
 					if (p_flags & PART_FLAG_SIZE_X)
