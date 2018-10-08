@@ -992,7 +992,6 @@ private:
 			{
 				auto frameDataIndexArrayVec = ssAnimationDataVec[2]->getChildren();
 
-				// TODO: 複数の型を float vector に格納しているため修正する
 				for(auto frameDataIndexArrayItem : frameDataIndexArrayVec) {
 					auto frameDataVec = frameDataIndexArrayItem->getChildren();
 
@@ -1000,26 +999,20 @@ private:
 					for(auto frameDataItem : frameDataVec) {
 						switch (frameDataItem->type) {
 							case Lump::DataType::S16:
-								// TODO: int16_t の型を float vector に格納しているため修正する
-								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
-//								ssfbFrameData2.push_back(GETS16(frameDataItem));
+								ssfbFrameData2.push_back(GETS16(frameDataItem));
 								break;
 							case Lump::DataType::S32:
-								// TODO: int32_t の型を float vector に格納しているため修正する
 								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
-//								ssfbFrameData2.push_back(GETS32(frameDataItem));
 								break;
 							case Lump::DataType::FLOAT:
 								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
 								break;
 							case Lump::DataType::COLOR:
-								// TODO: int32_t(color) の型を float vector に格納しているため修正する
 								{
 									auto rgba = GETU32(frameDataItem);
 									ssfbFrameData2.push_back((rgba & 0xffff0000) >> 16);
 									ssfbFrameData2.push_back(rgba & 0xffff);
 								}
-//								ssfbFrameData2.push_back(GETS32(frameDataItem));
 								break;
 							default:
 								break;
