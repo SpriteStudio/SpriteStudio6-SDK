@@ -244,7 +244,7 @@ table meshDataIndices {
 }
 
 table frameDataIndex {
-    data : [float];
+    data : [uint];
 }
 
 table userDataInteger {
