@@ -1368,9 +1368,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						int size = state->meshPart->ver_size;
 						for (i = 0; i < size; i++)
 						{
-							std::string tagname_mesh_x = tagname + "mesh_" + std::to_string(size) + "_x";
-							std::string tagname_mesh_y = tagname + "mesh_" + std::to_string(size) + "_y";
-							std::string tagname_mesh_z = tagname + "mesh_" + std::to_string(size) + "_z";
+							std::string tagname_mesh_x = tagname + "mesh_" + std::to_string(i) + "_x";
+							std::string tagname_mesh_y = tagname + "mesh_" + std::to_string(i) + "_y";
+							std::string tagname_mesh_z = tagname + "mesh_" + std::to_string(i) + "_z";
 
 							float mesh_x = state->meshPart->draw_vertices[i * 3 + 0];
 							float mesh_y = state->meshPart->draw_vertices[i * 3 + 1];
