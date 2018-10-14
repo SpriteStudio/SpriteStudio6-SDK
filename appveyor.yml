@@ -1,0 +1,31 @@
+os:
+  - Visual Studio 2017
+
+build:
+  verbosity: detailed
+
+configuration:
+  - Release
+
+cache:
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
+
+install:
+  - git submodule update --init --recursive
+  - Build\Depends\prepare.bat
+  - Build\Depends\allDownload.bat
+  - set CMAKE_URL="https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.zip"
+  - appveyor DownloadFile %CMAKE_URL% -FileName cmake.zip
+  - 7z x cmake.zip -oC:\projects\deps > nul
+  - move C:\projects\deps\cmake-* C:\projects\deps\cmake # Move to a version-agnostic directory
+  - set PATH=C:\projects\deps\cmake\bin;%PATH%
+  - cmake --version
+
+
+build_script:
+  - Scripts\release_win.bat
+
+artifacts:
+  - path: ./Tools/Ss6Converter.zip
+    name: Ss6Converter

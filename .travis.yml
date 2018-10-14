@@ -1,0 +1,25 @@
+language: cpp
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode10
+cache:
+  directories:
+    - $HOME/Library/Caches/Homebrew
+before_install:
+
+install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew reinstall qt ; fi
+
+before_script:
+  - git submodule update --init --recursive
+
+script:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./Scripts/release_macos.sh ; fi
+ 
+after_script:
+
+after_success:
+
+after_failure:
