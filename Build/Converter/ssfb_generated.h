@@ -218,6 +218,44 @@ inline const PART_FLAG (&EnumValuesPART_FLAG())[32] {
   return values;
 }
 
+inline const char *EnumNamePART_FLAG(PART_FLAG e) {
+  switch (e) {
+    case PART_FLAG_INVISIBLE: return "INVISIBLE";
+    case PART_FLAG_FLIP_H: return "FLIP_H";
+    case PART_FLAG_FLIP_V: return "FLIP_V";
+    case PART_FLAG_CELL_INDEX: return "CELL_INDEX";
+    case PART_FLAG_POSITION_X: return "POSITION_X";
+    case PART_FLAG_POSITION_Y: return "POSITION_Y";
+    case PART_FLAG_POSITION_Z: return "POSITION_Z";
+    case PART_FLAG_PIVOT_X: return "PIVOT_X";
+    case PART_FLAG_PIVOT_Y: return "PIVOT_Y";
+    case PART_FLAG_ROTATIONX: return "ROTATIONX";
+    case PART_FLAG_ROTATIONY: return "ROTATIONY";
+    case PART_FLAG_ROTATIONZ: return "ROTATIONZ";
+    case PART_FLAG_SCALE_X: return "SCALE_X";
+    case PART_FLAG_SCALE_Y: return "SCALE_Y";
+    case PART_FLAG_LOCALSCALE_X: return "LOCALSCALE_X";
+    case PART_FLAG_LOCALSCALE_Y: return "LOCALSCALE_Y";
+    case PART_FLAG_OPACITY: return "OPACITY";
+    case PART_FLAG_LOCALOPACITY: return "LOCALOPACITY";
+    case PART_FLAG_PARTS_COLOR: return "PARTS_COLOR";
+    case PART_FLAG_VERTEX_TRANSFORM: return "VERTEX_TRANSFORM";
+    case PART_FLAG_SIZE_X: return "SIZE_X";
+    case PART_FLAG_SIZE_Y: return "SIZE_Y";
+    case PART_FLAG_U_MOVE: return "U_MOVE";
+    case PART_FLAG_V_MOVE: return "V_MOVE";
+    case PART_FLAG_UV_ROTATION: return "UV_ROTATION";
+    case PART_FLAG_U_SCALE: return "U_SCALE";
+    case PART_FLAG_V_SCALE: return "V_SCALE";
+    case PART_FLAG_BOUNDINGRADIUS: return "BOUNDINGRADIUS";
+    case PART_FLAG_MASK: return "MASK";
+    case PART_FLAG_PRIORITY: return "PRIORITY";
+    case PART_FLAG_INSTANCE_KEYFRAME: return "INSTANCE_KEYFRAME";
+    case PART_FLAG_EFFECT_KEYFRAME: return "EFFECT_KEYFRAME";
+    default: return "";
+  }
+}
+
 enum PART_FLAG2 {
   PART_FLAG2_MESHDATA = 1,
   PART_FLAG2_NONE = 0,
@@ -1590,9 +1628,9 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int16_t>(verifier, VT_BLENDTYPE) &&
            VerifyField<int16_t>(verifier, VT_NUMBEHAVIOR) &&
            VerifyOffset(verifier, VT_BEHAVIOR_TYPE) &&
-           verifier.Verify(Behavior_type()) &&
+           verifier.VerifyVector(Behavior_type()) &&
            VerifyOffset(verifier, VT_BEHAVIOR) &&
-           verifier.Verify(Behavior()) &&
+           verifier.VerifyVector(Behavior()) &&
            VerifyEffectNodeBehaviorVector(verifier, Behavior(), Behavior_type()) &&
            verifier.EndTable();
   }
@@ -1719,7 +1757,7 @@ struct EffectFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyField<int16_t>(verifier, VT_FPS) &&
            VerifyField<int16_t>(verifier, VT_ISLOCKRANDSEED) &&
            VerifyField<int16_t>(verifier, VT_LOCKRANDSEED) &&
@@ -1727,7 +1765,7 @@ struct EffectFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int16_t>(verifier, VT_LAYOUTSCALEY) &&
            VerifyField<int16_t>(verifier, VT_NUMNODELIST) &&
            VerifyOffset(verifier, VT_EFFECTNODE) &&
-           verifier.Verify(effectNode()) &&
+           verifier.VerifyVector(effectNode()) &&
            verifier.VerifyVectorOfTables(effectNode()) &&
            verifier.EndTable();
   }
@@ -1842,9 +1880,9 @@ struct CellMap FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_IMAGEPATH) &&
-           verifier.Verify(imagePath()) &&
+           verifier.VerifyString(imagePath()) &&
            VerifyField<int16_t>(verifier, VT_INDEX) &&
            VerifyField<int16_t>(verifier, VT_WRAPMODE) &&
            VerifyField<int16_t>(verifier, VT_FILTERMODE) &&
@@ -1972,7 +2010,7 @@ struct Cell FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_CELLMAP) &&
            verifier.VerifyTable(cellMap()) &&
            VerifyField<int16_t>(verifier, VT_INDEXINCELLMAP) &&
@@ -2118,7 +2156,7 @@ struct meshDataUV FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_UV) &&
-           verifier.Verify(uv()) &&
+           verifier.VerifyVector(uv()) &&
            verifier.EndTable();
   }
 };
@@ -2167,7 +2205,7 @@ struct meshDataIndices FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_INDICES) &&
-           verifier.Verify(indices()) &&
+           verifier.VerifyVector(indices()) &&
            verifier.EndTable();
   }
 };
@@ -2216,7 +2254,7 @@ struct frameDataIndex FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_DATA) &&
-           verifier.Verify(data()) &&
+           verifier.VerifyVector(data()) &&
            verifier.EndTable();
   }
 };
@@ -2430,7 +2468,7 @@ struct userDataString FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyField<int32_t>(verifier, VT_LENGTH) &&
            VerifyOffset(verifier, VT_DATA) &&
-           verifier.Verify(data()) &&
+           verifier.VerifyString(data()) &&
            verifier.EndTable();
   }
 };
@@ -2500,9 +2538,9 @@ struct userDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int16_t>(verifier, VT_FLAGS) &&
            VerifyField<int16_t>(verifier, VT_ARRAYINDEX) &&
            VerifyOffset(verifier, VT_DATA_TYPE) &&
-           verifier.Verify(data_type()) &&
+           verifier.VerifyVector(data_type()) &&
            VerifyOffset(verifier, VT_DATA) &&
-           verifier.Verify(data()) &&
+           verifier.VerifyVector(data()) &&
            VerifyuserDataValueVector(verifier, data(), data_type()) &&
            verifier.EndTable();
   }
@@ -2578,7 +2616,7 @@ struct userDataPerFrame FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyField<int16_t>(verifier, VT_FRAMEINDEX) &&
            VerifyOffset(verifier, VT_DATA) &&
-           verifier.Verify(data()) &&
+           verifier.VerifyVector(data()) &&
            verifier.VerifyVectorOfTables(data()) &&
            verifier.EndTable();
   }
@@ -2639,7 +2677,7 @@ struct labelDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_LABEL) &&
-           verifier.Verify(label()) &&
+           verifier.VerifyString(label()) &&
            VerifyField<int16_t>(verifier, VT_FRAMEINDEX) &&
            verifier.EndTable();
   }
@@ -2756,24 +2794,24 @@ struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_DEFAULTDATA) &&
-           verifier.Verify(defaultData()) &&
+           verifier.VerifyVector(defaultData()) &&
            verifier.VerifyVectorOfTables(defaultData()) &&
            VerifyOffset(verifier, VT_FRAMEDATA) &&
-           verifier.Verify(frameData()) &&
+           verifier.VerifyVector(frameData()) &&
            verifier.VerifyVectorOfTables(frameData()) &&
            VerifyOffset(verifier, VT_USERDATA) &&
-           verifier.Verify(userData()) &&
+           verifier.VerifyVector(userData()) &&
            verifier.VerifyVectorOfTables(userData()) &&
            VerifyOffset(verifier, VT_LABELDATA) &&
-           verifier.Verify(labelData()) &&
+           verifier.VerifyVector(labelData()) &&
            verifier.VerifyVectorOfTables(labelData()) &&
            VerifyOffset(verifier, VT_MESHSDATAUV) &&
-           verifier.Verify(meshsDataUV()) &&
+           verifier.VerifyVector(meshsDataUV()) &&
            verifier.VerifyVectorOfTables(meshsDataUV()) &&
            VerifyOffset(verifier, VT_MESHSDATAINDICES) &&
-           verifier.Verify(meshsDataIndices()) &&
+           verifier.VerifyVector(meshsDataIndices()) &&
            verifier.VerifyVectorOfTables(meshsDataIndices()) &&
            VerifyField<int16_t>(verifier, VT_STARTFRAMES) &&
            VerifyField<int16_t>(verifier, VT_ENDFRAMES) &&
@@ -3383,18 +3421,18 @@ struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyField<int16_t>(verifier, VT_INDEX) &&
            VerifyField<int16_t>(verifier, VT_PARENTINDEX) &&
            VerifyField<int8_t>(verifier, VT_TYPE) &&
            VerifyField<int16_t>(verifier, VT_BOUNDSTYPE) &&
            VerifyField<int16_t>(verifier, VT_ALPHABLENDTYPE) &&
            VerifyOffset(verifier, VT_REFNAME) &&
-           verifier.Verify(refname()) &&
+           verifier.VerifyString(refname()) &&
            VerifyOffset(verifier, VT_EFFECTFILENAME) &&
-           verifier.Verify(effectfilename()) &&
+           verifier.VerifyString(effectfilename()) &&
            VerifyOffset(verifier, VT_COLORLABEL) &&
-           verifier.Verify(colorLabel()) &&
+           verifier.VerifyString(colorLabel()) &&
            VerifyField<int16_t>(verifier, VT_MASKINFLUENCE) &&
            verifier.EndTable();
   }
@@ -3515,12 +3553,12 @@ struct AnimePackData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_PARTS) &&
-           verifier.Verify(parts()) &&
+           verifier.VerifyVector(parts()) &&
            verifier.VerifyVectorOfTables(parts()) &&
            VerifyOffset(verifier, VT_ANIMATIONS) &&
-           verifier.Verify(animations()) &&
+           verifier.VerifyVector(animations()) &&
            verifier.VerifyVectorOfTables(animations()) &&
            verifier.EndTable();
   }
@@ -3623,15 +3661,15 @@ struct ProjectData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint32_t>(verifier, VT_VERSION) &&
            VerifyField<uint32_t>(verifier, VT_FLAGS) &&
            VerifyOffset(verifier, VT_IMAGEBASEDIR) &&
-           verifier.Verify(imageBaseDir()) &&
+           verifier.VerifyString(imageBaseDir()) &&
            VerifyOffset(verifier, VT_CELLS) &&
-           verifier.Verify(cells()) &&
+           verifier.VerifyVector(cells()) &&
            verifier.VerifyVectorOfTables(cells()) &&
            VerifyOffset(verifier, VT_ANIMEPACKS) &&
-           verifier.Verify(animePacks()) &&
+           verifier.VerifyVector(animePacks()) &&
            verifier.VerifyVectorOfTables(animePacks()) &&
            VerifyOffset(verifier, VT_EFFECTFILELIST) &&
-           verifier.Verify(effectFileList()) &&
+           verifier.VerifyVector(effectFileList()) &&
            verifier.VerifyVectorOfTables(effectFileList()) &&
            VerifyField<int16_t>(verifier, VT_NUMCELLS) &&
            VerifyField<int16_t>(verifier, VT_NUMANIMEPACKS) &&
