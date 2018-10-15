@@ -24,5 +24,6 @@ popd
 
 rem generate ssfb code
 %FLATC% -c fbs\ssfb.fbs
+%FLATC% -s fbs\ssfb.fbs
 
 popd

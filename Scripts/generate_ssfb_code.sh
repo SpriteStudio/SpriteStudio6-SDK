@@ -23,6 +23,7 @@ popd > /dev/null # flatbuffers
 
 # generate ssfb code
 ${FLATC} -c fbs/ssfb.fbs
+${FLATC} -s fbs/ssfb.fbs
 
 popd > /dev/null # Converter
 popd > /dev/null # ${BUILDDIR}
