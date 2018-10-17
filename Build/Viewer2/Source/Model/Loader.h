@@ -1,7 +1,5 @@
 ﻿#pragma once
-
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "ssHelper.h"
 
 class AsyncAnimeLoader : public ThreadWithProgressWindow
 {

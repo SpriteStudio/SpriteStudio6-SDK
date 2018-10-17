@@ -1,4 +1,5 @@
-﻿#include "Controller/MainComponent.h"
+﻿#include "ssHelper.h"
+#include "Controller/MainComponent.h"
 #include "Model/Player.h"
 #include "View/DocumentView3D.h"
 #include "View/MainWindow.h"
@@ -33,10 +34,6 @@ ViewerMainWindow::~ViewerMainWindow()
 	String fileList = recentlyOpenedFilesList.toString();
 	controller->getProperties().setValue("RecentlyOpenedFilesList", fileList);
 	controller->getProperties().save();
-
-	// 最後に読み込んだテクスチャの開放
-	Player::get()->unloadTexture();
-
 
 	if (animeTreeView)
 	{
@@ -103,7 +100,8 @@ void ViewerMainWindow::build()
 
 void ViewerMainWindow::buildMenuBar()
 {
-	addAndMakeVisible(menuBar = new MenuBarComponent(this));
+	menuBar.reset(new MenuBarComponent(this));
+	addAndMakeVisible(menuBar.get());
 
 	auto * controller = MainContentComponent::get();
 	String fileList = controller->getProperties().getValue("RecentlyOpenedFilesList");
@@ -116,28 +114,28 @@ void ViewerMainWindow::buildControlPanel()
 	// ボタンの作成
 	auto * cm = &MainContentComponent::get()->commandManager;
 
-	button_start	= new TextButton("start");
+	button_start.reset(new TextButton("start"));
 	button_start->setCommandToTrigger(cm, CommandIDs::START, false);
 
-	button_stop		= new TextButton("stop");
+	button_stop.reset(new TextButton("stop"));
 	button_stop->setCommandToTrigger(cm, CommandIDs::STOP, false);
 
-	button_reset	= new TextButton("reset");
+	button_reset.reset(new TextButton("reset"));
 	button_reset->setCommandToTrigger(cm, CommandIDs::RESET, false);
 
-	button_loop		= new TextButton("loop");
+	button_loop.reset(new TextButton("loop"));
 	button_loop->setClickingTogglesState(true);
 	button_loop->getToggleStateValue().referTo(state.loop);
 
 	// スライダーの作成
 	buildSlider();
 
-	controlPanel = new Component();
-	controlPanel->addAndMakeVisible(button_start);
-	controlPanel->addAndMakeVisible(button_stop);
-	controlPanel->addAndMakeVisible(button_reset);
-	controlPanel->addAndMakeVisible(button_loop);
-	controlPanel->addAndMakeVisible(slider_frame);
+	controlPanel.reset(new Component());
+	controlPanel->addAndMakeVisible(button_start.get());
+	controlPanel->addAndMakeVisible(button_stop.get());
+	controlPanel->addAndMakeVisible(button_reset.get());
+	controlPanel->addAndMakeVisible(button_loop.get());
+	controlPanel->addAndMakeVisible(slider_frame.get());
 
 	auto * player = Player::get();
 	if (player->getState()->animeName == "Setup")
@@ -145,32 +143,32 @@ void ViewerMainWindow::buildControlPanel()
 		controlPanel->setEnabled(false);
 	}
 
-	addAndMakeVisible(controlPanel);
+	addAndMakeVisible(controlPanel.get());
 }
 
 void ViewerMainWindow::buildSidePanel()
 {
-	sidePanel = new ConcertinaPanel();
+	sidePanel.reset(new ConcertinaPanel());
 
 	// ツリービューの作成
 	buildTreeView();
 	// プロパティーパネルの作成
 	buildPropertyPanel();
 
-	sidePanel->addPanel(-1, animeTreeView, false);
-	sidePanel->expandPanelFully(animeTreeView, true);
+	sidePanel->addPanel(-1, animeTreeView.get(), false);
+	sidePanel->expandPanelFully(animeTreeView.get(), true);
 
-	sidePanel->addPanel(-1, propertyPanel, false);
-	sidePanel->setMaximumPanelSize(propertyPanel, propertyPanel->getTotalContentHeight());
-	sidePanel->expandPanelFully(propertyPanel, true);
+	sidePanel->addPanel(-1, propertyPanel.get(), false);
+	sidePanel->setMaximumPanelSize(propertyPanel.get(), propertyPanel->getTotalContentHeight());
+	sidePanel->expandPanelFully(propertyPanel.get(), true);
 
-	addAndMakeVisible(sidePanel);
+	addAndMakeVisible(sidePanel.get());
 }
 
 void ViewerMainWindow::buildGL()
 {
-	opengl = new DocumentView3D();
-	addAndMakeVisible(opengl);
+	opengl.reset(new DocumentView3D());
+	addAndMakeVisible(opengl.get());
 }
 
 void ViewerMainWindow::openColourSelectorWindow()
@@ -182,8 +180,9 @@ void ViewerMainWindow::openColourSelectorWindow()
 
 	auto result = placement.appliedTo(area, getLocalBounds());
 	colourSelectorWindow->setBounds(result);
-	colourSelectorWindow->setUsingNativeTitleBar(true);
+	colourSelectorWindow->setUsingNativeTitleBar(false);
 	colourSelectorWindow->setVisible(true);
+	colourSelectorWindow->enterModalState();
 }
 
 void ViewerMainWindow::setBackGroundColour(const Colour & c)
@@ -378,7 +377,7 @@ void ViewerMainWindow::buildSlider()
 		length_model = 1;
 	}
 
-	slider_frame = new Slider(Slider::ThreeValueHorizontal, Slider::TextEntryBoxPosition::TextBoxLeft);
+	slider_frame.reset(new Slider(Slider::ThreeValueHorizontal, Slider::TextEntryBoxPosition::TextBoxLeft));
 	slider_frame->setRange(startFrame_model, length_model, 1);
 	slider_frame->setMinValue(startFrame_model);
 	slider_frame->setMaxValue(length_model);
@@ -408,9 +407,9 @@ ValueTree ViewerMainWindow::createTree()
 		return createTreeItem("", 0, -1);
 	}
 
-	SsProject * proj = Player::get()->currentProj;
+	SsProject * proj = Player::get()->currentProj.get();
 	auto root = createTreeItem("proj", -1, -1);
-	SsAnimePackList alist = proj->getAnimePackList();
+	SsAnimePackList & alist = proj->getAnimePackList();
 	for (int i = 0; i < alist.size(); i++)
 	{
 		// アニメパック名
@@ -444,7 +443,7 @@ void ViewerMainWindow::buildTreeView()
 	}
 	ValueTree root = createTree();
 	rootItem = new ViewerTreeViewItem(root);
-	animeTreeView = new TreeView();
+	animeTreeView.reset(new TreeView());
 	animeTreeView ->setDefaultOpenness(true);
 	animeTreeView ->setRootItem(rootItem);
 }
@@ -457,7 +456,7 @@ void ViewerMainWindow::buildPropertyPanel()
 	items.add(new TextPropertyComponent(state.length, "length", 10, false, false));
 	items.add(new SliderPropertyComponent(state.fps, "fps", 1, 60, 1));
 
-	propertyPanel = new PropertyPanel("Property");
+	propertyPanel.reset(new PropertyPanel("Property"));
 	propertyPanel->addProperties(items);
 }
 
@@ -526,9 +525,9 @@ void ViewerTreeViewItem::refreshSubItems()
 ColourSelectorWindow::ColourSelectorWindow(const String & name, Colour colour, int buttonsNeeded)
 	: DocumentWindow(name, colour, buttonsNeeded)
 {
-	selector = new ColourSelector(ColourSelector::showColourAtTop | ColourSelector::showSliders | ColourSelector::showColourspace);
+	selector.reset(new ColourSelector(ColourSelector::showColourAtTop | ColourSelector::showSliders | ColourSelector::showColourspace));
 	selector->setCurrentColour(colour);
-	setContentOwned(selector, false);
+	setContentOwned(selector.get(), false);
 }
 
 void ColourSelectorWindow::closeButtonPressed()

@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "ssHelper.h"
 
 class ViewerTreeViewItem;
 class ColourSelectorWindow;
@@ -44,24 +43,23 @@ public:
 	State *	getState();
     //==============================================================================
 private:
-	friend class WidgetCreator;
 	static ViewerMainWindow *	myInst;
 	// メニューバー
-	ScopedPointer<MenuBarComponent>	menuBar;
+	std::unique_ptr<MenuBarComponent>	menuBar;
 	// OpenGL描画領域
-	ScopedPointer<DocumentView3D>	opengl;
+	std::unique_ptr<DocumentView3D>	opengl;
 	// ウィジェット
-	ScopedPointer<TextButton>		button_start;
-	ScopedPointer<TextButton>		button_stop;
-	ScopedPointer<TextButton>		button_reset;
-	ScopedPointer<TextButton>		button_loop;
-	ScopedPointer<Slider>			slider_frame;
-	ScopedPointer<TreeView>			animeTreeView;
-	ScopedPointer<PropertyPanel>	propertyPanel;
+	std::unique_ptr<TextButton>		button_start;
+	std::unique_ptr<TextButton>		button_stop;
+	std::unique_ptr<TextButton>		button_reset;
+	std::unique_ptr<TextButton>		button_loop;
+	std::unique_ptr<Slider>			slider_frame;
+	std::unique_ptr<TreeView>		animeTreeView;
+	std::unique_ptr<PropertyPanel>	propertyPanel;
 	Component::SafePointer<ColourSelectorWindow>	colourSelectorWindow;
 	// レイアウト
-	ScopedPointer<Component>		controlPanel;
-	ScopedPointer<ConcertinaPanel>	sidePanel;
+	std::unique_ptr<Component>		controlPanel;
+	std::unique_ptr<ConcertinaPanel>sidePanel;
 	// 最近開いたファイルリスト
 	RecentlyOpenedFilesList			recentlyOpenedFilesList;
 	// ビューの状態
@@ -102,7 +100,7 @@ public:
 	ColourSelectorWindow(const String & name, Colour backgroundColour, int buttonsNeeded);
 	void closeButtonPressed() override;
 private:
-	ScopedPointer<ColourSelector> selector;
+	std::unique_ptr<ColourSelector> selector;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourSelectorWindow)
 };
 
