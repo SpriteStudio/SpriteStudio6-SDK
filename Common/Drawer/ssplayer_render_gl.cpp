@@ -178,13 +178,20 @@ static void __fastcall setupSimpleTextureCombiner_for_PartsColor_(SsBlendType::_
 	}
 }
 
+SsRenderGL::~SsRenderGL()
+{
+	delete vs;
+	delete fs1;
+	delete fs2;
+}
+
 void	SsRenderGL::initialize()
 {
 //	if ( m_isInit ) return ;
 	SSOpenGLShaderMan::Create();
-	SSOpenGLVertexShader*	vs = new SSOpenGLVertexShader( "basic_vs" , glshader_sprite_vs );
-	SSOpenGLFragmentShader*	fs1 = new SSOpenGLFragmentShader( "normal_fs" , glshader_sprite_fs );
-	SSOpenGLFragmentShader*	fs2 = new SSOpenGLFragmentShader( "pot_fs" ,glshader_sprite_fs_pot );
+	vs = new SSOpenGLVertexShader( "basic_vs" , glshader_sprite_vs );
+	fs1 = new SSOpenGLFragmentShader( "normal_fs" , glshader_sprite_fs );
+	fs2 = new SSOpenGLFragmentShader( "pot_fs" ,glshader_sprite_fs_pot );
 
 	SSOpenGLProgramObject* pgo1 = new SSOpenGLProgramObject();
 	SSOpenGLProgramObject* pgo2 = new SSOpenGLProgramObject();

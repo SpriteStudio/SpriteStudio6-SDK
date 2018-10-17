@@ -84,6 +84,8 @@ private:
 	SsMeshAnimator*	meshAnimator;
 	SsModel*		myModel;
 
+	std::vector<SsCellMapList*>		subCellMapManagerList;	//内部で生成したオブジェクト解体用
+
 private:
 	void	updateState( int nowTime , SsPart* part , SsPartAnime* part_anime , SsPartState* state );
 	void	updateInstance( int nowTime , SsPart* part , SsPartAnime* part_anime , SsPartState* state );
@@ -101,14 +103,7 @@ private:
 
 public:
 	SsAnimeDecoder();
-	virtual ~SsAnimeDecoder()
-	{
-		if ( curCellMapManager )
-			delete curCellMapManager;
-
-		if ( partState )
-			delete [] partState;
-	}
+	virtual ~SsAnimeDecoder();
 
 	virtual void	update( float frameDelta = 1.0f );
 	virtual void	draw();

@@ -10,6 +10,7 @@
 #include "Model/Player.h"
 #include "View/DocumentView3D.h"
 #include "View/MainWindow.h"
+#include "babel/babel.h"
 
 MainContentComponent* MainContentComponent::myInst = nullptr;
 

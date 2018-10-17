@@ -1,4 +1,5 @@
-﻿#include "Loader.h"
+﻿#include "ssplayer_animedecode.h"
+#include "Loader.h"
 #include "Player.h"
 #include "View/MainWindow.h"
 #include "Controller/MainComponent.h"
@@ -12,40 +13,54 @@ AsyncAnimeLoader::AsyncAnimeLoader()
 void AsyncAnimeLoader::run()
 {
 	auto* p = Player::get();
-	p->changeState(p->stateLoading);
 
 	setProgress(-1.0);
 	setStatusMessage("Analysing animation...");
 
-	p->setAnime(packIndex, animeIndex);
+	// GLのスレッドにリクエスト
+	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
+	{
+		p->changeState(p->stateLoading.get());
+		SsAnimePackList & alist = p->currentProj->getAnimePackList();
+		SsAnimePack * animePack = alist[packIndex];
+		SsAnimation * anime = animePack->animeList[animeIndex];
+		SsModel* model = &animePack->Model;
+
+		p->decoder.reset(new SsAnimeDecoder());
+		p->cellmap.reset(new SsCellMapList());
+		p->cellmap->set(p->currentProj.get(), animePack);
+		p->decoder->setAnimation(model, anime, p->cellmap.get(),p->currentProj.get());
+
+		int startFrame = static_cast<int>(p->decoder->getAnimeStartFrame());
+		int endFrame = static_cast<int>(p->decoder->getAnimeEndFrame());
+		int fps = static_cast<int>(p->decoder->getAnimeFPS());
+		String animeName = anime->name;
+
+		p->currentState->packIndex = packIndex;
+		p->currentState->animeIndex = animeIndex;
+		p->getState()->animeName = animeName;
+		p->getState()->length = endFrame;
+		p->getState()->startFrame = startFrame;
+		p->getState()->frame = startFrame;
+		p->getState()->endFrame = endFrame;
+		p->getState()->fps = fps;
+
+		if (animeName == "Setup")
+		{
+			p->changeState(p->stateInitial.get());
+		}
+		else
+		{
+			p->changeState(p->statePaused.get());
+		}
+	}, true);
 
 	wait(100);
 }
 
 void AsyncAnimeLoader::threadComplete(bool userPressedCancel)
 {
-	auto* pM = Player::get();
 	auto* pC = MainContentComponent::get();
-
-	int startFrame = static_cast<int>(pM->decoder->getAnimeStartFrame());
-	int endFrame = static_cast<int>(pM->decoder->getAnimeEndFrame());
-	int fps = static_cast<int>(pM->decoder->getAnimeFPS());
-
-	SsAnimePackList alist = pM->currentProj->getAnimePackList();
-	SsAnimePack * animePack = alist[packIndex];
-	SsAnimation * anime = animePack->animeList[animeIndex];
-	String animeName = anime->name.c_str();
-
-	pM->currentState->packIndex = packIndex;
-	pM->currentState->animeIndex = animeIndex;
-	pM->getState()->animeName = animeName;
-	pM->getState()->length = endFrame;
-	pM->getState()->startFrame = startFrame;
-	pM->getState()->frame = startFrame;
-	pM->getState()->endFrame = endFrame;
-	pM->getState()->fps = fps;
-
-	pM->changeState(pM->statePaused);
 
 	pC->repaint();
 	delete this;
@@ -66,51 +81,53 @@ AsyncProjectLoader::AsyncProjectLoader()
 void AsyncProjectLoader::run()
 {
 	auto* p = Player::get();
-	p->changeState(p->stateLoading);
 
 	setProgress(-1.0);
-
-	// 文字コード変換
-	std::string fileName = babel::auto_translate<>(projectName.toStdString());
-
 	setStatusMessage("Analysing project...");
-	auto * proj = ssloader_sspj::Load(fileName);
 
-	if (!proj)
+	// GLのスレッドにリクエスト
+	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
 	{
-		AlertWindow::showMessageBoxAsync(
-			AlertWindow::InfoIcon,
-			"File Open Failed",
-			"File Open Failed : " + projectName);
+		p->changeState(p->stateLoading.get());
 
-		return;
-	}
+		// 文字コード変換
+		std::string fileName = babel::auto_translate<>(projectName.toStdString());
 
-	if (proj->getAnimePackList().size() == 0)
-	{
-		return;
-	}
+		SsProject* proj = ssloader_sspj::Load(fileName);
 
-	p->unloadTexture();
-	p->currentProj = proj;
-	p->preloadTexture();
+		if (!proj)
+		{
+			AlertWindow::showMessageBoxAsync(
+				AlertWindow::InfoIcon,
+				"File Open Failed",
+				"File Open Failed : " + projectName);
+		}
+		else
+		if (proj->getAnimePackList().size() == 0)
+		{
+			delete proj;
+		}
+		else
+		{
+			p->currentProj.reset(proj);
 
-	// 最近開いたファイルリストに追加
-	ViewerMainWindow::get()->addRecentlyOpenedFile(File(fileName));
+			// 最近開いたファイルリストに追加
+			ViewerMainWindow::get()->addRecentlyOpenedFile(File(projectName));
+		}
+
+		p->changeState(p->stateInitial.get());
+	}, true);
 
 	wait(100);
 }
 
 void AsyncProjectLoader::threadComplete(bool userPressedCancel)
 {
-	auto* pM = Player::get();
 	auto* pV = ViewerMainWindow::get();
 	auto* pC = MainContentComponent::get();
 
 	pV->buildSidePanel();
 	pV->resized();
-
-	pM->changeState(pM->stateInitial);
 
 	pC->repaint();
 	delete this;

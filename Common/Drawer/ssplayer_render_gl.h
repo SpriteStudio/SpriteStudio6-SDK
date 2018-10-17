@@ -5,16 +5,20 @@
 
 struct SsPartState;
 class SsMeshPart;
-
+class SSOpenGLVertexShader;
+class SSOpenGLFragmentShader;
+class SSOpenGLFragmentShader;
 
 class SsRenderGL : public ISsRenderer
 {
 private:
 	//static bool	m_isInit;
-
+	SSOpenGLVertexShader*	vs;
+	SSOpenGLFragmentShader*	fs1;
+	SSOpenGLFragmentShader*	fs2;
 public:
-	SsRenderGL(){}
-	virtual ~SsRenderGL(){}
+	SsRenderGL() : vs(0), fs1(0), fs2(0) {};
+	virtual ~SsRenderGL();
 
 	virtual void	initialize();
 	virtual void	renderSetup();

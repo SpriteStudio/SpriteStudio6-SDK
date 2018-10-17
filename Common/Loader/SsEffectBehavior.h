@@ -21,7 +21,7 @@ public:
 
 public:
 	SsEffectBehavior() : refCell(0),BlendType(SsRenderBlendType::invalid) {}
-	virtual ~SsEffectBehavior(){}
+	virtual ~SsEffectBehavior();
 
 	SSSERIALIZE_BLOCK
 	{

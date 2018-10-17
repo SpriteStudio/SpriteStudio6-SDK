@@ -42,7 +42,19 @@ SsAnimeDecoder::SsAnimeDecoder() :
 	maskParentSetting(true),
 	meshAnimator(0)
 	{
+		meshAnimator = new SsMeshAnimator();
 	}
+
+SsAnimeDecoder::~SsAnimeDecoder()
+{
+	if ( partState )
+		delete [] partState;
+	delete meshAnimator;
+	for (auto itr = subCellMapManagerList.begin(); itr != subCellMapManagerList.end(); itr++)
+	{
+		delete *itr;
+	}
+}
 
 
 void	SsAnimeDecoder::reset()
@@ -198,8 +210,9 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 				SsAnimation* refanime = refpack->findAnimation( p->refAnime );
 
 				SsCellMapList* __cellmap = new SsCellMapList();
+				subCellMapManagerList.push_back(__cellmap);
 				__cellmap->set( sspj , refpack );
-				SsAnimeDecoder* animedecoder = new SsAnimeDecoder();
+				auto * animedecoder = new SsAnimeDecoder();
 
 				//インスタンスパーツの設定setAnimationでソースアニメになるパーツに適用するので先に設定を行う
 				animedecoder->setMaskFuncFlag(false);					//マスク機能を無効にする
@@ -270,7 +283,6 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	curAnimeFPS = anime->settings.fps;
 
 	//メッシュアニメーションを初期化
-	meshAnimator = new SsMeshAnimator();
 	meshAnimator->setAnimeDecoder(this);
 	meshAnimator->makeMeshBoneList();
 

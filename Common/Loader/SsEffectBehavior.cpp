@@ -56,3 +56,11 @@ void	SsEffectBehavior::EffectElementLoader(ISsXmlArchiver* ar)
 	}
 
 }
+
+SsEffectBehavior::~SsEffectBehavior()
+{
+	for (auto itr = plist.begin(); itr != plist.end(); itr++)
+	{
+		delete *itr;
+	}
+}

@@ -1,9 +1,11 @@
 ﻿#include <GL/glew.h>
+#include "OpenGL/SSTextureGL.h"
+#include "ssplayer_render_gl.h"
+#include "ssplayer_shader_gl.h"
 #include "Controller/MainComponent.h"
 #include "Model/Player.h"
 #include "View/DocumentView3D.h"
 #include "View/MainWindow.h"
-#include "ssplayer_shader_gl.h"
 
 DocumentView3D::DocumentView3D()
 {
@@ -18,11 +20,18 @@ DocumentView3D::~DocumentView3D()
 
 void DocumentView3D::initialise()
 {
-	Player::get()->initGL();
+#if JUCE_WINDOWS
+	GLenum err = glewInit();
+#endif
+
+	rendererGL.reset(new SsRenderGL());
+	SsCurrentRenderer::SetCurrentRender(rendererGL.get());
+	texfactory.reset(new SSTextureFactory(new SSTextureGL()));
 }
 
 void DocumentView3D::shutdown()
 {
+	SSTextureFactory::releaseAllTexture();
 	SSOpenGLShaderMan::Destory();
 }
 

@@ -1,5 +1,7 @@
 ﻿#include "../Loader/ssloader.h"
 #include "ssplayer_animedecode.h"
+#include "ssplayer_mesh.h"
+#include "ssplayer_effect2.h"
 #include "ssplayer_PartState.h"
 
 SsPartState::SsPartState() : refAnime(0), index(-1), parent(nullptr), noCells(false), alphaBlendType(SsBlendType::invalid),	refEffect(0) , 	meshPart(0)

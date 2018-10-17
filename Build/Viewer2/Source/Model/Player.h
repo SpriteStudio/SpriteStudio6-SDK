@@ -9,11 +9,7 @@
 */
 
 #pragma once
-
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "ssHelper.h"
-#include "ssplayer_animedecode.h"
-#include "ssplayer_render_gl.h"
 
 class SsProject;
 class SsAnimePack;
@@ -53,7 +49,6 @@ class Player : public juce::HighResolutionTimer
 		virtual void	draw(Player * p);
 		virtual void	loadProj(Player * p, const String & name);
 		virtual void	loadAnime(Player * p, int packIndex, int animeIndex);
-		virtual void	changeState(Player * p, State * newState);
 		virtual void	onEnter(Player * p) {};
 		virtual void	onLeave(Player * p) {};
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(State)
@@ -117,24 +112,18 @@ public:
 	void	stop();
 	void	reset();
 	void	loadProj(const String & name);
-	void	preloadTexture();
-	void	unloadTexture();
 	void	loadAnime(int packIndex, int animeIndex);
-	void	setAnime(int packIndex, int animeIndex);
-	void	initGL();
 	State *	getState();
 	static void	drawAnime();
 
 	// アニメーションの状態
-	ScopedPointer<StatePlaying>		statePlaying;
-	ScopedPointer<StatePaused>		statePaused;
-	ScopedPointer<StateLoading>		stateLoading;
-	ScopedPointer<StateInitial>		stateInitial;
-	ScopedPointer<SsProject>		currentProj;
-	ScopedPointer<SsAnimeDecoder>	decoder;
-	ScopedPointer<SSTextureFactory>	texfactory;
-	ScopedPointer<SsRenderGL>		rendererGL;
-	SsCellMapList *					cellmap = nullptr;
+	std::unique_ptr<StatePlaying>		statePlaying;
+	std::unique_ptr<StatePaused>		statePaused;
+	std::unique_ptr<StateLoading>		stateLoading;
+	std::unique_ptr<StateInitial>		stateInitial;
+	std::unique_ptr<SsProject>			currentProj;
+	std::unique_ptr<SsAnimeDecoder>		decoder;
+	std::unique_ptr<SsCellMapList>		cellmap;
 
 	friend class AsyncAnimeLoader;
 	friend class AsyncProjectLoader;
