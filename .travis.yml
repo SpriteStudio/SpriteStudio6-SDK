@@ -32,4 +32,5 @@ deploy:
   on:
     branch: develop
   region: ap-northeast-1
-    
+  deployment: "Tools"
+
