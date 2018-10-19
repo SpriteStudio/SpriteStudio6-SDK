@@ -29,3 +29,5 @@ build_script:
 artifacts:
   - path: ./Tools/Ss6Converter.zip
     name: Ss6Converter
+  - path: ./Tools/viewer_sample.zip
+    name: viewer_sample
