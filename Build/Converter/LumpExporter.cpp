@@ -995,17 +995,17 @@ private:
 				for(auto frameDataIndexArrayItem : frameDataIndexArrayVec) {
 					auto frameDataVec = frameDataIndexArrayItem->getChildren();
 
-					std::vector<float> ssfbFrameData2;
+					std::vector<uint32_t > ssfbFrameData2;
 					for(auto frameDataItem : frameDataVec) {
 						switch (frameDataItem->type) {
 							case Lump::DataType::S16:
 								ssfbFrameData2.push_back(GETS16(frameDataItem));
 								break;
 							case Lump::DataType::S32:
-								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
+								ssfbFrameData2.push_back(GETS32(frameDataItem));
 								break;
 							case Lump::DataType::FLOAT:
-								ssfbFrameData2.push_back(GETFLOAT(frameDataItem));
+								ssfbFrameData2.push_back(GETS32(frameDataItem));
 								break;
 							case Lump::DataType::COLOR:
 								{

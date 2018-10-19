@@ -2248,8 +2248,8 @@ struct frameDataIndex FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_DATA = 4
   };
-  const flatbuffers::Vector<float> *data() const {
-    return GetPointer<const flatbuffers::Vector<float> *>(VT_DATA);
+  const flatbuffers::Vector<uint32_t> *data() const {
+    return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_DATA);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -2262,7 +2262,7 @@ struct frameDataIndex FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct frameDataIndexBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_data(flatbuffers::Offset<flatbuffers::Vector<float>> data) {
+  void add_data(flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data) {
     fbb_.AddOffset(frameDataIndex::VT_DATA, data);
   }
   explicit frameDataIndexBuilder(flatbuffers::FlatBufferBuilder &_fbb)
@@ -2279,7 +2279,7 @@ struct frameDataIndexBuilder {
 
 inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(
     flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<float>> data = 0) {
+    flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data = 0) {
   frameDataIndexBuilder builder_(_fbb);
   builder_.add_data(data);
   return builder_.Finish();
@@ -2287,10 +2287,10 @@ inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(
 
 inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndexDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<float> *data = nullptr) {
+    const std::vector<uint32_t> *data = nullptr) {
   return ss::ssfb::CreateframeDataIndex(
       _fbb,
-      data ? _fbb.CreateVector<float>(*data) : 0);
+      data ? _fbb.CreateVector<uint32_t>(*data) : 0);
 }
 
 struct userDataInteger FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
