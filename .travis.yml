@@ -32,4 +32,7 @@ deploy:
   on:
     branch: develop
   region: ap-northeast-1
-    
+  local_dir: Tools
+  skip_cleanup: true
+
+
