@@ -886,7 +886,8 @@ private:
 			auto ssAnimationDataVec = animationDataItem->getChildren();
 
 			// 1:AnimationInitialData
-			std::vector<flatbuffers::Offset<ss::ssfb::AnimationInitialData>> ssfbDefaultData;
+			std::vector<ss::ssfb::AnimationInitialData> ssfbDefaultData;
+			//std::vector<const ss::ssfb::AnimationInitialData*> ssfbDefaultData;
 			{
 				auto AnimationInitialDataVec = ssAnimationDataVec[1]->getChildren();
 				for(auto AnimationInitialDataItem : AnimationInitialDataVec)
@@ -936,12 +937,13 @@ private:
 					auto effectValue_speed = GETFLOAT(AnimationInitialDataItemVec[38]);
 					auto effectValue_loopflag = GETS32(AnimationInitialDataItemVec[39]);
 
-					auto item = ss::ssfb::CreateAnimationInitialData(m_ssfbBuilder, index,
-																	 lowflag, highflag, priority, cellIndex, opacity, localopacity, masklimen, posX, posY, posZ, //
-																	 pivotX, pivotY, rotationX, rotationY, rotationZ, scaleX, scaleY, localscaleX, localscaleY, size_X, size_Y,
-																	 uv_move_X, uv_move_Y, uv_rotation, uv_scale_X, uv_scale_Y, boundingRadius,
-																	 instanceValue_curKeyframe, instanceValue_startFrame, instanceValue_endFrame, instanceValue_loopNum, instanceValue_speed, instanceValue_loopflag,
-																	 effectValue_curKeyframe, effectValue_startTime, effectValue_speed, effectValue_loopflag);
+
+					auto item = ss::ssfb::AnimationInitialData(index,
+					                                           lowflag, highflag, priority, cellIndex, opacity, localopacity, masklimen, posX, posY, posZ, //
+					                                           pivotX, pivotY, rotationX, rotationY, rotationZ, scaleX, scaleY, localscaleX, localscaleY, size_X, size_Y,
+					                                           uv_move_X, uv_move_Y, uv_rotation, uv_scale_X, uv_scale_Y, boundingRadius,
+					                                           instanceValue_curKeyframe, instanceValue_startFrame, instanceValue_endFrame, instanceValue_loopNum, instanceValue_speed, instanceValue_loopflag,
+					                                           effectValue_curKeyframe, effectValue_startTime, effectValue_speed, effectValue_loopflag);
 					ssfbDefaultData.push_back(item);
 				}
 			}
@@ -1046,7 +1048,7 @@ private:
 							auto arrayIndex = GETS16(userDataIndexArrayItemVec[idx++]);
 							if(flags & (int16_t)(USER_DATA_FLAG_INTEGER)) {
 								auto integer = GETS32(userDataIndexArrayItemVec[idx++]);
-								auto item = ss::ssfb::CreateuserDataInteger(m_ssfbBuilder, integer);
+								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::userDataInteger(integer));
 								ssfbDataArray.push_back(item.Union());
 								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataInteger);
 							}
@@ -1056,7 +1058,7 @@ private:
 								auto rect_w = GETS32(userDataIndexArrayItemVec[idx++]);
 								auto rect_h = GETS32(userDataIndexArrayItemVec[idx++]);
 
-								auto item = ss::ssfb::CreateuserDataRect(m_ssfbBuilder, rect_x, rect_y, rect_w, rect_h);
+								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::userDataRect(rect_x, rect_y, rect_w, rect_h));
 								ssfbDataArray.push_back(item.Union());
 								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataRect);
 							}
@@ -1064,10 +1066,9 @@ private:
 								auto point_x = GETS32(userDataIndexArrayItemVec[idx++]);
 								auto point_y = GETS32(userDataIndexArrayItemVec[idx++]);
 
-								auto item = ss::ssfb::CreateuserDataPoint(m_ssfbBuilder, point_x, point_y);
+								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::userDataPoint(point_x, point_y));
 								ssfbDataArray.push_back(item.Union());
 								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataPoint);
-
 							}
 							if(flags & (int16_t)(USER_DATA_FLAG_STRING)) {
 								auto str_length = GETS16(userDataIndexArrayItemVec[idx++]);
@@ -1123,7 +1124,7 @@ private:
 			auto canvasPvotX = GETFLOAT(ssAnimationDataVec[15]);
 			auto canvasPvotY = GETFLOAT(ssAnimationDataVec[16]);
 
-			auto serializeSsfbDefaultData = m_ssfbBuilder.CreateVector(ssfbDefaultData);
+			auto serializeSsfbDefaultData = m_ssfbBuilder.CreateVectorOfStructs(ssfbDefaultData);
 			auto serializeSsfbMeshsDataUV = m_ssfbBuilder.CreateVector(ssfbMeshsDataUV);
 			auto serializeSsfbMeshsDataIndices = m_ssfbBuilder.CreateVector(ssfbMeshsDataIndices);
 
@@ -1191,10 +1192,10 @@ private:
 							auto lifespanMaxValue = GETS32(effectBehaviorArrayItemVec[9]);
 							auto angle = GETFLOAT(effectBehaviorArrayItemVec[10]);
 							auto angleVariance = GETFLOAT(effectBehaviorArrayItemVec[11]);
-
-							auto item = ss::ssfb::CreateEffectParticleElementBasic(m_ssfbBuilder, SsEffectFunctionType, priority,
-																				   maximumParticle, attimeCreate, interval, lifetime,
-																				   speedMinValue, speedMaxValue, lifespanMinValue, lifespanMaxValue, angle, angleVariance);
+							auto item = m_ssfbBuilder.CreateStruct(
+									ss::ssfb::EffectParticleElementBasic(SsEffectFunctionType, priority,
+									                                     maximumParticle, attimeCreate, interval, lifetime,
+									                                     speedMinValue, speedMaxValue, lifespanMinValue, lifespanMaxValue, angle, angleVariance));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1202,7 +1203,7 @@ private:
 						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementRndSeedChange: {
 							auto Seed = GETS32(effectBehaviorArrayItemVec[1]);
 
-							auto item = ss::ssfb::CreateEffectParticleElementRndSeedChange(m_ssfbBuilder, Seed);
+							auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::EffectParticleElementRndSeedChange(Seed));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1210,7 +1211,7 @@ private:
 						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementDelay: {
 							auto DelayTime = GETS32(effectBehaviorArrayItemVec[1]);
 
-							auto item = ss::ssfb::CreateEffectParticleElementDelay(m_ssfbBuilder, DelayTime);
+							auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::EffectParticleElementDelay(DelayTime));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1219,7 +1220,7 @@ private:
 							auto Gravity_x = GETFLOAT(effectBehaviorArrayItemVec[1]);
 							auto Gravity_y = GETFLOAT(effectBehaviorArrayItemVec[2]);
 
-							auto item = ss::ssfb::CreateEffectParticleElementGravity(m_ssfbBuilder, Gravity_x , Gravity_y);
+							auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::EffectParticleElementGravity(Gravity_x, Gravity_y));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1230,11 +1231,11 @@ private:
 							auto OffsetYMinValue = GETFLOAT(effectBehaviorArrayItemVec[3]);
 							auto OffsetYMaxValue = GETFLOAT(effectBehaviorArrayItemVec[4]);
 
-							auto item = ss::ssfb::CreateEffectParticleElementPosition(m_ssfbBuilder,
-																					  OffsetXMinValue,
-																					  OffsetXMaxValue,
-																					  OffsetYMinValue,
-																					  OffsetYMaxValue);
+							auto item = m_ssfbBuilder.CreateStruct(
+									ss::ssfb::EffectParticleElementPosition(OffsetXMinValue,
+									                                        OffsetXMaxValue,
+									                                        OffsetYMinValue,
+									                                        OffsetYMaxValue));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1245,11 +1246,11 @@ private:
 							auto RotationAddMinValue = GETFLOAT(effectBehaviorArrayItemVec[3]);
 							auto RotationAddMaxValue = GETFLOAT(effectBehaviorArrayItemVec[4]);
 
-							auto item = ss::ssfb::CreateEffectParticleElementRotation(m_ssfbBuilder,
-																					  RotationMinValue,
-																					  RotationMaxValue,
-																					  RotationAddMinValue,
-																					  RotationAddMaxValue);
+							auto item = m_ssfbBuilder.CreateStruct(
+									ss::ssfb::EffectParticleElementRotation(RotationMinValue,
+									                                        RotationMaxValue,
+									                                        RotationAddMinValue,
+									                                        RotationAddMaxValue));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1258,7 +1259,8 @@ private:
 							auto RotationFactor = GETFLOAT(effectBehaviorArrayItemVec[1]);
 							auto EndLifeTimePer = GETFLOAT(effectBehaviorArrayItemVec[2]);
 
-							auto item = ss::ssfb::CreateEffectParticleElementRotationTrans(m_ssfbBuilder, RotationFactor, EndLifeTimePer);
+							auto item = m_ssfbBuilder.CreateStruct(
+									ss::ssfb::EffectParticleElementRotationTrans(RotationFactor, EndLifeTimePer));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1267,7 +1269,8 @@ private:
 							auto SpeedMinValue = GETFLOAT(effectBehaviorArrayItemVec[1]);
 							auto SpeedMaxValue = GETFLOAT(effectBehaviorArrayItemVec[2]);
 
-							auto item = ss::ssfb::CreateEffectParticleElementTransSpeed(m_ssfbBuilder, SpeedMinValue, SpeedMaxValue);
+							auto item = m_ssfbBuilder.CreateStruct(
+									ss::ssfb::EffectParticleElementTransSpeed(SpeedMinValue, SpeedMaxValue));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1276,7 +1279,8 @@ private:
 							auto AccelerationMinValue = GETFLOAT(effectBehaviorArrayItemVec[1]);
 							auto AccelerationMaxValue = GETFLOAT(effectBehaviorArrayItemVec[2]);
 
-							auto item = ss::ssfb::CreateEffectParticleElementTangentialAcceleration(m_ssfbBuilder, AccelerationMinValue, AccelerationMaxValue);
+							auto item = m_ssfbBuilder.CreateStruct(
+									ss::ssfb::EffectParticleElementTangentialAcceleration(AccelerationMinValue, AccelerationMaxValue));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1286,7 +1290,8 @@ private:
 							auto ColorMaxValue = GETS32(effectBehaviorArrayItemVec[2]);
 
 							// TODO: uint32
-							auto item = ss::ssfb::CreateEffectParticleElementInitColor(m_ssfbBuilder, ColorMinValue, ColorMaxValue);
+							auto item = m_ssfbBuilder.CreateStruct(
+									ss::ssfb::EffectParticleElementInitColor(ColorMinValue, ColorMaxValue));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1296,7 +1301,8 @@ private:
 							auto ColorMaxValue = GETS32(effectBehaviorArrayItemVec[2]);
 
 							// TODO: uint32
-							auto item = ss::ssfb::CreateEffectParticleElementTransColor(m_ssfbBuilder, ColorMinValue, ColorMaxValue);
+							auto item = m_ssfbBuilder.CreateStruct(
+									ss::ssfb::EffectParticleElementTransColor(ColorMinValue, ColorMaxValue));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1305,7 +1311,8 @@ private:
 							auto disprangeMinValue = GETFLOAT(effectBehaviorArrayItemVec[1]);
 							auto disprangeMaxValue = GETFLOAT(effectBehaviorArrayItemVec[2]);
 
-							auto item = ss::ssfb::CreateEffectParticleElementAlphaFade(m_ssfbBuilder, disprangeMinValue, disprangeMaxValue);
+							auto item = m_ssfbBuilder.CreateStruct(
+									ss::ssfb::EffectParticleElementAlphaFade(disprangeMinValue, disprangeMaxValue));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1318,10 +1325,10 @@ private:
 							auto ScaleFactorMinValue = GETFLOAT(effectBehaviorArrayItemVec[5]);
 							auto ScaleFactorMaxValue = GETFLOAT(effectBehaviorArrayItemVec[6]);
 
-							auto item = ss::ssfb::CreateEffectParticleElementSize(m_ssfbBuilder,
-																				  SizeXMinValue, SizeXMaxValue,
-																				  SizeYMinValue, SizeYMaxValue,
-																				  ScaleFactorMinValue, ScaleFactorMaxValue);
+							auto item = m_ssfbBuilder.CreateStruct(
+									ss::ssfb::EffectParticleElementSize(SizeXMinValue, SizeXMaxValue,
+									                                    SizeYMinValue, SizeYMaxValue,
+									                                    ScaleFactorMinValue, ScaleFactorMaxValue));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1334,10 +1341,10 @@ private:
 							auto ScaleFactorMinValue = GETFLOAT(effectBehaviorArrayItemVec[5]);
 							auto ScaleFactorMaxValue = GETFLOAT(effectBehaviorArrayItemVec[6]);
 
-							auto item = ss::ssfb::CreateEffectParticleElementTransSize(m_ssfbBuilder,
-																					   SizeXMinValue, SizeXMaxValue,
-																					   SizeYMinValue, SizeYMaxValue,
-																					   ScaleFactorMinValue, ScaleFactorMaxValue);
+							auto item = m_ssfbBuilder.CreateStruct(
+									ss::ssfb::EffectParticleElementTransSize(SizeXMinValue, SizeXMaxValue,
+									                                         SizeYMinValue, SizeYMaxValue,
+									                                         ScaleFactorMinValue, ScaleFactorMaxValue));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1347,7 +1354,8 @@ private:
 							auto Position_y = GETFLOAT(effectBehaviorArrayItemVec[2]);
 							auto Power = GETFLOAT(effectBehaviorArrayItemVec[3]);
 
-							auto item = ss::ssfb::CreateEffectParticlePointGravity(m_ssfbBuilder, Position_x, Position_y, Power);
+							auto item = m_ssfbBuilder.CreateStruct(
+									ss::ssfb::EffectParticlePointGravity(Position_x, Position_y, Power));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1355,7 +1363,7 @@ private:
 						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
 							auto Rotation = GETFLOAT(effectBehaviorArrayItemVec[1]);
 
-							auto item = ss::ssfb::CreateEffectParticleTurnToDirectionEnabled(m_ssfbBuilder, Rotation);
+							auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::EffectParticleTurnToDirectionEnabled(Rotation));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
@@ -1363,7 +1371,7 @@ private:
 						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
 							auto flag = GETS32(effectBehaviorArrayItemVec[1]);
 
-							auto item = ss::ssfb::CreateEffectParticleInfiniteEmitEnabled(m_ssfbBuilder, flag);
+							auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::EffectParticleInfiniteEmitEnabled(flag));
 							ssfbEffectNodeBehavior.push_back(item.Union());
 							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
 							break;
