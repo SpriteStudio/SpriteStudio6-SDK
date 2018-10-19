@@ -4,6 +4,9 @@ project(viewer_sample)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
+endif()
 
 # command options
 option(ENABLE_CCACHE "Enable ccache?" ON)
@@ -79,7 +82,20 @@ endif()
 
 Depends_Lib(${DEPSDIR})
 
-add_executable(viewer_sample_gl ${viewer_sample_common_SRCS}
+
+set(GUI_TYPE)
+if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+    set(GUI_TYPE MACOSX_BUNDLE)
+    #set(QTTEST_SRCS ${QTTEST_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/Resources/QtTest.icns)
+    #set(MACOSX_BUNDLE_ICON_FILE ${CMAKE_CURRENT_SOURCE_DIR}/Resources/QtTest.icns)
+    #set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/Resources/QtTest.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+endif()
+if(WIN32)
+ set(GUI_TYPE WIN32)
+endif(WIN32)
+
+add_executable(viewer_sample_gl ${GUI_TYPE}
+                                ${viewer_sample_common_SRCS}
                                 ${viewer_sample_common_HEADERS}
                                 ${viewer_sample_gl_SRCS}
                                 ${viewer_sample_gl_HEADERS}
@@ -106,6 +122,17 @@ elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
     target_link_libraries(viewer_sample_gl "-framework AppKit")
     target_link_libraries(viewer_sample_gl "-framework IOKit")
     ADD_DEFINITIONS(-DAPPLE)
+endif()
+
+
+# --- If we are on OS X copy all the embedded libraries to the app bundle
+if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+
+    install(CODE "
+        include(BundleUtilities)
+        set(BU_CHMOD_BUNDLE_ITEMS TRUE)
+        fixup_bundle(${CMAKE_INSTALL_PREFIX}/viewer_sample_gl.app \"\" \"\")
+    " COMPONENT Runtime)
 endif()
 
 
