@@ -25,6 +25,7 @@ pushd Viewer
 pushd build
 cmake -DENABLE_CCACHE=${ENABLE_CCACHE} -DCMAKE_BUILD_TYPE=${BUILDTYPE} -DCMAKE_OSX_ARCHITECTURES=x86_64 ..
 make -j4
+make install
 popd > /dev/null # build
 popd > /dev/null # Viewer
 

@@ -11,7 +11,7 @@
 #endif
 
 
-#include "../helper/OpenGL/SSTextureGL.h"
+#include "../Helper/OpenGL/SSTextureGL.h"
 
 #include "../Animator/ssplayer_animedecode.h"
 #include "../Animator/ssplayer_matrix.h"

@@ -66,28 +66,21 @@ enum VERTEX_FLAG : int (bit_flags) {
     ONE,
 }
 
-enum USER_DATA_FLAG : int (bit_flags) {
-	INTEGER,
-	RECT,
-	POINT,
-	STRING,
-}
-
-table EffectParticleInfiniteEmitEnabled {
+struct EffectParticleInfiniteEmitEnabled {
     flag : int;
 }
 
-table EffectParticleTurnToDirectionEnabled {
+struct EffectParticleTurnToDirectionEnabled {
     Rotation : float;
 }
 
-table EffectParticlePointGravity {
+struct EffectParticlePointGravity {
     Position_x : float;
     Position_y : float;
     Power : float;
 }
 
-table EffectParticleElementTransSize {
+struct EffectParticleElementTransSize {
     SizeXMinValue : float;
     SizeXMaxValue : float;
     SizeYMinValue : float;
@@ -96,7 +89,7 @@ table EffectParticleElementTransSize {
     ScaleFactorMaxValue : float;
 }
 
-table EffectParticleElementSize {
+struct EffectParticleElementSize {
     SizeXMinValue : float;
     SizeXMaxValue : float;
     SizeYMinValue : float;
@@ -105,64 +98,64 @@ table EffectParticleElementSize {
     ScaleFactorMaxValue : float;
 }
 
-table EffectParticleElementAlphaFade {
+struct EffectParticleElementAlphaFade {
     disprangeMinValue : float;
     disprangeMaxValue : float;
 }
 
-table EffectParticleElementTransColor {
+struct EffectParticleElementTransColor {
     ColorMinValue : uint;
     ColorMaxValue : uint;
 }
 
-table EffectParticleElementInitColor {
+struct EffectParticleElementInitColor {
     ColorMinValue : uint;
     ColorMaxValue : uint;
 }
 
-table EffectParticleElementTangentialAcceleration {
+struct EffectParticleElementTangentialAcceleration {
     AccelerationMinValue : float;
     AccelerationMaxValue : float;
 }
 
-table EffectParticleElementTransSpeed {
+struct EffectParticleElementTransSpeed {
 	SpeedMinValue : float;
 	SpeedMaxValue : float;
 }
 
-table EffectParticleElementRotationTrans {
+struct EffectParticleElementRotationTrans {
     RotationFactor : float;
     EndLifeTimePer : float;
 }
 
-table EffectParticleElementRotation {
+struct EffectParticleElementRotation {
     RotationMinValue : float;
     RotationMaxValue : float;
     RotationAddMinValue : float;
     RotationAddMaxValue : float;
 }
 
-table EffectParticleElementPosition {
+struct EffectParticleElementPosition {
     OffsetXMinValue : float;
     OffsetXMaxValue : float;
     OffsetYMinValue : float;
     OffsetYMaxValue : float;
 }
 
-table EffectParticleElementGravity {
+struct EffectParticleElementGravity {
     Gravity_x : float;
     Gravity_y : float;
 }
 
-table EffectParticleElementDelay {
+struct EffectParticleElementDelay {
     DelayTime : int;
 }
 
-table EffectParticleElementRndSeedChange {
+struct EffectParticleElementRndSeedChange {
     Seed : int;
 }
 
-table EffectParticleElementBasic {
+struct EffectParticleElementBasic {
     SsEffectFunctionType : int;
     
     priority : int;
@@ -251,21 +244,21 @@ table meshDataIndices {
 }
 
 table frameDataIndex {
-    data : [float];
+    data : [uint];
 }
 
-table userDataInteger {
+struct userDataInteger {
     integer : int;
 }
 
-table userDataRect {
+struct userDataRect {
     x : int;
     y : int;
     w : int;
     h : int;
 }
 
-table userDataPoint {
+struct userDataPoint {
     x : int;
     y : int;
 }
@@ -317,7 +310,7 @@ table AnimationData {
     canvasPvotY : float;
 }
 
-table AnimationInitialData {
+struct AnimationInitialData {
     index : short;
     lowflag : int;
     highflag : int;

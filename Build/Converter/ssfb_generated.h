@@ -218,6 +218,44 @@ inline const PART_FLAG (&EnumValuesPART_FLAG())[32] {
   return values;
 }
 
+inline const char *EnumNamePART_FLAG(PART_FLAG e) {
+  switch (e) {
+    case PART_FLAG_INVISIBLE: return "INVISIBLE";
+    case PART_FLAG_FLIP_H: return "FLIP_H";
+    case PART_FLAG_FLIP_V: return "FLIP_V";
+    case PART_FLAG_CELL_INDEX: return "CELL_INDEX";
+    case PART_FLAG_POSITION_X: return "POSITION_X";
+    case PART_FLAG_POSITION_Y: return "POSITION_Y";
+    case PART_FLAG_POSITION_Z: return "POSITION_Z";
+    case PART_FLAG_PIVOT_X: return "PIVOT_X";
+    case PART_FLAG_PIVOT_Y: return "PIVOT_Y";
+    case PART_FLAG_ROTATIONX: return "ROTATIONX";
+    case PART_FLAG_ROTATIONY: return "ROTATIONY";
+    case PART_FLAG_ROTATIONZ: return "ROTATIONZ";
+    case PART_FLAG_SCALE_X: return "SCALE_X";
+    case PART_FLAG_SCALE_Y: return "SCALE_Y";
+    case PART_FLAG_LOCALSCALE_X: return "LOCALSCALE_X";
+    case PART_FLAG_LOCALSCALE_Y: return "LOCALSCALE_Y";
+    case PART_FLAG_OPACITY: return "OPACITY";
+    case PART_FLAG_LOCALOPACITY: return "LOCALOPACITY";
+    case PART_FLAG_PARTS_COLOR: return "PARTS_COLOR";
+    case PART_FLAG_VERTEX_TRANSFORM: return "VERTEX_TRANSFORM";
+    case PART_FLAG_SIZE_X: return "SIZE_X";
+    case PART_FLAG_SIZE_Y: return "SIZE_Y";
+    case PART_FLAG_U_MOVE: return "U_MOVE";
+    case PART_FLAG_V_MOVE: return "V_MOVE";
+    case PART_FLAG_UV_ROTATION: return "UV_ROTATION";
+    case PART_FLAG_U_SCALE: return "U_SCALE";
+    case PART_FLAG_V_SCALE: return "V_SCALE";
+    case PART_FLAG_BOUNDINGRADIUS: return "BOUNDINGRADIUS";
+    case PART_FLAG_MASK: return "MASK";
+    case PART_FLAG_PRIORITY: return "PRIORITY";
+    case PART_FLAG_INSTANCE_KEYFRAME: return "INSTANCE_KEYFRAME";
+    case PART_FLAG_EFFECT_KEYFRAME: return "EFFECT_KEYFRAME";
+    default: return "";
+  }
+}
+
 enum PART_FLAG2 {
   PART_FLAG2_MESHDATA = 1,
   PART_FLAG2_NONE = 0,
@@ -291,45 +329,6 @@ inline const char * const *EnumNamesVERTEX_FLAG() {
 inline const char *EnumNameVERTEX_FLAG(VERTEX_FLAG e) {
   const size_t index = static_cast<int>(e) - static_cast<int>(VERTEX_FLAG_LT);
   return EnumNamesVERTEX_FLAG()[index];
-}
-
-enum USER_DATA_FLAG {
-  USER_DATA_FLAG_INTEGER = 1,
-  USER_DATA_FLAG_RECT = 2,
-  USER_DATA_FLAG_POINT = 4,
-  USER_DATA_FLAG_STRING = 8,
-  USER_DATA_FLAG_NONE = 0,
-  USER_DATA_FLAG_ANY = 15
-};
-
-inline const USER_DATA_FLAG (&EnumValuesUSER_DATA_FLAG())[4] {
-  static const USER_DATA_FLAG values[] = {
-    USER_DATA_FLAG_INTEGER,
-    USER_DATA_FLAG_RECT,
-    USER_DATA_FLAG_POINT,
-    USER_DATA_FLAG_STRING
-  };
-  return values;
-}
-
-inline const char * const *EnumNamesUSER_DATA_FLAG() {
-  static const char * const names[] = {
-    "INTEGER",
-    "RECT",
-    "",
-    "POINT",
-    "",
-    "",
-    "",
-    "STRING",
-    nullptr
-  };
-  return names;
-}
-
-inline const char *EnumNameUSER_DATA_FLAG(USER_DATA_FLAG e) {
-  const size_t index = static_cast<int>(e) - static_cast<int>(USER_DATA_FLAG_INTEGER);
-  return EnumNamesUSER_DATA_FLAG()[index];
 }
 
 enum EffectNodeBehavior {
@@ -545,1045 +544,753 @@ template<> struct userDataValueTraits<userDataString> {
 bool VerifyuserDataValue(flatbuffers::Verifier &verifier, const void *obj, userDataValue type);
 bool VerifyuserDataValueVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
 
-struct EffectParticleInfiniteEmitEnabled FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_FLAG = 4
-  };
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleInfiniteEmitEnabled FLATBUFFERS_FINAL_CLASS {
+ private:
+  int32_t flag_;
+
+ public:
+  EffectParticleInfiniteEmitEnabled() {
+    memset(this, 0, sizeof(EffectParticleInfiniteEmitEnabled));
+  }
+  EffectParticleInfiniteEmitEnabled(int32_t _flag)
+      : flag_(flatbuffers::EndianScalar(_flag)) {
+  }
   int32_t flag() const {
-    return GetField<int32_t>(VT_FLAG, 0);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_FLAG) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(flag_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleInfiniteEmitEnabled, 4);
 
-struct EffectParticleInfiniteEmitEnabledBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_flag(int32_t flag) {
-    fbb_.AddElement<int32_t>(EffectParticleInfiniteEmitEnabled::VT_FLAG, flag, 0);
-  }
-  explicit EffectParticleInfiniteEmitEnabledBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleInfiniteEmitEnabledBuilder &operator=(const EffectParticleInfiniteEmitEnabledBuilder &);
-  flatbuffers::Offset<EffectParticleInfiniteEmitEnabled> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleInfiniteEmitEnabled>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleTurnToDirectionEnabled FLATBUFFERS_FINAL_CLASS {
+ private:
+  float Rotation_;
 
-inline flatbuffers::Offset<EffectParticleInfiniteEmitEnabled> CreateEffectParticleInfiniteEmitEnabled(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t flag = 0) {
-  EffectParticleInfiniteEmitEnabledBuilder builder_(_fbb);
-  builder_.add_flag(flag);
-  return builder_.Finish();
-}
-
-struct EffectParticleTurnToDirectionEnabled FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_ROTATION = 4
-  };
+ public:
+  EffectParticleTurnToDirectionEnabled() {
+    memset(this, 0, sizeof(EffectParticleTurnToDirectionEnabled));
+  }
+  EffectParticleTurnToDirectionEnabled(float _Rotation)
+      : Rotation_(flatbuffers::EndianScalar(_Rotation)) {
+  }
   float Rotation() const {
-    return GetField<float>(VT_ROTATION, 0.0f);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<float>(verifier, VT_ROTATION) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(Rotation_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleTurnToDirectionEnabled, 4);
 
-struct EffectParticleTurnToDirectionEnabledBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_Rotation(float Rotation) {
-    fbb_.AddElement<float>(EffectParticleTurnToDirectionEnabled::VT_ROTATION, Rotation, 0.0f);
-  }
-  explicit EffectParticleTurnToDirectionEnabledBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleTurnToDirectionEnabledBuilder &operator=(const EffectParticleTurnToDirectionEnabledBuilder &);
-  flatbuffers::Offset<EffectParticleTurnToDirectionEnabled> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleTurnToDirectionEnabled>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticlePointGravity FLATBUFFERS_FINAL_CLASS {
+ private:
+  float Position_x_;
+  float Position_y_;
+  float Power_;
 
-inline flatbuffers::Offset<EffectParticleTurnToDirectionEnabled> CreateEffectParticleTurnToDirectionEnabled(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    float Rotation = 0.0f) {
-  EffectParticleTurnToDirectionEnabledBuilder builder_(_fbb);
-  builder_.add_Rotation(Rotation);
-  return builder_.Finish();
-}
-
-struct EffectParticlePointGravity FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_POSITION_X = 4,
-    VT_POSITION_Y = 6,
-    VT_POWER = 8
-  };
+ public:
+  EffectParticlePointGravity() {
+    memset(this, 0, sizeof(EffectParticlePointGravity));
+  }
+  EffectParticlePointGravity(float _Position_x, float _Position_y, float _Power)
+      : Position_x_(flatbuffers::EndianScalar(_Position_x)),
+        Position_y_(flatbuffers::EndianScalar(_Position_y)),
+        Power_(flatbuffers::EndianScalar(_Power)) {
+  }
   float Position_x() const {
-    return GetField<float>(VT_POSITION_X, 0.0f);
+    return flatbuffers::EndianScalar(Position_x_);
   }
   float Position_y() const {
-    return GetField<float>(VT_POSITION_Y, 0.0f);
+    return flatbuffers::EndianScalar(Position_y_);
   }
   float Power() const {
-    return GetField<float>(VT_POWER, 0.0f);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<float>(verifier, VT_POSITION_X) &&
-           VerifyField<float>(verifier, VT_POSITION_Y) &&
-           VerifyField<float>(verifier, VT_POWER) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(Power_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticlePointGravity, 12);
 
-struct EffectParticlePointGravityBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_Position_x(float Position_x) {
-    fbb_.AddElement<float>(EffectParticlePointGravity::VT_POSITION_X, Position_x, 0.0f);
-  }
-  void add_Position_y(float Position_y) {
-    fbb_.AddElement<float>(EffectParticlePointGravity::VT_POSITION_Y, Position_y, 0.0f);
-  }
-  void add_Power(float Power) {
-    fbb_.AddElement<float>(EffectParticlePointGravity::VT_POWER, Power, 0.0f);
-  }
-  explicit EffectParticlePointGravityBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticlePointGravityBuilder &operator=(const EffectParticlePointGravityBuilder &);
-  flatbuffers::Offset<EffectParticlePointGravity> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticlePointGravity>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransSize FLATBUFFERS_FINAL_CLASS {
+ private:
+  float SizeXMinValue_;
+  float SizeXMaxValue_;
+  float SizeYMinValue_;
+  float SizeYMaxValue_;
+  float ScaleFactorMinValue_;
+  float ScaleFactorMaxValue_;
 
-inline flatbuffers::Offset<EffectParticlePointGravity> CreateEffectParticlePointGravity(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    float Position_x = 0.0f,
-    float Position_y = 0.0f,
-    float Power = 0.0f) {
-  EffectParticlePointGravityBuilder builder_(_fbb);
-  builder_.add_Power(Power);
-  builder_.add_Position_y(Position_y);
-  builder_.add_Position_x(Position_x);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementTransSize FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_SIZEXMINVALUE = 4,
-    VT_SIZEXMAXVALUE = 6,
-    VT_SIZEYMINVALUE = 8,
-    VT_SIZEYMAXVALUE = 10,
-    VT_SCALEFACTORMINVALUE = 12,
-    VT_SCALEFACTORMAXVALUE = 14
-  };
+ public:
+  EffectParticleElementTransSize() {
+    memset(this, 0, sizeof(EffectParticleElementTransSize));
+  }
+  EffectParticleElementTransSize(float _SizeXMinValue, float _SizeXMaxValue, float _SizeYMinValue, float _SizeYMaxValue, float _ScaleFactorMinValue, float _ScaleFactorMaxValue)
+      : SizeXMinValue_(flatbuffers::EndianScalar(_SizeXMinValue)),
+        SizeXMaxValue_(flatbuffers::EndianScalar(_SizeXMaxValue)),
+        SizeYMinValue_(flatbuffers::EndianScalar(_SizeYMinValue)),
+        SizeYMaxValue_(flatbuffers::EndianScalar(_SizeYMaxValue)),
+        ScaleFactorMinValue_(flatbuffers::EndianScalar(_ScaleFactorMinValue)),
+        ScaleFactorMaxValue_(flatbuffers::EndianScalar(_ScaleFactorMaxValue)) {
+  }
   float SizeXMinValue() const {
-    return GetField<float>(VT_SIZEXMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(SizeXMinValue_);
   }
   float SizeXMaxValue() const {
-    return GetField<float>(VT_SIZEXMAXVALUE, 0.0f);
+    return flatbuffers::EndianScalar(SizeXMaxValue_);
   }
   float SizeYMinValue() const {
-    return GetField<float>(VT_SIZEYMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(SizeYMinValue_);
   }
   float SizeYMaxValue() const {
-    return GetField<float>(VT_SIZEYMAXVALUE, 0.0f);
+    return flatbuffers::EndianScalar(SizeYMaxValue_);
   }
   float ScaleFactorMinValue() const {
-    return GetField<float>(VT_SCALEFACTORMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(ScaleFactorMinValue_);
   }
   float ScaleFactorMaxValue() const {
-    return GetField<float>(VT_SCALEFACTORMAXVALUE, 0.0f);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<float>(verifier, VT_SIZEXMINVALUE) &&
-           VerifyField<float>(verifier, VT_SIZEXMAXVALUE) &&
-           VerifyField<float>(verifier, VT_SIZEYMINVALUE) &&
-           VerifyField<float>(verifier, VT_SIZEYMAXVALUE) &&
-           VerifyField<float>(verifier, VT_SCALEFACTORMINVALUE) &&
-           VerifyField<float>(verifier, VT_SCALEFACTORMAXVALUE) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(ScaleFactorMaxValue_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementTransSize, 24);
 
-struct EffectParticleElementTransSizeBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_SizeXMinValue(float SizeXMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementTransSize::VT_SIZEXMINVALUE, SizeXMinValue, 0.0f);
-  }
-  void add_SizeXMaxValue(float SizeXMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementTransSize::VT_SIZEXMAXVALUE, SizeXMaxValue, 0.0f);
-  }
-  void add_SizeYMinValue(float SizeYMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementTransSize::VT_SIZEYMINVALUE, SizeYMinValue, 0.0f);
-  }
-  void add_SizeYMaxValue(float SizeYMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementTransSize::VT_SIZEYMAXVALUE, SizeYMaxValue, 0.0f);
-  }
-  void add_ScaleFactorMinValue(float ScaleFactorMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementTransSize::VT_SCALEFACTORMINVALUE, ScaleFactorMinValue, 0.0f);
-  }
-  void add_ScaleFactorMaxValue(float ScaleFactorMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementTransSize::VT_SCALEFACTORMAXVALUE, ScaleFactorMaxValue, 0.0f);
-  }
-  explicit EffectParticleElementTransSizeBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementTransSizeBuilder &operator=(const EffectParticleElementTransSizeBuilder &);
-  flatbuffers::Offset<EffectParticleElementTransSize> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementTransSize>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementSize FLATBUFFERS_FINAL_CLASS {
+ private:
+  float SizeXMinValue_;
+  float SizeXMaxValue_;
+  float SizeYMinValue_;
+  float SizeYMaxValue_;
+  float ScaleFactorMinValue_;
+  float ScaleFactorMaxValue_;
 
-inline flatbuffers::Offset<EffectParticleElementTransSize> CreateEffectParticleElementTransSize(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    float SizeXMinValue = 0.0f,
-    float SizeXMaxValue = 0.0f,
-    float SizeYMinValue = 0.0f,
-    float SizeYMaxValue = 0.0f,
-    float ScaleFactorMinValue = 0.0f,
-    float ScaleFactorMaxValue = 0.0f) {
-  EffectParticleElementTransSizeBuilder builder_(_fbb);
-  builder_.add_ScaleFactorMaxValue(ScaleFactorMaxValue);
-  builder_.add_ScaleFactorMinValue(ScaleFactorMinValue);
-  builder_.add_SizeYMaxValue(SizeYMaxValue);
-  builder_.add_SizeYMinValue(SizeYMinValue);
-  builder_.add_SizeXMaxValue(SizeXMaxValue);
-  builder_.add_SizeXMinValue(SizeXMinValue);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementSize FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_SIZEXMINVALUE = 4,
-    VT_SIZEXMAXVALUE = 6,
-    VT_SIZEYMINVALUE = 8,
-    VT_SIZEYMAXVALUE = 10,
-    VT_SCALEFACTORMINVALUE = 12,
-    VT_SCALEFACTORMAXVALUE = 14
-  };
+ public:
+  EffectParticleElementSize() {
+    memset(this, 0, sizeof(EffectParticleElementSize));
+  }
+  EffectParticleElementSize(float _SizeXMinValue, float _SizeXMaxValue, float _SizeYMinValue, float _SizeYMaxValue, float _ScaleFactorMinValue, float _ScaleFactorMaxValue)
+      : SizeXMinValue_(flatbuffers::EndianScalar(_SizeXMinValue)),
+        SizeXMaxValue_(flatbuffers::EndianScalar(_SizeXMaxValue)),
+        SizeYMinValue_(flatbuffers::EndianScalar(_SizeYMinValue)),
+        SizeYMaxValue_(flatbuffers::EndianScalar(_SizeYMaxValue)),
+        ScaleFactorMinValue_(flatbuffers::EndianScalar(_ScaleFactorMinValue)),
+        ScaleFactorMaxValue_(flatbuffers::EndianScalar(_ScaleFactorMaxValue)) {
+  }
   float SizeXMinValue() const {
-    return GetField<float>(VT_SIZEXMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(SizeXMinValue_);
   }
   float SizeXMaxValue() const {
-    return GetField<float>(VT_SIZEXMAXVALUE, 0.0f);
+    return flatbuffers::EndianScalar(SizeXMaxValue_);
   }
   float SizeYMinValue() const {
-    return GetField<float>(VT_SIZEYMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(SizeYMinValue_);
   }
   float SizeYMaxValue() const {
-    return GetField<float>(VT_SIZEYMAXVALUE, 0.0f);
+    return flatbuffers::EndianScalar(SizeYMaxValue_);
   }
   float ScaleFactorMinValue() const {
-    return GetField<float>(VT_SCALEFACTORMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(ScaleFactorMinValue_);
   }
   float ScaleFactorMaxValue() const {
-    return GetField<float>(VT_SCALEFACTORMAXVALUE, 0.0f);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<float>(verifier, VT_SIZEXMINVALUE) &&
-           VerifyField<float>(verifier, VT_SIZEXMAXVALUE) &&
-           VerifyField<float>(verifier, VT_SIZEYMINVALUE) &&
-           VerifyField<float>(verifier, VT_SIZEYMAXVALUE) &&
-           VerifyField<float>(verifier, VT_SCALEFACTORMINVALUE) &&
-           VerifyField<float>(verifier, VT_SCALEFACTORMAXVALUE) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(ScaleFactorMaxValue_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementSize, 24);
 
-struct EffectParticleElementSizeBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_SizeXMinValue(float SizeXMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementSize::VT_SIZEXMINVALUE, SizeXMinValue, 0.0f);
-  }
-  void add_SizeXMaxValue(float SizeXMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementSize::VT_SIZEXMAXVALUE, SizeXMaxValue, 0.0f);
-  }
-  void add_SizeYMinValue(float SizeYMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementSize::VT_SIZEYMINVALUE, SizeYMinValue, 0.0f);
-  }
-  void add_SizeYMaxValue(float SizeYMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementSize::VT_SIZEYMAXVALUE, SizeYMaxValue, 0.0f);
-  }
-  void add_ScaleFactorMinValue(float ScaleFactorMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementSize::VT_SCALEFACTORMINVALUE, ScaleFactorMinValue, 0.0f);
-  }
-  void add_ScaleFactorMaxValue(float ScaleFactorMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementSize::VT_SCALEFACTORMAXVALUE, ScaleFactorMaxValue, 0.0f);
-  }
-  explicit EffectParticleElementSizeBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementSizeBuilder &operator=(const EffectParticleElementSizeBuilder &);
-  flatbuffers::Offset<EffectParticleElementSize> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementSize>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementAlphaFade FLATBUFFERS_FINAL_CLASS {
+ private:
+  float disprangeMinValue_;
+  float disprangeMaxValue_;
 
-inline flatbuffers::Offset<EffectParticleElementSize> CreateEffectParticleElementSize(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    float SizeXMinValue = 0.0f,
-    float SizeXMaxValue = 0.0f,
-    float SizeYMinValue = 0.0f,
-    float SizeYMaxValue = 0.0f,
-    float ScaleFactorMinValue = 0.0f,
-    float ScaleFactorMaxValue = 0.0f) {
-  EffectParticleElementSizeBuilder builder_(_fbb);
-  builder_.add_ScaleFactorMaxValue(ScaleFactorMaxValue);
-  builder_.add_ScaleFactorMinValue(ScaleFactorMinValue);
-  builder_.add_SizeYMaxValue(SizeYMaxValue);
-  builder_.add_SizeYMinValue(SizeYMinValue);
-  builder_.add_SizeXMaxValue(SizeXMaxValue);
-  builder_.add_SizeXMinValue(SizeXMinValue);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementAlphaFade FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_DISPRANGEMINVALUE = 4,
-    VT_DISPRANGEMAXVALUE = 6
-  };
+ public:
+  EffectParticleElementAlphaFade() {
+    memset(this, 0, sizeof(EffectParticleElementAlphaFade));
+  }
+  EffectParticleElementAlphaFade(float _disprangeMinValue, float _disprangeMaxValue)
+      : disprangeMinValue_(flatbuffers::EndianScalar(_disprangeMinValue)),
+        disprangeMaxValue_(flatbuffers::EndianScalar(_disprangeMaxValue)) {
+  }
   float disprangeMinValue() const {
-    return GetField<float>(VT_DISPRANGEMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(disprangeMinValue_);
   }
   float disprangeMaxValue() const {
-    return GetField<float>(VT_DISPRANGEMAXVALUE, 0.0f);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<float>(verifier, VT_DISPRANGEMINVALUE) &&
-           VerifyField<float>(verifier, VT_DISPRANGEMAXVALUE) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(disprangeMaxValue_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementAlphaFade, 8);
 
-struct EffectParticleElementAlphaFadeBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_disprangeMinValue(float disprangeMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementAlphaFade::VT_DISPRANGEMINVALUE, disprangeMinValue, 0.0f);
-  }
-  void add_disprangeMaxValue(float disprangeMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementAlphaFade::VT_DISPRANGEMAXVALUE, disprangeMaxValue, 0.0f);
-  }
-  explicit EffectParticleElementAlphaFadeBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementAlphaFadeBuilder &operator=(const EffectParticleElementAlphaFadeBuilder &);
-  flatbuffers::Offset<EffectParticleElementAlphaFade> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementAlphaFade>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransColor FLATBUFFERS_FINAL_CLASS {
+ private:
+  uint32_t ColorMinValue_;
+  uint32_t ColorMaxValue_;
 
-inline flatbuffers::Offset<EffectParticleElementAlphaFade> CreateEffectParticleElementAlphaFade(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    float disprangeMinValue = 0.0f,
-    float disprangeMaxValue = 0.0f) {
-  EffectParticleElementAlphaFadeBuilder builder_(_fbb);
-  builder_.add_disprangeMaxValue(disprangeMaxValue);
-  builder_.add_disprangeMinValue(disprangeMinValue);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementTransColor FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_COLORMINVALUE = 4,
-    VT_COLORMAXVALUE = 6
-  };
+ public:
+  EffectParticleElementTransColor() {
+    memset(this, 0, sizeof(EffectParticleElementTransColor));
+  }
+  EffectParticleElementTransColor(uint32_t _ColorMinValue, uint32_t _ColorMaxValue)
+      : ColorMinValue_(flatbuffers::EndianScalar(_ColorMinValue)),
+        ColorMaxValue_(flatbuffers::EndianScalar(_ColorMaxValue)) {
+  }
   uint32_t ColorMinValue() const {
-    return GetField<uint32_t>(VT_COLORMINVALUE, 0);
+    return flatbuffers::EndianScalar(ColorMinValue_);
   }
   uint32_t ColorMaxValue() const {
-    return GetField<uint32_t>(VT_COLORMAXVALUE, 0);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<uint32_t>(verifier, VT_COLORMINVALUE) &&
-           VerifyField<uint32_t>(verifier, VT_COLORMAXVALUE) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(ColorMaxValue_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementTransColor, 8);
 
-struct EffectParticleElementTransColorBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_ColorMinValue(uint32_t ColorMinValue) {
-    fbb_.AddElement<uint32_t>(EffectParticleElementTransColor::VT_COLORMINVALUE, ColorMinValue, 0);
-  }
-  void add_ColorMaxValue(uint32_t ColorMaxValue) {
-    fbb_.AddElement<uint32_t>(EffectParticleElementTransColor::VT_COLORMAXVALUE, ColorMaxValue, 0);
-  }
-  explicit EffectParticleElementTransColorBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementTransColorBuilder &operator=(const EffectParticleElementTransColorBuilder &);
-  flatbuffers::Offset<EffectParticleElementTransColor> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementTransColor>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementInitColor FLATBUFFERS_FINAL_CLASS {
+ private:
+  uint32_t ColorMinValue_;
+  uint32_t ColorMaxValue_;
 
-inline flatbuffers::Offset<EffectParticleElementTransColor> CreateEffectParticleElementTransColor(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    uint32_t ColorMinValue = 0,
-    uint32_t ColorMaxValue = 0) {
-  EffectParticleElementTransColorBuilder builder_(_fbb);
-  builder_.add_ColorMaxValue(ColorMaxValue);
-  builder_.add_ColorMinValue(ColorMinValue);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementInitColor FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_COLORMINVALUE = 4,
-    VT_COLORMAXVALUE = 6
-  };
+ public:
+  EffectParticleElementInitColor() {
+    memset(this, 0, sizeof(EffectParticleElementInitColor));
+  }
+  EffectParticleElementInitColor(uint32_t _ColorMinValue, uint32_t _ColorMaxValue)
+      : ColorMinValue_(flatbuffers::EndianScalar(_ColorMinValue)),
+        ColorMaxValue_(flatbuffers::EndianScalar(_ColorMaxValue)) {
+  }
   uint32_t ColorMinValue() const {
-    return GetField<uint32_t>(VT_COLORMINVALUE, 0);
+    return flatbuffers::EndianScalar(ColorMinValue_);
   }
   uint32_t ColorMaxValue() const {
-    return GetField<uint32_t>(VT_COLORMAXVALUE, 0);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<uint32_t>(verifier, VT_COLORMINVALUE) &&
-           VerifyField<uint32_t>(verifier, VT_COLORMAXVALUE) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(ColorMaxValue_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementInitColor, 8);
 
-struct EffectParticleElementInitColorBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_ColorMinValue(uint32_t ColorMinValue) {
-    fbb_.AddElement<uint32_t>(EffectParticleElementInitColor::VT_COLORMINVALUE, ColorMinValue, 0);
-  }
-  void add_ColorMaxValue(uint32_t ColorMaxValue) {
-    fbb_.AddElement<uint32_t>(EffectParticleElementInitColor::VT_COLORMAXVALUE, ColorMaxValue, 0);
-  }
-  explicit EffectParticleElementInitColorBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementInitColorBuilder &operator=(const EffectParticleElementInitColorBuilder &);
-  flatbuffers::Offset<EffectParticleElementInitColor> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementInitColor>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTangentialAcceleration FLATBUFFERS_FINAL_CLASS {
+ private:
+  float AccelerationMinValue_;
+  float AccelerationMaxValue_;
 
-inline flatbuffers::Offset<EffectParticleElementInitColor> CreateEffectParticleElementInitColor(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    uint32_t ColorMinValue = 0,
-    uint32_t ColorMaxValue = 0) {
-  EffectParticleElementInitColorBuilder builder_(_fbb);
-  builder_.add_ColorMaxValue(ColorMaxValue);
-  builder_.add_ColorMinValue(ColorMinValue);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementTangentialAcceleration FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_ACCELERATIONMINVALUE = 4,
-    VT_ACCELERATIONMAXVALUE = 6
-  };
+ public:
+  EffectParticleElementTangentialAcceleration() {
+    memset(this, 0, sizeof(EffectParticleElementTangentialAcceleration));
+  }
+  EffectParticleElementTangentialAcceleration(float _AccelerationMinValue, float _AccelerationMaxValue)
+      : AccelerationMinValue_(flatbuffers::EndianScalar(_AccelerationMinValue)),
+        AccelerationMaxValue_(flatbuffers::EndianScalar(_AccelerationMaxValue)) {
+  }
   float AccelerationMinValue() const {
-    return GetField<float>(VT_ACCELERATIONMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(AccelerationMinValue_);
   }
   float AccelerationMaxValue() const {
-    return GetField<float>(VT_ACCELERATIONMAXVALUE, 0.0f);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<float>(verifier, VT_ACCELERATIONMINVALUE) &&
-           VerifyField<float>(verifier, VT_ACCELERATIONMAXVALUE) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(AccelerationMaxValue_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementTangentialAcceleration, 8);
 
-struct EffectParticleElementTangentialAccelerationBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_AccelerationMinValue(float AccelerationMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementTangentialAcceleration::VT_ACCELERATIONMINVALUE, AccelerationMinValue, 0.0f);
-  }
-  void add_AccelerationMaxValue(float AccelerationMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementTangentialAcceleration::VT_ACCELERATIONMAXVALUE, AccelerationMaxValue, 0.0f);
-  }
-  explicit EffectParticleElementTangentialAccelerationBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementTangentialAccelerationBuilder &operator=(const EffectParticleElementTangentialAccelerationBuilder &);
-  flatbuffers::Offset<EffectParticleElementTangentialAcceleration> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementTangentialAcceleration>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransSpeed FLATBUFFERS_FINAL_CLASS {
+ private:
+  float SpeedMinValue_;
+  float SpeedMaxValue_;
 
-inline flatbuffers::Offset<EffectParticleElementTangentialAcceleration> CreateEffectParticleElementTangentialAcceleration(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    float AccelerationMinValue = 0.0f,
-    float AccelerationMaxValue = 0.0f) {
-  EffectParticleElementTangentialAccelerationBuilder builder_(_fbb);
-  builder_.add_AccelerationMaxValue(AccelerationMaxValue);
-  builder_.add_AccelerationMinValue(AccelerationMinValue);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementTransSpeed FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_SPEEDMINVALUE = 4,
-    VT_SPEEDMAXVALUE = 6
-  };
+ public:
+  EffectParticleElementTransSpeed() {
+    memset(this, 0, sizeof(EffectParticleElementTransSpeed));
+  }
+  EffectParticleElementTransSpeed(float _SpeedMinValue, float _SpeedMaxValue)
+      : SpeedMinValue_(flatbuffers::EndianScalar(_SpeedMinValue)),
+        SpeedMaxValue_(flatbuffers::EndianScalar(_SpeedMaxValue)) {
+  }
   float SpeedMinValue() const {
-    return GetField<float>(VT_SPEEDMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(SpeedMinValue_);
   }
   float SpeedMaxValue() const {
-    return GetField<float>(VT_SPEEDMAXVALUE, 0.0f);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<float>(verifier, VT_SPEEDMINVALUE) &&
-           VerifyField<float>(verifier, VT_SPEEDMAXVALUE) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(SpeedMaxValue_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementTransSpeed, 8);
 
-struct EffectParticleElementTransSpeedBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_SpeedMinValue(float SpeedMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementTransSpeed::VT_SPEEDMINVALUE, SpeedMinValue, 0.0f);
-  }
-  void add_SpeedMaxValue(float SpeedMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementTransSpeed::VT_SPEEDMAXVALUE, SpeedMaxValue, 0.0f);
-  }
-  explicit EffectParticleElementTransSpeedBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementTransSpeedBuilder &operator=(const EffectParticleElementTransSpeedBuilder &);
-  flatbuffers::Offset<EffectParticleElementTransSpeed> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementTransSpeed>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRotationTrans FLATBUFFERS_FINAL_CLASS {
+ private:
+  float RotationFactor_;
+  float EndLifeTimePer_;
 
-inline flatbuffers::Offset<EffectParticleElementTransSpeed> CreateEffectParticleElementTransSpeed(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    float SpeedMinValue = 0.0f,
-    float SpeedMaxValue = 0.0f) {
-  EffectParticleElementTransSpeedBuilder builder_(_fbb);
-  builder_.add_SpeedMaxValue(SpeedMaxValue);
-  builder_.add_SpeedMinValue(SpeedMinValue);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementRotationTrans FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_ROTATIONFACTOR = 4,
-    VT_ENDLIFETIMEPER = 6
-  };
+ public:
+  EffectParticleElementRotationTrans() {
+    memset(this, 0, sizeof(EffectParticleElementRotationTrans));
+  }
+  EffectParticleElementRotationTrans(float _RotationFactor, float _EndLifeTimePer)
+      : RotationFactor_(flatbuffers::EndianScalar(_RotationFactor)),
+        EndLifeTimePer_(flatbuffers::EndianScalar(_EndLifeTimePer)) {
+  }
   float RotationFactor() const {
-    return GetField<float>(VT_ROTATIONFACTOR, 0.0f);
+    return flatbuffers::EndianScalar(RotationFactor_);
   }
   float EndLifeTimePer() const {
-    return GetField<float>(VT_ENDLIFETIMEPER, 0.0f);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<float>(verifier, VT_ROTATIONFACTOR) &&
-           VerifyField<float>(verifier, VT_ENDLIFETIMEPER) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(EndLifeTimePer_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementRotationTrans, 8);
 
-struct EffectParticleElementRotationTransBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_RotationFactor(float RotationFactor) {
-    fbb_.AddElement<float>(EffectParticleElementRotationTrans::VT_ROTATIONFACTOR, RotationFactor, 0.0f);
-  }
-  void add_EndLifeTimePer(float EndLifeTimePer) {
-    fbb_.AddElement<float>(EffectParticleElementRotationTrans::VT_ENDLIFETIMEPER, EndLifeTimePer, 0.0f);
-  }
-  explicit EffectParticleElementRotationTransBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementRotationTransBuilder &operator=(const EffectParticleElementRotationTransBuilder &);
-  flatbuffers::Offset<EffectParticleElementRotationTrans> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementRotationTrans>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRotation FLATBUFFERS_FINAL_CLASS {
+ private:
+  float RotationMinValue_;
+  float RotationMaxValue_;
+  float RotationAddMinValue_;
+  float RotationAddMaxValue_;
 
-inline flatbuffers::Offset<EffectParticleElementRotationTrans> CreateEffectParticleElementRotationTrans(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    float RotationFactor = 0.0f,
-    float EndLifeTimePer = 0.0f) {
-  EffectParticleElementRotationTransBuilder builder_(_fbb);
-  builder_.add_EndLifeTimePer(EndLifeTimePer);
-  builder_.add_RotationFactor(RotationFactor);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementRotation FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_ROTATIONMINVALUE = 4,
-    VT_ROTATIONMAXVALUE = 6,
-    VT_ROTATIONADDMINVALUE = 8,
-    VT_ROTATIONADDMAXVALUE = 10
-  };
+ public:
+  EffectParticleElementRotation() {
+    memset(this, 0, sizeof(EffectParticleElementRotation));
+  }
+  EffectParticleElementRotation(float _RotationMinValue, float _RotationMaxValue, float _RotationAddMinValue, float _RotationAddMaxValue)
+      : RotationMinValue_(flatbuffers::EndianScalar(_RotationMinValue)),
+        RotationMaxValue_(flatbuffers::EndianScalar(_RotationMaxValue)),
+        RotationAddMinValue_(flatbuffers::EndianScalar(_RotationAddMinValue)),
+        RotationAddMaxValue_(flatbuffers::EndianScalar(_RotationAddMaxValue)) {
+  }
   float RotationMinValue() const {
-    return GetField<float>(VT_ROTATIONMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(RotationMinValue_);
   }
   float RotationMaxValue() const {
-    return GetField<float>(VT_ROTATIONMAXVALUE, 0.0f);
+    return flatbuffers::EndianScalar(RotationMaxValue_);
   }
   float RotationAddMinValue() const {
-    return GetField<float>(VT_ROTATIONADDMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(RotationAddMinValue_);
   }
   float RotationAddMaxValue() const {
-    return GetField<float>(VT_ROTATIONADDMAXVALUE, 0.0f);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<float>(verifier, VT_ROTATIONMINVALUE) &&
-           VerifyField<float>(verifier, VT_ROTATIONMAXVALUE) &&
-           VerifyField<float>(verifier, VT_ROTATIONADDMINVALUE) &&
-           VerifyField<float>(verifier, VT_ROTATIONADDMAXVALUE) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(RotationAddMaxValue_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementRotation, 16);
 
-struct EffectParticleElementRotationBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_RotationMinValue(float RotationMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementRotation::VT_ROTATIONMINVALUE, RotationMinValue, 0.0f);
-  }
-  void add_RotationMaxValue(float RotationMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementRotation::VT_ROTATIONMAXVALUE, RotationMaxValue, 0.0f);
-  }
-  void add_RotationAddMinValue(float RotationAddMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementRotation::VT_ROTATIONADDMINVALUE, RotationAddMinValue, 0.0f);
-  }
-  void add_RotationAddMaxValue(float RotationAddMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementRotation::VT_ROTATIONADDMAXVALUE, RotationAddMaxValue, 0.0f);
-  }
-  explicit EffectParticleElementRotationBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementRotationBuilder &operator=(const EffectParticleElementRotationBuilder &);
-  flatbuffers::Offset<EffectParticleElementRotation> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementRotation>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementPosition FLATBUFFERS_FINAL_CLASS {
+ private:
+  float OffsetXMinValue_;
+  float OffsetXMaxValue_;
+  float OffsetYMinValue_;
+  float OffsetYMaxValue_;
 
-inline flatbuffers::Offset<EffectParticleElementRotation> CreateEffectParticleElementRotation(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    float RotationMinValue = 0.0f,
-    float RotationMaxValue = 0.0f,
-    float RotationAddMinValue = 0.0f,
-    float RotationAddMaxValue = 0.0f) {
-  EffectParticleElementRotationBuilder builder_(_fbb);
-  builder_.add_RotationAddMaxValue(RotationAddMaxValue);
-  builder_.add_RotationAddMinValue(RotationAddMinValue);
-  builder_.add_RotationMaxValue(RotationMaxValue);
-  builder_.add_RotationMinValue(RotationMinValue);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementPosition FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_OFFSETXMINVALUE = 4,
-    VT_OFFSETXMAXVALUE = 6,
-    VT_OFFSETYMINVALUE = 8,
-    VT_OFFSETYMAXVALUE = 10
-  };
+ public:
+  EffectParticleElementPosition() {
+    memset(this, 0, sizeof(EffectParticleElementPosition));
+  }
+  EffectParticleElementPosition(float _OffsetXMinValue, float _OffsetXMaxValue, float _OffsetYMinValue, float _OffsetYMaxValue)
+      : OffsetXMinValue_(flatbuffers::EndianScalar(_OffsetXMinValue)),
+        OffsetXMaxValue_(flatbuffers::EndianScalar(_OffsetXMaxValue)),
+        OffsetYMinValue_(flatbuffers::EndianScalar(_OffsetYMinValue)),
+        OffsetYMaxValue_(flatbuffers::EndianScalar(_OffsetYMaxValue)) {
+  }
   float OffsetXMinValue() const {
-    return GetField<float>(VT_OFFSETXMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(OffsetXMinValue_);
   }
   float OffsetXMaxValue() const {
-    return GetField<float>(VT_OFFSETXMAXVALUE, 0.0f);
+    return flatbuffers::EndianScalar(OffsetXMaxValue_);
   }
   float OffsetYMinValue() const {
-    return GetField<float>(VT_OFFSETYMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(OffsetYMinValue_);
   }
   float OffsetYMaxValue() const {
-    return GetField<float>(VT_OFFSETYMAXVALUE, 0.0f);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<float>(verifier, VT_OFFSETXMINVALUE) &&
-           VerifyField<float>(verifier, VT_OFFSETXMAXVALUE) &&
-           VerifyField<float>(verifier, VT_OFFSETYMINVALUE) &&
-           VerifyField<float>(verifier, VT_OFFSETYMAXVALUE) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(OffsetYMaxValue_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementPosition, 16);
 
-struct EffectParticleElementPositionBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_OffsetXMinValue(float OffsetXMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementPosition::VT_OFFSETXMINVALUE, OffsetXMinValue, 0.0f);
-  }
-  void add_OffsetXMaxValue(float OffsetXMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementPosition::VT_OFFSETXMAXVALUE, OffsetXMaxValue, 0.0f);
-  }
-  void add_OffsetYMinValue(float OffsetYMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementPosition::VT_OFFSETYMINVALUE, OffsetYMinValue, 0.0f);
-  }
-  void add_OffsetYMaxValue(float OffsetYMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementPosition::VT_OFFSETYMAXVALUE, OffsetYMaxValue, 0.0f);
-  }
-  explicit EffectParticleElementPositionBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementPositionBuilder &operator=(const EffectParticleElementPositionBuilder &);
-  flatbuffers::Offset<EffectParticleElementPosition> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementPosition>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementGravity FLATBUFFERS_FINAL_CLASS {
+ private:
+  float Gravity_x_;
+  float Gravity_y_;
 
-inline flatbuffers::Offset<EffectParticleElementPosition> CreateEffectParticleElementPosition(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    float OffsetXMinValue = 0.0f,
-    float OffsetXMaxValue = 0.0f,
-    float OffsetYMinValue = 0.0f,
-    float OffsetYMaxValue = 0.0f) {
-  EffectParticleElementPositionBuilder builder_(_fbb);
-  builder_.add_OffsetYMaxValue(OffsetYMaxValue);
-  builder_.add_OffsetYMinValue(OffsetYMinValue);
-  builder_.add_OffsetXMaxValue(OffsetXMaxValue);
-  builder_.add_OffsetXMinValue(OffsetXMinValue);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementGravity FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_GRAVITY_X = 4,
-    VT_GRAVITY_Y = 6
-  };
+ public:
+  EffectParticleElementGravity() {
+    memset(this, 0, sizeof(EffectParticleElementGravity));
+  }
+  EffectParticleElementGravity(float _Gravity_x, float _Gravity_y)
+      : Gravity_x_(flatbuffers::EndianScalar(_Gravity_x)),
+        Gravity_y_(flatbuffers::EndianScalar(_Gravity_y)) {
+  }
   float Gravity_x() const {
-    return GetField<float>(VT_GRAVITY_X, 0.0f);
+    return flatbuffers::EndianScalar(Gravity_x_);
   }
   float Gravity_y() const {
-    return GetField<float>(VT_GRAVITY_Y, 0.0f);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<float>(verifier, VT_GRAVITY_X) &&
-           VerifyField<float>(verifier, VT_GRAVITY_Y) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(Gravity_y_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementGravity, 8);
 
-struct EffectParticleElementGravityBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_Gravity_x(float Gravity_x) {
-    fbb_.AddElement<float>(EffectParticleElementGravity::VT_GRAVITY_X, Gravity_x, 0.0f);
-  }
-  void add_Gravity_y(float Gravity_y) {
-    fbb_.AddElement<float>(EffectParticleElementGravity::VT_GRAVITY_Y, Gravity_y, 0.0f);
-  }
-  explicit EffectParticleElementGravityBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementGravityBuilder &operator=(const EffectParticleElementGravityBuilder &);
-  flatbuffers::Offset<EffectParticleElementGravity> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementGravity>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementDelay FLATBUFFERS_FINAL_CLASS {
+ private:
+  int32_t DelayTime_;
 
-inline flatbuffers::Offset<EffectParticleElementGravity> CreateEffectParticleElementGravity(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    float Gravity_x = 0.0f,
-    float Gravity_y = 0.0f) {
-  EffectParticleElementGravityBuilder builder_(_fbb);
-  builder_.add_Gravity_y(Gravity_y);
-  builder_.add_Gravity_x(Gravity_x);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementDelay FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_DELAYTIME = 4
-  };
+ public:
+  EffectParticleElementDelay() {
+    memset(this, 0, sizeof(EffectParticleElementDelay));
+  }
+  EffectParticleElementDelay(int32_t _DelayTime)
+      : DelayTime_(flatbuffers::EndianScalar(_DelayTime)) {
+  }
   int32_t DelayTime() const {
-    return GetField<int32_t>(VT_DELAYTIME, 0);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_DELAYTIME) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(DelayTime_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementDelay, 4);
 
-struct EffectParticleElementDelayBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_DelayTime(int32_t DelayTime) {
-    fbb_.AddElement<int32_t>(EffectParticleElementDelay::VT_DELAYTIME, DelayTime, 0);
-  }
-  explicit EffectParticleElementDelayBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementDelayBuilder &operator=(const EffectParticleElementDelayBuilder &);
-  flatbuffers::Offset<EffectParticleElementDelay> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementDelay>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRndSeedChange FLATBUFFERS_FINAL_CLASS {
+ private:
+  int32_t Seed_;
 
-inline flatbuffers::Offset<EffectParticleElementDelay> CreateEffectParticleElementDelay(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t DelayTime = 0) {
-  EffectParticleElementDelayBuilder builder_(_fbb);
-  builder_.add_DelayTime(DelayTime);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementRndSeedChange FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_SEED = 4
-  };
+ public:
+  EffectParticleElementRndSeedChange() {
+    memset(this, 0, sizeof(EffectParticleElementRndSeedChange));
+  }
+  EffectParticleElementRndSeedChange(int32_t _Seed)
+      : Seed_(flatbuffers::EndianScalar(_Seed)) {
+  }
   int32_t Seed() const {
-    return GetField<int32_t>(VT_SEED, 0);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_SEED) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(Seed_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementRndSeedChange, 4);
 
-struct EffectParticleElementRndSeedChangeBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_Seed(int32_t Seed) {
-    fbb_.AddElement<int32_t>(EffectParticleElementRndSeedChange::VT_SEED, Seed, 0);
-  }
-  explicit EffectParticleElementRndSeedChangeBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementRndSeedChangeBuilder &operator=(const EffectParticleElementRndSeedChangeBuilder &);
-  flatbuffers::Offset<EffectParticleElementRndSeedChange> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementRndSeedChange>(end);
-    return o;
-  }
-};
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementBasic FLATBUFFERS_FINAL_CLASS {
+ private:
+  int32_t SsEffectFunctionType_;
+  int32_t priority_;
+  int32_t maximumParticle_;
+  int32_t attimeCreate_;
+  int32_t interval_;
+  int32_t lifetime_;
+  float speedMinValue_;
+  float speedMaxValue_;
+  int32_t lifespanMinValue_;
+  int32_t lifespanMaxValue_;
+  float angle_;
+  float angleVariance_;
 
-inline flatbuffers::Offset<EffectParticleElementRndSeedChange> CreateEffectParticleElementRndSeedChange(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t Seed = 0) {
-  EffectParticleElementRndSeedChangeBuilder builder_(_fbb);
-  builder_.add_Seed(Seed);
-  return builder_.Finish();
-}
-
-struct EffectParticleElementBasic FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_SSEFFECTFUNCTIONTYPE = 4,
-    VT_PRIORITY = 6,
-    VT_MAXIMUMPARTICLE = 8,
-    VT_ATTIMECREATE = 10,
-    VT_INTERVAL = 12,
-    VT_LIFETIME = 14,
-    VT_SPEEDMINVALUE = 16,
-    VT_SPEEDMAXVALUE = 18,
-    VT_LIFESPANMINVALUE = 20,
-    VT_LIFESPANMAXVALUE = 22,
-    VT_ANGLE = 24,
-    VT_ANGLEVARIANCE = 26
-  };
+ public:
+  EffectParticleElementBasic() {
+    memset(this, 0, sizeof(EffectParticleElementBasic));
+  }
+  EffectParticleElementBasic(int32_t _SsEffectFunctionType, int32_t _priority, int32_t _maximumParticle, int32_t _attimeCreate, int32_t _interval, int32_t _lifetime, float _speedMinValue, float _speedMaxValue, int32_t _lifespanMinValue, int32_t _lifespanMaxValue, float _angle, float _angleVariance)
+      : SsEffectFunctionType_(flatbuffers::EndianScalar(_SsEffectFunctionType)),
+        priority_(flatbuffers::EndianScalar(_priority)),
+        maximumParticle_(flatbuffers::EndianScalar(_maximumParticle)),
+        attimeCreate_(flatbuffers::EndianScalar(_attimeCreate)),
+        interval_(flatbuffers::EndianScalar(_interval)),
+        lifetime_(flatbuffers::EndianScalar(_lifetime)),
+        speedMinValue_(flatbuffers::EndianScalar(_speedMinValue)),
+        speedMaxValue_(flatbuffers::EndianScalar(_speedMaxValue)),
+        lifespanMinValue_(flatbuffers::EndianScalar(_lifespanMinValue)),
+        lifespanMaxValue_(flatbuffers::EndianScalar(_lifespanMaxValue)),
+        angle_(flatbuffers::EndianScalar(_angle)),
+        angleVariance_(flatbuffers::EndianScalar(_angleVariance)) {
+  }
   int32_t SsEffectFunctionType() const {
-    return GetField<int32_t>(VT_SSEFFECTFUNCTIONTYPE, 0);
+    return flatbuffers::EndianScalar(SsEffectFunctionType_);
   }
   int32_t priority() const {
-    return GetField<int32_t>(VT_PRIORITY, 0);
+    return flatbuffers::EndianScalar(priority_);
   }
   int32_t maximumParticle() const {
-    return GetField<int32_t>(VT_MAXIMUMPARTICLE, 0);
+    return flatbuffers::EndianScalar(maximumParticle_);
   }
   int32_t attimeCreate() const {
-    return GetField<int32_t>(VT_ATTIMECREATE, 0);
+    return flatbuffers::EndianScalar(attimeCreate_);
   }
   int32_t interval() const {
-    return GetField<int32_t>(VT_INTERVAL, 0);
+    return flatbuffers::EndianScalar(interval_);
   }
   int32_t lifetime() const {
-    return GetField<int32_t>(VT_LIFETIME, 0);
+    return flatbuffers::EndianScalar(lifetime_);
   }
   float speedMinValue() const {
-    return GetField<float>(VT_SPEEDMINVALUE, 0.0f);
+    return flatbuffers::EndianScalar(speedMinValue_);
   }
   float speedMaxValue() const {
-    return GetField<float>(VT_SPEEDMAXVALUE, 0.0f);
+    return flatbuffers::EndianScalar(speedMaxValue_);
   }
   int32_t lifespanMinValue() const {
-    return GetField<int32_t>(VT_LIFESPANMINVALUE, 0);
+    return flatbuffers::EndianScalar(lifespanMinValue_);
   }
   int32_t lifespanMaxValue() const {
-    return GetField<int32_t>(VT_LIFESPANMAXVALUE, 0);
+    return flatbuffers::EndianScalar(lifespanMaxValue_);
   }
   float angle() const {
-    return GetField<float>(VT_ANGLE, 0.0f);
+    return flatbuffers::EndianScalar(angle_);
   }
   float angleVariance() const {
-    return GetField<float>(VT_ANGLEVARIANCE, 0.0f);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_SSEFFECTFUNCTIONTYPE) &&
-           VerifyField<int32_t>(verifier, VT_PRIORITY) &&
-           VerifyField<int32_t>(verifier, VT_MAXIMUMPARTICLE) &&
-           VerifyField<int32_t>(verifier, VT_ATTIMECREATE) &&
-           VerifyField<int32_t>(verifier, VT_INTERVAL) &&
-           VerifyField<int32_t>(verifier, VT_LIFETIME) &&
-           VerifyField<float>(verifier, VT_SPEEDMINVALUE) &&
-           VerifyField<float>(verifier, VT_SPEEDMAXVALUE) &&
-           VerifyField<int32_t>(verifier, VT_LIFESPANMINVALUE) &&
-           VerifyField<int32_t>(verifier, VT_LIFESPANMAXVALUE) &&
-           VerifyField<float>(verifier, VT_ANGLE) &&
-           VerifyField<float>(verifier, VT_ANGLEVARIANCE) &&
-           verifier.EndTable();
+    return flatbuffers::EndianScalar(angleVariance_);
   }
 };
+FLATBUFFERS_STRUCT_END(EffectParticleElementBasic, 48);
 
-struct EffectParticleElementBasicBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_SsEffectFunctionType(int32_t SsEffectFunctionType) {
-    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_SSEFFECTFUNCTIONTYPE, SsEffectFunctionType, 0);
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) userDataInteger FLATBUFFERS_FINAL_CLASS {
+ private:
+  int32_t integer_;
+
+ public:
+  userDataInteger() {
+    memset(this, 0, sizeof(userDataInteger));
   }
-  void add_priority(int32_t priority) {
-    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_PRIORITY, priority, 0);
+  userDataInteger(int32_t _integer)
+      : integer_(flatbuffers::EndianScalar(_integer)) {
   }
-  void add_maximumParticle(int32_t maximumParticle) {
-    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_MAXIMUMPARTICLE, maximumParticle, 0);
-  }
-  void add_attimeCreate(int32_t attimeCreate) {
-    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_ATTIMECREATE, attimeCreate, 0);
-  }
-  void add_interval(int32_t interval) {
-    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_INTERVAL, interval, 0);
-  }
-  void add_lifetime(int32_t lifetime) {
-    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_LIFETIME, lifetime, 0);
-  }
-  void add_speedMinValue(float speedMinValue) {
-    fbb_.AddElement<float>(EffectParticleElementBasic::VT_SPEEDMINVALUE, speedMinValue, 0.0f);
-  }
-  void add_speedMaxValue(float speedMaxValue) {
-    fbb_.AddElement<float>(EffectParticleElementBasic::VT_SPEEDMAXVALUE, speedMaxValue, 0.0f);
-  }
-  void add_lifespanMinValue(int32_t lifespanMinValue) {
-    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_LIFESPANMINVALUE, lifespanMinValue, 0);
-  }
-  void add_lifespanMaxValue(int32_t lifespanMaxValue) {
-    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_LIFESPANMAXVALUE, lifespanMaxValue, 0);
-  }
-  void add_angle(float angle) {
-    fbb_.AddElement<float>(EffectParticleElementBasic::VT_ANGLE, angle, 0.0f);
-  }
-  void add_angleVariance(float angleVariance) {
-    fbb_.AddElement<float>(EffectParticleElementBasic::VT_ANGLEVARIANCE, angleVariance, 0.0f);
-  }
-  explicit EffectParticleElementBasicBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  EffectParticleElementBasicBuilder &operator=(const EffectParticleElementBasicBuilder &);
-  flatbuffers::Offset<EffectParticleElementBasic> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectParticleElementBasic>(end);
-    return o;
+  int32_t integer() const {
+    return flatbuffers::EndianScalar(integer_);
   }
 };
+FLATBUFFERS_STRUCT_END(userDataInteger, 4);
 
-inline flatbuffers::Offset<EffectParticleElementBasic> CreateEffectParticleElementBasic(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t SsEffectFunctionType = 0,
-    int32_t priority = 0,
-    int32_t maximumParticle = 0,
-    int32_t attimeCreate = 0,
-    int32_t interval = 0,
-    int32_t lifetime = 0,
-    float speedMinValue = 0.0f,
-    float speedMaxValue = 0.0f,
-    int32_t lifespanMinValue = 0,
-    int32_t lifespanMaxValue = 0,
-    float angle = 0.0f,
-    float angleVariance = 0.0f) {
-  EffectParticleElementBasicBuilder builder_(_fbb);
-  builder_.add_angleVariance(angleVariance);
-  builder_.add_angle(angle);
-  builder_.add_lifespanMaxValue(lifespanMaxValue);
-  builder_.add_lifespanMinValue(lifespanMinValue);
-  builder_.add_speedMaxValue(speedMaxValue);
-  builder_.add_speedMinValue(speedMinValue);
-  builder_.add_lifetime(lifetime);
-  builder_.add_interval(interval);
-  builder_.add_attimeCreate(attimeCreate);
-  builder_.add_maximumParticle(maximumParticle);
-  builder_.add_priority(priority);
-  builder_.add_SsEffectFunctionType(SsEffectFunctionType);
-  return builder_.Finish();
-}
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) userDataRect FLATBUFFERS_FINAL_CLASS {
+ private:
+  int32_t x_;
+  int32_t y_;
+  int32_t w_;
+  int32_t h_;
+
+ public:
+  userDataRect() {
+    memset(this, 0, sizeof(userDataRect));
+  }
+  userDataRect(int32_t _x, int32_t _y, int32_t _w, int32_t _h)
+      : x_(flatbuffers::EndianScalar(_x)),
+        y_(flatbuffers::EndianScalar(_y)),
+        w_(flatbuffers::EndianScalar(_w)),
+        h_(flatbuffers::EndianScalar(_h)) {
+  }
+  int32_t x() const {
+    return flatbuffers::EndianScalar(x_);
+  }
+  int32_t y() const {
+    return flatbuffers::EndianScalar(y_);
+  }
+  int32_t w() const {
+    return flatbuffers::EndianScalar(w_);
+  }
+  int32_t h() const {
+    return flatbuffers::EndianScalar(h_);
+  }
+};
+FLATBUFFERS_STRUCT_END(userDataRect, 16);
+
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) userDataPoint FLATBUFFERS_FINAL_CLASS {
+ private:
+  int32_t x_;
+  int32_t y_;
+
+ public:
+  userDataPoint() {
+    memset(this, 0, sizeof(userDataPoint));
+  }
+  userDataPoint(int32_t _x, int32_t _y)
+      : x_(flatbuffers::EndianScalar(_x)),
+        y_(flatbuffers::EndianScalar(_y)) {
+  }
+  int32_t x() const {
+    return flatbuffers::EndianScalar(x_);
+  }
+  int32_t y() const {
+    return flatbuffers::EndianScalar(y_);
+  }
+};
+FLATBUFFERS_STRUCT_END(userDataPoint, 8);
+
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) AnimationInitialData FLATBUFFERS_FINAL_CLASS {
+ private:
+  int16_t index_;
+  int16_t padding0__;
+  int32_t lowflag_;
+  int32_t highflag_;
+  int16_t priority_;
+  int16_t cellIndex_;
+  int16_t opacity_;
+  int16_t localopacity_;
+  int16_t masklimen_;
+  int16_t padding1__;
+  float positionX_;
+  float positionY_;
+  float positionZ_;
+  float pivotX_;
+  float pivotY_;
+  float rotationX_;
+  float rotationY_;
+  float rotationZ_;
+  float scaleX_;
+  float scaleY_;
+  float localscaleX_;
+  float localscaleY_;
+  float size_X_;
+  float size_Y_;
+  float uv_move_X_;
+  float uv_move_Y_;
+  float uv_rotation_;
+  float uv_scale_X_;
+  float uv_scale_Y_;
+  float boundingRadius_;
+  int32_t instanceValue_curKeyframe_;
+  int32_t instanceValue_startFrame_;
+  int32_t instanceValue_endFrame_;
+  int32_t instanceValue_loopNum_;
+  float instanceValue_speed_;
+  int32_t instanceValue_loopflag_;
+  int32_t effectValue_curKeyframe_;
+  int32_t effectValue_startTime_;
+  float effectValue_speed_;
+  int32_t effectValue_loopflag_;
+
+ public:
+  AnimationInitialData() {
+    memset(this, 0, sizeof(AnimationInitialData));
+  }
+  AnimationInitialData(int16_t _index, int32_t _lowflag, int32_t _highflag, int16_t _priority, int16_t _cellIndex, int16_t _opacity, int16_t _localopacity, int16_t _masklimen, float _positionX, float _positionY, float _positionZ, float _pivotX, float _pivotY, float _rotationX, float _rotationY, float _rotationZ, float _scaleX, float _scaleY, float _localscaleX, float _localscaleY, float _size_X, float _size_Y, float _uv_move_X, float _uv_move_Y, float _uv_rotation, float _uv_scale_X, float _uv_scale_Y, float _boundingRadius, int32_t _instanceValue_curKeyframe, int32_t _instanceValue_startFrame, int32_t _instanceValue_endFrame, int32_t _instanceValue_loopNum, float _instanceValue_speed, int32_t _instanceValue_loopflag, int32_t _effectValue_curKeyframe, int32_t _effectValue_startTime, float _effectValue_speed, int32_t _effectValue_loopflag)
+      : index_(flatbuffers::EndianScalar(_index)),
+        padding0__(0),
+        lowflag_(flatbuffers::EndianScalar(_lowflag)),
+        highflag_(flatbuffers::EndianScalar(_highflag)),
+        priority_(flatbuffers::EndianScalar(_priority)),
+        cellIndex_(flatbuffers::EndianScalar(_cellIndex)),
+        opacity_(flatbuffers::EndianScalar(_opacity)),
+        localopacity_(flatbuffers::EndianScalar(_localopacity)),
+        masklimen_(flatbuffers::EndianScalar(_masklimen)),
+        padding1__(0),
+        positionX_(flatbuffers::EndianScalar(_positionX)),
+        positionY_(flatbuffers::EndianScalar(_positionY)),
+        positionZ_(flatbuffers::EndianScalar(_positionZ)),
+        pivotX_(flatbuffers::EndianScalar(_pivotX)),
+        pivotY_(flatbuffers::EndianScalar(_pivotY)),
+        rotationX_(flatbuffers::EndianScalar(_rotationX)),
+        rotationY_(flatbuffers::EndianScalar(_rotationY)),
+        rotationZ_(flatbuffers::EndianScalar(_rotationZ)),
+        scaleX_(flatbuffers::EndianScalar(_scaleX)),
+        scaleY_(flatbuffers::EndianScalar(_scaleY)),
+        localscaleX_(flatbuffers::EndianScalar(_localscaleX)),
+        localscaleY_(flatbuffers::EndianScalar(_localscaleY)),
+        size_X_(flatbuffers::EndianScalar(_size_X)),
+        size_Y_(flatbuffers::EndianScalar(_size_Y)),
+        uv_move_X_(flatbuffers::EndianScalar(_uv_move_X)),
+        uv_move_Y_(flatbuffers::EndianScalar(_uv_move_Y)),
+        uv_rotation_(flatbuffers::EndianScalar(_uv_rotation)),
+        uv_scale_X_(flatbuffers::EndianScalar(_uv_scale_X)),
+        uv_scale_Y_(flatbuffers::EndianScalar(_uv_scale_Y)),
+        boundingRadius_(flatbuffers::EndianScalar(_boundingRadius)),
+        instanceValue_curKeyframe_(flatbuffers::EndianScalar(_instanceValue_curKeyframe)),
+        instanceValue_startFrame_(flatbuffers::EndianScalar(_instanceValue_startFrame)),
+        instanceValue_endFrame_(flatbuffers::EndianScalar(_instanceValue_endFrame)),
+        instanceValue_loopNum_(flatbuffers::EndianScalar(_instanceValue_loopNum)),
+        instanceValue_speed_(flatbuffers::EndianScalar(_instanceValue_speed)),
+        instanceValue_loopflag_(flatbuffers::EndianScalar(_instanceValue_loopflag)),
+        effectValue_curKeyframe_(flatbuffers::EndianScalar(_effectValue_curKeyframe)),
+        effectValue_startTime_(flatbuffers::EndianScalar(_effectValue_startTime)),
+        effectValue_speed_(flatbuffers::EndianScalar(_effectValue_speed)),
+        effectValue_loopflag_(flatbuffers::EndianScalar(_effectValue_loopflag)) {
+    (void)padding0__;
+    (void)padding1__;
+  }
+  int16_t index() const {
+    return flatbuffers::EndianScalar(index_);
+  }
+  int32_t lowflag() const {
+    return flatbuffers::EndianScalar(lowflag_);
+  }
+  int32_t highflag() const {
+    return flatbuffers::EndianScalar(highflag_);
+  }
+  int16_t priority() const {
+    return flatbuffers::EndianScalar(priority_);
+  }
+  int16_t cellIndex() const {
+    return flatbuffers::EndianScalar(cellIndex_);
+  }
+  int16_t opacity() const {
+    return flatbuffers::EndianScalar(opacity_);
+  }
+  int16_t localopacity() const {
+    return flatbuffers::EndianScalar(localopacity_);
+  }
+  int16_t masklimen() const {
+    return flatbuffers::EndianScalar(masklimen_);
+  }
+  float positionX() const {
+    return flatbuffers::EndianScalar(positionX_);
+  }
+  float positionY() const {
+    return flatbuffers::EndianScalar(positionY_);
+  }
+  float positionZ() const {
+    return flatbuffers::EndianScalar(positionZ_);
+  }
+  float pivotX() const {
+    return flatbuffers::EndianScalar(pivotX_);
+  }
+  float pivotY() const {
+    return flatbuffers::EndianScalar(pivotY_);
+  }
+  float rotationX() const {
+    return flatbuffers::EndianScalar(rotationX_);
+  }
+  float rotationY() const {
+    return flatbuffers::EndianScalar(rotationY_);
+  }
+  float rotationZ() const {
+    return flatbuffers::EndianScalar(rotationZ_);
+  }
+  float scaleX() const {
+    return flatbuffers::EndianScalar(scaleX_);
+  }
+  float scaleY() const {
+    return flatbuffers::EndianScalar(scaleY_);
+  }
+  float localscaleX() const {
+    return flatbuffers::EndianScalar(localscaleX_);
+  }
+  float localscaleY() const {
+    return flatbuffers::EndianScalar(localscaleY_);
+  }
+  float size_X() const {
+    return flatbuffers::EndianScalar(size_X_);
+  }
+  float size_Y() const {
+    return flatbuffers::EndianScalar(size_Y_);
+  }
+  float uv_move_X() const {
+    return flatbuffers::EndianScalar(uv_move_X_);
+  }
+  float uv_move_Y() const {
+    return flatbuffers::EndianScalar(uv_move_Y_);
+  }
+  float uv_rotation() const {
+    return flatbuffers::EndianScalar(uv_rotation_);
+  }
+  float uv_scale_X() const {
+    return flatbuffers::EndianScalar(uv_scale_X_);
+  }
+  float uv_scale_Y() const {
+    return flatbuffers::EndianScalar(uv_scale_Y_);
+  }
+  float boundingRadius() const {
+    return flatbuffers::EndianScalar(boundingRadius_);
+  }
+  int32_t instanceValue_curKeyframe() const {
+    return flatbuffers::EndianScalar(instanceValue_curKeyframe_);
+  }
+  int32_t instanceValue_startFrame() const {
+    return flatbuffers::EndianScalar(instanceValue_startFrame_);
+  }
+  int32_t instanceValue_endFrame() const {
+    return flatbuffers::EndianScalar(instanceValue_endFrame_);
+  }
+  int32_t instanceValue_loopNum() const {
+    return flatbuffers::EndianScalar(instanceValue_loopNum_);
+  }
+  float instanceValue_speed() const {
+    return flatbuffers::EndianScalar(instanceValue_speed_);
+  }
+  int32_t instanceValue_loopflag() const {
+    return flatbuffers::EndianScalar(instanceValue_loopflag_);
+  }
+  int32_t effectValue_curKeyframe() const {
+    return flatbuffers::EndianScalar(effectValue_curKeyframe_);
+  }
+  int32_t effectValue_startTime() const {
+    return flatbuffers::EndianScalar(effectValue_startTime_);
+  }
+  float effectValue_speed() const {
+    return flatbuffers::EndianScalar(effectValue_speed_);
+  }
+  int32_t effectValue_loopflag() const {
+    return flatbuffers::EndianScalar(effectValue_loopflag_);
+  }
+};
+FLATBUFFERS_STRUCT_END(AnimationInitialData, 144);
 
 struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
@@ -1629,9 +1336,9 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int16_t>(verifier, VT_BLENDTYPE) &&
            VerifyField<int16_t>(verifier, VT_NUMBEHAVIOR) &&
            VerifyOffset(verifier, VT_BEHAVIOR_TYPE) &&
-           verifier.Verify(Behavior_type()) &&
+           verifier.VerifyVector(Behavior_type()) &&
            VerifyOffset(verifier, VT_BEHAVIOR) &&
-           verifier.Verify(Behavior()) &&
+           verifier.VerifyVector(Behavior()) &&
            VerifyEffectNodeBehaviorVector(verifier, Behavior(), Behavior_type()) &&
            verifier.EndTable();
   }
@@ -1758,7 +1465,7 @@ struct EffectFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyField<int16_t>(verifier, VT_FPS) &&
            VerifyField<int16_t>(verifier, VT_ISLOCKRANDSEED) &&
            VerifyField<int16_t>(verifier, VT_LOCKRANDSEED) &&
@@ -1766,7 +1473,7 @@ struct EffectFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int16_t>(verifier, VT_LAYOUTSCALEY) &&
            VerifyField<int16_t>(verifier, VT_NUMNODELIST) &&
            VerifyOffset(verifier, VT_EFFECTNODE) &&
-           verifier.Verify(effectNode()) &&
+           verifier.VerifyVector(effectNode()) &&
            verifier.VerifyVectorOfTables(effectNode()) &&
            verifier.EndTable();
   }
@@ -1881,9 +1588,9 @@ struct CellMap FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_IMAGEPATH) &&
-           verifier.Verify(imagePath()) &&
+           verifier.VerifyString(imagePath()) &&
            VerifyField<int16_t>(verifier, VT_INDEX) &&
            VerifyField<int16_t>(verifier, VT_WRAPMODE) &&
            VerifyField<int16_t>(verifier, VT_FILTERMODE) &&
@@ -2011,7 +1718,7 @@ struct Cell FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_CELLMAP) &&
            verifier.VerifyTable(cellMap()) &&
            VerifyField<int16_t>(verifier, VT_INDEXINCELLMAP) &&
@@ -2157,7 +1864,7 @@ struct meshDataUV FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_UV) &&
-           verifier.Verify(uv()) &&
+           verifier.VerifyVector(uv()) &&
            verifier.EndTable();
   }
 };
@@ -2206,7 +1913,7 @@ struct meshDataIndices FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_INDICES) &&
-           verifier.Verify(indices()) &&
+           verifier.VerifyVector(indices()) &&
            verifier.EndTable();
   }
 };
@@ -2249,13 +1956,13 @@ struct frameDataIndex FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_DATA = 4
   };
-  const flatbuffers::Vector<float> *data() const {
-    return GetPointer<const flatbuffers::Vector<float> *>(VT_DATA);
+  const flatbuffers::Vector<uint32_t> *data() const {
+    return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_DATA);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_DATA) &&
-           verifier.Verify(data()) &&
+           verifier.VerifyVector(data()) &&
            verifier.EndTable();
   }
 };
@@ -2263,7 +1970,7 @@ struct frameDataIndex FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct frameDataIndexBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_data(flatbuffers::Offset<flatbuffers::Vector<float>> data) {
+  void add_data(flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data) {
     fbb_.AddOffset(frameDataIndex::VT_DATA, data);
   }
   explicit frameDataIndexBuilder(flatbuffers::FlatBufferBuilder &_fbb)
@@ -2280,7 +1987,7 @@ struct frameDataIndexBuilder {
 
 inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(
     flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<float>> data = 0) {
+    flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data = 0) {
   frameDataIndexBuilder builder_(_fbb);
   builder_.add_data(data);
   return builder_.Finish();
@@ -2288,170 +1995,10 @@ inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(
 
 inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndexDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<float> *data = nullptr) {
+    const std::vector<uint32_t> *data = nullptr) {
   return ss::ssfb::CreateframeDataIndex(
       _fbb,
-      data ? _fbb.CreateVector<float>(*data) : 0);
-}
-
-struct userDataInteger FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_INTEGER = 4
-  };
-  int32_t integer() const {
-    return GetField<int32_t>(VT_INTEGER, 0);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_INTEGER) &&
-           verifier.EndTable();
-  }
-};
-
-struct userDataIntegerBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_integer(int32_t integer) {
-    fbb_.AddElement<int32_t>(userDataInteger::VT_INTEGER, integer, 0);
-  }
-  explicit userDataIntegerBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  userDataIntegerBuilder &operator=(const userDataIntegerBuilder &);
-  flatbuffers::Offset<userDataInteger> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<userDataInteger>(end);
-    return o;
-  }
-};
-
-inline flatbuffers::Offset<userDataInteger> CreateuserDataInteger(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t integer = 0) {
-  userDataIntegerBuilder builder_(_fbb);
-  builder_.add_integer(integer);
-  return builder_.Finish();
-}
-
-struct userDataRect FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_X = 4,
-    VT_Y = 6,
-    VT_W = 8,
-    VT_H = 10
-  };
-  int32_t x() const {
-    return GetField<int32_t>(VT_X, 0);
-  }
-  int32_t y() const {
-    return GetField<int32_t>(VT_Y, 0);
-  }
-  int32_t w() const {
-    return GetField<int32_t>(VT_W, 0);
-  }
-  int32_t h() const {
-    return GetField<int32_t>(VT_H, 0);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_X) &&
-           VerifyField<int32_t>(verifier, VT_Y) &&
-           VerifyField<int32_t>(verifier, VT_W) &&
-           VerifyField<int32_t>(verifier, VT_H) &&
-           verifier.EndTable();
-  }
-};
-
-struct userDataRectBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_x(int32_t x) {
-    fbb_.AddElement<int32_t>(userDataRect::VT_X, x, 0);
-  }
-  void add_y(int32_t y) {
-    fbb_.AddElement<int32_t>(userDataRect::VT_Y, y, 0);
-  }
-  void add_w(int32_t w) {
-    fbb_.AddElement<int32_t>(userDataRect::VT_W, w, 0);
-  }
-  void add_h(int32_t h) {
-    fbb_.AddElement<int32_t>(userDataRect::VT_H, h, 0);
-  }
-  explicit userDataRectBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  userDataRectBuilder &operator=(const userDataRectBuilder &);
-  flatbuffers::Offset<userDataRect> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<userDataRect>(end);
-    return o;
-  }
-};
-
-inline flatbuffers::Offset<userDataRect> CreateuserDataRect(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t x = 0,
-    int32_t y = 0,
-    int32_t w = 0,
-    int32_t h = 0) {
-  userDataRectBuilder builder_(_fbb);
-  builder_.add_h(h);
-  builder_.add_w(w);
-  builder_.add_y(y);
-  builder_.add_x(x);
-  return builder_.Finish();
-}
-
-struct userDataPoint FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_X = 4,
-    VT_Y = 6
-  };
-  int32_t x() const {
-    return GetField<int32_t>(VT_X, 0);
-  }
-  int32_t y() const {
-    return GetField<int32_t>(VT_Y, 0);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_X) &&
-           VerifyField<int32_t>(verifier, VT_Y) &&
-           verifier.EndTable();
-  }
-};
-
-struct userDataPointBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_x(int32_t x) {
-    fbb_.AddElement<int32_t>(userDataPoint::VT_X, x, 0);
-  }
-  void add_y(int32_t y) {
-    fbb_.AddElement<int32_t>(userDataPoint::VT_Y, y, 0);
-  }
-  explicit userDataPointBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  userDataPointBuilder &operator=(const userDataPointBuilder &);
-  flatbuffers::Offset<userDataPoint> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<userDataPoint>(end);
-    return o;
-  }
-};
-
-inline flatbuffers::Offset<userDataPoint> CreateuserDataPoint(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t x = 0,
-    int32_t y = 0) {
-  userDataPointBuilder builder_(_fbb);
-  builder_.add_y(y);
-  builder_.add_x(x);
-  return builder_.Finish();
+      data ? _fbb.CreateVector<uint32_t>(*data) : 0);
 }
 
 struct userDataString FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -2469,7 +2016,7 @@ struct userDataString FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyField<int32_t>(verifier, VT_LENGTH) &&
            VerifyOffset(verifier, VT_DATA) &&
-           verifier.Verify(data()) &&
+           verifier.VerifyString(data()) &&
            verifier.EndTable();
   }
 };
@@ -2539,9 +2086,9 @@ struct userDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int16_t>(verifier, VT_FLAGS) &&
            VerifyField<int16_t>(verifier, VT_ARRAYINDEX) &&
            VerifyOffset(verifier, VT_DATA_TYPE) &&
-           verifier.Verify(data_type()) &&
+           verifier.VerifyVector(data_type()) &&
            VerifyOffset(verifier, VT_DATA) &&
-           verifier.Verify(data()) &&
+           verifier.VerifyVector(data()) &&
            VerifyuserDataValueVector(verifier, data(), data_type()) &&
            verifier.EndTable();
   }
@@ -2617,7 +2164,7 @@ struct userDataPerFrame FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyField<int16_t>(verifier, VT_FRAMEINDEX) &&
            VerifyOffset(verifier, VT_DATA) &&
-           verifier.Verify(data()) &&
+           verifier.VerifyVector(data()) &&
            verifier.VerifyVectorOfTables(data()) &&
            verifier.EndTable();
   }
@@ -2678,7 +2225,7 @@ struct labelDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_LABEL) &&
-           verifier.Verify(label()) &&
+           verifier.VerifyString(label()) &&
            VerifyField<int16_t>(verifier, VT_FRAMEINDEX) &&
            verifier.EndTable();
   }
@@ -2747,8 +2294,8 @@ struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::String *name() const {
     return GetPointer<const flatbuffers::String *>(VT_NAME);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<AnimationInitialData>> *defaultData() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<AnimationInitialData>> *>(VT_DEFAULTDATA);
+  const flatbuffers::Vector<const AnimationInitialData *> *defaultData() const {
+    return GetPointer<const flatbuffers::Vector<const AnimationInitialData *> *>(VT_DEFAULTDATA);
   }
   const flatbuffers::Vector<flatbuffers::Offset<frameDataIndex>> *frameData() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<frameDataIndex>> *>(VT_FRAMEDATA);
@@ -2795,24 +2342,23 @@ struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_DEFAULTDATA) &&
-           verifier.Verify(defaultData()) &&
-           verifier.VerifyVectorOfTables(defaultData()) &&
+           verifier.VerifyVector(defaultData()) &&
            VerifyOffset(verifier, VT_FRAMEDATA) &&
-           verifier.Verify(frameData()) &&
+           verifier.VerifyVector(frameData()) &&
            verifier.VerifyVectorOfTables(frameData()) &&
            VerifyOffset(verifier, VT_USERDATA) &&
-           verifier.Verify(userData()) &&
+           verifier.VerifyVector(userData()) &&
            verifier.VerifyVectorOfTables(userData()) &&
            VerifyOffset(verifier, VT_LABELDATA) &&
-           verifier.Verify(labelData()) &&
+           verifier.VerifyVector(labelData()) &&
            verifier.VerifyVectorOfTables(labelData()) &&
            VerifyOffset(verifier, VT_MESHSDATAUV) &&
-           verifier.Verify(meshsDataUV()) &&
+           verifier.VerifyVector(meshsDataUV()) &&
            verifier.VerifyVectorOfTables(meshsDataUV()) &&
            VerifyOffset(verifier, VT_MESHSDATAINDICES) &&
-           verifier.Verify(meshsDataIndices()) &&
+           verifier.VerifyVector(meshsDataIndices()) &&
            verifier.VerifyVectorOfTables(meshsDataIndices()) &&
            VerifyField<int16_t>(verifier, VT_STARTFRAMES) &&
            VerifyField<int16_t>(verifier, VT_ENDFRAMES) &&
@@ -2833,7 +2379,7 @@ struct AnimationDataBuilder {
   void add_name(flatbuffers::Offset<flatbuffers::String> name) {
     fbb_.AddOffset(AnimationData::VT_NAME, name);
   }
-  void add_defaultData(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<AnimationInitialData>>> defaultData) {
+  void add_defaultData(flatbuffers::Offset<flatbuffers::Vector<const AnimationInitialData *>> defaultData) {
     fbb_.AddOffset(AnimationData::VT_DEFAULTDATA, defaultData);
   }
   void add_frameData(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<frameDataIndex>>> frameData) {
@@ -2893,7 +2439,7 @@ struct AnimationDataBuilder {
 inline flatbuffers::Offset<AnimationData> CreateAnimationData(
     flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::String> name = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<AnimationInitialData>>> defaultData = 0,
+    flatbuffers::Offset<flatbuffers::Vector<const AnimationInitialData *>> defaultData = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<frameDataIndex>>> frameData = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<userDataPerFrame>>> userData = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<labelDataItem>>> labelData = 0,
@@ -2931,7 +2477,7 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationData(
 inline flatbuffers::Offset<AnimationData> CreateAnimationDataDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
-    const std::vector<flatbuffers::Offset<AnimationInitialData>> *defaultData = nullptr,
+    const std::vector<AnimationInitialData> *defaultData = nullptr,
     const std::vector<flatbuffers::Offset<frameDataIndex>> *frameData = nullptr,
     const std::vector<flatbuffers::Offset<userDataPerFrame>> *userData = nullptr,
     const std::vector<flatbuffers::Offset<labelDataItem>> *labelData = nullptr,
@@ -2949,7 +2495,7 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationDataDirect(
   return ss::ssfb::CreateAnimationData(
       _fbb,
       name ? _fbb.CreateString(name) : 0,
-      defaultData ? _fbb.CreateVector<flatbuffers::Offset<AnimationInitialData>>(*defaultData) : 0,
+      defaultData ? _fbb.CreateVectorOfStructs<AnimationInitialData>(*defaultData) : 0,
       frameData ? _fbb.CreateVector<flatbuffers::Offset<frameDataIndex>>(*frameData) : 0,
       userData ? _fbb.CreateVector<flatbuffers::Offset<userDataPerFrame>>(*userData) : 0,
       labelData ? _fbb.CreateVector<flatbuffers::Offset<labelDataItem>>(*labelData) : 0,
@@ -2964,416 +2510,6 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationDataDirect(
       canvasSizeH,
       canvasPvotX,
       canvasPvotY);
-}
-
-struct AnimationInitialData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_INDEX = 4,
-    VT_LOWFLAG = 6,
-    VT_HIGHFLAG = 8,
-    VT_PRIORITY = 10,
-    VT_CELLINDEX = 12,
-    VT_OPACITY = 14,
-    VT_LOCALOPACITY = 16,
-    VT_MASKLIMEN = 18,
-    VT_POSITIONX = 20,
-    VT_POSITIONY = 22,
-    VT_POSITIONZ = 24,
-    VT_PIVOTX = 26,
-    VT_PIVOTY = 28,
-    VT_ROTATIONX = 30,
-    VT_ROTATIONY = 32,
-    VT_ROTATIONZ = 34,
-    VT_SCALEX = 36,
-    VT_SCALEY = 38,
-    VT_LOCALSCALEX = 40,
-    VT_LOCALSCALEY = 42,
-    VT_SIZE_X = 44,
-    VT_SIZE_Y = 46,
-    VT_UV_MOVE_X = 48,
-    VT_UV_MOVE_Y = 50,
-    VT_UV_ROTATION = 52,
-    VT_UV_SCALE_X = 54,
-    VT_UV_SCALE_Y = 56,
-    VT_BOUNDINGRADIUS = 58,
-    VT_INSTANCEVALUE_CURKEYFRAME = 60,
-    VT_INSTANCEVALUE_STARTFRAME = 62,
-    VT_INSTANCEVALUE_ENDFRAME = 64,
-    VT_INSTANCEVALUE_LOOPNUM = 66,
-    VT_INSTANCEVALUE_SPEED = 68,
-    VT_INSTANCEVALUE_LOOPFLAG = 70,
-    VT_EFFECTVALUE_CURKEYFRAME = 72,
-    VT_EFFECTVALUE_STARTTIME = 74,
-    VT_EFFECTVALUE_SPEED = 76,
-    VT_EFFECTVALUE_LOOPFLAG = 78
-  };
-  int16_t index() const {
-    return GetField<int16_t>(VT_INDEX, 0);
-  }
-  int32_t lowflag() const {
-    return GetField<int32_t>(VT_LOWFLAG, 0);
-  }
-  int32_t highflag() const {
-    return GetField<int32_t>(VT_HIGHFLAG, 0);
-  }
-  int16_t priority() const {
-    return GetField<int16_t>(VT_PRIORITY, 0);
-  }
-  int16_t cellIndex() const {
-    return GetField<int16_t>(VT_CELLINDEX, 0);
-  }
-  int16_t opacity() const {
-    return GetField<int16_t>(VT_OPACITY, 0);
-  }
-  int16_t localopacity() const {
-    return GetField<int16_t>(VT_LOCALOPACITY, 0);
-  }
-  int16_t masklimen() const {
-    return GetField<int16_t>(VT_MASKLIMEN, 0);
-  }
-  float positionX() const {
-    return GetField<float>(VT_POSITIONX, 0.0f);
-  }
-  float positionY() const {
-    return GetField<float>(VT_POSITIONY, 0.0f);
-  }
-  float positionZ() const {
-    return GetField<float>(VT_POSITIONZ, 0.0f);
-  }
-  float pivotX() const {
-    return GetField<float>(VT_PIVOTX, 0.0f);
-  }
-  float pivotY() const {
-    return GetField<float>(VT_PIVOTY, 0.0f);
-  }
-  float rotationX() const {
-    return GetField<float>(VT_ROTATIONX, 0.0f);
-  }
-  float rotationY() const {
-    return GetField<float>(VT_ROTATIONY, 0.0f);
-  }
-  float rotationZ() const {
-    return GetField<float>(VT_ROTATIONZ, 0.0f);
-  }
-  float scaleX() const {
-    return GetField<float>(VT_SCALEX, 0.0f);
-  }
-  float scaleY() const {
-    return GetField<float>(VT_SCALEY, 0.0f);
-  }
-  float localscaleX() const {
-    return GetField<float>(VT_LOCALSCALEX, 0.0f);
-  }
-  float localscaleY() const {
-    return GetField<float>(VT_LOCALSCALEY, 0.0f);
-  }
-  float size_X() const {
-    return GetField<float>(VT_SIZE_X, 0.0f);
-  }
-  float size_Y() const {
-    return GetField<float>(VT_SIZE_Y, 0.0f);
-  }
-  float uv_move_X() const {
-    return GetField<float>(VT_UV_MOVE_X, 0.0f);
-  }
-  float uv_move_Y() const {
-    return GetField<float>(VT_UV_MOVE_Y, 0.0f);
-  }
-  float uv_rotation() const {
-    return GetField<float>(VT_UV_ROTATION, 0.0f);
-  }
-  float uv_scale_X() const {
-    return GetField<float>(VT_UV_SCALE_X, 0.0f);
-  }
-  float uv_scale_Y() const {
-    return GetField<float>(VT_UV_SCALE_Y, 0.0f);
-  }
-  float boundingRadius() const {
-    return GetField<float>(VT_BOUNDINGRADIUS, 0.0f);
-  }
-  int32_t instanceValue_curKeyframe() const {
-    return GetField<int32_t>(VT_INSTANCEVALUE_CURKEYFRAME, 0);
-  }
-  int32_t instanceValue_startFrame() const {
-    return GetField<int32_t>(VT_INSTANCEVALUE_STARTFRAME, 0);
-  }
-  int32_t instanceValue_endFrame() const {
-    return GetField<int32_t>(VT_INSTANCEVALUE_ENDFRAME, 0);
-  }
-  int32_t instanceValue_loopNum() const {
-    return GetField<int32_t>(VT_INSTANCEVALUE_LOOPNUM, 0);
-  }
-  float instanceValue_speed() const {
-    return GetField<float>(VT_INSTANCEVALUE_SPEED, 0.0f);
-  }
-  int32_t instanceValue_loopflag() const {
-    return GetField<int32_t>(VT_INSTANCEVALUE_LOOPFLAG, 0);
-  }
-  int32_t effectValue_curKeyframe() const {
-    return GetField<int32_t>(VT_EFFECTVALUE_CURKEYFRAME, 0);
-  }
-  int32_t effectValue_startTime() const {
-    return GetField<int32_t>(VT_EFFECTVALUE_STARTTIME, 0);
-  }
-  float effectValue_speed() const {
-    return GetField<float>(VT_EFFECTVALUE_SPEED, 0.0f);
-  }
-  int32_t effectValue_loopflag() const {
-    return GetField<int32_t>(VT_EFFECTVALUE_LOOPFLAG, 0);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<int16_t>(verifier, VT_INDEX) &&
-           VerifyField<int32_t>(verifier, VT_LOWFLAG) &&
-           VerifyField<int32_t>(verifier, VT_HIGHFLAG) &&
-           VerifyField<int16_t>(verifier, VT_PRIORITY) &&
-           VerifyField<int16_t>(verifier, VT_CELLINDEX) &&
-           VerifyField<int16_t>(verifier, VT_OPACITY) &&
-           VerifyField<int16_t>(verifier, VT_LOCALOPACITY) &&
-           VerifyField<int16_t>(verifier, VT_MASKLIMEN) &&
-           VerifyField<float>(verifier, VT_POSITIONX) &&
-           VerifyField<float>(verifier, VT_POSITIONY) &&
-           VerifyField<float>(verifier, VT_POSITIONZ) &&
-           VerifyField<float>(verifier, VT_PIVOTX) &&
-           VerifyField<float>(verifier, VT_PIVOTY) &&
-           VerifyField<float>(verifier, VT_ROTATIONX) &&
-           VerifyField<float>(verifier, VT_ROTATIONY) &&
-           VerifyField<float>(verifier, VT_ROTATIONZ) &&
-           VerifyField<float>(verifier, VT_SCALEX) &&
-           VerifyField<float>(verifier, VT_SCALEY) &&
-           VerifyField<float>(verifier, VT_LOCALSCALEX) &&
-           VerifyField<float>(verifier, VT_LOCALSCALEY) &&
-           VerifyField<float>(verifier, VT_SIZE_X) &&
-           VerifyField<float>(verifier, VT_SIZE_Y) &&
-           VerifyField<float>(verifier, VT_UV_MOVE_X) &&
-           VerifyField<float>(verifier, VT_UV_MOVE_Y) &&
-           VerifyField<float>(verifier, VT_UV_ROTATION) &&
-           VerifyField<float>(verifier, VT_UV_SCALE_X) &&
-           VerifyField<float>(verifier, VT_UV_SCALE_Y) &&
-           VerifyField<float>(verifier, VT_BOUNDINGRADIUS) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_CURKEYFRAME) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_STARTFRAME) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_ENDFRAME) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_LOOPNUM) &&
-           VerifyField<float>(verifier, VT_INSTANCEVALUE_SPEED) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_LOOPFLAG) &&
-           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_CURKEYFRAME) &&
-           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_STARTTIME) &&
-           VerifyField<float>(verifier, VT_EFFECTVALUE_SPEED) &&
-           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_LOOPFLAG) &&
-           verifier.EndTable();
-  }
-};
-
-struct AnimationInitialDataBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_index(int16_t index) {
-    fbb_.AddElement<int16_t>(AnimationInitialData::VT_INDEX, index, 0);
-  }
-  void add_lowflag(int32_t lowflag) {
-    fbb_.AddElement<int32_t>(AnimationInitialData::VT_LOWFLAG, lowflag, 0);
-  }
-  void add_highflag(int32_t highflag) {
-    fbb_.AddElement<int32_t>(AnimationInitialData::VT_HIGHFLAG, highflag, 0);
-  }
-  void add_priority(int16_t priority) {
-    fbb_.AddElement<int16_t>(AnimationInitialData::VT_PRIORITY, priority, 0);
-  }
-  void add_cellIndex(int16_t cellIndex) {
-    fbb_.AddElement<int16_t>(AnimationInitialData::VT_CELLINDEX, cellIndex, 0);
-  }
-  void add_opacity(int16_t opacity) {
-    fbb_.AddElement<int16_t>(AnimationInitialData::VT_OPACITY, opacity, 0);
-  }
-  void add_localopacity(int16_t localopacity) {
-    fbb_.AddElement<int16_t>(AnimationInitialData::VT_LOCALOPACITY, localopacity, 0);
-  }
-  void add_masklimen(int16_t masklimen) {
-    fbb_.AddElement<int16_t>(AnimationInitialData::VT_MASKLIMEN, masklimen, 0);
-  }
-  void add_positionX(float positionX) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_POSITIONX, positionX, 0.0f);
-  }
-  void add_positionY(float positionY) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_POSITIONY, positionY, 0.0f);
-  }
-  void add_positionZ(float positionZ) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_POSITIONZ, positionZ, 0.0f);
-  }
-  void add_pivotX(float pivotX) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_PIVOTX, pivotX, 0.0f);
-  }
-  void add_pivotY(float pivotY) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_PIVOTY, pivotY, 0.0f);
-  }
-  void add_rotationX(float rotationX) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_ROTATIONX, rotationX, 0.0f);
-  }
-  void add_rotationY(float rotationY) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_ROTATIONY, rotationY, 0.0f);
-  }
-  void add_rotationZ(float rotationZ) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_ROTATIONZ, rotationZ, 0.0f);
-  }
-  void add_scaleX(float scaleX) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_SCALEX, scaleX, 0.0f);
-  }
-  void add_scaleY(float scaleY) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_SCALEY, scaleY, 0.0f);
-  }
-  void add_localscaleX(float localscaleX) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_LOCALSCALEX, localscaleX, 0.0f);
-  }
-  void add_localscaleY(float localscaleY) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_LOCALSCALEY, localscaleY, 0.0f);
-  }
-  void add_size_X(float size_X) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_SIZE_X, size_X, 0.0f);
-  }
-  void add_size_Y(float size_Y) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_SIZE_Y, size_Y, 0.0f);
-  }
-  void add_uv_move_X(float uv_move_X) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_UV_MOVE_X, uv_move_X, 0.0f);
-  }
-  void add_uv_move_Y(float uv_move_Y) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_UV_MOVE_Y, uv_move_Y, 0.0f);
-  }
-  void add_uv_rotation(float uv_rotation) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_UV_ROTATION, uv_rotation, 0.0f);
-  }
-  void add_uv_scale_X(float uv_scale_X) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_UV_SCALE_X, uv_scale_X, 0.0f);
-  }
-  void add_uv_scale_Y(float uv_scale_Y) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_UV_SCALE_Y, uv_scale_Y, 0.0f);
-  }
-  void add_boundingRadius(float boundingRadius) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_BOUNDINGRADIUS, boundingRadius, 0.0f);
-  }
-  void add_instanceValue_curKeyframe(int32_t instanceValue_curKeyframe) {
-    fbb_.AddElement<int32_t>(AnimationInitialData::VT_INSTANCEVALUE_CURKEYFRAME, instanceValue_curKeyframe, 0);
-  }
-  void add_instanceValue_startFrame(int32_t instanceValue_startFrame) {
-    fbb_.AddElement<int32_t>(AnimationInitialData::VT_INSTANCEVALUE_STARTFRAME, instanceValue_startFrame, 0);
-  }
-  void add_instanceValue_endFrame(int32_t instanceValue_endFrame) {
-    fbb_.AddElement<int32_t>(AnimationInitialData::VT_INSTANCEVALUE_ENDFRAME, instanceValue_endFrame, 0);
-  }
-  void add_instanceValue_loopNum(int32_t instanceValue_loopNum) {
-    fbb_.AddElement<int32_t>(AnimationInitialData::VT_INSTANCEVALUE_LOOPNUM, instanceValue_loopNum, 0);
-  }
-  void add_instanceValue_speed(float instanceValue_speed) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_INSTANCEVALUE_SPEED, instanceValue_speed, 0.0f);
-  }
-  void add_instanceValue_loopflag(int32_t instanceValue_loopflag) {
-    fbb_.AddElement<int32_t>(AnimationInitialData::VT_INSTANCEVALUE_LOOPFLAG, instanceValue_loopflag, 0);
-  }
-  void add_effectValue_curKeyframe(int32_t effectValue_curKeyframe) {
-    fbb_.AddElement<int32_t>(AnimationInitialData::VT_EFFECTVALUE_CURKEYFRAME, effectValue_curKeyframe, 0);
-  }
-  void add_effectValue_startTime(int32_t effectValue_startTime) {
-    fbb_.AddElement<int32_t>(AnimationInitialData::VT_EFFECTVALUE_STARTTIME, effectValue_startTime, 0);
-  }
-  void add_effectValue_speed(float effectValue_speed) {
-    fbb_.AddElement<float>(AnimationInitialData::VT_EFFECTVALUE_SPEED, effectValue_speed, 0.0f);
-  }
-  void add_effectValue_loopflag(int32_t effectValue_loopflag) {
-    fbb_.AddElement<int32_t>(AnimationInitialData::VT_EFFECTVALUE_LOOPFLAG, effectValue_loopflag, 0);
-  }
-  explicit AnimationInitialDataBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  AnimationInitialDataBuilder &operator=(const AnimationInitialDataBuilder &);
-  flatbuffers::Offset<AnimationInitialData> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<AnimationInitialData>(end);
-    return o;
-  }
-};
-
-inline flatbuffers::Offset<AnimationInitialData> CreateAnimationInitialData(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    int16_t index = 0,
-    int32_t lowflag = 0,
-    int32_t highflag = 0,
-    int16_t priority = 0,
-    int16_t cellIndex = 0,
-    int16_t opacity = 0,
-    int16_t localopacity = 0,
-    int16_t masklimen = 0,
-    float positionX = 0.0f,
-    float positionY = 0.0f,
-    float positionZ = 0.0f,
-    float pivotX = 0.0f,
-    float pivotY = 0.0f,
-    float rotationX = 0.0f,
-    float rotationY = 0.0f,
-    float rotationZ = 0.0f,
-    float scaleX = 0.0f,
-    float scaleY = 0.0f,
-    float localscaleX = 0.0f,
-    float localscaleY = 0.0f,
-    float size_X = 0.0f,
-    float size_Y = 0.0f,
-    float uv_move_X = 0.0f,
-    float uv_move_Y = 0.0f,
-    float uv_rotation = 0.0f,
-    float uv_scale_X = 0.0f,
-    float uv_scale_Y = 0.0f,
-    float boundingRadius = 0.0f,
-    int32_t instanceValue_curKeyframe = 0,
-    int32_t instanceValue_startFrame = 0,
-    int32_t instanceValue_endFrame = 0,
-    int32_t instanceValue_loopNum = 0,
-    float instanceValue_speed = 0.0f,
-    int32_t instanceValue_loopflag = 0,
-    int32_t effectValue_curKeyframe = 0,
-    int32_t effectValue_startTime = 0,
-    float effectValue_speed = 0.0f,
-    int32_t effectValue_loopflag = 0) {
-  AnimationInitialDataBuilder builder_(_fbb);
-  builder_.add_effectValue_loopflag(effectValue_loopflag);
-  builder_.add_effectValue_speed(effectValue_speed);
-  builder_.add_effectValue_startTime(effectValue_startTime);
-  builder_.add_effectValue_curKeyframe(effectValue_curKeyframe);
-  builder_.add_instanceValue_loopflag(instanceValue_loopflag);
-  builder_.add_instanceValue_speed(instanceValue_speed);
-  builder_.add_instanceValue_loopNum(instanceValue_loopNum);
-  builder_.add_instanceValue_endFrame(instanceValue_endFrame);
-  builder_.add_instanceValue_startFrame(instanceValue_startFrame);
-  builder_.add_instanceValue_curKeyframe(instanceValue_curKeyframe);
-  builder_.add_boundingRadius(boundingRadius);
-  builder_.add_uv_scale_Y(uv_scale_Y);
-  builder_.add_uv_scale_X(uv_scale_X);
-  builder_.add_uv_rotation(uv_rotation);
-  builder_.add_uv_move_Y(uv_move_Y);
-  builder_.add_uv_move_X(uv_move_X);
-  builder_.add_size_Y(size_Y);
-  builder_.add_size_X(size_X);
-  builder_.add_localscaleY(localscaleY);
-  builder_.add_localscaleX(localscaleX);
-  builder_.add_scaleY(scaleY);
-  builder_.add_scaleX(scaleX);
-  builder_.add_rotationZ(rotationZ);
-  builder_.add_rotationY(rotationY);
-  builder_.add_rotationX(rotationX);
-  builder_.add_pivotY(pivotY);
-  builder_.add_pivotX(pivotX);
-  builder_.add_positionZ(positionZ);
-  builder_.add_positionY(positionY);
-  builder_.add_positionX(positionX);
-  builder_.add_highflag(highflag);
-  builder_.add_lowflag(lowflag);
-  builder_.add_masklimen(masklimen);
-  builder_.add_localopacity(localopacity);
-  builder_.add_opacity(opacity);
-  builder_.add_cellIndex(cellIndex);
-  builder_.add_priority(priority);
-  builder_.add_index(index);
-  return builder_.Finish();
 }
 
 struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -3422,18 +2558,18 @@ struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyField<int16_t>(verifier, VT_INDEX) &&
            VerifyField<int16_t>(verifier, VT_PARENTINDEX) &&
            VerifyField<int8_t>(verifier, VT_TYPE) &&
            VerifyField<int16_t>(verifier, VT_BOUNDSTYPE) &&
            VerifyField<int16_t>(verifier, VT_ALPHABLENDTYPE) &&
            VerifyOffset(verifier, VT_REFNAME) &&
-           verifier.Verify(refname()) &&
+           verifier.VerifyString(refname()) &&
            VerifyOffset(verifier, VT_EFFECTFILENAME) &&
-           verifier.Verify(effectfilename()) &&
+           verifier.VerifyString(effectfilename()) &&
            VerifyOffset(verifier, VT_COLORLABEL) &&
-           verifier.Verify(colorLabel()) &&
+           verifier.VerifyString(colorLabel()) &&
            VerifyField<int16_t>(verifier, VT_MASKINFLUENCE) &&
            verifier.EndTable();
   }
@@ -3554,12 +2690,12 @@ struct AnimePackData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_PARTS) &&
-           verifier.Verify(parts()) &&
+           verifier.VerifyVector(parts()) &&
            verifier.VerifyVectorOfTables(parts()) &&
            VerifyOffset(verifier, VT_ANIMATIONS) &&
-           verifier.Verify(animations()) &&
+           verifier.VerifyVector(animations()) &&
            verifier.VerifyVectorOfTables(animations()) &&
            verifier.EndTable();
   }
@@ -3662,15 +2798,15 @@ struct ProjectData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint32_t>(verifier, VT_VERSION) &&
            VerifyField<uint32_t>(verifier, VT_FLAGS) &&
            VerifyOffset(verifier, VT_IMAGEBASEDIR) &&
-           verifier.Verify(imageBaseDir()) &&
+           verifier.VerifyString(imageBaseDir()) &&
            VerifyOffset(verifier, VT_CELLS) &&
-           verifier.Verify(cells()) &&
+           verifier.VerifyVector(cells()) &&
            verifier.VerifyVectorOfTables(cells()) &&
            VerifyOffset(verifier, VT_ANIMEPACKS) &&
-           verifier.Verify(animePacks()) &&
+           verifier.VerifyVector(animePacks()) &&
            verifier.VerifyVectorOfTables(animePacks()) &&
            VerifyOffset(verifier, VT_EFFECTFILELIST) &&
-           verifier.Verify(effectFileList()) &&
+           verifier.VerifyVector(effectFileList()) &&
            verifier.VerifyVectorOfTables(effectFileList()) &&
            VerifyField<int16_t>(verifier, VT_NUMCELLS) &&
            VerifyField<int16_t>(verifier, VT_NUMANIMEPACKS) &&
@@ -3782,72 +2918,55 @@ inline bool VerifyEffectNodeBehavior(flatbuffers::Verifier &verifier, const void
       return true;
     }
     case EffectNodeBehavior_EffectParticleElementBasic: {
-      auto ptr = reinterpret_cast<const EffectParticleElementBasic *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRndSeedChange *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleElementDelay: {
-      auto ptr = reinterpret_cast<const EffectParticleElementDelay *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleElementGravity: {
-      auto ptr = reinterpret_cast<const EffectParticleElementGravity *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleElementPosition: {
-      auto ptr = reinterpret_cast<const EffectParticleElementPosition *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleElementRotation: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotation *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotationTrans *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSpeed *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleElementInitColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementInitColor *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleElementTransColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransColor *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      auto ptr = reinterpret_cast<const EffectParticleElementAlphaFade *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleElementSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementSize *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleElementTransSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSize *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticlePointGravity: {
-      auto ptr = reinterpret_cast<const EffectParticlePointGravity *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     default: return false;
   }
@@ -3871,16 +2990,13 @@ inline bool VerifyuserDataValue(flatbuffers::Verifier &verifier, const void *obj
       return true;
     }
     case userDataValue_userDataInteger: {
-      auto ptr = reinterpret_cast<const userDataInteger *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case userDataValue_userDataRect: {
-      auto ptr = reinterpret_cast<const userDataRect *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case userDataValue_userDataPoint: {
-      auto ptr = reinterpret_cast<const userDataPoint *>(obj);
-      return verifier.VerifyTable(ptr);
+      return true;
     }
     case userDataValue_userDataString: {
       auto ptr = reinterpret_cast<const userDataString *>(obj);
