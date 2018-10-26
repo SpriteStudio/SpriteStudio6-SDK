@@ -7,21 +7,13 @@
 
   ==============================================================================
 */
-#define GLEW_STATIC
-#include <GL/glew.h>
-
 #include "ssHelper.h"
 #include "ssplayer_animedecode.h"
-#include "OpenGL/SSTextureGL.h"
-#include "ssplayer_render_gl.h"
-#include "ssplayer_shader_gl.h"
-
 #include "Controller/MainComponent.h"
 #include "Model/Player.h"
 #include "View/DocumentView3D.h"
 #include "View/MainWindow.h"
 #include "Loader.h"
-#include <algorithm>
 #include "babel/babel.h"
 
 Player*	Player::myInst = 0;
@@ -76,12 +68,12 @@ Player::Player()
 	currentState->fps.addListener(view);
 	currentState->loop.addListener(view);
 
-	statePlaying = new StatePlaying();
-	statePaused = new StatePaused();
-	stateLoading = new StateLoading();
-	stateInitial = new StateInitial();
+	statePlaying.reset(new StatePlaying());
+	statePaused.reset(new StatePaused());
+	stateLoading.reset(new StateLoading());
+	stateInitial.reset(new StateInitial());
 
-	currentState = stateInitial;
+	currentState = stateInitial.get();
 
 	stopTimer();
 }
@@ -136,63 +128,9 @@ void Player::loadProj(const String & name)
 	currentState->loadProj(this, name);
 }
 
-void Player::preloadTexture()
-{
-	// GLのスレッドにリクエスト
-	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
-	{
-		if (currentProj)
-		{
-			cellmap->preloadTexture(currentProj);
-		}
-	}, true);
-}
-
-void Player::unloadTexture()
-{
-	// GLのスレッドにリクエスト
-	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
-	{
-		if (currentProj)
-		{
-			cellmap->unloadTexture(currentProj);
-		}
-	}, true);
-}
-
 void Player::loadAnime(int packIndex, int animeIndex)
 {
 	currentState->loadAnime(this, packIndex, animeIndex);
-}
-
-void Player::setAnime(int packIndex, int animeIndex)
-{
-	// GLのスレッドにリクエスト
-	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
-	{
-		SsAnimePackList alist = currentProj->getAnimePackList();
-		SsAnimePack * animePack = alist[packIndex];
-
-		SsAnimation * anime = animePack->animeList[animeIndex];
-
-		SsModel* model = &animePack->Model;
-		cellmap->set(currentProj, animePack);
-		decoder->setAnimation(model, anime, cellmap,currentProj);
-	}, true);
-}
-
-void Player::initGL()
-{
-	decoder = new SsAnimeDecoder();
-	cellmap = new SsCellMapList();
-
-#if JUCE_WINDOWS
-	GLenum err = glewInit();
-#endif
-
-	rendererGL = new SsRenderGL();
-	SsCurrentRenderer::SetCurrentRender(rendererGL);
-	texfactory = new SSTextureFactory(new SSTextureGL());
 }
 
 Player::State * Player::getState()
@@ -224,7 +162,7 @@ void Player::changeState(State * newState)
 //--------------------------------------------------------------------
 void Player::State::start(Player * p)
 {
-	changeState(p, p->statePlaying);
+	p->changeState(p->statePlaying.get());
 
 	float fps = p->currentState->fps.getValue();
 	p->startTimer((int)(1000.0f / std::max(fps, 1.0f)));
@@ -234,7 +172,7 @@ void Player::State::stop(Player * p)
 {
 	p->stopTimer();
 
-	changeState(p, p->statePaused);
+	p->changeState(p->statePaused.get());
 }
 
 void Player::State::reset(Player * p)
@@ -242,7 +180,7 @@ void Player::State::reset(Player * p)
 	p->stopTimer();
 	p->currentState->frame = (int)p->currentState->startFrame.getValue();
 
-	changeState(p, p->statePaused);
+	p->changeState(p->statePaused.get());
 }
 
 void Player::State::hiResTimerCallback(Player * p)
@@ -272,9 +210,4 @@ void Player::State::loadAnime(Player * p, int packIndex, int animeIndex)
 	auto* asyncAnimeLoader = new AsyncAnimeLoader();
 	asyncAnimeLoader->setAnimeIndex(packIndex, animeIndex);
 	asyncAnimeLoader->launchThread();
-}
-
-void Player::State::changeState(Player * p, State * newState)
-{
-	p->currentState = newState;
 }

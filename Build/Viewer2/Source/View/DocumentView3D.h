@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
 
+class SSTextureFactory;
+class SsRenderGL;
+
 class DocumentView3D : public OpenGLAppComponent
 {
 public:
@@ -22,6 +25,8 @@ public:
 	void setBackGroundColour(const Colour & colour);
 
 private:
+	std::unique_ptr<SSTextureFactory>	texfactory;
+	std::unique_ptr<SsRenderGL>			rendererGL;
 	Colour	backGroundColour;
 	//==============================================================================
 	// private member variables
