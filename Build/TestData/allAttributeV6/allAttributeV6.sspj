@@ -199,11 +199,11 @@
 	<effectFileNames>
 		<value>NewEffect.ssee</value>
 	</effectFileNames>
-	<lastAnimeFile>scl.ssae</lastAnimeFile>
+	<lastAnimeFile>rot.ssae</lastAnimeFile>
 	<lastAnimeName>anime_1</lastAnimeName>
-	<lastPart>NewCell_6</lastPart>
+	<lastPart>NewCell_10</lastPart>
 	<lastCellMapFile>color_bar.ssce</lastCellMapFile>
-	<lastCell>NewCell_2</lastCell>
+	<lastCell>NewCell_9</lastCell>
 	<lastEffectFile>NewEffect.ssee</lastEffectFile>
 	<setupmode>0</setupmode>
 	<expandAnimation />
