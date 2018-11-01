@@ -3,6 +3,7 @@
 
 class ViewerTreeViewItem;
 class ColourSelectorWindow;
+class LicenseWindow;
 class DocumentView3D;
 
 class ViewerMainWindow :	public Component,
@@ -26,6 +27,7 @@ public:
 	void		buildSidePanel();
 	void		buildGL();
 	void		openColourSelectorWindow();
+	void		openLicenseWindow();
 	void		setBackGroundColour(const Colour & c);
 	void		addRecentlyOpenedFile(const File & proj);
 	OpenGLContext &	getOpenGLContext();
@@ -56,7 +58,8 @@ private:
 	std::unique_ptr<Slider>			slider_frame;
 	std::unique_ptr<TreeView>		animeTreeView;
 	std::unique_ptr<PropertyPanel>	propertyPanel;
-	Component::SafePointer<ColourSelectorWindow>	colourSelectorWindow;
+	SafePointer<ColourSelectorWindow>	colourSelectorWindow;
+	SafePointer<LicenseWindow>		licenseWindow;
 	// レイアウト
 	std::unique_ptr<Component>		controlPanel;
 	std::unique_ptr<ConcertinaPanel>sidePanel;
@@ -97,10 +100,20 @@ private:
 class ColourSelectorWindow :	public DocumentWindow
 {
 public:
-	ColourSelectorWindow(const String & name, Colour backgroundColour, int buttonsNeeded);
+	ColourSelectorWindow(const String & name, const Colour & colour, int buttonsNeeded);
 	void closeButtonPressed() override;
 private:
-	std::unique_ptr<ColourSelector> selector;
+	std::unique_ptr<ColourSelector> colourSelector;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourSelectorWindow)
 };
 
+class LicenseWindow :	public DocumentWindow
+{
+public:
+	LicenseWindow(const String & name, const Colour & colour, int buttonsNeeded);
+	void closeButtonPressed() override;
+private:
+	std::unique_ptr<Label>				copyright;
+	std::unique_ptr<TextEditor>			license;
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LicenseWindow)
+};

@@ -3,6 +3,7 @@
 #include "Model/Player.h"
 #include "View/DocumentView3D.h"
 #include "View/MainWindow.h"
+#include "View/GPL_v3.h"
 
 ViewerMainWindow::ViewerMainWindow()
 {
@@ -41,7 +42,7 @@ ViewerMainWindow::~ViewerMainWindow()
 	}
 
 	delete colourSelectorWindow;
-	colourSelectorWindow = nullptr;
+	delete licenseWindow;
 
 	myInst = nullptr;
 }
@@ -177,12 +178,22 @@ void ViewerMainWindow::openColourSelectorWindow()
 
 	Rectangle<int> area(0, 0, 300, 400);
 	RectanglePlacement placement(RectanglePlacement::centred | RectanglePlacement::doNotResize);
-
-	auto result = placement.appliedTo(area, getLocalBounds());
+	auto result = placement.appliedTo(area, getScreenBounds());
 	colourSelectorWindow->setBounds(result);
 	colourSelectorWindow->setUsingNativeTitleBar(false);
 	colourSelectorWindow->setVisible(true);
-	colourSelectorWindow->enterModalState();
+}
+
+void ViewerMainWindow::openLicenseWindow()
+{
+	licenseWindow = new LicenseWindow("Viewer2", LookAndFeel::getDefaultLookAndFeel().findColour(TextEditor::ColourIds::backgroundColourId), DocumentWindow::TitleBarButtons::closeButton);
+
+	Rectangle<int> area(licenseWindow->getLocalBounds());
+	RectanglePlacement placement(RectanglePlacement::centred | RectanglePlacement::doNotResize);
+	auto result = placement.appliedTo(area, getScreenBounds());
+	licenseWindow->setBounds(result);
+	licenseWindow->setUsingNativeTitleBar(false);
+	licenseWindow->setVisible(true);
 }
 
 void ViewerMainWindow::setBackGroundColour(const Colour & c)
@@ -209,7 +220,7 @@ void ViewerMainWindow::paint (Graphics& g)
 
 StringArray ViewerMainWindow::getMenuBarNames()
 {
-	return { "File", "Tools"};
+	return { "File", "Tools", "Help"};
 }
 
 PopupMenu ViewerMainWindow::getMenuForIndex(int menuIndex, const String &)
@@ -231,6 +242,11 @@ PopupMenu ViewerMainWindow::getMenuForIndex(int menuIndex, const String &)
 	if(menuIndex == 1)
 	{
 		menu.addItem(3100, "BackGroundColor", true, false);
+	}
+	else
+	if(menuIndex == 2)
+	{
+		menu.addItem(3200, "About", true, false);
 	}
 	return menu;
 }
@@ -330,6 +346,11 @@ void ViewerMainWindow::menuItemSelected(int menuItemID, int)
 		case 3100:
 		{
 			openColourSelectorWindow();
+		}
+		break;
+		case 3200:
+		{
+			openLicenseWindow();
 		}
 		break;
 	}
@@ -522,16 +543,57 @@ void ViewerTreeViewItem::refreshSubItems()
 }
 
 
-ColourSelectorWindow::ColourSelectorWindow(const String & name, Colour colour, int buttonsNeeded)
+ColourSelectorWindow::ColourSelectorWindow(const String & name, const Colour & colour, int buttonsNeeded)
 	: DocumentWindow(name, colour, buttonsNeeded)
 {
-	selector.reset(new ColourSelector(ColourSelector::showColourAtTop | ColourSelector::showSliders | ColourSelector::showColourspace));
-	selector->setCurrentColour(colour);
-	setContentOwned(selector.get(), false);
+	colourSelector.reset(new ColourSelector(ColourSelector::showColourAtTop | ColourSelector::showSliders | ColourSelector::showColourspace));
+	colourSelector->setCurrentColour(colour);
+	setContentOwned(colourSelector.get(), false);
+	enterModalState();
 }
 
 void ColourSelectorWindow::closeButtonPressed()
 {
-	ViewerMainWindow::get()->setBackGroundColour(selector->getCurrentColour());
+	ViewerMainWindow::get()->setBackGroundColour(colourSelector->getCurrentColour());
+	exitModalState(0);
+	delete this;
+}
+
+LicenseWindow::LicenseWindow(const String & name, const Colour & colour, int buttonsNeeded)
+	: DocumentWindow(name, colour, buttonsNeeded)
+{
+	Justification centre(Justification::Flags::centred);
+	Rectangle<int> area(Rectangle<int>(0, 0, 500, 500));
+	auto * layout = new Component();
+	layout->setBounds(area);
+
+	// copyright
+	String text;
+	text	
+		<< "Copyright(c) 2018, Web Technology Corp." << newLine
+		<< "All rights reserved.";
+	copyright.reset(new Label);
+	copyright->setText(text, NotificationType::dontSendNotification);
+	copyright->setJustificationType(centre);
+	copyright->setBounds(area.removeFromTop(50));
+	layout->addAndMakeVisible(copyright.get());
+
+	// license
+	String licenseText(GPL_v3::GPL_v3_txt);
+	license.reset(new TextEditor());
+	license->setMultiLine(true);
+	license->setReadOnly(true);
+	license->setFont(Font(15.0f));
+	license->setText(licenseText);
+	license->setBounds(area);
+	layout->addAndMakeVisible(license.get());
+
+	setContentOwned(layout, true);
+	enterModalState();
+}
+
+void LicenseWindow::closeButtonPressed()
+{
+	exitModalState(0);
 	delete this;
 }
