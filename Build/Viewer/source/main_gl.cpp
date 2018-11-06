@@ -16,9 +16,14 @@
 
 
 #ifdef _WIN32
-#pragma comment(lib, "glew32.lib")
 
+#ifdef _DEBUG
+#pragma comment(lib, "glew32d.lib")
+#pragma comment(lib, "glfw3d.lib")
+#else
+#pragma comment(lib, "glew32.lib")
 #pragma comment(lib, "glfw3.lib")
+#endif
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glu32.lib")
 #pragma comment(lib, "AntTweakBar.lib")
@@ -180,7 +185,7 @@ int main(void)
 
     /* Create a windowed mode window and its OpenGL context */
 	std::string wt = SPRITESTUDIOSDK_VERSION;
-    window = glfwCreateWindow(1280, 720, wt.c_str(), NULL, NULL);
+    window = glfwCreateWindow(800, 600, wt.c_str(), NULL, NULL);
     if (!window)
     {
         glfwTerminate();
