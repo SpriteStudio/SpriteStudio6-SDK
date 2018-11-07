@@ -34,44 +34,18 @@ public:
 		: cellMap(0) , tex(0)
 	{}
 
-	SsCelMapLinker(SsCellMap* cellmap ,SsString filePath )
-	{
-
-		cellMap = cellmap;
-		size_t num = cellMap->cells.size();
-		for ( size_t i = 0 ; i < num ; i++ )
-		{
-			CellDic[cellMap->cells[i]->name] = cellMap->cells[i];
-		}
-
-		if (!SSTextureFactory::isExist() )
-		{
-			puts( "SSTextureFactory not created yet." );
-			throw;
-		}
-
-		tex = SSTextureFactory::create();
-
-		//SsString fullpath = filePath + cellmap->imagePath;
-
-		std::string fullpath = getFullPath( filePath , path2dir( cellmap->imagePath ) );
-		fullpath = fullpath + path2file( cellmap->imagePath );
-		fullpath = nomarizeFilename(fullpath);
-
-		if ( !tex->Load( fullpath.c_str() ) )
-		{
-			delete tex;
-			tex = 0;
-		}
-
-	}
+	SsCelMapLinker(SsCellMap* cellmap, SsString filePath);
 
 	virtual ~SsCelMapLinker()
 	{
 		CellDic.clear();
 
-		if ( tex )
-			delete tex;
+		if (tex)
+		{
+			SSTextureFactory::releaseTexture(tex);
+			//delete tex;
+			tex = 0;
+		}
 	}
 
 	SsCell*	findCell( const SsString& name ){ return CellDic[name]; }
@@ -129,6 +103,8 @@ public:
 		return CellMapList[index];
 	}
 	
+	bool preloadTexture(SsProject* proj);
+	bool unloadTexture(SsProject* proj = 0);
 
 };
 

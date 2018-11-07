@@ -11,6 +11,59 @@
 #include "../Helper/DebugPrint.h"
 
 
+bool SsCellMapList::preloadTexture(SsProject* proj)
+{
+
+	for (auto i = proj->textureList.begin(); i != proj->textureList.end(); i++)
+	{
+		SsString fname = (*i);
+		SSTextureFactory::loadTexture(fname.c_str());
+	}
+
+	return true;
+}
+
+bool SsCellMapList::unloadTexture(SsProject* proj)
+{
+	for (auto i = proj->textureList.begin(); i != proj->textureList.end(); i++)
+	{
+		SsString fname = (*i);
+		SSTextureFactory::releaseTextureForced(fname.c_str());
+	}
+
+	//SSTextureFactory::releaseAllTexture();
+
+	return true;
+}
+
+
+SsCelMapLinker::SsCelMapLinker(SsCellMap* cellmap, SsString filePath)
+{
+
+	cellMap = cellmap;
+	size_t num = cellMap->cells.size();
+	for (size_t i = 0; i < num; i++)
+	{
+		CellDic[cellMap->cells[i]->name] = cellMap->cells[i];
+	}
+
+	if (!SSTextureFactory::isExist())
+	{
+		puts("SSTextureFactory not created yet.");
+		throw;
+	}
+
+	std::string fullpath = getFullPath(filePath, path2dir(cellmap->imagePath));
+	fullpath = fullpath + path2file(cellmap->imagePath);
+	fullpath = nomarizeFilename(fullpath);
+
+	DEBUG_PRINTF("TextureFile Load %s \n", fullpath.c_str());
+	tex = SSTextureFactory::loadTexture(fullpath.c_str());
+
+}
+
+
+
 void	SsCellMapList::clear()
 {
 	if (CellMapDic.size() > 0)
@@ -89,18 +142,6 @@ SsCelMapLinker*	SsCellMapList::getCellMapLink( const SsString& name )
 		return itr->second;
 	}else{
 
-#if 0
-		std::vector<SsString> slist;
-		split_string( name , '.' , slist );
-		
-		std::map<SsString,SsCelMapLinker*>::iterator itr = CellMapDic.find(slist[0]);
-		if ( itr != CellMapDic.end() )
-		{
-			return itr->second;
-		}else{
-			DEBUG_PRINTF( "CellMapName not found : %s " , name.c_str() );
-		}
-#endif
 		for ( std::map<SsString,SsCelMapLinker*>::iterator itr=CellMapDic.begin() ; itr != CellMapDic.end() ; itr++)
 		{
 			if ( itr->second->cellMap->loadFilepath == name )
@@ -108,8 +149,6 @@ SsCelMapLinker*	SsCellMapList::getCellMapLink( const SsString& name )
 				return itr->second;
 			}
 		}
-
-
 	}
 
 	return 0;

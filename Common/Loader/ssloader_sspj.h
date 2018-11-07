@@ -94,6 +94,7 @@ public:
 	std::vector<SsString>	cellmapNames;		//!< セルマップファイルのリスト
 	std::vector<SsString>	animepackNames;		//!< アニメファイルのリスト
 	std::vector<SsString>	effectFileNames;	//!< エフェクトファイルのリスト
+	std::vector<SsString>	textureList;		//!< セルマップから取得したテクスチャのリスト
 
 
 	SsAnimePackList		animeList;		//!< アニメーションのリスト	

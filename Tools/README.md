@@ -13,3 +13,9 @@ SpriteStudio 6 で作成したデータを利用するためのルーツが含�
 
 - viewer_sample_Mac.zip
   - SDKを利用したsspjからアニメを再生するMac版ビュワーです。
+
+- viewer_sample_2.zip
+  - SDKを利用したsspjからアニメを再生するWindows版ビュワーです。
+
+- viewer_sample_2_Mac.zip
+  - SDKを利用したsspjからアニメを再生するMac版ビュワーです。

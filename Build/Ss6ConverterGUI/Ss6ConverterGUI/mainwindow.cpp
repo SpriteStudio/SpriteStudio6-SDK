@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(cnvProcess, SIGNAL(readyReadStandardError()), this, SLOT(processErrOutput()));
 
     //ウィンドウのタイトルをつける
-    setWindowTitle("Ss6Converter GUI Ver1.1.1");
+    setWindowTitle("Ss6Converter GUI Ver1.1.2");
 
     //ウィンドウサイズ固定
     setFixedSize( QSize(734,465) );
@@ -45,6 +45,11 @@ MainWindow::MainWindow(QWidget *parent) :
     //初期化
     convert_exec = false;
     cnvOutputStr.clear();
+
+    ui->type_comboBox->addItem("ssbp");
+    ui->type_comboBox->addItem("json");
+    ui->type_comboBox->addItem("FlatBuffers");
+
 }
 
 MainWindow::~MainWindow()
@@ -92,13 +97,9 @@ void MainWindow::loadConfig(void)
         switch( read_count )
         {
         case 0:
-            if (str != "0")
             {
-                ui->checkBoxJsonOut->setChecked(true);
-            }
-            else
-            {
-                ui->checkBoxJsonOut->setChecked(false);
+                int idx = str.toInt();
+                ui->type_comboBox->setCurrentIndex(idx);
             }
             break;
         }
@@ -117,14 +118,7 @@ void MainWindow::saveConfig(void)
     }
 
     QTextStream out(&file);
-    if ( ui->checkBoxJsonOut->checkState() == Qt::Checked )
-    {
-        out << "1" << endl;
-    }
-    else
-    {
-        out << "0" << endl;
-    }
+    out << ui->type_comboBox->currentIndex() << endl;
 }
 
 void MainWindow::on_pushButton_exit_clicked()
@@ -233,9 +227,13 @@ void MainWindow::on_pushButton_convert_clicked()
         #endif
                 str = execstr + " \"" + fileName + "\"";
                 //オプション引数
-                if( ui->checkBoxJsonOut->checkState() == Qt::Checked )
+                if ( ui->type_comboBox->currentText() == "json" )
                 {
                     str = str + " -f json";
+                }
+                if ( ui->type_comboBox->currentText() == "FlatBuffers" )
+                {
+                    str = str + " -f ssfb";
                 }
 
                 cnvProcess->start(str); //パスと引数

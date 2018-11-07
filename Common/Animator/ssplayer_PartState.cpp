@@ -27,6 +27,12 @@ void	SsPartState::destroy()
 		delete refEffect;
 		refEffect = 0;
 	}
+	//メッシュデータの開放を追加
+	if (meshPart)
+	{
+		delete meshPart;
+		meshPart = 0;
+	}
 }
 
 void	SsPartState::init()

@@ -1,7 +1,6 @@
 ﻿#ifndef __TKTEXTURE__
 #define __TKTEXTURE__
 
-#include <GLFW/glfw3.h>
 #include "../IsshTexture.h"
 
 

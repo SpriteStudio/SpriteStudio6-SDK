@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<SpriteStudioAnimePack version="2.00.01">
+<SpriteStudioAnimePack version="2.00.03">
 	<settings>
 		<fps>30</fps>
 		<frameCount>11</frameCount>
@@ -12,6 +12,22 @@
 		<ik_depth>3</ik_depth>
 		<startFrame>0</startFrame>
 		<endFrame>10</endFrame>
+		<bgSettings>
+			<value>
+				<imagePath></imagePath>
+				<imageDisp>1</imageDisp>
+				<imageOffset>0 0</imageOffset>
+				<imageCanvas>0 0</imageCanvas>
+				<imagePivot>0 0</imagePivot>
+			</value>
+			<value>
+				<imagePath></imagePath>
+				<imageDisp>1</imageDisp>
+				<imageOffset>0 0</imageOffset>
+				<imageCanvas>0 0</imageCanvas>
+				<imagePivot>0 0</imagePivot>
+			</value>
+		</bgSettings>
 		<outStartNum>0</outStartNum>
 	</settings>
 	<name>rot</name>
@@ -42,7 +58,7 @@
 				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
-				<name>NewCell_6</name>
+				<name>NewCell_9</name>
 				<arrayIndex>1</arrayIndex>
 				<parentIndex>0</parentIndex>
 				<type>normal</type>
@@ -65,7 +81,7 @@
 				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
-				<name>NewCell_7</name>
+				<name>NewCell_10</name>
 				<arrayIndex>2</arrayIndex>
 				<parentIndex>1</parentIndex>
 				<type>normal</type>
@@ -88,7 +104,7 @@
 				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
-				<name>NewCell</name>
+				<name>NewCell_6</name>
 				<arrayIndex>3</arrayIndex>
 				<parentIndex>0</parentIndex>
 				<type>normal</type>
@@ -111,9 +127,9 @@
 				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
-				<name>NewCell_1</name>
+				<name>NewCell_7</name>
 				<arrayIndex>4</arrayIndex>
-				<parentIndex>0</parentIndex>
+				<parentIndex>3</parentIndex>
 				<type>normal</type>
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
@@ -134,7 +150,7 @@
 				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
-				<name>NewCell_11</name>
+				<name>NewCell</name>
 				<arrayIndex>5</arrayIndex>
 				<parentIndex>0</parentIndex>
 				<type>normal</type>
@@ -157,7 +173,7 @@
 				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
-				<name>NewCell_2</name>
+				<name>NewCell_1</name>
 				<arrayIndex>6</arrayIndex>
 				<parentIndex>0</parentIndex>
 				<type>normal</type>
@@ -180,9 +196,9 @@
 				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
-				<name>NewCell_4</name>
+				<name>NewCell_11</name>
 				<arrayIndex>7</arrayIndex>
-				<parentIndex>6</parentIndex>
+				<parentIndex>0</parentIndex>
 				<type>normal</type>
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
@@ -203,7 +219,7 @@
 				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
-				<name>NewCell_3</name>
+				<name>NewCell_2</name>
 				<arrayIndex>8</arrayIndex>
 				<parentIndex>0</parentIndex>
 				<type>normal</type>
@@ -226,7 +242,7 @@
 				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
-				<name>NewCell_5</name>
+				<name>NewCell_4</name>
 				<arrayIndex>9</arrayIndex>
 				<parentIndex>8</parentIndex>
 				<type>normal</type>
@@ -249,7 +265,7 @@
 				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
-				<name>NewCell_12</name>
+				<name>NewCell_3</name>
 				<arrayIndex>10</arrayIndex>
 				<parentIndex>0</parentIndex>
 				<type>normal</type>
@@ -272,9 +288,55 @@
 				<maskInfluence>1</maskInfluence>
 			</value>
 			<value>
-				<name>NewCell_13</name>
+				<name>NewCell_5</name>
 				<arrayIndex>11</arrayIndex>
 				<parentIndex>10</parentIndex>
+				<type>normal</type>
+				<boundsType>none</boundsType>
+				<inheritType>parent</inheritType>
+				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
+					<FLPH>0</FLPH>
+					<FLPV>0</FLPV>
+					<HIDE>0</HIDE>
+				</ineheritRates>
+				<alphaBlendType>mix</alphaBlendType>
+				<show>1</show>
+				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
+			</value>
+			<value>
+				<name>NewCell_12</name>
+				<arrayIndex>12</arrayIndex>
+				<parentIndex>0</parentIndex>
+				<type>normal</type>
+				<boundsType>none</boundsType>
+				<inheritType>parent</inheritType>
+				<ineheritRates>
+					<ALPH>1</ALPH>
+					<IFLH>0</IFLH>
+					<IFLV>0</IFLV>
+					<FLPH>0</FLPH>
+					<FLPV>0</FLPV>
+					<HIDE>0</HIDE>
+				</ineheritRates>
+				<alphaBlendType>mix</alphaBlendType>
+				<show>1</show>
+				<locked>0</locked>
+				<expandAttribute>0</expandAttribute>
+				<expandChildren>1</expandChildren>
+				<refCellTag></refCellTag>
+				<maskInfluence>1</maskInfluence>
+			</value>
+			<value>
+				<name>NewCell_13</name>
+				<arrayIndex>13</arrayIndex>
+				<parentIndex>12</parentIndex>
 				<type>normal</type>
 				<boundsType>none</boundsType>
 				<inheritType>parent</inheritType>
@@ -317,6 +379,22 @@
 				<ik_depth>3</ik_depth>
 				<startFrame>0</startFrame>
 				<endFrame>0</endFrame>
+				<bgSettings>
+					<value>
+						<imagePath></imagePath>
+						<imageDisp>1</imageDisp>
+						<imageOffset>0 0</imageOffset>
+						<imageCanvas>0 0</imageCanvas>
+						<imagePivot>0 0</imagePivot>
+					</value>
+					<value>
+						<imagePath></imagePath>
+						<imageDisp>1</imageDisp>
+						<imageOffset>0 0</imageOffset>
+						<imageCanvas>0 0</imageCanvas>
+						<imagePivot>0 0</imagePivot>
+					</value>
+				</bgSettings>
 				<outStartNum>0</outStartNum>
 			</settings>
 			<labels />
@@ -349,6 +427,22 @@
 				<ik_depth>3</ik_depth>
 				<startFrame>0</startFrame>
 				<endFrame>59</endFrame>
+				<bgSettings>
+					<value>
+						<imagePath></imagePath>
+						<imageDisp>1</imageDisp>
+						<imageOffset>0 0</imageOffset>
+						<imageCanvas>0 0</imageCanvas>
+						<imagePivot>0 0</imagePivot>
+					</value>
+					<value>
+						<imagePath></imagePath>
+						<imageDisp>1</imageDisp>
+						<imageOffset>0 0</imageOffset>
+						<imageCanvas>0 0</imageCanvas>
+						<imagePivot>0 0</imagePivot>
+					</value>
+				</bgSettings>
 				<outStartNum>0</outStartNum>
 			</settings>
 			<labels />
@@ -357,6 +451,90 @@
 				<partAnime>
 					<partName>root</partName>
 					<attributes>
+						<attribute tag="HIDE">
+							<key time="0">
+								<value>0</value>
+							</key>
+						</attribute>
+					</attributes>
+				</partAnime>
+				<partAnime>
+					<partName>NewCell_9</partName>
+					<attributes>
+						<attribute tag="CELL">
+							<key time="0">
+								<value>
+									<mapId>0</mapId>
+									<name>NewCell_9</name>
+								</value>
+							</key>
+						</attribute>
+						<attribute tag="POSX">
+							<key time="0" ipType="linear">
+								<value>-270</value>
+							</key>
+						</attribute>
+						<attribute tag="POSY">
+							<key time="0" ipType="linear">
+								<value>57.3333358764648</value>
+							</key>
+						</attribute>
+						<attribute tag="SCLX">
+							<key time="0" ipType="linear">
+								<value>0.260416984558105</value>
+							</key>
+						</attribute>
+						<attribute tag="SCLY">
+							<key time="0" ipType="linear">
+								<value>1</value>
+							</key>
+						</attribute>
+						<attribute tag="PRIO">
+							<key time="0" ipType="linear">
+								<value>0</value>
+							</key>
+						</attribute>
+						<attribute tag="HIDE">
+							<key time="0">
+								<value>0</value>
+							</key>
+						</attribute>
+					</attributes>
+				</partAnime>
+				<partAnime>
+					<partName>NewCell_10</partName>
+					<attributes>
+						<attribute tag="CELL">
+							<key time="0">
+								<value>
+									<mapId>0</mapId>
+									<name>NewCell_9</name>
+								</value>
+							</key>
+						</attribute>
+						<attribute tag="POSX">
+							<key time="0" ipType="linear">
+								<value>149.759658813477</value>
+							</key>
+						</attribute>
+						<attribute tag="POSY">
+							<key time="0" ipType="linear">
+								<value>1</value>
+							</key>
+						</attribute>
+						<attribute tag="ROTZ">
+							<key time="0" ipType="linear">
+								<value>0</value>
+							</key>
+							<key time="59" ipType="linear">
+								<value>90</value>
+							</key>
+						</attribute>
+						<attribute tag="PRIO">
+							<key time="0" ipType="linear">
+								<value>0</value>
+							</key>
+						</attribute>
 						<attribute tag="HIDE">
 							<key time="0">
 								<value>0</value>

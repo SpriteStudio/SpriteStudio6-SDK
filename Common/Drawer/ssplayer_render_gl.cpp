@@ -11,7 +11,7 @@
 #endif
 
 
-#include "../helper/OpenGL/SSTextureGL.h"
+#include "../Helper/OpenGL/SSTextureGL.h"
 
 #include "../Animator/ssplayer_animedecode.h"
 #include "../Animator/ssplayer_matrix.h"
@@ -493,10 +493,10 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 	}
 
 
+	bool texture_is_pow2 = true;
+	int	gl_target = GL_TEXTURE_2D;
 	if (mesh->targetTexture)
 	{
-		bool texture_is_pow2;
-		int	gl_target;
 
 		// テクスチャのサイズが2のべき乗かチェック
 		if (mesh->targetTexture->isPow2())
@@ -579,11 +579,10 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 
 	}
 
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	// UV 配列を指定する
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, 0, (GLvoid *)mesh->uvs);
 
 	glColorPointer(4, GL_FLOAT, 0, (GLvoid *)mesh->colors);
@@ -591,9 +590,17 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 	// 頂点バッファの設定
 	glVertexPointer(3, GL_FLOAT, 0, (GLvoid *)mesh->draw_vertices);
 
-//	glDrawElements(GL_TRIANGLES, mesh->tri_size * 3, GL_UNSIGNED_SHORT, mesh->indices);
 	glDrawElements(GL_TRIANGLES, mesh->tri_size * 3, GL_UNSIGNED_SHORT, mesh->indices);
 	glPopMatrix();
+
+	if (texture_is_pow2 == false)
+	{
+		glDisable(gl_target);
+	}
+	glDisable(GL_TEXTURE_2D);
+
+	//ブレンドモード　減算時の設定を戻す
+	glBlendEquation(GL_FUNC_ADD);
 
 }
 

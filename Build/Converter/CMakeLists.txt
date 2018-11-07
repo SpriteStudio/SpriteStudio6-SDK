@@ -30,7 +30,29 @@ if(NOT TARGET ssHelper)
 endif()
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../Depends Ss6Converter_Depends)
 
+set(FlatBuffers_Library_SRCS
+    flatbuffers/include/flatbuffers/code_generators.h
+    flatbuffers/include/flatbuffers/base.h
+    flatbuffers/include/flatbuffers/flatbuffers.h
+    flatbuffers/include/flatbuffers/hash.h
+    flatbuffers/include/flatbuffers/idl.h
+    flatbuffers/include/flatbuffers/util.h
+    flatbuffers/include/flatbuffers/reflection.h
+    flatbuffers/include/flatbuffers/reflection_generated.h
+    flatbuffers/include/flatbuffers/stl_emulation.h
+    flatbuffers/include/flatbuffers/flexbuffers.h
+    flatbuffers/include/flatbuffers/registry.h
+    flatbuffers/include/flatbuffers/minireflect.h
+    flatbuffers/src/code_generators.cpp
+    flatbuffers/src/idl_parser.cpp
+    flatbuffers/src/idl_gen_text.cpp
+    flatbuffers/src/reflection.cpp
+    flatbuffers/src/util.cpp
+)
+include_directories(flatbuffers/include)
+
 set(Ss6Converter_SRCS
+    ${FlatBuffers_Library_SRCS}
     main.cpp
     BinaryDataWriter.cpp
     FileUtil.cpp
@@ -39,6 +61,7 @@ set(Ss6Converter_SRCS
 )
 
 set(Ss6Converter_HEADERS
+    ssfb_generated.h
     BinaryDataWriter.h
     FileUtil.h
     Lump.h
@@ -72,3 +95,6 @@ add_test(NAME effect_allcheckJson COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Convert
 add_test(NAME allAttributeV6C COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter -f c ${CMAKE_CURRENT_SOURCE_DIR}/../TestData/allAttributeV6/allAttributeV6.sspj)
 add_test(NAME allPartsV6C COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter -f c ${CMAKE_CURRENT_SOURCE_DIR}/../TestData/allPartsV6/allPartsV6.sspj)
 add_test(NAME effect_allchecC COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter -f c ${CMAKE_CURRENT_SOURCE_DIR}/../TestData/effect_allcheck/effect_allcheck.sspj)
+add_test(NAME allAttributeV6Ssfb COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter -f ssfb ${CMAKE_CURRENT_SOURCE_DIR}/../TestData/allAttributeV6/allAttributeV6.sspj)
+add_test(NAME allPartsV6Ssfb COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter -f ssfb ${CMAKE_CURRENT_SOURCE_DIR}/../TestData/allPartsV6/allPartsV6.sspj)
+add_test(NAME effect_allcheckSsfb COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter -f ssfb ${CMAKE_CURRENT_SOURCE_DIR}/../TestData/effect_allcheck/effect_allcheck.sspj)

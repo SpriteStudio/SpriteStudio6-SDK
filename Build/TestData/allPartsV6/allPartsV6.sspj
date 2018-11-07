@@ -139,6 +139,22 @@
 		<ik_depth>3</ik_depth>
 		<startFrame>0</startFrame>
 		<endFrame>59</endFrame>
+		<bgSettings>
+			<value>
+				<imagePath></imagePath>
+				<imageDisp>1</imageDisp>
+				<imageOffset>0 0</imageOffset>
+				<imageCanvas>0 0</imageCanvas>
+				<imagePivot>0 0</imagePivot>
+			</value>
+			<value>
+				<imagePath></imagePath>
+				<imageDisp>1</imageDisp>
+				<imageOffset>0 0</imageOffset>
+				<imageCanvas>0 0</imageCanvas>
+				<imagePivot>0 0</imagePivot>
+			</value>
+		</bgSettings>
 		<outStartNum>0</outStartNum>
 	</animeSettings>
 	<texPackSettings>
@@ -163,11 +179,12 @@
 	<effectFileNames>
 		<value>NewEffect.ssee</value>
 	</effectFileNames>
-	<lastAnimeFile>mesh.ssae</lastAnimeFile>
+	<lastAnimeFile>root.ssae</lastAnimeFile>
 	<lastAnimeName>anime_1</lastAnimeName>
+	<lastPart></lastPart>
 	<lastCellMapFile>color_bar.ssce</lastCellMapFile>
+	<lastCell>NewCell</lastCell>
 	<lastEffectFile>NewEffect.ssee</lastEffectFile>
-	<lastCell>NewCell_17</lastCell>
 	<setupmode>0</setupmode>
 	<expandAnimation />
 </SpriteStudioProject>

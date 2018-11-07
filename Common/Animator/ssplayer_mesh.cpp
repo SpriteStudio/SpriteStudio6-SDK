@@ -14,6 +14,7 @@ void	SsMeshPart::makeMesh()
 {
 	//パーツステートの初期化の際にターゲットセルが作られる、その際にマップもコピーする？
 	if (targetCell == 0)return;
+	if (targetTexture == 0) return;
 	size_t psize = targetCell->meshPointList.size();
 
 	if (vertices) delete[] vertices;
@@ -59,7 +60,13 @@ void	SsMeshPart::makeMesh()
 
 	float uvpixel_x = 1.0f / txsizew;
 	float uvpixel_y = 1.0f / txsizeh;
-
+	
+	//べき乗でないテクスチャはUVをピクセルにしなくてはならない
+	if (this->targetTexture->isPow2() == false )
+	{
+		uvpixel_x = 1.0f;
+		uvpixel_y = 1.0f;
+	}
 
 	for (size_t i = 0; i < targetCell->meshPointList.size(); i++)
 	{

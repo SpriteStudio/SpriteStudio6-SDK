@@ -142,3 +142,6 @@ void BinaryDataWriter::writeString(const std::string& str)
 	writeByte(0);
 }
 
+
+
+
