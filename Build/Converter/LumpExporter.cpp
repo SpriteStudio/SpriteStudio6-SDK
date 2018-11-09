@@ -743,6 +743,12 @@ private:
 	std::vector<std::vector<float>> m_floatVecVec;
 	std::vector<flatbuffers::Offset<flatbuffers::Vector<float>>> m_ssfbFloatVecVec;
 
+	struct meshDataUVPrimitive {
+        std::vector<float> uv;
+	};
+	std::vector<std::shared_ptr<struct meshDataUVPrimitive>> m_meshDataUVVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> m_ssfbMeshDataUVVec;
+
 	struct FrameDataIndexPrimitive {
 		std::vector<uint32_t> data;
 	};
@@ -958,6 +964,31 @@ private:
 		return ssfbVec;
 	}
 
+	flatbuffers::Offset<ss::ssfb::meshDataUV> createSharedMeshDataUV(const std::vector<float> &uvPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &uv) {
+		flatbuffers::Offset<ss::ssfb::meshDataUV> meshDataUV;
+
+		std::shared_ptr<struct meshDataUVPrimitive> meshDataUVPrimitive(new struct meshDataUVPrimitive);
+		meshDataUVPrimitive->uv = uvPrimitive;
+		auto result = std::find_if(m_meshDataUVVec.begin(), m_meshDataUVVec.end(), [&meshDataUVPrimitive](const std::shared_ptr<struct meshDataUVPrimitive> &item) {
+			return meshDataUVPrimitive->uv == item->uv;
+		});
+		if (result == m_meshDataUVVec.end()) {
+			// not found
+
+			// create ssfb vec
+			meshDataUV = ss::ssfb::CreatemeshDataUV(m_ssfbBuilder, uv);
+
+			// cache ssfb vec
+			m_meshDataUVVec.push_back(meshDataUVPrimitive);
+			m_ssfbMeshDataUVVec.push_back(meshDataUV);
+		} else {
+			auto idx = std::distance(m_meshDataUVVec.begin(), result);
+			meshDataUV = m_ssfbMeshDataUVVec[idx];
+		}
+
+		return meshDataUV;
+	}
+
 	flatbuffers::Offset<ss::ssfb::frameDataIndex> createSharedFrameDataIndex(const std::vector<uint32_t> &dataPrimitive, const flatbuffers::Offset<flatbuffers::Vector<uint32_t>> &data) {
 		flatbuffers::Offset<ss::ssfb::frameDataIndex> frameDataIndex;
 
@@ -1115,7 +1146,7 @@ private:
 					}
 
 					auto serializeSsfbUV = createSharedFloatVec(ssfbUV);
-					auto item = ss::ssfb::CreatemeshDataUV(m_ssfbBuilder, serializeSsfbUV);
+					auto item = createSharedMeshDataUV(ssfbUV, serializeSsfbUV);
 					ssfbMeshsDataUV.push_back(item);
 				}
 			}
