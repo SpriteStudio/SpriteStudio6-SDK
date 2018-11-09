@@ -722,6 +722,11 @@ private:
 	std::vector<std::shared_ptr<struct CellMapPrimitive>> m_cellMaps;
 	std::vector<flatbuffers::Offset<ss::ssfb::CellMap>> m_ssfbCellMaps;
 
+	std::vector<std::vector<uint32_t>> m_uint32VecVec;
+	std::vector<flatbuffers::Offset<flatbuffers::Vector<uint32_t>>> m_ssfbUint32VecVec;
+
+	std::vector<std::vector<float>> m_floatVecVec;
+	std::vector<flatbuffers::Offset<flatbuffers::Vector<float>>> m_ssfbFloatVecVec;
 
 	enum {
 		USER_DATA_FLAG_INTEGER	= 1 << 0,
@@ -819,6 +824,52 @@ private:
 
         return cellMap;
     }
+
+    flatbuffers::Offset<flatbuffers::Vector<uint32_t>> createSharedUint32Vec(const std::vector<uint32_t> &vec) {
+	    flatbuffers::Offset<flatbuffers::Vector<uint32_t>> ssfbVec;
+
+	    auto result = std::find_if(m_uint32VecVec.begin(), m_uint32VecVec.end(), [&vec](const std::vector<uint32_t> &item) {
+	        return vec == item;
+	    });
+        if (result == m_uint32VecVec.end()) {
+            // not found
+
+            // create ssfb vec
+            ssfbVec = m_ssfbBuilder.CreateVector(vec);
+
+            // cache ssfb vec
+            m_uint32VecVec.push_back(vec);
+            m_ssfbUint32VecVec.push_back(ssfbVec);
+        } else {
+            auto idx = std::distance(m_uint32VecVec.begin(), result);
+            ssfbVec = m_ssfbUint32VecVec[idx];
+        }
+
+        return ssfbVec;
+	}
+
+    flatbuffers::Offset<flatbuffers::Vector<float>> createSharedFloatVec(const std::vector<float> &vec) {
+	    flatbuffers::Offset<flatbuffers::Vector<float>> ssfbVec;
+
+	    auto result = std::find_if(m_floatVecVec.begin(), m_floatVecVec.end(), [&vec](const std::vector<float> &item) {
+	        return vec == item;
+	    });
+        if (result == m_floatVecVec.end()) {
+            // not found
+
+            // create ssfb vec
+            ssfbVec = m_ssfbBuilder.CreateVector(vec);
+
+            // cache ssfb vec
+            m_floatVecVec.push_back(vec);
+            m_ssfbFloatVecVec.push_back(ssfbVec);
+        } else {
+            auto idx = std::distance(m_floatVecVec.begin(), result);
+            ssfbVec = m_ssfbFloatVecVec[idx];
+        }
+
+        return ssfbVec;
+	}
 
 	void createAnimePacks()
 	{
@@ -968,7 +1019,7 @@ private:
 						}
 					}
 
-					auto serializeSsfbUV = m_ssfbBuilder.CreateVector(ssfbUV);
+					auto serializeSsfbUV = createSharedFloatVec(ssfbUV);
 					auto item = ss::ssfb::CreatemeshDataUV(m_ssfbBuilder, serializeSsfbUV);
 					ssfbMeshsDataUV.push_back(item);
 				}
@@ -984,12 +1035,13 @@ private:
 						ssfbIndices.push_back(GETS32(meshDataItem));
 					}
 
-					auto serializeSsfbIndices = m_ssfbBuilder.CreateVector(ssfbIndices);
+					auto serializeSsfbIndices = createSharedFloatVec(ssfbIndices);
 					auto item = ss::ssfb::CreatemeshDataIndices(m_ssfbBuilder, serializeSsfbIndices);
 					ssfbMeshsDataIndices.push_back(item);
 				}
 			}
 			// 2:frameDataIndexArray
+
 			std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> ssfbFrameData;
 			{
 				auto frameDataIndexArrayVec = ssAnimationDataVec[2]->getChildren();
@@ -1020,7 +1072,7 @@ private:
 								break;
 						}
 					}
-					auto serializeSsfbFrameData2 = m_ssfbBuilder.CreateVector(ssfbFrameData2);
+					auto serializeSsfbFrameData2 = createSharedUint32Vec(ssfbFrameData2);
 					auto item = ss::ssfb::CreateframeDataIndex(m_ssfbBuilder, serializeSsfbFrameData2);
 					ssfbFrameData.push_back(item);
 				}
