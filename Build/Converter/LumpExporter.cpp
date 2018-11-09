@@ -715,9 +715,9 @@ private:
 	struct CellMapPrimitive {
         std::string name;
         std::string imagePath;
-        int16_t mapIndex;
-        int16_t wrapMode;
-        int16_t filterMode;
+        int16_t mapIndex{};
+        int16_t wrapMode{};
+        int16_t filterMode{};
 	};
 	std::vector<std::shared_ptr<struct CellMapPrimitive>> m_cellMaps;
 	std::vector<flatbuffers::Offset<ss::ssfb::CellMap>> m_ssfbCellMaps;
@@ -786,7 +786,7 @@ private:
         // 5:reserved(s16)
 
         // search same cellMap from cellMap caches.
-        auto result = std::find_if(m_cellMaps.begin(), m_cellMaps.end(), [&cellMapPrimitive](std::shared_ptr<struct CellMapPrimitive> item) {
+        auto result = std::find_if(m_cellMaps.begin(), m_cellMaps.end(), [&cellMapPrimitive](const std::shared_ptr<struct CellMapPrimitive> &item) {
             if(cellMapPrimitive->name != item->name)
                 return false;
             if(cellMapPrimitive->imagePath != item->imagePath)
