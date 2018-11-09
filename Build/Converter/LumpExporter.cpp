@@ -748,7 +748,7 @@ private:
 		auto cellsVec = cellsLump->getChildren();
 		for(auto cellItem : cellsVec) {
 			auto cellItemVec = cellItem->getChildren();
-			auto ssfbCellMap = createCellMap(cellItemVec[1]);
+			auto ssfbCellMap = createSharedCellMap(cellItemVec[1]);
 			auto ssfbCellName = GETSSFBSTRING(m_ssfbBuilder, cellItemVec[0], m_encoding);
 
 			auto indexInCellMap = GETS16(cellItemVec[2]);
@@ -771,7 +771,7 @@ private:
 		}
 	}
 
-    flatbuffers::Offset<ss::ssfb::CellMap> createCellMap(const Lump *lump)
+    flatbuffers::Offset<ss::ssfb::CellMap> createSharedCellMap(const Lump *lump)
     {
         flatbuffers::Offset<ss::ssfb::CellMap> cellMap;
 
