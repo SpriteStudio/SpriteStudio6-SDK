@@ -664,7 +664,7 @@ private:
 #define GETU32(l) (uint32_t)(l->data.i)
 #define GETFLOAT(l) (float)(l->data.f)
 #define GETSTRING(l, enc) encode(*l->data.s, enc)
-#define GETSSFBSTRING(builder, l, enc) builder.CreateString(GETSTRING(l, enc))
+#define GETSSFBSTRING(builder, l, enc) builder.CreateSharedString(GETSTRING(l, enc))
 
 class SsfbExporter
 {
@@ -804,8 +804,8 @@ private:
             // not found
 
             // create ssfb cellMap
-            auto ssfbCellMapName = m_ssfbBuilder.CreateString(cellMapPrimitive->name);
-            auto ssfbCellMapImagePath = m_ssfbBuilder.CreateString(cellMapPrimitive->imagePath);
+            auto ssfbCellMapName = m_ssfbBuilder.CreateSharedString(cellMapPrimitive->name);
+            auto ssfbCellMapImagePath = m_ssfbBuilder.CreateSharedString(cellMapPrimitive->imagePath);
             cellMap = ss::ssfb::CreateCellMap(m_ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath,
                                               cellMapPrimitive->mapIndex, cellMapPrimitive->wrapMode, cellMapPrimitive->filterMode);
             // cache ssfb cellMap
