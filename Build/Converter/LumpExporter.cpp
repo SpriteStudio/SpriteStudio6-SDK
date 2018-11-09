@@ -743,6 +743,12 @@ private:
 	std::vector<std::vector<float>> m_floatVecVec;
 	std::vector<flatbuffers::Offset<flatbuffers::Vector<float>>> m_ssfbFloatVecVec;
 
+	struct FrameDataIndexPrimitive {
+		std::vector<uint32_t> data;
+	};
+	std::vector<std::shared_ptr<struct FrameDataIndexPrimitive>> m_frameDataIndexVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> m_ssfbFrameDataIndexVec;
+
 	enum {
 		USER_DATA_FLAG_INTEGER	= 1 << 0,
 		USER_DATA_FLAG_RECT	= 1 << 1,
@@ -952,6 +958,31 @@ private:
 		return ssfbVec;
 	}
 
+	flatbuffers::Offset<ss::ssfb::frameDataIndex> createSharedFrameDataIndex(const std::vector<uint32_t> &dataPrimitive, const flatbuffers::Offset<flatbuffers::Vector<uint32_t>> &data) {
+		flatbuffers::Offset<ss::ssfb::frameDataIndex> frameDataIndex;
+
+		std::shared_ptr<struct FrameDataIndexPrimitive> frameDataIndexPrimitive(new struct FrameDataIndexPrimitive);
+		frameDataIndexPrimitive->data = dataPrimitive;
+		auto result = std::find_if(m_frameDataIndexVec.begin(), m_frameDataIndexVec.end(), [&frameDataIndexPrimitive](const std::shared_ptr<struct FrameDataIndexPrimitive> &item) {
+			return frameDataIndexPrimitive->data == item->data;
+		});
+		if (result == m_frameDataIndexVec.end()) {
+			// not found
+
+			// create ssfb vec
+			frameDataIndex = ss::ssfb::CreateframeDataIndex(m_ssfbBuilder, data);
+
+			// cache ssfb vec
+			m_frameDataIndexVec.push_back(frameDataIndexPrimitive);
+			m_ssfbFrameDataIndexVec.push_back(frameDataIndex);
+		} else {
+			auto idx = std::distance(m_frameDataIndexVec.begin(), result);
+			frameDataIndex = m_ssfbFrameDataIndexVec[idx];
+		}
+
+		return frameDataIndex;
+	}
+
 	void createAnimePacks()
 	{
 		auto rootChildVec = m_root->getChildren();
@@ -1137,7 +1168,7 @@ private:
 						}
 					}
 					auto serializeSsfbFrameData2 = createSharedUint32Vec(ssfbFrameData2);
-					auto item = ss::ssfb::CreateframeDataIndex(m_ssfbBuilder, serializeSsfbFrameData2);
+					auto item = createSharedFrameDataIndex(ssfbFrameData2, serializeSsfbFrameData2);
 					ssfbFrameData.push_back(item);
 				}
 			}
