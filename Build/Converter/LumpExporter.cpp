@@ -722,6 +722,21 @@ private:
 	std::vector<std::shared_ptr<struct CellMapPrimitive>> m_cellMaps;
 	std::vector<flatbuffers::Offset<ss::ssfb::CellMap>> m_ssfbCellMaps;
 
+	struct PartDataPrimitive {
+		std::string name;
+		int16_t index;
+		int16_t parentIndex;
+		int16_t type;
+		int16_t boundsType;
+		int16_t alphaBlendType;
+		std::string refname;
+		std::string effectfilename;
+		std::string colorLabel;
+		int16_t maskInfluence;
+	};
+	std::vector<std::shared_ptr<struct PartDataPrimitive>> m_partDataVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::PartData>> m_ssfbPartDataVec;
+
 	std::vector<std::vector<uint32_t>> m_uint32VecVec;
 	std::vector<flatbuffers::Offset<flatbuffers::Vector<uint32_t>>> m_ssfbUint32VecVec;
 
@@ -776,99 +791,165 @@ private:
 		}
 	}
 
-    flatbuffers::Offset<ss::ssfb::CellMap> createSharedCellMap(const Lump *lump)
-    {
-        flatbuffers::Offset<ss::ssfb::CellMap> cellMap;
+	flatbuffers::Offset<ss::ssfb::CellMap> createSharedCellMap(const Lump *lump)
+	{
+		flatbuffers::Offset<ss::ssfb::CellMap> cellMap;
 
-        auto cellMapVec = lump->getChildren();
+		auto cellMapVec = lump->getChildren();
 
-        std::shared_ptr<struct CellMapPrimitive> cellMapPrimitive(new struct CellMapPrimitive);
-        cellMapPrimitive->name = GETSTRING(cellMapVec[0], m_encoding);
-        cellMapPrimitive->imagePath = GETSTRING(cellMapVec[1], m_encoding);
-        cellMapPrimitive->mapIndex = GETS16(cellMapVec[2]);
-        cellMapPrimitive->wrapMode = GETS16(cellMapVec[3]);
-        cellMapPrimitive->filterMode = GETS16(cellMapVec[4]);
-        // 5:reserved(s16)
+		std::shared_ptr<struct CellMapPrimitive> cellMapPrimitive(new struct CellMapPrimitive);
+		cellMapPrimitive->name = GETSTRING(cellMapVec[0], m_encoding);
+		cellMapPrimitive->imagePath = GETSTRING(cellMapVec[1], m_encoding);
+		cellMapPrimitive->mapIndex = GETS16(cellMapVec[2]);
+		cellMapPrimitive->wrapMode = GETS16(cellMapVec[3]);
+		cellMapPrimitive->filterMode = GETS16(cellMapVec[4]);
+		// 5:reserved(s16)
 
-        // search same cellMap from cellMap caches.
-        auto result = std::find_if(m_cellMaps.begin(), m_cellMaps.end(), [&cellMapPrimitive](const std::shared_ptr<struct CellMapPrimitive> &item) {
-            if(cellMapPrimitive->name != item->name)
-                return false;
-            if(cellMapPrimitive->imagePath != item->imagePath)
-                return false;
-            if(cellMapPrimitive->mapIndex != item->mapIndex)
-                return false;
-            if(cellMapPrimitive->wrapMode != item->wrapMode)
-                return false;
-            if(cellMapPrimitive->filterMode != item->filterMode)
-                return false;
+		// search same cellMap from cellMap caches.
+		auto result = std::find_if(m_cellMaps.begin(), m_cellMaps.end(), [&cellMapPrimitive](const std::shared_ptr<struct CellMapPrimitive> &item) {
+			if(cellMapPrimitive->name != item->name)
+				return false;
+			if(cellMapPrimitive->imagePath != item->imagePath)
+				return false;
+			if(cellMapPrimitive->mapIndex != item->mapIndex)
+				return false;
+			if(cellMapPrimitive->wrapMode != item->wrapMode)
+				return false;
+			if(cellMapPrimitive->filterMode != item->filterMode)
+				return false;
 
-            return true;
-        });
-        if (result == m_cellMaps.end()) {
-            // not found
+			return true;
+		});
+		if (result == m_cellMaps.end()) {
+			// not found
 
-            // create ssfb cellMap
-            auto ssfbCellMapName = m_ssfbBuilder.CreateSharedString(cellMapPrimitive->name);
-            auto ssfbCellMapImagePath = m_ssfbBuilder.CreateSharedString(cellMapPrimitive->imagePath);
-            cellMap = ss::ssfb::CreateCellMap(m_ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath,
-                                              cellMapPrimitive->mapIndex, cellMapPrimitive->wrapMode, cellMapPrimitive->filterMode);
-            // cache ssfb cellMap
-            m_cellMaps.push_back(cellMapPrimitive);
-            m_ssfbCellMaps.push_back(cellMap);
-        } else {
-            // found
-            auto idx = std::distance(m_cellMaps.begin(), result);
-            cellMap = m_ssfbCellMaps[idx];
-        }
+			// create ssfb cellMap
+			auto ssfbCellMapName = m_ssfbBuilder.CreateSharedString(cellMapPrimitive->name);
+			auto ssfbCellMapImagePath = m_ssfbBuilder.CreateSharedString(cellMapPrimitive->imagePath);
+			cellMap = ss::ssfb::CreateCellMap(m_ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath,
+											  cellMapPrimitive->mapIndex, cellMapPrimitive->wrapMode, cellMapPrimitive->filterMode);
+			// cache ssfb cellMap
+			m_cellMaps.push_back(cellMapPrimitive);
+			m_ssfbCellMaps.push_back(cellMap);
+		} else {
+			// found
+			auto idx = std::distance(m_cellMaps.begin(), result);
+			cellMap = m_ssfbCellMaps[idx];
+		}
 
-        return cellMap;
-    }
-
-    flatbuffers::Offset<flatbuffers::Vector<uint32_t>> createSharedUint32Vec(const std::vector<uint32_t> &vec) {
-	    flatbuffers::Offset<flatbuffers::Vector<uint32_t>> ssfbVec;
-
-	    auto result = std::find_if(m_uint32VecVec.begin(), m_uint32VecVec.end(), [&vec](const std::vector<uint32_t> &item) {
-	        return vec == item;
-	    });
-        if (result == m_uint32VecVec.end()) {
-            // not found
-
-            // create ssfb vec
-            ssfbVec = m_ssfbBuilder.CreateVector(vec);
-
-            // cache ssfb vec
-            m_uint32VecVec.push_back(vec);
-            m_ssfbUint32VecVec.push_back(ssfbVec);
-        } else {
-            auto idx = std::distance(m_uint32VecVec.begin(), result);
-            ssfbVec = m_ssfbUint32VecVec[idx];
-        }
-
-        return ssfbVec;
+		return cellMap;
 	}
 
-    flatbuffers::Offset<flatbuffers::Vector<float>> createSharedFloatVec(const std::vector<float> &vec) {
-	    flatbuffers::Offset<flatbuffers::Vector<float>> ssfbVec;
+	flatbuffers::Offset<ss::ssfb::PartData> createSharedPartData(const Lump *lump)
+	{
+		flatbuffers::Offset<ss::ssfb::PartData> partData;
+		auto partDataItemVec = lump->getChildren();
 
-	    auto result = std::find_if(m_floatVecVec.begin(), m_floatVecVec.end(), [&vec](const std::vector<float> &item) {
-	        return vec == item;
-	    });
-        if (result == m_floatVecVec.end()) {
-            // not found
+		std::shared_ptr<struct PartDataPrimitive> partDataPrimitive(new struct PartDataPrimitive);
 
-            // create ssfb vec
-            ssfbVec = m_ssfbBuilder.CreateVector(vec);
+		partDataPrimitive->name = GETSTRING(partDataItemVec[0], m_encoding);
+		partDataPrimitive->index = GETS16(partDataItemVec[1]);
+		partDataPrimitive->parentIndex = GETS16(partDataItemVec[2]);
+		partDataPrimitive->type = (ss::ssfb::SsPartType)GETS16(partDataItemVec[3]);
+		partDataPrimitive->boundsType = GETS16(partDataItemVec[4]);
+		partDataPrimitive->alphaBlendType = GETS16(partDataItemVec[5]);
+		partDataPrimitive->refname = GETSTRING(partDataItemVec[7], m_encoding);
+		partDataPrimitive->effectfilename = GETSTRING(partDataItemVec[8], m_encoding);
+		partDataPrimitive->colorLabel = GETSTRING(partDataItemVec[9], m_encoding);
+		partDataPrimitive->maskInfluence = GETS16(partDataItemVec[10]);
 
-            // cache ssfb vec
-            m_floatVecVec.push_back(vec);
-            m_ssfbFloatVecVec.push_back(ssfbVec);
-        } else {
-            auto idx = std::distance(m_floatVecVec.begin(), result);
-            ssfbVec = m_ssfbFloatVecVec[idx];
-        }
+		// search same cellMap from cellMap caches.
+		auto result = std::find_if(m_partDataVec.begin(), m_partDataVec.end(), [&partDataPrimitive](const std::shared_ptr<struct PartDataPrimitive> &item) {
+			if (partDataPrimitive->name != item->name)
+				return false;
+			if (partDataPrimitive->index != item->index)
+				return false;
+			if (partDataPrimitive->parentIndex != item->parentIndex)
+				return false;
+			if (partDataPrimitive->type != item->type)
+				return false;
+			if (partDataPrimitive->boundsType != item->boundsType)
+				return false;
+			if (partDataPrimitive->alphaBlendType != item->alphaBlendType)
+				return false;
+			if (partDataPrimitive->refname != item->refname)
+				return false;
+			if (partDataPrimitive->effectfilename != item->effectfilename)
+				return false;
+			if (partDataPrimitive->colorLabel != item->colorLabel)
+				return false;
+			if (partDataPrimitive->maskInfluence != item->maskInfluence)
+				return false;
+			return true;
+		});
+		if (result == m_partDataVec.end()) {
+			// not found
 
-        return ssfbVec;
+			// create ssfb partData
+			auto ssfbPartDataName =  m_ssfbBuilder.CreateSharedString(partDataPrimitive->name);
+			auto ssfbRefname = m_ssfbBuilder.CreateSharedString(partDataPrimitive->refname);
+			auto ssfbEffectfilename = m_ssfbBuilder.CreateSharedString(partDataPrimitive->effectfilename);
+			auto ssfbColorLabel = m_ssfbBuilder.CreateSharedString(partDataPrimitive->colorLabel);
+
+			partData = ss::ssfb::CreatePartData(m_ssfbBuilder, ssfbPartDataName,partDataPrimitive->index, partDataPrimitive->parentIndex, (ss::ssfb::SsPartType)partDataPrimitive->type,
+												partDataPrimitive->boundsType, partDataPrimitive->alphaBlendType, ssfbRefname, ssfbEffectfilename, ssfbColorLabel,
+												partDataPrimitive->maskInfluence);
+			// cache ssfb cellMap
+			m_partDataVec.push_back(partDataPrimitive);
+			m_ssfbPartDataVec.push_back(partData);
+		} else {
+			// found
+			auto idx = std::distance(m_partDataVec.begin(), result);
+			partData = m_ssfbPartDataVec[idx];
+		}
+
+		return partData;
+	}
+
+	flatbuffers::Offset<flatbuffers::Vector<uint32_t>> createSharedUint32Vec(const std::vector<uint32_t> &vec) {
+		flatbuffers::Offset<flatbuffers::Vector<uint32_t>> ssfbVec;
+
+		auto result = std::find_if(m_uint32VecVec.begin(), m_uint32VecVec.end(), [&vec](const std::vector<uint32_t> &item) {
+			return vec == item;
+		});
+		if (result == m_uint32VecVec.end()) {
+			// not found
+
+			// create ssfb vec
+			ssfbVec = m_ssfbBuilder.CreateVector(vec);
+
+			// cache ssfb vec
+			m_uint32VecVec.push_back(vec);
+			m_ssfbUint32VecVec.push_back(ssfbVec);
+		} else {
+			auto idx = std::distance(m_uint32VecVec.begin(), result);
+			ssfbVec = m_ssfbUint32VecVec[idx];
+		}
+
+		return ssfbVec;
+	}
+
+	flatbuffers::Offset<flatbuffers::Vector<float>> createSharedFloatVec(const std::vector<float> &vec) {
+		flatbuffers::Offset<flatbuffers::Vector<float>> ssfbVec;
+
+		auto result = std::find_if(m_floatVecVec.begin(), m_floatVecVec.end(), [&vec](const std::vector<float> &item) {
+			return vec == item;
+		});
+		if (result == m_floatVecVec.end()) {
+			// not found
+
+			// create ssfb vec
+			ssfbVec = m_ssfbBuilder.CreateVector(vec);
+
+			// cache ssfb vec
+			m_floatVecVec.push_back(vec);
+			m_ssfbFloatVecVec.push_back(ssfbVec);
+		} else {
+			auto idx = std::distance(m_floatVecVec.begin(), result);
+			ssfbVec = m_ssfbFloatVecVec[idx];
+		}
+
+		return ssfbVec;
 	}
 
 	void createAnimePacks()
@@ -904,24 +985,7 @@ private:
 
 		auto partDataVec = lump->getChildren();
 		for(auto partDataItem : partDataVec) {
-			auto partDataItemVec = partDataItem->getChildren();
-
-			auto ssfbPartDataName = GETSSFBSTRING(m_ssfbBuilder, partDataItemVec[0], m_encoding);
-			auto index = GETS16(partDataItemVec[1]);
-			auto parentIndex = GETS16(partDataItemVec[2]);
-			auto type = (ss::ssfb::SsPartType)GETS16(partDataItemVec[3]);
-			auto boundsType = GETS16(partDataItemVec[4]);
-			auto alphaBlendType = GETS16(partDataItemVec[5]);
-			// 6:reserve
-			auto ssfbRefname = GETSSFBSTRING(m_ssfbBuilder, partDataItemVec[7], m_encoding);
-			auto ssfbEffectfilename = GETSSFBSTRING(m_ssfbBuilder, partDataItemVec[8], m_encoding);
-			auto ssfbColorLabel = GETSSFBSTRING(m_ssfbBuilder, partDataItemVec[9], m_encoding);
-			auto maskInfluence = GETS16(partDataItemVec[10]);
-
-			auto ssfbPartDataItem = ss::ssfb::CreatePartData(m_ssfbBuilder, ssfbPartDataName,
-															 index, parentIndex, type, boundsType,
-															 alphaBlendType, ssfbRefname, ssfbEffectfilename, ssfbColorLabel,
-															 maskInfluence);
+			auto ssfbPartDataItem = createSharedPartData(partDataItem);
 			ssfbParts.push_back(ssfbPartDataItem);
 		}
 
@@ -990,12 +1054,12 @@ private:
 
 
 					auto item = ss::ssfb::AnimationInitialData(index,
-					                                           lowflag, highflag, priority, cellIndex, opacity, localopacity, masklimen, posX, posY, posZ, //
-					                                           pivotX, pivotY, rotationX, rotationY, rotationZ, scaleX, scaleY, localscaleX, localscaleY, size_X, size_Y,
-					                                           uv_move_X, uv_move_Y, uv_rotation, uv_scale_X, uv_scale_Y, boundingRadius,
-					                                           instanceValue_curKeyframe, instanceValue_startFrame, instanceValue_endFrame, instanceValue_loopNum, instanceValue_speed, instanceValue_loopflag,
-					                                           effectValue_curKeyframe, effectValue_startTime, effectValue_speed, effectValue_loopflag);
-					ssfbDefaultData.push_back(item);
+															   lowflag, highflag, priority, cellIndex, opacity, localopacity, masklimen, posX, posY, posZ, //
+															   pivotX, pivotY, rotationX, rotationY, rotationZ, scaleX, scaleY, localscaleX, localscaleY, size_X, size_Y,
+															   uv_move_X, uv_move_Y, uv_rotation, uv_scale_X, uv_scale_Y, boundingRadius,
+															   instanceValue_curKeyframe, instanceValue_startFrame, instanceValue_endFrame, instanceValue_loopNum, instanceValue_speed, instanceValue_loopflag,
+															   effectValue_curKeyframe, effectValue_startTime, effectValue_speed, effectValue_loopflag);
+                    ssfbDefaultData.push_back(item);
 				}
 			}
 
