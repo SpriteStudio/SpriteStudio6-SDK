@@ -749,6 +749,12 @@ private:
 	std::vector<std::shared_ptr<struct meshDataUVPrimitive>> m_meshDataUVVec;
 	std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> m_ssfbMeshDataUVVec;
 
+	struct meshDataIndicesPrimitive {
+        std::vector<float> indices;
+	};
+	std::vector<std::shared_ptr<struct meshDataIndicesPrimitive>> m_meshDataIndicesVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> m_ssfbMeshDataIndicesVec;
+
 	struct FrameDataIndexPrimitive {
 		std::vector<uint32_t> data;
 	};
@@ -989,6 +995,31 @@ private:
 		return meshDataUV;
 	}
 
+	flatbuffers::Offset<ss::ssfb::meshDataIndices> createSharedMeshDataIndices(const std::vector<float> &indicesPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &indices) {
+		flatbuffers::Offset<ss::ssfb::meshDataIndices> meshDataIndices;
+
+		std::shared_ptr<struct meshDataIndicesPrimitive> meshDataIndicesPrimitive(new struct meshDataIndicesPrimitive);
+		meshDataIndicesPrimitive->indices = indicesPrimitive;
+		auto result = std::find_if(m_meshDataIndicesVec.begin(), m_meshDataIndicesVec.end(), [&meshDataIndicesPrimitive](const std::shared_ptr<struct meshDataIndicesPrimitive> &item) {
+			return meshDataIndicesPrimitive->indices == item->indices;
+		});
+		if (result == m_meshDataIndicesVec.end()) {
+			// not found
+
+			// create ssfb vec
+			meshDataIndices = ss::ssfb::CreatemeshDataIndices(m_ssfbBuilder, indices);
+
+			// cache ssfb vec
+			m_meshDataIndicesVec.push_back(meshDataIndicesPrimitive);
+			m_ssfbMeshDataIndicesVec.push_back(meshDataIndices);
+		} else {
+			auto idx = std::distance(m_meshDataIndicesVec.begin(), result);
+			meshDataIndices = m_ssfbMeshDataIndicesVec[idx];
+		}
+
+		return meshDataIndices;
+	}
+
 	flatbuffers::Offset<ss::ssfb::frameDataIndex> createSharedFrameDataIndex(const std::vector<uint32_t> &dataPrimitive, const flatbuffers::Offset<flatbuffers::Vector<uint32_t>> &data) {
 		flatbuffers::Offset<ss::ssfb::frameDataIndex> frameDataIndex;
 
@@ -1162,7 +1193,7 @@ private:
 					}
 
 					auto serializeSsfbIndices = createSharedFloatVec(ssfbIndices);
-					auto item = ss::ssfb::CreatemeshDataIndices(m_ssfbBuilder, serializeSsfbIndices);
+					auto item = createSharedMeshDataIndices(ssfbIndices, serializeSsfbIndices);
 					ssfbMeshsDataIndices.push_back(item);
 				}
 			}
