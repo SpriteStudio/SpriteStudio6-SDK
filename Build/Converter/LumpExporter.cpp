@@ -722,6 +722,49 @@ private:
 	std::vector<std::shared_ptr<struct CellMapPrimitive>> m_cellMaps;
 	std::vector<flatbuffers::Offset<ss::ssfb::CellMap>> m_ssfbCellMaps;
 
+	struct AnimationInitialDataPrimitive {
+		int16_t index;
+		int32_t lowflag;
+		int32_t highflag;
+		int16_t priority;
+		int16_t cellIndex;
+		int16_t opacity;
+		int16_t localopacity;
+		int16_t masklimen;
+		float posX;
+		float posY;
+		float posZ;
+		float pivotX;
+		float pivotY;
+		float rotationX;
+		float rotationY;
+		float rotationZ;
+		float scaleX;
+		float scaleY;
+		float localscaleX;
+		float localscaleY;
+		float size_X;
+		float size_Y;
+		float uv_move_X;
+		float uv_move_Y;
+		float uv_rotation;
+		float uv_scale_X;
+		float uv_scale_Y;
+		float boundingRadius;
+		int32_t instanceValue_curKeyframe;
+		int32_t instanceValue_startFrame;
+		int32_t instanceValue_endFrame;
+		int32_t instanceValue_loopNum;
+		float instanceValue_speed;
+		int32_t instanceValue_loopflag;
+		int32_t effectValue_curKeyframe;
+		int32_t effectValue_startTime;
+		float effectValue_speed;
+		int32_t effectValue_loopflag;
+	};
+	std::vector<std::shared_ptr<struct AnimationInitialDataPrimitive>> m_animationInitialDataVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::AnimationInitialData>> m_ssfbAnimationInitialDataVec;
+
 	struct PartDataPrimitive {
 		std::string name;
 		int16_t index;
@@ -856,6 +899,192 @@ private:
 		}
 
 		return cellMap;
+	}
+
+	flatbuffers::Offset<ss::ssfb::AnimationInitialData> createSharedAnimationInitialData(const Lump *lump)
+	{
+		flatbuffers::Offset<ss::ssfb::AnimationInitialData> animationInitialData;
+		auto AnimationInitialDataItemVec = lump->getChildren();
+
+		std::shared_ptr<struct AnimationInitialDataPrimitive> animationInitialDataPrimitive(new struct AnimationInitialDataPrimitive);
+
+		animationInitialDataPrimitive->index = GETS16(AnimationInitialDataItemVec[0]);
+		// 1:reserve
+		animationInitialDataPrimitive->lowflag = GETS32(AnimationInitialDataItemVec[2]);
+		animationInitialDataPrimitive->highflag = GETS32(AnimationInitialDataItemVec[3]);
+		animationInitialDataPrimitive->priority = GETS16(AnimationInitialDataItemVec[4]);
+		animationInitialDataPrimitive->cellIndex = GETS16(AnimationInitialDataItemVec[5]);
+		animationInitialDataPrimitive->opacity = GETS16(AnimationInitialDataItemVec[6]);
+		animationInitialDataPrimitive->localopacity = GETS16(AnimationInitialDataItemVec[7]);
+		animationInitialDataPrimitive->masklimen = GETS16(AnimationInitialDataItemVec[8]);
+		// 9:reserved
+		animationInitialDataPrimitive->posX = GETFLOAT(AnimationInitialDataItemVec[10]);
+		animationInitialDataPrimitive->posY = GETFLOAT(AnimationInitialDataItemVec[11]);
+		animationInitialDataPrimitive->posZ = GETFLOAT(AnimationInitialDataItemVec[12]);
+		animationInitialDataPrimitive->pivotX = GETFLOAT(AnimationInitialDataItemVec[13]);
+		animationInitialDataPrimitive->pivotY = GETFLOAT(AnimationInitialDataItemVec[14]);
+		animationInitialDataPrimitive->rotationX = GETFLOAT(AnimationInitialDataItemVec[15]);
+		animationInitialDataPrimitive->rotationY = GETFLOAT(AnimationInitialDataItemVec[16]);
+		animationInitialDataPrimitive->rotationZ = GETFLOAT(AnimationInitialDataItemVec[17]);
+		animationInitialDataPrimitive->scaleX = GETFLOAT(AnimationInitialDataItemVec[18]);
+		animationInitialDataPrimitive->scaleY = GETFLOAT(AnimationInitialDataItemVec[19]);
+		animationInitialDataPrimitive->localscaleX = GETFLOAT(AnimationInitialDataItemVec[20]);
+		animationInitialDataPrimitive->localscaleY = GETFLOAT(AnimationInitialDataItemVec[21]);
+		animationInitialDataPrimitive->size_X = GETFLOAT(AnimationInitialDataItemVec[22]);
+		animationInitialDataPrimitive->size_Y = GETFLOAT(AnimationInitialDataItemVec[23]);
+		animationInitialDataPrimitive->uv_move_X = GETFLOAT(AnimationInitialDataItemVec[24]);
+		animationInitialDataPrimitive->uv_move_Y = GETFLOAT(AnimationInitialDataItemVec[25]);
+		animationInitialDataPrimitive->uv_rotation = GETFLOAT(AnimationInitialDataItemVec[26]);
+		animationInitialDataPrimitive->uv_scale_X = GETFLOAT(AnimationInitialDataItemVec[27]);
+		animationInitialDataPrimitive->uv_scale_Y = GETFLOAT(AnimationInitialDataItemVec[28]);
+		animationInitialDataPrimitive->boundingRadius = GETFLOAT(AnimationInitialDataItemVec[29]);
+		//インスタンス関連
+		animationInitialDataPrimitive->instanceValue_curKeyframe = GETS32(AnimationInitialDataItemVec[30]);
+		animationInitialDataPrimitive->instanceValue_startFrame = GETS32(AnimationInitialDataItemVec[31]);
+		animationInitialDataPrimitive->instanceValue_endFrame = GETS32(AnimationInitialDataItemVec[32]);
+		animationInitialDataPrimitive->instanceValue_loopNum = GETS32(AnimationInitialDataItemVec[33]);
+		animationInitialDataPrimitive->instanceValue_speed = GETFLOAT(AnimationInitialDataItemVec[34]);
+		animationInitialDataPrimitive->instanceValue_loopflag = GETS32(AnimationInitialDataItemVec[35]);
+		//エフェクト関連
+		animationInitialDataPrimitive->effectValue_curKeyframe = GETS32(AnimationInitialDataItemVec[36]);
+		animationInitialDataPrimitive->effectValue_startTime = GETS32(AnimationInitialDataItemVec[37]);
+		animationInitialDataPrimitive->effectValue_speed = GETFLOAT(AnimationInitialDataItemVec[38]);
+		animationInitialDataPrimitive->effectValue_loopflag = GETS32(AnimationInitialDataItemVec[39]);
+
+		// search same cellMap from cellMap caches.
+		auto result = std::find_if(m_animationInitialDataVec.begin(), m_animationInitialDataVec.end(), [&animationInitialDataPrimitive](const std::shared_ptr<struct AnimationInitialDataPrimitive> &item) {
+			if(animationInitialDataPrimitive->index != item->index)
+				return false;
+			if(animationInitialDataPrimitive->lowflag != item->lowflag)
+				return false;
+			if(animationInitialDataPrimitive->highflag != item->highflag)
+				return false;
+			if(animationInitialDataPrimitive->priority != item->priority)
+				return false;
+			if(animationInitialDataPrimitive->cellIndex != item->cellIndex)
+				return false;
+			if(animationInitialDataPrimitive->opacity != item->opacity)
+				return false;
+			if(animationInitialDataPrimitive->localopacity != item->localopacity)
+				return false;
+			if(animationInitialDataPrimitive->masklimen != item->masklimen)
+				return false;
+			if(animationInitialDataPrimitive->posX != item->posX)
+				return false;
+			if(animationInitialDataPrimitive->posY != item->posY)
+				return false;
+			if(animationInitialDataPrimitive->posZ != item->posZ)
+				return false;
+			if(animationInitialDataPrimitive->pivotX != item->pivotX)
+				return false;
+			if(animationInitialDataPrimitive->pivotY != item->pivotY)
+				return false;
+			if(animationInitialDataPrimitive->rotationX != item->rotationX)
+				return false;
+			if(animationInitialDataPrimitive->rotationY != item->rotationY)
+				return false;
+			if(animationInitialDataPrimitive->rotationZ != item->rotationZ)
+				return false;
+			if(animationInitialDataPrimitive->scaleX != item->scaleX)
+				return false;
+			if(animationInitialDataPrimitive->scaleY != item->scaleY)
+				return false;
+			if(animationInitialDataPrimitive->localscaleX != item->localscaleX)
+				return false;
+			if(animationInitialDataPrimitive->localscaleY != item->localscaleY)
+				return false;
+			if(animationInitialDataPrimitive->size_X != item->size_X)
+				return false;
+			if(animationInitialDataPrimitive->size_Y != item->size_Y)
+				return false;
+			if(animationInitialDataPrimitive->uv_move_X != item->uv_move_X)
+				return false;
+			if(animationInitialDataPrimitive->uv_move_Y != item->uv_move_Y)
+				return false;
+			if(animationInitialDataPrimitive->uv_rotation != item->uv_rotation)
+				return false;
+			if(animationInitialDataPrimitive->uv_scale_X != item->uv_scale_X)
+				return false;
+			if(animationInitialDataPrimitive->uv_scale_Y != item->uv_scale_Y)
+				return false;
+			if(animationInitialDataPrimitive->boundingRadius != item->boundingRadius)
+				return false;
+			if(animationInitialDataPrimitive->instanceValue_curKeyframe != item->instanceValue_curKeyframe)
+				return false;
+			if(animationInitialDataPrimitive->instanceValue_startFrame != item->instanceValue_startFrame)
+				return false;
+			if(animationInitialDataPrimitive->instanceValue_endFrame != item->instanceValue_endFrame)
+				return false;
+			if(animationInitialDataPrimitive->instanceValue_loopNum != item->instanceValue_loopNum)
+				return false;
+			if(animationInitialDataPrimitive->instanceValue_speed != item->instanceValue_speed)
+				return false;
+			if(animationInitialDataPrimitive->instanceValue_loopflag != item->instanceValue_loopflag)
+				return false;
+			if(animationInitialDataPrimitive->effectValue_curKeyframe != item->effectValue_curKeyframe)
+				return false;
+			if(animationInitialDataPrimitive->effectValue_startTime != item->effectValue_startTime)
+				return false;
+			if(animationInitialDataPrimitive->effectValue_speed != item->effectValue_speed)
+				return false;
+			if(animationInitialDataPrimitive->effectValue_loopflag != item->effectValue_loopflag)
+				return false;
+			return true;
+		});
+		if (result == m_animationInitialDataVec.end()) {
+			// not found
+
+			// create ssfb partData
+			//animationInitialData = m_ssfbBuilder.Create
+			animationInitialData = ss::ssfb::CreateAnimationInitialData(m_ssfbBuilder,
+																		animationInitialDataPrimitive->index,
+																		animationInitialDataPrimitive->lowflag,
+																		animationInitialDataPrimitive->highflag,
+																		animationInitialDataPrimitive->priority,
+																		animationInitialDataPrimitive->cellIndex,
+																		animationInitialDataPrimitive->opacity,
+																		animationInitialDataPrimitive->localopacity,
+																		animationInitialDataPrimitive->masklimen,
+																		animationInitialDataPrimitive->posX,
+																		animationInitialDataPrimitive->posY,
+																		animationInitialDataPrimitive->posZ,
+																		animationInitialDataPrimitive->pivotX,
+																		animationInitialDataPrimitive->pivotY,
+																		animationInitialDataPrimitive->rotationX,
+																		animationInitialDataPrimitive->rotationY,
+																		animationInitialDataPrimitive->rotationZ,
+																		animationInitialDataPrimitive->scaleX,
+																		animationInitialDataPrimitive->scaleY,
+																		animationInitialDataPrimitive->localscaleX,
+																		animationInitialDataPrimitive->localscaleY,
+																		animationInitialDataPrimitive->size_X,
+																		animationInitialDataPrimitive->size_Y,
+																		animationInitialDataPrimitive->uv_move_X,
+																		animationInitialDataPrimitive->uv_move_Y,
+																		animationInitialDataPrimitive->uv_rotation,
+																		animationInitialDataPrimitive->uv_scale_X,
+																		animationInitialDataPrimitive->uv_scale_Y,
+																		animationInitialDataPrimitive->boundingRadius,
+																		animationInitialDataPrimitive->instanceValue_curKeyframe,
+																		animationInitialDataPrimitive->instanceValue_startFrame,
+																		animationInitialDataPrimitive->instanceValue_endFrame,
+																		animationInitialDataPrimitive->instanceValue_loopNum,
+																		animationInitialDataPrimitive->instanceValue_speed,
+																		animationInitialDataPrimitive->instanceValue_loopflag,
+																		animationInitialDataPrimitive->effectValue_curKeyframe,
+																		animationInitialDataPrimitive->effectValue_startTime,
+																		animationInitialDataPrimitive->effectValue_speed,
+																		animationInitialDataPrimitive->effectValue_loopflag);
+			// cache ssfb cellMap
+			m_animationInitialDataVec.push_back(animationInitialDataPrimitive);
+			m_ssfbAnimationInitialDataVec.push_back(animationInitialData);
+		} else {
+			// found
+			auto idx = std::distance(m_animationInitialDataVec.begin(), result);
+			animationInitialData = m_ssfbAnimationInitialDataVec[idx];
+		}
+
+		return animationInitialData;
 	}
 
 	flatbuffers::Offset<ss::ssfb::PartData> createSharedPartData(const Lump *lump)
@@ -1100,59 +1329,8 @@ private:
 				auto AnimationInitialDataVec = ssAnimationDataVec[1]->getChildren();
 				for(auto AnimationInitialDataItem : AnimationInitialDataVec)
 				{
-
-					auto AnimationInitialDataItemVec = AnimationInitialDataItem->getChildren();
-					auto index = GETS16(AnimationInitialDataItemVec[0]);
-					// 1:reserve
-					auto lowflag = GETS32(AnimationInitialDataItemVec[2]);
-					auto highflag = GETS32(AnimationInitialDataItemVec[3]);
-					auto priority = GETS16(AnimationInitialDataItemVec[4]);
-					auto cellIndex = GETS16(AnimationInitialDataItemVec[5]);
-					auto opacity = GETS16(AnimationInitialDataItemVec[6]);
-					auto localopacity = GETS16(AnimationInitialDataItemVec[7]);
-					auto masklimen = GETS16(AnimationInitialDataItemVec[8]);
-					// 9:reserved
-					auto posX = GETFLOAT(AnimationInitialDataItemVec[10]);
-					auto posY = GETFLOAT(AnimationInitialDataItemVec[11]);
-					auto posZ = GETFLOAT(AnimationInitialDataItemVec[12]);
-					auto pivotX = GETFLOAT(AnimationInitialDataItemVec[13]);
-					auto pivotY = GETFLOAT(AnimationInitialDataItemVec[14]);
-					auto rotationX = GETFLOAT(AnimationInitialDataItemVec[15]);
-					auto rotationY = GETFLOAT(AnimationInitialDataItemVec[16]);
-					auto rotationZ = GETFLOAT(AnimationInitialDataItemVec[17]);
-					auto scaleX = GETFLOAT(AnimationInitialDataItemVec[18]);
-					auto scaleY = GETFLOAT(AnimationInitialDataItemVec[19]);
-					auto localscaleX = GETFLOAT(AnimationInitialDataItemVec[20]);
-					auto localscaleY = GETFLOAT(AnimationInitialDataItemVec[21]);
-					auto size_X = GETFLOAT(AnimationInitialDataItemVec[22]);
-					auto size_Y = GETFLOAT(AnimationInitialDataItemVec[23]);
-					auto uv_move_X = GETFLOAT(AnimationInitialDataItemVec[24]);
-					auto uv_move_Y = GETFLOAT(AnimationInitialDataItemVec[25]);
-					auto uv_rotation = GETFLOAT(AnimationInitialDataItemVec[26]);
-					auto uv_scale_X = GETFLOAT(AnimationInitialDataItemVec[27]);
-					auto uv_scale_Y = GETFLOAT(AnimationInitialDataItemVec[28]);
-					auto boundingRadius = GETFLOAT(AnimationInitialDataItemVec[29]);
-					//インスタンス関連
-					auto instanceValue_curKeyframe = GETS32(AnimationInitialDataItemVec[30]);
-					auto instanceValue_startFrame = GETS32(AnimationInitialDataItemVec[31]);
-					auto instanceValue_endFrame = GETS32(AnimationInitialDataItemVec[32]);
-					auto instanceValue_loopNum = GETS32(AnimationInitialDataItemVec[33]);
-					auto instanceValue_speed = GETFLOAT(AnimationInitialDataItemVec[34]);
-					auto instanceValue_loopflag = GETS32(AnimationInitialDataItemVec[35]);
-					//エフェクト関連
-					auto effectValue_curKeyframe = GETS32(AnimationInitialDataItemVec[36]);
-					auto effectValue_startTime = GETS32(AnimationInitialDataItemVec[37]);
-					auto effectValue_speed = GETFLOAT(AnimationInitialDataItemVec[38]);
-					auto effectValue_loopflag = GETS32(AnimationInitialDataItemVec[39]);
-
-
-					auto item = ss::ssfb::CreateAnimationInitialData(m_ssfbBuilder,
-																	 lowflag, highflag, priority, cellIndex, opacity, localopacity, masklimen, posX, posY, posZ, //
-																	 pivotX, pivotY, rotationX, rotationY, rotationZ, scaleX, scaleY, localscaleX, localscaleY, size_X, size_Y,
-																	 uv_move_X, uv_move_Y, uv_rotation, uv_scale_X, uv_scale_Y, boundingRadius,
-																	 instanceValue_curKeyframe, instanceValue_startFrame, instanceValue_endFrame, instanceValue_loopNum, instanceValue_speed, instanceValue_loopflag,
-																	 effectValue_curKeyframe, effectValue_startTime, effectValue_speed, effectValue_loopflag);
-                    ssfbDefaultData.push_back(item);
+					auto item = createSharedAnimationInitialData(AnimationInitialDataItem);
+					m_ssfbAnimationInitialDataVec.push_back(item);
 				}
 			}
 
