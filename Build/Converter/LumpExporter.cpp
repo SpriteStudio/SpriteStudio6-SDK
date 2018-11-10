@@ -1094,8 +1094,8 @@ private:
 			auto ssAnimationDataVec = animationDataItem->getChildren();
 
 			// 1:AnimationInitialData
-			std::vector<ss::ssfb::AnimationInitialData> ssfbDefaultData;
-			//std::vector<const ss::ssfb::AnimationInitialData*> ssfbDefaultData;
+
+			std::vector<flatbuffers::Offset<ss::ssfb::AnimationInitialData>> ssfbDefaultData;
 			{
 				auto AnimationInitialDataVec = ssAnimationDataVec[1]->getChildren();
 				for(auto AnimationInitialDataItem : AnimationInitialDataVec)
@@ -1146,12 +1146,12 @@ private:
 					auto effectValue_loopflag = GETS32(AnimationInitialDataItemVec[39]);
 
 
-					auto item = ss::ssfb::AnimationInitialData(index,
-															   lowflag, highflag, priority, cellIndex, opacity, localopacity, masklimen, posX, posY, posZ, //
-															   pivotX, pivotY, rotationX, rotationY, rotationZ, scaleX, scaleY, localscaleX, localscaleY, size_X, size_Y,
-															   uv_move_X, uv_move_Y, uv_rotation, uv_scale_X, uv_scale_Y, boundingRadius,
-															   instanceValue_curKeyframe, instanceValue_startFrame, instanceValue_endFrame, instanceValue_loopNum, instanceValue_speed, instanceValue_loopflag,
-															   effectValue_curKeyframe, effectValue_startTime, effectValue_speed, effectValue_loopflag);
+					auto item = ss::ssfb::CreateAnimationInitialData(m_ssfbBuilder,
+																	 lowflag, highflag, priority, cellIndex, opacity, localopacity, masklimen, posX, posY, posZ, //
+																	 pivotX, pivotY, rotationX, rotationY, rotationZ, scaleX, scaleY, localscaleX, localscaleY, size_X, size_Y,
+																	 uv_move_X, uv_move_Y, uv_rotation, uv_scale_X, uv_scale_Y, boundingRadius,
+																	 instanceValue_curKeyframe, instanceValue_startFrame, instanceValue_endFrame, instanceValue_loopNum, instanceValue_speed, instanceValue_loopflag,
+																	 effectValue_curKeyframe, effectValue_startTime, effectValue_speed, effectValue_loopflag);
                     ssfbDefaultData.push_back(item);
 				}
 			}
@@ -1333,7 +1333,7 @@ private:
 			auto canvasPvotX = GETFLOAT(ssAnimationDataVec[15]);
 			auto canvasPvotY = GETFLOAT(ssAnimationDataVec[16]);
 
-			auto serializeSsfbDefaultData = m_ssfbBuilder.CreateVectorOfStructs(ssfbDefaultData);
+			auto serializeSsfbDefaultData = m_ssfbBuilder.CreateVector(ssfbDefaultData);
 			auto serializeSsfbMeshsDataUV = m_ssfbBuilder.CreateVector(ssfbMeshsDataUV);
 			auto serializeSsfbMeshsDataIndices = m_ssfbBuilder.CreateVector(ssfbMeshsDataIndices);
 
