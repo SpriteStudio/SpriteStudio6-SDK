@@ -310,7 +310,7 @@ table AnimationData {
     canvasPvotY : float;
 }
 
-table AnimationInitialData {
+struct AnimationInitialData {
     index : short;
     lowflag : int;
     highflag : int;
