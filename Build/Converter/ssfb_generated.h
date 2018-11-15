@@ -1084,214 +1084,6 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) userDataPoint FLATBUFFERS_FINAL_CLASS {
 };
 FLATBUFFERS_STRUCT_END(userDataPoint, 8);
 
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) AnimationInitialData FLATBUFFERS_FINAL_CLASS {
- private:
-  int16_t index_;
-  int16_t padding0__;
-  int32_t lowflag_;
-  int32_t highflag_;
-  int16_t priority_;
-  int16_t cellIndex_;
-  int16_t opacity_;
-  int16_t localopacity_;
-  int16_t masklimen_;
-  int16_t padding1__;
-  float positionX_;
-  float positionY_;
-  float positionZ_;
-  float pivotX_;
-  float pivotY_;
-  float rotationX_;
-  float rotationY_;
-  float rotationZ_;
-  float scaleX_;
-  float scaleY_;
-  float localscaleX_;
-  float localscaleY_;
-  float size_X_;
-  float size_Y_;
-  float uv_move_X_;
-  float uv_move_Y_;
-  float uv_rotation_;
-  float uv_scale_X_;
-  float uv_scale_Y_;
-  float boundingRadius_;
-  int32_t instanceValue_curKeyframe_;
-  int32_t instanceValue_startFrame_;
-  int32_t instanceValue_endFrame_;
-  int32_t instanceValue_loopNum_;
-  float instanceValue_speed_;
-  int32_t instanceValue_loopflag_;
-  int32_t effectValue_curKeyframe_;
-  int32_t effectValue_startTime_;
-  float effectValue_speed_;
-  int32_t effectValue_loopflag_;
-
- public:
-  AnimationInitialData() {
-    memset(this, 0, sizeof(AnimationInitialData));
-  }
-  AnimationInitialData(int16_t _index, int32_t _lowflag, int32_t _highflag, int16_t _priority, int16_t _cellIndex, int16_t _opacity, int16_t _localopacity, int16_t _masklimen, float _positionX, float _positionY, float _positionZ, float _pivotX, float _pivotY, float _rotationX, float _rotationY, float _rotationZ, float _scaleX, float _scaleY, float _localscaleX, float _localscaleY, float _size_X, float _size_Y, float _uv_move_X, float _uv_move_Y, float _uv_rotation, float _uv_scale_X, float _uv_scale_Y, float _boundingRadius, int32_t _instanceValue_curKeyframe, int32_t _instanceValue_startFrame, int32_t _instanceValue_endFrame, int32_t _instanceValue_loopNum, float _instanceValue_speed, int32_t _instanceValue_loopflag, int32_t _effectValue_curKeyframe, int32_t _effectValue_startTime, float _effectValue_speed, int32_t _effectValue_loopflag)
-      : index_(flatbuffers::EndianScalar(_index)),
-        padding0__(0),
-        lowflag_(flatbuffers::EndianScalar(_lowflag)),
-        highflag_(flatbuffers::EndianScalar(_highflag)),
-        priority_(flatbuffers::EndianScalar(_priority)),
-        cellIndex_(flatbuffers::EndianScalar(_cellIndex)),
-        opacity_(flatbuffers::EndianScalar(_opacity)),
-        localopacity_(flatbuffers::EndianScalar(_localopacity)),
-        masklimen_(flatbuffers::EndianScalar(_masklimen)),
-        padding1__(0),
-        positionX_(flatbuffers::EndianScalar(_positionX)),
-        positionY_(flatbuffers::EndianScalar(_positionY)),
-        positionZ_(flatbuffers::EndianScalar(_positionZ)),
-        pivotX_(flatbuffers::EndianScalar(_pivotX)),
-        pivotY_(flatbuffers::EndianScalar(_pivotY)),
-        rotationX_(flatbuffers::EndianScalar(_rotationX)),
-        rotationY_(flatbuffers::EndianScalar(_rotationY)),
-        rotationZ_(flatbuffers::EndianScalar(_rotationZ)),
-        scaleX_(flatbuffers::EndianScalar(_scaleX)),
-        scaleY_(flatbuffers::EndianScalar(_scaleY)),
-        localscaleX_(flatbuffers::EndianScalar(_localscaleX)),
-        localscaleY_(flatbuffers::EndianScalar(_localscaleY)),
-        size_X_(flatbuffers::EndianScalar(_size_X)),
-        size_Y_(flatbuffers::EndianScalar(_size_Y)),
-        uv_move_X_(flatbuffers::EndianScalar(_uv_move_X)),
-        uv_move_Y_(flatbuffers::EndianScalar(_uv_move_Y)),
-        uv_rotation_(flatbuffers::EndianScalar(_uv_rotation)),
-        uv_scale_X_(flatbuffers::EndianScalar(_uv_scale_X)),
-        uv_scale_Y_(flatbuffers::EndianScalar(_uv_scale_Y)),
-        boundingRadius_(flatbuffers::EndianScalar(_boundingRadius)),
-        instanceValue_curKeyframe_(flatbuffers::EndianScalar(_instanceValue_curKeyframe)),
-        instanceValue_startFrame_(flatbuffers::EndianScalar(_instanceValue_startFrame)),
-        instanceValue_endFrame_(flatbuffers::EndianScalar(_instanceValue_endFrame)),
-        instanceValue_loopNum_(flatbuffers::EndianScalar(_instanceValue_loopNum)),
-        instanceValue_speed_(flatbuffers::EndianScalar(_instanceValue_speed)),
-        instanceValue_loopflag_(flatbuffers::EndianScalar(_instanceValue_loopflag)),
-        effectValue_curKeyframe_(flatbuffers::EndianScalar(_effectValue_curKeyframe)),
-        effectValue_startTime_(flatbuffers::EndianScalar(_effectValue_startTime)),
-        effectValue_speed_(flatbuffers::EndianScalar(_effectValue_speed)),
-        effectValue_loopflag_(flatbuffers::EndianScalar(_effectValue_loopflag)) {
-    (void)padding0__;
-    (void)padding1__;
-  }
-  int16_t index() const {
-    return flatbuffers::EndianScalar(index_);
-  }
-  int32_t lowflag() const {
-    return flatbuffers::EndianScalar(lowflag_);
-  }
-  int32_t highflag() const {
-    return flatbuffers::EndianScalar(highflag_);
-  }
-  int16_t priority() const {
-    return flatbuffers::EndianScalar(priority_);
-  }
-  int16_t cellIndex() const {
-    return flatbuffers::EndianScalar(cellIndex_);
-  }
-  int16_t opacity() const {
-    return flatbuffers::EndianScalar(opacity_);
-  }
-  int16_t localopacity() const {
-    return flatbuffers::EndianScalar(localopacity_);
-  }
-  int16_t masklimen() const {
-    return flatbuffers::EndianScalar(masklimen_);
-  }
-  float positionX() const {
-    return flatbuffers::EndianScalar(positionX_);
-  }
-  float positionY() const {
-    return flatbuffers::EndianScalar(positionY_);
-  }
-  float positionZ() const {
-    return flatbuffers::EndianScalar(positionZ_);
-  }
-  float pivotX() const {
-    return flatbuffers::EndianScalar(pivotX_);
-  }
-  float pivotY() const {
-    return flatbuffers::EndianScalar(pivotY_);
-  }
-  float rotationX() const {
-    return flatbuffers::EndianScalar(rotationX_);
-  }
-  float rotationY() const {
-    return flatbuffers::EndianScalar(rotationY_);
-  }
-  float rotationZ() const {
-    return flatbuffers::EndianScalar(rotationZ_);
-  }
-  float scaleX() const {
-    return flatbuffers::EndianScalar(scaleX_);
-  }
-  float scaleY() const {
-    return flatbuffers::EndianScalar(scaleY_);
-  }
-  float localscaleX() const {
-    return flatbuffers::EndianScalar(localscaleX_);
-  }
-  float localscaleY() const {
-    return flatbuffers::EndianScalar(localscaleY_);
-  }
-  float size_X() const {
-    return flatbuffers::EndianScalar(size_X_);
-  }
-  float size_Y() const {
-    return flatbuffers::EndianScalar(size_Y_);
-  }
-  float uv_move_X() const {
-    return flatbuffers::EndianScalar(uv_move_X_);
-  }
-  float uv_move_Y() const {
-    return flatbuffers::EndianScalar(uv_move_Y_);
-  }
-  float uv_rotation() const {
-    return flatbuffers::EndianScalar(uv_rotation_);
-  }
-  float uv_scale_X() const {
-    return flatbuffers::EndianScalar(uv_scale_X_);
-  }
-  float uv_scale_Y() const {
-    return flatbuffers::EndianScalar(uv_scale_Y_);
-  }
-  float boundingRadius() const {
-    return flatbuffers::EndianScalar(boundingRadius_);
-  }
-  int32_t instanceValue_curKeyframe() const {
-    return flatbuffers::EndianScalar(instanceValue_curKeyframe_);
-  }
-  int32_t instanceValue_startFrame() const {
-    return flatbuffers::EndianScalar(instanceValue_startFrame_);
-  }
-  int32_t instanceValue_endFrame() const {
-    return flatbuffers::EndianScalar(instanceValue_endFrame_);
-  }
-  int32_t instanceValue_loopNum() const {
-    return flatbuffers::EndianScalar(instanceValue_loopNum_);
-  }
-  float instanceValue_speed() const {
-    return flatbuffers::EndianScalar(instanceValue_speed_);
-  }
-  int32_t instanceValue_loopflag() const {
-    return flatbuffers::EndianScalar(instanceValue_loopflag_);
-  }
-  int32_t effectValue_curKeyframe() const {
-    return flatbuffers::EndianScalar(effectValue_curKeyframe_);
-  }
-  int32_t effectValue_startTime() const {
-    return flatbuffers::EndianScalar(effectValue_startTime_);
-  }
-  float effectValue_speed() const {
-    return flatbuffers::EndianScalar(effectValue_speed_);
-  }
-  int32_t effectValue_loopflag() const {
-    return flatbuffers::EndianScalar(effectValue_loopflag_);
-  }
-};
-FLATBUFFERS_STRUCT_END(AnimationInitialData, 144);
-
 struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_ARRAYINDEX = 4,
@@ -2294,8 +2086,8 @@ struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::String *name() const {
     return GetPointer<const flatbuffers::String *>(VT_NAME);
   }
-  const flatbuffers::Vector<const AnimationInitialData *> *defaultData() const {
-    return GetPointer<const flatbuffers::Vector<const AnimationInitialData *> *>(VT_DEFAULTDATA);
+  const flatbuffers::Vector<flatbuffers::Offset<AnimationInitialData>> *defaultData() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<AnimationInitialData>> *>(VT_DEFAULTDATA);
   }
   const flatbuffers::Vector<flatbuffers::Offset<frameDataIndex>> *frameData() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<frameDataIndex>> *>(VT_FRAMEDATA);
@@ -2345,6 +2137,7 @@ struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_DEFAULTDATA) &&
            verifier.VerifyVector(defaultData()) &&
+           verifier.VerifyVectorOfTables(defaultData()) &&
            VerifyOffset(verifier, VT_FRAMEDATA) &&
            verifier.VerifyVector(frameData()) &&
            verifier.VerifyVectorOfTables(frameData()) &&
@@ -2379,7 +2172,7 @@ struct AnimationDataBuilder {
   void add_name(flatbuffers::Offset<flatbuffers::String> name) {
     fbb_.AddOffset(AnimationData::VT_NAME, name);
   }
-  void add_defaultData(flatbuffers::Offset<flatbuffers::Vector<const AnimationInitialData *>> defaultData) {
+  void add_defaultData(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<AnimationInitialData>>> defaultData) {
     fbb_.AddOffset(AnimationData::VT_DEFAULTDATA, defaultData);
   }
   void add_frameData(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<frameDataIndex>>> frameData) {
@@ -2439,7 +2232,7 @@ struct AnimationDataBuilder {
 inline flatbuffers::Offset<AnimationData> CreateAnimationData(
     flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::String> name = 0,
-    flatbuffers::Offset<flatbuffers::Vector<const AnimationInitialData *>> defaultData = 0,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<AnimationInitialData>>> defaultData = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<frameDataIndex>>> frameData = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<userDataPerFrame>>> userData = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<labelDataItem>>> labelData = 0,
@@ -2477,7 +2270,7 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationData(
 inline flatbuffers::Offset<AnimationData> CreateAnimationDataDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
-    const std::vector<AnimationInitialData> *defaultData = nullptr,
+    const std::vector<flatbuffers::Offset<AnimationInitialData>> *defaultData = nullptr,
     const std::vector<flatbuffers::Offset<frameDataIndex>> *frameData = nullptr,
     const std::vector<flatbuffers::Offset<userDataPerFrame>> *userData = nullptr,
     const std::vector<flatbuffers::Offset<labelDataItem>> *labelData = nullptr,
@@ -2495,7 +2288,7 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationDataDirect(
   return ss::ssfb::CreateAnimationData(
       _fbb,
       name ? _fbb.CreateString(name) : 0,
-      defaultData ? _fbb.CreateVectorOfStructs<AnimationInitialData>(*defaultData) : 0,
+      defaultData ? _fbb.CreateVector<flatbuffers::Offset<AnimationInitialData>>(*defaultData) : 0,
       frameData ? _fbb.CreateVector<flatbuffers::Offset<frameDataIndex>>(*frameData) : 0,
       userData ? _fbb.CreateVector<flatbuffers::Offset<userDataPerFrame>>(*userData) : 0,
       labelData ? _fbb.CreateVector<flatbuffers::Offset<labelDataItem>>(*labelData) : 0,
@@ -2510,6 +2303,416 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationDataDirect(
       canvasSizeH,
       canvasPvotX,
       canvasPvotY);
+}
+
+struct AnimationInitialData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_INDEX = 4,
+    VT_LOWFLAG = 6,
+    VT_HIGHFLAG = 8,
+    VT_PRIORITY = 10,
+    VT_CELLINDEX = 12,
+    VT_OPACITY = 14,
+    VT_LOCALOPACITY = 16,
+    VT_MASKLIMEN = 18,
+    VT_POSITIONX = 20,
+    VT_POSITIONY = 22,
+    VT_POSITIONZ = 24,
+    VT_PIVOTX = 26,
+    VT_PIVOTY = 28,
+    VT_ROTATIONX = 30,
+    VT_ROTATIONY = 32,
+    VT_ROTATIONZ = 34,
+    VT_SCALEX = 36,
+    VT_SCALEY = 38,
+    VT_LOCALSCALEX = 40,
+    VT_LOCALSCALEY = 42,
+    VT_SIZE_X = 44,
+    VT_SIZE_Y = 46,
+    VT_UV_MOVE_X = 48,
+    VT_UV_MOVE_Y = 50,
+    VT_UV_ROTATION = 52,
+    VT_UV_SCALE_X = 54,
+    VT_UV_SCALE_Y = 56,
+    VT_BOUNDINGRADIUS = 58,
+    VT_INSTANCEVALUE_CURKEYFRAME = 60,
+    VT_INSTANCEVALUE_STARTFRAME = 62,
+    VT_INSTANCEVALUE_ENDFRAME = 64,
+    VT_INSTANCEVALUE_LOOPNUM = 66,
+    VT_INSTANCEVALUE_SPEED = 68,
+    VT_INSTANCEVALUE_LOOPFLAG = 70,
+    VT_EFFECTVALUE_CURKEYFRAME = 72,
+    VT_EFFECTVALUE_STARTTIME = 74,
+    VT_EFFECTVALUE_SPEED = 76,
+    VT_EFFECTVALUE_LOOPFLAG = 78
+  };
+  int16_t index() const {
+    return GetField<int16_t>(VT_INDEX, 0);
+  }
+  int32_t lowflag() const {
+    return GetField<int32_t>(VT_LOWFLAG, 0);
+  }
+  int32_t highflag() const {
+    return GetField<int32_t>(VT_HIGHFLAG, 0);
+  }
+  int16_t priority() const {
+    return GetField<int16_t>(VT_PRIORITY, 0);
+  }
+  int16_t cellIndex() const {
+    return GetField<int16_t>(VT_CELLINDEX, 0);
+  }
+  int16_t opacity() const {
+    return GetField<int16_t>(VT_OPACITY, 0);
+  }
+  int16_t localopacity() const {
+    return GetField<int16_t>(VT_LOCALOPACITY, 0);
+  }
+  int16_t masklimen() const {
+    return GetField<int16_t>(VT_MASKLIMEN, 0);
+  }
+  float positionX() const {
+    return GetField<float>(VT_POSITIONX, 0.0f);
+  }
+  float positionY() const {
+    return GetField<float>(VT_POSITIONY, 0.0f);
+  }
+  float positionZ() const {
+    return GetField<float>(VT_POSITIONZ, 0.0f);
+  }
+  float pivotX() const {
+    return GetField<float>(VT_PIVOTX, 0.0f);
+  }
+  float pivotY() const {
+    return GetField<float>(VT_PIVOTY, 0.0f);
+  }
+  float rotationX() const {
+    return GetField<float>(VT_ROTATIONX, 0.0f);
+  }
+  float rotationY() const {
+    return GetField<float>(VT_ROTATIONY, 0.0f);
+  }
+  float rotationZ() const {
+    return GetField<float>(VT_ROTATIONZ, 0.0f);
+  }
+  float scaleX() const {
+    return GetField<float>(VT_SCALEX, 0.0f);
+  }
+  float scaleY() const {
+    return GetField<float>(VT_SCALEY, 0.0f);
+  }
+  float localscaleX() const {
+    return GetField<float>(VT_LOCALSCALEX, 0.0f);
+  }
+  float localscaleY() const {
+    return GetField<float>(VT_LOCALSCALEY, 0.0f);
+  }
+  float size_X() const {
+    return GetField<float>(VT_SIZE_X, 0.0f);
+  }
+  float size_Y() const {
+    return GetField<float>(VT_SIZE_Y, 0.0f);
+  }
+  float uv_move_X() const {
+    return GetField<float>(VT_UV_MOVE_X, 0.0f);
+  }
+  float uv_move_Y() const {
+    return GetField<float>(VT_UV_MOVE_Y, 0.0f);
+  }
+  float uv_rotation() const {
+    return GetField<float>(VT_UV_ROTATION, 0.0f);
+  }
+  float uv_scale_X() const {
+    return GetField<float>(VT_UV_SCALE_X, 0.0f);
+  }
+  float uv_scale_Y() const {
+    return GetField<float>(VT_UV_SCALE_Y, 0.0f);
+  }
+  float boundingRadius() const {
+    return GetField<float>(VT_BOUNDINGRADIUS, 0.0f);
+  }
+  int32_t instanceValue_curKeyframe() const {
+    return GetField<int32_t>(VT_INSTANCEVALUE_CURKEYFRAME, 0);
+  }
+  int32_t instanceValue_startFrame() const {
+    return GetField<int32_t>(VT_INSTANCEVALUE_STARTFRAME, 0);
+  }
+  int32_t instanceValue_endFrame() const {
+    return GetField<int32_t>(VT_INSTANCEVALUE_ENDFRAME, 0);
+  }
+  int32_t instanceValue_loopNum() const {
+    return GetField<int32_t>(VT_INSTANCEVALUE_LOOPNUM, 0);
+  }
+  float instanceValue_speed() const {
+    return GetField<float>(VT_INSTANCEVALUE_SPEED, 0.0f);
+  }
+  int32_t instanceValue_loopflag() const {
+    return GetField<int32_t>(VT_INSTANCEVALUE_LOOPFLAG, 0);
+  }
+  int32_t effectValue_curKeyframe() const {
+    return GetField<int32_t>(VT_EFFECTVALUE_CURKEYFRAME, 0);
+  }
+  int32_t effectValue_startTime() const {
+    return GetField<int32_t>(VT_EFFECTVALUE_STARTTIME, 0);
+  }
+  float effectValue_speed() const {
+    return GetField<float>(VT_EFFECTVALUE_SPEED, 0.0f);
+  }
+  int32_t effectValue_loopflag() const {
+    return GetField<int32_t>(VT_EFFECTVALUE_LOOPFLAG, 0);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int16_t>(verifier, VT_INDEX) &&
+           VerifyField<int32_t>(verifier, VT_LOWFLAG) &&
+           VerifyField<int32_t>(verifier, VT_HIGHFLAG) &&
+           VerifyField<int16_t>(verifier, VT_PRIORITY) &&
+           VerifyField<int16_t>(verifier, VT_CELLINDEX) &&
+           VerifyField<int16_t>(verifier, VT_OPACITY) &&
+           VerifyField<int16_t>(verifier, VT_LOCALOPACITY) &&
+           VerifyField<int16_t>(verifier, VT_MASKLIMEN) &&
+           VerifyField<float>(verifier, VT_POSITIONX) &&
+           VerifyField<float>(verifier, VT_POSITIONY) &&
+           VerifyField<float>(verifier, VT_POSITIONZ) &&
+           VerifyField<float>(verifier, VT_PIVOTX) &&
+           VerifyField<float>(verifier, VT_PIVOTY) &&
+           VerifyField<float>(verifier, VT_ROTATIONX) &&
+           VerifyField<float>(verifier, VT_ROTATIONY) &&
+           VerifyField<float>(verifier, VT_ROTATIONZ) &&
+           VerifyField<float>(verifier, VT_SCALEX) &&
+           VerifyField<float>(verifier, VT_SCALEY) &&
+           VerifyField<float>(verifier, VT_LOCALSCALEX) &&
+           VerifyField<float>(verifier, VT_LOCALSCALEY) &&
+           VerifyField<float>(verifier, VT_SIZE_X) &&
+           VerifyField<float>(verifier, VT_SIZE_Y) &&
+           VerifyField<float>(verifier, VT_UV_MOVE_X) &&
+           VerifyField<float>(verifier, VT_UV_MOVE_Y) &&
+           VerifyField<float>(verifier, VT_UV_ROTATION) &&
+           VerifyField<float>(verifier, VT_UV_SCALE_X) &&
+           VerifyField<float>(verifier, VT_UV_SCALE_Y) &&
+           VerifyField<float>(verifier, VT_BOUNDINGRADIUS) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_CURKEYFRAME) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_STARTFRAME) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_ENDFRAME) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_LOOPNUM) &&
+           VerifyField<float>(verifier, VT_INSTANCEVALUE_SPEED) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_LOOPFLAG) &&
+           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_CURKEYFRAME) &&
+           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_STARTTIME) &&
+           VerifyField<float>(verifier, VT_EFFECTVALUE_SPEED) &&
+           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_LOOPFLAG) &&
+           verifier.EndTable();
+  }
+};
+
+struct AnimationInitialDataBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_index(int16_t index) {
+    fbb_.AddElement<int16_t>(AnimationInitialData::VT_INDEX, index, 0);
+  }
+  void add_lowflag(int32_t lowflag) {
+    fbb_.AddElement<int32_t>(AnimationInitialData::VT_LOWFLAG, lowflag, 0);
+  }
+  void add_highflag(int32_t highflag) {
+    fbb_.AddElement<int32_t>(AnimationInitialData::VT_HIGHFLAG, highflag, 0);
+  }
+  void add_priority(int16_t priority) {
+    fbb_.AddElement<int16_t>(AnimationInitialData::VT_PRIORITY, priority, 0);
+  }
+  void add_cellIndex(int16_t cellIndex) {
+    fbb_.AddElement<int16_t>(AnimationInitialData::VT_CELLINDEX, cellIndex, 0);
+  }
+  void add_opacity(int16_t opacity) {
+    fbb_.AddElement<int16_t>(AnimationInitialData::VT_OPACITY, opacity, 0);
+  }
+  void add_localopacity(int16_t localopacity) {
+    fbb_.AddElement<int16_t>(AnimationInitialData::VT_LOCALOPACITY, localopacity, 0);
+  }
+  void add_masklimen(int16_t masklimen) {
+    fbb_.AddElement<int16_t>(AnimationInitialData::VT_MASKLIMEN, masklimen, 0);
+  }
+  void add_positionX(float positionX) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_POSITIONX, positionX, 0.0f);
+  }
+  void add_positionY(float positionY) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_POSITIONY, positionY, 0.0f);
+  }
+  void add_positionZ(float positionZ) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_POSITIONZ, positionZ, 0.0f);
+  }
+  void add_pivotX(float pivotX) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_PIVOTX, pivotX, 0.0f);
+  }
+  void add_pivotY(float pivotY) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_PIVOTY, pivotY, 0.0f);
+  }
+  void add_rotationX(float rotationX) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_ROTATIONX, rotationX, 0.0f);
+  }
+  void add_rotationY(float rotationY) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_ROTATIONY, rotationY, 0.0f);
+  }
+  void add_rotationZ(float rotationZ) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_ROTATIONZ, rotationZ, 0.0f);
+  }
+  void add_scaleX(float scaleX) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_SCALEX, scaleX, 0.0f);
+  }
+  void add_scaleY(float scaleY) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_SCALEY, scaleY, 0.0f);
+  }
+  void add_localscaleX(float localscaleX) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_LOCALSCALEX, localscaleX, 0.0f);
+  }
+  void add_localscaleY(float localscaleY) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_LOCALSCALEY, localscaleY, 0.0f);
+  }
+  void add_size_X(float size_X) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_SIZE_X, size_X, 0.0f);
+  }
+  void add_size_Y(float size_Y) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_SIZE_Y, size_Y, 0.0f);
+  }
+  void add_uv_move_X(float uv_move_X) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_UV_MOVE_X, uv_move_X, 0.0f);
+  }
+  void add_uv_move_Y(float uv_move_Y) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_UV_MOVE_Y, uv_move_Y, 0.0f);
+  }
+  void add_uv_rotation(float uv_rotation) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_UV_ROTATION, uv_rotation, 0.0f);
+  }
+  void add_uv_scale_X(float uv_scale_X) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_UV_SCALE_X, uv_scale_X, 0.0f);
+  }
+  void add_uv_scale_Y(float uv_scale_Y) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_UV_SCALE_Y, uv_scale_Y, 0.0f);
+  }
+  void add_boundingRadius(float boundingRadius) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_BOUNDINGRADIUS, boundingRadius, 0.0f);
+  }
+  void add_instanceValue_curKeyframe(int32_t instanceValue_curKeyframe) {
+    fbb_.AddElement<int32_t>(AnimationInitialData::VT_INSTANCEVALUE_CURKEYFRAME, instanceValue_curKeyframe, 0);
+  }
+  void add_instanceValue_startFrame(int32_t instanceValue_startFrame) {
+    fbb_.AddElement<int32_t>(AnimationInitialData::VT_INSTANCEVALUE_STARTFRAME, instanceValue_startFrame, 0);
+  }
+  void add_instanceValue_endFrame(int32_t instanceValue_endFrame) {
+    fbb_.AddElement<int32_t>(AnimationInitialData::VT_INSTANCEVALUE_ENDFRAME, instanceValue_endFrame, 0);
+  }
+  void add_instanceValue_loopNum(int32_t instanceValue_loopNum) {
+    fbb_.AddElement<int32_t>(AnimationInitialData::VT_INSTANCEVALUE_LOOPNUM, instanceValue_loopNum, 0);
+  }
+  void add_instanceValue_speed(float instanceValue_speed) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_INSTANCEVALUE_SPEED, instanceValue_speed, 0.0f);
+  }
+  void add_instanceValue_loopflag(int32_t instanceValue_loopflag) {
+    fbb_.AddElement<int32_t>(AnimationInitialData::VT_INSTANCEVALUE_LOOPFLAG, instanceValue_loopflag, 0);
+  }
+  void add_effectValue_curKeyframe(int32_t effectValue_curKeyframe) {
+    fbb_.AddElement<int32_t>(AnimationInitialData::VT_EFFECTVALUE_CURKEYFRAME, effectValue_curKeyframe, 0);
+  }
+  void add_effectValue_startTime(int32_t effectValue_startTime) {
+    fbb_.AddElement<int32_t>(AnimationInitialData::VT_EFFECTVALUE_STARTTIME, effectValue_startTime, 0);
+  }
+  void add_effectValue_speed(float effectValue_speed) {
+    fbb_.AddElement<float>(AnimationInitialData::VT_EFFECTVALUE_SPEED, effectValue_speed, 0.0f);
+  }
+  void add_effectValue_loopflag(int32_t effectValue_loopflag) {
+    fbb_.AddElement<int32_t>(AnimationInitialData::VT_EFFECTVALUE_LOOPFLAG, effectValue_loopflag, 0);
+  }
+  explicit AnimationInitialDataBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  AnimationInitialDataBuilder &operator=(const AnimationInitialDataBuilder &);
+  flatbuffers::Offset<AnimationInitialData> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<AnimationInitialData>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<AnimationInitialData> CreateAnimationInitialData(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    int16_t index = 0,
+    int32_t lowflag = 0,
+    int32_t highflag = 0,
+    int16_t priority = 0,
+    int16_t cellIndex = 0,
+    int16_t opacity = 0,
+    int16_t localopacity = 0,
+    int16_t masklimen = 0,
+    float positionX = 0.0f,
+    float positionY = 0.0f,
+    float positionZ = 0.0f,
+    float pivotX = 0.0f,
+    float pivotY = 0.0f,
+    float rotationX = 0.0f,
+    float rotationY = 0.0f,
+    float rotationZ = 0.0f,
+    float scaleX = 0.0f,
+    float scaleY = 0.0f,
+    float localscaleX = 0.0f,
+    float localscaleY = 0.0f,
+    float size_X = 0.0f,
+    float size_Y = 0.0f,
+    float uv_move_X = 0.0f,
+    float uv_move_Y = 0.0f,
+    float uv_rotation = 0.0f,
+    float uv_scale_X = 0.0f,
+    float uv_scale_Y = 0.0f,
+    float boundingRadius = 0.0f,
+    int32_t instanceValue_curKeyframe = 0,
+    int32_t instanceValue_startFrame = 0,
+    int32_t instanceValue_endFrame = 0,
+    int32_t instanceValue_loopNum = 0,
+    float instanceValue_speed = 0.0f,
+    int32_t instanceValue_loopflag = 0,
+    int32_t effectValue_curKeyframe = 0,
+    int32_t effectValue_startTime = 0,
+    float effectValue_speed = 0.0f,
+    int32_t effectValue_loopflag = 0) {
+  AnimationInitialDataBuilder builder_(_fbb);
+  builder_.add_effectValue_loopflag(effectValue_loopflag);
+  builder_.add_effectValue_speed(effectValue_speed);
+  builder_.add_effectValue_startTime(effectValue_startTime);
+  builder_.add_effectValue_curKeyframe(effectValue_curKeyframe);
+  builder_.add_instanceValue_loopflag(instanceValue_loopflag);
+  builder_.add_instanceValue_speed(instanceValue_speed);
+  builder_.add_instanceValue_loopNum(instanceValue_loopNum);
+  builder_.add_instanceValue_endFrame(instanceValue_endFrame);
+  builder_.add_instanceValue_startFrame(instanceValue_startFrame);
+  builder_.add_instanceValue_curKeyframe(instanceValue_curKeyframe);
+  builder_.add_boundingRadius(boundingRadius);
+  builder_.add_uv_scale_Y(uv_scale_Y);
+  builder_.add_uv_scale_X(uv_scale_X);
+  builder_.add_uv_rotation(uv_rotation);
+  builder_.add_uv_move_Y(uv_move_Y);
+  builder_.add_uv_move_X(uv_move_X);
+  builder_.add_size_Y(size_Y);
+  builder_.add_size_X(size_X);
+  builder_.add_localscaleY(localscaleY);
+  builder_.add_localscaleX(localscaleX);
+  builder_.add_scaleY(scaleY);
+  builder_.add_scaleX(scaleX);
+  builder_.add_rotationZ(rotationZ);
+  builder_.add_rotationY(rotationY);
+  builder_.add_rotationX(rotationX);
+  builder_.add_pivotY(pivotY);
+  builder_.add_pivotX(pivotX);
+  builder_.add_positionZ(positionZ);
+  builder_.add_positionY(positionY);
+  builder_.add_positionX(positionX);
+  builder_.add_highflag(highflag);
+  builder_.add_lowflag(lowflag);
+  builder_.add_masklimen(masklimen);
+  builder_.add_localopacity(localopacity);
+  builder_.add_opacity(opacity);
+  builder_.add_cellIndex(cellIndex);
+  builder_.add_priority(priority);
+  builder_.add_index(index);
+  return builder_.Finish();
 }
 
 struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
