@@ -975,9 +975,7 @@ private:
 	flatbuffers::Offset<flatbuffers::Vector<uint32_t>> createSharedUint32Vec(const std::vector<uint32_t> &vec) {
 		flatbuffers::Offset<flatbuffers::Vector<uint32_t>> ssfbVec;
 
-		auto result = std::find_if(m_uint32VecVec.begin(), m_uint32VecVec.end(), [&vec](const std::vector<uint32_t> &item) {
-			return vec == item;
-		});
+		auto result = std::find(m_uint32VecVec.begin(), m_uint32VecVec.end(), vec);
 		if (result == m_uint32VecVec.end()) {
 			// not found
 
@@ -998,9 +996,7 @@ private:
 	flatbuffers::Offset<flatbuffers::Vector<float>> createSharedFloatVec(const std::vector<float> &vec) {
 		flatbuffers::Offset<flatbuffers::Vector<float>> ssfbVec;
 
-		auto result = std::find_if(m_floatVecVec.begin(), m_floatVecVec.end(), [&vec](const std::vector<float> &item) {
-			return vec == item;
-		});
+		auto result = std::find(m_floatVecVec.begin(), m_floatVecVec.end(), vec);
 		if (result == m_floatVecVec.end()) {
 			// not found
 
