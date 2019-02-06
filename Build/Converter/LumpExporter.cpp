@@ -6,6 +6,7 @@
 #include "BinaryDataWriter.h"
 #include <assert.h>
 #include <cstdarg>
+#include <regex>
 #include "babel/babel.h"
 #include "picojson.h"
 #include "flatbuffers/flatbuffers.h"
@@ -733,6 +734,9 @@ private:
 	std::vector<struct ss::ssfb::meshDataIndicesT> m_meshDataIndicesVec;
 	std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> m_ssfbMeshDataIndicesVec;
 
+	std::vector<struct ss::ssfb::partStateT> m_partStateVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::partState>> m_ssfbPartStateVec;
+
 	std::vector<struct ss::ssfb::frameDataIndexT> m_frameDataIndexVec;
 	std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> m_ssfbFrameDataIndexVec;
 
@@ -1060,21 +1064,76 @@ private:
 
 		return meshDataIndices;
 	}
+	
+	flatbuffers::Offset<ss::ssfb::partState>
+	createSharedPartState(int16_t index, uint32_t flag1, uint32_t flag2, const std::vector<uint32_t> &dataPrimitive) {
+		flatbuffers::Offset<ss::ssfb::partState> partState;
+		
+		struct ss::ssfb::partStateT partStateT;
+		partStateT.index = index;
+		partStateT.flag1 = flag1;
+		partStateT.flag2 = flag2;
+		partStateT.data = dataPrimitive;
+		auto result = std::find(m_partStateVec.begin(), m_partStateVec.end(), partStateT);
+		if (result == m_partStateVec.end()) {
+			// not found
+			auto serializePartStateData = createSharedUint32Vec(dataPrimitive);
+			partState = ss::ssfb::CreatepartState(m_ssfbBuilder, partStateT.index, partStateT.flag1, partStateT.flag2, serializePartStateData);
 
-	flatbuffers::Offset<ss::ssfb::frameDataIndex> createSharedFrameDataIndex(const std::vector<uint32_t> &dataPrimitive, const flatbuffers::Offset<flatbuffers::Vector<uint32_t>> &data) {
+			m_partStateVec.push_back(partStateT);
+			m_ssfbPartStateVec.push_back(partState);
+		} else {
+			auto idx = std::distance(m_partStateVec.begin(), result);
+			partState = m_ssfbPartStateVec[idx];
+		}
+
+		return partState;
+	}
+
+	flatbuffers::Offset<ss::ssfb::frameDataIndex> createSharedFrameDataIndex(const std::vector<ss::ssfb::partStateT> &dataPrimitive) {
 		flatbuffers::Offset<ss::ssfb::frameDataIndex> frameDataIndex;
 
-		struct ss::ssfb::frameDataIndexT frameDataIndexT;
-		frameDataIndexT.data = dataPrimitive;
-		auto result = std::find(m_frameDataIndexVec.begin(), m_frameDataIndexVec.end(), frameDataIndexT);
+		struct ss::ssfb::frameDataIndexT frameDataIndexT1;
+		for(auto i : dataPrimitive) {
+			std::unique_ptr<ss::ssfb::partStateT> p(new ss::ssfb::partStateT());
+			p->index = i.index;
+			p->flag1 = i.flag1;
+			p->flag2 = i.flag2;
+			p->data = i.data;
+			frameDataIndexT1.states.push_back(std::move(p));
+		}
+		auto result = std::find_if(m_frameDataIndexVec.begin(), m_frameDataIndexVec.end(), [&frameDataIndexT1](const struct ss::ssfb::frameDataIndexT &item) {
+			if(frameDataIndexT1.states.size() != item.states.size())
+				return false;
+
+			int idx = 0;
+			for(auto &p : frameDataIndexT1.states) {
+				auto &i = item.states[idx];
+				if(p->index != i->index) return false;
+				if(p->flag1 != i->flag1) return false;
+				if(p->flag2 != i->flag2) return false;
+				if(p->data != i->data) return false;
+
+				idx++;
+			}
+			return true;
+		});
 		if (result == m_frameDataIndexVec.end()) {
 			// not found
 
+			std::vector<flatbuffers::Offset<ss::ssfb::partState>> vec;
+			for (auto i : dataPrimitive) {
+				auto item = createSharedPartState(i.index, i.flag1, i.flag2, i.data);
+				//auto item = ss::ssfb::CreatepartState(m_ssfbBuilder, i.index, i.flag1, i.flag2, data);
+				vec.push_back(item);
+			}
+
+			auto serializeVec = m_ssfbBuilder.CreateVector(vec);
 			// create ssfb vec
-			frameDataIndex = ss::ssfb::CreateframeDataIndex(m_ssfbBuilder, data);
+			frameDataIndex = ss::ssfb::CreateframeDataIndex(m_ssfbBuilder, serializeVec);
 
 			// cache ssfb vec
-			m_frameDataIndexVec.push_back(frameDataIndexT);
+			m_frameDataIndexVec.push_back(std::move(frameDataIndexT1));
 			m_ssfbFrameDataIndexVec.push_back(frameDataIndex);
 		} else {
 			auto idx = std::distance(m_frameDataIndexVec.begin(), result);
@@ -1083,6 +1142,7 @@ private:
 
 		return frameDataIndex;
 	}
+
 
 	void createAnimePacks()
 	{
@@ -1194,31 +1254,80 @@ private:
 				for(auto frameDataIndexArrayItem : frameDataIndexArrayVec) {
 					auto frameDataVec = frameDataIndexArrayItem->getChildren();
 
-					std::vector<uint32_t > ssfbFrameData2;
+					std::vector<struct ss::ssfb::partStateT> ssfbPartStateVec;
+
+					uint32_t flag1;
+					uint32_t flag2;
+					int outPartsCount = -1;
+					int16_t index;
+					std::string tagname;
+					std::vector<uint32_t > partStateData;
 					for(auto frameDataItem : frameDataVec) {
+						std::regex re("^part_[0-9].*_index$");
+						bool match = std::regex_match(frameDataItem->name, re);
+						if(match) {
+							if(outPartsCount != -1) {
+								index = GETS16(frameDataItem);
+								auto serializePartStateData = createSharedUint32Vec(partStateData);
+								struct ss::ssfb::partStateT item;
+								item.index = index;
+								item.flag1 = flag1;
+								item.flag2 = flag2;
+								item.data = partStateData;
+
+								ssfbPartStateVec.push_back(item);
+								outPartsCount++;
+							} else {
+								outPartsCount = 0;
+							}
+
+							tagname = "part_" + std::to_string(outPartsCount) + "_";
+							flag1 = 0;
+							flag2 = 0;
+							partStateData = {};
+							continue;
+						}
+
+						if(frameDataItem->name == tagname + "flag1") {
+							flag1 = GETU32(frameDataItem);
+							continue;
+						}
+
+						if(frameDataItem->name == tagname + "flag2") {
+							flag2 = GETU32(frameDataItem);
+							continue;
+						}
+
 						switch (frameDataItem->type) {
 							case Lump::DataType::S16:
-								ssfbFrameData2.push_back(GETS16(frameDataItem));
+								partStateData.push_back(GETS16(frameDataItem));
 								break;
 							case Lump::DataType::S32:
-								ssfbFrameData2.push_back(GETS32(frameDataItem));
+								partStateData.push_back(GETS32(frameDataItem));
 								break;
 							case Lump::DataType::FLOAT:
-								ssfbFrameData2.push_back(GETS32(frameDataItem));
+								partStateData.push_back(GETS32(frameDataItem));
 								break;
 							case Lump::DataType::COLOR:
 								{
 									auto rgba = GETU32(frameDataItem);
-									ssfbFrameData2.push_back((rgba & 0xffff0000) >> 16);
-									ssfbFrameData2.push_back(rgba & 0xffff);
+									partStateData.push_back((rgba & 0xffff0000) >> 16);
+									partStateData.push_back(rgba & 0xffff);
 								}
 								break;
 							default:
 								break;
 						}
 					}
-					auto serializeSsfbFrameData2 = createSharedUint32Vec(ssfbFrameData2);
-					auto item = createSharedFrameDataIndex(ssfbFrameData2, serializeSsfbFrameData2);
+
+					struct ss::ssfb::partStateT partStateTItem;
+					partStateTItem.index = index;
+					partStateTItem.flag1 = flag1;
+					partStateTItem.flag2 = flag2;
+					partStateTItem.data = partStateData;
+					ssfbPartStateVec.push_back(partStateTItem);
+
+					auto item = createSharedFrameDataIndex(ssfbPartStateVec);
 					ssfbFrameData.push_back(item);
 				}
 			}

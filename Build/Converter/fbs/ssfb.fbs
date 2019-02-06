@@ -243,8 +243,15 @@ table meshDataIndices {
     indices : [float];
 }
 
+table partState {
+    index: short;
+    flag1: uint;
+    flag2: uint;
+    data: [uint];
+}
+
 table frameDataIndex {
-    data : [uint];
+    states: [partState];
 }
 
 struct userDataInteger {
