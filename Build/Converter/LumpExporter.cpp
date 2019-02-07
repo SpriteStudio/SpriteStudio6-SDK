@@ -6,7 +6,6 @@
 #include "BinaryDataWriter.h"
 #include <assert.h>
 #include <cstdarg>
-#include <regex>
 #include "babel/babel.h"
 #include "picojson.h"
 #include "flatbuffers/flatbuffers.h"
@@ -1090,16 +1089,16 @@ private:
 		return partState;
 	}
 
-	flatbuffers::Offset<ss::ssfb::frameDataIndex> createSharedFrameDataIndex(const std::vector<ss::ssfb::partStateT> &dataPrimitive) {
+	flatbuffers::Offset<ss::ssfb::frameDataIndex> createSharedFrameDataIndex(const std::vector<ss::ssfb::partStateT> &statesPrimitive) {
 		flatbuffers::Offset<ss::ssfb::frameDataIndex> frameDataIndex;
 
 		struct ss::ssfb::frameDataIndexT frameDataIndexT1;
-		for(auto i : dataPrimitive) {
+		for(auto state : statesPrimitive) {
 			std::unique_ptr<ss::ssfb::partStateT> p(new ss::ssfb::partStateT());
-			p->index = i.index;
-			p->flag1 = i.flag1;
-			p->flag2 = i.flag2;
-			p->data = i.data;
+			p->index = state.index;
+			p->flag1 = state.flag1;
+			p->flag2 = state.flag2;
+			p->data = state.data;
 			frameDataIndexT1.states.push_back(std::move(p));
 		}
 		auto result = std::find_if(m_frameDataIndexVec.begin(), m_frameDataIndexVec.end(), [&frameDataIndexT1](const struct ss::ssfb::frameDataIndexT &item) {
@@ -1122,9 +1121,8 @@ private:
 			// not found
 
 			std::vector<flatbuffers::Offset<ss::ssfb::partState>> vec;
-			for (auto i : dataPrimitive) {
+			for (auto i : statesPrimitive) {
 				auto item = createSharedPartState(i.index, i.flag1, i.flag2, i.data);
-				//auto item = ss::ssfb::CreatepartState(m_ssfbBuilder, i.index, i.flag1, i.flag2, data);
 				vec.push_back(item);
 			}
 
@@ -1254,7 +1252,8 @@ private:
 				for(auto frameDataIndexArrayItem : frameDataIndexArrayVec) {
 					auto frameDataVec = frameDataIndexArrayItem->getChildren();
 
-					std::vector<struct ss::ssfb::partStateT> ssfbPartStateVec;
+					struct ss::ssfb::partStateT partStateTItem;
+					std::vector<struct ss::ssfb::partStateT> partStateTVec;
 
 					uint32_t flag1;
 					uint32_t flag2;
@@ -1263,18 +1262,15 @@ private:
 					std::string tagname;
 					std::vector<uint32_t > partStateData;
 					for(auto frameDataItem : frameDataVec) {
-						std::regex re("^part_[0-9].*_index$");
-						bool match = std::regex_match(frameDataItem->name, re);
-						if(match) {
+						if(frameDataItem->name.find("part_") != std::string::npos &&
+						   frameDataItem->name.find("_index") != std::string::npos) {
 							if(outPartsCount != -1) {
-								auto serializePartStateData = createSharedUint32Vec(partStateData);
-								struct ss::ssfb::partStateT item;
-								item.index = index;
-								item.flag1 = flag1;
-								item.flag2 = flag2;
-								item.data = partStateData;
+								partStateTItem.index = index;
+								partStateTItem.flag1 = flag1;
+								partStateTItem.flag2 = flag2;
+								partStateTItem.data = partStateData;
 
-								ssfbPartStateVec.push_back(item);
+								partStateTVec.push_back(partStateTItem);
 								outPartsCount++;
 							} else {
 								outPartsCount = 0;
@@ -1320,14 +1316,13 @@ private:
 						}
 					}
 
-					struct ss::ssfb::partStateT partStateTItem;
 					partStateTItem.index = index;
 					partStateTItem.flag1 = flag1;
 					partStateTItem.flag2 = flag2;
 					partStateTItem.data = partStateData;
-					ssfbPartStateVec.push_back(partStateTItem);
+					partStateTVec.push_back(partStateTItem);
 
-					auto item = createSharedFrameDataIndex(ssfbPartStateVec);
+					auto item = createSharedFrameDataIndex(partStateTVec);
 					ssfbFrameData.push_back(item);
 				}
 			}
