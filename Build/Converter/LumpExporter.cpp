@@ -1267,7 +1267,6 @@ private:
 						bool match = std::regex_match(frameDataItem->name, re);
 						if(match) {
 							if(outPartsCount != -1) {
-								index = GETS16(frameDataItem);
 								auto serializePartStateData = createSharedUint32Vec(partStateData);
 								struct ss::ssfb::partStateT item;
 								item.index = index;
@@ -1281,6 +1280,7 @@ private:
 								outPartsCount = 0;
 							}
 
+							index = GETS16(frameDataItem);
 							tagname = "part_" + std::to_string(outPartsCount) + "_";
 							flag1 = 0;
 							flag2 = 0;
