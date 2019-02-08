@@ -7,8 +7,8 @@ set TOOLSDIR=%BASEDIR%\Tools
 set QT_PREFIX=C:\Qt\5.11.1\msvc2017_64
 @echo on
 
-call %CURDIR%\build_converter_win.bat Release
-call %CURDIR%\build_convertergui_win.bat Release
+call %CURDIR%\build_converter_win.bat Release || exit /b 1
+call %CURDIR%\build_convertergui_win.bat Release || exit /b 1
 
 pushd %BASEDIR%
 rmdir /S/Q Ss6Converter
