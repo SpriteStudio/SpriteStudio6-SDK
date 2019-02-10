@@ -31,3 +31,6 @@ artifacts:
     name: Ss6Converter
   - path: ./Tools/viewer_sample.zip
     name: viewer_sample
+  - path: ./Tools/viewer_sample_2.zip
+    name: viewer_sample_2
+
