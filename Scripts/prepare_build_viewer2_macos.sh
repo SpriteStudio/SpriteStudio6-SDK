@@ -17,7 +17,7 @@ git clone https://github.com/McMartin/FRUT.git
 pushd FRUT
 mkdir build 
 pushd build
-cmake .. -DCMAKE_INSTALL_PREFIX=../prefix -DJUCE_ROOT=../../JUCE
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../prefix -DJUCE_ROOT=../../JUCE
 cmake --build . --target install
 popd > /dev/null # build
 popd > /dev/null # FRUT
