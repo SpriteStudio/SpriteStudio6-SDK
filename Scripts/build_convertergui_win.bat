@@ -55,5 +55,5 @@ if exist Makefile (
     nmake distclean
 )
 %QT_PREFIX%\bin\qmake "CONFIG+=%BUILD_TYPE%"
-nmake || exit /b 1
+nmake
 popd
