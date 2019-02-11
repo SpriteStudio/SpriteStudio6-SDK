@@ -18,7 +18,7 @@ pushd %BUILDDIR%\Viewer2
 rmdir /S /Q cmakeBuild
 mkdir cmakeBuild
 pushd cmakeBuild
-cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% ..
+cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
 cmake --build . --target ALL_BUILD -- /p:Configuration=%BUILD_TYPE% || exit /b 1
 popd
 popd
