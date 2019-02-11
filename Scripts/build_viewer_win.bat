@@ -15,7 +15,7 @@ pushd %BUILDDIR%\Viewer
 rmdir /S /Q build
 mkdir build
 pushd build
-cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
+cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% ..
 cmake --build . --target ALL_BUILD -- /p:Configuration=%BUILD_TYPE% || exit /b 1
 copy %DEPENDSDIR%\AntTweakBar\lib\AntTweakBar64.dll %BUILD_TYPE%\
 rem TODO: glew version
