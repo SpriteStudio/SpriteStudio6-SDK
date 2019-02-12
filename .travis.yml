@@ -1,38 +1,30 @@
 language: cpp
 matrix:
   include:
-    - os: osx
-      osx_image: xcode10
+  - os: osx
+    osx_image: xcode10
 cache:
   directories:
-    - $HOME/Library/Caches/Homebrew
+  - "$HOME/Library/Caches/Homebrew"
 before_install:
-  - git submodule update --init --recursive
-
+- git submodule update --init --recursive
 install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./Build/Depends/prepare_macos.sh ; fi
-
-before_script:
-
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./Build/Depends/prepare_macos.sh ; fi
+before_script: 
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./Scripts/release_macos.sh ; fi
- 
-after_script:
-
-after_success:
-
-after_failure:
-
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./Scripts/release_macos.sh ; fi
+after_script: 
+after_success: 
+after_failure: 
 deploy:
   provider: s3
-  access_key_id: "AKIAJI2NHFF6LNSLEEJA"
-  secret_access_key: 
-    secure : "gPB2slZ8HQ6PKP6hUAQiEBslWFH+x2Phz70nkW9p9bNHLHJW5wD6jRQKdEyFYMzhQutN5nguDF6IOtxF4NFZP8KqBuiTJkv7pJwLF2eHGM2PM3ilfTsiIzbVagy0IKS2eVG59djhC3+q2+stJ1UCj0K+gDxbUlfsLiSQA9OaQFo3XPC7IJ2MEtoT1MeRDMMMC3FhPhXDDZbeGtSyd5AUeZxo9F8s/DqpKoMPlV6vqM+cmGnYtKBqaAudYxaCZ2cqxYV7ID3Z9mXfOi0m7c8ZJtuE9T0kkdjtbS855jatqCH49cOVA9f4+J7RK3VF1CtJPRN75RRP2uE9cxyYEXCvGkiRuSAWkE8uub/FeTDqf0JnuX7oOw2TE603LoE6eRWGAkoZykx9tM1tdzpMsp7G/Rn+wfyyQCwvZHL3WNZ15FZBFiF0dLM0cXq0a/yDCOHwQkU2uqHnr3C1pv4wmPJWTu+WnYT5Z9e2mIArRmoy5JorwNXgPuBsLTLx0sxbB0bwWMoSozB5waoWyae8kmRqZAHbZXNoK7JvFmoDcxYh4yLQ19zENM9RYcHfFHhOOQLDbj0VvQHBldkibdQ+Srh0xQL2XA12j5/00QRIZKZG95xF5qSatbLcuPJlSv7XuEGG0bicBaYTc9vbqlLOG6jrAlteizDY9/N1j52b2p7C2wU="
-  bucket: "spritestudio-public"
+  access_key_id: AKIAJI2NHFF6LNSLEEJA
+  secret_access_key:
+    secure: I8Fg9L1vAsmd1T0wEJx1WNqYgY3cnpIzJXQbg82Mt0jd+WgjhEGrNpYtE/HxI2G0dnabpyaZ4hiZDpbZTg14x6GwLiwlb5QJJEK/DB9Iu33mxl9zqaf95ZWXfhdOwC8nKZii1QJL2IZtp7sZoRMbkPCQkO31kq4tjPCqB31ga45ATxlOLqVd/Uw65FBxwk+YfhfMZgxk8CjMDA0kI90UXJQWWLGJKC9DKdcX6MyHDC5g1V3M/HpAHsRQCBlazSZ/pcSNmJsQVqr+qGDMTgUwg7gdvuLrZ+NuxXOx9hVEGbRIWh4culdwbCE6Df/8O4I115zBfwOPWfaHMnRWCweVJTkFqEk/6MDhNF2mt62oypFhZY398myxpRDAo6ifZHzxlju25q3tOVWumyBNkqmRZyrw1/7iH79Z0ulKFpqYaUuD+CjJQZvVf0CsngivWpx9WTtrvHU6zsCD34wxc+deHD6q77YxRWGXHWSsTfw6NumvJlqONk4IHT/0v1ULzZQvW4VdoRahdQChw+jjYG0JokxMziWoNg+CtVMPKNKBnjVysaM6BkZWpzUVTBEL60ph8lrbzAwLePUfT9ZieeoudGs+uf9luUaibC/tqthR6mSeraK90E+/Lk0r24q9cn+JIki5YdOrfEtjLIpU/fMRjE31x0NNKT4oSufRC6KUZ2k=
+  bucket: spritestudio-public
   on:
     branch: master
   region: ap-northeast-1
   local_dir: Tools
   skip_cleanup: true
-
-
+    repo: SpriteStudio/SpriteStudio6-SDK
