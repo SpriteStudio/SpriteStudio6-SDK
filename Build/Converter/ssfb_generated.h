@@ -61,6 +61,9 @@ struct meshDataUVT;
 struct meshDataIndices;
 struct meshDataIndicesT;
 
+struct partState;
+struct partStateT;
+
 struct frameDataIndex;
 struct frameDataIndexT;
 
@@ -120,6 +123,7 @@ bool operator==(const CellMapT &lhs, const CellMapT &rhs);
 bool operator==(const CellT &lhs, const CellT &rhs);
 bool operator==(const meshDataUVT &lhs, const meshDataUVT &rhs);
 bool operator==(const meshDataIndicesT &lhs, const meshDataIndicesT &rhs);
+bool operator==(const partStateT &lhs, const partStateT &rhs);
 bool operator==(const frameDataIndexT &lhs, const frameDataIndexT &rhs);
 bool operator==(const userDataInteger &lhs, const userDataInteger &rhs);
 bool operator==(const userDataRect &lhs, const userDataRect &rhs);
@@ -2471,30 +2475,143 @@ inline flatbuffers::Offset<meshDataIndices> CreatemeshDataIndicesDirect(
 
 flatbuffers::Offset<meshDataIndices> CreatemeshDataIndices(flatbuffers::FlatBufferBuilder &_fbb, const meshDataIndicesT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
+struct partStateT : public flatbuffers::NativeTable {
+  typedef partState TableType;
+  int16_t index;
+  uint32_t flag1;
+  uint32_t flag2;
+  std::vector<uint32_t> data;
+  partStateT()
+      : index(0),
+        flag1(0),
+        flag2(0) {
+  }
+};
+
+inline bool operator==(const partStateT &lhs, const partStateT &rhs) {
+  return
+      (lhs.index == rhs.index) &&
+      (lhs.flag1 == rhs.flag1) &&
+      (lhs.flag2 == rhs.flag2) &&
+      (lhs.data == rhs.data);
+}
+
+struct partState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef partStateT NativeTableType;
+  enum {
+    VT_INDEX = 4,
+    VT_FLAG1 = 6,
+    VT_FLAG2 = 8,
+    VT_DATA = 10
+  };
+  int16_t index() const {
+    return GetField<int16_t>(VT_INDEX, 0);
+  }
+  uint32_t flag1() const {
+    return GetField<uint32_t>(VT_FLAG1, 0);
+  }
+  uint32_t flag2() const {
+    return GetField<uint32_t>(VT_FLAG2, 0);
+  }
+  const flatbuffers::Vector<uint32_t> *data() const {
+    return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_DATA);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int16_t>(verifier, VT_INDEX) &&
+           VerifyField<uint32_t>(verifier, VT_FLAG1) &&
+           VerifyField<uint32_t>(verifier, VT_FLAG2) &&
+           VerifyOffset(verifier, VT_DATA) &&
+           verifier.VerifyVector(data()) &&
+           verifier.EndTable();
+  }
+  partStateT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(partStateT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static flatbuffers::Offset<partState> Pack(flatbuffers::FlatBufferBuilder &_fbb, const partStateT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+};
+
+struct partStateBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_index(int16_t index) {
+    fbb_.AddElement<int16_t>(partState::VT_INDEX, index, 0);
+  }
+  void add_flag1(uint32_t flag1) {
+    fbb_.AddElement<uint32_t>(partState::VT_FLAG1, flag1, 0);
+  }
+  void add_flag2(uint32_t flag2) {
+    fbb_.AddElement<uint32_t>(partState::VT_FLAG2, flag2, 0);
+  }
+  void add_data(flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data) {
+    fbb_.AddOffset(partState::VT_DATA, data);
+  }
+  explicit partStateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  partStateBuilder &operator=(const partStateBuilder &);
+  flatbuffers::Offset<partState> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<partState>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<partState> CreatepartState(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    int16_t index = 0,
+    uint32_t flag1 = 0,
+    uint32_t flag2 = 0,
+    flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data = 0) {
+  partStateBuilder builder_(_fbb);
+  builder_.add_data(data);
+  builder_.add_flag2(flag2);
+  builder_.add_flag1(flag1);
+  builder_.add_index(index);
+  return builder_.Finish();
+}
+
+inline flatbuffers::Offset<partState> CreatepartStateDirect(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    int16_t index = 0,
+    uint32_t flag1 = 0,
+    uint32_t flag2 = 0,
+    const std::vector<uint32_t> *data = nullptr) {
+  return ss::ssfb::CreatepartState(
+      _fbb,
+      index,
+      flag1,
+      flag2,
+      data ? _fbb.CreateVector<uint32_t>(*data) : 0);
+}
+
+flatbuffers::Offset<partState> CreatepartState(flatbuffers::FlatBufferBuilder &_fbb, const partStateT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+
 struct frameDataIndexT : public flatbuffers::NativeTable {
   typedef frameDataIndex TableType;
-  std::vector<uint32_t> data;
+  std::vector<std::unique_ptr<partStateT>> states;
   frameDataIndexT() {
   }
 };
 
 inline bool operator==(const frameDataIndexT &lhs, const frameDataIndexT &rhs) {
   return
-      (lhs.data == rhs.data);
+      (lhs.states == rhs.states);
 }
 
 struct frameDataIndex FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef frameDataIndexT NativeTableType;
   enum {
-    VT_DATA = 4
+    VT_STATES = 4
   };
-  const flatbuffers::Vector<uint32_t> *data() const {
-    return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_DATA);
+  const flatbuffers::Vector<flatbuffers::Offset<partState>> *states() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<partState>> *>(VT_STATES);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyOffset(verifier, VT_DATA) &&
-           verifier.VerifyVector(data()) &&
+           VerifyOffset(verifier, VT_STATES) &&
+           verifier.VerifyVector(states()) &&
+           verifier.VerifyVectorOfTables(states()) &&
            verifier.EndTable();
   }
   frameDataIndexT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -2505,8 +2622,8 @@ struct frameDataIndex FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct frameDataIndexBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_data(flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data) {
-    fbb_.AddOffset(frameDataIndex::VT_DATA, data);
+  void add_states(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<partState>>> states) {
+    fbb_.AddOffset(frameDataIndex::VT_STATES, states);
   }
   explicit frameDataIndexBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -2522,18 +2639,18 @@ struct frameDataIndexBuilder {
 
 inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(
     flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data = 0) {
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<partState>>> states = 0) {
   frameDataIndexBuilder builder_(_fbb);
-  builder_.add_data(data);
+  builder_.add_states(states);
   return builder_.Finish();
 }
 
 inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndexDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<uint32_t> *data = nullptr) {
+    const std::vector<flatbuffers::Offset<partState>> *states = nullptr) {
   return ss::ssfb::CreateframeDataIndex(
       _fbb,
-      data ? _fbb.CreateVector<uint32_t>(*data) : 0);
+      states ? _fbb.CreateVector<flatbuffers::Offset<partState>>(*states) : 0);
 }
 
 flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(flatbuffers::FlatBufferBuilder &_fbb, const frameDataIndexT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -4486,6 +4603,41 @@ inline flatbuffers::Offset<meshDataIndices> CreatemeshDataIndices(flatbuffers::F
       _indices);
 }
 
+inline partStateT *partState::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = new partStateT();
+  UnPackTo(_o, _resolver);
+  return _o;
+}
+
+inline void partState::UnPackTo(partStateT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+  (void)_o;
+  (void)_resolver;
+  { auto _e = index(); _o->index = _e; };
+  { auto _e = flag1(); _o->flag1 = _e; };
+  { auto _e = flag2(); _o->flag2 = _e; };
+  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i] = _e->Get(_i); } } };
+}
+
+inline flatbuffers::Offset<partState> partState::Pack(flatbuffers::FlatBufferBuilder &_fbb, const partStateT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+  return CreatepartState(_fbb, _o, _rehasher);
+}
+
+inline flatbuffers::Offset<partState> CreatepartState(flatbuffers::FlatBufferBuilder &_fbb, const partStateT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+  (void)_rehasher;
+  (void)_o;
+  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const partStateT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _index = _o->index;
+  auto _flag1 = _o->flag1;
+  auto _flag2 = _o->flag2;
+  auto _data = _o->data.size() ? _fbb.CreateVector(_o->data) : 0;
+  return ss::ssfb::CreatepartState(
+      _fbb,
+      _index,
+      _flag1,
+      _flag2,
+      _data);
+}
+
 inline frameDataIndexT *frameDataIndex::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   auto _o = new frameDataIndexT();
   UnPackTo(_o, _resolver);
@@ -4495,7 +4647,7 @@ inline frameDataIndexT *frameDataIndex::UnPack(const flatbuffers::resolver_funct
 inline void frameDataIndex::UnPackTo(frameDataIndexT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i] = _e->Get(_i); } } };
+  { auto _e = states(); if (_e) { _o->states.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->states[_i] = std::unique_ptr<partStateT>(_e->Get(_i)->UnPack(_resolver)); } } };
 }
 
 inline flatbuffers::Offset<frameDataIndex> frameDataIndex::Pack(flatbuffers::FlatBufferBuilder &_fbb, const frameDataIndexT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -4506,10 +4658,10 @@ inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(flatbuffers::Fla
   (void)_rehasher;
   (void)_o;
   struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const frameDataIndexT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
-  auto _data = _o->data.size() ? _fbb.CreateVector(_o->data) : 0;
+  auto _states = _o->states.size() ? _fbb.CreateVector<flatbuffers::Offset<partState>> (_o->states.size(), [](size_t i, _VectorArgs *__va) { return CreatepartState(*__va->__fbb, __va->__o->states[i].get(), __va->__rehasher); }, &_va ) : 0;
   return ss::ssfb::CreateframeDataIndex(
       _fbb,
-      _data);
+      _states);
 }
 
 inline userDataStringT *userDataString::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
