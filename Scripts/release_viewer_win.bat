@@ -7,13 +7,13 @@ set DEPENDDIR=%BUILDDIR%\Depends
 set TOOLSDIR=%BASEDIR%\Tools
 @echo on
 
-call %CURDIR%\build_viewer_win.bat Release
+call %CURDIR%\build_viewer_win.bat Release || exit /b 1
 
 pushd %BASEDIR%
-rmdir /S/Q viewer_sample
+rmdir /S /Q viewer_sample
 mkdir viewer_sample
 copy %BUILDDIR%\Viewer\build\Release\* viewer_sample\
 zip -r viewer_sample.zip viewer_sample
-move viewer_sample.zip %TOOLSDIR%\
-rmdir /S/Q viewer_sample
+move /y viewer_sample.zip %TOOLSDIR%\
+rmdir /S /Q viewer_sample
 popd

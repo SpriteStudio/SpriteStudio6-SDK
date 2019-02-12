@@ -16,8 +16,8 @@ rem create Jucer2Reprojucer command
 pushd FRUT
 mkdir build 
 pushd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../prefix -DJUCE_ROOT=..\..\JUCE
-cmake --build . --target install
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../prefix -DJUCE_ROOT=..\..\JUCE || exit /b 1
+cmake --build . --target install || exit /b 1
 popd
 popd
 
