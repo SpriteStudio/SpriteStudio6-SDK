@@ -54,6 +54,6 @@ pushd "%BUILDDIR%\Ss6ConverterGUI\Ss6ConverterGUI"
 if exist Makefile (
     nmake distclean
 )
-%QT_PREFIX%\bin\qmake "CONFIG+=%BUILD_TYPE%" || exit /b 1
-nmake || exit /b 1
+%QT_PREFIX%\bin\qmake "CONFIG+=%BUILD_TYPE%"
+nmake
 popd
