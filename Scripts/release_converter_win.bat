@@ -11,7 +11,7 @@ if "%QT_PREFIX%" == "" (
 if exist "%QT_PREFIX%\bin\windeployqt.exe" (
     set WINDEPLOYQT="%QT_PREFIX%\bin\windeployqt.exe"
 ) else (
-    set WINDEPLOYQT="windeployqt"
+    set WINDEPLOYQT=windeployqt.exe
 )
 @echo on
 

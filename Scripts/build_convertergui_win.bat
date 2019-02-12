@@ -11,7 +11,7 @@ if "%QT_PREFIX%" == "" (
 if exist "%QT_PREFIX%\bin\qmake.exe" (
     set QMAKE="%QT_PREFIX%\bin\qmake.exe"
 ) else (
-    set QMAKE="qmake"
+    set QMAKE=qmake.exe
 )
 @echo on
 
