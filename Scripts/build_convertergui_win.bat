@@ -49,7 +49,7 @@ if exist "%VCDIR%\Enterprise" (
     set VCVARSALL="%VCDIR%\Community\VC\Auxiliary\Build\vcvarsall.bat"
 )
 
-call %VCVARSALL% x64 || exit /b 1
+call %VCVARSALL% x64
 pushd "%BUILDDIR%\Ss6ConverterGUI\Ss6ConverterGUI"
 if exist Makefile (
     nmake distclean
