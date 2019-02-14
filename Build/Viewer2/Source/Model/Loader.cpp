@@ -84,7 +84,8 @@ void AsyncProjectLoader::run()
 		p->changeState(p->stateLoading.get());
 
 		// 文字コード変換
-		std::string fileName = babel::auto_translate<>(projectName.toStdString());
+		//std::string fileName = babel::auto_translate<>(projectName.toStdString());
+        std::string fileName = projectName.toStdString();
 
 		SsProject* proj = ssloader_sspj::Load(fileName);
 

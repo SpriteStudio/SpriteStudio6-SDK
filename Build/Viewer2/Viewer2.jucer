@@ -179,6 +179,10 @@
           <FILE id="cJtg3a" name="sstypes.h" compile="0" resource="0" file="../../Common/Loader/sstypes.h"/>
           <FILE id="VFkBfI" name="ssvalue.cpp" compile="1" resource="0" file="../../Common/Loader/ssvalue.cpp"/>
           <FILE id="BHdNfT" name="ssvalue.h" compile="0" resource="0" file="../../Common/Loader/ssvalue.h"/>
+          <FILE id="BAPhHd" name="sscharconverter.cpp" compile="1" resource="0"
+                file="../../Common/Loader/sscharconverter.cpp"/>
+          <FILE id="bAjs71" name="sscharconverter.h" compile="0" resource="0"
+                file="../../Common/Loader/sscharconverter.h"/>
         </GROUP>
       </GROUP>
     </GROUP>
@@ -236,5 +240,6 @@
   <JUCEOPTIONS/>
   <LIVE_SETTINGS>
     <WINDOWS/>
+    <OSX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>

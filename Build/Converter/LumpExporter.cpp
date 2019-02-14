@@ -6,7 +6,7 @@
 #include "BinaryDataWriter.h"
 #include <assert.h>
 #include <cstdarg>
-#include "babel/babel.h"
+#include "sscharconverter.h"
 #include "picojson.h"
 #include "flatbuffers/flatbuffers.h"
 #include "flatbuffers/util.h"
@@ -35,7 +35,7 @@ static std::string format(const char* fmt, ...)
 static std::string encode(const std::string& sjisStr, StringEncoding encoding)
 {
 	switch (encoding) {
-		case UTF8: return babel::sjis_to_utf8(sjisStr.c_str());
+		case UTF8: return SsCharConverter::sjis_to_utf8(sjisStr);
 		case SJIS: return sjisStr;
 		default:
 			break;

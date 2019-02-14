@@ -8,7 +8,6 @@
 
 // TODO
 #include "ssloader.h"
-#include "babel/babel.h"
 #include "ssplayer_animedecode.h"
 #include "ssHelper.h"
 #include "sshTextureBMP.h"

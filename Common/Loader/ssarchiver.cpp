@@ -1,5 +1,6 @@
 ﻿#include "ssarchiver.h"
 #include "ssstring_uty.h"
+#include "sscharconverter.h"
 
 bool	SsXmlIArchiver::dc_attr( const char* name , SsString& member )
 {
@@ -61,7 +62,7 @@ bool	SsXmlIArchiver::dc( const char* name , SsString& member )
 		if ( e->GetText() )
 		{
 			//Winではsjisへ変換する
-			member = babel::utf8_to_sjis( e->GetText() );
+			member = SsCharConverter::utf8_to_sjis( e->GetText() );
 		}else{
 			member ="";
 		}
@@ -139,7 +140,7 @@ bool	SsXmlIArchiver::dc( const char* name , std::vector<SsString>& list )
 	{
 		const char* txt = e->GetText();
 		//Winではsjisへ変換する
-		std::string sjis_str = babel::utf8_to_sjis( txt );
+		std::string sjis_str = SsCharConverter::utf8_to_sjis( txt );
 
 		list.push_back( sjis_str );
 		e = e->NextSiblingElement();
@@ -327,6 +328,4 @@ bool	StringToIRect( const std::string& str , SsIRect& rect )
 
 void	SsArchiverInit()
 {
-	babel::init_babel();
-	
 }

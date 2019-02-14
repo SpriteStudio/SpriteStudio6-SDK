@@ -1,7 +1,7 @@
 ﻿#include "ssarchiver.h"
 #include "ssstring_uty.h"
 #include "ssvalue.h"
-
+#include "sscharconverter.h"
 
 
 //SsValue用のシリアライザ
@@ -38,7 +38,7 @@ void	SsValueSeriarizer( ISsXmlArchiver* ar , SsValue& v , const std::string key)
 				return ;
 			}
 			
-			std::string enc_str = babel::utf8_to_sjis(str);
+			std::string enc_str = SsCharConverter::utf8_to_sjis(str);
 			v = SsValueSeriarizer__MakeValue( enc_str.c_str() );
 		}else{
 			XMLElement* ce = child;
@@ -49,7 +49,7 @@ void	SsValueSeriarizer( ISsXmlArchiver* ar , SsValue& v , const std::string key)
 				const char* str = ce->GetText();
 				if ( str != 0 )
 				{
-					std::string enc_str = babel::utf8_to_sjis(str);
+					std::string enc_str = SsCharConverter::utf8_to_sjis(str);
 					hash[ce->Name()] = SsValueSeriarizer__MakeValue( enc_str.c_str() );
 					ce = (XMLElement*)ce->NextSibling();
 				}else{
