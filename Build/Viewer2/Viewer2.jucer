@@ -117,28 +117,6 @@
           <FILE id="mCrhMT" name="stb_image.h" compile="0" resource="0" file="../../Common/Helper/stb_image.h"/>
         </GROUP>
         <GROUP id="{656FD655-C189-73D9-8DDC-EE997AFB15AF}" name="Loader">
-          <GROUP id="{8CA7D934-1BA2-8B1B-A6D9-505F32BF24D9}" name="babel">
-            <FILE id="Iz5ucM" name="apple.csv" compile="0" resource="1" file="../../Common/Loader/babel/apple.csv"/>
-            <FILE id="WF2HIu" name="babel.cpp" compile="1" resource="0" file="../../Common/Loader/babel/babel.cpp"/>
-            <FILE id="HL0i2m" name="babel.h" compile="0" resource="0" file="../../Common/Loader/babel/babel.h"/>
-            <FILE id="cAgvpO" name="c932-uni.dat" compile="0" resource="1" file="../../Common/Loader/babel/c932-uni.dat"/>
-            <FILE id="FS6YNV" name="cp932.csv" compile="0" resource="1" file="../../Common/Loader/babel/cp932.csv"/>
-            <FILE id="T1qJYN" name="euc-scr.dat" compile="0" resource="1" file="../../Common/Loader/babel/euc-scr.dat"/>
-            <FILE id="dJf67Q" name="euc-sjis.dat" compile="0" resource="1" file="../../Common/Loader/babel/euc-sjis.dat"/>
-            <FILE id="cHmmpN" name="euc-uni.csv" compile="0" resource="1" file="../../Common/Loader/babel/euc-uni.csv"/>
-            <FILE id="X2DmT3" name="euc2-uni.dat" compile="0" resource="1" file="../../Common/Loader/babel/euc2-uni.dat"/>
-            <FILE id="QGB0SH" name="euc3-uni.dat" compile="0" resource="1" file="../../Common/Loader/babel/euc3-uni.dat"/>
-            <FILE id="Uh9nSB" name="scoremap.csv" compile="0" resource="1" file="../../Common/Loader/babel/scoremap.csv"/>
-            <FILE id="fhUHQR" name="sjis-euc.csv" compile="0" resource="1" file="../../Common/Loader/babel/sjis-euc.csv"/>
-            <FILE id="BmWjYr" name="sjis-euc.dat" compile="0" resource="1" file="../../Common/Loader/babel/sjis-euc.dat"/>
-            <FILE id="ZxHWEv" name="sjis-scr.dat" compile="0" resource="1" file="../../Common/Loader/babel/sjis-scr.dat"/>
-            <FILE id="RSpoPG" name="uni-c932.dat" compile="0" resource="1" file="../../Common/Loader/babel/uni-c932.dat"/>
-            <FILE id="qmI0TF" name="uni-euc.dat" compile="0" resource="1" file="../../Common/Loader/babel/uni-euc.dat"/>
-            <FILE id="ppnqaJ" name="uni-scr.dat" compile="0" resource="1" file="../../Common/Loader/babel/uni-scr.dat"/>
-            <FILE id="QfCR6N" name="uni-utc.dat" compile="0" resource="1" file="../../Common/Loader/babel/uni-utc.dat"/>
-            <FILE id="cwCSb1" name="utc-uni.dat" compile="0" resource="1" file="../../Common/Loader/babel/utc-uni.dat"/>
-            <FILE id="mWM6P0" name="utc.csv" compile="0" resource="1" file="../../Common/Loader/babel/utc.csv"/>
-          </GROUP>
           <GROUP id="{B85DCC7B-1842-C5D1-9DC8-F92CD30E79AA}" name="tinyxml2">
             <FILE id="CgfS4E" name="tinyxml2.cpp" compile="1" resource="0" file="../../Common/Loader/tinyxml2/tinyxml2.cpp"/>
             <FILE id="PzdR1X" name="tinyxml2.h" compile="0" resource="0" file="../../Common/Loader/tinyxml2/tinyxml2.h"/>
