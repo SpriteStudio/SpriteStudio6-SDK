@@ -32,15 +32,15 @@ static std::string format(const char* fmt, ...)
 	return s;
 }
 
-static std::string encode(const std::string& sjisStr, StringEncoding encoding)
+static std::string encode(const std::string& str, StringEncoding encoding)
 {
 	switch (encoding) {
-		case UTF8: return SsCharConverter::sjis_to_utf8(sjisStr);
-		case SJIS: return sjisStr;
+		case UTF8: return str;
+		case SJIS: return SsCharConverter::utf8_to_sjis(str); // TODO:
 		default:
 			break;
 	}
-	return sjisStr;
+	return str;
 }
 
 

@@ -4,7 +4,6 @@
 #include "View/DocumentView3D.h"
 #include "View/MainWindow.h"
 #include "View/GPL_v3.h"
-#include "sscharconverter.h"
 
 ViewerMainWindow::ViewerMainWindow()
 {
@@ -436,13 +435,14 @@ ValueTree ViewerMainWindow::createTree()
 	{
 		// アニメパック名
 		SsAnimePack* animepack = alist[i];
-		String animepackName(SsCharConverter::force_convert_to_utf8(animepack->name));
+
+		String animepackName(animepack->name);
 		ValueTree ssae = createTreeItem(animepackName, i, -1);
 		for (int j = 0; j < animepack->animeList.size(); j++)
 		{
 			SsAnimation* anime = animepack->animeList[j];
 			// アニメ名
-			String animeName(SsCharConverter::force_convert_to_utf8(anime->name));
+			String animeName(anime->name);
 			if (animeName == "Setup")
 			{
 				ssae.addChild(createTreeItem(animeName, i, j), 0, nullptr);
