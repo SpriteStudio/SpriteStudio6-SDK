@@ -7,12 +7,12 @@ cache:
   directories:
   - "$HOME/Library/Caches/Homebrew"
 before_install:
-- git submodule update --init --recursive
+	- git submodule update --init --recursive
 install:
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./Build/Depends/prepare_macos.sh ; fi
+	- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./Build/Depends/prepare_macos.sh ; fi
 before_script: 
 script:
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./Scripts/release_macos.sh ; fi
+	- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./Scripts/release_macos.sh ; fi
 after_script: 
 after_success: 
 after_failure: 
