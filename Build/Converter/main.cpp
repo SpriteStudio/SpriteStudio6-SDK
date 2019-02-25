@@ -1701,8 +1701,11 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_CSOURCE)
 		{
-			out.open((outPath + ".c").c_str(), std::ios_base::out);
-			LumpExporter::saveCSource(out, encoding, lump, "topLabel", creatorComment);
+
+			// out.open((outPath + ".c").c_str(), std::ios_base::out);
+			// LumpExporter::saveCSource(out, encoding, lump, "topLabel", creatorComment);
+			std::cerr << "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***"  << std::endl;
+
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{
