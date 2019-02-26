@@ -10,7 +10,6 @@
 #include "Model/Player.h"
 #include "View/DocumentView3D.h"
 #include "View/MainWindow.h"
-#include "babel/babel.h"
 
 MainContentComponent* MainContentComponent::myInst = nullptr;
 
@@ -29,9 +28,6 @@ MainContentComponent::MainContentComponent() : properties(getPropertyFileOptions
 	commandManager.registerAllCommandsForTarget(this);
 
 	setSize(1200, 800); //てきとう
-
-	// babelを初期化
-	babel::init_babel();
 
 	// モデルの作成
 	//Player::get();

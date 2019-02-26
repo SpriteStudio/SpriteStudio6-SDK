@@ -85,6 +85,11 @@ if(NOT (WIN32 OR APPLE))
     target_link_libraries(Ss6Converter ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter_Common/Helper/libssHelper.a)
 endif()
 
+if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+    target_link_libraries(Ss6Converter "-framework CoreFoundation")
+endif()
+
+
 enable_testing()
 add_test(NAME allAttributeV6 COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter ${CMAKE_CURRENT_SOURCE_DIR}/../TestData/allAttributeV6/allAttributeV6.sspj)
 add_test(NAME allPartsV6 COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter ${CMAKE_CURRENT_SOURCE_DIR}/../TestData/allPartsV6/allPartsV6.sspj)

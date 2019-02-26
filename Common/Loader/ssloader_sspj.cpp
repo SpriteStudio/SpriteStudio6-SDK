@@ -5,7 +5,7 @@
 
 #include "ssstring_uty.h"
 #include "../Helper/DebugPrint.h"
-
+#include "sscharconverter.h"
 
 
 
@@ -97,7 +97,7 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 
 		SsProject* proj = new SsProject();
 		proj->__Serialize( &ar );
-		std::string project_filepath = path2dir( filename );
+		std::string project_filepath = SsCharConverter::convert_path_string(path2dir( filename ));
 		proj->setFilepath( project_filepath );
 
 		if ( checkFileVersion(proj->version, SPRITESTUDIO6_SSPJVERSION) == false )
@@ -111,8 +111,7 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 		//アニメーションリストを元に読み込みます。
 		for ( size_t i = 0 ;i < proj->getAnimePackNum() ; i++ )
 		{
-
-			SsString ssaepath = proj->getAnimePackFilePath(i);
+			SsString ssaepath = SsCharConverter::convert_path_string(proj->getAnimePackFilePath(i));
 			SsAnimePack* anime = ssloader_ssae::Load( ssaepath );
 
 			if ( ( anime ) && ( checkFileVersion(anime->version, SPRITESTUDIO6_SSAEVERSION) == true ) ) 
@@ -132,7 +131,7 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 		//セルマップリストを元に読み込みます。
 		for ( size_t i = 0 ;i < proj->getCellMapNum() ; i++ )
 		{
-			SsString sscepath = proj->getCellMapFilePath(i);
+			SsString sscepath = SsCharConverter::convert_path_string(proj->getCellMapFilePath(i));
 
 			SsCellMap* cell = ssloader_ssce::Load( sscepath );
 			cell->loadFilepath = proj->getCelMapFileOriginalPath(i);
@@ -164,7 +163,7 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 
 		for ( size_t i = 0 ;i < proj->getEffectFileNum() ; i++ )
 		{
-			SsString sscepath = proj->getEffectFilePath(i);
+			SsString sscepath = SsCharConverter::convert_path_string(proj->getEffectFilePath(i));
 
 			SsEffectFile* efile = ssloader_ssee::Load( sscepath );
 			proj->effectfileList.push_back(efile);

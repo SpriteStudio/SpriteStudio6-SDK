@@ -1,5 +1,6 @@
 ﻿#include "ssarchiver.h"
 #include "ssstring_uty.h"
+#include "sscharconverter.h"
 
 bool	SsXmlIArchiver::dc_attr( const char* name , SsString& member )
 {
@@ -60,8 +61,7 @@ bool	SsXmlIArchiver::dc( const char* name , SsString& member )
 	{
 		if ( e->GetText() )
 		{
-			//Winではsjisへ変換する
-			member = babel::utf8_to_sjis( e->GetText() );
+			member = e->GetText();
 		}else{
 			member ="";
 		}
@@ -99,7 +99,6 @@ bool	SsXmlIArchiver::dc(const char* name, std::vector<SsPoint2>& list)
 		SsVector2 vec;
 		StringToPoint2(txt, vec);
 		list.push_back(vec);
-		//Winではsjisへ変換する
 		e = e->NextSiblingElement();
 	}
 
@@ -120,7 +119,6 @@ bool	SsXmlIArchiver::dc(const char* name, std::vector<SsTriangle>& list)
 		SsTriangle tri;
 		StringToTriangle(txt, tri);
 		list.push_back(tri);
-		//Winではsjisへ変換する
 		e = e->NextSiblingElement();
 	}
 
@@ -138,10 +136,9 @@ bool	SsXmlIArchiver::dc( const char* name , std::vector<SsString>& list )
 	while( e )
 	{
 		const char* txt = e->GetText();
-		//Winではsjisへ変換する
-		std::string sjis_str = babel::utf8_to_sjis( txt );
+		std::string txtStr = std::string(txt);
 
-		list.push_back( sjis_str );
+		list.push_back( txtStr );
 		e = e->NextSiblingElement();
 	}
 
@@ -327,6 +324,4 @@ bool	StringToIRect( const std::string& str , SsIRect& rect )
 
 void	SsArchiverInit()
 {
-	babel::init_babel();
-	
 }

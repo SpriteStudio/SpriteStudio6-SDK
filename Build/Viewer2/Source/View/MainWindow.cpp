@@ -435,13 +435,14 @@ ValueTree ViewerMainWindow::createTree()
 	{
 		// アニメパック名
 		SsAnimePack* animepack = alist[i];
-		String animepackName(babel::auto_translate<std::string>(animepack->name, babel::base_encoding::utf8));
+
+		String animepackName(animepack->name);
 		ValueTree ssae = createTreeItem(animepackName, i, -1);
 		for (int j = 0; j < animepack->animeList.size(); j++)
 		{
 			SsAnimation* anime = animepack->animeList[j];
 			// アニメ名
-			String animeName(babel::auto_translate<std::string>(anime->name, babel::base_encoding::utf8));
+			String animeName(anime->name);
 			if (animeName == "Setup")
 			{
 				ssae.addChild(createTreeItem(animeName, i, j), 0, nullptr);
