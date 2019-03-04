@@ -12,6 +12,7 @@ cache:
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
 
 install:
+  - set QT_PREFIX=C:\Qt\5.10.1\msvc2017_64
   - git submodule update --init --recursive
   - Build\Depends\prepare.bat
   - Build\Depends\allDownload.bat
@@ -31,3 +32,6 @@ artifacts:
     name: Ss6Converter
   - path: ./Tools/viewer_sample.zip
     name: viewer_sample
+  - path: ./Tools/viewer_sample_2.zip
+    name: viewer_sample_2
+

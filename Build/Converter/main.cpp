@@ -8,7 +8,6 @@
 
 // TODO
 #include "ssloader.h"
-#include "babel/babel.h"
 #include "ssplayer_animedecode.h"
 #include "ssHelper.h"
 #include "sshTextureBMP.h"
@@ -739,31 +738,25 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					//サイズ分のUV出力
 					Lump* meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
 					meshsDataUV->add(meshData);
-					std::vector<float> ssfbUV;
 
 					//メッシュのサイズを書き出す
 					if (part->type == SsPartType::mesh)
 					{
 						int meshsize = state->meshPart->ver_size;
 						meshData->add(Lump::s32Data((int)state->meshPart->isBind, "isBind"));	//バインドの有無
-						ssfbUV.push_back((float)(int)state->meshPart->isBind);
 						meshData->add(Lump::s32Data(meshsize, "meshsize"));	//サイズ
-						ssfbUV.push_back(meshsize);
 						int i;
 						for (i = 0; i < meshsize; i++)
 						{
 							float u = state->meshPart->uvs[i * 2 + 0];
 							float v = state->meshPart->uvs[i * 2 + 1];
 							meshData->add(Lump::floatData(u, "u"));
-							ssfbUV.push_back(u);
 							meshData->add(Lump::floatData(v, "v"));
-							ssfbUV.push_back(v);
 						}
 					}
 					else
 					{
 						meshData->add(Lump::s32Data(0, "isBind"));
-						ssfbUV.push_back(0);
 					}
 
 				}
@@ -783,14 +776,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					//サイズ分のUV出力
 					Lump* meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
 					meshsDataIndices->add(meshData);
-					std::vector<float> ssfbIndices;
 
 					//メッシュのサイズを書き出す
 					if (part->type == SsPartType::mesh)
 					{
 						int tri_size = state->meshPart->tri_size;
 						meshData->add(Lump::s32Data(tri_size, "tri_size"));	//サイズ
-						ssfbIndices.push_back(tri_size);
 						int i;
 						for (i = 0; i < tri_size; i++)
 						{
@@ -798,17 +789,13 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							int po2 = (int)state->meshPart->indices[i * 3 + 1];
 							int po3 = (int)state->meshPart->indices[i * 3 + 2];
 							meshData->add(Lump::s32Data(po1, "po1"));
-							ssfbIndices.push_back(po1);
 							meshData->add(Lump::s32Data(po2, "po2"));
-							ssfbIndices.push_back(po2);
 							meshData->add(Lump::s32Data(po3, "po3"));
-							ssfbIndices.push_back(po3);
 						}
 					}
 					else
 					{
 						meshData->add(Lump::s32Data(0, "tri_size"));
-						ssfbIndices.push_back(0);
 					}
 				}
 			}
@@ -840,8 +827,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				// パーツごとのデータを出力する
 				Lump* frameData = Lump::set("ss::ss_u16[]", true, "frameData");
 				frameDataIndexArray->add(frameData);
-				std::vector<float> ssfbFrameData2;
-				
+
 				Lump* frameFlag = Lump::s16Data(0, "frameFlag");
 //				frameData->add(frameFlag);
 
@@ -1037,146 +1023,118 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					std::string tagname = "part_" + std::to_string(outPartsCount) + "_";
 					outPartsCount++;
 					frameData->add(Lump::s16Data(state->index, tagname + "index"));
-					ssfbFrameData2.push_back(state->index);
 //					frameData->add(Lump::s16Data(0));				//32bitアライメント用ダミーデータ
 					frameData->add(Lump::s32Data(s_flags | p_flags, tagname + "flag1"));
 					c32.ui = s_flags | p_flags;
 					//intで出力すると上位ビットが立った場合に丸めが発生するので、floatで出力し、プレイヤーではbitを整数で扱う事になる
-					ssfbFrameData2.push_back(c32.f);	
 					frameData->add(Lump::s32Data(p_flags2, tagname + "flag2"));
 					c32.ui = p_flags2;
 					//intで出力すると上位ビットが立った場合に丸めが発生するので、floatで出力し、プレイヤーではbitを整数で扱う事になる
-					ssfbFrameData2.push_back(c32.f);
-					
+
 					if (p_flags & PART_FLAG_CELL_INDEX)
 					{
 						frameData->add(Lump::s16Data(cellIndex, tagname + "cellIndex"));
-						ssfbFrameData2.push_back(cellIndex);
 					}
 					if (p_flags & PART_FLAG_POSITION_X)
 					{
 						frameData->add(Lump::floatData(state->position.x, tagname + "position_x"));
-						ssfbFrameData2.push_back(state->position.x);
 					}
 					if (p_flags & PART_FLAG_POSITION_Y)
 					{
 						frameData->add(Lump::floatData(state->position.y, tagname + "position_y"));
-						ssfbFrameData2.push_back(state->position.y);
 					}
 					if (p_flags & PART_FLAG_POSITION_Z)
 					{
 						frameData->add(Lump::floatData(state->position.z, tagname + "position_z"));
-						ssfbFrameData2.push_back(state->position.z);
 					}
 
 					if (p_flags & PART_FLAG_PIVOT_X)
 					{
 						frameData->add(Lump::floatData(pivot.x, tagname + "pivot_x"));
-						ssfbFrameData2.push_back(pivot.x);
 					}
 					if (p_flags & PART_FLAG_PIVOT_Y)
 					{
 						frameData->add(Lump::floatData(pivot.y, tagname + "pivot_y"));
-						ssfbFrameData2.push_back(pivot.y);
 					}
 					if (p_flags & PART_FLAG_ROTATIONX)
 					{
 						frameData->add(Lump::floatData(state->rotation.x, tagname + "rotation_x"));	// degree
-						ssfbFrameData2.push_back(state->rotation.x);
 					}
 					if (p_flags & PART_FLAG_ROTATIONY)
 					{
 						frameData->add(Lump::floatData(state->rotation.y, tagname + "rotation_y"));	// degree
-						ssfbFrameData2.push_back(state->rotation.y);
 					}
 					if (p_flags & PART_FLAG_ROTATIONZ)
 					{
 						frameData->add(Lump::floatData(state->rotation.z, tagname + "rotation_z"));	// degree
-						ssfbFrameData2.push_back(state->rotation.z);
 					}
 					if (p_flags & PART_FLAG_SCALE_X)
 					{
 						frameData->add(Lump::floatData(state->scale.x, tagname + "scale_x"));
-						ssfbFrameData2.push_back(state->scale.x);
 					}
 					if (p_flags & PART_FLAG_SCALE_Y)
 					{
 						frameData->add(Lump::floatData(state->scale.y, tagname + "scale_y"));
-						ssfbFrameData2.push_back(state->scale.y);
 					}
 					if (p_flags & PART_FLAG_LOCALSCALE_X)
 					{
 						frameData->add(Lump::floatData(state->localscale.x, tagname + "localscale_x"));
-						ssfbFrameData2.push_back(state->localscale.x);
 					}
 					if (p_flags & PART_FLAG_LOCALSCALE_Y)
 					{
 						frameData->add(Lump::floatData(state->localscale.y, tagname + "localscale_y"));
-						ssfbFrameData2.push_back(state->localscale.y);
 					}
 					if (p_flags & PART_FLAG_OPACITY)
 					{
 						frameData->add(Lump::s16Data((int)(state->alpha * 255), tagname + "alpha"));
-						ssfbFrameData2.push_back((int)(state->alpha * 255));
 					}
 					if (p_flags & PART_FLAG_LOCALOPACITY)
 					{
 						frameData->add(Lump::s16Data((int)(state->localalpha * 255), tagname + "localalpha"));
-						ssfbFrameData2.push_back((int)(state->localalpha * 255));
 					}
 
 					if (p_flags & PART_FLAG_SIZE_X)
 					{
 						frameData->add(Lump::floatData(state->size.x, tagname + "size_x"));
-						ssfbFrameData2.push_back(state->size.x);
 					}
 					if (p_flags & PART_FLAG_SIZE_Y)
 					{
 						frameData->add(Lump::floatData(state->size.y, tagname + "size_y"));
-						ssfbFrameData2.push_back(state->size.y);
 					}
 
 					if (p_flags & PART_FLAG_U_MOVE)
 					{
 						frameData->add(Lump::floatData(state->uvTranslate.x, tagname + "uvTranslate.x"));
-						ssfbFrameData2.push_back(state->uvTranslate.x);
 					}
 					if (p_flags & PART_FLAG_V_MOVE)
 					{
 						frameData->add(Lump::floatData(state->uvTranslate.y, tagname + "uvTranslate.y"));
-						ssfbFrameData2.push_back(state->uvTranslate.y);
 					}
 					if (p_flags & PART_FLAG_UV_ROTATION)
 					{
 						frameData->add(Lump::floatData(state->uvRotation, tagname + "uvRotation"));
-						ssfbFrameData2.push_back(state->uvRotation);
 					}
 					if (p_flags & PART_FLAG_U_SCALE)
 					{
 						frameData->add(Lump::floatData(state->uvScale.x, tagname + "uvScale_x"));
-						ssfbFrameData2.push_back(state->uvScale.x);
 					}
 					if (p_flags & PART_FLAG_V_SCALE)
 					{
 						frameData->add(Lump::floatData(state->uvScale.y, tagname + "uvScale_y"));
-						ssfbFrameData2.push_back(state->uvScale.y);
 					}
 
 					if (p_flags & PART_FLAG_BOUNDINGRADIUS)
 					{
 						frameData->add(Lump::floatData(state->boundingRadius, tagname + "boundingRadius"));
-						ssfbFrameData2.push_back(state->boundingRadius);
 					}
 
 					if (p_flags & PART_FLAG_MASK)
 					{
 						frameData->add(Lump::s16Data(state->masklimen, tagname + "masklimen"));
-						ssfbFrameData2.push_back(state->masklimen);
 					}
 					if (p_flags & PART_FLAG_PRIORITY)
 					{
 						frameData->add(Lump::s16Data(state->prio, tagname + "prio"));
-						ssfbFrameData2.push_back(state->prio);
 					}
 
 					//インスタンス情報出力
@@ -1184,36 +1142,26 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					{
 						frameData->add(Lump::s32Data(state->instanceValue.curKeyframe, tagname + "instanceValue_curKeyframe"));
 						c32.i = state->instanceValue.curKeyframe;
-						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::s32Data(state->instanceValue.startFrame, tagname + "instanceValue_startFrame"));
 						c32.i = state->instanceValue.startFrame;
-						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::s32Data(state->instanceValue.endFrame, tagname + "instanceValue_endFrame"));
 						c32.i = state->instanceValue.endFrame;
-						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::s32Data(state->instanceValue.loopNum, tagname + "instanceValue_loopNum"));
 						c32.i = state->instanceValue.loopNum;
-						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::floatData(state->instanceValue.speed, tagname + "instanceValue_speed"));
-						ssfbFrameData2.push_back(state->instanceValue.speed);
 						frameData->add(Lump::s32Data(state->instanceValue.loopflag, tagname + "instanceValue_loopflag"));
 						c32.i = state->instanceValue.loopflag;
-						ssfbFrameData2.push_back(c32.f);
 					}
 					//エフェクト情報出力
 					if (p_flags & PART_FLAG_EFFECT_KEYFRAME)
 					{
 						frameData->add(Lump::s32Data(state->effectValue.curKeyframe, tagname + "effectValue_curKeyframe"));	//キー配置フレーム
 						c32.i = state->effectValue.curKeyframe;
-						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::s32Data(state->effectValue.startTime, tagname + "effectValue_startTime"));	//開始フレーム
 						c32.i = state->effectValue.startTime;
-						ssfbFrameData2.push_back(c32.f);
 						frameData->add(Lump::floatData(state->effectValue.speed, tagname + "effectValue_speed"));		//再生速度
-						ssfbFrameData2.push_back(state->effectValue.speed);
 						frameData->add(Lump::s32Data(state->effectValue.loopflag, tagname + "effectValue_loopflag"));		//独立動作
 						c32.i = state->effectValue.loopflag;
-						ssfbFrameData2.push_back(c32.f);
 					}
 
 
@@ -1222,8 +1170,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					{
 						// どの頂点のオフセット値が格納されているかのフラグ
 						frameData->add(Lump::s16Data(vt_flags));
-						ssfbFrameData2.push_back(vt_flags);
-						
+
 						// 各頂点のオフセット値
 						for (int vtxNo = 0; vtxNo < 4; vtxNo++)
 						{
@@ -1235,16 +1182,12 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								{
 									//頂点変形の少数対応
 									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].x, tagname_x));
-									ssfbFrameData2.push_back(state->vertexValue.offsets[vtxNo].x);
 									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].y, tagname_y));
-									ssfbFrameData2.push_back(state->vertexValue.offsets[vtxNo].y);
 								}
 								else
 								{
 									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].x, tagname_x));
-									ssfbFrameData2.push_back((int)state->vertexValue.offsets[vtxNo].x);
 									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].y, tagname_y));
-									ssfbFrameData2.push_back((int)state->vertexValue.offsets[vtxNo].y);
 								}
 							}
 						}
@@ -1256,15 +1199,11 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 						// ブレンド方法と、単色もしくはどの頂点に対するカラー値が格納されているかをu16にまとめる
 						int typeAndFlags = (int)state->partsColorValue.blendType | (cb_flags << 8);
 						frameData->add(Lump::s16Data(typeAndFlags));
-						ssfbFrameData2.push_back(typeAndFlags);
-						
+
 						if (cb_flags & VERTEX_FLAG_ONE)
 						{
 							frameData->add(Lump::floatData(state->partsColorValue.color.rate, tagname + "partsColorValue_color_rate"));
-							ssfbFrameData2.push_back(state->partsColorValue.color.rate);
 							frameData->add(Lump::colorData(state->partsColorValue.color.rgba.toARGB(), tagname + "partsColorValue_color_rgba"));
-							ssfbFrameData2.push_back((state->partsColorValue.color.rgba.toARGB() & 0xffff0000) >> 16);
-							ssfbFrameData2.push_back(state->partsColorValue.color.rgba.toARGB() & 0xffff);
 						}
 						else
 						{
@@ -1275,10 +1214,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								if (cb_flags & (1 << vtxNo))
 								{
 									frameData->add(Lump::floatData(state->partsColorValue.colors[vtxNo].rate, tagname_rate));
-									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rate);
 									frameData->add(Lump::colorData(state->partsColorValue.colors[vtxNo].rgba.toARGB(), tagname_rgba));
-									ssfbFrameData2.push_back((state->partsColorValue.colors[vtxNo].rgba.toARGB() & 0xffff0000) >> 16);
-									ssfbFrameData2.push_back(state->partsColorValue.colors[vtxNo].rgba.toARGB() & 0xffff);
 								}
 							}
 						}
@@ -1299,11 +1235,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 							float mesh_y = state->meshPart->draw_vertices[i * 3 + 1];
 							float mesh_z = state->meshPart->draw_vertices[i * 3 + 2];
 							frameData->add(Lump::floatData(mesh_x, tagname_mesh_x));		//x
-							ssfbFrameData2.push_back(mesh_x);
 							frameData->add(Lump::floatData(mesh_y, tagname_mesh_y));		//y
-							ssfbFrameData2.push_back(mesh_y);
 							frameData->add(Lump::floatData(mesh_z, tagname_mesh_z));		//z
-							ssfbFrameData2.push_back(mesh_z);
 						}
 					}
 				}
@@ -1767,8 +1700,11 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_CSOURCE)
 		{
-			out.open((outPath + ".c").c_str(), std::ios_base::out);
-			LumpExporter::saveCSource(out, encoding, lump, "topLabel", creatorComment);
+
+			// out.open((outPath + ".c").c_str(), std::ios_base::out);
+			// LumpExporter::saveCSource(out, encoding, lump, "topLabel", creatorComment);
+			std::cerr << "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***"  << std::endl;
+
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{

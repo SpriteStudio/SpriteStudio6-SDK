@@ -23,7 +23,8 @@ set FLATC="%BUILDDIR%\Converter\flatbuffers\%BUILD_TYPE%\flatc.exe"
 popd
 
 rem generate ssfb code
-%FLATC% -c fbs\ssfb.fbs
+%FLATC% -c fbs\ssfb.fbs --gen-compare --gen-object-api
 %FLATC% -s fbs\ssfb.fbs
+%FLATC% -T fbs\ssfb.fbs --no-fb-import
 
 popd
