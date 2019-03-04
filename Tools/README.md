@@ -1,21 +1,2 @@
-### OPTPiX SpriteStudio 6 SDK Tools
-
-SpriteStudio 6 で作成したデータを利用するためのルーツが含まれています。
-
-- Ss6Converter.zip
-  - sspjからssbpを作成するWindows用コンバータです。
-
-- Ss6Converter_Mac.zip
-  - sspjからssbpを作成するMac用コンバータです。
-
-- viewer_sample.zip
-  - SDKを利用したsspjからアニメを再生するWindows版ビュワーです。
-
-- viewer_sample_Mac.zip
-  - SDKを利用したsspjからアニメを再生するMac版ビュワーです。
-
-- viewer_sample_2.zip
-  - SDKを利用したsspjからアニメを再生するWindows版ビュワーです。
-
-- viewer_sample_2_Mac.zip
-  - SDKを利用したsspjからアニメを再生するMac版ビュワーです。
+Tool binaries have been deleted on repository.
+If you require tool binaries, please reference to https://github.com/SpriteStudio/SpriteStudio6-SDK/releases .
