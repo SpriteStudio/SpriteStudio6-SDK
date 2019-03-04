@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "View/MainWindow.h"
 #include "Controller/MainComponent.h"
+#include "sscharconverter.h"
 
 AsyncAnimeLoader::AsyncAnimeLoader()
 	: ThreadWithProgressWindow("Loading...", true, false)
@@ -83,8 +84,7 @@ void AsyncProjectLoader::run()
 	{
 		p->changeState(p->stateLoading.get());
 
-		// 文字コード変換
-		std::string fileName = babel::auto_translate<>(projectName.toStdString());
+		std::string fileName = SsCharConverter::convert_path_string(projectName.toStdString());
 
 		SsProject* proj = ssloader_sspj::Load(fileName);
 

@@ -14,7 +14,6 @@
 #include "View/DocumentView3D.h"
 #include "View/MainWindow.h"
 #include "Loader.h"
-#include "babel/babel.h"
 
 Player*	Player::myInst = 0;
 Value	Player::State::packIndex;

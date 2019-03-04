@@ -2,7 +2,6 @@
 #define  __SSARCHIVER__
 
 #include "./tinyxml2/tinyxml2.h"
-#include "./babel/babel.h"
 #include "sstypes.h"
 #include <string>
 #include <vector>
