@@ -9,39 +9,8 @@
 namespace ss {
 namespace ssfb {
 
-struct EffectParticleInfiniteEmitEnabled;
-
-struct EffectParticleTurnToDirectionEnabled;
-
-struct EffectParticlePointGravity;
-
-struct EffectParticleElementTransSize;
-
-struct EffectParticleElementSize;
-
-struct EffectParticleElementAlphaFade;
-
-struct EffectParticleElementTransColor;
-
-struct EffectParticleElementInitColor;
-
-struct EffectParticleElementTangentialAcceleration;
-
-struct EffectParticleElementTransSpeed;
-
-struct EffectParticleElementRotationTrans;
-
-struct EffectParticleElementRotation;
-
-struct EffectParticleElementPosition;
-
-struct EffectParticleElementGravity;
-
-struct EffectParticleElementDelay;
-
-struct EffectParticleElementRndSeedChange;
-
-struct EffectParticleElementBasic;
+struct EffectNodeBehavior;
+struct EffectNodeBehaviorT;
 
 struct EffectNode;
 struct EffectNodeT;
@@ -100,23 +69,7 @@ struct AnimePackDataT;
 struct ProjectData;
 struct ProjectDataT;
 
-bool operator==(const EffectParticleInfiniteEmitEnabled &lhs, const EffectParticleInfiniteEmitEnabled &rhs);
-bool operator==(const EffectParticleTurnToDirectionEnabled &lhs, const EffectParticleTurnToDirectionEnabled &rhs);
-bool operator==(const EffectParticlePointGravity &lhs, const EffectParticlePointGravity &rhs);
-bool operator==(const EffectParticleElementTransSize &lhs, const EffectParticleElementTransSize &rhs);
-bool operator==(const EffectParticleElementSize &lhs, const EffectParticleElementSize &rhs);
-bool operator==(const EffectParticleElementAlphaFade &lhs, const EffectParticleElementAlphaFade &rhs);
-bool operator==(const EffectParticleElementTransColor &lhs, const EffectParticleElementTransColor &rhs);
-bool operator==(const EffectParticleElementInitColor &lhs, const EffectParticleElementInitColor &rhs);
-bool operator==(const EffectParticleElementTangentialAcceleration &lhs, const EffectParticleElementTangentialAcceleration &rhs);
-bool operator==(const EffectParticleElementTransSpeed &lhs, const EffectParticleElementTransSpeed &rhs);
-bool operator==(const EffectParticleElementRotationTrans &lhs, const EffectParticleElementRotationTrans &rhs);
-bool operator==(const EffectParticleElementRotation &lhs, const EffectParticleElementRotation &rhs);
-bool operator==(const EffectParticleElementPosition &lhs, const EffectParticleElementPosition &rhs);
-bool operator==(const EffectParticleElementGravity &lhs, const EffectParticleElementGravity &rhs);
-bool operator==(const EffectParticleElementDelay &lhs, const EffectParticleElementDelay &rhs);
-bool operator==(const EffectParticleElementRndSeedChange &lhs, const EffectParticleElementRndSeedChange &rhs);
-bool operator==(const EffectParticleElementBasic &lhs, const EffectParticleElementBasic &rhs);
+bool operator==(const EffectNodeBehaviorT &lhs, const EffectNodeBehaviorT &rhs);
 bool operator==(const EffectNodeT &lhs, const EffectNodeT &rhs);
 bool operator==(const EffectFileT &lhs, const EffectFileT &rhs);
 bool operator==(const CellMapT &lhs, const CellMapT &rhs);
@@ -388,406 +341,146 @@ inline const char *EnumNameVERTEX_FLAG(VERTEX_FLAG e) {
   return EnumNamesVERTEX_FLAG()[index];
 }
 
-enum EffectNodeBehavior {
-  EffectNodeBehavior_NONE = 0,
-  EffectNodeBehavior_EffectParticleElementBasic = 1,
-  EffectNodeBehavior_EffectParticleElementRndSeedChange = 2,
-  EffectNodeBehavior_EffectParticleElementDelay = 3,
-  EffectNodeBehavior_EffectParticleElementGravity = 4,
-  EffectNodeBehavior_EffectParticleElementPosition = 5,
-  EffectNodeBehavior_EffectParticleElementRotation = 6,
-  EffectNodeBehavior_EffectParticleElementRotationTrans = 7,
-  EffectNodeBehavior_EffectParticleElementTransSpeed = 8,
-  EffectNodeBehavior_EffectParticleElementTangentialAcceleration = 9,
-  EffectNodeBehavior_EffectParticleElementInitColor = 10,
-  EffectNodeBehavior_EffectParticleElementTransColor = 11,
-  EffectNodeBehavior_EffectParticleElementAlphaFade = 12,
-  EffectNodeBehavior_EffectParticleElementSize = 13,
-  EffectNodeBehavior_EffectParticleElementTransSize = 14,
-  EffectNodeBehavior_EffectParticlePointGravity = 15,
-  EffectNodeBehavior_EffectParticleTurnToDirectionEnabled = 16,
-  EffectNodeBehavior_EffectParticleInfiniteEmitEnabled = 17,
-  EffectNodeBehavior_MIN = EffectNodeBehavior_NONE,
-  EffectNodeBehavior_MAX = EffectNodeBehavior_EffectParticleInfiniteEmitEnabled
+enum EffectFunctionType {
+  EffectFunctionType_Basic = 0,
+  EffectFunctionType_RndSeedChange = 1,
+  EffectFunctionType_Delay = 2,
+  EffectFunctionType_Gravity = 3,
+  EffectFunctionType_Position = 4,
+  EffectFunctionType_Rotation = 5,
+  EffectFunctionType_TransRotation = 6,
+  EffectFunctionType_TransSpeed = 7,
+  EffectFunctionType_TangentialAcceleration = 8,
+  EffectFunctionType_InitColor = 9,
+  EffectFunctionType_TransColor = 10,
+  EffectFunctionType_AlphaFade = 11,
+  EffectFunctionType_Size = 12,
+  EffectFunctionType_TransSize = 13,
+  EffectFunctionType_PointGravity = 14,
+  EffectFunctionType_TurnToDirectionEnabled = 15,
+  EffectFunctionType_InfiniteEmitEnabled = 16,
+  EffectFunctionType_MIN = EffectFunctionType_Basic,
+  EffectFunctionType_MAX = EffectFunctionType_InfiniteEmitEnabled
 };
 
-inline const EffectNodeBehavior (&EnumValuesEffectNodeBehavior())[18] {
-  static const EffectNodeBehavior values[] = {
-    EffectNodeBehavior_NONE,
-    EffectNodeBehavior_EffectParticleElementBasic,
-    EffectNodeBehavior_EffectParticleElementRndSeedChange,
-    EffectNodeBehavior_EffectParticleElementDelay,
-    EffectNodeBehavior_EffectParticleElementGravity,
-    EffectNodeBehavior_EffectParticleElementPosition,
-    EffectNodeBehavior_EffectParticleElementRotation,
-    EffectNodeBehavior_EffectParticleElementRotationTrans,
-    EffectNodeBehavior_EffectParticleElementTransSpeed,
-    EffectNodeBehavior_EffectParticleElementTangentialAcceleration,
-    EffectNodeBehavior_EffectParticleElementInitColor,
-    EffectNodeBehavior_EffectParticleElementTransColor,
-    EffectNodeBehavior_EffectParticleElementAlphaFade,
-    EffectNodeBehavior_EffectParticleElementSize,
-    EffectNodeBehavior_EffectParticleElementTransSize,
-    EffectNodeBehavior_EffectParticlePointGravity,
-    EffectNodeBehavior_EffectParticleTurnToDirectionEnabled,
-    EffectNodeBehavior_EffectParticleInfiniteEmitEnabled
+inline const EffectFunctionType (&EnumValuesEffectFunctionType())[17] {
+  static const EffectFunctionType values[] = {
+    EffectFunctionType_Basic,
+    EffectFunctionType_RndSeedChange,
+    EffectFunctionType_Delay,
+    EffectFunctionType_Gravity,
+    EffectFunctionType_Position,
+    EffectFunctionType_Rotation,
+    EffectFunctionType_TransRotation,
+    EffectFunctionType_TransSpeed,
+    EffectFunctionType_TangentialAcceleration,
+    EffectFunctionType_InitColor,
+    EffectFunctionType_TransColor,
+    EffectFunctionType_AlphaFade,
+    EffectFunctionType_Size,
+    EffectFunctionType_TransSize,
+    EffectFunctionType_PointGravity,
+    EffectFunctionType_TurnToDirectionEnabled,
+    EffectFunctionType_InfiniteEmitEnabled
   };
   return values;
 }
 
-inline const char * const *EnumNamesEffectNodeBehavior() {
+inline const char * const *EnumNamesEffectFunctionType() {
   static const char * const names[] = {
-    "NONE",
-    "EffectParticleElementBasic",
-    "EffectParticleElementRndSeedChange",
-    "EffectParticleElementDelay",
-    "EffectParticleElementGravity",
-    "EffectParticleElementPosition",
-    "EffectParticleElementRotation",
-    "EffectParticleElementRotationTrans",
-    "EffectParticleElementTransSpeed",
-    "EffectParticleElementTangentialAcceleration",
-    "EffectParticleElementInitColor",
-    "EffectParticleElementTransColor",
-    "EffectParticleElementAlphaFade",
-    "EffectParticleElementSize",
-    "EffectParticleElementTransSize",
-    "EffectParticlePointGravity",
-    "EffectParticleTurnToDirectionEnabled",
-    "EffectParticleInfiniteEmitEnabled",
+    "Basic",
+    "RndSeedChange",
+    "Delay",
+    "Gravity",
+    "Position",
+    "Rotation",
+    "TransRotation",
+    "TransSpeed",
+    "TangentialAcceleration",
+    "InitColor",
+    "TransColor",
+    "AlphaFade",
+    "Size",
+    "TransSize",
+    "PointGravity",
+    "TurnToDirectionEnabled",
+    "InfiniteEmitEnabled",
     nullptr
   };
   return names;
 }
 
-inline const char *EnumNameEffectNodeBehavior(EffectNodeBehavior e) {
+inline const char *EnumNameEffectFunctionType(EffectFunctionType e) {
   const size_t index = static_cast<int>(e);
-  return EnumNamesEffectNodeBehavior()[index];
+  return EnumNamesEffectFunctionType()[index];
 }
 
-template<typename T> struct EffectNodeBehaviorTraits {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_NONE;
+enum EffectNodeType {
+  EffectNodeType_Invalid = -1,
+  EffectNodeType_Root = 0,
+  EffectNodeType_Emmiter = 1,
+  EffectNodeType_Particle = 2,
+  EffectNodeType_MIN = EffectNodeType_Invalid,
+  EffectNodeType_MAX = EffectNodeType_Particle
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementBasic> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementBasic;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementRndSeedChange> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementRndSeedChange;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementDelay> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementDelay;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementGravity> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementGravity;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementPosition> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementPosition;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementRotation> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementRotation;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementRotationTrans> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementRotationTrans;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementTransSpeed> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTransSpeed;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementTangentialAcceleration> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTangentialAcceleration;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementInitColor> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementInitColor;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementTransColor> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTransColor;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementAlphaFade> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementAlphaFade;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementSize> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementSize;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementTransSize> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTransSize;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticlePointGravity> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticlePointGravity;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleTurnToDirectionEnabled> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleTurnToDirectionEnabled;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleInfiniteEmitEnabled> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleInfiniteEmitEnabled;
-};
-
-struct EffectNodeBehaviorUnion {
-  EffectNodeBehavior type;
-  void *value;
-
-  EffectNodeBehaviorUnion() : type(EffectNodeBehavior_NONE), value(nullptr) {}
-  EffectNodeBehaviorUnion(EffectNodeBehaviorUnion&& u) FLATBUFFERS_NOEXCEPT :
-    type(EffectNodeBehavior_NONE), value(nullptr)
-    { std::swap(type, u.type); std::swap(value, u.value); }
-  EffectNodeBehaviorUnion(const EffectNodeBehaviorUnion &) FLATBUFFERS_NOEXCEPT;
-  EffectNodeBehaviorUnion &operator=(const EffectNodeBehaviorUnion &u) FLATBUFFERS_NOEXCEPT
-    { EffectNodeBehaviorUnion t(u); std::swap(type, t.type); std::swap(value, t.value); return *this; }
-  EffectNodeBehaviorUnion &operator=(EffectNodeBehaviorUnion &&u) FLATBUFFERS_NOEXCEPT
-    { std::swap(type, u.type); std::swap(value, u.value); return *this; }
-  ~EffectNodeBehaviorUnion() { Reset(); }
-
-  void Reset();
-
-#ifndef FLATBUFFERS_CPP98_STL
-  template <typename T>
-  void Set(T&& val) {
-    Reset();
-    type = EffectNodeBehaviorTraits<typename T::TableType>::enum_value;
-    if (type != EffectNodeBehavior_NONE) {
-      value = new T(std::forward<T>(val));
-    }
-  }
-#endif  // FLATBUFFERS_CPP98_STL
-
-  static void *UnPack(const void *obj, EffectNodeBehavior type, const flatbuffers::resolver_function_t *resolver);
-  flatbuffers::Offset<void> Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher = nullptr) const;
-
-  EffectParticleElementBasic *AsEffectParticleElementBasic() {
-    return type == EffectNodeBehavior_EffectParticleElementBasic ?
-      reinterpret_cast<EffectParticleElementBasic *>(value) : nullptr;
-  }
-  const EffectParticleElementBasic *AsEffectParticleElementBasic() const {
-    return type == EffectNodeBehavior_EffectParticleElementBasic ?
-      reinterpret_cast<const EffectParticleElementBasic *>(value) : nullptr;
-  }
-  EffectParticleElementRndSeedChange *AsEffectParticleElementRndSeedChange() {
-    return type == EffectNodeBehavior_EffectParticleElementRndSeedChange ?
-      reinterpret_cast<EffectParticleElementRndSeedChange *>(value) : nullptr;
-  }
-  const EffectParticleElementRndSeedChange *AsEffectParticleElementRndSeedChange() const {
-    return type == EffectNodeBehavior_EffectParticleElementRndSeedChange ?
-      reinterpret_cast<const EffectParticleElementRndSeedChange *>(value) : nullptr;
-  }
-  EffectParticleElementDelay *AsEffectParticleElementDelay() {
-    return type == EffectNodeBehavior_EffectParticleElementDelay ?
-      reinterpret_cast<EffectParticleElementDelay *>(value) : nullptr;
-  }
-  const EffectParticleElementDelay *AsEffectParticleElementDelay() const {
-    return type == EffectNodeBehavior_EffectParticleElementDelay ?
-      reinterpret_cast<const EffectParticleElementDelay *>(value) : nullptr;
-  }
-  EffectParticleElementGravity *AsEffectParticleElementGravity() {
-    return type == EffectNodeBehavior_EffectParticleElementGravity ?
-      reinterpret_cast<EffectParticleElementGravity *>(value) : nullptr;
-  }
-  const EffectParticleElementGravity *AsEffectParticleElementGravity() const {
-    return type == EffectNodeBehavior_EffectParticleElementGravity ?
-      reinterpret_cast<const EffectParticleElementGravity *>(value) : nullptr;
-  }
-  EffectParticleElementPosition *AsEffectParticleElementPosition() {
-    return type == EffectNodeBehavior_EffectParticleElementPosition ?
-      reinterpret_cast<EffectParticleElementPosition *>(value) : nullptr;
-  }
-  const EffectParticleElementPosition *AsEffectParticleElementPosition() const {
-    return type == EffectNodeBehavior_EffectParticleElementPosition ?
-      reinterpret_cast<const EffectParticleElementPosition *>(value) : nullptr;
-  }
-  EffectParticleElementRotation *AsEffectParticleElementRotation() {
-    return type == EffectNodeBehavior_EffectParticleElementRotation ?
-      reinterpret_cast<EffectParticleElementRotation *>(value) : nullptr;
-  }
-  const EffectParticleElementRotation *AsEffectParticleElementRotation() const {
-    return type == EffectNodeBehavior_EffectParticleElementRotation ?
-      reinterpret_cast<const EffectParticleElementRotation *>(value) : nullptr;
-  }
-  EffectParticleElementRotationTrans *AsEffectParticleElementRotationTrans() {
-    return type == EffectNodeBehavior_EffectParticleElementRotationTrans ?
-      reinterpret_cast<EffectParticleElementRotationTrans *>(value) : nullptr;
-  }
-  const EffectParticleElementRotationTrans *AsEffectParticleElementRotationTrans() const {
-    return type == EffectNodeBehavior_EffectParticleElementRotationTrans ?
-      reinterpret_cast<const EffectParticleElementRotationTrans *>(value) : nullptr;
-  }
-  EffectParticleElementTransSpeed *AsEffectParticleElementTransSpeed() {
-    return type == EffectNodeBehavior_EffectParticleElementTransSpeed ?
-      reinterpret_cast<EffectParticleElementTransSpeed *>(value) : nullptr;
-  }
-  const EffectParticleElementTransSpeed *AsEffectParticleElementTransSpeed() const {
-    return type == EffectNodeBehavior_EffectParticleElementTransSpeed ?
-      reinterpret_cast<const EffectParticleElementTransSpeed *>(value) : nullptr;
-  }
-  EffectParticleElementTangentialAcceleration *AsEffectParticleElementTangentialAcceleration() {
-    return type == EffectNodeBehavior_EffectParticleElementTangentialAcceleration ?
-      reinterpret_cast<EffectParticleElementTangentialAcceleration *>(value) : nullptr;
-  }
-  const EffectParticleElementTangentialAcceleration *AsEffectParticleElementTangentialAcceleration() const {
-    return type == EffectNodeBehavior_EffectParticleElementTangentialAcceleration ?
-      reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(value) : nullptr;
-  }
-  EffectParticleElementInitColor *AsEffectParticleElementInitColor() {
-    return type == EffectNodeBehavior_EffectParticleElementInitColor ?
-      reinterpret_cast<EffectParticleElementInitColor *>(value) : nullptr;
-  }
-  const EffectParticleElementInitColor *AsEffectParticleElementInitColor() const {
-    return type == EffectNodeBehavior_EffectParticleElementInitColor ?
-      reinterpret_cast<const EffectParticleElementInitColor *>(value) : nullptr;
-  }
-  EffectParticleElementTransColor *AsEffectParticleElementTransColor() {
-    return type == EffectNodeBehavior_EffectParticleElementTransColor ?
-      reinterpret_cast<EffectParticleElementTransColor *>(value) : nullptr;
-  }
-  const EffectParticleElementTransColor *AsEffectParticleElementTransColor() const {
-    return type == EffectNodeBehavior_EffectParticleElementTransColor ?
-      reinterpret_cast<const EffectParticleElementTransColor *>(value) : nullptr;
-  }
-  EffectParticleElementAlphaFade *AsEffectParticleElementAlphaFade() {
-    return type == EffectNodeBehavior_EffectParticleElementAlphaFade ?
-      reinterpret_cast<EffectParticleElementAlphaFade *>(value) : nullptr;
-  }
-  const EffectParticleElementAlphaFade *AsEffectParticleElementAlphaFade() const {
-    return type == EffectNodeBehavior_EffectParticleElementAlphaFade ?
-      reinterpret_cast<const EffectParticleElementAlphaFade *>(value) : nullptr;
-  }
-  EffectParticleElementSize *AsEffectParticleElementSize() {
-    return type == EffectNodeBehavior_EffectParticleElementSize ?
-      reinterpret_cast<EffectParticleElementSize *>(value) : nullptr;
-  }
-  const EffectParticleElementSize *AsEffectParticleElementSize() const {
-    return type == EffectNodeBehavior_EffectParticleElementSize ?
-      reinterpret_cast<const EffectParticleElementSize *>(value) : nullptr;
-  }
-  EffectParticleElementTransSize *AsEffectParticleElementTransSize() {
-    return type == EffectNodeBehavior_EffectParticleElementTransSize ?
-      reinterpret_cast<EffectParticleElementTransSize *>(value) : nullptr;
-  }
-  const EffectParticleElementTransSize *AsEffectParticleElementTransSize() const {
-    return type == EffectNodeBehavior_EffectParticleElementTransSize ?
-      reinterpret_cast<const EffectParticleElementTransSize *>(value) : nullptr;
-  }
-  EffectParticlePointGravity *AsEffectParticlePointGravity() {
-    return type == EffectNodeBehavior_EffectParticlePointGravity ?
-      reinterpret_cast<EffectParticlePointGravity *>(value) : nullptr;
-  }
-  const EffectParticlePointGravity *AsEffectParticlePointGravity() const {
-    return type == EffectNodeBehavior_EffectParticlePointGravity ?
-      reinterpret_cast<const EffectParticlePointGravity *>(value) : nullptr;
-  }
-  EffectParticleTurnToDirectionEnabled *AsEffectParticleTurnToDirectionEnabled() {
-    return type == EffectNodeBehavior_EffectParticleTurnToDirectionEnabled ?
-      reinterpret_cast<EffectParticleTurnToDirectionEnabled *>(value) : nullptr;
-  }
-  const EffectParticleTurnToDirectionEnabled *AsEffectParticleTurnToDirectionEnabled() const {
-    return type == EffectNodeBehavior_EffectParticleTurnToDirectionEnabled ?
-      reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(value) : nullptr;
-  }
-  EffectParticleInfiniteEmitEnabled *AsEffectParticleInfiniteEmitEnabled() {
-    return type == EffectNodeBehavior_EffectParticleInfiniteEmitEnabled ?
-      reinterpret_cast<EffectParticleInfiniteEmitEnabled *>(value) : nullptr;
-  }
-  const EffectParticleInfiniteEmitEnabled *AsEffectParticleInfiniteEmitEnabled() const {
-    return type == EffectNodeBehavior_EffectParticleInfiniteEmitEnabled ?
-      reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(value) : nullptr;
-  }
-};
-
-
-inline bool operator==(const EffectNodeBehaviorUnion &lhs, const EffectNodeBehaviorUnion &rhs) {
-  if (lhs.type != rhs.type) return false;
-  switch (lhs.type) {
-    case EffectNodeBehavior_NONE: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementBasic: {
-      return *(reinterpret_cast<const EffectParticleElementBasic *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementBasic *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      return *(reinterpret_cast<const EffectParticleElementRndSeedChange *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementRndSeedChange *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementDelay: {
-      return *(reinterpret_cast<const EffectParticleElementDelay *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementDelay *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementGravity: {
-      return *(reinterpret_cast<const EffectParticleElementGravity *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementGravity *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementPosition: {
-      return *(reinterpret_cast<const EffectParticleElementPosition *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementPosition *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementRotation: {
-      return *(reinterpret_cast<const EffectParticleElementRotation *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementRotation *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      return *(reinterpret_cast<const EffectParticleElementRotationTrans *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementRotationTrans *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      return *(reinterpret_cast<const EffectParticleElementTransSpeed *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementTransSpeed *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      return *(reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementInitColor: {
-      return *(reinterpret_cast<const EffectParticleElementInitColor *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementInitColor *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementTransColor: {
-      return *(reinterpret_cast<const EffectParticleElementTransColor *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementTransColor *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      return *(reinterpret_cast<const EffectParticleElementAlphaFade *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementAlphaFade *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementSize: {
-      return *(reinterpret_cast<const EffectParticleElementSize *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementSize *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSize: {
-      return *(reinterpret_cast<const EffectParticleElementTransSize *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementTransSize *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticlePointGravity: {
-      return *(reinterpret_cast<const EffectParticlePointGravity *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticlePointGravity *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      return *(reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      return *(reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(rhs.value));
-    }
-    default: {
-      return false;
-    }
-  }
+inline const EffectNodeType (&EnumValuesEffectNodeType())[4] {
+  static const EffectNodeType values[] = {
+    EffectNodeType_Invalid,
+    EffectNodeType_Root,
+    EffectNodeType_Emmiter,
+    EffectNodeType_Particle
+  };
+  return values;
 }
-bool VerifyEffectNodeBehavior(flatbuffers::Verifier &verifier, const void *obj, EffectNodeBehavior type);
-bool VerifyEffectNodeBehaviorVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
+
+inline const char * const *EnumNamesEffectNodeType() {
+  static const char * const names[] = {
+    "Invalid",
+    "Root",
+    "Emmiter",
+    "Particle",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameEffectNodeType(EffectNodeType e) {
+  const size_t index = static_cast<int>(e) - static_cast<int>(EffectNodeType_Invalid);
+  return EnumNamesEffectNodeType()[index];
+}
+
+enum RenderBlendType {
+  RenderBlendType_Invalid = -1,
+  RenderBlendType_Mix = 0,
+  RenderBlendType_Add = 1,
+  RenderBlendType_MIN = RenderBlendType_Invalid,
+  RenderBlendType_MAX = RenderBlendType_Add
+};
+
+inline const RenderBlendType (&EnumValuesRenderBlendType())[3] {
+  static const RenderBlendType values[] = {
+    RenderBlendType_Invalid,
+    RenderBlendType_Mix,
+    RenderBlendType_Add
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesRenderBlendType() {
+  static const char * const names[] = {
+    "Invalid",
+    "Mix",
+    "Add",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameRenderBlendType(RenderBlendType e) {
+  const size_t index = static_cast<int>(e) - static_cast<int>(RenderBlendType_Invalid);
+  return EnumNamesRenderBlendType()[index];
+}
 
 enum userDataValue {
   userDataValue_NONE = 0,
@@ -943,596 +636,6 @@ inline bool operator==(const userDataValueUnion &lhs, const userDataValueUnion &
 bool VerifyuserDataValue(flatbuffers::Verifier &verifier, const void *obj, userDataValue type);
 bool VerifyuserDataValueVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
 
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleInfiniteEmitEnabled FLATBUFFERS_FINAL_CLASS {
- private:
-  int32_t flag_;
-
- public:
-  EffectParticleInfiniteEmitEnabled() {
-    memset(this, 0, sizeof(EffectParticleInfiniteEmitEnabled));
-  }
-  EffectParticleInfiniteEmitEnabled(int32_t _flag)
-      : flag_(flatbuffers::EndianScalar(_flag)) {
-  }
-  int32_t flag() const {
-    return flatbuffers::EndianScalar(flag_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleInfiniteEmitEnabled, 4);
-
-inline bool operator==(const EffectParticleInfiniteEmitEnabled &lhs, const EffectParticleInfiniteEmitEnabled &rhs) {
-  return
-      (lhs.flag() == rhs.flag());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleTurnToDirectionEnabled FLATBUFFERS_FINAL_CLASS {
- private:
-  float Rotation_;
-
- public:
-  EffectParticleTurnToDirectionEnabled() {
-    memset(this, 0, sizeof(EffectParticleTurnToDirectionEnabled));
-  }
-  EffectParticleTurnToDirectionEnabled(float _Rotation)
-      : Rotation_(flatbuffers::EndianScalar(_Rotation)) {
-  }
-  float Rotation() const {
-    return flatbuffers::EndianScalar(Rotation_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleTurnToDirectionEnabled, 4);
-
-inline bool operator==(const EffectParticleTurnToDirectionEnabled &lhs, const EffectParticleTurnToDirectionEnabled &rhs) {
-  return
-      (lhs.Rotation() == rhs.Rotation());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticlePointGravity FLATBUFFERS_FINAL_CLASS {
- private:
-  float Position_x_;
-  float Position_y_;
-  float Power_;
-
- public:
-  EffectParticlePointGravity() {
-    memset(this, 0, sizeof(EffectParticlePointGravity));
-  }
-  EffectParticlePointGravity(float _Position_x, float _Position_y, float _Power)
-      : Position_x_(flatbuffers::EndianScalar(_Position_x)),
-        Position_y_(flatbuffers::EndianScalar(_Position_y)),
-        Power_(flatbuffers::EndianScalar(_Power)) {
-  }
-  float Position_x() const {
-    return flatbuffers::EndianScalar(Position_x_);
-  }
-  float Position_y() const {
-    return flatbuffers::EndianScalar(Position_y_);
-  }
-  float Power() const {
-    return flatbuffers::EndianScalar(Power_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticlePointGravity, 12);
-
-inline bool operator==(const EffectParticlePointGravity &lhs, const EffectParticlePointGravity &rhs) {
-  return
-      (lhs.Position_x() == rhs.Position_x()) &&
-      (lhs.Position_y() == rhs.Position_y()) &&
-      (lhs.Power() == rhs.Power());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransSize FLATBUFFERS_FINAL_CLASS {
- private:
-  float SizeXMinValue_;
-  float SizeXMaxValue_;
-  float SizeYMinValue_;
-  float SizeYMaxValue_;
-  float ScaleFactorMinValue_;
-  float ScaleFactorMaxValue_;
-
- public:
-  EffectParticleElementTransSize() {
-    memset(this, 0, sizeof(EffectParticleElementTransSize));
-  }
-  EffectParticleElementTransSize(float _SizeXMinValue, float _SizeXMaxValue, float _SizeYMinValue, float _SizeYMaxValue, float _ScaleFactorMinValue, float _ScaleFactorMaxValue)
-      : SizeXMinValue_(flatbuffers::EndianScalar(_SizeXMinValue)),
-        SizeXMaxValue_(flatbuffers::EndianScalar(_SizeXMaxValue)),
-        SizeYMinValue_(flatbuffers::EndianScalar(_SizeYMinValue)),
-        SizeYMaxValue_(flatbuffers::EndianScalar(_SizeYMaxValue)),
-        ScaleFactorMinValue_(flatbuffers::EndianScalar(_ScaleFactorMinValue)),
-        ScaleFactorMaxValue_(flatbuffers::EndianScalar(_ScaleFactorMaxValue)) {
-  }
-  float SizeXMinValue() const {
-    return flatbuffers::EndianScalar(SizeXMinValue_);
-  }
-  float SizeXMaxValue() const {
-    return flatbuffers::EndianScalar(SizeXMaxValue_);
-  }
-  float SizeYMinValue() const {
-    return flatbuffers::EndianScalar(SizeYMinValue_);
-  }
-  float SizeYMaxValue() const {
-    return flatbuffers::EndianScalar(SizeYMaxValue_);
-  }
-  float ScaleFactorMinValue() const {
-    return flatbuffers::EndianScalar(ScaleFactorMinValue_);
-  }
-  float ScaleFactorMaxValue() const {
-    return flatbuffers::EndianScalar(ScaleFactorMaxValue_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementTransSize, 24);
-
-inline bool operator==(const EffectParticleElementTransSize &lhs, const EffectParticleElementTransSize &rhs) {
-  return
-      (lhs.SizeXMinValue() == rhs.SizeXMinValue()) &&
-      (lhs.SizeXMaxValue() == rhs.SizeXMaxValue()) &&
-      (lhs.SizeYMinValue() == rhs.SizeYMinValue()) &&
-      (lhs.SizeYMaxValue() == rhs.SizeYMaxValue()) &&
-      (lhs.ScaleFactorMinValue() == rhs.ScaleFactorMinValue()) &&
-      (lhs.ScaleFactorMaxValue() == rhs.ScaleFactorMaxValue());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementSize FLATBUFFERS_FINAL_CLASS {
- private:
-  float SizeXMinValue_;
-  float SizeXMaxValue_;
-  float SizeYMinValue_;
-  float SizeYMaxValue_;
-  float ScaleFactorMinValue_;
-  float ScaleFactorMaxValue_;
-
- public:
-  EffectParticleElementSize() {
-    memset(this, 0, sizeof(EffectParticleElementSize));
-  }
-  EffectParticleElementSize(float _SizeXMinValue, float _SizeXMaxValue, float _SizeYMinValue, float _SizeYMaxValue, float _ScaleFactorMinValue, float _ScaleFactorMaxValue)
-      : SizeXMinValue_(flatbuffers::EndianScalar(_SizeXMinValue)),
-        SizeXMaxValue_(flatbuffers::EndianScalar(_SizeXMaxValue)),
-        SizeYMinValue_(flatbuffers::EndianScalar(_SizeYMinValue)),
-        SizeYMaxValue_(flatbuffers::EndianScalar(_SizeYMaxValue)),
-        ScaleFactorMinValue_(flatbuffers::EndianScalar(_ScaleFactorMinValue)),
-        ScaleFactorMaxValue_(flatbuffers::EndianScalar(_ScaleFactorMaxValue)) {
-  }
-  float SizeXMinValue() const {
-    return flatbuffers::EndianScalar(SizeXMinValue_);
-  }
-  float SizeXMaxValue() const {
-    return flatbuffers::EndianScalar(SizeXMaxValue_);
-  }
-  float SizeYMinValue() const {
-    return flatbuffers::EndianScalar(SizeYMinValue_);
-  }
-  float SizeYMaxValue() const {
-    return flatbuffers::EndianScalar(SizeYMaxValue_);
-  }
-  float ScaleFactorMinValue() const {
-    return flatbuffers::EndianScalar(ScaleFactorMinValue_);
-  }
-  float ScaleFactorMaxValue() const {
-    return flatbuffers::EndianScalar(ScaleFactorMaxValue_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementSize, 24);
-
-inline bool operator==(const EffectParticleElementSize &lhs, const EffectParticleElementSize &rhs) {
-  return
-      (lhs.SizeXMinValue() == rhs.SizeXMinValue()) &&
-      (lhs.SizeXMaxValue() == rhs.SizeXMaxValue()) &&
-      (lhs.SizeYMinValue() == rhs.SizeYMinValue()) &&
-      (lhs.SizeYMaxValue() == rhs.SizeYMaxValue()) &&
-      (lhs.ScaleFactorMinValue() == rhs.ScaleFactorMinValue()) &&
-      (lhs.ScaleFactorMaxValue() == rhs.ScaleFactorMaxValue());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementAlphaFade FLATBUFFERS_FINAL_CLASS {
- private:
-  float disprangeMinValue_;
-  float disprangeMaxValue_;
-
- public:
-  EffectParticleElementAlphaFade() {
-    memset(this, 0, sizeof(EffectParticleElementAlphaFade));
-  }
-  EffectParticleElementAlphaFade(float _disprangeMinValue, float _disprangeMaxValue)
-      : disprangeMinValue_(flatbuffers::EndianScalar(_disprangeMinValue)),
-        disprangeMaxValue_(flatbuffers::EndianScalar(_disprangeMaxValue)) {
-  }
-  float disprangeMinValue() const {
-    return flatbuffers::EndianScalar(disprangeMinValue_);
-  }
-  float disprangeMaxValue() const {
-    return flatbuffers::EndianScalar(disprangeMaxValue_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementAlphaFade, 8);
-
-inline bool operator==(const EffectParticleElementAlphaFade &lhs, const EffectParticleElementAlphaFade &rhs) {
-  return
-      (lhs.disprangeMinValue() == rhs.disprangeMinValue()) &&
-      (lhs.disprangeMaxValue() == rhs.disprangeMaxValue());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransColor FLATBUFFERS_FINAL_CLASS {
- private:
-  uint32_t ColorMinValue_;
-  uint32_t ColorMaxValue_;
-
- public:
-  EffectParticleElementTransColor() {
-    memset(this, 0, sizeof(EffectParticleElementTransColor));
-  }
-  EffectParticleElementTransColor(uint32_t _ColorMinValue, uint32_t _ColorMaxValue)
-      : ColorMinValue_(flatbuffers::EndianScalar(_ColorMinValue)),
-        ColorMaxValue_(flatbuffers::EndianScalar(_ColorMaxValue)) {
-  }
-  uint32_t ColorMinValue() const {
-    return flatbuffers::EndianScalar(ColorMinValue_);
-  }
-  uint32_t ColorMaxValue() const {
-    return flatbuffers::EndianScalar(ColorMaxValue_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementTransColor, 8);
-
-inline bool operator==(const EffectParticleElementTransColor &lhs, const EffectParticleElementTransColor &rhs) {
-  return
-      (lhs.ColorMinValue() == rhs.ColorMinValue()) &&
-      (lhs.ColorMaxValue() == rhs.ColorMaxValue());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementInitColor FLATBUFFERS_FINAL_CLASS {
- private:
-  uint32_t ColorMinValue_;
-  uint32_t ColorMaxValue_;
-
- public:
-  EffectParticleElementInitColor() {
-    memset(this, 0, sizeof(EffectParticleElementInitColor));
-  }
-  EffectParticleElementInitColor(uint32_t _ColorMinValue, uint32_t _ColorMaxValue)
-      : ColorMinValue_(flatbuffers::EndianScalar(_ColorMinValue)),
-        ColorMaxValue_(flatbuffers::EndianScalar(_ColorMaxValue)) {
-  }
-  uint32_t ColorMinValue() const {
-    return flatbuffers::EndianScalar(ColorMinValue_);
-  }
-  uint32_t ColorMaxValue() const {
-    return flatbuffers::EndianScalar(ColorMaxValue_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementInitColor, 8);
-
-inline bool operator==(const EffectParticleElementInitColor &lhs, const EffectParticleElementInitColor &rhs) {
-  return
-      (lhs.ColorMinValue() == rhs.ColorMinValue()) &&
-      (lhs.ColorMaxValue() == rhs.ColorMaxValue());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTangentialAcceleration FLATBUFFERS_FINAL_CLASS {
- private:
-  float AccelerationMinValue_;
-  float AccelerationMaxValue_;
-
- public:
-  EffectParticleElementTangentialAcceleration() {
-    memset(this, 0, sizeof(EffectParticleElementTangentialAcceleration));
-  }
-  EffectParticleElementTangentialAcceleration(float _AccelerationMinValue, float _AccelerationMaxValue)
-      : AccelerationMinValue_(flatbuffers::EndianScalar(_AccelerationMinValue)),
-        AccelerationMaxValue_(flatbuffers::EndianScalar(_AccelerationMaxValue)) {
-  }
-  float AccelerationMinValue() const {
-    return flatbuffers::EndianScalar(AccelerationMinValue_);
-  }
-  float AccelerationMaxValue() const {
-    return flatbuffers::EndianScalar(AccelerationMaxValue_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementTangentialAcceleration, 8);
-
-inline bool operator==(const EffectParticleElementTangentialAcceleration &lhs, const EffectParticleElementTangentialAcceleration &rhs) {
-  return
-      (lhs.AccelerationMinValue() == rhs.AccelerationMinValue()) &&
-      (lhs.AccelerationMaxValue() == rhs.AccelerationMaxValue());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransSpeed FLATBUFFERS_FINAL_CLASS {
- private:
-  float SpeedMinValue_;
-  float SpeedMaxValue_;
-
- public:
-  EffectParticleElementTransSpeed() {
-    memset(this, 0, sizeof(EffectParticleElementTransSpeed));
-  }
-  EffectParticleElementTransSpeed(float _SpeedMinValue, float _SpeedMaxValue)
-      : SpeedMinValue_(flatbuffers::EndianScalar(_SpeedMinValue)),
-        SpeedMaxValue_(flatbuffers::EndianScalar(_SpeedMaxValue)) {
-  }
-  float SpeedMinValue() const {
-    return flatbuffers::EndianScalar(SpeedMinValue_);
-  }
-  float SpeedMaxValue() const {
-    return flatbuffers::EndianScalar(SpeedMaxValue_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementTransSpeed, 8);
-
-inline bool operator==(const EffectParticleElementTransSpeed &lhs, const EffectParticleElementTransSpeed &rhs) {
-  return
-      (lhs.SpeedMinValue() == rhs.SpeedMinValue()) &&
-      (lhs.SpeedMaxValue() == rhs.SpeedMaxValue());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRotationTrans FLATBUFFERS_FINAL_CLASS {
- private:
-  float RotationFactor_;
-  float EndLifeTimePer_;
-
- public:
-  EffectParticleElementRotationTrans() {
-    memset(this, 0, sizeof(EffectParticleElementRotationTrans));
-  }
-  EffectParticleElementRotationTrans(float _RotationFactor, float _EndLifeTimePer)
-      : RotationFactor_(flatbuffers::EndianScalar(_RotationFactor)),
-        EndLifeTimePer_(flatbuffers::EndianScalar(_EndLifeTimePer)) {
-  }
-  float RotationFactor() const {
-    return flatbuffers::EndianScalar(RotationFactor_);
-  }
-  float EndLifeTimePer() const {
-    return flatbuffers::EndianScalar(EndLifeTimePer_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementRotationTrans, 8);
-
-inline bool operator==(const EffectParticleElementRotationTrans &lhs, const EffectParticleElementRotationTrans &rhs) {
-  return
-      (lhs.RotationFactor() == rhs.RotationFactor()) &&
-      (lhs.EndLifeTimePer() == rhs.EndLifeTimePer());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRotation FLATBUFFERS_FINAL_CLASS {
- private:
-  float RotationMinValue_;
-  float RotationMaxValue_;
-  float RotationAddMinValue_;
-  float RotationAddMaxValue_;
-
- public:
-  EffectParticleElementRotation() {
-    memset(this, 0, sizeof(EffectParticleElementRotation));
-  }
-  EffectParticleElementRotation(float _RotationMinValue, float _RotationMaxValue, float _RotationAddMinValue, float _RotationAddMaxValue)
-      : RotationMinValue_(flatbuffers::EndianScalar(_RotationMinValue)),
-        RotationMaxValue_(flatbuffers::EndianScalar(_RotationMaxValue)),
-        RotationAddMinValue_(flatbuffers::EndianScalar(_RotationAddMinValue)),
-        RotationAddMaxValue_(flatbuffers::EndianScalar(_RotationAddMaxValue)) {
-  }
-  float RotationMinValue() const {
-    return flatbuffers::EndianScalar(RotationMinValue_);
-  }
-  float RotationMaxValue() const {
-    return flatbuffers::EndianScalar(RotationMaxValue_);
-  }
-  float RotationAddMinValue() const {
-    return flatbuffers::EndianScalar(RotationAddMinValue_);
-  }
-  float RotationAddMaxValue() const {
-    return flatbuffers::EndianScalar(RotationAddMaxValue_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementRotation, 16);
-
-inline bool operator==(const EffectParticleElementRotation &lhs, const EffectParticleElementRotation &rhs) {
-  return
-      (lhs.RotationMinValue() == rhs.RotationMinValue()) &&
-      (lhs.RotationMaxValue() == rhs.RotationMaxValue()) &&
-      (lhs.RotationAddMinValue() == rhs.RotationAddMinValue()) &&
-      (lhs.RotationAddMaxValue() == rhs.RotationAddMaxValue());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementPosition FLATBUFFERS_FINAL_CLASS {
- private:
-  float OffsetXMinValue_;
-  float OffsetXMaxValue_;
-  float OffsetYMinValue_;
-  float OffsetYMaxValue_;
-
- public:
-  EffectParticleElementPosition() {
-    memset(this, 0, sizeof(EffectParticleElementPosition));
-  }
-  EffectParticleElementPosition(float _OffsetXMinValue, float _OffsetXMaxValue, float _OffsetYMinValue, float _OffsetYMaxValue)
-      : OffsetXMinValue_(flatbuffers::EndianScalar(_OffsetXMinValue)),
-        OffsetXMaxValue_(flatbuffers::EndianScalar(_OffsetXMaxValue)),
-        OffsetYMinValue_(flatbuffers::EndianScalar(_OffsetYMinValue)),
-        OffsetYMaxValue_(flatbuffers::EndianScalar(_OffsetYMaxValue)) {
-  }
-  float OffsetXMinValue() const {
-    return flatbuffers::EndianScalar(OffsetXMinValue_);
-  }
-  float OffsetXMaxValue() const {
-    return flatbuffers::EndianScalar(OffsetXMaxValue_);
-  }
-  float OffsetYMinValue() const {
-    return flatbuffers::EndianScalar(OffsetYMinValue_);
-  }
-  float OffsetYMaxValue() const {
-    return flatbuffers::EndianScalar(OffsetYMaxValue_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementPosition, 16);
-
-inline bool operator==(const EffectParticleElementPosition &lhs, const EffectParticleElementPosition &rhs) {
-  return
-      (lhs.OffsetXMinValue() == rhs.OffsetXMinValue()) &&
-      (lhs.OffsetXMaxValue() == rhs.OffsetXMaxValue()) &&
-      (lhs.OffsetYMinValue() == rhs.OffsetYMinValue()) &&
-      (lhs.OffsetYMaxValue() == rhs.OffsetYMaxValue());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementGravity FLATBUFFERS_FINAL_CLASS {
- private:
-  float Gravity_x_;
-  float Gravity_y_;
-
- public:
-  EffectParticleElementGravity() {
-    memset(this, 0, sizeof(EffectParticleElementGravity));
-  }
-  EffectParticleElementGravity(float _Gravity_x, float _Gravity_y)
-      : Gravity_x_(flatbuffers::EndianScalar(_Gravity_x)),
-        Gravity_y_(flatbuffers::EndianScalar(_Gravity_y)) {
-  }
-  float Gravity_x() const {
-    return flatbuffers::EndianScalar(Gravity_x_);
-  }
-  float Gravity_y() const {
-    return flatbuffers::EndianScalar(Gravity_y_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementGravity, 8);
-
-inline bool operator==(const EffectParticleElementGravity &lhs, const EffectParticleElementGravity &rhs) {
-  return
-      (lhs.Gravity_x() == rhs.Gravity_x()) &&
-      (lhs.Gravity_y() == rhs.Gravity_y());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementDelay FLATBUFFERS_FINAL_CLASS {
- private:
-  int32_t DelayTime_;
-
- public:
-  EffectParticleElementDelay() {
-    memset(this, 0, sizeof(EffectParticleElementDelay));
-  }
-  EffectParticleElementDelay(int32_t _DelayTime)
-      : DelayTime_(flatbuffers::EndianScalar(_DelayTime)) {
-  }
-  int32_t DelayTime() const {
-    return flatbuffers::EndianScalar(DelayTime_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementDelay, 4);
-
-inline bool operator==(const EffectParticleElementDelay &lhs, const EffectParticleElementDelay &rhs) {
-  return
-      (lhs.DelayTime() == rhs.DelayTime());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRndSeedChange FLATBUFFERS_FINAL_CLASS {
- private:
-  int32_t Seed_;
-
- public:
-  EffectParticleElementRndSeedChange() {
-    memset(this, 0, sizeof(EffectParticleElementRndSeedChange));
-  }
-  EffectParticleElementRndSeedChange(int32_t _Seed)
-      : Seed_(flatbuffers::EndianScalar(_Seed)) {
-  }
-  int32_t Seed() const {
-    return flatbuffers::EndianScalar(Seed_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementRndSeedChange, 4);
-
-inline bool operator==(const EffectParticleElementRndSeedChange &lhs, const EffectParticleElementRndSeedChange &rhs) {
-  return
-      (lhs.Seed() == rhs.Seed());
-}
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementBasic FLATBUFFERS_FINAL_CLASS {
- private:
-  int32_t SsEffectFunctionType_;
-  int32_t priority_;
-  int32_t maximumParticle_;
-  int32_t attimeCreate_;
-  int32_t interval_;
-  int32_t lifetime_;
-  float speedMinValue_;
-  float speedMaxValue_;
-  int32_t lifespanMinValue_;
-  int32_t lifespanMaxValue_;
-  float angle_;
-  float angleVariance_;
-
- public:
-  EffectParticleElementBasic() {
-    memset(this, 0, sizeof(EffectParticleElementBasic));
-  }
-  EffectParticleElementBasic(int32_t _SsEffectFunctionType, int32_t _priority, int32_t _maximumParticle, int32_t _attimeCreate, int32_t _interval, int32_t _lifetime, float _speedMinValue, float _speedMaxValue, int32_t _lifespanMinValue, int32_t _lifespanMaxValue, float _angle, float _angleVariance)
-      : SsEffectFunctionType_(flatbuffers::EndianScalar(_SsEffectFunctionType)),
-        priority_(flatbuffers::EndianScalar(_priority)),
-        maximumParticle_(flatbuffers::EndianScalar(_maximumParticle)),
-        attimeCreate_(flatbuffers::EndianScalar(_attimeCreate)),
-        interval_(flatbuffers::EndianScalar(_interval)),
-        lifetime_(flatbuffers::EndianScalar(_lifetime)),
-        speedMinValue_(flatbuffers::EndianScalar(_speedMinValue)),
-        speedMaxValue_(flatbuffers::EndianScalar(_speedMaxValue)),
-        lifespanMinValue_(flatbuffers::EndianScalar(_lifespanMinValue)),
-        lifespanMaxValue_(flatbuffers::EndianScalar(_lifespanMaxValue)),
-        angle_(flatbuffers::EndianScalar(_angle)),
-        angleVariance_(flatbuffers::EndianScalar(_angleVariance)) {
-  }
-  int32_t SsEffectFunctionType() const {
-    return flatbuffers::EndianScalar(SsEffectFunctionType_);
-  }
-  int32_t priority() const {
-    return flatbuffers::EndianScalar(priority_);
-  }
-  int32_t maximumParticle() const {
-    return flatbuffers::EndianScalar(maximumParticle_);
-  }
-  int32_t attimeCreate() const {
-    return flatbuffers::EndianScalar(attimeCreate_);
-  }
-  int32_t interval() const {
-    return flatbuffers::EndianScalar(interval_);
-  }
-  int32_t lifetime() const {
-    return flatbuffers::EndianScalar(lifetime_);
-  }
-  float speedMinValue() const {
-    return flatbuffers::EndianScalar(speedMinValue_);
-  }
-  float speedMaxValue() const {
-    return flatbuffers::EndianScalar(speedMaxValue_);
-  }
-  int32_t lifespanMinValue() const {
-    return flatbuffers::EndianScalar(lifespanMinValue_);
-  }
-  int32_t lifespanMaxValue() const {
-    return flatbuffers::EndianScalar(lifespanMaxValue_);
-  }
-  float angle() const {
-    return flatbuffers::EndianScalar(angle_);
-  }
-  float angleVariance() const {
-    return flatbuffers::EndianScalar(angleVariance_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementBasic, 48);
-
-inline bool operator==(const EffectParticleElementBasic &lhs, const EffectParticleElementBasic &rhs) {
-  return
-      (lhs.SsEffectFunctionType() == rhs.SsEffectFunctionType()) &&
-      (lhs.priority() == rhs.priority()) &&
-      (lhs.maximumParticle() == rhs.maximumParticle()) &&
-      (lhs.attimeCreate() == rhs.attimeCreate()) &&
-      (lhs.interval() == rhs.interval()) &&
-      (lhs.lifetime() == rhs.lifetime()) &&
-      (lhs.speedMinValue() == rhs.speedMinValue()) &&
-      (lhs.speedMaxValue() == rhs.speedMaxValue()) &&
-      (lhs.lifespanMinValue() == rhs.lifespanMinValue()) &&
-      (lhs.lifespanMaxValue() == rhs.lifespanMaxValue()) &&
-      (lhs.angle() == rhs.angle()) &&
-      (lhs.angleVariance() == rhs.angleVariance());
-}
-
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) userDataInteger FLATBUFFERS_FINAL_CLASS {
  private:
   int32_t integer_;
@@ -1623,22 +726,102 @@ inline bool operator==(const userDataPoint &lhs, const userDataPoint &rhs) {
       (lhs.y() == rhs.y());
 }
 
+struct EffectNodeBehaviorT : public flatbuffers::NativeTable {
+  typedef EffectNodeBehavior TableType;
+  EffectFunctionType type;
+  std::vector<uint32_t> data;
+  EffectNodeBehaviorT()
+      : type(EffectFunctionType_Basic) {
+  }
+};
+
+inline bool operator==(const EffectNodeBehaviorT &lhs, const EffectNodeBehaviorT &rhs) {
+  return
+      (lhs.type == rhs.type) &&
+      (lhs.data == rhs.data);
+}
+
+struct EffectNodeBehavior FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef EffectNodeBehaviorT NativeTableType;
+  enum {
+    VT_TYPE = 4,
+    VT_DATA = 6
+  };
+  EffectFunctionType type() const {
+    return static_cast<EffectFunctionType>(GetField<int8_t>(VT_TYPE, 0));
+  }
+  const flatbuffers::Vector<uint32_t> *data() const {
+    return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_DATA);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int8_t>(verifier, VT_TYPE) &&
+           VerifyOffset(verifier, VT_DATA) &&
+           verifier.VerifyVector(data()) &&
+           verifier.EndTable();
+  }
+  EffectNodeBehaviorT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(EffectNodeBehaviorT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static flatbuffers::Offset<EffectNodeBehavior> Pack(flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeBehaviorT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+};
+
+struct EffectNodeBehaviorBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_type(EffectFunctionType type) {
+    fbb_.AddElement<int8_t>(EffectNodeBehavior::VT_TYPE, static_cast<int8_t>(type), 0);
+  }
+  void add_data(flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data) {
+    fbb_.AddOffset(EffectNodeBehavior::VT_DATA, data);
+  }
+  explicit EffectNodeBehaviorBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  EffectNodeBehaviorBuilder &operator=(const EffectNodeBehaviorBuilder &);
+  flatbuffers::Offset<EffectNodeBehavior> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<EffectNodeBehavior>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<EffectNodeBehavior> CreateEffectNodeBehavior(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    EffectFunctionType type = EffectFunctionType_Basic,
+    flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data = 0) {
+  EffectNodeBehaviorBuilder builder_(_fbb);
+  builder_.add_data(data);
+  builder_.add_type(type);
+  return builder_.Finish();
+}
+
+inline flatbuffers::Offset<EffectNodeBehavior> CreateEffectNodeBehaviorDirect(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    EffectFunctionType type = EffectFunctionType_Basic,
+    const std::vector<uint32_t> *data = nullptr) {
+  return ss::ssfb::CreateEffectNodeBehavior(
+      _fbb,
+      type,
+      data ? _fbb.CreateVector<uint32_t>(*data) : 0);
+}
+
+flatbuffers::Offset<EffectNodeBehavior> CreateEffectNodeBehavior(flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeBehaviorT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+
 struct EffectNodeT : public flatbuffers::NativeTable {
   typedef EffectNode TableType;
   int16_t arrayIndex;
   int16_t parentIndex;
-  int16_t type;
+  EffectNodeType type;
   int16_t cellIndex;
-  int16_t blendType;
-  int16_t numBehavior;
-  std::vector<EffectNodeBehaviorUnion> Behavior;
+  RenderBlendType blendType;
+  std::vector<std::unique_ptr<EffectNodeBehaviorT>> Behavior;
   EffectNodeT()
       : arrayIndex(0),
         parentIndex(0),
-        type(0),
+        type(EffectNodeType_Root),
         cellIndex(0),
-        blendType(0),
-        numBehavior(0) {
+        blendType(RenderBlendType_Mix) {
   }
 };
 
@@ -1649,7 +832,6 @@ inline bool operator==(const EffectNodeT &lhs, const EffectNodeT &rhs) {
       (lhs.type == rhs.type) &&
       (lhs.cellIndex == rhs.cellIndex) &&
       (lhs.blendType == rhs.blendType) &&
-      (lhs.numBehavior == rhs.numBehavior) &&
       (lhs.Behavior == rhs.Behavior);
 }
 
@@ -1661,9 +843,7 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_TYPE = 8,
     VT_CELLINDEX = 10,
     VT_BLENDTYPE = 12,
-    VT_NUMBEHAVIOR = 14,
-    VT_BEHAVIOR_TYPE = 16,
-    VT_BEHAVIOR = 18
+    VT_BEHAVIOR = 14
   };
   int16_t arrayIndex() const {
     return GetField<int16_t>(VT_ARRAYINDEX, 0);
@@ -1671,37 +851,28 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t parentIndex() const {
     return GetField<int16_t>(VT_PARENTINDEX, 0);
   }
-  int16_t type() const {
-    return GetField<int16_t>(VT_TYPE, 0);
+  EffectNodeType type() const {
+    return static_cast<EffectNodeType>(GetField<int8_t>(VT_TYPE, 0));
   }
   int16_t cellIndex() const {
     return GetField<int16_t>(VT_CELLINDEX, 0);
   }
-  int16_t blendType() const {
-    return GetField<int16_t>(VT_BLENDTYPE, 0);
+  RenderBlendType blendType() const {
+    return static_cast<RenderBlendType>(GetField<int8_t>(VT_BLENDTYPE, 0));
   }
-  int16_t numBehavior() const {
-    return GetField<int16_t>(VT_NUMBEHAVIOR, 0);
-  }
-  const flatbuffers::Vector<uint8_t> *Behavior_type() const {
-    return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_BEHAVIOR_TYPE);
-  }
-  const flatbuffers::Vector<flatbuffers::Offset<void>> *Behavior() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<void>> *>(VT_BEHAVIOR);
+  const flatbuffers::Vector<flatbuffers::Offset<EffectNodeBehavior>> *Behavior() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<EffectNodeBehavior>> *>(VT_BEHAVIOR);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int16_t>(verifier, VT_ARRAYINDEX) &&
            VerifyField<int16_t>(verifier, VT_PARENTINDEX) &&
-           VerifyField<int16_t>(verifier, VT_TYPE) &&
+           VerifyField<int8_t>(verifier, VT_TYPE) &&
            VerifyField<int16_t>(verifier, VT_CELLINDEX) &&
-           VerifyField<int16_t>(verifier, VT_BLENDTYPE) &&
-           VerifyField<int16_t>(verifier, VT_NUMBEHAVIOR) &&
-           VerifyOffset(verifier, VT_BEHAVIOR_TYPE) &&
-           verifier.VerifyVector(Behavior_type()) &&
+           VerifyField<int8_t>(verifier, VT_BLENDTYPE) &&
            VerifyOffset(verifier, VT_BEHAVIOR) &&
            verifier.VerifyVector(Behavior()) &&
-           VerifyEffectNodeBehaviorVector(verifier, Behavior(), Behavior_type()) &&
+           verifier.VerifyVectorOfTables(Behavior()) &&
            verifier.EndTable();
   }
   EffectNodeT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -1718,22 +889,16 @@ struct EffectNodeBuilder {
   void add_parentIndex(int16_t parentIndex) {
     fbb_.AddElement<int16_t>(EffectNode::VT_PARENTINDEX, parentIndex, 0);
   }
-  void add_type(int16_t type) {
-    fbb_.AddElement<int16_t>(EffectNode::VT_TYPE, type, 0);
+  void add_type(EffectNodeType type) {
+    fbb_.AddElement<int8_t>(EffectNode::VT_TYPE, static_cast<int8_t>(type), 0);
   }
   void add_cellIndex(int16_t cellIndex) {
     fbb_.AddElement<int16_t>(EffectNode::VT_CELLINDEX, cellIndex, 0);
   }
-  void add_blendType(int16_t blendType) {
-    fbb_.AddElement<int16_t>(EffectNode::VT_BLENDTYPE, blendType, 0);
+  void add_blendType(RenderBlendType blendType) {
+    fbb_.AddElement<int8_t>(EffectNode::VT_BLENDTYPE, static_cast<int8_t>(blendType), 0);
   }
-  void add_numBehavior(int16_t numBehavior) {
-    fbb_.AddElement<int16_t>(EffectNode::VT_NUMBEHAVIOR, numBehavior, 0);
-  }
-  void add_Behavior_type(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> Behavior_type) {
-    fbb_.AddOffset(EffectNode::VT_BEHAVIOR_TYPE, Behavior_type);
-  }
-  void add_Behavior(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> Behavior) {
+  void add_Behavior(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<EffectNodeBehavior>>> Behavior) {
     fbb_.AddOffset(EffectNode::VT_BEHAVIOR, Behavior);
   }
   explicit EffectNodeBuilder(flatbuffers::FlatBufferBuilder &_fbb)
@@ -1752,21 +917,17 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNode(
     flatbuffers::FlatBufferBuilder &_fbb,
     int16_t arrayIndex = 0,
     int16_t parentIndex = 0,
-    int16_t type = 0,
+    EffectNodeType type = EffectNodeType_Root,
     int16_t cellIndex = 0,
-    int16_t blendType = 0,
-    int16_t numBehavior = 0,
-    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> Behavior_type = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> Behavior = 0) {
+    RenderBlendType blendType = RenderBlendType_Mix,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<EffectNodeBehavior>>> Behavior = 0) {
   EffectNodeBuilder builder_(_fbb);
   builder_.add_Behavior(Behavior);
-  builder_.add_Behavior_type(Behavior_type);
-  builder_.add_numBehavior(numBehavior);
-  builder_.add_blendType(blendType);
   builder_.add_cellIndex(cellIndex);
-  builder_.add_type(type);
   builder_.add_parentIndex(parentIndex);
   builder_.add_arrayIndex(arrayIndex);
+  builder_.add_blendType(blendType);
+  builder_.add_type(type);
   return builder_.Finish();
 }
 
@@ -1774,12 +935,10 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNodeDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     int16_t arrayIndex = 0,
     int16_t parentIndex = 0,
-    int16_t type = 0,
+    EffectNodeType type = EffectNodeType_Root,
     int16_t cellIndex = 0,
-    int16_t blendType = 0,
-    int16_t numBehavior = 0,
-    const std::vector<uint8_t> *Behavior_type = nullptr,
-    const std::vector<flatbuffers::Offset<void>> *Behavior = nullptr) {
+    RenderBlendType blendType = RenderBlendType_Mix,
+    const std::vector<flatbuffers::Offset<EffectNodeBehavior>> *Behavior = nullptr) {
   return ss::ssfb::CreateEffectNode(
       _fbb,
       arrayIndex,
@@ -1787,9 +946,7 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNodeDirect(
       type,
       cellIndex,
       blendType,
-      numBehavior,
-      Behavior_type ? _fbb.CreateVector<uint8_t>(*Behavior_type) : 0,
-      Behavior ? _fbb.CreateVector<flatbuffers::Offset<void>>(*Behavior) : 0);
+      Behavior ? _fbb.CreateVector<flatbuffers::Offset<EffectNodeBehavior>>(*Behavior) : 0);
 }
 
 flatbuffers::Offset<EffectNode> CreateEffectNode(flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -4357,6 +3514,35 @@ inline flatbuffers::Offset<ProjectData> CreateProjectDataDirect(
 
 flatbuffers::Offset<ProjectData> CreateProjectData(flatbuffers::FlatBufferBuilder &_fbb, const ProjectDataT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
+inline EffectNodeBehaviorT *EffectNodeBehavior::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = new EffectNodeBehaviorT();
+  UnPackTo(_o, _resolver);
+  return _o;
+}
+
+inline void EffectNodeBehavior::UnPackTo(EffectNodeBehaviorT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+  (void)_o;
+  (void)_resolver;
+  { auto _e = type(); _o->type = _e; };
+  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i] = _e->Get(_i); } } };
+}
+
+inline flatbuffers::Offset<EffectNodeBehavior> EffectNodeBehavior::Pack(flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeBehaviorT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+  return CreateEffectNodeBehavior(_fbb, _o, _rehasher);
+}
+
+inline flatbuffers::Offset<EffectNodeBehavior> CreateEffectNodeBehavior(flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeBehaviorT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+  (void)_rehasher;
+  (void)_o;
+  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const EffectNodeBehaviorT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _type = _o->type;
+  auto _data = _o->data.size() ? _fbb.CreateVector(_o->data) : 0;
+  return ss::ssfb::CreateEffectNodeBehavior(
+      _fbb,
+      _type,
+      _data);
+}
+
 inline EffectNodeT *EffectNode::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   auto _o = new EffectNodeT();
   UnPackTo(_o, _resolver);
@@ -4371,9 +3557,7 @@ inline void EffectNode::UnPackTo(EffectNodeT *_o, const flatbuffers::resolver_fu
   { auto _e = type(); _o->type = _e; };
   { auto _e = cellIndex(); _o->cellIndex = _e; };
   { auto _e = blendType(); _o->blendType = _e; };
-  { auto _e = numBehavior(); _o->numBehavior = _e; };
-  { auto _e = Behavior_type(); if (_e) { _o->Behavior.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Behavior[_i].type = (EffectNodeBehavior)_e->Get(_i); } } };
-  { auto _e = Behavior(); if (_e) { _o->Behavior.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Behavior[_i].value = EffectNodeBehaviorUnion::UnPack(_e->Get(_i), Behavior_type()->GetEnum<EffectNodeBehavior>(_i), _resolver); } } };
+  { auto _e = Behavior(); if (_e) { _o->Behavior.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Behavior[_i] = std::unique_ptr<EffectNodeBehaviorT>(_e->Get(_i)->UnPack(_resolver)); } } };
 }
 
 inline flatbuffers::Offset<EffectNode> EffectNode::Pack(flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -4389,9 +3573,7 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNode(flatbuffers::FlatBufferB
   auto _type = _o->type;
   auto _cellIndex = _o->cellIndex;
   auto _blendType = _o->blendType;
-  auto _numBehavior = _o->numBehavior;
-  auto _Behavior_type = _o->Behavior.size() ? _fbb.CreateVector<uint8_t>(_o->Behavior.size(), [](size_t i, _VectorArgs *__va) { return static_cast<uint8_t>(__va->__o->Behavior[i].type); }, &_va) : 0;
-  auto _Behavior = _o->Behavior.size() ? _fbb.CreateVector<flatbuffers::Offset<void>>(_o->Behavior.size(), [](size_t i, _VectorArgs *__va) { return __va->__o->Behavior[i].Pack(*__va->__fbb, __va->__rehasher); }, &_va) : 0;
+  auto _Behavior = _o->Behavior.size() ? _fbb.CreateVector<flatbuffers::Offset<EffectNodeBehavior>> (_o->Behavior.size(), [](size_t i, _VectorArgs *__va) { return CreateEffectNodeBehavior(*__va->__fbb, __va->__o->Behavior[i].get(), __va->__rehasher); }, &_va ) : 0;
   return ss::ssfb::CreateEffectNode(
       _fbb,
       _arrayIndex,
@@ -4399,8 +3581,6 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNode(flatbuffers::FlatBufferB
       _type,
       _cellIndex,
       _blendType,
-      _numBehavior,
-      _Behavior_type,
       _Behavior);
 }
 
@@ -5130,394 +4310,6 @@ inline flatbuffers::Offset<ProjectData> CreateProjectData(flatbuffers::FlatBuffe
       _numCells,
       _numAnimePacks,
       _numEffectFileList);
-}
-
-inline bool VerifyEffectNodeBehavior(flatbuffers::Verifier &verifier, const void *obj, EffectNodeBehavior type) {
-  switch (type) {
-    case EffectNodeBehavior_NONE: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementBasic: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementDelay: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementGravity: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementPosition: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementRotation: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementInitColor: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransColor: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementSize: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSize: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticlePointGravity: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      return true;
-    }
-    default: return false;
-  }
-}
-
-inline bool VerifyEffectNodeBehaviorVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types) {
-  if (!values || !types) return !values && !types;
-  if (values->size() != types->size()) return false;
-  for (flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
-    if (!VerifyEffectNodeBehavior(
-        verifier,  values->Get(i), types->GetEnum<EffectNodeBehavior>(i))) {
-      return false;
-    }
-  }
-  return true;
-}
-
-inline void *EffectNodeBehaviorUnion::UnPack(const void *obj, EffectNodeBehavior type, const flatbuffers::resolver_function_t *resolver) {
-  switch (type) {
-    case EffectNodeBehavior_EffectParticleElementBasic: {
-      auto ptr = reinterpret_cast<const EffectParticleElementBasic *>(obj);
-      return new EffectParticleElementBasic(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRndSeedChange *>(obj);
-      return new EffectParticleElementRndSeedChange(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementDelay: {
-      auto ptr = reinterpret_cast<const EffectParticleElementDelay *>(obj);
-      return new EffectParticleElementDelay(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementGravity: {
-      auto ptr = reinterpret_cast<const EffectParticleElementGravity *>(obj);
-      return new EffectParticleElementGravity(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementPosition: {
-      auto ptr = reinterpret_cast<const EffectParticleElementPosition *>(obj);
-      return new EffectParticleElementPosition(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementRotation: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotation *>(obj);
-      return new EffectParticleElementRotation(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotationTrans *>(obj);
-      return new EffectParticleElementRotationTrans(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSpeed *>(obj);
-      return new EffectParticleElementTransSpeed(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(obj);
-      return new EffectParticleElementTangentialAcceleration(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementInitColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementInitColor *>(obj);
-      return new EffectParticleElementInitColor(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementTransColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransColor *>(obj);
-      return new EffectParticleElementTransColor(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      auto ptr = reinterpret_cast<const EffectParticleElementAlphaFade *>(obj);
-      return new EffectParticleElementAlphaFade(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementSize *>(obj);
-      return new EffectParticleElementSize(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSize *>(obj);
-      return new EffectParticleElementTransSize(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticlePointGravity: {
-      auto ptr = reinterpret_cast<const EffectParticlePointGravity *>(obj);
-      return new EffectParticlePointGravity(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(obj);
-      return new EffectParticleTurnToDirectionEnabled(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(obj);
-      return new EffectParticleInfiniteEmitEnabled(*ptr);
-    }
-    default: return nullptr;
-  }
-}
-
-inline flatbuffers::Offset<void> EffectNodeBehaviorUnion::Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher) const {
-  switch (type) {
-    case EffectNodeBehavior_EffectParticleElementBasic: {
-      auto ptr = reinterpret_cast<const EffectParticleElementBasic *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRndSeedChange *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementDelay: {
-      auto ptr = reinterpret_cast<const EffectParticleElementDelay *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementGravity: {
-      auto ptr = reinterpret_cast<const EffectParticleElementGravity *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementPosition: {
-      auto ptr = reinterpret_cast<const EffectParticleElementPosition *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementRotation: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotation *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotationTrans *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSpeed *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementInitColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementInitColor *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementTransColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransColor *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      auto ptr = reinterpret_cast<const EffectParticleElementAlphaFade *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementSize *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSize *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticlePointGravity: {
-      auto ptr = reinterpret_cast<const EffectParticlePointGravity *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    default: return 0;
-  }
-}
-
-inline EffectNodeBehaviorUnion::EffectNodeBehaviorUnion(const EffectNodeBehaviorUnion &u) FLATBUFFERS_NOEXCEPT : type(u.type), value(nullptr) {
-  switch (type) {
-    case EffectNodeBehavior_EffectParticleElementBasic: {
-      value = new EffectParticleElementBasic(*reinterpret_cast<EffectParticleElementBasic *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      value = new EffectParticleElementRndSeedChange(*reinterpret_cast<EffectParticleElementRndSeedChange *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementDelay: {
-      value = new EffectParticleElementDelay(*reinterpret_cast<EffectParticleElementDelay *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementGravity: {
-      value = new EffectParticleElementGravity(*reinterpret_cast<EffectParticleElementGravity *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementPosition: {
-      value = new EffectParticleElementPosition(*reinterpret_cast<EffectParticleElementPosition *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementRotation: {
-      value = new EffectParticleElementRotation(*reinterpret_cast<EffectParticleElementRotation *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      value = new EffectParticleElementRotationTrans(*reinterpret_cast<EffectParticleElementRotationTrans *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      value = new EffectParticleElementTransSpeed(*reinterpret_cast<EffectParticleElementTransSpeed *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      value = new EffectParticleElementTangentialAcceleration(*reinterpret_cast<EffectParticleElementTangentialAcceleration *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementInitColor: {
-      value = new EffectParticleElementInitColor(*reinterpret_cast<EffectParticleElementInitColor *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransColor: {
-      value = new EffectParticleElementTransColor(*reinterpret_cast<EffectParticleElementTransColor *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      value = new EffectParticleElementAlphaFade(*reinterpret_cast<EffectParticleElementAlphaFade *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementSize: {
-      value = new EffectParticleElementSize(*reinterpret_cast<EffectParticleElementSize *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSize: {
-      value = new EffectParticleElementTransSize(*reinterpret_cast<EffectParticleElementTransSize *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticlePointGravity: {
-      value = new EffectParticlePointGravity(*reinterpret_cast<EffectParticlePointGravity *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      value = new EffectParticleTurnToDirectionEnabled(*reinterpret_cast<EffectParticleTurnToDirectionEnabled *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      value = new EffectParticleInfiniteEmitEnabled(*reinterpret_cast<EffectParticleInfiniteEmitEnabled *>(u.value));
-      break;
-    }
-    default:
-      break;
-  }
-}
-
-inline void EffectNodeBehaviorUnion::Reset() {
-  switch (type) {
-    case EffectNodeBehavior_EffectParticleElementBasic: {
-      auto ptr = reinterpret_cast<EffectParticleElementBasic *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      auto ptr = reinterpret_cast<EffectParticleElementRndSeedChange *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementDelay: {
-      auto ptr = reinterpret_cast<EffectParticleElementDelay *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementGravity: {
-      auto ptr = reinterpret_cast<EffectParticleElementGravity *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementPosition: {
-      auto ptr = reinterpret_cast<EffectParticleElementPosition *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementRotation: {
-      auto ptr = reinterpret_cast<EffectParticleElementRotation *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      auto ptr = reinterpret_cast<EffectParticleElementRotationTrans *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      auto ptr = reinterpret_cast<EffectParticleElementTransSpeed *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      auto ptr = reinterpret_cast<EffectParticleElementTangentialAcceleration *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementInitColor: {
-      auto ptr = reinterpret_cast<EffectParticleElementInitColor *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransColor: {
-      auto ptr = reinterpret_cast<EffectParticleElementTransColor *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      auto ptr = reinterpret_cast<EffectParticleElementAlphaFade *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementSize: {
-      auto ptr = reinterpret_cast<EffectParticleElementSize *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSize: {
-      auto ptr = reinterpret_cast<EffectParticleElementTransSize *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticlePointGravity: {
-      auto ptr = reinterpret_cast<EffectParticlePointGravity *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      auto ptr = reinterpret_cast<EffectParticleTurnToDirectionEnabled *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      auto ptr = reinterpret_cast<EffectParticleInfiniteEmitEnabled *>(value);
-      delete ptr;
-      break;
-    }
-    default: break;
-  }
-  value = nullptr;
-  type = EffectNodeBehavior_NONE;
 }
 
 inline bool VerifyuserDataValue(flatbuffers::Verifier &verifier, const void *obj, userDataValue type) {

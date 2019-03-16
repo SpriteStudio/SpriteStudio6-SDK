@@ -66,138 +66,50 @@ enum VERTEX_FLAG : int (bit_flags) {
     ONE,
 }
 
-struct EffectParticleInfiniteEmitEnabled {
-    flag : int;
+enum EffectFunctionType : byte {
+    Basic,
+    RndSeedChange,
+    Delay,
+    Gravity,
+    Position,
+    Rotation,
+    TransRotation,
+    TransSpeed,
+    TangentialAcceleration,
+    InitColor,
+    TransColor,
+    AlphaFade,
+    Size,
+    TransSize,
+    PointGravity,
+    TurnToDirectionEnabled,
+    InfiniteEmitEnabled,
 }
 
-struct EffectParticleTurnToDirectionEnabled {
-    Rotation : float;
+table EffectNodeBehavior {
+    type : EffectFunctionType;
+    data : [uint];
 }
 
-struct EffectParticlePointGravity {
-    Position_x : float;
-    Position_y : float;
-    Power : float;
+enum EffectNodeType : byte {
+    Invalid=-1,
+    Root,
+    Emmiter,
+    Particle,
 }
 
-struct EffectParticleElementTransSize {
-    SizeXMinValue : float;
-    SizeXMaxValue : float;
-    SizeYMinValue : float;
-    SizeYMaxValue : float;
-    ScaleFactorMinValue : float;
-    ScaleFactorMaxValue : float;
-}
-
-struct EffectParticleElementSize {
-    SizeXMinValue : float;
-    SizeXMaxValue : float;
-    SizeYMinValue : float;
-    SizeYMaxValue : float;
-    ScaleFactorMinValue : float;
-    ScaleFactorMaxValue : float;
-}
-
-struct EffectParticleElementAlphaFade {
-    disprangeMinValue : float;
-    disprangeMaxValue : float;
-}
-
-struct EffectParticleElementTransColor {
-    ColorMinValue : uint;
-    ColorMaxValue : uint;
-}
-
-struct EffectParticleElementInitColor {
-    ColorMinValue : uint;
-    ColorMaxValue : uint;
-}
-
-struct EffectParticleElementTangentialAcceleration {
-    AccelerationMinValue : float;
-    AccelerationMaxValue : float;
-}
-
-struct EffectParticleElementTransSpeed {
-	SpeedMinValue : float;
-	SpeedMaxValue : float;
-}
-
-struct EffectParticleElementRotationTrans {
-    RotationFactor : float;
-    EndLifeTimePer : float;
-}
-
-struct EffectParticleElementRotation {
-    RotationMinValue : float;
-    RotationMaxValue : float;
-    RotationAddMinValue : float;
-    RotationAddMaxValue : float;
-}
-
-struct EffectParticleElementPosition {
-    OffsetXMinValue : float;
-    OffsetXMaxValue : float;
-    OffsetYMinValue : float;
-    OffsetYMaxValue : float;
-}
-
-struct EffectParticleElementGravity {
-    Gravity_x : float;
-    Gravity_y : float;
-}
-
-struct EffectParticleElementDelay {
-    DelayTime : int;
-}
-
-struct EffectParticleElementRndSeedChange {
-    Seed : int;
-}
-
-struct EffectParticleElementBasic {
-    SsEffectFunctionType : int;
-    
-    priority : int;
-    maximumParticle : int;
-    attimeCreate : int;
-    interval : int;
-    lifetime : int;
-    speedMinValue : float;
-    speedMaxValue : float;
-    lifespanMinValue : int;
-    lifespanMaxValue : int;
-    angle : float;
-    angleVariance : float;
-}
-
-union EffectNodeBehavior {
-    EffectParticleElementBasic,
-    EffectParticleElementRndSeedChange,
-    EffectParticleElementDelay,
-    EffectParticleElementGravity,
-    EffectParticleElementPosition,
-    EffectParticleElementRotation,
-    EffectParticleElementRotationTrans,
-    EffectParticleElementTransSpeed,
-    EffectParticleElementTangentialAcceleration,
-    EffectParticleElementInitColor,
-    EffectParticleElementTransColor,
-    EffectParticleElementAlphaFade,
-    EffectParticleElementSize,
-    EffectParticleElementTransSize,
-    EffectParticlePointGravity,
-    EffectParticleTurnToDirectionEnabled,
-    EffectParticleInfiniteEmitEnabled,
+enum RenderBlendType : byte {
+    Invalid=-1,
+    Mix,
+    Add,
 }
 
 table EffectNode {
     arrayIndex : short;
     parentIndex : short;
-    type : short;
+    type : EffectNodeType;
     cellIndex : short;	
-    blendType : short;
-    numBehavior : short;
+    blendType : RenderBlendType;
     Behavior : [EffectNodeBehavior];
 }
 
