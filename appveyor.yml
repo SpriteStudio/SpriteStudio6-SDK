@@ -13,8 +13,8 @@ cache:
 
 init:
   - ps: Set-WinSystemLocale ja-JP
-  - ps: Start-Sleep -s 5
   - ps: Restart-Computer
+  - ps: Start-Sleep -s 5
 
 install:
   - set QT_PREFIX=C:\Qt\5.10.1\msvc2017_64
