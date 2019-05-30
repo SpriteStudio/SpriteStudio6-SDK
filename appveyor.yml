@@ -11,11 +11,6 @@ cache:
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
 
-init:
-  - ps: Set-WinSystemLocale ja-JP
-  - ps: Restart-Computer
-  - ps: Start-Sleep -s 5
-
 install:
   - set QT_PREFIX=C:\Qt\5.10.1\msvc2017_64
   - git submodule update --init --recursive
