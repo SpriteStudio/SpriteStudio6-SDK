@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->type_comboBox->addItem("ssbp");
     ui->type_comboBox->addItem("json");
-    ui->type_comboBox->addItem("FlatBuffers");
+    ui->type_comboBox->addItem("ssfb");
 
 }
 
@@ -231,7 +231,7 @@ void MainWindow::on_pushButton_convert_clicked()
                 {
                     str = str + " -f json";
                 }
-                if ( ui->type_comboBox->currentText() == "FlatBuffers" )
+                if ( ui->type_comboBox->currentText() == "ssfb" )
                 {
                     str = str + " -f ssfb";
                 }

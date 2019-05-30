@@ -3,7 +3,7 @@
 <JUCERPROJECT id="pETMlY" name="SSViewer2" displaySplashScreen="1" reportAppUsage="1"
               splashScreenColour="Dark" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.NewProject" includeBinaryInAppConfig="1"
-              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.3.2"
+              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.4.3"
               headerPath="">
   <MAINGROUP id="PqiQba" name="SSViewer2">
     <GROUP id="{9D43D578-FD48-58A0-B214-36284BAFD7DC}" name="Source">

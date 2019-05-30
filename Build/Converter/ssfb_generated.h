@@ -101,42 +101,79 @@ struct ProjectData;
 struct ProjectDataT;
 
 bool operator==(const EffectParticleInfiniteEmitEnabled &lhs, const EffectParticleInfiniteEmitEnabled &rhs);
+bool operator!=(const EffectParticleInfiniteEmitEnabled &lhs, const EffectParticleInfiniteEmitEnabled &rhs);
 bool operator==(const EffectParticleTurnToDirectionEnabled &lhs, const EffectParticleTurnToDirectionEnabled &rhs);
+bool operator!=(const EffectParticleTurnToDirectionEnabled &lhs, const EffectParticleTurnToDirectionEnabled &rhs);
 bool operator==(const EffectParticlePointGravity &lhs, const EffectParticlePointGravity &rhs);
+bool operator!=(const EffectParticlePointGravity &lhs, const EffectParticlePointGravity &rhs);
 bool operator==(const EffectParticleElementTransSize &lhs, const EffectParticleElementTransSize &rhs);
+bool operator!=(const EffectParticleElementTransSize &lhs, const EffectParticleElementTransSize &rhs);
 bool operator==(const EffectParticleElementSize &lhs, const EffectParticleElementSize &rhs);
+bool operator!=(const EffectParticleElementSize &lhs, const EffectParticleElementSize &rhs);
 bool operator==(const EffectParticleElementAlphaFade &lhs, const EffectParticleElementAlphaFade &rhs);
+bool operator!=(const EffectParticleElementAlphaFade &lhs, const EffectParticleElementAlphaFade &rhs);
 bool operator==(const EffectParticleElementTransColor &lhs, const EffectParticleElementTransColor &rhs);
+bool operator!=(const EffectParticleElementTransColor &lhs, const EffectParticleElementTransColor &rhs);
 bool operator==(const EffectParticleElementInitColor &lhs, const EffectParticleElementInitColor &rhs);
+bool operator!=(const EffectParticleElementInitColor &lhs, const EffectParticleElementInitColor &rhs);
 bool operator==(const EffectParticleElementTangentialAcceleration &lhs, const EffectParticleElementTangentialAcceleration &rhs);
+bool operator!=(const EffectParticleElementTangentialAcceleration &lhs, const EffectParticleElementTangentialAcceleration &rhs);
 bool operator==(const EffectParticleElementTransSpeed &lhs, const EffectParticleElementTransSpeed &rhs);
+bool operator!=(const EffectParticleElementTransSpeed &lhs, const EffectParticleElementTransSpeed &rhs);
 bool operator==(const EffectParticleElementRotationTrans &lhs, const EffectParticleElementRotationTrans &rhs);
+bool operator!=(const EffectParticleElementRotationTrans &lhs, const EffectParticleElementRotationTrans &rhs);
 bool operator==(const EffectParticleElementRotation &lhs, const EffectParticleElementRotation &rhs);
+bool operator!=(const EffectParticleElementRotation &lhs, const EffectParticleElementRotation &rhs);
 bool operator==(const EffectParticleElementPosition &lhs, const EffectParticleElementPosition &rhs);
+bool operator!=(const EffectParticleElementPosition &lhs, const EffectParticleElementPosition &rhs);
 bool operator==(const EffectParticleElementGravity &lhs, const EffectParticleElementGravity &rhs);
+bool operator!=(const EffectParticleElementGravity &lhs, const EffectParticleElementGravity &rhs);
 bool operator==(const EffectParticleElementDelay &lhs, const EffectParticleElementDelay &rhs);
+bool operator!=(const EffectParticleElementDelay &lhs, const EffectParticleElementDelay &rhs);
 bool operator==(const EffectParticleElementRndSeedChange &lhs, const EffectParticleElementRndSeedChange &rhs);
+bool operator!=(const EffectParticleElementRndSeedChange &lhs, const EffectParticleElementRndSeedChange &rhs);
 bool operator==(const EffectParticleElementBasic &lhs, const EffectParticleElementBasic &rhs);
+bool operator!=(const EffectParticleElementBasic &lhs, const EffectParticleElementBasic &rhs);
 bool operator==(const EffectNodeT &lhs, const EffectNodeT &rhs);
+bool operator!=(const EffectNodeT &lhs, const EffectNodeT &rhs);
 bool operator==(const EffectFileT &lhs, const EffectFileT &rhs);
+bool operator!=(const EffectFileT &lhs, const EffectFileT &rhs);
 bool operator==(const CellMapT &lhs, const CellMapT &rhs);
+bool operator!=(const CellMapT &lhs, const CellMapT &rhs);
 bool operator==(const CellT &lhs, const CellT &rhs);
+bool operator!=(const CellT &lhs, const CellT &rhs);
 bool operator==(const meshDataUVT &lhs, const meshDataUVT &rhs);
+bool operator!=(const meshDataUVT &lhs, const meshDataUVT &rhs);
 bool operator==(const meshDataIndicesT &lhs, const meshDataIndicesT &rhs);
+bool operator!=(const meshDataIndicesT &lhs, const meshDataIndicesT &rhs);
 bool operator==(const partStateT &lhs, const partStateT &rhs);
+bool operator!=(const partStateT &lhs, const partStateT &rhs);
 bool operator==(const frameDataIndexT &lhs, const frameDataIndexT &rhs);
+bool operator!=(const frameDataIndexT &lhs, const frameDataIndexT &rhs);
 bool operator==(const userDataInteger &lhs, const userDataInteger &rhs);
+bool operator!=(const userDataInteger &lhs, const userDataInteger &rhs);
 bool operator==(const userDataRect &lhs, const userDataRect &rhs);
+bool operator!=(const userDataRect &lhs, const userDataRect &rhs);
 bool operator==(const userDataPoint &lhs, const userDataPoint &rhs);
+bool operator!=(const userDataPoint &lhs, const userDataPoint &rhs);
 bool operator==(const userDataStringT &lhs, const userDataStringT &rhs);
+bool operator!=(const userDataStringT &lhs, const userDataStringT &rhs);
 bool operator==(const userDataItemT &lhs, const userDataItemT &rhs);
+bool operator!=(const userDataItemT &lhs, const userDataItemT &rhs);
 bool operator==(const userDataPerFrameT &lhs, const userDataPerFrameT &rhs);
+bool operator!=(const userDataPerFrameT &lhs, const userDataPerFrameT &rhs);
 bool operator==(const labelDataItemT &lhs, const labelDataItemT &rhs);
+bool operator!=(const labelDataItemT &lhs, const labelDataItemT &rhs);
 bool operator==(const AnimationDataT &lhs, const AnimationDataT &rhs);
+bool operator!=(const AnimationDataT &lhs, const AnimationDataT &rhs);
 bool operator==(const AnimationInitialDataT &lhs, const AnimationInitialDataT &rhs);
+bool operator!=(const AnimationInitialDataT &lhs, const AnimationInitialDataT &rhs);
 bool operator==(const PartDataT &lhs, const PartDataT &rhs);
+bool operator!=(const PartDataT &lhs, const PartDataT &rhs);
 bool operator==(const AnimePackDataT &lhs, const AnimePackDataT &rhs);
+bool operator!=(const AnimePackDataT &lhs, const AnimePackDataT &rhs);
 bool operator==(const ProjectDataT &lhs, const ProjectDataT &rhs);
+bool operator!=(const ProjectDataT &lhs, const ProjectDataT &rhs);
 
 enum SsPartType {
   SsPartType_Invalid = -1,
@@ -196,7 +233,8 @@ inline const char * const *EnumNamesSsPartType() {
 }
 
 inline const char *EnumNameSsPartType(SsPartType e) {
-  const size_t index = static_cast<int>(e) - static_cast<int>(SsPartType_Invalid);
+  if (e < SsPartType_Invalid || e > SsPartType_Bonepoint) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(SsPartType_Invalid);
   return EnumNamesSsPartType()[index];
 }
 
@@ -335,7 +373,8 @@ inline const char * const *EnumNamesPART_FLAG2() {
 }
 
 inline const char *EnumNamePART_FLAG2(PART_FLAG2 e) {
-  const size_t index = static_cast<int>(e) - static_cast<int>(PART_FLAG2_MESHDATA);
+  if (e < PART_FLAG2_MESHDATA || e > PART_FLAG2_MESHDATA) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(PART_FLAG2_MESHDATA);
   return EnumNamesPART_FLAG2()[index];
 }
 
@@ -384,7 +423,8 @@ inline const char * const *EnumNamesVERTEX_FLAG() {
 }
 
 inline const char *EnumNameVERTEX_FLAG(VERTEX_FLAG e) {
-  const size_t index = static_cast<int>(e) - static_cast<int>(VERTEX_FLAG_LT);
+  if (e < VERTEX_FLAG_LT || e > VERTEX_FLAG_ONE) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(VERTEX_FLAG_LT);
   return EnumNamesVERTEX_FLAG()[index];
 }
 
@@ -461,7 +501,8 @@ inline const char * const *EnumNamesEffectNodeBehavior() {
 }
 
 inline const char *EnumNameEffectNodeBehavior(EffectNodeBehavior e) {
-  const size_t index = static_cast<int>(e);
+  if (e < EffectNodeBehavior_NONE || e > EffectNodeBehavior_EffectParticleInfiniteEmitEnabled) return "";
+  const size_t index = static_cast<size_t>(e);
   return EnumNamesEffectNodeBehavior()[index];
 }
 
@@ -557,10 +598,11 @@ struct EffectNodeBehaviorUnion {
 #ifndef FLATBUFFERS_CPP98_STL
   template <typename T>
   void Set(T&& val) {
+    using RT = typename std::remove_reference<T>::type;
     Reset();
-    type = EffectNodeBehaviorTraits<typename T::TableType>::enum_value;
+    type = EffectNodeBehaviorTraits<typename RT::TableType>::enum_value;
     if (type != EffectNodeBehavior_NONE) {
-      value = new T(std::forward<T>(val));
+      value = new RT(std::forward<T>(val));
     }
   }
 #endif  // FLATBUFFERS_CPP98_STL
@@ -786,6 +828,11 @@ inline bool operator==(const EffectNodeBehaviorUnion &lhs, const EffectNodeBehav
     }
   }
 }
+
+inline bool operator!=(const EffectNodeBehaviorUnion &lhs, const EffectNodeBehaviorUnion &rhs) {
+    return !(lhs == rhs);
+}
+
 bool VerifyEffectNodeBehavior(flatbuffers::Verifier &verifier, const void *obj, EffectNodeBehavior type);
 bool VerifyEffectNodeBehaviorVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
 
@@ -823,7 +870,8 @@ inline const char * const *EnumNamesuserDataValue() {
 }
 
 inline const char *EnumNameuserDataValue(userDataValue e) {
-  const size_t index = static_cast<int>(e);
+  if (e < userDataValue_NONE || e > userDataValue_userDataString) return "";
+  const size_t index = static_cast<size_t>(e);
   return EnumNamesuserDataValue()[index];
 }
 
@@ -867,10 +915,11 @@ struct userDataValueUnion {
 #ifndef FLATBUFFERS_CPP98_STL
   template <typename T>
   void Set(T&& val) {
+    using RT = typename std::remove_reference<T>::type;
     Reset();
-    type = userDataValueTraits<typename T::TableType>::enum_value;
+    type = userDataValueTraits<typename RT::TableType>::enum_value;
     if (type != userDataValue_NONE) {
-      value = new T(std::forward<T>(val));
+      value = new RT(std::forward<T>(val));
     }
   }
 #endif  // FLATBUFFERS_CPP98_STL
@@ -940,6 +989,11 @@ inline bool operator==(const userDataValueUnion &lhs, const userDataValueUnion &
     }
   }
 }
+
+inline bool operator!=(const userDataValueUnion &lhs, const userDataValueUnion &rhs) {
+    return !(lhs == rhs);
+}
+
 bool VerifyuserDataValue(flatbuffers::Verifier &verifier, const void *obj, userDataValue type);
 bool VerifyuserDataValueVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
 
@@ -949,7 +1003,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleInfiniteEmitEnabled FLATBUF
 
  public:
   EffectParticleInfiniteEmitEnabled() {
-    memset(this, 0, sizeof(EffectParticleInfiniteEmitEnabled));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleInfiniteEmitEnabled));
   }
   EffectParticleInfiniteEmitEnabled(int32_t _flag)
       : flag_(flatbuffers::EndianScalar(_flag)) {
@@ -965,13 +1019,18 @@ inline bool operator==(const EffectParticleInfiniteEmitEnabled &lhs, const Effec
       (lhs.flag() == rhs.flag());
 }
 
+inline bool operator!=(const EffectParticleInfiniteEmitEnabled &lhs, const EffectParticleInfiniteEmitEnabled &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleTurnToDirectionEnabled FLATBUFFERS_FINAL_CLASS {
  private:
   float Rotation_;
 
  public:
   EffectParticleTurnToDirectionEnabled() {
-    memset(this, 0, sizeof(EffectParticleTurnToDirectionEnabled));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleTurnToDirectionEnabled));
   }
   EffectParticleTurnToDirectionEnabled(float _Rotation)
       : Rotation_(flatbuffers::EndianScalar(_Rotation)) {
@@ -987,6 +1046,11 @@ inline bool operator==(const EffectParticleTurnToDirectionEnabled &lhs, const Ef
       (lhs.Rotation() == rhs.Rotation());
 }
 
+inline bool operator!=(const EffectParticleTurnToDirectionEnabled &lhs, const EffectParticleTurnToDirectionEnabled &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticlePointGravity FLATBUFFERS_FINAL_CLASS {
  private:
   float Position_x_;
@@ -995,7 +1059,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticlePointGravity FLATBUFFERS_FI
 
  public:
   EffectParticlePointGravity() {
-    memset(this, 0, sizeof(EffectParticlePointGravity));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticlePointGravity));
   }
   EffectParticlePointGravity(float _Position_x, float _Position_y, float _Power)
       : Position_x_(flatbuffers::EndianScalar(_Position_x)),
@@ -1021,6 +1085,11 @@ inline bool operator==(const EffectParticlePointGravity &lhs, const EffectPartic
       (lhs.Power() == rhs.Power());
 }
 
+inline bool operator!=(const EffectParticlePointGravity &lhs, const EffectParticlePointGravity &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransSize FLATBUFFERS_FINAL_CLASS {
  private:
   float SizeXMinValue_;
@@ -1032,7 +1101,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransSize FLATBUFFER
 
  public:
   EffectParticleElementTransSize() {
-    memset(this, 0, sizeof(EffectParticleElementTransSize));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementTransSize));
   }
   EffectParticleElementTransSize(float _SizeXMinValue, float _SizeXMaxValue, float _SizeYMinValue, float _SizeYMaxValue, float _ScaleFactorMinValue, float _ScaleFactorMaxValue)
       : SizeXMinValue_(flatbuffers::EndianScalar(_SizeXMinValue)),
@@ -1073,6 +1142,11 @@ inline bool operator==(const EffectParticleElementTransSize &lhs, const EffectPa
       (lhs.ScaleFactorMaxValue() == rhs.ScaleFactorMaxValue());
 }
 
+inline bool operator!=(const EffectParticleElementTransSize &lhs, const EffectParticleElementTransSize &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementSize FLATBUFFERS_FINAL_CLASS {
  private:
   float SizeXMinValue_;
@@ -1084,7 +1158,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementSize FLATBUFFERS_FIN
 
  public:
   EffectParticleElementSize() {
-    memset(this, 0, sizeof(EffectParticleElementSize));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementSize));
   }
   EffectParticleElementSize(float _SizeXMinValue, float _SizeXMaxValue, float _SizeYMinValue, float _SizeYMaxValue, float _ScaleFactorMinValue, float _ScaleFactorMaxValue)
       : SizeXMinValue_(flatbuffers::EndianScalar(_SizeXMinValue)),
@@ -1125,6 +1199,11 @@ inline bool operator==(const EffectParticleElementSize &lhs, const EffectParticl
       (lhs.ScaleFactorMaxValue() == rhs.ScaleFactorMaxValue());
 }
 
+inline bool operator!=(const EffectParticleElementSize &lhs, const EffectParticleElementSize &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementAlphaFade FLATBUFFERS_FINAL_CLASS {
  private:
   float disprangeMinValue_;
@@ -1132,7 +1211,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementAlphaFade FLATBUFFER
 
  public:
   EffectParticleElementAlphaFade() {
-    memset(this, 0, sizeof(EffectParticleElementAlphaFade));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementAlphaFade));
   }
   EffectParticleElementAlphaFade(float _disprangeMinValue, float _disprangeMaxValue)
       : disprangeMinValue_(flatbuffers::EndianScalar(_disprangeMinValue)),
@@ -1153,6 +1232,11 @@ inline bool operator==(const EffectParticleElementAlphaFade &lhs, const EffectPa
       (lhs.disprangeMaxValue() == rhs.disprangeMaxValue());
 }
 
+inline bool operator!=(const EffectParticleElementAlphaFade &lhs, const EffectParticleElementAlphaFade &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransColor FLATBUFFERS_FINAL_CLASS {
  private:
   uint32_t ColorMinValue_;
@@ -1160,7 +1244,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransColor FLATBUFFE
 
  public:
   EffectParticleElementTransColor() {
-    memset(this, 0, sizeof(EffectParticleElementTransColor));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementTransColor));
   }
   EffectParticleElementTransColor(uint32_t _ColorMinValue, uint32_t _ColorMaxValue)
       : ColorMinValue_(flatbuffers::EndianScalar(_ColorMinValue)),
@@ -1181,6 +1265,11 @@ inline bool operator==(const EffectParticleElementTransColor &lhs, const EffectP
       (lhs.ColorMaxValue() == rhs.ColorMaxValue());
 }
 
+inline bool operator!=(const EffectParticleElementTransColor &lhs, const EffectParticleElementTransColor &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementInitColor FLATBUFFERS_FINAL_CLASS {
  private:
   uint32_t ColorMinValue_;
@@ -1188,7 +1277,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementInitColor FLATBUFFER
 
  public:
   EffectParticleElementInitColor() {
-    memset(this, 0, sizeof(EffectParticleElementInitColor));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementInitColor));
   }
   EffectParticleElementInitColor(uint32_t _ColorMinValue, uint32_t _ColorMaxValue)
       : ColorMinValue_(flatbuffers::EndianScalar(_ColorMinValue)),
@@ -1209,6 +1298,11 @@ inline bool operator==(const EffectParticleElementInitColor &lhs, const EffectPa
       (lhs.ColorMaxValue() == rhs.ColorMaxValue());
 }
 
+inline bool operator!=(const EffectParticleElementInitColor &lhs, const EffectParticleElementInitColor &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTangentialAcceleration FLATBUFFERS_FINAL_CLASS {
  private:
   float AccelerationMinValue_;
@@ -1216,7 +1310,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTangentialAccelerati
 
  public:
   EffectParticleElementTangentialAcceleration() {
-    memset(this, 0, sizeof(EffectParticleElementTangentialAcceleration));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementTangentialAcceleration));
   }
   EffectParticleElementTangentialAcceleration(float _AccelerationMinValue, float _AccelerationMaxValue)
       : AccelerationMinValue_(flatbuffers::EndianScalar(_AccelerationMinValue)),
@@ -1237,6 +1331,11 @@ inline bool operator==(const EffectParticleElementTangentialAcceleration &lhs, c
       (lhs.AccelerationMaxValue() == rhs.AccelerationMaxValue());
 }
 
+inline bool operator!=(const EffectParticleElementTangentialAcceleration &lhs, const EffectParticleElementTangentialAcceleration &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransSpeed FLATBUFFERS_FINAL_CLASS {
  private:
   float SpeedMinValue_;
@@ -1244,7 +1343,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransSpeed FLATBUFFE
 
  public:
   EffectParticleElementTransSpeed() {
-    memset(this, 0, sizeof(EffectParticleElementTransSpeed));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementTransSpeed));
   }
   EffectParticleElementTransSpeed(float _SpeedMinValue, float _SpeedMaxValue)
       : SpeedMinValue_(flatbuffers::EndianScalar(_SpeedMinValue)),
@@ -1265,6 +1364,11 @@ inline bool operator==(const EffectParticleElementTransSpeed &lhs, const EffectP
       (lhs.SpeedMaxValue() == rhs.SpeedMaxValue());
 }
 
+inline bool operator!=(const EffectParticleElementTransSpeed &lhs, const EffectParticleElementTransSpeed &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRotationTrans FLATBUFFERS_FINAL_CLASS {
  private:
   float RotationFactor_;
@@ -1272,7 +1376,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRotationTrans FLATBU
 
  public:
   EffectParticleElementRotationTrans() {
-    memset(this, 0, sizeof(EffectParticleElementRotationTrans));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementRotationTrans));
   }
   EffectParticleElementRotationTrans(float _RotationFactor, float _EndLifeTimePer)
       : RotationFactor_(flatbuffers::EndianScalar(_RotationFactor)),
@@ -1293,6 +1397,11 @@ inline bool operator==(const EffectParticleElementRotationTrans &lhs, const Effe
       (lhs.EndLifeTimePer() == rhs.EndLifeTimePer());
 }
 
+inline bool operator!=(const EffectParticleElementRotationTrans &lhs, const EffectParticleElementRotationTrans &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRotation FLATBUFFERS_FINAL_CLASS {
  private:
   float RotationMinValue_;
@@ -1302,7 +1411,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRotation FLATBUFFERS
 
  public:
   EffectParticleElementRotation() {
-    memset(this, 0, sizeof(EffectParticleElementRotation));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementRotation));
   }
   EffectParticleElementRotation(float _RotationMinValue, float _RotationMaxValue, float _RotationAddMinValue, float _RotationAddMaxValue)
       : RotationMinValue_(flatbuffers::EndianScalar(_RotationMinValue)),
@@ -1333,6 +1442,11 @@ inline bool operator==(const EffectParticleElementRotation &lhs, const EffectPar
       (lhs.RotationAddMaxValue() == rhs.RotationAddMaxValue());
 }
 
+inline bool operator!=(const EffectParticleElementRotation &lhs, const EffectParticleElementRotation &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementPosition FLATBUFFERS_FINAL_CLASS {
  private:
   float OffsetXMinValue_;
@@ -1342,7 +1456,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementPosition FLATBUFFERS
 
  public:
   EffectParticleElementPosition() {
-    memset(this, 0, sizeof(EffectParticleElementPosition));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementPosition));
   }
   EffectParticleElementPosition(float _OffsetXMinValue, float _OffsetXMaxValue, float _OffsetYMinValue, float _OffsetYMaxValue)
       : OffsetXMinValue_(flatbuffers::EndianScalar(_OffsetXMinValue)),
@@ -1373,6 +1487,11 @@ inline bool operator==(const EffectParticleElementPosition &lhs, const EffectPar
       (lhs.OffsetYMaxValue() == rhs.OffsetYMaxValue());
 }
 
+inline bool operator!=(const EffectParticleElementPosition &lhs, const EffectParticleElementPosition &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementGravity FLATBUFFERS_FINAL_CLASS {
  private:
   float Gravity_x_;
@@ -1380,7 +1499,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementGravity FLATBUFFERS_
 
  public:
   EffectParticleElementGravity() {
-    memset(this, 0, sizeof(EffectParticleElementGravity));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementGravity));
   }
   EffectParticleElementGravity(float _Gravity_x, float _Gravity_y)
       : Gravity_x_(flatbuffers::EndianScalar(_Gravity_x)),
@@ -1401,13 +1520,18 @@ inline bool operator==(const EffectParticleElementGravity &lhs, const EffectPart
       (lhs.Gravity_y() == rhs.Gravity_y());
 }
 
+inline bool operator!=(const EffectParticleElementGravity &lhs, const EffectParticleElementGravity &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementDelay FLATBUFFERS_FINAL_CLASS {
  private:
   int32_t DelayTime_;
 
  public:
   EffectParticleElementDelay() {
-    memset(this, 0, sizeof(EffectParticleElementDelay));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementDelay));
   }
   EffectParticleElementDelay(int32_t _DelayTime)
       : DelayTime_(flatbuffers::EndianScalar(_DelayTime)) {
@@ -1423,13 +1547,18 @@ inline bool operator==(const EffectParticleElementDelay &lhs, const EffectPartic
       (lhs.DelayTime() == rhs.DelayTime());
 }
 
+inline bool operator!=(const EffectParticleElementDelay &lhs, const EffectParticleElementDelay &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRndSeedChange FLATBUFFERS_FINAL_CLASS {
  private:
   int32_t Seed_;
 
  public:
   EffectParticleElementRndSeedChange() {
-    memset(this, 0, sizeof(EffectParticleElementRndSeedChange));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementRndSeedChange));
   }
   EffectParticleElementRndSeedChange(int32_t _Seed)
       : Seed_(flatbuffers::EndianScalar(_Seed)) {
@@ -1444,6 +1573,11 @@ inline bool operator==(const EffectParticleElementRndSeedChange &lhs, const Effe
   return
       (lhs.Seed() == rhs.Seed());
 }
+
+inline bool operator!=(const EffectParticleElementRndSeedChange &lhs, const EffectParticleElementRndSeedChange &rhs) {
+    return !(lhs == rhs);
+}
+
 
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementBasic FLATBUFFERS_FINAL_CLASS {
  private:
@@ -1462,7 +1596,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementBasic FLATBUFFERS_FI
 
  public:
   EffectParticleElementBasic() {
-    memset(this, 0, sizeof(EffectParticleElementBasic));
+    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementBasic));
   }
   EffectParticleElementBasic(int32_t _SsEffectFunctionType, int32_t _priority, int32_t _maximumParticle, int32_t _attimeCreate, int32_t _interval, int32_t _lifetime, float _speedMinValue, float _speedMaxValue, int32_t _lifespanMinValue, int32_t _lifespanMaxValue, float _angle, float _angleVariance)
       : SsEffectFunctionType_(flatbuffers::EndianScalar(_SsEffectFunctionType)),
@@ -1533,13 +1667,18 @@ inline bool operator==(const EffectParticleElementBasic &lhs, const EffectPartic
       (lhs.angleVariance() == rhs.angleVariance());
 }
 
+inline bool operator!=(const EffectParticleElementBasic &lhs, const EffectParticleElementBasic &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) userDataInteger FLATBUFFERS_FINAL_CLASS {
  private:
   int32_t integer_;
 
  public:
   userDataInteger() {
-    memset(this, 0, sizeof(userDataInteger));
+    memset(static_cast<void *>(this), 0, sizeof(userDataInteger));
   }
   userDataInteger(int32_t _integer)
       : integer_(flatbuffers::EndianScalar(_integer)) {
@@ -1555,6 +1694,11 @@ inline bool operator==(const userDataInteger &lhs, const userDataInteger &rhs) {
       (lhs.integer() == rhs.integer());
 }
 
+inline bool operator!=(const userDataInteger &lhs, const userDataInteger &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) userDataRect FLATBUFFERS_FINAL_CLASS {
  private:
   int32_t x_;
@@ -1564,7 +1708,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) userDataRect FLATBUFFERS_FINAL_CLASS {
 
  public:
   userDataRect() {
-    memset(this, 0, sizeof(userDataRect));
+    memset(static_cast<void *>(this), 0, sizeof(userDataRect));
   }
   userDataRect(int32_t _x, int32_t _y, int32_t _w, int32_t _h)
       : x_(flatbuffers::EndianScalar(_x)),
@@ -1595,6 +1739,11 @@ inline bool operator==(const userDataRect &lhs, const userDataRect &rhs) {
       (lhs.h() == rhs.h());
 }
 
+inline bool operator!=(const userDataRect &lhs, const userDataRect &rhs) {
+    return !(lhs == rhs);
+}
+
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) userDataPoint FLATBUFFERS_FINAL_CLASS {
  private:
   int32_t x_;
@@ -1602,7 +1751,7 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) userDataPoint FLATBUFFERS_FINAL_CLASS {
 
  public:
   userDataPoint() {
-    memset(this, 0, sizeof(userDataPoint));
+    memset(static_cast<void *>(this), 0, sizeof(userDataPoint));
   }
   userDataPoint(int32_t _x, int32_t _y)
       : x_(flatbuffers::EndianScalar(_x)),
@@ -1622,6 +1771,11 @@ inline bool operator==(const userDataPoint &lhs, const userDataPoint &rhs) {
       (lhs.x() == rhs.x()) &&
       (lhs.y() == rhs.y());
 }
+
+inline bool operator!=(const userDataPoint &lhs, const userDataPoint &rhs) {
+    return !(lhs == rhs);
+}
+
 
 struct EffectNodeT : public flatbuffers::NativeTable {
   typedef EffectNode TableType;
@@ -1653,9 +1807,14 @@ inline bool operator==(const EffectNodeT &lhs, const EffectNodeT &rhs) {
       (lhs.Behavior == rhs.Behavior);
 }
 
+inline bool operator!=(const EffectNodeT &lhs, const EffectNodeT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef EffectNodeT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_ARRAYINDEX = 4,
     VT_PARENTINDEX = 6,
     VT_TYPE = 8,
@@ -1780,6 +1939,8 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNodeDirect(
     int16_t numBehavior = 0,
     const std::vector<uint8_t> *Behavior_type = nullptr,
     const std::vector<flatbuffers::Offset<void>> *Behavior = nullptr) {
+  auto Behavior_type__ = Behavior_type ? _fbb.CreateVector<uint8_t>(*Behavior_type) : 0;
+  auto Behavior__ = Behavior ? _fbb.CreateVector<flatbuffers::Offset<void>>(*Behavior) : 0;
   return ss::ssfb::CreateEffectNode(
       _fbb,
       arrayIndex,
@@ -1788,8 +1949,8 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNodeDirect(
       cellIndex,
       blendType,
       numBehavior,
-      Behavior_type ? _fbb.CreateVector<uint8_t>(*Behavior_type) : 0,
-      Behavior ? _fbb.CreateVector<flatbuffers::Offset<void>>(*Behavior) : 0);
+      Behavior_type__,
+      Behavior__);
 }
 
 flatbuffers::Offset<EffectNode> CreateEffectNode(flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -1826,9 +1987,14 @@ inline bool operator==(const EffectFileT &lhs, const EffectFileT &rhs) {
       (lhs.effectNode == rhs.effectNode);
 }
 
+inline bool operator!=(const EffectFileT &lhs, const EffectFileT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct EffectFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef EffectFileT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_FPS = 6,
     VT_ISLOCKRANDSEED = 8,
@@ -1953,16 +2119,18 @@ inline flatbuffers::Offset<EffectFile> CreateEffectFileDirect(
     int16_t layoutScaleY = 0,
     int16_t numNodeList = 0,
     const std::vector<flatbuffers::Offset<EffectNode>> *effectNode = nullptr) {
+  auto name__ = name ? _fbb.CreateString(name) : 0;
+  auto effectNode__ = effectNode ? _fbb.CreateVector<flatbuffers::Offset<EffectNode>>(*effectNode) : 0;
   return ss::ssfb::CreateEffectFile(
       _fbb,
-      name ? _fbb.CreateString(name) : 0,
+      name__,
       fps,
       isLockRandSeed,
       lockRandSeed,
       layoutScaleX,
       layoutScaleY,
       numNodeList,
-      effectNode ? _fbb.CreateVector<flatbuffers::Offset<EffectNode>>(*effectNode) : 0);
+      effectNode__);
 }
 
 flatbuffers::Offset<EffectFile> CreateEffectFile(flatbuffers::FlatBufferBuilder &_fbb, const EffectFileT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -1990,9 +2158,14 @@ inline bool operator==(const CellMapT &lhs, const CellMapT &rhs) {
       (lhs.filtermode == rhs.filtermode);
 }
 
+inline bool operator!=(const CellMapT &lhs, const CellMapT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct CellMap FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef CellMapT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_IMAGEPATH = 6,
     VT_INDEX = 8,
@@ -2083,10 +2256,12 @@ inline flatbuffers::Offset<CellMap> CreateCellMapDirect(
     int16_t index = 0,
     int16_t wrapmode = 0,
     int16_t filtermode = 0) {
+  auto name__ = name ? _fbb.CreateString(name) : 0;
+  auto imagePath__ = imagePath ? _fbb.CreateString(imagePath) : 0;
   return ss::ssfb::CreateCellMap(
       _fbb,
-      name ? _fbb.CreateString(name) : 0,
-      imagePath ? _fbb.CreateString(imagePath) : 0,
+      name__,
+      imagePath__,
       index,
       wrapmode,
       filtermode);
@@ -2141,9 +2316,14 @@ inline bool operator==(const CellT &lhs, const CellT &rhs) {
       (lhs.v2 == rhs.v2);
 }
 
+inline bool operator!=(const CellT &lhs, const CellT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct Cell FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef CellT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_CELLMAP = 6,
     VT_INDEXINCELLMAP = 8,
@@ -2322,9 +2502,10 @@ inline flatbuffers::Offset<Cell> CreateCellDirect(
     float v1 = 0.0f,
     float u2 = 0.0f,
     float v2 = 0.0f) {
+  auto name__ = name ? _fbb.CreateString(name) : 0;
   return ss::ssfb::CreateCell(
       _fbb,
-      name ? _fbb.CreateString(name) : 0,
+      name__,
       cellMap,
       indexInCellMap,
       x,
@@ -2353,9 +2534,14 @@ inline bool operator==(const meshDataUVT &lhs, const meshDataUVT &rhs) {
       (lhs.uv == rhs.uv);
 }
 
+inline bool operator!=(const meshDataUVT &lhs, const meshDataUVT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct meshDataUV FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef meshDataUVT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_UV = 4
   };
   const flatbuffers::Vector<float> *uv() const {
@@ -2401,9 +2587,10 @@ inline flatbuffers::Offset<meshDataUV> CreatemeshDataUV(
 inline flatbuffers::Offset<meshDataUV> CreatemeshDataUVDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const std::vector<float> *uv = nullptr) {
+  auto uv__ = uv ? _fbb.CreateVector<float>(*uv) : 0;
   return ss::ssfb::CreatemeshDataUV(
       _fbb,
-      uv ? _fbb.CreateVector<float>(*uv) : 0);
+      uv__);
 }
 
 flatbuffers::Offset<meshDataUV> CreatemeshDataUV(flatbuffers::FlatBufferBuilder &_fbb, const meshDataUVT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -2420,9 +2607,14 @@ inline bool operator==(const meshDataIndicesT &lhs, const meshDataIndicesT &rhs)
       (lhs.indices == rhs.indices);
 }
 
+inline bool operator!=(const meshDataIndicesT &lhs, const meshDataIndicesT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct meshDataIndices FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef meshDataIndicesT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_INDICES = 4
   };
   const flatbuffers::Vector<float> *indices() const {
@@ -2468,9 +2660,10 @@ inline flatbuffers::Offset<meshDataIndices> CreatemeshDataIndices(
 inline flatbuffers::Offset<meshDataIndices> CreatemeshDataIndicesDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const std::vector<float> *indices = nullptr) {
+  auto indices__ = indices ? _fbb.CreateVector<float>(*indices) : 0;
   return ss::ssfb::CreatemeshDataIndices(
       _fbb,
-      indices ? _fbb.CreateVector<float>(*indices) : 0);
+      indices__);
 }
 
 flatbuffers::Offset<meshDataIndices> CreatemeshDataIndices(flatbuffers::FlatBufferBuilder &_fbb, const meshDataIndicesT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -2496,9 +2689,14 @@ inline bool operator==(const partStateT &lhs, const partStateT &rhs) {
       (lhs.data == rhs.data);
 }
 
+inline bool operator!=(const partStateT &lhs, const partStateT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct partState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef partStateT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_INDEX = 4,
     VT_FLAG1 = 6,
     VT_FLAG2 = 8,
@@ -2577,12 +2775,13 @@ inline flatbuffers::Offset<partState> CreatepartStateDirect(
     uint32_t flag1 = 0,
     uint32_t flag2 = 0,
     const std::vector<uint32_t> *data = nullptr) {
+  auto data__ = data ? _fbb.CreateVector<uint32_t>(*data) : 0;
   return ss::ssfb::CreatepartState(
       _fbb,
       index,
       flag1,
       flag2,
-      data ? _fbb.CreateVector<uint32_t>(*data) : 0);
+      data__);
 }
 
 flatbuffers::Offset<partState> CreatepartState(flatbuffers::FlatBufferBuilder &_fbb, const partStateT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -2599,9 +2798,14 @@ inline bool operator==(const frameDataIndexT &lhs, const frameDataIndexT &rhs) {
       (lhs.states == rhs.states);
 }
 
+inline bool operator!=(const frameDataIndexT &lhs, const frameDataIndexT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct frameDataIndex FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef frameDataIndexT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_STATES = 4
   };
   const flatbuffers::Vector<flatbuffers::Offset<partState>> *states() const {
@@ -2648,9 +2852,10 @@ inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(
 inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndexDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const std::vector<flatbuffers::Offset<partState>> *states = nullptr) {
+  auto states__ = states ? _fbb.CreateVector<flatbuffers::Offset<partState>>(*states) : 0;
   return ss::ssfb::CreateframeDataIndex(
       _fbb,
-      states ? _fbb.CreateVector<flatbuffers::Offset<partState>>(*states) : 0);
+      states__);
 }
 
 flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(flatbuffers::FlatBufferBuilder &_fbb, const frameDataIndexT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -2670,9 +2875,14 @@ inline bool operator==(const userDataStringT &lhs, const userDataStringT &rhs) {
       (lhs.data == rhs.data);
 }
 
+inline bool operator!=(const userDataStringT &lhs, const userDataStringT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct userDataString FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef userDataStringT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_LENGTH = 4,
     VT_DATA = 6
   };
@@ -2729,10 +2939,11 @@ inline flatbuffers::Offset<userDataString> CreateuserDataStringDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     int32_t length = 0,
     const char *data = nullptr) {
+  auto data__ = data ? _fbb.CreateString(data) : 0;
   return ss::ssfb::CreateuserDataString(
       _fbb,
       length,
-      data ? _fbb.CreateString(data) : 0);
+      data__);
 }
 
 flatbuffers::Offset<userDataString> CreateuserDataString(flatbuffers::FlatBufferBuilder &_fbb, const userDataStringT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -2755,9 +2966,14 @@ inline bool operator==(const userDataItemT &lhs, const userDataItemT &rhs) {
       (lhs.data == rhs.data);
 }
 
+inline bool operator!=(const userDataItemT &lhs, const userDataItemT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct userDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef userDataItemT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_FLAGS = 4,
     VT_ARRAYINDEX = 6,
     VT_DATA_TYPE = 8,
@@ -2838,12 +3054,14 @@ inline flatbuffers::Offset<userDataItem> CreateuserDataItemDirect(
     int16_t arrayIndex = 0,
     const std::vector<uint8_t> *data_type = nullptr,
     const std::vector<flatbuffers::Offset<void>> *data = nullptr) {
+  auto data_type__ = data_type ? _fbb.CreateVector<uint8_t>(*data_type) : 0;
+  auto data__ = data ? _fbb.CreateVector<flatbuffers::Offset<void>>(*data) : 0;
   return ss::ssfb::CreateuserDataItem(
       _fbb,
       flags,
       arrayIndex,
-      data_type ? _fbb.CreateVector<uint8_t>(*data_type) : 0,
-      data ? _fbb.CreateVector<flatbuffers::Offset<void>>(*data) : 0);
+      data_type__,
+      data__);
 }
 
 flatbuffers::Offset<userDataItem> CreateuserDataItem(flatbuffers::FlatBufferBuilder &_fbb, const userDataItemT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -2863,9 +3081,14 @@ inline bool operator==(const userDataPerFrameT &lhs, const userDataPerFrameT &rh
       (lhs.data == rhs.data);
 }
 
+inline bool operator!=(const userDataPerFrameT &lhs, const userDataPerFrameT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct userDataPerFrame FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef userDataPerFrameT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_FRAMEINDEX = 4,
     VT_DATA = 6
   };
@@ -2923,10 +3146,11 @@ inline flatbuffers::Offset<userDataPerFrame> CreateuserDataPerFrameDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     int16_t frameIndex = 0,
     const std::vector<flatbuffers::Offset<userDataItem>> *data = nullptr) {
+  auto data__ = data ? _fbb.CreateVector<flatbuffers::Offset<userDataItem>>(*data) : 0;
   return ss::ssfb::CreateuserDataPerFrame(
       _fbb,
       frameIndex,
-      data ? _fbb.CreateVector<flatbuffers::Offset<userDataItem>>(*data) : 0);
+      data__);
 }
 
 flatbuffers::Offset<userDataPerFrame> CreateuserDataPerFrame(flatbuffers::FlatBufferBuilder &_fbb, const userDataPerFrameT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -2946,9 +3170,14 @@ inline bool operator==(const labelDataItemT &lhs, const labelDataItemT &rhs) {
       (lhs.frameIndex == rhs.frameIndex);
 }
 
+inline bool operator!=(const labelDataItemT &lhs, const labelDataItemT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct labelDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef labelDataItemT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_LABEL = 4,
     VT_FRAMEINDEX = 6
   };
@@ -3005,9 +3234,10 @@ inline flatbuffers::Offset<labelDataItem> CreatelabelDataItemDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *label = nullptr,
     int16_t frameIndex = 0) {
+  auto label__ = label ? _fbb.CreateString(label) : 0;
   return ss::ssfb::CreatelabelDataItem(
       _fbb,
-      label ? _fbb.CreateString(label) : 0,
+      label__,
       frameIndex);
 }
 
@@ -3064,9 +3294,14 @@ inline bool operator==(const AnimationDataT &lhs, const AnimationDataT &rhs) {
       (lhs.canvasPvotY == rhs.canvasPvotY);
 }
 
+inline bool operator!=(const AnimationDataT &lhs, const AnimationDataT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef AnimationDataT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_DEFAULTDATA = 6,
     VT_FRAMEDATA = 8,
@@ -3289,15 +3524,22 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationDataDirect(
     int16_t canvasSizeH = 0,
     float canvasPvotX = 0.0f,
     float canvasPvotY = 0.0f) {
+  auto name__ = name ? _fbb.CreateString(name) : 0;
+  auto defaultData__ = defaultData ? _fbb.CreateVector<flatbuffers::Offset<AnimationInitialData>>(*defaultData) : 0;
+  auto frameData__ = frameData ? _fbb.CreateVector<flatbuffers::Offset<frameDataIndex>>(*frameData) : 0;
+  auto userData__ = userData ? _fbb.CreateVector<flatbuffers::Offset<userDataPerFrame>>(*userData) : 0;
+  auto labelData__ = labelData ? _fbb.CreateVector<flatbuffers::Offset<labelDataItem>>(*labelData) : 0;
+  auto meshsDataUV__ = meshsDataUV ? _fbb.CreateVector<flatbuffers::Offset<meshDataUV>>(*meshsDataUV) : 0;
+  auto meshsDataIndices__ = meshsDataIndices ? _fbb.CreateVector<flatbuffers::Offset<meshDataIndices>>(*meshsDataIndices) : 0;
   return ss::ssfb::CreateAnimationData(
       _fbb,
-      name ? _fbb.CreateString(name) : 0,
-      defaultData ? _fbb.CreateVector<flatbuffers::Offset<AnimationInitialData>>(*defaultData) : 0,
-      frameData ? _fbb.CreateVector<flatbuffers::Offset<frameDataIndex>>(*frameData) : 0,
-      userData ? _fbb.CreateVector<flatbuffers::Offset<userDataPerFrame>>(*userData) : 0,
-      labelData ? _fbb.CreateVector<flatbuffers::Offset<labelDataItem>>(*labelData) : 0,
-      meshsDataUV ? _fbb.CreateVector<flatbuffers::Offset<meshDataUV>>(*meshsDataUV) : 0,
-      meshsDataIndices ? _fbb.CreateVector<flatbuffers::Offset<meshDataIndices>>(*meshsDataIndices) : 0,
+      name__,
+      defaultData__,
+      frameData__,
+      userData__,
+      labelData__,
+      meshsDataUV__,
+      meshsDataIndices__,
       startFrames,
       endFrames,
       totalFrames,
@@ -3435,9 +3677,14 @@ inline bool operator==(const AnimationInitialDataT &lhs, const AnimationInitialD
       (lhs.effectValue_loopflag == rhs.effectValue_loopflag);
 }
 
+inline bool operator!=(const AnimationInitialDataT &lhs, const AnimationInitialDataT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct AnimationInitialData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef AnimationInitialDataT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_INDEX = 4,
     VT_LOWFLAG = 6,
     VT_HIGHFLAG = 8,
@@ -3887,9 +4134,14 @@ inline bool operator==(const PartDataT &lhs, const PartDataT &rhs) {
       (lhs.maskInfluence == rhs.maskInfluence);
 }
 
+inline bool operator!=(const PartDataT &lhs, const PartDataT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef PartDataT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_INDEX = 6,
     VT_PARENTINDEX = 8,
@@ -4037,17 +4289,21 @@ inline flatbuffers::Offset<PartData> CreatePartDataDirect(
     const char *effectfilename = nullptr,
     const char *colorLabel = nullptr,
     int16_t maskInfluence = 0) {
+  auto name__ = name ? _fbb.CreateString(name) : 0;
+  auto refname__ = refname ? _fbb.CreateString(refname) : 0;
+  auto effectfilename__ = effectfilename ? _fbb.CreateString(effectfilename) : 0;
+  auto colorLabel__ = colorLabel ? _fbb.CreateString(colorLabel) : 0;
   return ss::ssfb::CreatePartData(
       _fbb,
-      name ? _fbb.CreateString(name) : 0,
+      name__,
       index,
       parentIndex,
       type,
       boundsType,
       alphaBlendType,
-      refname ? _fbb.CreateString(refname) : 0,
-      effectfilename ? _fbb.CreateString(effectfilename) : 0,
-      colorLabel ? _fbb.CreateString(colorLabel) : 0,
+      refname__,
+      effectfilename__,
+      colorLabel__,
       maskInfluence);
 }
 
@@ -4069,9 +4325,14 @@ inline bool operator==(const AnimePackDataT &lhs, const AnimePackDataT &rhs) {
       (lhs.animations == rhs.animations);
 }
 
+inline bool operator!=(const AnimePackDataT &lhs, const AnimePackDataT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct AnimePackData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef AnimePackDataT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_PARTS = 6,
     VT_ANIMATIONS = 8
@@ -4143,11 +4404,14 @@ inline flatbuffers::Offset<AnimePackData> CreateAnimePackDataDirect(
     const char *name = nullptr,
     const std::vector<flatbuffers::Offset<PartData>> *parts = nullptr,
     const std::vector<flatbuffers::Offset<AnimationData>> *animations = nullptr) {
+  auto name__ = name ? _fbb.CreateString(name) : 0;
+  auto parts__ = parts ? _fbb.CreateVector<flatbuffers::Offset<PartData>>(*parts) : 0;
+  auto animations__ = animations ? _fbb.CreateVector<flatbuffers::Offset<AnimationData>>(*animations) : 0;
   return ss::ssfb::CreateAnimePackData(
       _fbb,
-      name ? _fbb.CreateString(name) : 0,
-      parts ? _fbb.CreateVector<flatbuffers::Offset<PartData>>(*parts) : 0,
-      animations ? _fbb.CreateVector<flatbuffers::Offset<AnimationData>>(*animations) : 0);
+      name__,
+      parts__,
+      animations__);
 }
 
 flatbuffers::Offset<AnimePackData> CreateAnimePackData(flatbuffers::FlatBufferBuilder &_fbb, const AnimePackDataT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -4188,9 +4452,14 @@ inline bool operator==(const ProjectDataT &lhs, const ProjectDataT &rhs) {
       (lhs.numEffectFileList == rhs.numEffectFileList);
 }
 
+inline bool operator!=(const ProjectDataT &lhs, const ProjectDataT &rhs) {
+    return !(lhs == rhs);
+}
+
+
 struct ProjectData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef ProjectDataT NativeTableType;
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_DATAID = 4,
     VT_VERSION = 6,
     VT_FLAGS = 8,
@@ -4341,15 +4610,19 @@ inline flatbuffers::Offset<ProjectData> CreateProjectDataDirect(
     int16_t numCells = 0,
     int16_t numAnimePacks = 0,
     int16_t numEffectFileList = 0) {
+  auto imageBaseDir__ = imageBaseDir ? _fbb.CreateString(imageBaseDir) : 0;
+  auto cells__ = cells ? _fbb.CreateVector<flatbuffers::Offset<Cell>>(*cells) : 0;
+  auto animePacks__ = animePacks ? _fbb.CreateVector<flatbuffers::Offset<AnimePackData>>(*animePacks) : 0;
+  auto effectFileList__ = effectFileList ? _fbb.CreateVector<flatbuffers::Offset<EffectFile>>(*effectFileList) : 0;
   return ss::ssfb::CreateProjectData(
       _fbb,
       dataId,
       version,
       flags,
-      imageBaseDir ? _fbb.CreateString(imageBaseDir) : 0,
-      cells ? _fbb.CreateVector<flatbuffers::Offset<Cell>>(*cells) : 0,
-      animePacks ? _fbb.CreateVector<flatbuffers::Offset<AnimePackData>>(*animePacks) : 0,
-      effectFileList ? _fbb.CreateVector<flatbuffers::Offset<EffectFile>>(*effectFileList) : 0,
+      imageBaseDir__,
+      cells__,
+      animePacks__,
+      effectFileList__,
       numCells,
       numAnimePacks,
       numEffectFileList);
@@ -4372,7 +4645,7 @@ inline void EffectNode::UnPackTo(EffectNodeT *_o, const flatbuffers::resolver_fu
   { auto _e = cellIndex(); _o->cellIndex = _e; };
   { auto _e = blendType(); _o->blendType = _e; };
   { auto _e = numBehavior(); _o->numBehavior = _e; };
-  { auto _e = Behavior_type(); if (_e) { _o->Behavior.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Behavior[_i].type = (EffectNodeBehavior)_e->Get(_i); } } };
+  { auto _e = Behavior_type(); if (_e) { _o->Behavior.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Behavior[_i].type = static_cast<EffectNodeBehavior>(_e->Get(_i)); } } };
   { auto _e = Behavior(); if (_e) { _o->Behavior.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Behavior[_i].value = EffectNodeBehaviorUnion::UnPack(_e->Get(_i), Behavior_type()->GetEnum<EffectNodeBehavior>(_i), _resolver); } } };
 }
 
@@ -4704,7 +4977,7 @@ inline void userDataItem::UnPackTo(userDataItemT *_o, const flatbuffers::resolve
   (void)_resolver;
   { auto _e = flags(); _o->flags = _e; };
   { auto _e = arrayIndex(); _o->arrayIndex = _e; };
-  { auto _e = data_type(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i].type = (userDataValue)_e->Get(_i); } } };
+  { auto _e = data_type(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i].type = static_cast<userDataValue>(_e->Get(_i)); } } };
   { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i].value = userDataValueUnion::UnPack(_e->Get(_i), data_type()->GetEnum<userDataValue>(_i), _resolver); } } };
 }
 
@@ -5138,55 +5411,55 @@ inline bool VerifyEffectNodeBehavior(flatbuffers::Verifier &verifier, const void
       return true;
     }
     case EffectNodeBehavior_EffectParticleElementBasic: {
-      return true;
+      return verifier.Verify<EffectParticleElementBasic>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      return true;
+      return verifier.Verify<EffectParticleElementRndSeedChange>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleElementDelay: {
-      return true;
+      return verifier.Verify<EffectParticleElementDelay>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleElementGravity: {
-      return true;
+      return verifier.Verify<EffectParticleElementGravity>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleElementPosition: {
-      return true;
+      return verifier.Verify<EffectParticleElementPosition>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleElementRotation: {
-      return true;
+      return verifier.Verify<EffectParticleElementRotation>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      return true;
+      return verifier.Verify<EffectParticleElementRotationTrans>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      return true;
+      return verifier.Verify<EffectParticleElementTransSpeed>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      return true;
+      return verifier.Verify<EffectParticleElementTangentialAcceleration>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleElementInitColor: {
-      return true;
+      return verifier.Verify<EffectParticleElementInitColor>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleElementTransColor: {
-      return true;
+      return verifier.Verify<EffectParticleElementTransColor>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      return true;
+      return verifier.Verify<EffectParticleElementAlphaFade>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleElementSize: {
-      return true;
+      return verifier.Verify<EffectParticleElementSize>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleElementTransSize: {
-      return true;
+      return verifier.Verify<EffectParticleElementTransSize>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticlePointGravity: {
-      return true;
+      return verifier.Verify<EffectParticlePointGravity>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      return true;
+      return verifier.Verify<EffectParticleTurnToDirectionEnabled>(static_cast<const uint8_t *>(obj), 0);
     }
     case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      return true;
+      return verifier.Verify<EffectParticleInfiniteEmitEnabled>(static_cast<const uint8_t *>(obj), 0);
     }
     default: return false;
   }
@@ -5526,13 +5799,13 @@ inline bool VerifyuserDataValue(flatbuffers::Verifier &verifier, const void *obj
       return true;
     }
     case userDataValue_userDataInteger: {
-      return true;
+      return verifier.Verify<userDataInteger>(static_cast<const uint8_t *>(obj), 0);
     }
     case userDataValue_userDataRect: {
-      return true;
+      return verifier.Verify<userDataRect>(static_cast<const uint8_t *>(obj), 0);
     }
     case userDataValue_userDataPoint: {
-      return true;
+      return verifier.Verify<userDataPoint>(static_cast<const uint8_t *>(obj), 0);
     }
     case userDataValue_userDataString: {
       auto ptr = reinterpret_cast<const userDataString *>(obj);

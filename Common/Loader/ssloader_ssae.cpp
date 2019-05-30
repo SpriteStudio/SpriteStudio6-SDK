@@ -40,22 +40,27 @@ SsAnimation*	SsAnimePack::findAnimation(SsString& name)
 void	SsMeshBind::loader(ISsXmlArchiver* ar)
 {
 
-	SsString str = ar->getxml()->GetText();
-	
-	SsStringTokenizer tokenizer(str, ',');
-	
-	
-	for (int i = 0; i < tokenizer.tokenNum(); i++)
+	const char* Text = ar->getxml()->GetText();
+
+	//Meshのバインドリストはテキスト要素が空の場合がある（並び順も意味のあるデータ列なため）
+	if (Text)
 	{
-		std::string getstr;
-		if (tokenizer.get(&getstr))
+		SsString str = Text;
+
+		SsStringTokenizer tokenizer(str, ',');
+
+
+		for (int i = 0; i < tokenizer.tokenNum(); i++)
 		{
-			SsMeshBindInfo info;
-			info.fromString(getstr);
-			meshVerticesBindArray.push_back(info);
+			std::string getstr;
+			if (tokenizer.get(&getstr))
+			{
+				SsMeshBindInfo info;
+				info.fromString(getstr);
+				meshVerticesBindArray.push_back(info);
+			}
 		}
 	}
-
 
 
 }
