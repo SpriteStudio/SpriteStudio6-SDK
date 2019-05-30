@@ -1,4 +1,4 @@
-# Compiled Object files
+﻿# Compiled Object files
 *.slo
 *.lo
 *.o
@@ -96,3 +96,9 @@ Build/Viewer2/CMakeLists.txt
 Build/Viewer2/cmakeBuild
 
 Tools/*
+.vscode/
+Build/Viewer2/Builds/
+Build/Viewer2/JuceLibraryCode/
+
+
+
