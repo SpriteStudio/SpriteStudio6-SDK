@@ -33,12 +33,16 @@ glfw-3.2.1.bin.WIN64.zip
 glfw-3.2.1.bin.WIN64/
 
 *.ssbp
+*.ssfb
+*.json
+
+.idea
+cmake-build-debug/
 
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
 Debug
-cmake_install.cmake/Users/kurooka/Documents/workspace/SpriteStudio6-SDK/.gitignore
 project.pbxproj
 sssdk.xcodeproj
 *.swp
@@ -51,35 +55,6 @@ sssdk.xcodeproj
 AntTweakBar64.dll
 glew32mx.dll
 Release/
-Build/Viewer/python27_d.dll
-Build/Viewer/RelWithDebInfo/scriptbase_converter.exe
-Build/Viewer/RelWithDebInfo/
-Build/Viewer/Win32/RelWithDebInfo/
-Build/Viewer/scriptbase_converter.dir/
-Build/Viewer/ssAnimater.dir/
-Build/Viewer/ssHelper.dir/RelWithDebInfo/CL.read.1.tlog
-Build/Viewer/ssHelper.dir/
-Build/Viewer/ssloader.dir/
-Build/Viewer/viewer_sample_dx9.dir/
-Build/Viewer/viewer_sample_gl.dir/
-Build/TestScript/build/
-Build/TestScript/psd2ss/build/
-Build/TestScript/psd2ss/dist/
-Build/TestScript/psd2ss/setuptools/
-Build/AntTweakBar.lib
-Build/AntTweakBar64.lib
-Common/Animator/57314826.txt
-Build/TestScript/SpriteStudio_pythonモジュール仕様書.txt
-Build/Viewer/cmake_install.cmake
-Build/cmake_install.cmake
-SpriteStudio5-SDK.zip
-Build/Ss5Converter.dir/
-Build/Win32/RelWithDebInfo/
-Build/ssAnimater.dir/
-Build/ssHelper.dir/
-Build/ssloader.dir/
-Build/viewer_sample_dx9.dir/
-Build/viewer_sample_gl.dir/
 *.log
 Build/*.dll
 Build/*.lib
@@ -100,5 +75,5 @@ Tools/*
 Build/Viewer2/Builds/
 Build/Viewer2/JuceLibraryCode/
 
-
-
+Build/Converter/build/
+Build/Viewer/build/

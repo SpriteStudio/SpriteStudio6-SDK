@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<SpriteStudioProject version="2.00.01">
+<SpriteStudioProject version="2.00.01" edition="Professional">
 	<name>allPartsV6</name>
 	<exportPath></exportPath>
 	<settings>
@@ -9,25 +9,12 @@
 		<effectBaseDirectory></effectBaseDirectory>
 		<exportBaseDirectory>Export</exportBaseDirectory>
 		<queryExportBaseDirectory>1</queryExportBaseDirectory>
-		<ssaxImport>
-			<convertImageOffsetToCellAnime>1</convertImageOffsetToCellAnime>
-			<ignorePivotAsCellRegister>1</ignorePivotAsCellRegister>
-			<keepAngleAsIsIfNegativeScale>1</keepAngleAsIsIfNegativeScale>
-		</ssaxImport>
 		<copyWhenImportImageIsOutside>1</copyWhenImportImageIsOutside>
 		<exportAnimeFileFormat>SSAX</exportAnimeFileFormat>
 		<exportCellMapFileFormat>invalid</exportCellMapFileFormat>
 		<exportCellMap>0</exportCellMap>
 		<copyImageWhenExportCellmap>1</copyImageWhenExportCellmap>
 		<ssConverterOptions></ssConverterOptions>
-		<ssaxExport>
-			<addAnimeNameEvenIfSingle>1</addAnimeNameEvenIfSingle>
-			<listAllCellMaps>1</listAllCellMaps>
-			<connectAnimations>0</connectAnimations>
-			<zRotCurveParamAsRadian>1</zRotCurveParamAsRadian>
-			<reverseZRotSignForNegativeScale>1</reverseZRotSignForNegativeScale>
-			<numberOfPivotDecimals>0</numberOfPivotDecimals>
-		</ssaxExport>
 		<player>custom</player>
 		<strictVer4>0</strictVer4>
 		<dontUseMatrixForTransform>0</dontUseMatrixForTransform>

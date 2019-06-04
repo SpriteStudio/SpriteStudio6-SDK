@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<SpriteStudioAnimePack version="2.00.03">
+<SpriteStudioAnimePack version="2.00.04" edition="Professional">
 	<settings>
 		<fps>30</fps>
 		<frameCount>11</frameCount>
@@ -12,17 +12,23 @@
 		<ik_depth>3</ik_depth>
 		<startFrame>0</startFrame>
 		<endFrame>10</endFrame>
+		<bgSettings>
+			<value>
+				<imagePath></imagePath>
+				<imageDisp>1</imageDisp>
+				<imageOffset>0 0</imageOffset>
+				<imageCanvas>0 0</imageCanvas>
+				<imagePivot>0 0</imagePivot>
+			</value>
+			<value>
+				<imagePath></imagePath>
+				<imageDisp>1</imageDisp>
+				<imageOffset>0 0</imageOffset>
+				<imageCanvas>0 0</imageCanvas>
+				<imagePivot>0 0</imagePivot>
+			</value>
+		</bgSettings>
 		<outStartNum>0</outStartNum>
-		<frontImagePath></frontImagePath>
-		<frontImageDisp>1</frontImageDisp>
-		<frontImageOffset>0 0</frontImageOffset>
-		<frontImageCanvas>0 0</frontImageCanvas>
-		<frontImagePivot>0 0</frontImagePivot>
-		<backImagePath></backImagePath>
-		<backImageDisp>1</backImageDisp>
-		<backImageOffset>0 0</backImageOffset>
-		<backImageCanvas>0 0</backImageCanvas>
-		<backImagePivot>0 0</backImagePivot>
 	</settings>
 	<name>deform_bone</name>
 	<exportPath></exportPath>
@@ -181,17 +187,23 @@
 				<ik_depth>3</ik_depth>
 				<startFrame>0</startFrame>
 				<endFrame>0</endFrame>
+				<bgSettings>
+					<value>
+						<imagePath></imagePath>
+						<imageDisp>1</imageDisp>
+						<imageOffset>0 0</imageOffset>
+						<imageCanvas>0 0</imageCanvas>
+						<imagePivot>0 0</imagePivot>
+					</value>
+					<value>
+						<imagePath></imagePath>
+						<imageDisp>1</imageDisp>
+						<imageOffset>0 0</imageOffset>
+						<imageCanvas>0 0</imageCanvas>
+						<imagePivot>0 0</imagePivot>
+					</value>
+				</bgSettings>
 				<outStartNum>0</outStartNum>
-				<frontImagePath></frontImagePath>
-				<frontImageDisp>1</frontImageDisp>
-				<frontImageOffset>0 0</frontImageOffset>
-				<frontImageCanvas>0 0</frontImageCanvas>
-				<frontImagePivot>0 0</frontImagePivot>
-				<backImagePath></backImagePath>
-				<backImageDisp>1</backImageDisp>
-				<backImageOffset>0 0</backImageOffset>
-				<backImageCanvas>0 0</backImageCanvas>
-				<backImagePivot>0 0</backImagePivot>
 			</settings>
 			<labels />
 			<isSetup>1</isSetup>
@@ -331,17 +343,23 @@
 				<ik_depth>3</ik_depth>
 				<startFrame>0</startFrame>
 				<endFrame>59</endFrame>
+				<bgSettings>
+					<value>
+						<imagePath></imagePath>
+						<imageDisp>1</imageDisp>
+						<imageOffset>0 0</imageOffset>
+						<imageCanvas>0 0</imageCanvas>
+						<imagePivot>0 0</imagePivot>
+					</value>
+					<value>
+						<imagePath></imagePath>
+						<imageDisp>1</imageDisp>
+						<imageOffset>0 0</imageOffset>
+						<imageCanvas>0 0</imageCanvas>
+						<imagePivot>0 0</imagePivot>
+					</value>
+				</bgSettings>
 				<outStartNum>0</outStartNum>
-				<frontImagePath></frontImagePath>
-				<frontImageDisp>1</frontImageDisp>
-				<frontImageOffset>0 0</frontImageOffset>
-				<frontImageCanvas>0 0</frontImageCanvas>
-				<frontImagePivot>0 0</frontImagePivot>
-				<backImagePath></backImagePath>
-				<backImageDisp>1</backImageDisp>
-				<backImageOffset>0 0</backImageOffset>
-				<backImageCanvas>0 0</backImageCanvas>
-				<backImagePivot>0 0</backImagePivot>
 			</settings>
 			<labels />
 			<isSetup>0</isSetup>
@@ -385,7 +403,7 @@
 						<attribute tag="DEFM">
 							<key time="0" ipType="linear">
 								<value>
-									<vsize>0</vsize>
+									<vsize>52</vsize>
 									<vchg>0 </vchg>
 								</value>
 							</key>
