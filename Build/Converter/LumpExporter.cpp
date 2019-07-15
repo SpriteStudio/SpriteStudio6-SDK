@@ -1468,9 +1468,9 @@ private:
 
 				auto arrayIndex = GETS16(EffectNodeVec[0]);
 				auto parentIndex = GETS16(EffectNodeVec[1]);
-				auto type = GETS16(EffectNodeVec[2]);
+				auto type = (ss::ssfb::EffectNodeType)GETS16(EffectNodeVec[2]);
 				auto cellIndex = GETS16(EffectNodeVec[3]);
-				auto blendType = GETS16(EffectNodeVec[4]);
+				auto blendType = (ss::ssfb::EffectRenderBlendType)GETS16(EffectNodeVec[4]);
 				auto numBehavior = GETS16(EffectNodeVec[5]);
 				auto effectBehaviorArrayVec = EffectNodeVec[6]->getChildren();
 
