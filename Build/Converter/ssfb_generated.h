@@ -428,6 +428,75 @@ inline const char *EnumNameVERTEX_FLAG(VERTEX_FLAG e) {
   return EnumNamesVERTEX_FLAG()[index];
 }
 
+enum EffectNodeType {
+  EffectNodeType_Invalid = -1,
+  EffectNodeType_Root = 0,
+  EffectNodeType_Emitter = 1,
+  EffectNodeType_Particle = 2,
+  EffectNodeType_MIN = EffectNodeType_Invalid,
+  EffectNodeType_MAX = EffectNodeType_Particle
+};
+
+inline const EffectNodeType (&EnumValuesEffectNodeType())[4] {
+  static const EffectNodeType values[] = {
+    EffectNodeType_Invalid,
+    EffectNodeType_Root,
+    EffectNodeType_Emitter,
+    EffectNodeType_Particle
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesEffectNodeType() {
+  static const char * const names[] = {
+    "Invalid",
+    "Root",
+    "Emitter",
+    "Particle",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameEffectNodeType(EffectNodeType e) {
+  if (e < EffectNodeType_Invalid || e > EffectNodeType_Particle) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(EffectNodeType_Invalid);
+  return EnumNamesEffectNodeType()[index];
+}
+
+enum EffectRenderBlendType {
+  EffectRenderBlendType_Invalid = -1,
+  EffectRenderBlendType_Mix = 0,
+  EffectRenderBlendType_Add = 1,
+  EffectRenderBlendType_MIN = EffectRenderBlendType_Invalid,
+  EffectRenderBlendType_MAX = EffectRenderBlendType_Add
+};
+
+inline const EffectRenderBlendType (&EnumValuesEffectRenderBlendType())[3] {
+  static const EffectRenderBlendType values[] = {
+    EffectRenderBlendType_Invalid,
+    EffectRenderBlendType_Mix,
+    EffectRenderBlendType_Add
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesEffectRenderBlendType() {
+  static const char * const names[] = {
+    "Invalid",
+    "Mix",
+    "Add",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameEffectRenderBlendType(EffectRenderBlendType e) {
+  if (e < EffectRenderBlendType_Invalid || e > EffectRenderBlendType_Add) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(EffectRenderBlendType_Invalid);
+  return EnumNamesEffectRenderBlendType()[index];
+}
+
 enum EffectNodeBehavior {
   EffectNodeBehavior_NONE = 0,
   EffectNodeBehavior_EffectParticleElementBasic = 1,
@@ -1781,17 +1850,17 @@ struct EffectNodeT : public flatbuffers::NativeTable {
   typedef EffectNode TableType;
   int16_t arrayIndex;
   int16_t parentIndex;
-  int16_t type;
+  EffectNodeType type;
   int16_t cellIndex;
-  int16_t blendType;
+  EffectRenderBlendType blendType;
   int16_t numBehavior;
   std::vector<EffectNodeBehaviorUnion> Behavior;
   EffectNodeT()
       : arrayIndex(0),
         parentIndex(0),
-        type(0),
+        type(EffectNodeType_Root),
         cellIndex(0),
-        blendType(0),
+        blendType(EffectRenderBlendType_Mix),
         numBehavior(0) {
   }
 };
@@ -1830,14 +1899,14 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t parentIndex() const {
     return GetField<int16_t>(VT_PARENTINDEX, 0);
   }
-  int16_t type() const {
-    return GetField<int16_t>(VT_TYPE, 0);
+  EffectNodeType type() const {
+    return static_cast<EffectNodeType>(GetField<int8_t>(VT_TYPE, 0));
   }
   int16_t cellIndex() const {
     return GetField<int16_t>(VT_CELLINDEX, 0);
   }
-  int16_t blendType() const {
-    return GetField<int16_t>(VT_BLENDTYPE, 0);
+  EffectRenderBlendType blendType() const {
+    return static_cast<EffectRenderBlendType>(GetField<int8_t>(VT_BLENDTYPE, 0));
   }
   int16_t numBehavior() const {
     return GetField<int16_t>(VT_NUMBEHAVIOR, 0);
@@ -1852,9 +1921,9 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyField<int16_t>(verifier, VT_ARRAYINDEX) &&
            VerifyField<int16_t>(verifier, VT_PARENTINDEX) &&
-           VerifyField<int16_t>(verifier, VT_TYPE) &&
+           VerifyField<int8_t>(verifier, VT_TYPE) &&
            VerifyField<int16_t>(verifier, VT_CELLINDEX) &&
-           VerifyField<int16_t>(verifier, VT_BLENDTYPE) &&
+           VerifyField<int8_t>(verifier, VT_BLENDTYPE) &&
            VerifyField<int16_t>(verifier, VT_NUMBEHAVIOR) &&
            VerifyOffset(verifier, VT_BEHAVIOR_TYPE) &&
            verifier.VerifyVector(Behavior_type()) &&
@@ -1877,14 +1946,14 @@ struct EffectNodeBuilder {
   void add_parentIndex(int16_t parentIndex) {
     fbb_.AddElement<int16_t>(EffectNode::VT_PARENTINDEX, parentIndex, 0);
   }
-  void add_type(int16_t type) {
-    fbb_.AddElement<int16_t>(EffectNode::VT_TYPE, type, 0);
+  void add_type(EffectNodeType type) {
+    fbb_.AddElement<int8_t>(EffectNode::VT_TYPE, static_cast<int8_t>(type), 0);
   }
   void add_cellIndex(int16_t cellIndex) {
     fbb_.AddElement<int16_t>(EffectNode::VT_CELLINDEX, cellIndex, 0);
   }
-  void add_blendType(int16_t blendType) {
-    fbb_.AddElement<int16_t>(EffectNode::VT_BLENDTYPE, blendType, 0);
+  void add_blendType(EffectRenderBlendType blendType) {
+    fbb_.AddElement<int8_t>(EffectNode::VT_BLENDTYPE, static_cast<int8_t>(blendType), 0);
   }
   void add_numBehavior(int16_t numBehavior) {
     fbb_.AddElement<int16_t>(EffectNode::VT_NUMBEHAVIOR, numBehavior, 0);
@@ -1911,9 +1980,9 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNode(
     flatbuffers::FlatBufferBuilder &_fbb,
     int16_t arrayIndex = 0,
     int16_t parentIndex = 0,
-    int16_t type = 0,
+    EffectNodeType type = EffectNodeType_Root,
     int16_t cellIndex = 0,
-    int16_t blendType = 0,
+    EffectRenderBlendType blendType = EffectRenderBlendType_Mix,
     int16_t numBehavior = 0,
     flatbuffers::Offset<flatbuffers::Vector<uint8_t>> Behavior_type = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> Behavior = 0) {
@@ -1921,11 +1990,11 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNode(
   builder_.add_Behavior(Behavior);
   builder_.add_Behavior_type(Behavior_type);
   builder_.add_numBehavior(numBehavior);
-  builder_.add_blendType(blendType);
   builder_.add_cellIndex(cellIndex);
-  builder_.add_type(type);
   builder_.add_parentIndex(parentIndex);
   builder_.add_arrayIndex(arrayIndex);
+  builder_.add_blendType(blendType);
+  builder_.add_type(type);
   return builder_.Finish();
 }
 
@@ -1933,9 +2002,9 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNodeDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     int16_t arrayIndex = 0,
     int16_t parentIndex = 0,
-    int16_t type = 0,
+    EffectNodeType type = EffectNodeType_Root,
     int16_t cellIndex = 0,
-    int16_t blendType = 0,
+    EffectRenderBlendType blendType = EffectRenderBlendType_Mix,
     int16_t numBehavior = 0,
     const std::vector<uint8_t> *Behavior_type = nullptr,
     const std::vector<flatbuffers::Offset<void>> *Behavior = nullptr) {

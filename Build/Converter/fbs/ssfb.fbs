@@ -66,6 +66,19 @@ enum VERTEX_FLAG : int (bit_flags) {
     ONE,
 }
 
+enum EffectNodeType : byte {
+    Invalid = -1,
+    Root,
+    Emitter,
+    Particle,
+}
+
+enum EffectRenderBlendType : byte {
+    Invalid=-1,
+    Mix,
+    Add,
+}
+
 struct EffectParticleInfiniteEmitEnabled {
     flag : int;
 }
@@ -194,9 +207,9 @@ union EffectNodeBehavior {
 table EffectNode {
     arrayIndex : short;
     parentIndex : short;
-    type : short;
+    type : EffectNodeType;
     cellIndex : short;	
-    blendType : short;
+    blendType : EffectRenderBlendType;
     numBehavior : short;
     Behavior : [EffectNodeBehavior];
 }
