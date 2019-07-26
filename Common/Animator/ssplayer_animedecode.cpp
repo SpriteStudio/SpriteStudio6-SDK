@@ -179,6 +179,7 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 		}else{
 			partState[i].parent = 0;
 		}
+		partState[i].part = p;
 
 		//継承率の設定
 		partState[i].inheritRates = p->inheritRates;
@@ -775,6 +776,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 			state->inheritRates = state->parent->inheritRates;
 		}
 	}
+
 
 	bool	size_x_key_find = false;
 	bool	size_y_key_find = false;

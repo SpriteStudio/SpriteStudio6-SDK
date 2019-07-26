@@ -348,7 +348,7 @@ void	SsMeshAnimator::makeMeshBoneList()
 {
 	if (bindAnime == 0)return;
 	meshList.clear();
-	boneList.clear();
+	animeboneList.clear();
 	jointList.clear();
 
 
@@ -362,7 +362,7 @@ void	SsMeshAnimator::makeMeshBoneList()
 		}
 		if (indexState[i].partType == SsPartType::armature)
 		{
-			boneList.push_back(&indexState[i]);
+			animeboneList.push_back(&indexState[i]);
 		}
 		if (indexState[i].partType == SsPartType::joint)
 		{
@@ -391,13 +391,12 @@ void	SsMeshAnimator::update()
 }
 
 
-void	SsMeshAnimator::copyToSsMeshPart(SsMeshBind* src , SsMeshPart* dst , std::vector<SsPartState*>& boneList )
+
+void	SsMeshAnimator::copyToSsMeshPart(SsMeshBind* src, SsMeshPart* dst, std::map<int, SsPartState*> boneIdxList)
 {
+	int bnum = (int)boneIdxList.size();
 
-	int bnum = (int)boneList.size();
 	bool isbind = false;	//バインドするボーンが存在するか？
-
-
 
 	for (size_t i = 0; i < src->meshVerticesBindArray.size(); i++)
 	{
@@ -411,10 +410,9 @@ void	SsMeshAnimator::copyToSsMeshPart(SsMeshBind* src , SsMeshPart* dst , std::v
 				dst->bindBoneInfo[i].offset[n] = bi.offset[n];
 				dst->bindBoneInfo[i].weight[n] = bi.weight[n];
 
-				//
-				if (bnum > bi.boneIndex[n])
+				if (boneIdxList.count(bi.boneIndex[n]) > 0)
 				{
-					dst->bindBoneInfo[i].bone[n] = boneList[bi.boneIndex[n]];
+					dst->bindBoneInfo[i].bone[n] = boneIdxList[bi.boneIndex[n]];
 					isbind = true;	//バインドするボーンがある
 					cntBone++;
 				}
@@ -435,20 +433,28 @@ void	SsMeshAnimator::modelLoad()
 {
 	if (bindAnime == 0)return;
 	if (meshList.empty()) return;
-	if (boneList.empty()) return;
+	if (animeboneList.empty()) return;
 	if (jointList.empty()) return;
 
-
 	SsModel* model = bindAnime->getMyModel();
+
+	std::map<SsString, int>& boneListRef = model->boneList;
+	
+
+	std::map<int, SsPartState*> boneIdxList;
+
+	for (size_t i = 0; i < animeboneList.size(); i++)
+	{
+		int idx = boneListRef[animeboneList[i]->part->name];
+		boneIdxList[idx] = animeboneList[i];
+	}
 
 	if (meshList.size() == model->meshList.size() )
 	{
 		for (size_t i = 0; i < model->meshList.size(); i++)
 		{
-			copyToSsMeshPart(model->meshList[i], meshList[i]->meshPart, boneList);
-
+			copyToSsMeshPart(model->meshList[i], meshList[i]->meshPart, boneIdxList);
 		}
-
 	}
 
 
