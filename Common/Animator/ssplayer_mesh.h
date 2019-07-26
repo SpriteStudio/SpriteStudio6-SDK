@@ -130,7 +130,7 @@ public:
 	SsAnimeDecoder* bindAnime;
 
 	std::vector<SsPartState*>    	meshList;
-	std::vector<SsPartState*>    	boneList;
+	std::vector<SsPartState*>    	animeboneList;
 	std::vector<SsPartState*>    	jointList;
 
 public:
@@ -141,7 +141,7 @@ public:
 
 	void	update();
 	void	makeMeshBoneList();
-	void	copyToSsMeshPart(SsMeshBind* src, SsMeshPart* dst, std::vector<SsPartState*>& boneList);
+	void	copyToSsMeshPart(SsMeshBind* src, SsMeshPart* dst, std::map<int, SsPartState*> boneIdxList);
 
 
 };
