@@ -66,6 +66,13 @@ enum VERTEX_FLAG : uint (bit_flags) {
     ONE,
 }
 
+enum INSTANCE_LOOP_FLAG : int (bit_flags) {
+    INFINITY,
+    REVERSE,
+    PINGPONG,
+    INDEPENDENT,
+};
+
 enum EffectNodeType : byte {
     Invalid = -1,
     Root,
