@@ -23,7 +23,6 @@ popd > /dev/null # flatbuffers
 
 # generate ssfb code
 ${FLATC} -c fbs/ssfb.fbs --gen-compare --gen-object-api 
-${FLATC} -s fbs/ssfb.fbs
 ${FLATC} -T fbs/ssfb.fbs --no-fb-import 
 
 popd > /dev/null # Converter
