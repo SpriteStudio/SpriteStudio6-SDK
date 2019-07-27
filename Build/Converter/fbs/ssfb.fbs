@@ -58,7 +58,7 @@ enum PART_FLAG2 : int (bit_flags) {
     MESHDATA,
 }
 
-enum VERTEX_FLAG : int (bit_flags) {
+enum VERTEX_FLAG : byte (bit_flags) {
     LT,
     RT,
     LB,	
@@ -66,12 +66,19 @@ enum VERTEX_FLAG : int (bit_flags) {
     ONE,
 }
 
-enum INSTANCE_LOOP_FLAG : int (bit_flags) {
+enum INSTANCE_LOOP_FLAG : byte (bit_flags) {
     INFINITY,
     REVERSE,
     PINGPONG,
     INDEPENDENT,
-};
+}
+
+enum USER_DATA_FLAG : byte (bit_flags) {
+    INTEGER,
+    RECT,
+    POINT,
+    STRING,
+}
 
 enum EffectNodeType : byte {
     Invalid = -1,
@@ -303,7 +310,7 @@ union userDataValue {
 }
 
 table userDataItem {
-    flags : short;
+    flags : USER_DATA_FLAG;
     arrayIndex : short;
     data : [userDataValue];
 }
