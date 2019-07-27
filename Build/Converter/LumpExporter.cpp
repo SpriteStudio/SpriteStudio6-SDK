@@ -1345,7 +1345,7 @@ private:
 						auto num = GETS16(userDataIndexArrayItemVec[0]);
 						int idx = 1;
 						for(int i=0; i<num; i++) {
-							auto flags = GETS16(userDataIndexArrayItemVec[idx++]);
+							auto flags = (ss::ssfb::USER_DATA_FLAG)GETS16(userDataIndexArrayItemVec[idx++]);
 							auto arrayIndex = GETS16(userDataIndexArrayItemVec[idx++]);
 							if(flags & (int16_t)(USER_DATA_FLAG_INTEGER)) {
 								auto integer = GETS32(userDataIndexArrayItemVec[idx++]);
@@ -1382,7 +1382,7 @@ private:
 
 							auto serializeSsfbDataArrayType = m_ssfbBuilder.CreateVector(ssfbDataArrayType);
 							auto serializeSsfbDataArray = m_ssfbBuilder.CreateVector(ssfbDataArray);
-							auto item = ss::ssfb::CreateuserDataItem(m_ssfbBuilder, static_cast<int16_t>(flags),
+							auto item = ss::ssfb::CreateuserDataItem(m_ssfbBuilder, flags,
 																	 arrayIndex,
 																	 serializeSsfbDataArrayType,
 																	 serializeSsfbDataArray);

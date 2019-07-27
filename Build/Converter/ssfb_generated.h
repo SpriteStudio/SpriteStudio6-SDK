@@ -395,7 +395,7 @@ inline const char *EnumNamePART_FLAG2(PART_FLAG2 e) {
   return EnumNamesPART_FLAG2()[index];
 }
 
-enum VERTEX_FLAG : uint32_t {
+enum VERTEX_FLAG : int8_t {
   VERTEX_FLAG_LT = 1,
   VERTEX_FLAG_RT = 2,
   VERTEX_FLAG_LB = 4,
@@ -443,6 +443,86 @@ inline const char *EnumNameVERTEX_FLAG(VERTEX_FLAG e) {
   if (flatbuffers::IsOutRange(e, VERTEX_FLAG_LT, VERTEX_FLAG_ONE)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(VERTEX_FLAG_LT);
   return EnumNamesVERTEX_FLAG()[index];
+}
+
+enum INSTANCE_LOOP_FLAG : int8_t {
+  INSTANCE_LOOP_FLAG_INFINITY = 1,
+  INSTANCE_LOOP_FLAG_REVERSE = 2,
+  INSTANCE_LOOP_FLAG_PINGPONG = 4,
+  INSTANCE_LOOP_FLAG_INDEPENDENT = 8,
+  INSTANCE_LOOP_FLAG_NONE = 0,
+  INSTANCE_LOOP_FLAG_ANY = 15
+};
+
+inline const INSTANCE_LOOP_FLAG (&EnumValuesINSTANCE_LOOP_FLAG())[4] {
+  static const INSTANCE_LOOP_FLAG values[] = {
+    INSTANCE_LOOP_FLAG_INFINITY,
+    INSTANCE_LOOP_FLAG_REVERSE,
+    INSTANCE_LOOP_FLAG_PINGPONG,
+    INSTANCE_LOOP_FLAG_INDEPENDENT
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesINSTANCE_LOOP_FLAG() {
+  static const char * const names[9] = {
+    "INFINITY",
+    "REVERSE",
+    "",
+    "PINGPONG",
+    "",
+    "",
+    "",
+    "INDEPENDENT",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameINSTANCE_LOOP_FLAG(INSTANCE_LOOP_FLAG e) {
+  if (flatbuffers::IsOutRange(e, INSTANCE_LOOP_FLAG_INFINITY, INSTANCE_LOOP_FLAG_INDEPENDENT)) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(INSTANCE_LOOP_FLAG_INFINITY);
+  return EnumNamesINSTANCE_LOOP_FLAG()[index];
+}
+
+enum USER_DATA_FLAG : int8_t {
+  USER_DATA_FLAG_INTEGER = 1,
+  USER_DATA_FLAG_RECT = 2,
+  USER_DATA_FLAG_POINT = 4,
+  USER_DATA_FLAG_STRING = 8,
+  USER_DATA_FLAG_NONE = 0,
+  USER_DATA_FLAG_ANY = 15
+};
+
+inline const USER_DATA_FLAG (&EnumValuesUSER_DATA_FLAG())[4] {
+  static const USER_DATA_FLAG values[] = {
+    USER_DATA_FLAG_INTEGER,
+    USER_DATA_FLAG_RECT,
+    USER_DATA_FLAG_POINT,
+    USER_DATA_FLAG_STRING
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesUSER_DATA_FLAG() {
+  static const char * const names[9] = {
+    "INTEGER",
+    "RECT",
+    "",
+    "POINT",
+    "",
+    "",
+    "",
+    "STRING",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameUSER_DATA_FLAG(USER_DATA_FLAG e) {
+  if (flatbuffers::IsOutRange(e, USER_DATA_FLAG_INTEGER, USER_DATA_FLAG_STRING)) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(USER_DATA_FLAG_INTEGER);
+  return EnumNamesUSER_DATA_FLAG()[index];
 }
 
 enum EffectNodeType : int8_t {
@@ -3002,7 +3082,7 @@ flatbuffers::Offset<userDataString> CreateuserDataString(flatbuffers::FlatBuffer
 
 struct userDataItemT : public flatbuffers::NativeTable {
   typedef userDataItem TableType;
-  int16_t flags = 0;
+  ss::ssfb::USER_DATA_FLAG flags = static_cast<ss::ssfb::USER_DATA_FLAG>(0);
   int16_t arrayIndex = 0;
   std::vector<ss::ssfb::userDataValueUnion> data{};
 };
@@ -3016,8 +3096,8 @@ struct userDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_DATA_TYPE = 8,
     VT_DATA = 10
   };
-  int16_t flags() const {
-    return GetField<int16_t>(VT_FLAGS, 0);
+  ss::ssfb::USER_DATA_FLAG flags() const {
+    return static_cast<ss::ssfb::USER_DATA_FLAG>(GetField<int8_t>(VT_FLAGS, 0));
   }
   int16_t arrayIndex() const {
     return GetField<int16_t>(VT_ARRAYINDEX, 0);
@@ -3030,7 +3110,7 @@ struct userDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int16_t>(verifier, VT_FLAGS) &&
+           VerifyField<int8_t>(verifier, VT_FLAGS) &&
            VerifyField<int16_t>(verifier, VT_ARRAYINDEX) &&
            VerifyOffset(verifier, VT_DATA_TYPE) &&
            verifier.VerifyVector(data_type()) &&
@@ -3048,8 +3128,8 @@ struct userDataItemBuilder {
   typedef userDataItem Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_flags(int16_t flags) {
-    fbb_.AddElement<int16_t>(userDataItem::VT_FLAGS, flags, 0);
+  void add_flags(ss::ssfb::USER_DATA_FLAG flags) {
+    fbb_.AddElement<int8_t>(userDataItem::VT_FLAGS, static_cast<int8_t>(flags), 0);
   }
   void add_arrayIndex(int16_t arrayIndex) {
     fbb_.AddElement<int16_t>(userDataItem::VT_ARRAYINDEX, arrayIndex, 0);
@@ -3073,7 +3153,7 @@ struct userDataItemBuilder {
 
 inline flatbuffers::Offset<userDataItem> CreateuserDataItem(
     flatbuffers::FlatBufferBuilder &_fbb,
-    int16_t flags = 0,
+    ss::ssfb::USER_DATA_FLAG flags = static_cast<ss::ssfb::USER_DATA_FLAG>(0),
     int16_t arrayIndex = 0,
     flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data_type = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> data = 0) {
@@ -3087,7 +3167,7 @@ inline flatbuffers::Offset<userDataItem> CreateuserDataItem(
 
 inline flatbuffers::Offset<userDataItem> CreateuserDataItemDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
-    int16_t flags = 0,
+    ss::ssfb::USER_DATA_FLAG flags = static_cast<ss::ssfb::USER_DATA_FLAG>(0),
     int16_t arrayIndex = 0,
     const std::vector<uint8_t> *data_type = nullptr,
     const std::vector<flatbuffers::Offset<void>> *data = nullptr) {
