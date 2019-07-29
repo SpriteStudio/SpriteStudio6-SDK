@@ -1344,51 +1344,41 @@ private:
 						auto userDataIndexArrayItemVec = userDataIndexArrayItem->getChildren();
 						auto num = GETS16(userDataIndexArrayItemVec[0]);
 						int idx = 1;
+
 						for(int i=0; i<num; i++) {
+                            int integer = 0;
+                            int rect_x = 0;
+                            int rect_y = 0;
+                            int rect_w = 0;
+                            int rect_h = 0;
+                            int point_x = 0;
+                            int point_y = 0;
+                            int user_string_length = 0;
+                            flatbuffers::Offset<flatbuffers::String> user_string = 0;
+
 							auto flags = (ss::ssfb::UserDataFlag)GETS16(userDataIndexArrayItemVec[idx++]);
 							auto arrayIndex = GETS16(userDataIndexArrayItemVec[idx++]);
+
 							if(flags & ss::ssfb::UserDataFlag::UserDataFlag_Integer) {
-								auto integer = GETS32(userDataIndexArrayItemVec[idx++]);
-								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::UserDataInteger(integer));
-								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::UserDataValue_UserDataInteger);
+                                integer = GETS32(userDataIndexArrayItemVec[idx++]);
 							}
 							if(flags & ss::ssfb::UserDataFlag::UserDataFlag_Rect) {
-								auto rect_x = GETS32(userDataIndexArrayItemVec[idx++]);
-								auto rect_y = GETS32(userDataIndexArrayItemVec[idx++]);
-								auto rect_w = GETS32(userDataIndexArrayItemVec[idx++]);
-								auto rect_h = GETS32(userDataIndexArrayItemVec[idx++]);
-
-								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::UserDataRect(rect_x, rect_y, rect_w, rect_h));
-								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::UserDataValue_UserDataRect);
+								rect_x = GETS32(userDataIndexArrayItemVec[idx++]);
+								rect_y = GETS32(userDataIndexArrayItemVec[idx++]);
+								rect_w = GETS32(userDataIndexArrayItemVec[idx++]);
+								rect_h = GETS32(userDataIndexArrayItemVec[idx++]);
 							}
 							if(flags & ss::ssfb::UserDataFlag::UserDataFlag_Point) {
-								auto point_x = GETS32(userDataIndexArrayItemVec[idx++]);
-								auto point_y = GETS32(userDataIndexArrayItemVec[idx++]);
-
-								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::UserDataPoint(point_x, point_y));
-								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::UserDataValue_UserDataPoint);
+								point_x = GETS32(userDataIndexArrayItemVec[idx++]);
+								point_y = GETS32(userDataIndexArrayItemVec[idx++]);
 							}
 							if(flags & ss::ssfb::UserDataFlag::UserDataFlag_String) {
-								auto str_length = GETS16(userDataIndexArrayItemVec[idx++]);
-								auto ssfbStr = GETSSFBSTRING(m_ssfbBuilder, userDataIndexArrayItemVec[idx++], m_encoding);
-
-								auto item = ss::ssfb::CreateUserDataString(m_ssfbBuilder, str_length, ssfbStr);
-								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::UserDataValue_UserDataString);
+								user_string_length = GETS16(userDataIndexArrayItemVec[idx++]);
+								user_string = GETSSFBSTRING(m_ssfbBuilder, userDataIndexArrayItemVec[idx++], m_encoding);
 							}
-
-							auto serializeSsfbDataArrayType = m_ssfbBuilder.CreateVector(ssfbDataArrayType);
-							auto serializeSsfbDataArray = m_ssfbBuilder.CreateVector(ssfbDataArray);
-							auto item = ss::ssfb::CreateUserDataItem(m_ssfbBuilder, flags,
-																	 arrayIndex,
-																	 serializeSsfbDataArrayType,
-																	 serializeSsfbDataArray);
+							auto item = ss::ssfb::CreateUserDataItem(m_ssfbBuilder, flags, arrayIndex, integer, rect_x, rect_y, rect_w, rect_h, point_x, point_y, user_string_length, user_string);
 							ssfbUserDataItemData.push_back(item);
 						}
-
 						auto serializeSsfbUserDataItemData = m_ssfbBuilder.CreateVector(ssfbUserDataItemData);
 
 						auto frame = this->m_frameIndexVec[this->m_frameIndex++];

@@ -281,38 +281,18 @@ table FrameDataIndex {
   states:[PartState];
 }
 
-struct UserDataInteger {
-  integer:int;
-}
-
-struct UserDataRect {
-  x:int;
-  y:int;
-  w:int;
-  h:int;
-}
-
-struct UserDataPoint {
-  x:int;
-  y:int;
-}
-
-table UserDataString {
-  length:int;
-  data:string;
-}
-
-union UserDataValue {
-  UserDataInteger,
-  UserDataRect,
-  UserDataPoint,
-  UserDataString,
-}
-
 table UserDataItem {
   flags:UserDataFlag;
   array_index:short;
-  data:[UserDataValue];
+  inteegr:int;
+  rect_x:int;
+  rect_y:int;
+  rect_w:int;
+  rect_h:int;
+  point_x:int;
+  point_y:int;
+  user_string_length:int;
+  user_string:string;
 }
 
 table UserDataPerFrame {

@@ -75,16 +75,6 @@ struct FrameDataIndex;
 struct FrameDataIndexBuilder;
 struct FrameDataIndexT;
 
-struct UserDataInteger;
-
-struct UserDataRect;
-
-struct UserDataPoint;
-
-struct UserDataString;
-struct UserDataStringBuilder;
-struct UserDataStringT;
-
 struct UserDataItem;
 struct UserDataItemBuilder;
 struct UserDataItemT;
@@ -167,14 +157,6 @@ bool operator==(const PartStateT &lhs, const PartStateT &rhs);
 bool operator!=(const PartStateT &lhs, const PartStateT &rhs);
 bool operator==(const FrameDataIndexT &lhs, const FrameDataIndexT &rhs);
 bool operator!=(const FrameDataIndexT &lhs, const FrameDataIndexT &rhs);
-bool operator==(const UserDataInteger &lhs, const UserDataInteger &rhs);
-bool operator!=(const UserDataInteger &lhs, const UserDataInteger &rhs);
-bool operator==(const UserDataRect &lhs, const UserDataRect &rhs);
-bool operator!=(const UserDataRect &lhs, const UserDataRect &rhs);
-bool operator==(const UserDataPoint &lhs, const UserDataPoint &rhs);
-bool operator!=(const UserDataPoint &lhs, const UserDataPoint &rhs);
-bool operator==(const UserDataStringT &lhs, const UserDataStringT &rhs);
-bool operator!=(const UserDataStringT &lhs, const UserDataStringT &rhs);
 bool operator==(const UserDataItemT &lhs, const UserDataItemT &rhs);
 bool operator!=(const UserDataItemT &lhs, const UserDataItemT &rhs);
 bool operator==(const UserDataPerFrameT &lhs, const UserDataPerFrameT &rhs);
@@ -1072,185 +1054,6 @@ inline bool operator!=(const EffectNodeBehaviorUnion &lhs, const EffectNodeBehav
 bool VerifyEffectNodeBehavior(flatbuffers::Verifier &verifier, const void *obj, EffectNodeBehavior type);
 bool VerifyEffectNodeBehaviorVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
 
-enum UserDataValue : uint8_t {
-  UserDataValue_NONE = 0,
-  UserDataValue_UserDataInteger = 1,
-  UserDataValue_UserDataRect = 2,
-  UserDataValue_UserDataPoint = 3,
-  UserDataValue_UserDataString = 4,
-  UserDataValue_MIN = UserDataValue_NONE,
-  UserDataValue_MAX = UserDataValue_UserDataString
-};
-
-inline const UserDataValue (&EnumValuesUserDataValue())[5] {
-  static const UserDataValue values[] = {
-    UserDataValue_NONE,
-    UserDataValue_UserDataInteger,
-    UserDataValue_UserDataRect,
-    UserDataValue_UserDataPoint,
-    UserDataValue_UserDataString
-  };
-  return values;
-}
-
-inline const char * const *EnumNamesUserDataValue() {
-  static const char * const names[6] = {
-    "NONE",
-    "UserDataInteger",
-    "UserDataRect",
-    "UserDataPoint",
-    "UserDataString",
-    nullptr
-  };
-  return names;
-}
-
-inline const char *EnumNameUserDataValue(UserDataValue e) {
-  if (flatbuffers::IsOutRange(e, UserDataValue_NONE, UserDataValue_UserDataString)) return "";
-  const size_t index = static_cast<size_t>(e);
-  return EnumNamesUserDataValue()[index];
-}
-
-template<typename T> struct UserDataValueTraits {
-  static const UserDataValue enum_value = UserDataValue_NONE;
-};
-
-template<> struct UserDataValueTraits<ss::ssfb::UserDataInteger> {
-  static const UserDataValue enum_value = UserDataValue_UserDataInteger;
-};
-
-template<> struct UserDataValueTraits<ss::ssfb::UserDataRect> {
-  static const UserDataValue enum_value = UserDataValue_UserDataRect;
-};
-
-template<> struct UserDataValueTraits<ss::ssfb::UserDataPoint> {
-  static const UserDataValue enum_value = UserDataValue_UserDataPoint;
-};
-
-template<> struct UserDataValueTraits<ss::ssfb::UserDataString> {
-  static const UserDataValue enum_value = UserDataValue_UserDataString;
-};
-
-template<typename T> struct UserDataValueUnionTraits {
-  static const UserDataValue enum_value = UserDataValue_NONE;
-};
-
-template<> struct UserDataValueUnionTraits<ss::ssfb::UserDataInteger> {
-  static const UserDataValue enum_value = UserDataValue_UserDataInteger;
-};
-
-template<> struct UserDataValueUnionTraits<ss::ssfb::UserDataRect> {
-  static const UserDataValue enum_value = UserDataValue_UserDataRect;
-};
-
-template<> struct UserDataValueUnionTraits<ss::ssfb::UserDataPoint> {
-  static const UserDataValue enum_value = UserDataValue_UserDataPoint;
-};
-
-template<> struct UserDataValueUnionTraits<ss::ssfb::UserDataStringT> {
-  static const UserDataValue enum_value = UserDataValue_UserDataString;
-};
-
-struct UserDataValueUnion {
-  UserDataValue type;
-  void *value;
-
-  UserDataValueUnion() : type(UserDataValue_NONE), value(nullptr) {}
-  UserDataValueUnion(UserDataValueUnion&& u) FLATBUFFERS_NOEXCEPT :
-    type(UserDataValue_NONE), value(nullptr)
-    { std::swap(type, u.type); std::swap(value, u.value); }
-  UserDataValueUnion(const UserDataValueUnion &);
-  UserDataValueUnion &operator=(const UserDataValueUnion &u)
-    { UserDataValueUnion t(u); std::swap(type, t.type); std::swap(value, t.value); return *this; }
-  UserDataValueUnion &operator=(UserDataValueUnion &&u) FLATBUFFERS_NOEXCEPT
-    { std::swap(type, u.type); std::swap(value, u.value); return *this; }
-  ~UserDataValueUnion() { Reset(); }
-
-  void Reset();
-
-  template <typename T>
-  void Set(T&& val) {
-    typedef typename std::remove_reference<T>::type RT;
-    Reset();
-    type = UserDataValueUnionTraits<RT>::enum_value;
-    if (type != UserDataValue_NONE) {
-      value = new RT(std::forward<T>(val));
-    }
-  }
-
-  static void *UnPack(const void *obj, UserDataValue type, const flatbuffers::resolver_function_t *resolver);
-  flatbuffers::Offset<void> Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher = nullptr) const;
-
-  ss::ssfb::UserDataInteger *AsUserDataInteger() {
-    return type == UserDataValue_UserDataInteger ?
-      reinterpret_cast<ss::ssfb::UserDataInteger *>(value) : nullptr;
-  }
-  const ss::ssfb::UserDataInteger *AsUserDataInteger() const {
-    return type == UserDataValue_UserDataInteger ?
-      reinterpret_cast<const ss::ssfb::UserDataInteger *>(value) : nullptr;
-  }
-  ss::ssfb::UserDataRect *AsUserDataRect() {
-    return type == UserDataValue_UserDataRect ?
-      reinterpret_cast<ss::ssfb::UserDataRect *>(value) : nullptr;
-  }
-  const ss::ssfb::UserDataRect *AsUserDataRect() const {
-    return type == UserDataValue_UserDataRect ?
-      reinterpret_cast<const ss::ssfb::UserDataRect *>(value) : nullptr;
-  }
-  ss::ssfb::UserDataPoint *AsUserDataPoint() {
-    return type == UserDataValue_UserDataPoint ?
-      reinterpret_cast<ss::ssfb::UserDataPoint *>(value) : nullptr;
-  }
-  const ss::ssfb::UserDataPoint *AsUserDataPoint() const {
-    return type == UserDataValue_UserDataPoint ?
-      reinterpret_cast<const ss::ssfb::UserDataPoint *>(value) : nullptr;
-  }
-  ss::ssfb::UserDataStringT *AsUserDataString() {
-    return type == UserDataValue_UserDataString ?
-      reinterpret_cast<ss::ssfb::UserDataStringT *>(value) : nullptr;
-  }
-  const ss::ssfb::UserDataStringT *AsUserDataString() const {
-    return type == UserDataValue_UserDataString ?
-      reinterpret_cast<const ss::ssfb::UserDataStringT *>(value) : nullptr;
-  }
-};
-
-
-inline bool operator==(const UserDataValueUnion &lhs, const UserDataValueUnion &rhs) {
-  if (lhs.type != rhs.type) return false;
-  switch (lhs.type) {
-    case UserDataValue_NONE: {
-      return true;
-    }
-    case UserDataValue_UserDataInteger: {
-      return *(reinterpret_cast<const ss::ssfb::UserDataInteger *>(lhs.value)) ==
-             *(reinterpret_cast<const ss::ssfb::UserDataInteger *>(rhs.value));
-    }
-    case UserDataValue_UserDataRect: {
-      return *(reinterpret_cast<const ss::ssfb::UserDataRect *>(lhs.value)) ==
-             *(reinterpret_cast<const ss::ssfb::UserDataRect *>(rhs.value));
-    }
-    case UserDataValue_UserDataPoint: {
-      return *(reinterpret_cast<const ss::ssfb::UserDataPoint *>(lhs.value)) ==
-             *(reinterpret_cast<const ss::ssfb::UserDataPoint *>(rhs.value));
-    }
-    case UserDataValue_UserDataString: {
-      return *(reinterpret_cast<const ss::ssfb::UserDataStringT *>(lhs.value)) ==
-             *(reinterpret_cast<const ss::ssfb::UserDataStringT *>(rhs.value));
-    }
-    default: {
-      return false;
-    }
-  }
-}
-
-inline bool operator!=(const UserDataValueUnion &lhs, const UserDataValueUnion &rhs) {
-    return !(lhs == rhs);
-}
-
-bool VerifyUserDataValue(flatbuffers::Verifier &verifier, const void *obj, UserDataValue type);
-bool VerifyUserDataValueVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
-
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleInfiniteEmitEnabled FLATBUFFERS_FINAL_CLASS {
  private:
   int32_t flag_;
@@ -1958,115 +1761,6 @@ inline bool operator==(const EffectParticleElementBasic &lhs, const EffectPartic
 }
 
 inline bool operator!=(const EffectParticleElementBasic &lhs, const EffectParticleElementBasic &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) UserDataInteger FLATBUFFERS_FINAL_CLASS {
- private:
-  int32_t integer_;
-
- public:
-  UserDataInteger()
-      : integer_(0) {
-  }
-  UserDataInteger(int32_t _integer)
-      : integer_(flatbuffers::EndianScalar(_integer)) {
-  }
-  int32_t integer() const {
-    return flatbuffers::EndianScalar(integer_);
-  }
-};
-FLATBUFFERS_STRUCT_END(UserDataInteger, 4);
-
-inline bool operator==(const UserDataInteger &lhs, const UserDataInteger &rhs) {
-  return
-      (lhs.integer() == rhs.integer());
-}
-
-inline bool operator!=(const UserDataInteger &lhs, const UserDataInteger &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) UserDataRect FLATBUFFERS_FINAL_CLASS {
- private:
-  int32_t x_;
-  int32_t y_;
-  int32_t w_;
-  int32_t h_;
-
- public:
-  UserDataRect()
-      : x_(0),
-        y_(0),
-        w_(0),
-        h_(0) {
-  }
-  UserDataRect(int32_t _x, int32_t _y, int32_t _w, int32_t _h)
-      : x_(flatbuffers::EndianScalar(_x)),
-        y_(flatbuffers::EndianScalar(_y)),
-        w_(flatbuffers::EndianScalar(_w)),
-        h_(flatbuffers::EndianScalar(_h)) {
-  }
-  int32_t x() const {
-    return flatbuffers::EndianScalar(x_);
-  }
-  int32_t y() const {
-    return flatbuffers::EndianScalar(y_);
-  }
-  int32_t w() const {
-    return flatbuffers::EndianScalar(w_);
-  }
-  int32_t h() const {
-    return flatbuffers::EndianScalar(h_);
-  }
-};
-FLATBUFFERS_STRUCT_END(UserDataRect, 16);
-
-inline bool operator==(const UserDataRect &lhs, const UserDataRect &rhs) {
-  return
-      (lhs.x() == rhs.x()) &&
-      (lhs.y() == rhs.y()) &&
-      (lhs.w() == rhs.w()) &&
-      (lhs.h() == rhs.h());
-}
-
-inline bool operator!=(const UserDataRect &lhs, const UserDataRect &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) UserDataPoint FLATBUFFERS_FINAL_CLASS {
- private:
-  int32_t x_;
-  int32_t y_;
-
- public:
-  UserDataPoint()
-      : x_(0),
-        y_(0) {
-  }
-  UserDataPoint(int32_t _x, int32_t _y)
-      : x_(flatbuffers::EndianScalar(_x)),
-        y_(flatbuffers::EndianScalar(_y)) {
-  }
-  int32_t x() const {
-    return flatbuffers::EndianScalar(x_);
-  }
-  int32_t y() const {
-    return flatbuffers::EndianScalar(y_);
-  }
-};
-FLATBUFFERS_STRUCT_END(UserDataPoint, 8);
-
-inline bool operator==(const UserDataPoint &lhs, const UserDataPoint &rhs) {
-  return
-      (lhs.x() == rhs.x()) &&
-      (lhs.y() == rhs.y());
-}
-
-inline bool operator!=(const UserDataPoint &lhs, const UserDataPoint &rhs) {
     return !(lhs == rhs);
 }
 
@@ -3005,86 +2699,19 @@ inline flatbuffers::Offset<FrameDataIndex> CreateFrameDataIndexDirect(
 
 flatbuffers::Offset<FrameDataIndex> CreateFrameDataIndex(flatbuffers::FlatBufferBuilder &_fbb, const FrameDataIndexT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct UserDataStringT : public flatbuffers::NativeTable {
-  typedef UserDataString TableType;
-  int32_t length = 0;
-  std::string data{};
-};
-
-struct UserDataString FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  typedef UserDataStringT NativeTableType;
-  typedef UserDataStringBuilder Builder;
-  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_LENGTH = 4,
-    VT_DATA = 6
-  };
-  int32_t length() const {
-    return GetField<int32_t>(VT_LENGTH, 0);
-  }
-  const flatbuffers::String *data() const {
-    return GetPointer<const flatbuffers::String *>(VT_DATA);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_LENGTH) &&
-           VerifyOffset(verifier, VT_DATA) &&
-           verifier.VerifyString(data()) &&
-           verifier.EndTable();
-  }
-  UserDataStringT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(UserDataStringT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<UserDataString> Pack(flatbuffers::FlatBufferBuilder &_fbb, const UserDataStringT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
-};
-
-struct UserDataStringBuilder {
-  typedef UserDataString Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_length(int32_t length) {
-    fbb_.AddElement<int32_t>(UserDataString::VT_LENGTH, length, 0);
-  }
-  void add_data(flatbuffers::Offset<flatbuffers::String> data) {
-    fbb_.AddOffset(UserDataString::VT_DATA, data);
-  }
-  explicit UserDataStringBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  flatbuffers::Offset<UserDataString> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<UserDataString>(end);
-    return o;
-  }
-};
-
-inline flatbuffers::Offset<UserDataString> CreateUserDataString(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t length = 0,
-    flatbuffers::Offset<flatbuffers::String> data = 0) {
-  UserDataStringBuilder builder_(_fbb);
-  builder_.add_data(data);
-  builder_.add_length(length);
-  return builder_.Finish();
-}
-
-inline flatbuffers::Offset<UserDataString> CreateUserDataStringDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t length = 0,
-    const char *data = nullptr) {
-  auto data__ = data ? _fbb.CreateString(data) : 0;
-  return ss::ssfb::CreateUserDataString(
-      _fbb,
-      length,
-      data__);
-}
-
-flatbuffers::Offset<UserDataString> CreateUserDataString(flatbuffers::FlatBufferBuilder &_fbb, const UserDataStringT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
-
 struct UserDataItemT : public flatbuffers::NativeTable {
   typedef UserDataItem TableType;
   ss::ssfb::UserDataFlag flags = static_cast<ss::ssfb::UserDataFlag>(0);
   int16_t array_index = 0;
-  std::vector<ss::ssfb::UserDataValueUnion> data{};
+  int32_t inteegr = 0;
+  int32_t rect_x = 0;
+  int32_t rect_y = 0;
+  int32_t rect_w = 0;
+  int32_t rect_h = 0;
+  int32_t point_x = 0;
+  int32_t point_y = 0;
+  int32_t user_string_length = 0;
+  std::string user_string{};
 };
 
 struct UserDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -3093,8 +2720,15 @@ struct UserDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_FLAGS = 4,
     VT_ARRAY_INDEX = 6,
-    VT_DATA_TYPE = 8,
-    VT_DATA = 10
+    VT_INTEEGR = 8,
+    VT_RECT_X = 10,
+    VT_RECT_Y = 12,
+    VT_RECT_W = 14,
+    VT_RECT_H = 16,
+    VT_POINT_X = 18,
+    VT_POINT_Y = 20,
+    VT_USER_STRING_LENGTH = 22,
+    VT_USER_STRING = 24
   };
   ss::ssfb::UserDataFlag flags() const {
     return static_cast<ss::ssfb::UserDataFlag>(GetField<uint8_t>(VT_FLAGS, 0));
@@ -3102,21 +2736,47 @@ struct UserDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t array_index() const {
     return GetField<int16_t>(VT_ARRAY_INDEX, 0);
   }
-  const flatbuffers::Vector<uint8_t> *data_type() const {
-    return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_DATA_TYPE);
+  int32_t inteegr() const {
+    return GetField<int32_t>(VT_INTEEGR, 0);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<void>> *data() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<void>> *>(VT_DATA);
+  int32_t rect_x() const {
+    return GetField<int32_t>(VT_RECT_X, 0);
+  }
+  int32_t rect_y() const {
+    return GetField<int32_t>(VT_RECT_Y, 0);
+  }
+  int32_t rect_w() const {
+    return GetField<int32_t>(VT_RECT_W, 0);
+  }
+  int32_t rect_h() const {
+    return GetField<int32_t>(VT_RECT_H, 0);
+  }
+  int32_t point_x() const {
+    return GetField<int32_t>(VT_POINT_X, 0);
+  }
+  int32_t point_y() const {
+    return GetField<int32_t>(VT_POINT_Y, 0);
+  }
+  int32_t user_string_length() const {
+    return GetField<int32_t>(VT_USER_STRING_LENGTH, 0);
+  }
+  const flatbuffers::String *user_string() const {
+    return GetPointer<const flatbuffers::String *>(VT_USER_STRING);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint8_t>(verifier, VT_FLAGS) &&
            VerifyField<int16_t>(verifier, VT_ARRAY_INDEX) &&
-           VerifyOffset(verifier, VT_DATA_TYPE) &&
-           verifier.VerifyVector(data_type()) &&
-           VerifyOffset(verifier, VT_DATA) &&
-           verifier.VerifyVector(data()) &&
-           VerifyUserDataValueVector(verifier, data(), data_type()) &&
+           VerifyField<int32_t>(verifier, VT_INTEEGR) &&
+           VerifyField<int32_t>(verifier, VT_RECT_X) &&
+           VerifyField<int32_t>(verifier, VT_RECT_Y) &&
+           VerifyField<int32_t>(verifier, VT_RECT_W) &&
+           VerifyField<int32_t>(verifier, VT_RECT_H) &&
+           VerifyField<int32_t>(verifier, VT_POINT_X) &&
+           VerifyField<int32_t>(verifier, VT_POINT_Y) &&
+           VerifyField<int32_t>(verifier, VT_USER_STRING_LENGTH) &&
+           VerifyOffset(verifier, VT_USER_STRING) &&
+           verifier.VerifyString(user_string()) &&
            verifier.EndTable();
   }
   UserDataItemT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -3134,11 +2794,32 @@ struct UserDataItemBuilder {
   void add_array_index(int16_t array_index) {
     fbb_.AddElement<int16_t>(UserDataItem::VT_ARRAY_INDEX, array_index, 0);
   }
-  void add_data_type(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data_type) {
-    fbb_.AddOffset(UserDataItem::VT_DATA_TYPE, data_type);
+  void add_inteegr(int32_t inteegr) {
+    fbb_.AddElement<int32_t>(UserDataItem::VT_INTEEGR, inteegr, 0);
   }
-  void add_data(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> data) {
-    fbb_.AddOffset(UserDataItem::VT_DATA, data);
+  void add_rect_x(int32_t rect_x) {
+    fbb_.AddElement<int32_t>(UserDataItem::VT_RECT_X, rect_x, 0);
+  }
+  void add_rect_y(int32_t rect_y) {
+    fbb_.AddElement<int32_t>(UserDataItem::VT_RECT_Y, rect_y, 0);
+  }
+  void add_rect_w(int32_t rect_w) {
+    fbb_.AddElement<int32_t>(UserDataItem::VT_RECT_W, rect_w, 0);
+  }
+  void add_rect_h(int32_t rect_h) {
+    fbb_.AddElement<int32_t>(UserDataItem::VT_RECT_H, rect_h, 0);
+  }
+  void add_point_x(int32_t point_x) {
+    fbb_.AddElement<int32_t>(UserDataItem::VT_POINT_X, point_x, 0);
+  }
+  void add_point_y(int32_t point_y) {
+    fbb_.AddElement<int32_t>(UserDataItem::VT_POINT_Y, point_y, 0);
+  }
+  void add_user_string_length(int32_t user_string_length) {
+    fbb_.AddElement<int32_t>(UserDataItem::VT_USER_STRING_LENGTH, user_string_length, 0);
+  }
+  void add_user_string(flatbuffers::Offset<flatbuffers::String> user_string) {
+    fbb_.AddOffset(UserDataItem::VT_USER_STRING, user_string);
   }
   explicit UserDataItemBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -3155,11 +2836,25 @@ inline flatbuffers::Offset<UserDataItem> CreateUserDataItem(
     flatbuffers::FlatBufferBuilder &_fbb,
     ss::ssfb::UserDataFlag flags = static_cast<ss::ssfb::UserDataFlag>(0),
     int16_t array_index = 0,
-    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data_type = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> data = 0) {
+    int32_t inteegr = 0,
+    int32_t rect_x = 0,
+    int32_t rect_y = 0,
+    int32_t rect_w = 0,
+    int32_t rect_h = 0,
+    int32_t point_x = 0,
+    int32_t point_y = 0,
+    int32_t user_string_length = 0,
+    flatbuffers::Offset<flatbuffers::String> user_string = 0) {
   UserDataItemBuilder builder_(_fbb);
-  builder_.add_data(data);
-  builder_.add_data_type(data_type);
+  builder_.add_user_string(user_string);
+  builder_.add_user_string_length(user_string_length);
+  builder_.add_point_y(point_y);
+  builder_.add_point_x(point_x);
+  builder_.add_rect_h(rect_h);
+  builder_.add_rect_w(rect_w);
+  builder_.add_rect_y(rect_y);
+  builder_.add_rect_x(rect_x);
+  builder_.add_inteegr(inteegr);
   builder_.add_array_index(array_index);
   builder_.add_flags(flags);
   return builder_.Finish();
@@ -3169,16 +2864,29 @@ inline flatbuffers::Offset<UserDataItem> CreateUserDataItemDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     ss::ssfb::UserDataFlag flags = static_cast<ss::ssfb::UserDataFlag>(0),
     int16_t array_index = 0,
-    const std::vector<uint8_t> *data_type = nullptr,
-    const std::vector<flatbuffers::Offset<void>> *data = nullptr) {
-  auto data_type__ = data_type ? _fbb.CreateVector<uint8_t>(*data_type) : 0;
-  auto data__ = data ? _fbb.CreateVector<flatbuffers::Offset<void>>(*data) : 0;
+    int32_t inteegr = 0,
+    int32_t rect_x = 0,
+    int32_t rect_y = 0,
+    int32_t rect_w = 0,
+    int32_t rect_h = 0,
+    int32_t point_x = 0,
+    int32_t point_y = 0,
+    int32_t user_string_length = 0,
+    const char *user_string = nullptr) {
+  auto user_string__ = user_string ? _fbb.CreateString(user_string) : 0;
   return ss::ssfb::CreateUserDataItem(
       _fbb,
       flags,
       array_index,
-      data_type__,
-      data__);
+      inteegr,
+      rect_x,
+      rect_y,
+      rect_w,
+      rect_h,
+      point_x,
+      point_y,
+      user_string_length,
+      user_string__);
 }
 
 flatbuffers::Offset<UserDataItem> CreateUserDataItem(flatbuffers::FlatBufferBuilder &_fbb, const UserDataItemT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -4963,52 +4671,19 @@ inline flatbuffers::Offset<FrameDataIndex> CreateFrameDataIndex(flatbuffers::Fla
 }
 
 
-inline bool operator==(const UserDataStringT &lhs, const UserDataStringT &rhs) {
-  return
-      (lhs.length == rhs.length) &&
-      (lhs.data == rhs.data);
-}
-
-inline bool operator!=(const UserDataStringT &lhs, const UserDataStringT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-inline UserDataStringT *UserDataString::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<UserDataStringT>(new UserDataStringT());
-  UnPackTo(_o.get(), _resolver);
-  return _o.release();
-}
-
-inline void UserDataString::UnPackTo(UserDataStringT *_o, const flatbuffers::resolver_function_t *_resolver) const {
-  (void)_o;
-  (void)_resolver;
-  { auto _e = length(); _o->length = _e; }
-  { auto _e = data(); if (_e) _o->data = _e->str(); }
-}
-
-inline flatbuffers::Offset<UserDataString> UserDataString::Pack(flatbuffers::FlatBufferBuilder &_fbb, const UserDataStringT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
-  return CreateUserDataString(_fbb, _o, _rehasher);
-}
-
-inline flatbuffers::Offset<UserDataString> CreateUserDataString(flatbuffers::FlatBufferBuilder &_fbb, const UserDataStringT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
-  (void)_rehasher;
-  (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const UserDataStringT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
-  auto _length = _o->length;
-  auto _data = _o->data.empty() ? 0 : _fbb.CreateString(_o->data);
-  return ss::ssfb::CreateUserDataString(
-      _fbb,
-      _length,
-      _data);
-}
-
-
 inline bool operator==(const UserDataItemT &lhs, const UserDataItemT &rhs) {
   return
       (lhs.flags == rhs.flags) &&
       (lhs.array_index == rhs.array_index) &&
-      (lhs.data == rhs.data);
+      (lhs.inteegr == rhs.inteegr) &&
+      (lhs.rect_x == rhs.rect_x) &&
+      (lhs.rect_y == rhs.rect_y) &&
+      (lhs.rect_w == rhs.rect_w) &&
+      (lhs.rect_h == rhs.rect_h) &&
+      (lhs.point_x == rhs.point_x) &&
+      (lhs.point_y == rhs.point_y) &&
+      (lhs.user_string_length == rhs.user_string_length) &&
+      (lhs.user_string == rhs.user_string);
 }
 
 inline bool operator!=(const UserDataItemT &lhs, const UserDataItemT &rhs) {
@@ -5027,8 +4702,15 @@ inline void UserDataItem::UnPackTo(UserDataItemT *_o, const flatbuffers::resolve
   (void)_resolver;
   { auto _e = flags(); _o->flags = _e; }
   { auto _e = array_index(); _o->array_index = _e; }
-  { auto _e = data_type(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i].type = static_cast<ss::ssfb::UserDataValue>(_e->Get(_i)); } } }
-  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i].value = ss::ssfb::UserDataValueUnion::UnPack(_e->Get(_i), data_type()->GetEnum<UserDataValue>(_i), _resolver); } } }
+  { auto _e = inteegr(); _o->inteegr = _e; }
+  { auto _e = rect_x(); _o->rect_x = _e; }
+  { auto _e = rect_y(); _o->rect_y = _e; }
+  { auto _e = rect_w(); _o->rect_w = _e; }
+  { auto _e = rect_h(); _o->rect_h = _e; }
+  { auto _e = point_x(); _o->point_x = _e; }
+  { auto _e = point_y(); _o->point_y = _e; }
+  { auto _e = user_string_length(); _o->user_string_length = _e; }
+  { auto _e = user_string(); if (_e) _o->user_string = _e->str(); }
 }
 
 inline flatbuffers::Offset<UserDataItem> UserDataItem::Pack(flatbuffers::FlatBufferBuilder &_fbb, const UserDataItemT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -5041,14 +4723,28 @@ inline flatbuffers::Offset<UserDataItem> CreateUserDataItem(flatbuffers::FlatBuf
   struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const UserDataItemT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _flags = _o->flags;
   auto _array_index = _o->array_index;
-  auto _data_type = _o->data.size() ? _fbb.CreateVector<uint8_t>(_o->data.size(), [](size_t i, _VectorArgs *__va) { return static_cast<uint8_t>(__va->__o->data[i].type); }, &_va) : 0;
-  auto _data = _o->data.size() ? _fbb.CreateVector<flatbuffers::Offset<void>>(_o->data.size(), [](size_t i, _VectorArgs *__va) { return __va->__o->data[i].Pack(*__va->__fbb, __va->__rehasher); }, &_va) : 0;
+  auto _inteegr = _o->inteegr;
+  auto _rect_x = _o->rect_x;
+  auto _rect_y = _o->rect_y;
+  auto _rect_w = _o->rect_w;
+  auto _rect_h = _o->rect_h;
+  auto _point_x = _o->point_x;
+  auto _point_y = _o->point_y;
+  auto _user_string_length = _o->user_string_length;
+  auto _user_string = _o->user_string.empty() ? 0 : _fbb.CreateString(_o->user_string);
   return ss::ssfb::CreateUserDataItem(
       _fbb,
       _flags,
       _array_index,
-      _data_type,
-      _data);
+      _inteegr,
+      _rect_x,
+      _rect_y,
+      _rect_w,
+      _rect_h,
+      _point_x,
+      _point_y,
+      _user_string_length,
+      _user_string);
 }
 
 
@@ -5994,137 +5690,6 @@ inline void EffectNodeBehaviorUnion::Reset() {
   }
   value = nullptr;
   type = EffectNodeBehavior_NONE;
-}
-
-inline bool VerifyUserDataValue(flatbuffers::Verifier &verifier, const void *obj, UserDataValue type) {
-  switch (type) {
-    case UserDataValue_NONE: {
-      return true;
-    }
-    case UserDataValue_UserDataInteger: {
-      return verifier.Verify<ss::ssfb::UserDataInteger>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case UserDataValue_UserDataRect: {
-      return verifier.Verify<ss::ssfb::UserDataRect>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case UserDataValue_UserDataPoint: {
-      return verifier.Verify<ss::ssfb::UserDataPoint>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case UserDataValue_UserDataString: {
-      auto ptr = reinterpret_cast<const ss::ssfb::UserDataString *>(obj);
-      return verifier.VerifyTable(ptr);
-    }
-    default: return true;
-  }
-}
-
-inline bool VerifyUserDataValueVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types) {
-  if (!values || !types) return !values && !types;
-  if (values->size() != types->size()) return false;
-  for (flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
-    if (!VerifyUserDataValue(
-        verifier,  values->Get(i), types->GetEnum<UserDataValue>(i))) {
-      return false;
-    }
-  }
-  return true;
-}
-
-inline void *UserDataValueUnion::UnPack(const void *obj, UserDataValue type, const flatbuffers::resolver_function_t *resolver) {
-  (void)resolver;
-  switch (type) {
-    case UserDataValue_UserDataInteger: {
-      auto ptr = reinterpret_cast<const ss::ssfb::UserDataInteger *>(obj);
-      return new ss::ssfb::UserDataInteger(*ptr);
-    }
-    case UserDataValue_UserDataRect: {
-      auto ptr = reinterpret_cast<const ss::ssfb::UserDataRect *>(obj);
-      return new ss::ssfb::UserDataRect(*ptr);
-    }
-    case UserDataValue_UserDataPoint: {
-      auto ptr = reinterpret_cast<const ss::ssfb::UserDataPoint *>(obj);
-      return new ss::ssfb::UserDataPoint(*ptr);
-    }
-    case UserDataValue_UserDataString: {
-      auto ptr = reinterpret_cast<const ss::ssfb::UserDataString *>(obj);
-      return ptr->UnPack(resolver);
-    }
-    default: return nullptr;
-  }
-}
-
-inline flatbuffers::Offset<void> UserDataValueUnion::Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher) const {
-  (void)_rehasher;
-  switch (type) {
-    case UserDataValue_UserDataInteger: {
-      auto ptr = reinterpret_cast<const ss::ssfb::UserDataInteger *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case UserDataValue_UserDataRect: {
-      auto ptr = reinterpret_cast<const ss::ssfb::UserDataRect *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case UserDataValue_UserDataPoint: {
-      auto ptr = reinterpret_cast<const ss::ssfb::UserDataPoint *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case UserDataValue_UserDataString: {
-      auto ptr = reinterpret_cast<const ss::ssfb::UserDataStringT *>(value);
-      return CreateUserDataString(_fbb, ptr, _rehasher).Union();
-    }
-    default: return 0;
-  }
-}
-
-inline UserDataValueUnion::UserDataValueUnion(const UserDataValueUnion &u) : type(u.type), value(nullptr) {
-  switch (type) {
-    case UserDataValue_UserDataInteger: {
-      value = new ss::ssfb::UserDataInteger(*reinterpret_cast<ss::ssfb::UserDataInteger *>(u.value));
-      break;
-    }
-    case UserDataValue_UserDataRect: {
-      value = new ss::ssfb::UserDataRect(*reinterpret_cast<ss::ssfb::UserDataRect *>(u.value));
-      break;
-    }
-    case UserDataValue_UserDataPoint: {
-      value = new ss::ssfb::UserDataPoint(*reinterpret_cast<ss::ssfb::UserDataPoint *>(u.value));
-      break;
-    }
-    case UserDataValue_UserDataString: {
-      value = new ss::ssfb::UserDataStringT(*reinterpret_cast<ss::ssfb::UserDataStringT *>(u.value));
-      break;
-    }
-    default:
-      break;
-  }
-}
-
-inline void UserDataValueUnion::Reset() {
-  switch (type) {
-    case UserDataValue_UserDataInteger: {
-      auto ptr = reinterpret_cast<ss::ssfb::UserDataInteger *>(value);
-      delete ptr;
-      break;
-    }
-    case UserDataValue_UserDataRect: {
-      auto ptr = reinterpret_cast<ss::ssfb::UserDataRect *>(value);
-      delete ptr;
-      break;
-    }
-    case UserDataValue_UserDataPoint: {
-      auto ptr = reinterpret_cast<ss::ssfb::UserDataPoint *>(value);
-      delete ptr;
-      break;
-    }
-    case UserDataValue_UserDataString: {
-      auto ptr = reinterpret_cast<ss::ssfb::UserDataStringT *>(value);
-      delete ptr;
-      break;
-    }
-    default: break;
-  }
-  value = nullptr;
-  type = UserDataValue_NONE;
 }
 
 inline const ss::ssfb::ProjectData *GetProjectData(const void *buf) {
