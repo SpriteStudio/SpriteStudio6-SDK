@@ -727,17 +727,17 @@ private:
 	std::vector<std::vector<float>> m_floatVecVec;
 	std::vector<flatbuffers::Offset<flatbuffers::Vector<float>>> m_ssfbFloatVecVec;
 
-	std::vector<struct ss::ssfb::meshDataUVT> m_meshDataUVVec;
-	std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> m_ssfbMeshDataUVVec;
+	std::vector<struct ss::ssfb::MeshDataUVT> m_meshDataUVVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::MeshDataUV>> m_ssfbMeshDataUVVec;
 
-	std::vector<struct ss::ssfb::meshDataIndicesT> m_meshDataIndicesVec;
-	std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> m_ssfbMeshDataIndicesVec;
+	std::vector<struct ss::ssfb::MeshDataIndicesT> m_meshDataIndicesVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::MeshDataIndices>> m_ssfbMeshDataIndicesVec;
 
-	std::vector<struct ss::ssfb::partStateT> m_partStateVec;
-	std::vector<flatbuffers::Offset<ss::ssfb::partState>> m_ssfbPartStateVec;
+	std::vector<struct ss::ssfb::PartStateT> m_partStateVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::PartState>> m_ssfbPartStateVec;
 
-	std::vector<struct ss::ssfb::frameDataIndexT> m_frameDataIndexVec;
-	std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> m_ssfbFrameDataIndexVec;
+	std::vector<struct ss::ssfb::FrameDataIndexT> m_frameDataIndexVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::FrameDataIndex>> m_ssfbFrameDataIndexVec;
 
 	enum {
 		USER_DATA_FLAG_INTEGER	= 1 << 0,
@@ -795,10 +795,10 @@ private:
 
 		struct ss::ssfb::CellMapT cellMapT;
 		cellMapT.name = GETSTRING(cellMapVec[0], m_encoding);
-		cellMapT.imagePath = GETSTRING(cellMapVec[1], m_encoding);
+		cellMapT.image_path = GETSTRING(cellMapVec[1], m_encoding);
 		cellMapT.index = GETS16(cellMapVec[2]);
-		cellMapT.wrapmode = GETS16(cellMapVec[3]);
-		cellMapT.filtermode = GETS16(cellMapVec[4]);
+		cellMapT.wrap_mode = GETS16(cellMapVec[3]);
+		cellMapT.filter_mode = GETS16(cellMapVec[4]);
 		// 5:reserved(s16)
 
 		// search same cellMap from cellMap caches.
@@ -808,9 +808,9 @@ private:
 
 			// create ssfb cellMap
 			auto ssfbCellMapName = m_ssfbBuilder.CreateSharedString(cellMapT.name);
-			auto ssfbCellMapImagePath = m_ssfbBuilder.CreateSharedString(cellMapT.imagePath);
+			auto ssfbCellMapImagePath = m_ssfbBuilder.CreateSharedString(cellMapT.image_path);
 			cellMap = ss::ssfb::CreateCellMap(m_ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath,
-											  cellMapT.index, cellMapT.wrapmode, cellMapT.filtermode);
+											  cellMapT.index, cellMapT.wrap_mode, cellMapT.filter_mode);
 			// cache ssfb cellMap
 			m_cellMaps.push_back(cellMapT);
 			m_ssfbCellMaps.push_back(cellMap);
@@ -835,43 +835,43 @@ private:
 		animationInitialDataT.lowflag = GETS32(AnimationInitialDataItemVec[2]);
 		animationInitialDataT.highflag = GETS32(AnimationInitialDataItemVec[3]);
 		animationInitialDataT.priority = GETS16(AnimationInitialDataItemVec[4]);
-		animationInitialDataT.cellIndex = GETS16(AnimationInitialDataItemVec[5]);
+		animationInitialDataT.cell_index = GETS16(AnimationInitialDataItemVec[5]);
 		animationInitialDataT.opacity = GETS16(AnimationInitialDataItemVec[6]);
-		animationInitialDataT.localopacity = GETS16(AnimationInitialDataItemVec[7]);
+		animationInitialDataT.local_opacity = GETS16(AnimationInitialDataItemVec[7]);
 		animationInitialDataT.masklimen = GETS16(AnimationInitialDataItemVec[8]);
 		// 9:reserved
-		animationInitialDataT.positionX = GETFLOAT(AnimationInitialDataItemVec[10]);
-		animationInitialDataT.positionY = GETFLOAT(AnimationInitialDataItemVec[11]);
-		animationInitialDataT.positionZ = GETFLOAT(AnimationInitialDataItemVec[12]);
-		animationInitialDataT.pivotX = GETFLOAT(AnimationInitialDataItemVec[13]);
-		animationInitialDataT.pivotY = GETFLOAT(AnimationInitialDataItemVec[14]);
-		animationInitialDataT.rotationX = GETFLOAT(AnimationInitialDataItemVec[15]);
-		animationInitialDataT.rotationY = GETFLOAT(AnimationInitialDataItemVec[16]);
-		animationInitialDataT.rotationZ = GETFLOAT(AnimationInitialDataItemVec[17]);
-		animationInitialDataT.scaleX = GETFLOAT(AnimationInitialDataItemVec[18]);
-		animationInitialDataT.scaleY = GETFLOAT(AnimationInitialDataItemVec[19]);
-		animationInitialDataT.localscaleX = GETFLOAT(AnimationInitialDataItemVec[20]);
-		animationInitialDataT.localscaleY = GETFLOAT(AnimationInitialDataItemVec[21]);
-		animationInitialDataT.size_X = GETFLOAT(AnimationInitialDataItemVec[22]);
-		animationInitialDataT.size_Y = GETFLOAT(AnimationInitialDataItemVec[23]);
-		animationInitialDataT.uv_move_X = GETFLOAT(AnimationInitialDataItemVec[24]);
-		animationInitialDataT.uv_move_Y = GETFLOAT(AnimationInitialDataItemVec[25]);
+		animationInitialDataT.position_x = GETFLOAT(AnimationInitialDataItemVec[10]);
+		animationInitialDataT.position_y = GETFLOAT(AnimationInitialDataItemVec[11]);
+		animationInitialDataT.position_z = GETFLOAT(AnimationInitialDataItemVec[12]);
+		animationInitialDataT.pivot_x = GETFLOAT(AnimationInitialDataItemVec[13]);
+		animationInitialDataT.pivot_y = GETFLOAT(AnimationInitialDataItemVec[14]);
+		animationInitialDataT.rotation_x = GETFLOAT(AnimationInitialDataItemVec[15]);
+		animationInitialDataT.rotation_y = GETFLOAT(AnimationInitialDataItemVec[16]);
+		animationInitialDataT.rotation_z = GETFLOAT(AnimationInitialDataItemVec[17]);
+		animationInitialDataT.scale_x = GETFLOAT(AnimationInitialDataItemVec[18]);
+		animationInitialDataT.scale_y = GETFLOAT(AnimationInitialDataItemVec[19]);
+		animationInitialDataT.local_scale_x = GETFLOAT(AnimationInitialDataItemVec[20]);
+		animationInitialDataT.local_scale_y = GETFLOAT(AnimationInitialDataItemVec[21]);
+		animationInitialDataT.size_x = GETFLOAT(AnimationInitialDataItemVec[22]);
+		animationInitialDataT.size_y = GETFLOAT(AnimationInitialDataItemVec[23]);
+		animationInitialDataT.uv_move_x = GETFLOAT(AnimationInitialDataItemVec[24]);
+		animationInitialDataT.uv_move_y = GETFLOAT(AnimationInitialDataItemVec[25]);
 		animationInitialDataT.uv_rotation = GETFLOAT(AnimationInitialDataItemVec[26]);
-		animationInitialDataT.uv_scale_X = GETFLOAT(AnimationInitialDataItemVec[27]);
-		animationInitialDataT.uv_scale_Y = GETFLOAT(AnimationInitialDataItemVec[28]);
-		animationInitialDataT.boundingRadius = GETFLOAT(AnimationInitialDataItemVec[29]);
+		animationInitialDataT.uv_scale_x = GETFLOAT(AnimationInitialDataItemVec[27]);
+		animationInitialDataT.uv_scale_y = GETFLOAT(AnimationInitialDataItemVec[28]);
+		animationInitialDataT.bounding_radius = GETFLOAT(AnimationInitialDataItemVec[29]);
 		//インスタンス関連
-		animationInitialDataT.instanceValue_curKeyframe = GETS32(AnimationInitialDataItemVec[30]);
-		animationInitialDataT.instanceValue_startFrame = GETS32(AnimationInitialDataItemVec[31]);
-		animationInitialDataT.instanceValue_endFrame = GETS32(AnimationInitialDataItemVec[32]);
-		animationInitialDataT.instanceValue_loopNum = GETS32(AnimationInitialDataItemVec[33]);
-		animationInitialDataT.instanceValue_speed = GETFLOAT(AnimationInitialDataItemVec[34]);
-		animationInitialDataT.instanceValue_loopflag = GETS32(AnimationInitialDataItemVec[35]);
+		animationInitialDataT.instance_value_cur_keyframe = GETS32(AnimationInitialDataItemVec[30]);
+		animationInitialDataT.instance_value_start_frame = GETS32(AnimationInitialDataItemVec[31]);
+		animationInitialDataT.instance_value_end_frame = GETS32(AnimationInitialDataItemVec[32]);
+		animationInitialDataT.instance_value_loop_num = GETS32(AnimationInitialDataItemVec[33]);
+		animationInitialDataT.instance_value_speed = GETFLOAT(AnimationInitialDataItemVec[34]);
+		animationInitialDataT.instance_value_loop_flag = GETS32(AnimationInitialDataItemVec[35]);
 		//エフェクト関連
-		animationInitialDataT.effectValue_curKeyframe = GETS32(AnimationInitialDataItemVec[36]);
-		animationInitialDataT.effectValue_startTime = GETS32(AnimationInitialDataItemVec[37]);
-		animationInitialDataT.effectValue_speed = GETFLOAT(AnimationInitialDataItemVec[38]);
-		animationInitialDataT.effectValue_loopflag = GETS32(AnimationInitialDataItemVec[39]);
+		animationInitialDataT.effect_value_cur_keyframe = GETS32(AnimationInitialDataItemVec[36]);
+		animationInitialDataT.effect_value_start_time = GETS32(AnimationInitialDataItemVec[37]);
+		animationInitialDataT.effect_value_speed = GETFLOAT(AnimationInitialDataItemVec[38]);
+		animationInitialDataT.effect_value_loop_flag = GETS32(AnimationInitialDataItemVec[39]);
 
 		// search same cellMap from cellMap caches.
 		auto result = std::find(m_animationInitialDataVec.begin(), m_animationInitialDataVec.end(), animationInitialDataT);
@@ -885,40 +885,40 @@ private:
 																		animationInitialDataT.lowflag,
 																		animationInitialDataT.highflag,
 																		animationInitialDataT.priority,
-																		animationInitialDataT.cellIndex,
+																		animationInitialDataT.cell_index,
 																		animationInitialDataT.opacity,
-																		animationInitialDataT.localopacity,
+																		animationInitialDataT.local_opacity,
 																		animationInitialDataT.masklimen,
-																		animationInitialDataT.positionX,
-																		animationInitialDataT.positionY,
-																		animationInitialDataT.positionZ,
-																		animationInitialDataT.pivotX,
-																		animationInitialDataT.pivotY,
-																		animationInitialDataT.rotationX,
-																		animationInitialDataT.rotationY,
-																		animationInitialDataT.rotationZ,
-																		animationInitialDataT.scaleX,
-																		animationInitialDataT.scaleY,
-																		animationInitialDataT.localscaleX,
-																		animationInitialDataT.localscaleY,
-																		animationInitialDataT.size_X,
-																		animationInitialDataT.size_Y,
-																		animationInitialDataT.uv_move_X,
-																		animationInitialDataT.uv_move_Y,
+																		animationInitialDataT.position_x,
+																		animationInitialDataT.position_y,
+																		animationInitialDataT.position_z,
+																		animationInitialDataT.pivot_x,
+																		animationInitialDataT.pivot_y,
+																		animationInitialDataT.rotation_x,
+																		animationInitialDataT.rotation_y,
+																		animationInitialDataT.rotation_z,
+																		animationInitialDataT.scale_x,
+																		animationInitialDataT.scale_y,
+																		animationInitialDataT.local_scale_x,
+																		animationInitialDataT.local_scale_y,
+																		animationInitialDataT.size_x,
+																		animationInitialDataT.size_y,
+																		animationInitialDataT.uv_move_x,
+																		animationInitialDataT.uv_move_y,
 																		animationInitialDataT.uv_rotation,
-																		animationInitialDataT.uv_scale_X,
-																		animationInitialDataT.uv_scale_Y,
-																		animationInitialDataT.boundingRadius,
-																		animationInitialDataT.instanceValue_curKeyframe,
-																		animationInitialDataT.instanceValue_startFrame,
-																		animationInitialDataT.instanceValue_endFrame,
-																		animationInitialDataT.instanceValue_loopNum,
-																		animationInitialDataT.instanceValue_speed,
-																		animationInitialDataT.instanceValue_loopflag,
-																		animationInitialDataT.effectValue_curKeyframe,
-																		animationInitialDataT.effectValue_startTime,
-																		animationInitialDataT.effectValue_speed,
-																		animationInitialDataT.effectValue_loopflag);
+																		animationInitialDataT.uv_scale_x,
+																		animationInitialDataT.uv_scale_y,
+																		animationInitialDataT.bounding_radius,
+																		animationInitialDataT.instance_value_cur_keyframe,
+																		animationInitialDataT.instance_value_start_frame,
+																		animationInitialDataT.instance_value_end_frame,
+																		animationInitialDataT.instance_value_loop_num,
+																		animationInitialDataT.instance_value_speed,
+																		animationInitialDataT.instance_value_loop_flag,
+																		animationInitialDataT.effect_value_cur_keyframe,
+																		animationInitialDataT.effect_value_start_time,
+																		animationInitialDataT.effect_value_speed,
+																		animationInitialDataT.effect_value_loop_flag);
 			// cache ssfb cellMap
 			m_animationInitialDataVec.push_back(animationInitialDataT);
 			m_ssfbAnimationInitialDataVec.push_back(animationInitialData);
@@ -940,14 +940,14 @@ private:
 
 		partDataT.name = GETSTRING(partDataItemVec[0], m_encoding);
 		partDataT.index = GETS16(partDataItemVec[1]);
-		partDataT.parentIndex = GETS16(partDataItemVec[2]);
+		partDataT.parent_index = GETS16(partDataItemVec[2]);
 		partDataT.type = (ss::ssfb::SsPartType)GETS16(partDataItemVec[3]);
-		partDataT.boundsType = GETS16(partDataItemVec[4]);
-		partDataT.alphaBlendType = GETS16(partDataItemVec[5]);
+		partDataT.bounds_type = GETS16(partDataItemVec[4]);
+		partDataT.alpha_blend_type = GETS16(partDataItemVec[5]);
 		partDataT.refname = GETSTRING(partDataItemVec[7], m_encoding);
 		partDataT.effectfilename = GETSTRING(partDataItemVec[8], m_encoding);
 		partDataT.colorLabel = GETSTRING(partDataItemVec[9], m_encoding);
-		partDataT.maskInfluence = GETS16(partDataItemVec[10]);
+		partDataT.mask_influence = GETS16(partDataItemVec[10]);
 
 		// search same cellMap from cellMap caches.
 		auto result = std::find(m_partDataVec.begin(), m_partDataVec.end(), partDataT);
@@ -960,9 +960,9 @@ private:
 			auto ssfbEffectfilename = m_ssfbBuilder.CreateSharedString(partDataT.effectfilename);
 			auto ssfbColorLabel = m_ssfbBuilder.CreateSharedString(partDataT.colorLabel);
 
-			partData = ss::ssfb::CreatePartData(m_ssfbBuilder, ssfbPartDataName,partDataT.index, partDataT.parentIndex, (ss::ssfb::SsPartType)partDataT.type,
-												partDataT.boundsType, partDataT.alphaBlendType, ssfbRefname, ssfbEffectfilename, ssfbColorLabel,
-												partDataT.maskInfluence);
+			partData = ss::ssfb::CreatePartData(m_ssfbBuilder, ssfbPartDataName,partDataT.index, partDataT.parent_index, (ss::ssfb::SsPartType)partDataT.type,
+												partDataT.bounds_type, partDataT.alpha_blend_type, ssfbRefname, ssfbEffectfilename, ssfbColorLabel,
+												partDataT.mask_influence);
 			// cache ssfb cellMap
 			m_partDataVec.push_back(partDataT);
 			m_ssfbPartDataVec.push_back(partData);
@@ -1017,10 +1017,10 @@ private:
 		return ssfbVec;
 	}
 
-	flatbuffers::Offset<ss::ssfb::meshDataUV> createSharedMeshDataUV(const std::vector<float> &uvPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &uv) {
-		flatbuffers::Offset<ss::ssfb::meshDataUV> meshDataUV;
+	flatbuffers::Offset<ss::ssfb::MeshDataUV> createSharedMeshDataUV(const std::vector<float> &uvPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &uv) {
+		flatbuffers::Offset<ss::ssfb::MeshDataUV> meshDataUV;
 
-		struct ss::ssfb::meshDataUVT meshDataUVT;
+		struct ss::ssfb::MeshDataUVT meshDataUVT;
 		meshDataUVT.uv = uvPrimitive;
 
 		auto result = std::find(m_meshDataUVVec.begin(), m_meshDataUVVec.end(), meshDataUVT);
@@ -1028,7 +1028,7 @@ private:
 			// not found
 
 			// create ssfb vec
-			meshDataUV = ss::ssfb::CreatemeshDataUV(m_ssfbBuilder, uv);
+			meshDataUV = ss::ssfb::CreateMeshDataUV(m_ssfbBuilder, uv);
 
 			// cache ssfb vec
 			m_meshDataUVVec.push_back(meshDataUVT);
@@ -1041,17 +1041,17 @@ private:
 		return meshDataUV;
 	}
 
-	flatbuffers::Offset<ss::ssfb::meshDataIndices> createSharedMeshDataIndices(const std::vector<float> &indicesPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &indices) {
-		flatbuffers::Offset<ss::ssfb::meshDataIndices> meshDataIndices;
+	flatbuffers::Offset<ss::ssfb::MeshDataIndices> createSharedMeshDataIndices(const std::vector<float> &indicesPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &indices) {
+		flatbuffers::Offset<ss::ssfb::MeshDataIndices> meshDataIndices;
 
-		struct ss::ssfb::meshDataIndicesT meshDataIndicesT;
+		struct ss::ssfb::MeshDataIndicesT meshDataIndicesT;
 		meshDataIndicesT.indices = indicesPrimitive;
 		auto result = std::find(m_meshDataIndicesVec.begin(), m_meshDataIndicesVec.end(), meshDataIndicesT);
 		if (result == m_meshDataIndicesVec.end()) {
 			// not found
 
 			// create ssfb vec
-			meshDataIndices = ss::ssfb::CreatemeshDataIndices(m_ssfbBuilder, indices);
+			meshDataIndices = ss::ssfb::CreateMeshDataIndices(m_ssfbBuilder, indices);
 
 			// cache ssfb vec
 			m_meshDataIndicesVec.push_back(meshDataIndicesT);
@@ -1064,11 +1064,11 @@ private:
 		return meshDataIndices;
 	}
 	
-	flatbuffers::Offset<ss::ssfb::partState>
+	flatbuffers::Offset<ss::ssfb::PartState>
 	createSharedPartState(int16_t index, uint32_t flag1, uint32_t flag2, const std::vector<uint32_t> &dataPrimitive) {
-		flatbuffers::Offset<ss::ssfb::partState> partState;
+		flatbuffers::Offset<ss::ssfb::PartState> partState;
 		
-		struct ss::ssfb::partStateT partStateT;
+		struct ss::ssfb::PartStateT partStateT;
 		partStateT.index = index;
 		partStateT.flag1 = flag1;
 		partStateT.flag2 = flag2;
@@ -1077,7 +1077,7 @@ private:
 		if (result == m_partStateVec.end()) {
 			// not found
 			auto serializePartStateData = createSharedUint32Vec(dataPrimitive);
-			partState = ss::ssfb::CreatepartState(m_ssfbBuilder, partStateT.index, partStateT.flag1, partStateT.flag2, serializePartStateData);
+			partState = ss::ssfb::CreatePartState(m_ssfbBuilder, partStateT.index, partStateT.flag1, partStateT.flag2, serializePartStateData);
 
 			m_partStateVec.push_back(partStateT);
 			m_ssfbPartStateVec.push_back(partState);
@@ -1089,19 +1089,19 @@ private:
 		return partState;
 	}
 
-	flatbuffers::Offset<ss::ssfb::frameDataIndex> createSharedFrameDataIndex(const std::vector<ss::ssfb::partStateT> &statesPrimitive) {
-		flatbuffers::Offset<ss::ssfb::frameDataIndex> frameDataIndex;
+	flatbuffers::Offset<ss::ssfb::FrameDataIndex> createSharedFrameDataIndex(const std::vector<ss::ssfb::PartStateT> &statesPrimitive) {
+		flatbuffers::Offset<ss::ssfb::FrameDataIndex> frameDataIndex;
 
-		struct ss::ssfb::frameDataIndexT frameDataIndexT1;
+		struct ss::ssfb::FrameDataIndexT frameDataIndexT1;
 		for(auto state : statesPrimitive) {
-			std::unique_ptr<ss::ssfb::partStateT> p(new ss::ssfb::partStateT());
+			std::unique_ptr<ss::ssfb::PartStateT> p(new ss::ssfb::PartStateT());
 			p->index = state.index;
 			p->flag1 = state.flag1;
 			p->flag2 = state.flag2;
 			p->data = state.data;
 			frameDataIndexT1.states.push_back(std::move(p));
 		}
-		auto result = std::find_if(m_frameDataIndexVec.begin(), m_frameDataIndexVec.end(), [&frameDataIndexT1](const struct ss::ssfb::frameDataIndexT &item) {
+		auto result = std::find_if(m_frameDataIndexVec.begin(), m_frameDataIndexVec.end(), [&frameDataIndexT1](const struct ss::ssfb::FrameDataIndexT &item) {
 			if(frameDataIndexT1.states.size() != item.states.size())
 				return false;
 
@@ -1120,7 +1120,7 @@ private:
 		if (result == m_frameDataIndexVec.end()) {
 			// not found
 
-			std::vector<flatbuffers::Offset<ss::ssfb::partState>> vec;
+			std::vector<flatbuffers::Offset<ss::ssfb::PartState>> vec;
 			for (auto i : statesPrimitive) {
 				auto item = createSharedPartState(i.index, i.flag1, i.flag2, i.data);
 				vec.push_back(item);
@@ -1128,7 +1128,7 @@ private:
 
 			auto serializeVec = m_ssfbBuilder.CreateVector(vec);
 			// create ssfb vec
-			frameDataIndex = ss::ssfb::CreateframeDataIndex(m_ssfbBuilder, serializeVec);
+			frameDataIndex = ss::ssfb::CreateFrameDataIndex(m_ssfbBuilder, serializeVec);
 
 			// cache ssfb vec
 			m_frameDataIndexVec.push_back(std::move(frameDataIndexT1));
@@ -1203,7 +1203,7 @@ private:
 			}
 
 			// 5:meshDataUV
-			std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> ssfbMeshsDataUV;
+			std::vector<flatbuffers::Offset<ss::ssfb::MeshDataUV>> ssfbMeshsDataUV;
 			{
 				auto meshDataUVVec = ssAnimationDataVec[5]->getChildren();
 				for(auto meshDataUVItem : meshDataUVVec) {
@@ -1228,7 +1228,7 @@ private:
 				}
 			}
 			// 6:meshsDataIndices
-			std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> ssfbMeshsDataIndices;
+			std::vector<flatbuffers::Offset<ss::ssfb::MeshDataIndices>> ssfbMeshsDataIndices;
 			{
 				auto meshsDataIndicesVec = ssAnimationDataVec[6]->getChildren();
 				for(auto meshsDataIndicesItem : meshsDataIndicesVec) {
@@ -1245,15 +1245,15 @@ private:
 			}
 			// 2:frameDataIndexArray
 
-			std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> ssfbFrameData;
+			std::vector<flatbuffers::Offset<ss::ssfb::FrameDataIndex>> ssfbFrameData;
 			{
 				auto frameDataIndexArrayVec = ssAnimationDataVec[2]->getChildren();
 
 				for(auto frameDataIndexArrayItem : frameDataIndexArrayVec) {
 					auto frameDataVec = frameDataIndexArrayItem->getChildren();
 
-					struct ss::ssfb::partStateT partStateTItem;
-					std::vector<struct ss::ssfb::partStateT> partStateTVec;
+					struct ss::ssfb::PartStateT partStateTItem;
+					std::vector<struct ss::ssfb::PartStateT> partStateTVec;
 
 					uint32_t flag1;
 					uint32_t flag2;
@@ -1327,7 +1327,7 @@ private:
 				}
 			}
 			// 3:userDataIndexArray
-			std::vector<flatbuffers::Offset<ss::ssfb::userDataPerFrame>> ssfbUserData;
+			std::vector<flatbuffers::Offset<ss::ssfb::UserDataPerFrame>> ssfbUserData;
 			{
 				if(ssAnimationDataVec[3]->type == Lump::DataType::SET) {
 
@@ -1336,7 +1336,7 @@ private:
 						if(userDataIndexArrayItem->type != Lump::DataType::SET) {
 							continue;
 						}
-						std::vector<flatbuffers::Offset<ss::ssfb::userDataItem>> ssfbUserDataItemData;
+						std::vector<flatbuffers::Offset<ss::ssfb::UserDataItem>> ssfbUserDataItemData;
 
 						std::vector<flatbuffers::Offset<void>> ssfbDataArray;
 						std::vector<uint8_t> ssfbDataArrayType;
@@ -1345,44 +1345,44 @@ private:
 						auto num = GETS16(userDataIndexArrayItemVec[0]);
 						int idx = 1;
 						for(int i=0; i<num; i++) {
-							auto flags = (ss::ssfb::USER_DATA_FLAG)GETS16(userDataIndexArrayItemVec[idx++]);
+							auto flags = (ss::ssfb::UserDataFlag)GETS16(userDataIndexArrayItemVec[idx++]);
 							auto arrayIndex = GETS16(userDataIndexArrayItemVec[idx++]);
-							if(flags & (int16_t)(USER_DATA_FLAG_INTEGER)) {
+							if(flags & ss::ssfb::UserDataFlag::UserDataFlag_Integer) {
 								auto integer = GETS32(userDataIndexArrayItemVec[idx++]);
-								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::userDataInteger(integer));
+								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::UserDataInteger(integer));
 								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataInteger);
+								ssfbDataArrayType.push_back(ss::ssfb::UserDataValue_UserDataInteger);
 							}
-							if(flags & (int16_t)USER_DATA_FLAG_RECT) {
+							if(flags & ss::ssfb::UserDataFlag::UserDataFlag_Rect) {
 								auto rect_x = GETS32(userDataIndexArrayItemVec[idx++]);
 								auto rect_y = GETS32(userDataIndexArrayItemVec[idx++]);
 								auto rect_w = GETS32(userDataIndexArrayItemVec[idx++]);
 								auto rect_h = GETS32(userDataIndexArrayItemVec[idx++]);
 
-								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::userDataRect(rect_x, rect_y, rect_w, rect_h));
+								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::UserDataRect(rect_x, rect_y, rect_w, rect_h));
 								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataRect);
+								ssfbDataArrayType.push_back(ss::ssfb::UserDataValue_UserDataRect);
 							}
-							if(flags & (int16_t)(USER_DATA_FLAG_POINT)) {
+							if(flags & ss::ssfb::UserDataFlag::UserDataFlag_Point) {
 								auto point_x = GETS32(userDataIndexArrayItemVec[idx++]);
 								auto point_y = GETS32(userDataIndexArrayItemVec[idx++]);
 
-								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::userDataPoint(point_x, point_y));
+								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::UserDataPoint(point_x, point_y));
 								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataPoint);
+								ssfbDataArrayType.push_back(ss::ssfb::UserDataValue_UserDataPoint);
 							}
-							if(flags & (int16_t)(USER_DATA_FLAG_STRING)) {
+							if(flags & ss::ssfb::UserDataFlag::UserDataFlag_String) {
 								auto str_length = GETS16(userDataIndexArrayItemVec[idx++]);
 								auto ssfbStr = GETSSFBSTRING(m_ssfbBuilder, userDataIndexArrayItemVec[idx++], m_encoding);
 
-								auto item = ss::ssfb::CreateuserDataString(m_ssfbBuilder, str_length, ssfbStr);
+								auto item = ss::ssfb::CreateUserDataString(m_ssfbBuilder, str_length, ssfbStr);
 								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataString);
+								ssfbDataArrayType.push_back(ss::ssfb::UserDataValue_UserDataString);
 							}
 
 							auto serializeSsfbDataArrayType = m_ssfbBuilder.CreateVector(ssfbDataArrayType);
 							auto serializeSsfbDataArray = m_ssfbBuilder.CreateVector(ssfbDataArray);
-							auto item = ss::ssfb::CreateuserDataItem(m_ssfbBuilder, flags,
+							auto item = ss::ssfb::CreateUserDataItem(m_ssfbBuilder, flags,
 																	 arrayIndex,
 																	 serializeSsfbDataArrayType,
 																	 serializeSsfbDataArray);
@@ -1392,13 +1392,13 @@ private:
 						auto serializeSsfbUserDataItemData = m_ssfbBuilder.CreateVector(ssfbUserDataItemData);
 
 						auto frame = this->m_frameIndexVec[this->m_frameIndex++];
-						auto item = ss::ssfb::CreateuserDataPerFrame(m_ssfbBuilder, frame, serializeSsfbUserDataItemData);
+						auto item = ss::ssfb::CreateUserDataPerFrame(m_ssfbBuilder, frame, serializeSsfbUserDataItemData);
 						ssfbUserData.push_back(item);
 					}
 				}
 			}
 			// 4:LabelDataIndexArray
-			std::vector<flatbuffers::Offset<ss::ssfb::labelDataItem>> ssfbLabelData;
+			std::vector<flatbuffers::Offset<ss::ssfb::LabelDataItem>> ssfbLabelData;
 			{
 				if(ssAnimationDataVec[4]->type == Lump::DataType::SET) {
 					auto LabelDataIndexArrayVec = ssAnimationDataVec[4]->getChildren();
@@ -1407,7 +1407,7 @@ private:
 						auto ssfbLabelDataItemName = GETSSFBSTRING(m_ssfbBuilder, labelDataVec[0], m_encoding);
 						auto time = GETS16(labelDataVec[1]);
 
-						auto item = ss::ssfb::CreatelabelDataItem(m_ssfbBuilder, ssfbLabelDataItemName, time);
+						auto item = ss::ssfb::CreateLabelDataItem(m_ssfbBuilder, ssfbLabelDataItemName, time);
 						ssfbLabelData.push_back(item);
 					}
 				}
