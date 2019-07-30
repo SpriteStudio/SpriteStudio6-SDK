@@ -6,12 +6,13 @@
 #include "BinaryDataWriter.h"
 #include <assert.h>
 #include <cstdarg>
+#include <flatbuffers/idl.h>
 #include "sscharconverter.h"
 #include "picojson.h"
 #include "flatbuffers/flatbuffers.h"
-#include "flatbuffers/util.h"
 #include "ssfb_generated.h"
 #include "Lump.h"
+#include "ssfb_fbs_array.h"
 
 namespace LumpExporter {
 
@@ -1713,11 +1714,24 @@ private:
 													  static_cast<int16_t>(m_ssfbCells.size()),
 													  static_cast<int16_t>(m_ssfbAnimePacks.size()),
 													  static_cast<int16_t>(m_ssfbEffectFileList.size()));
+
 		m_ssfbBuilder.Finish(m_ssfbProjectData);
 	}
 
 	void writeFile(std::ostream& out) {
 		out.write(reinterpret_cast<const char *>(m_ssfbBuilder.GetBufferPointer()), m_ssfbBuilder.GetSize());
+		/*
+		// ssfb json
+		flatbuffers::Parser parser;
+		bool ret = parser.Parse(reinterpret_cast<const char *>(fbs_ssfb_fbs));
+		parser.opts.generate_name_strings = true;
+		parser.opts.output_enum_identifiers = true;
+		parser.opts.output_default_scalars_in_json = true;
+		parser.opts.output_enum_identifiers = true;
+		parser.opts.strict_json = true;
+		std::string jsongen;
+		flatbuffers::GenerateText(parser, m_ssfbBuilder.GetBufferPointer(), &jsongen);
+		 */
 	}
 };
 #undef GETS16
