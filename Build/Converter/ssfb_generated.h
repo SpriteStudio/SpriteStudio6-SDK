@@ -9,38 +9,6 @@
 namespace ss {
 namespace ssfb {
 
-struct EffectParticleInfiniteEmitEnabled;
-
-struct EffectParticleTurnToDirectionEnabled;
-
-struct EffectParticlePointGravity;
-
-struct EffectParticleElementTransSize;
-
-struct EffectParticleElementSize;
-
-struct EffectParticleElementAlphaFade;
-
-struct EffectParticleElementTransColor;
-
-struct EffectParticleElementInitColor;
-
-struct EffectParticleElementTangentialAcceleration;
-
-struct EffectParticleElementTransSpeed;
-
-struct EffectParticleElementRotationTrans;
-
-struct EffectParticleElementRotation;
-
-struct EffectParticleElementPosition;
-
-struct EffectParticleElementGravity;
-
-struct EffectParticleElementDelay;
-
-struct EffectParticleElementRndSeedChange;
-
 struct EffectParticleElementBasic;
 
 struct EffectNode;
@@ -91,38 +59,6 @@ struct AnimePackDataT;
 struct ProjectData;
 struct ProjectDataT;
 
-bool operator==(const EffectParticleInfiniteEmitEnabled &lhs, const EffectParticleInfiniteEmitEnabled &rhs);
-bool operator!=(const EffectParticleInfiniteEmitEnabled &lhs, const EffectParticleInfiniteEmitEnabled &rhs);
-bool operator==(const EffectParticleTurnToDirectionEnabled &lhs, const EffectParticleTurnToDirectionEnabled &rhs);
-bool operator!=(const EffectParticleTurnToDirectionEnabled &lhs, const EffectParticleTurnToDirectionEnabled &rhs);
-bool operator==(const EffectParticlePointGravity &lhs, const EffectParticlePointGravity &rhs);
-bool operator!=(const EffectParticlePointGravity &lhs, const EffectParticlePointGravity &rhs);
-bool operator==(const EffectParticleElementTransSize &lhs, const EffectParticleElementTransSize &rhs);
-bool operator!=(const EffectParticleElementTransSize &lhs, const EffectParticleElementTransSize &rhs);
-bool operator==(const EffectParticleElementSize &lhs, const EffectParticleElementSize &rhs);
-bool operator!=(const EffectParticleElementSize &lhs, const EffectParticleElementSize &rhs);
-bool operator==(const EffectParticleElementAlphaFade &lhs, const EffectParticleElementAlphaFade &rhs);
-bool operator!=(const EffectParticleElementAlphaFade &lhs, const EffectParticleElementAlphaFade &rhs);
-bool operator==(const EffectParticleElementTransColor &lhs, const EffectParticleElementTransColor &rhs);
-bool operator!=(const EffectParticleElementTransColor &lhs, const EffectParticleElementTransColor &rhs);
-bool operator==(const EffectParticleElementInitColor &lhs, const EffectParticleElementInitColor &rhs);
-bool operator!=(const EffectParticleElementInitColor &lhs, const EffectParticleElementInitColor &rhs);
-bool operator==(const EffectParticleElementTangentialAcceleration &lhs, const EffectParticleElementTangentialAcceleration &rhs);
-bool operator!=(const EffectParticleElementTangentialAcceleration &lhs, const EffectParticleElementTangentialAcceleration &rhs);
-bool operator==(const EffectParticleElementTransSpeed &lhs, const EffectParticleElementTransSpeed &rhs);
-bool operator!=(const EffectParticleElementTransSpeed &lhs, const EffectParticleElementTransSpeed &rhs);
-bool operator==(const EffectParticleElementRotationTrans &lhs, const EffectParticleElementRotationTrans &rhs);
-bool operator!=(const EffectParticleElementRotationTrans &lhs, const EffectParticleElementRotationTrans &rhs);
-bool operator==(const EffectParticleElementRotation &lhs, const EffectParticleElementRotation &rhs);
-bool operator!=(const EffectParticleElementRotation &lhs, const EffectParticleElementRotation &rhs);
-bool operator==(const EffectParticleElementPosition &lhs, const EffectParticleElementPosition &rhs);
-bool operator!=(const EffectParticleElementPosition &lhs, const EffectParticleElementPosition &rhs);
-bool operator==(const EffectParticleElementGravity &lhs, const EffectParticleElementGravity &rhs);
-bool operator!=(const EffectParticleElementGravity &lhs, const EffectParticleElementGravity &rhs);
-bool operator==(const EffectParticleElementDelay &lhs, const EffectParticleElementDelay &rhs);
-bool operator!=(const EffectParticleElementDelay &lhs, const EffectParticleElementDelay &rhs);
-bool operator==(const EffectParticleElementRndSeedChange &lhs, const EffectParticleElementRndSeedChange &rhs);
-bool operator!=(const EffectParticleElementRndSeedChange &lhs, const EffectParticleElementRndSeedChange &rhs);
 bool operator==(const EffectParticleElementBasic &lhs, const EffectParticleElementBasic &rhs);
 bool operator!=(const EffectParticleElementBasic &lhs, const EffectParticleElementBasic &rhs);
 bool operator==(const EffectNodeT &lhs, const EffectNodeT &rhs);
@@ -491,6 +427,155 @@ inline const char *EnumNameUserDataFlag(UserDataFlag e) {
   return EnumNamesUserDataFlag()[index];
 }
 
+enum SsEffectFunctionType {
+  SsEffectFunctionType_Base = 0,
+  SsEffectFunctionType_Basic = 1,
+  SsEffectFunctionType_RndSeedChange = 2,
+  SsEffectFunctionType_Delay = 3,
+  SsEffectFunctionType_Gravity = 4,
+  SsEffectFunctionType_Position = 5,
+  SsEffectFunctionType_Rotation = 6,
+  SsEffectFunctionType_TransRotation = 7,
+  SsEffectFunctionType_TransSpeed = 8,
+  SsEffectFunctionType_TangentialAcceleration = 9,
+  SsEffectFunctionType_InitColor = 10,
+  SsEffectFunctionType_TransColor = 11,
+  SsEffectFunctionType_AlphaFade = 12,
+  SsEffectFunctionType_Size = 13,
+  SsEffectFunctionType_TransSize = 14,
+  SsEffectFunctionType_PointGravity = 15,
+  SsEffectFunctionType_TurnToDirectionEnabled = 16,
+  SsEffectFunctionType_InfiniteEmitEnabled = 17,
+  SsEffectFunctionType_MIN = SsEffectFunctionType_Base,
+  SsEffectFunctionType_MAX = SsEffectFunctionType_InfiniteEmitEnabled
+};
+
+inline const SsEffectFunctionType (&EnumValuesSsEffectFunctionType())[18] {
+  static const SsEffectFunctionType values[] = {
+    SsEffectFunctionType_Base,
+    SsEffectFunctionType_Basic,
+    SsEffectFunctionType_RndSeedChange,
+    SsEffectFunctionType_Delay,
+    SsEffectFunctionType_Gravity,
+    SsEffectFunctionType_Position,
+    SsEffectFunctionType_Rotation,
+    SsEffectFunctionType_TransRotation,
+    SsEffectFunctionType_TransSpeed,
+    SsEffectFunctionType_TangentialAcceleration,
+    SsEffectFunctionType_InitColor,
+    SsEffectFunctionType_TransColor,
+    SsEffectFunctionType_AlphaFade,
+    SsEffectFunctionType_Size,
+    SsEffectFunctionType_TransSize,
+    SsEffectFunctionType_PointGravity,
+    SsEffectFunctionType_TurnToDirectionEnabled,
+    SsEffectFunctionType_InfiniteEmitEnabled
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesSsEffectFunctionType() {
+  static const char * const names[] = {
+    "Base",
+    "Basic",
+    "RndSeedChange",
+    "Delay",
+    "Gravity",
+    "Position",
+    "Rotation",
+    "TransRotation",
+    "TransSpeed",
+    "TangentialAcceleration",
+    "InitColor",
+    "TransColor",
+    "AlphaFade",
+    "Size",
+    "TransSize",
+    "PointGravity",
+    "TurnToDirectionEnabled",
+    "InfiniteEmitEnabled",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameSsEffectFunctionType(SsEffectFunctionType e) {
+  if (e < SsEffectFunctionType_Base || e > SsEffectFunctionType_InfiniteEmitEnabled) return "";
+  const size_t index = static_cast<size_t>(e);
+  return EnumNamesSsEffectFunctionType()[index];
+}
+
+enum EffectBehaviorFlags {
+  EffectBehaviorFlags_Base = 1,
+  EffectBehaviorFlags_Basic = 2,
+  EffectBehaviorFlags_RndSeedChange = 4,
+  EffectBehaviorFlags_Delay = 8,
+  EffectBehaviorFlags_Gravity = 16,
+  EffectBehaviorFlags_Position = 32,
+  EffectBehaviorFlags_Rotation = 64,
+  EffectBehaviorFlags_TransRotation = 128,
+  EffectBehaviorFlags_TransSpeed = 256,
+  EffectBehaviorFlags_TangentialAcceleration = 512,
+  EffectBehaviorFlags_InitColor = 1024,
+  EffectBehaviorFlags_TransColor = 2048,
+  EffectBehaviorFlags_AlphaFade = 4096,
+  EffectBehaviorFlags_Size = 8192,
+  EffectBehaviorFlags_TransSize = 16384,
+  EffectBehaviorFlags_PointGravity = 32768,
+  EffectBehaviorFlags_TurnToDirectionEnabled = 65536,
+  EffectBehaviorFlags_InfiniteEmitEnabled = 131072,
+  EffectBehaviorFlags_NONE = 0,
+  EffectBehaviorFlags_ANY = 262143
+};
+
+inline const EffectBehaviorFlags (&EnumValuesEffectBehaviorFlags())[18] {
+  static const EffectBehaviorFlags values[] = {
+    EffectBehaviorFlags_Base,
+    EffectBehaviorFlags_Basic,
+    EffectBehaviorFlags_RndSeedChange,
+    EffectBehaviorFlags_Delay,
+    EffectBehaviorFlags_Gravity,
+    EffectBehaviorFlags_Position,
+    EffectBehaviorFlags_Rotation,
+    EffectBehaviorFlags_TransRotation,
+    EffectBehaviorFlags_TransSpeed,
+    EffectBehaviorFlags_TangentialAcceleration,
+    EffectBehaviorFlags_InitColor,
+    EffectBehaviorFlags_TransColor,
+    EffectBehaviorFlags_AlphaFade,
+    EffectBehaviorFlags_Size,
+    EffectBehaviorFlags_TransSize,
+    EffectBehaviorFlags_PointGravity,
+    EffectBehaviorFlags_TurnToDirectionEnabled,
+    EffectBehaviorFlags_InfiniteEmitEnabled
+  };
+  return values;
+}
+
+inline const char *EnumNameEffectBehaviorFlags(EffectBehaviorFlags e) {
+  switch (e) {
+    case EffectBehaviorFlags_Base: return "Base";
+    case EffectBehaviorFlags_Basic: return "Basic";
+    case EffectBehaviorFlags_RndSeedChange: return "RndSeedChange";
+    case EffectBehaviorFlags_Delay: return "Delay";
+    case EffectBehaviorFlags_Gravity: return "Gravity";
+    case EffectBehaviorFlags_Position: return "Position";
+    case EffectBehaviorFlags_Rotation: return "Rotation";
+    case EffectBehaviorFlags_TransRotation: return "TransRotation";
+    case EffectBehaviorFlags_TransSpeed: return "TransSpeed";
+    case EffectBehaviorFlags_TangentialAcceleration: return "TangentialAcceleration";
+    case EffectBehaviorFlags_InitColor: return "InitColor";
+    case EffectBehaviorFlags_TransColor: return "TransColor";
+    case EffectBehaviorFlags_AlphaFade: return "AlphaFade";
+    case EffectBehaviorFlags_Size: return "Size";
+    case EffectBehaviorFlags_TransSize: return "TransSize";
+    case EffectBehaviorFlags_PointGravity: return "PointGravity";
+    case EffectBehaviorFlags_TurnToDirectionEnabled: return "TurnToDirectionEnabled";
+    case EffectBehaviorFlags_InfiniteEmitEnabled: return "InfiniteEmitEnabled";
+    default: return "";
+  }
+}
+
 enum EffectNodeType {
   EffectNodeType_Invalid = -1,
   EffectNodeType_Root = 0,
@@ -559,996 +644,6 @@ inline const char *EnumNameEffectRenderBlendType(EffectRenderBlendType e) {
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(EffectRenderBlendType_Invalid);
   return EnumNamesEffectRenderBlendType()[index];
 }
-
-enum EffectNodeBehavior {
-  EffectNodeBehavior_NONE = 0,
-  EffectNodeBehavior_EffectParticleElementBasic = 1,
-  EffectNodeBehavior_EffectParticleElementRndSeedChange = 2,
-  EffectNodeBehavior_EffectParticleElementDelay = 3,
-  EffectNodeBehavior_EffectParticleElementGravity = 4,
-  EffectNodeBehavior_EffectParticleElementPosition = 5,
-  EffectNodeBehavior_EffectParticleElementRotation = 6,
-  EffectNodeBehavior_EffectParticleElementRotationTrans = 7,
-  EffectNodeBehavior_EffectParticleElementTransSpeed = 8,
-  EffectNodeBehavior_EffectParticleElementTangentialAcceleration = 9,
-  EffectNodeBehavior_EffectParticleElementInitColor = 10,
-  EffectNodeBehavior_EffectParticleElementTransColor = 11,
-  EffectNodeBehavior_EffectParticleElementAlphaFade = 12,
-  EffectNodeBehavior_EffectParticleElementSize = 13,
-  EffectNodeBehavior_EffectParticleElementTransSize = 14,
-  EffectNodeBehavior_EffectParticlePointGravity = 15,
-  EffectNodeBehavior_EffectParticleTurnToDirectionEnabled = 16,
-  EffectNodeBehavior_EffectParticleInfiniteEmitEnabled = 17,
-  EffectNodeBehavior_MIN = EffectNodeBehavior_NONE,
-  EffectNodeBehavior_MAX = EffectNodeBehavior_EffectParticleInfiniteEmitEnabled
-};
-
-inline const EffectNodeBehavior (&EnumValuesEffectNodeBehavior())[18] {
-  static const EffectNodeBehavior values[] = {
-    EffectNodeBehavior_NONE,
-    EffectNodeBehavior_EffectParticleElementBasic,
-    EffectNodeBehavior_EffectParticleElementRndSeedChange,
-    EffectNodeBehavior_EffectParticleElementDelay,
-    EffectNodeBehavior_EffectParticleElementGravity,
-    EffectNodeBehavior_EffectParticleElementPosition,
-    EffectNodeBehavior_EffectParticleElementRotation,
-    EffectNodeBehavior_EffectParticleElementRotationTrans,
-    EffectNodeBehavior_EffectParticleElementTransSpeed,
-    EffectNodeBehavior_EffectParticleElementTangentialAcceleration,
-    EffectNodeBehavior_EffectParticleElementInitColor,
-    EffectNodeBehavior_EffectParticleElementTransColor,
-    EffectNodeBehavior_EffectParticleElementAlphaFade,
-    EffectNodeBehavior_EffectParticleElementSize,
-    EffectNodeBehavior_EffectParticleElementTransSize,
-    EffectNodeBehavior_EffectParticlePointGravity,
-    EffectNodeBehavior_EffectParticleTurnToDirectionEnabled,
-    EffectNodeBehavior_EffectParticleInfiniteEmitEnabled
-  };
-  return values;
-}
-
-inline const char * const *EnumNamesEffectNodeBehavior() {
-  static const char * const names[] = {
-    "NONE",
-    "EffectParticleElementBasic",
-    "EffectParticleElementRndSeedChange",
-    "EffectParticleElementDelay",
-    "EffectParticleElementGravity",
-    "EffectParticleElementPosition",
-    "EffectParticleElementRotation",
-    "EffectParticleElementRotationTrans",
-    "EffectParticleElementTransSpeed",
-    "EffectParticleElementTangentialAcceleration",
-    "EffectParticleElementInitColor",
-    "EffectParticleElementTransColor",
-    "EffectParticleElementAlphaFade",
-    "EffectParticleElementSize",
-    "EffectParticleElementTransSize",
-    "EffectParticlePointGravity",
-    "EffectParticleTurnToDirectionEnabled",
-    "EffectParticleInfiniteEmitEnabled",
-    nullptr
-  };
-  return names;
-}
-
-inline const char *EnumNameEffectNodeBehavior(EffectNodeBehavior e) {
-  if (e < EffectNodeBehavior_NONE || e > EffectNodeBehavior_EffectParticleInfiniteEmitEnabled) return "";
-  const size_t index = static_cast<size_t>(e);
-  return EnumNamesEffectNodeBehavior()[index];
-}
-
-template<typename T> struct EffectNodeBehaviorTraits {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_NONE;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementBasic> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementBasic;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementRndSeedChange> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementRndSeedChange;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementDelay> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementDelay;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementGravity> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementGravity;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementPosition> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementPosition;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementRotation> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementRotation;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementRotationTrans> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementRotationTrans;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementTransSpeed> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTransSpeed;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementTangentialAcceleration> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTangentialAcceleration;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementInitColor> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementInitColor;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementTransColor> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTransColor;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementAlphaFade> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementAlphaFade;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementSize> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementSize;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementTransSize> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTransSize;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticlePointGravity> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticlePointGravity;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleTurnToDirectionEnabled> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleTurnToDirectionEnabled;
-};
-
-template<> struct EffectNodeBehaviorTraits<EffectParticleInfiniteEmitEnabled> {
-  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleInfiniteEmitEnabled;
-};
-
-struct EffectNodeBehaviorUnion {
-  EffectNodeBehavior type;
-  void *value;
-
-  EffectNodeBehaviorUnion() : type(EffectNodeBehavior_NONE), value(nullptr) {}
-  EffectNodeBehaviorUnion(EffectNodeBehaviorUnion&& u) FLATBUFFERS_NOEXCEPT :
-    type(EffectNodeBehavior_NONE), value(nullptr)
-    { std::swap(type, u.type); std::swap(value, u.value); }
-  EffectNodeBehaviorUnion(const EffectNodeBehaviorUnion &) FLATBUFFERS_NOEXCEPT;
-  EffectNodeBehaviorUnion &operator=(const EffectNodeBehaviorUnion &u) FLATBUFFERS_NOEXCEPT
-    { EffectNodeBehaviorUnion t(u); std::swap(type, t.type); std::swap(value, t.value); return *this; }
-  EffectNodeBehaviorUnion &operator=(EffectNodeBehaviorUnion &&u) FLATBUFFERS_NOEXCEPT
-    { std::swap(type, u.type); std::swap(value, u.value); return *this; }
-  ~EffectNodeBehaviorUnion() { Reset(); }
-
-  void Reset();
-
-#ifndef FLATBUFFERS_CPP98_STL
-  template <typename T>
-  void Set(T&& val) {
-    using RT = typename std::remove_reference<T>::type;
-    Reset();
-    type = EffectNodeBehaviorTraits<typename RT::TableType>::enum_value;
-    if (type != EffectNodeBehavior_NONE) {
-      value = new RT(std::forward<T>(val));
-    }
-  }
-#endif  // FLATBUFFERS_CPP98_STL
-
-  static void *UnPack(const void *obj, EffectNodeBehavior type, const flatbuffers::resolver_function_t *resolver);
-  flatbuffers::Offset<void> Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher = nullptr) const;
-
-  EffectParticleElementBasic *AsEffectParticleElementBasic() {
-    return type == EffectNodeBehavior_EffectParticleElementBasic ?
-      reinterpret_cast<EffectParticleElementBasic *>(value) : nullptr;
-  }
-  const EffectParticleElementBasic *AsEffectParticleElementBasic() const {
-    return type == EffectNodeBehavior_EffectParticleElementBasic ?
-      reinterpret_cast<const EffectParticleElementBasic *>(value) : nullptr;
-  }
-  EffectParticleElementRndSeedChange *AsEffectParticleElementRndSeedChange() {
-    return type == EffectNodeBehavior_EffectParticleElementRndSeedChange ?
-      reinterpret_cast<EffectParticleElementRndSeedChange *>(value) : nullptr;
-  }
-  const EffectParticleElementRndSeedChange *AsEffectParticleElementRndSeedChange() const {
-    return type == EffectNodeBehavior_EffectParticleElementRndSeedChange ?
-      reinterpret_cast<const EffectParticleElementRndSeedChange *>(value) : nullptr;
-  }
-  EffectParticleElementDelay *AsEffectParticleElementDelay() {
-    return type == EffectNodeBehavior_EffectParticleElementDelay ?
-      reinterpret_cast<EffectParticleElementDelay *>(value) : nullptr;
-  }
-  const EffectParticleElementDelay *AsEffectParticleElementDelay() const {
-    return type == EffectNodeBehavior_EffectParticleElementDelay ?
-      reinterpret_cast<const EffectParticleElementDelay *>(value) : nullptr;
-  }
-  EffectParticleElementGravity *AsEffectParticleElementGravity() {
-    return type == EffectNodeBehavior_EffectParticleElementGravity ?
-      reinterpret_cast<EffectParticleElementGravity *>(value) : nullptr;
-  }
-  const EffectParticleElementGravity *AsEffectParticleElementGravity() const {
-    return type == EffectNodeBehavior_EffectParticleElementGravity ?
-      reinterpret_cast<const EffectParticleElementGravity *>(value) : nullptr;
-  }
-  EffectParticleElementPosition *AsEffectParticleElementPosition() {
-    return type == EffectNodeBehavior_EffectParticleElementPosition ?
-      reinterpret_cast<EffectParticleElementPosition *>(value) : nullptr;
-  }
-  const EffectParticleElementPosition *AsEffectParticleElementPosition() const {
-    return type == EffectNodeBehavior_EffectParticleElementPosition ?
-      reinterpret_cast<const EffectParticleElementPosition *>(value) : nullptr;
-  }
-  EffectParticleElementRotation *AsEffectParticleElementRotation() {
-    return type == EffectNodeBehavior_EffectParticleElementRotation ?
-      reinterpret_cast<EffectParticleElementRotation *>(value) : nullptr;
-  }
-  const EffectParticleElementRotation *AsEffectParticleElementRotation() const {
-    return type == EffectNodeBehavior_EffectParticleElementRotation ?
-      reinterpret_cast<const EffectParticleElementRotation *>(value) : nullptr;
-  }
-  EffectParticleElementRotationTrans *AsEffectParticleElementRotationTrans() {
-    return type == EffectNodeBehavior_EffectParticleElementRotationTrans ?
-      reinterpret_cast<EffectParticleElementRotationTrans *>(value) : nullptr;
-  }
-  const EffectParticleElementRotationTrans *AsEffectParticleElementRotationTrans() const {
-    return type == EffectNodeBehavior_EffectParticleElementRotationTrans ?
-      reinterpret_cast<const EffectParticleElementRotationTrans *>(value) : nullptr;
-  }
-  EffectParticleElementTransSpeed *AsEffectParticleElementTransSpeed() {
-    return type == EffectNodeBehavior_EffectParticleElementTransSpeed ?
-      reinterpret_cast<EffectParticleElementTransSpeed *>(value) : nullptr;
-  }
-  const EffectParticleElementTransSpeed *AsEffectParticleElementTransSpeed() const {
-    return type == EffectNodeBehavior_EffectParticleElementTransSpeed ?
-      reinterpret_cast<const EffectParticleElementTransSpeed *>(value) : nullptr;
-  }
-  EffectParticleElementTangentialAcceleration *AsEffectParticleElementTangentialAcceleration() {
-    return type == EffectNodeBehavior_EffectParticleElementTangentialAcceleration ?
-      reinterpret_cast<EffectParticleElementTangentialAcceleration *>(value) : nullptr;
-  }
-  const EffectParticleElementTangentialAcceleration *AsEffectParticleElementTangentialAcceleration() const {
-    return type == EffectNodeBehavior_EffectParticleElementTangentialAcceleration ?
-      reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(value) : nullptr;
-  }
-  EffectParticleElementInitColor *AsEffectParticleElementInitColor() {
-    return type == EffectNodeBehavior_EffectParticleElementInitColor ?
-      reinterpret_cast<EffectParticleElementInitColor *>(value) : nullptr;
-  }
-  const EffectParticleElementInitColor *AsEffectParticleElementInitColor() const {
-    return type == EffectNodeBehavior_EffectParticleElementInitColor ?
-      reinterpret_cast<const EffectParticleElementInitColor *>(value) : nullptr;
-  }
-  EffectParticleElementTransColor *AsEffectParticleElementTransColor() {
-    return type == EffectNodeBehavior_EffectParticleElementTransColor ?
-      reinterpret_cast<EffectParticleElementTransColor *>(value) : nullptr;
-  }
-  const EffectParticleElementTransColor *AsEffectParticleElementTransColor() const {
-    return type == EffectNodeBehavior_EffectParticleElementTransColor ?
-      reinterpret_cast<const EffectParticleElementTransColor *>(value) : nullptr;
-  }
-  EffectParticleElementAlphaFade *AsEffectParticleElementAlphaFade() {
-    return type == EffectNodeBehavior_EffectParticleElementAlphaFade ?
-      reinterpret_cast<EffectParticleElementAlphaFade *>(value) : nullptr;
-  }
-  const EffectParticleElementAlphaFade *AsEffectParticleElementAlphaFade() const {
-    return type == EffectNodeBehavior_EffectParticleElementAlphaFade ?
-      reinterpret_cast<const EffectParticleElementAlphaFade *>(value) : nullptr;
-  }
-  EffectParticleElementSize *AsEffectParticleElementSize() {
-    return type == EffectNodeBehavior_EffectParticleElementSize ?
-      reinterpret_cast<EffectParticleElementSize *>(value) : nullptr;
-  }
-  const EffectParticleElementSize *AsEffectParticleElementSize() const {
-    return type == EffectNodeBehavior_EffectParticleElementSize ?
-      reinterpret_cast<const EffectParticleElementSize *>(value) : nullptr;
-  }
-  EffectParticleElementTransSize *AsEffectParticleElementTransSize() {
-    return type == EffectNodeBehavior_EffectParticleElementTransSize ?
-      reinterpret_cast<EffectParticleElementTransSize *>(value) : nullptr;
-  }
-  const EffectParticleElementTransSize *AsEffectParticleElementTransSize() const {
-    return type == EffectNodeBehavior_EffectParticleElementTransSize ?
-      reinterpret_cast<const EffectParticleElementTransSize *>(value) : nullptr;
-  }
-  EffectParticlePointGravity *AsEffectParticlePointGravity() {
-    return type == EffectNodeBehavior_EffectParticlePointGravity ?
-      reinterpret_cast<EffectParticlePointGravity *>(value) : nullptr;
-  }
-  const EffectParticlePointGravity *AsEffectParticlePointGravity() const {
-    return type == EffectNodeBehavior_EffectParticlePointGravity ?
-      reinterpret_cast<const EffectParticlePointGravity *>(value) : nullptr;
-  }
-  EffectParticleTurnToDirectionEnabled *AsEffectParticleTurnToDirectionEnabled() {
-    return type == EffectNodeBehavior_EffectParticleTurnToDirectionEnabled ?
-      reinterpret_cast<EffectParticleTurnToDirectionEnabled *>(value) : nullptr;
-  }
-  const EffectParticleTurnToDirectionEnabled *AsEffectParticleTurnToDirectionEnabled() const {
-    return type == EffectNodeBehavior_EffectParticleTurnToDirectionEnabled ?
-      reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(value) : nullptr;
-  }
-  EffectParticleInfiniteEmitEnabled *AsEffectParticleInfiniteEmitEnabled() {
-    return type == EffectNodeBehavior_EffectParticleInfiniteEmitEnabled ?
-      reinterpret_cast<EffectParticleInfiniteEmitEnabled *>(value) : nullptr;
-  }
-  const EffectParticleInfiniteEmitEnabled *AsEffectParticleInfiniteEmitEnabled() const {
-    return type == EffectNodeBehavior_EffectParticleInfiniteEmitEnabled ?
-      reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(value) : nullptr;
-  }
-};
-
-
-inline bool operator==(const EffectNodeBehaviorUnion &lhs, const EffectNodeBehaviorUnion &rhs) {
-  if (lhs.type != rhs.type) return false;
-  switch (lhs.type) {
-    case EffectNodeBehavior_NONE: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementBasic: {
-      return *(reinterpret_cast<const EffectParticleElementBasic *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementBasic *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      return *(reinterpret_cast<const EffectParticleElementRndSeedChange *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementRndSeedChange *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementDelay: {
-      return *(reinterpret_cast<const EffectParticleElementDelay *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementDelay *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementGravity: {
-      return *(reinterpret_cast<const EffectParticleElementGravity *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementGravity *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementPosition: {
-      return *(reinterpret_cast<const EffectParticleElementPosition *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementPosition *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementRotation: {
-      return *(reinterpret_cast<const EffectParticleElementRotation *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementRotation *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      return *(reinterpret_cast<const EffectParticleElementRotationTrans *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementRotationTrans *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      return *(reinterpret_cast<const EffectParticleElementTransSpeed *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementTransSpeed *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      return *(reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementInitColor: {
-      return *(reinterpret_cast<const EffectParticleElementInitColor *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementInitColor *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementTransColor: {
-      return *(reinterpret_cast<const EffectParticleElementTransColor *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementTransColor *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      return *(reinterpret_cast<const EffectParticleElementAlphaFade *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementAlphaFade *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementSize: {
-      return *(reinterpret_cast<const EffectParticleElementSize *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementSize *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSize: {
-      return *(reinterpret_cast<const EffectParticleElementTransSize *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementTransSize *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticlePointGravity: {
-      return *(reinterpret_cast<const EffectParticlePointGravity *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticlePointGravity *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      return *(reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(rhs.value));
-    }
-    case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      return *(reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(rhs.value));
-    }
-    default: {
-      return false;
-    }
-  }
-}
-
-inline bool operator!=(const EffectNodeBehaviorUnion &lhs, const EffectNodeBehaviorUnion &rhs) {
-    return !(lhs == rhs);
-}
-
-bool VerifyEffectNodeBehavior(flatbuffers::Verifier &verifier, const void *obj, EffectNodeBehavior type);
-bool VerifyEffectNodeBehaviorVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleInfiniteEmitEnabled FLATBUFFERS_FINAL_CLASS {
- private:
-  int32_t flag_;
-
- public:
-  EffectParticleInfiniteEmitEnabled() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleInfiniteEmitEnabled));
-  }
-  EffectParticleInfiniteEmitEnabled(int32_t _flag)
-      : flag_(flatbuffers::EndianScalar(_flag)) {
-  }
-  int32_t flag() const {
-    return flatbuffers::EndianScalar(flag_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleInfiniteEmitEnabled, 4);
-
-inline bool operator==(const EffectParticleInfiniteEmitEnabled &lhs, const EffectParticleInfiniteEmitEnabled &rhs) {
-  return
-      (lhs.flag() == rhs.flag());
-}
-
-inline bool operator!=(const EffectParticleInfiniteEmitEnabled &lhs, const EffectParticleInfiniteEmitEnabled &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleTurnToDirectionEnabled FLATBUFFERS_FINAL_CLASS {
- private:
-  float rotation_;
-
- public:
-  EffectParticleTurnToDirectionEnabled() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleTurnToDirectionEnabled));
-  }
-  EffectParticleTurnToDirectionEnabled(float _rotation)
-      : rotation_(flatbuffers::EndianScalar(_rotation)) {
-  }
-  float rotation() const {
-    return flatbuffers::EndianScalar(rotation_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleTurnToDirectionEnabled, 4);
-
-inline bool operator==(const EffectParticleTurnToDirectionEnabled &lhs, const EffectParticleTurnToDirectionEnabled &rhs) {
-  return
-      (lhs.rotation() == rhs.rotation());
-}
-
-inline bool operator!=(const EffectParticleTurnToDirectionEnabled &lhs, const EffectParticleTurnToDirectionEnabled &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticlePointGravity FLATBUFFERS_FINAL_CLASS {
- private:
-  float position_x_;
-  float position_y_;
-  float power_;
-
- public:
-  EffectParticlePointGravity() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticlePointGravity));
-  }
-  EffectParticlePointGravity(float _position_x, float _position_y, float _power)
-      : position_x_(flatbuffers::EndianScalar(_position_x)),
-        position_y_(flatbuffers::EndianScalar(_position_y)),
-        power_(flatbuffers::EndianScalar(_power)) {
-  }
-  float position_x() const {
-    return flatbuffers::EndianScalar(position_x_);
-  }
-  float position_y() const {
-    return flatbuffers::EndianScalar(position_y_);
-  }
-  float power() const {
-    return flatbuffers::EndianScalar(power_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticlePointGravity, 12);
-
-inline bool operator==(const EffectParticlePointGravity &lhs, const EffectParticlePointGravity &rhs) {
-  return
-      (lhs.position_x() == rhs.position_x()) &&
-      (lhs.position_y() == rhs.position_y()) &&
-      (lhs.power() == rhs.power());
-}
-
-inline bool operator!=(const EffectParticlePointGravity &lhs, const EffectParticlePointGravity &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransSize FLATBUFFERS_FINAL_CLASS {
- private:
-  float size_x_min_value_;
-  float size_x_max_value_;
-  float size_y_min_value_;
-  float size_y_max_value_;
-  float scale_factor_min_value_;
-  float scale_factor_max_value_;
-
- public:
-  EffectParticleElementTransSize() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementTransSize));
-  }
-  EffectParticleElementTransSize(float _size_x_min_value, float _size_x_max_value, float _size_y_min_value, float _size_y_max_value, float _scale_factor_min_value, float _scale_factor_max_value)
-      : size_x_min_value_(flatbuffers::EndianScalar(_size_x_min_value)),
-        size_x_max_value_(flatbuffers::EndianScalar(_size_x_max_value)),
-        size_y_min_value_(flatbuffers::EndianScalar(_size_y_min_value)),
-        size_y_max_value_(flatbuffers::EndianScalar(_size_y_max_value)),
-        scale_factor_min_value_(flatbuffers::EndianScalar(_scale_factor_min_value)),
-        scale_factor_max_value_(flatbuffers::EndianScalar(_scale_factor_max_value)) {
-  }
-  float size_x_min_value() const {
-    return flatbuffers::EndianScalar(size_x_min_value_);
-  }
-  float size_x_max_value() const {
-    return flatbuffers::EndianScalar(size_x_max_value_);
-  }
-  float size_y_min_value() const {
-    return flatbuffers::EndianScalar(size_y_min_value_);
-  }
-  float size_y_max_value() const {
-    return flatbuffers::EndianScalar(size_y_max_value_);
-  }
-  float scale_factor_min_value() const {
-    return flatbuffers::EndianScalar(scale_factor_min_value_);
-  }
-  float scale_factor_max_value() const {
-    return flatbuffers::EndianScalar(scale_factor_max_value_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementTransSize, 24);
-
-inline bool operator==(const EffectParticleElementTransSize &lhs, const EffectParticleElementTransSize &rhs) {
-  return
-      (lhs.size_x_min_value() == rhs.size_x_min_value()) &&
-      (lhs.size_x_max_value() == rhs.size_x_max_value()) &&
-      (lhs.size_y_min_value() == rhs.size_y_min_value()) &&
-      (lhs.size_y_max_value() == rhs.size_y_max_value()) &&
-      (lhs.scale_factor_min_value() == rhs.scale_factor_min_value()) &&
-      (lhs.scale_factor_max_value() == rhs.scale_factor_max_value());
-}
-
-inline bool operator!=(const EffectParticleElementTransSize &lhs, const EffectParticleElementTransSize &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementSize FLATBUFFERS_FINAL_CLASS {
- private:
-  float size_x_min_value_;
-  float size_x_max_value_;
-  float size_y_min_value_;
-  float size_y_max_value_;
-  float scale_factor_min_value_;
-  float scale_factor_max_value_;
-
- public:
-  EffectParticleElementSize() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementSize));
-  }
-  EffectParticleElementSize(float _size_x_min_value, float _size_x_max_value, float _size_y_min_value, float _size_y_max_value, float _scale_factor_min_value, float _scale_factor_max_value)
-      : size_x_min_value_(flatbuffers::EndianScalar(_size_x_min_value)),
-        size_x_max_value_(flatbuffers::EndianScalar(_size_x_max_value)),
-        size_y_min_value_(flatbuffers::EndianScalar(_size_y_min_value)),
-        size_y_max_value_(flatbuffers::EndianScalar(_size_y_max_value)),
-        scale_factor_min_value_(flatbuffers::EndianScalar(_scale_factor_min_value)),
-        scale_factor_max_value_(flatbuffers::EndianScalar(_scale_factor_max_value)) {
-  }
-  float size_x_min_value() const {
-    return flatbuffers::EndianScalar(size_x_min_value_);
-  }
-  float size_x_max_value() const {
-    return flatbuffers::EndianScalar(size_x_max_value_);
-  }
-  float size_y_min_value() const {
-    return flatbuffers::EndianScalar(size_y_min_value_);
-  }
-  float size_y_max_value() const {
-    return flatbuffers::EndianScalar(size_y_max_value_);
-  }
-  float scale_factor_min_value() const {
-    return flatbuffers::EndianScalar(scale_factor_min_value_);
-  }
-  float scale_factor_max_value() const {
-    return flatbuffers::EndianScalar(scale_factor_max_value_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementSize, 24);
-
-inline bool operator==(const EffectParticleElementSize &lhs, const EffectParticleElementSize &rhs) {
-  return
-      (lhs.size_x_min_value() == rhs.size_x_min_value()) &&
-      (lhs.size_x_max_value() == rhs.size_x_max_value()) &&
-      (lhs.size_y_min_value() == rhs.size_y_min_value()) &&
-      (lhs.size_y_max_value() == rhs.size_y_max_value()) &&
-      (lhs.scale_factor_min_value() == rhs.scale_factor_min_value()) &&
-      (lhs.scale_factor_max_value() == rhs.scale_factor_max_value());
-}
-
-inline bool operator!=(const EffectParticleElementSize &lhs, const EffectParticleElementSize &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementAlphaFade FLATBUFFERS_FINAL_CLASS {
- private:
-  float disprange_min_value_;
-  float disprange_max_value_;
-
- public:
-  EffectParticleElementAlphaFade() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementAlphaFade));
-  }
-  EffectParticleElementAlphaFade(float _disprange_min_value, float _disprange_max_value)
-      : disprange_min_value_(flatbuffers::EndianScalar(_disprange_min_value)),
-        disprange_max_value_(flatbuffers::EndianScalar(_disprange_max_value)) {
-  }
-  float disprange_min_value() const {
-    return flatbuffers::EndianScalar(disprange_min_value_);
-  }
-  float disprange_max_value() const {
-    return flatbuffers::EndianScalar(disprange_max_value_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementAlphaFade, 8);
-
-inline bool operator==(const EffectParticleElementAlphaFade &lhs, const EffectParticleElementAlphaFade &rhs) {
-  return
-      (lhs.disprange_min_value() == rhs.disprange_min_value()) &&
-      (lhs.disprange_max_value() == rhs.disprange_max_value());
-}
-
-inline bool operator!=(const EffectParticleElementAlphaFade &lhs, const EffectParticleElementAlphaFade &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransColor FLATBUFFERS_FINAL_CLASS {
- private:
-  uint32_t color_min_value_;
-  uint32_t color_max_value_;
-
- public:
-  EffectParticleElementTransColor() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementTransColor));
-  }
-  EffectParticleElementTransColor(uint32_t _color_min_value, uint32_t _color_max_value)
-      : color_min_value_(flatbuffers::EndianScalar(_color_min_value)),
-        color_max_value_(flatbuffers::EndianScalar(_color_max_value)) {
-  }
-  uint32_t color_min_value() const {
-    return flatbuffers::EndianScalar(color_min_value_);
-  }
-  uint32_t color_max_value() const {
-    return flatbuffers::EndianScalar(color_max_value_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementTransColor, 8);
-
-inline bool operator==(const EffectParticleElementTransColor &lhs, const EffectParticleElementTransColor &rhs) {
-  return
-      (lhs.color_min_value() == rhs.color_min_value()) &&
-      (lhs.color_max_value() == rhs.color_max_value());
-}
-
-inline bool operator!=(const EffectParticleElementTransColor &lhs, const EffectParticleElementTransColor &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementInitColor FLATBUFFERS_FINAL_CLASS {
- private:
-  uint32_t color_min_value_;
-  uint32_t color_max_value_;
-
- public:
-  EffectParticleElementInitColor() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementInitColor));
-  }
-  EffectParticleElementInitColor(uint32_t _color_min_value, uint32_t _color_max_value)
-      : color_min_value_(flatbuffers::EndianScalar(_color_min_value)),
-        color_max_value_(flatbuffers::EndianScalar(_color_max_value)) {
-  }
-  uint32_t color_min_value() const {
-    return flatbuffers::EndianScalar(color_min_value_);
-  }
-  uint32_t color_max_value() const {
-    return flatbuffers::EndianScalar(color_max_value_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementInitColor, 8);
-
-inline bool operator==(const EffectParticleElementInitColor &lhs, const EffectParticleElementInitColor &rhs) {
-  return
-      (lhs.color_min_value() == rhs.color_min_value()) &&
-      (lhs.color_max_value() == rhs.color_max_value());
-}
-
-inline bool operator!=(const EffectParticleElementInitColor &lhs, const EffectParticleElementInitColor &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTangentialAcceleration FLATBUFFERS_FINAL_CLASS {
- private:
-  float acceleration_min_value_;
-  float acceleration_max_value_;
-
- public:
-  EffectParticleElementTangentialAcceleration() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementTangentialAcceleration));
-  }
-  EffectParticleElementTangentialAcceleration(float _acceleration_min_value, float _acceleration_max_value)
-      : acceleration_min_value_(flatbuffers::EndianScalar(_acceleration_min_value)),
-        acceleration_max_value_(flatbuffers::EndianScalar(_acceleration_max_value)) {
-  }
-  float acceleration_min_value() const {
-    return flatbuffers::EndianScalar(acceleration_min_value_);
-  }
-  float acceleration_max_value() const {
-    return flatbuffers::EndianScalar(acceleration_max_value_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementTangentialAcceleration, 8);
-
-inline bool operator==(const EffectParticleElementTangentialAcceleration &lhs, const EffectParticleElementTangentialAcceleration &rhs) {
-  return
-      (lhs.acceleration_min_value() == rhs.acceleration_min_value()) &&
-      (lhs.acceleration_max_value() == rhs.acceleration_max_value());
-}
-
-inline bool operator!=(const EffectParticleElementTangentialAcceleration &lhs, const EffectParticleElementTangentialAcceleration &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransSpeed FLATBUFFERS_FINAL_CLASS {
- private:
-  float speed_min_value_;
-  float speed_max_value_;
-
- public:
-  EffectParticleElementTransSpeed() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementTransSpeed));
-  }
-  EffectParticleElementTransSpeed(float _speed_min_value, float _speed_max_value)
-      : speed_min_value_(flatbuffers::EndianScalar(_speed_min_value)),
-        speed_max_value_(flatbuffers::EndianScalar(_speed_max_value)) {
-  }
-  float speed_min_value() const {
-    return flatbuffers::EndianScalar(speed_min_value_);
-  }
-  float speed_max_value() const {
-    return flatbuffers::EndianScalar(speed_max_value_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementTransSpeed, 8);
-
-inline bool operator==(const EffectParticleElementTransSpeed &lhs, const EffectParticleElementTransSpeed &rhs) {
-  return
-      (lhs.speed_min_value() == rhs.speed_min_value()) &&
-      (lhs.speed_max_value() == rhs.speed_max_value());
-}
-
-inline bool operator!=(const EffectParticleElementTransSpeed &lhs, const EffectParticleElementTransSpeed &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRotationTrans FLATBUFFERS_FINAL_CLASS {
- private:
-  float rotation_factor_;
-  float end_life_time_per_;
-
- public:
-  EffectParticleElementRotationTrans() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementRotationTrans));
-  }
-  EffectParticleElementRotationTrans(float _rotation_factor, float _end_life_time_per)
-      : rotation_factor_(flatbuffers::EndianScalar(_rotation_factor)),
-        end_life_time_per_(flatbuffers::EndianScalar(_end_life_time_per)) {
-  }
-  float rotation_factor() const {
-    return flatbuffers::EndianScalar(rotation_factor_);
-  }
-  float end_life_time_per() const {
-    return flatbuffers::EndianScalar(end_life_time_per_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementRotationTrans, 8);
-
-inline bool operator==(const EffectParticleElementRotationTrans &lhs, const EffectParticleElementRotationTrans &rhs) {
-  return
-      (lhs.rotation_factor() == rhs.rotation_factor()) &&
-      (lhs.end_life_time_per() == rhs.end_life_time_per());
-}
-
-inline bool operator!=(const EffectParticleElementRotationTrans &lhs, const EffectParticleElementRotationTrans &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRotation FLATBUFFERS_FINAL_CLASS {
- private:
-  float rotation_min_value_;
-  float rotation_max_value_;
-  float rotation_add_min_value_;
-  float rotation_add_max_value_;
-
- public:
-  EffectParticleElementRotation() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementRotation));
-  }
-  EffectParticleElementRotation(float _rotation_min_value, float _rotation_max_value, float _rotation_add_min_value, float _rotation_add_max_value)
-      : rotation_min_value_(flatbuffers::EndianScalar(_rotation_min_value)),
-        rotation_max_value_(flatbuffers::EndianScalar(_rotation_max_value)),
-        rotation_add_min_value_(flatbuffers::EndianScalar(_rotation_add_min_value)),
-        rotation_add_max_value_(flatbuffers::EndianScalar(_rotation_add_max_value)) {
-  }
-  float rotation_min_value() const {
-    return flatbuffers::EndianScalar(rotation_min_value_);
-  }
-  float rotation_max_value() const {
-    return flatbuffers::EndianScalar(rotation_max_value_);
-  }
-  float rotation_add_min_value() const {
-    return flatbuffers::EndianScalar(rotation_add_min_value_);
-  }
-  float rotation_add_max_value() const {
-    return flatbuffers::EndianScalar(rotation_add_max_value_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementRotation, 16);
-
-inline bool operator==(const EffectParticleElementRotation &lhs, const EffectParticleElementRotation &rhs) {
-  return
-      (lhs.rotation_min_value() == rhs.rotation_min_value()) &&
-      (lhs.rotation_max_value() == rhs.rotation_max_value()) &&
-      (lhs.rotation_add_min_value() == rhs.rotation_add_min_value()) &&
-      (lhs.rotation_add_max_value() == rhs.rotation_add_max_value());
-}
-
-inline bool operator!=(const EffectParticleElementRotation &lhs, const EffectParticleElementRotation &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementPosition FLATBUFFERS_FINAL_CLASS {
- private:
-  float offset_x_min_value_;
-  float offset_x_max_value_;
-  float offset_y_min_value_;
-  float offset_y_max_value_;
-
- public:
-  EffectParticleElementPosition() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementPosition));
-  }
-  EffectParticleElementPosition(float _offset_x_min_value, float _offset_x_max_value, float _offset_y_min_value, float _offset_y_max_value)
-      : offset_x_min_value_(flatbuffers::EndianScalar(_offset_x_min_value)),
-        offset_x_max_value_(flatbuffers::EndianScalar(_offset_x_max_value)),
-        offset_y_min_value_(flatbuffers::EndianScalar(_offset_y_min_value)),
-        offset_y_max_value_(flatbuffers::EndianScalar(_offset_y_max_value)) {
-  }
-  float offset_x_min_value() const {
-    return flatbuffers::EndianScalar(offset_x_min_value_);
-  }
-  float offset_x_max_value() const {
-    return flatbuffers::EndianScalar(offset_x_max_value_);
-  }
-  float offset_y_min_value() const {
-    return flatbuffers::EndianScalar(offset_y_min_value_);
-  }
-  float offset_y_max_value() const {
-    return flatbuffers::EndianScalar(offset_y_max_value_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementPosition, 16);
-
-inline bool operator==(const EffectParticleElementPosition &lhs, const EffectParticleElementPosition &rhs) {
-  return
-      (lhs.offset_x_min_value() == rhs.offset_x_min_value()) &&
-      (lhs.offset_x_max_value() == rhs.offset_x_max_value()) &&
-      (lhs.offset_y_min_value() == rhs.offset_y_min_value()) &&
-      (lhs.offset_y_max_value() == rhs.offset_y_max_value());
-}
-
-inline bool operator!=(const EffectParticleElementPosition &lhs, const EffectParticleElementPosition &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementGravity FLATBUFFERS_FINAL_CLASS {
- private:
-  float gravity_x_;
-  float gravity_y_;
-
- public:
-  EffectParticleElementGravity() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementGravity));
-  }
-  EffectParticleElementGravity(float _gravity_x, float _gravity_y)
-      : gravity_x_(flatbuffers::EndianScalar(_gravity_x)),
-        gravity_y_(flatbuffers::EndianScalar(_gravity_y)) {
-  }
-  float gravity_x() const {
-    return flatbuffers::EndianScalar(gravity_x_);
-  }
-  float gravity_y() const {
-    return flatbuffers::EndianScalar(gravity_y_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementGravity, 8);
-
-inline bool operator==(const EffectParticleElementGravity &lhs, const EffectParticleElementGravity &rhs) {
-  return
-      (lhs.gravity_x() == rhs.gravity_x()) &&
-      (lhs.gravity_y() == rhs.gravity_y());
-}
-
-inline bool operator!=(const EffectParticleElementGravity &lhs, const EffectParticleElementGravity &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementDelay FLATBUFFERS_FINAL_CLASS {
- private:
-  int32_t delay_time_;
-
- public:
-  EffectParticleElementDelay() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementDelay));
-  }
-  EffectParticleElementDelay(int32_t _delay_time)
-      : delay_time_(flatbuffers::EndianScalar(_delay_time)) {
-  }
-  int32_t delay_time() const {
-    return flatbuffers::EndianScalar(delay_time_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementDelay, 4);
-
-inline bool operator==(const EffectParticleElementDelay &lhs, const EffectParticleElementDelay &rhs) {
-  return
-      (lhs.delay_time() == rhs.delay_time());
-}
-
-inline bool operator!=(const EffectParticleElementDelay &lhs, const EffectParticleElementDelay &rhs) {
-    return !(lhs == rhs);
-}
-
-
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRndSeedChange FLATBUFFERS_FINAL_CLASS {
- private:
-  int32_t seed_;
-
- public:
-  EffectParticleElementRndSeedChange() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementRndSeedChange));
-  }
-  EffectParticleElementRndSeedChange(int32_t _seed)
-      : seed_(flatbuffers::EndianScalar(_seed)) {
-  }
-  int32_t seed() const {
-    return flatbuffers::EndianScalar(seed_);
-  }
-};
-FLATBUFFERS_STRUCT_END(EffectParticleElementRndSeedChange, 4);
-
-inline bool operator==(const EffectParticleElementRndSeedChange &lhs, const EffectParticleElementRndSeedChange &rhs) {
-  return
-      (lhs.seed() == rhs.seed());
-}
-
-inline bool operator!=(const EffectParticleElementRndSeedChange &lhs, const EffectParticleElementRndSeedChange &rhs) {
-    return !(lhs == rhs);
-}
-
 
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementBasic FLATBUFFERS_FINAL_CLASS {
  private:
@@ -1650,15 +745,97 @@ struct EffectNodeT : public flatbuffers::NativeTable {
   EffectNodeType type;
   int16_t cell_index;
   EffectRenderBlendType blend_type;
-  int16_t num_behavior;
-  std::vector<EffectNodeBehaviorUnion> behavior;
+  std::unique_ptr<EffectParticleElementBasic> basic_behavior;
+  EffectBehaviorFlags behavior_flags;
+  int32_t seed;
+  int32_t delay_time;
+  float gravity_x;
+  float gravity_y;
+  float offset_x_min_value;
+  float offset_x_max_value;
+  float offset_y_min_value;
+  float offset_y_max_value;
+  float rotation_min_value;
+  float rotation_max_value;
+  float rotation_add_min_value;
+  float rotation_add_max_value;
+  float rotation_factor;
+  float end_life_time_per;
+  float speed_min_value;
+  float speed_max_value;
+  float acceleration_min_value;
+  float acceleration_max_value;
+  uint32_t init_color_min_value;
+  uint32_t init_color_max_value;
+  uint32_t trans_color_min_value;
+  uint32_t trans_color_max_value;
+  float disprange_min_value;
+  float disprange_max_value;
+  float size_x_min_value;
+  float size_x_max_value;
+  float size_y_min_value;
+  float size_y_max_value;
+  float scale_factor_min_value;
+  float scale_factor_max_value;
+  float trans_size_x_min_value;
+  float trans_size_x_max_value;
+  float trans_size_y_min_value;
+  float trans_size_y_max_value;
+  float trans_scale_factor_min_value;
+  float trans_scale_factor_max_value;
+  float point_gravity_position_x;
+  float point_gravity_position_y;
+  float point_gravity_power;
+  float rotation;
+  int32_t infinitie_emit_flag;
   EffectNodeT()
       : array_index(0),
         parent_index(0),
         type(EffectNodeType_Root),
         cell_index(0),
         blend_type(EffectRenderBlendType_Mix),
-        num_behavior(0) {
+        behavior_flags(static_cast<EffectBehaviorFlags>(0)),
+        seed(0),
+        delay_time(0),
+        gravity_x(0.0f),
+        gravity_y(0.0f),
+        offset_x_min_value(0.0f),
+        offset_x_max_value(0.0f),
+        offset_y_min_value(0.0f),
+        offset_y_max_value(0.0f),
+        rotation_min_value(0.0f),
+        rotation_max_value(0.0f),
+        rotation_add_min_value(0.0f),
+        rotation_add_max_value(0.0f),
+        rotation_factor(0.0f),
+        end_life_time_per(0.0f),
+        speed_min_value(0.0f),
+        speed_max_value(0.0f),
+        acceleration_min_value(0.0f),
+        acceleration_max_value(0.0f),
+        init_color_min_value(0),
+        init_color_max_value(0),
+        trans_color_min_value(0),
+        trans_color_max_value(0),
+        disprange_min_value(0.0f),
+        disprange_max_value(0.0f),
+        size_x_min_value(0.0f),
+        size_x_max_value(0.0f),
+        size_y_min_value(0.0f),
+        size_y_max_value(0.0f),
+        scale_factor_min_value(0.0f),
+        scale_factor_max_value(0.0f),
+        trans_size_x_min_value(0.0f),
+        trans_size_x_max_value(0.0f),
+        trans_size_y_min_value(0.0f),
+        trans_size_y_max_value(0.0f),
+        trans_scale_factor_min_value(0.0f),
+        trans_scale_factor_max_value(0.0f),
+        point_gravity_position_x(0.0f),
+        point_gravity_position_y(0.0f),
+        point_gravity_power(0.0f),
+        rotation(0.0f),
+        infinitie_emit_flag(0) {
   }
 };
 
@@ -1669,8 +846,49 @@ inline bool operator==(const EffectNodeT &lhs, const EffectNodeT &rhs) {
       (lhs.type == rhs.type) &&
       (lhs.cell_index == rhs.cell_index) &&
       (lhs.blend_type == rhs.blend_type) &&
-      (lhs.num_behavior == rhs.num_behavior) &&
-      (lhs.behavior == rhs.behavior);
+      (lhs.basic_behavior == rhs.basic_behavior) &&
+      (lhs.behavior_flags == rhs.behavior_flags) &&
+      (lhs.seed == rhs.seed) &&
+      (lhs.delay_time == rhs.delay_time) &&
+      (lhs.gravity_x == rhs.gravity_x) &&
+      (lhs.gravity_y == rhs.gravity_y) &&
+      (lhs.offset_x_min_value == rhs.offset_x_min_value) &&
+      (lhs.offset_x_max_value == rhs.offset_x_max_value) &&
+      (lhs.offset_y_min_value == rhs.offset_y_min_value) &&
+      (lhs.offset_y_max_value == rhs.offset_y_max_value) &&
+      (lhs.rotation_min_value == rhs.rotation_min_value) &&
+      (lhs.rotation_max_value == rhs.rotation_max_value) &&
+      (lhs.rotation_add_min_value == rhs.rotation_add_min_value) &&
+      (lhs.rotation_add_max_value == rhs.rotation_add_max_value) &&
+      (lhs.rotation_factor == rhs.rotation_factor) &&
+      (lhs.end_life_time_per == rhs.end_life_time_per) &&
+      (lhs.speed_min_value == rhs.speed_min_value) &&
+      (lhs.speed_max_value == rhs.speed_max_value) &&
+      (lhs.acceleration_min_value == rhs.acceleration_min_value) &&
+      (lhs.acceleration_max_value == rhs.acceleration_max_value) &&
+      (lhs.init_color_min_value == rhs.init_color_min_value) &&
+      (lhs.init_color_max_value == rhs.init_color_max_value) &&
+      (lhs.trans_color_min_value == rhs.trans_color_min_value) &&
+      (lhs.trans_color_max_value == rhs.trans_color_max_value) &&
+      (lhs.disprange_min_value == rhs.disprange_min_value) &&
+      (lhs.disprange_max_value == rhs.disprange_max_value) &&
+      (lhs.size_x_min_value == rhs.size_x_min_value) &&
+      (lhs.size_x_max_value == rhs.size_x_max_value) &&
+      (lhs.size_y_min_value == rhs.size_y_min_value) &&
+      (lhs.size_y_max_value == rhs.size_y_max_value) &&
+      (lhs.scale_factor_min_value == rhs.scale_factor_min_value) &&
+      (lhs.scale_factor_max_value == rhs.scale_factor_max_value) &&
+      (lhs.trans_size_x_min_value == rhs.trans_size_x_min_value) &&
+      (lhs.trans_size_x_max_value == rhs.trans_size_x_max_value) &&
+      (lhs.trans_size_y_min_value == rhs.trans_size_y_min_value) &&
+      (lhs.trans_size_y_max_value == rhs.trans_size_y_max_value) &&
+      (lhs.trans_scale_factor_min_value == rhs.trans_scale_factor_min_value) &&
+      (lhs.trans_scale_factor_max_value == rhs.trans_scale_factor_max_value) &&
+      (lhs.point_gravity_position_x == rhs.point_gravity_position_x) &&
+      (lhs.point_gravity_position_y == rhs.point_gravity_position_y) &&
+      (lhs.point_gravity_power == rhs.point_gravity_power) &&
+      (lhs.rotation == rhs.rotation) &&
+      (lhs.infinitie_emit_flag == rhs.infinitie_emit_flag);
 }
 
 inline bool operator!=(const EffectNodeT &lhs, const EffectNodeT &rhs) {
@@ -1686,9 +904,49 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_TYPE = 8,
     VT_CELL_INDEX = 10,
     VT_BLEND_TYPE = 12,
-    VT_NUM_BEHAVIOR = 14,
-    VT_BEHAVIOR_TYPE = 16,
-    VT_BEHAVIOR = 18
+    VT_BASIC_BEHAVIOR = 14,
+    VT_BEHAVIOR_FLAGS = 16,
+    VT_SEED = 18,
+    VT_DELAY_TIME = 20,
+    VT_GRAVITY_X = 22,
+    VT_GRAVITY_Y = 24,
+    VT_OFFSET_X_MIN_VALUE = 26,
+    VT_OFFSET_X_MAX_VALUE = 28,
+    VT_OFFSET_Y_MIN_VALUE = 30,
+    VT_OFFSET_Y_MAX_VALUE = 32,
+    VT_ROTATION_MIN_VALUE = 34,
+    VT_ROTATION_MAX_VALUE = 36,
+    VT_ROTATION_ADD_MIN_VALUE = 38,
+    VT_ROTATION_ADD_MAX_VALUE = 40,
+    VT_ROTATION_FACTOR = 42,
+    VT_END_LIFE_TIME_PER = 44,
+    VT_SPEED_MIN_VALUE = 46,
+    VT_SPEED_MAX_VALUE = 48,
+    VT_ACCELERATION_MIN_VALUE = 50,
+    VT_ACCELERATION_MAX_VALUE = 52,
+    VT_INIT_COLOR_MIN_VALUE = 54,
+    VT_INIT_COLOR_MAX_VALUE = 56,
+    VT_TRANS_COLOR_MIN_VALUE = 58,
+    VT_TRANS_COLOR_MAX_VALUE = 60,
+    VT_DISPRANGE_MIN_VALUE = 62,
+    VT_DISPRANGE_MAX_VALUE = 64,
+    VT_SIZE_X_MIN_VALUE = 66,
+    VT_SIZE_X_MAX_VALUE = 68,
+    VT_SIZE_Y_MIN_VALUE = 70,
+    VT_SIZE_Y_MAX_VALUE = 72,
+    VT_SCALE_FACTOR_MIN_VALUE = 74,
+    VT_SCALE_FACTOR_MAX_VALUE = 76,
+    VT_TRANS_SIZE_X_MIN_VALUE = 78,
+    VT_TRANS_SIZE_X_MAX_VALUE = 80,
+    VT_TRANS_SIZE_Y_MIN_VALUE = 82,
+    VT_TRANS_SIZE_Y_MAX_VALUE = 84,
+    VT_TRANS_SCALE_FACTOR_MIN_VALUE = 86,
+    VT_TRANS_SCALE_FACTOR_MAX_VALUE = 88,
+    VT_POINT_GRAVITY_POSITION_X = 90,
+    VT_POINT_GRAVITY_POSITION_Y = 92,
+    VT_POINT_GRAVITY_POWER = 94,
+    VT_ROTATION = 96,
+    VT_INFINITIE_EMIT_FLAG = 98
   };
   int16_t array_index() const {
     return GetField<int16_t>(VT_ARRAY_INDEX, 0);
@@ -1705,14 +963,134 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   EffectRenderBlendType blend_type() const {
     return static_cast<EffectRenderBlendType>(GetField<int8_t>(VT_BLEND_TYPE, 0));
   }
-  int16_t num_behavior() const {
-    return GetField<int16_t>(VT_NUM_BEHAVIOR, 0);
+  const EffectParticleElementBasic *basic_behavior() const {
+    return GetStruct<const EffectParticleElementBasic *>(VT_BASIC_BEHAVIOR);
   }
-  const flatbuffers::Vector<uint8_t> *behavior_type() const {
-    return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_BEHAVIOR_TYPE);
+  EffectBehaviorFlags behavior_flags() const {
+    return static_cast<EffectBehaviorFlags>(GetField<uint32_t>(VT_BEHAVIOR_FLAGS, 0));
   }
-  const flatbuffers::Vector<flatbuffers::Offset<void>> *behavior() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<void>> *>(VT_BEHAVIOR);
+  int32_t seed() const {
+    return GetField<int32_t>(VT_SEED, 0);
+  }
+  int32_t delay_time() const {
+    return GetField<int32_t>(VT_DELAY_TIME, 0);
+  }
+  float gravity_x() const {
+    return GetField<float>(VT_GRAVITY_X, 0.0f);
+  }
+  float gravity_y() const {
+    return GetField<float>(VT_GRAVITY_Y, 0.0f);
+  }
+  float offset_x_min_value() const {
+    return GetField<float>(VT_OFFSET_X_MIN_VALUE, 0.0f);
+  }
+  float offset_x_max_value() const {
+    return GetField<float>(VT_OFFSET_X_MAX_VALUE, 0.0f);
+  }
+  float offset_y_min_value() const {
+    return GetField<float>(VT_OFFSET_Y_MIN_VALUE, 0.0f);
+  }
+  float offset_y_max_value() const {
+    return GetField<float>(VT_OFFSET_Y_MAX_VALUE, 0.0f);
+  }
+  float rotation_min_value() const {
+    return GetField<float>(VT_ROTATION_MIN_VALUE, 0.0f);
+  }
+  float rotation_max_value() const {
+    return GetField<float>(VT_ROTATION_MAX_VALUE, 0.0f);
+  }
+  float rotation_add_min_value() const {
+    return GetField<float>(VT_ROTATION_ADD_MIN_VALUE, 0.0f);
+  }
+  float rotation_add_max_value() const {
+    return GetField<float>(VT_ROTATION_ADD_MAX_VALUE, 0.0f);
+  }
+  float rotation_factor() const {
+    return GetField<float>(VT_ROTATION_FACTOR, 0.0f);
+  }
+  float end_life_time_per() const {
+    return GetField<float>(VT_END_LIFE_TIME_PER, 0.0f);
+  }
+  float speed_min_value() const {
+    return GetField<float>(VT_SPEED_MIN_VALUE, 0.0f);
+  }
+  float speed_max_value() const {
+    return GetField<float>(VT_SPEED_MAX_VALUE, 0.0f);
+  }
+  float acceleration_min_value() const {
+    return GetField<float>(VT_ACCELERATION_MIN_VALUE, 0.0f);
+  }
+  float acceleration_max_value() const {
+    return GetField<float>(VT_ACCELERATION_MAX_VALUE, 0.0f);
+  }
+  uint32_t init_color_min_value() const {
+    return GetField<uint32_t>(VT_INIT_COLOR_MIN_VALUE, 0);
+  }
+  uint32_t init_color_max_value() const {
+    return GetField<uint32_t>(VT_INIT_COLOR_MAX_VALUE, 0);
+  }
+  uint32_t trans_color_min_value() const {
+    return GetField<uint32_t>(VT_TRANS_COLOR_MIN_VALUE, 0);
+  }
+  uint32_t trans_color_max_value() const {
+    return GetField<uint32_t>(VT_TRANS_COLOR_MAX_VALUE, 0);
+  }
+  float disprange_min_value() const {
+    return GetField<float>(VT_DISPRANGE_MIN_VALUE, 0.0f);
+  }
+  float disprange_max_value() const {
+    return GetField<float>(VT_DISPRANGE_MAX_VALUE, 0.0f);
+  }
+  float size_x_min_value() const {
+    return GetField<float>(VT_SIZE_X_MIN_VALUE, 0.0f);
+  }
+  float size_x_max_value() const {
+    return GetField<float>(VT_SIZE_X_MAX_VALUE, 0.0f);
+  }
+  float size_y_min_value() const {
+    return GetField<float>(VT_SIZE_Y_MIN_VALUE, 0.0f);
+  }
+  float size_y_max_value() const {
+    return GetField<float>(VT_SIZE_Y_MAX_VALUE, 0.0f);
+  }
+  float scale_factor_min_value() const {
+    return GetField<float>(VT_SCALE_FACTOR_MIN_VALUE, 0.0f);
+  }
+  float scale_factor_max_value() const {
+    return GetField<float>(VT_SCALE_FACTOR_MAX_VALUE, 0.0f);
+  }
+  float trans_size_x_min_value() const {
+    return GetField<float>(VT_TRANS_SIZE_X_MIN_VALUE, 0.0f);
+  }
+  float trans_size_x_max_value() const {
+    return GetField<float>(VT_TRANS_SIZE_X_MAX_VALUE, 0.0f);
+  }
+  float trans_size_y_min_value() const {
+    return GetField<float>(VT_TRANS_SIZE_Y_MIN_VALUE, 0.0f);
+  }
+  float trans_size_y_max_value() const {
+    return GetField<float>(VT_TRANS_SIZE_Y_MAX_VALUE, 0.0f);
+  }
+  float trans_scale_factor_min_value() const {
+    return GetField<float>(VT_TRANS_SCALE_FACTOR_MIN_VALUE, 0.0f);
+  }
+  float trans_scale_factor_max_value() const {
+    return GetField<float>(VT_TRANS_SCALE_FACTOR_MAX_VALUE, 0.0f);
+  }
+  float point_gravity_position_x() const {
+    return GetField<float>(VT_POINT_GRAVITY_POSITION_X, 0.0f);
+  }
+  float point_gravity_position_y() const {
+    return GetField<float>(VT_POINT_GRAVITY_POSITION_Y, 0.0f);
+  }
+  float point_gravity_power() const {
+    return GetField<float>(VT_POINT_GRAVITY_POWER, 0.0f);
+  }
+  float rotation() const {
+    return GetField<float>(VT_ROTATION, 0.0f);
+  }
+  int32_t infinitie_emit_flag() const {
+    return GetField<int32_t>(VT_INFINITIE_EMIT_FLAG, 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -1721,12 +1099,49 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int8_t>(verifier, VT_TYPE) &&
            VerifyField<int16_t>(verifier, VT_CELL_INDEX) &&
            VerifyField<int8_t>(verifier, VT_BLEND_TYPE) &&
-           VerifyField<int16_t>(verifier, VT_NUM_BEHAVIOR) &&
-           VerifyOffset(verifier, VT_BEHAVIOR_TYPE) &&
-           verifier.VerifyVector(behavior_type()) &&
-           VerifyOffset(verifier, VT_BEHAVIOR) &&
-           verifier.VerifyVector(behavior()) &&
-           VerifyEffectNodeBehaviorVector(verifier, behavior(), behavior_type()) &&
+           VerifyField<EffectParticleElementBasic>(verifier, VT_BASIC_BEHAVIOR) &&
+           VerifyField<uint32_t>(verifier, VT_BEHAVIOR_FLAGS) &&
+           VerifyField<int32_t>(verifier, VT_SEED) &&
+           VerifyField<int32_t>(verifier, VT_DELAY_TIME) &&
+           VerifyField<float>(verifier, VT_GRAVITY_X) &&
+           VerifyField<float>(verifier, VT_GRAVITY_Y) &&
+           VerifyField<float>(verifier, VT_OFFSET_X_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_OFFSET_X_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_OFFSET_Y_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_OFFSET_Y_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_ROTATION_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_ROTATION_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_ROTATION_ADD_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_ROTATION_ADD_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_ROTATION_FACTOR) &&
+           VerifyField<float>(verifier, VT_END_LIFE_TIME_PER) &&
+           VerifyField<float>(verifier, VT_SPEED_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_SPEED_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_ACCELERATION_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_ACCELERATION_MAX_VALUE) &&
+           VerifyField<uint32_t>(verifier, VT_INIT_COLOR_MIN_VALUE) &&
+           VerifyField<uint32_t>(verifier, VT_INIT_COLOR_MAX_VALUE) &&
+           VerifyField<uint32_t>(verifier, VT_TRANS_COLOR_MIN_VALUE) &&
+           VerifyField<uint32_t>(verifier, VT_TRANS_COLOR_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_DISPRANGE_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_DISPRANGE_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_SIZE_X_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_SIZE_X_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_SIZE_Y_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_SIZE_Y_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_SCALE_FACTOR_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_SCALE_FACTOR_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_TRANS_SIZE_X_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_TRANS_SIZE_X_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_TRANS_SIZE_Y_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_TRANS_SIZE_Y_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_TRANS_SCALE_FACTOR_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_TRANS_SCALE_FACTOR_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_POINT_GRAVITY_POSITION_X) &&
+           VerifyField<float>(verifier, VT_POINT_GRAVITY_POSITION_Y) &&
+           VerifyField<float>(verifier, VT_POINT_GRAVITY_POWER) &&
+           VerifyField<float>(verifier, VT_ROTATION) &&
+           VerifyField<int32_t>(verifier, VT_INFINITIE_EMIT_FLAG) &&
            verifier.EndTable();
   }
   EffectNodeT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -1752,14 +1167,134 @@ struct EffectNodeBuilder {
   void add_blend_type(EffectRenderBlendType blend_type) {
     fbb_.AddElement<int8_t>(EffectNode::VT_BLEND_TYPE, static_cast<int8_t>(blend_type), 0);
   }
-  void add_num_behavior(int16_t num_behavior) {
-    fbb_.AddElement<int16_t>(EffectNode::VT_NUM_BEHAVIOR, num_behavior, 0);
+  void add_basic_behavior(const EffectParticleElementBasic *basic_behavior) {
+    fbb_.AddStruct(EffectNode::VT_BASIC_BEHAVIOR, basic_behavior);
   }
-  void add_behavior_type(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> behavior_type) {
-    fbb_.AddOffset(EffectNode::VT_BEHAVIOR_TYPE, behavior_type);
+  void add_behavior_flags(EffectBehaviorFlags behavior_flags) {
+    fbb_.AddElement<uint32_t>(EffectNode::VT_BEHAVIOR_FLAGS, static_cast<uint32_t>(behavior_flags), 0);
   }
-  void add_behavior(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> behavior) {
-    fbb_.AddOffset(EffectNode::VT_BEHAVIOR, behavior);
+  void add_seed(int32_t seed) {
+    fbb_.AddElement<int32_t>(EffectNode::VT_SEED, seed, 0);
+  }
+  void add_delay_time(int32_t delay_time) {
+    fbb_.AddElement<int32_t>(EffectNode::VT_DELAY_TIME, delay_time, 0);
+  }
+  void add_gravity_x(float gravity_x) {
+    fbb_.AddElement<float>(EffectNode::VT_GRAVITY_X, gravity_x, 0.0f);
+  }
+  void add_gravity_y(float gravity_y) {
+    fbb_.AddElement<float>(EffectNode::VT_GRAVITY_Y, gravity_y, 0.0f);
+  }
+  void add_offset_x_min_value(float offset_x_min_value) {
+    fbb_.AddElement<float>(EffectNode::VT_OFFSET_X_MIN_VALUE, offset_x_min_value, 0.0f);
+  }
+  void add_offset_x_max_value(float offset_x_max_value) {
+    fbb_.AddElement<float>(EffectNode::VT_OFFSET_X_MAX_VALUE, offset_x_max_value, 0.0f);
+  }
+  void add_offset_y_min_value(float offset_y_min_value) {
+    fbb_.AddElement<float>(EffectNode::VT_OFFSET_Y_MIN_VALUE, offset_y_min_value, 0.0f);
+  }
+  void add_offset_y_max_value(float offset_y_max_value) {
+    fbb_.AddElement<float>(EffectNode::VT_OFFSET_Y_MAX_VALUE, offset_y_max_value, 0.0f);
+  }
+  void add_rotation_min_value(float rotation_min_value) {
+    fbb_.AddElement<float>(EffectNode::VT_ROTATION_MIN_VALUE, rotation_min_value, 0.0f);
+  }
+  void add_rotation_max_value(float rotation_max_value) {
+    fbb_.AddElement<float>(EffectNode::VT_ROTATION_MAX_VALUE, rotation_max_value, 0.0f);
+  }
+  void add_rotation_add_min_value(float rotation_add_min_value) {
+    fbb_.AddElement<float>(EffectNode::VT_ROTATION_ADD_MIN_VALUE, rotation_add_min_value, 0.0f);
+  }
+  void add_rotation_add_max_value(float rotation_add_max_value) {
+    fbb_.AddElement<float>(EffectNode::VT_ROTATION_ADD_MAX_VALUE, rotation_add_max_value, 0.0f);
+  }
+  void add_rotation_factor(float rotation_factor) {
+    fbb_.AddElement<float>(EffectNode::VT_ROTATION_FACTOR, rotation_factor, 0.0f);
+  }
+  void add_end_life_time_per(float end_life_time_per) {
+    fbb_.AddElement<float>(EffectNode::VT_END_LIFE_TIME_PER, end_life_time_per, 0.0f);
+  }
+  void add_speed_min_value(float speed_min_value) {
+    fbb_.AddElement<float>(EffectNode::VT_SPEED_MIN_VALUE, speed_min_value, 0.0f);
+  }
+  void add_speed_max_value(float speed_max_value) {
+    fbb_.AddElement<float>(EffectNode::VT_SPEED_MAX_VALUE, speed_max_value, 0.0f);
+  }
+  void add_acceleration_min_value(float acceleration_min_value) {
+    fbb_.AddElement<float>(EffectNode::VT_ACCELERATION_MIN_VALUE, acceleration_min_value, 0.0f);
+  }
+  void add_acceleration_max_value(float acceleration_max_value) {
+    fbb_.AddElement<float>(EffectNode::VT_ACCELERATION_MAX_VALUE, acceleration_max_value, 0.0f);
+  }
+  void add_init_color_min_value(uint32_t init_color_min_value) {
+    fbb_.AddElement<uint32_t>(EffectNode::VT_INIT_COLOR_MIN_VALUE, init_color_min_value, 0);
+  }
+  void add_init_color_max_value(uint32_t init_color_max_value) {
+    fbb_.AddElement<uint32_t>(EffectNode::VT_INIT_COLOR_MAX_VALUE, init_color_max_value, 0);
+  }
+  void add_trans_color_min_value(uint32_t trans_color_min_value) {
+    fbb_.AddElement<uint32_t>(EffectNode::VT_TRANS_COLOR_MIN_VALUE, trans_color_min_value, 0);
+  }
+  void add_trans_color_max_value(uint32_t trans_color_max_value) {
+    fbb_.AddElement<uint32_t>(EffectNode::VT_TRANS_COLOR_MAX_VALUE, trans_color_max_value, 0);
+  }
+  void add_disprange_min_value(float disprange_min_value) {
+    fbb_.AddElement<float>(EffectNode::VT_DISPRANGE_MIN_VALUE, disprange_min_value, 0.0f);
+  }
+  void add_disprange_max_value(float disprange_max_value) {
+    fbb_.AddElement<float>(EffectNode::VT_DISPRANGE_MAX_VALUE, disprange_max_value, 0.0f);
+  }
+  void add_size_x_min_value(float size_x_min_value) {
+    fbb_.AddElement<float>(EffectNode::VT_SIZE_X_MIN_VALUE, size_x_min_value, 0.0f);
+  }
+  void add_size_x_max_value(float size_x_max_value) {
+    fbb_.AddElement<float>(EffectNode::VT_SIZE_X_MAX_VALUE, size_x_max_value, 0.0f);
+  }
+  void add_size_y_min_value(float size_y_min_value) {
+    fbb_.AddElement<float>(EffectNode::VT_SIZE_Y_MIN_VALUE, size_y_min_value, 0.0f);
+  }
+  void add_size_y_max_value(float size_y_max_value) {
+    fbb_.AddElement<float>(EffectNode::VT_SIZE_Y_MAX_VALUE, size_y_max_value, 0.0f);
+  }
+  void add_scale_factor_min_value(float scale_factor_min_value) {
+    fbb_.AddElement<float>(EffectNode::VT_SCALE_FACTOR_MIN_VALUE, scale_factor_min_value, 0.0f);
+  }
+  void add_scale_factor_max_value(float scale_factor_max_value) {
+    fbb_.AddElement<float>(EffectNode::VT_SCALE_FACTOR_MAX_VALUE, scale_factor_max_value, 0.0f);
+  }
+  void add_trans_size_x_min_value(float trans_size_x_min_value) {
+    fbb_.AddElement<float>(EffectNode::VT_TRANS_SIZE_X_MIN_VALUE, trans_size_x_min_value, 0.0f);
+  }
+  void add_trans_size_x_max_value(float trans_size_x_max_value) {
+    fbb_.AddElement<float>(EffectNode::VT_TRANS_SIZE_X_MAX_VALUE, trans_size_x_max_value, 0.0f);
+  }
+  void add_trans_size_y_min_value(float trans_size_y_min_value) {
+    fbb_.AddElement<float>(EffectNode::VT_TRANS_SIZE_Y_MIN_VALUE, trans_size_y_min_value, 0.0f);
+  }
+  void add_trans_size_y_max_value(float trans_size_y_max_value) {
+    fbb_.AddElement<float>(EffectNode::VT_TRANS_SIZE_Y_MAX_VALUE, trans_size_y_max_value, 0.0f);
+  }
+  void add_trans_scale_factor_min_value(float trans_scale_factor_min_value) {
+    fbb_.AddElement<float>(EffectNode::VT_TRANS_SCALE_FACTOR_MIN_VALUE, trans_scale_factor_min_value, 0.0f);
+  }
+  void add_trans_scale_factor_max_value(float trans_scale_factor_max_value) {
+    fbb_.AddElement<float>(EffectNode::VT_TRANS_SCALE_FACTOR_MAX_VALUE, trans_scale_factor_max_value, 0.0f);
+  }
+  void add_point_gravity_position_x(float point_gravity_position_x) {
+    fbb_.AddElement<float>(EffectNode::VT_POINT_GRAVITY_POSITION_X, point_gravity_position_x, 0.0f);
+  }
+  void add_point_gravity_position_y(float point_gravity_position_y) {
+    fbb_.AddElement<float>(EffectNode::VT_POINT_GRAVITY_POSITION_Y, point_gravity_position_y, 0.0f);
+  }
+  void add_point_gravity_power(float point_gravity_power) {
+    fbb_.AddElement<float>(EffectNode::VT_POINT_GRAVITY_POWER, point_gravity_power, 0.0f);
+  }
+  void add_rotation(float rotation) {
+    fbb_.AddElement<float>(EffectNode::VT_ROTATION, rotation, 0.0f);
+  }
+  void add_infinitie_emit_flag(int32_t infinitie_emit_flag) {
+    fbb_.AddElement<int32_t>(EffectNode::VT_INFINITIE_EMIT_FLAG, infinitie_emit_flag, 0);
   }
   explicit EffectNodeBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -1780,43 +1315,99 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNode(
     EffectNodeType type = EffectNodeType_Root,
     int16_t cell_index = 0,
     EffectRenderBlendType blend_type = EffectRenderBlendType_Mix,
-    int16_t num_behavior = 0,
-    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> behavior_type = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> behavior = 0) {
+    const EffectParticleElementBasic *basic_behavior = 0,
+    EffectBehaviorFlags behavior_flags = static_cast<EffectBehaviorFlags>(0),
+    int32_t seed = 0,
+    int32_t delay_time = 0,
+    float gravity_x = 0.0f,
+    float gravity_y = 0.0f,
+    float offset_x_min_value = 0.0f,
+    float offset_x_max_value = 0.0f,
+    float offset_y_min_value = 0.0f,
+    float offset_y_max_value = 0.0f,
+    float rotation_min_value = 0.0f,
+    float rotation_max_value = 0.0f,
+    float rotation_add_min_value = 0.0f,
+    float rotation_add_max_value = 0.0f,
+    float rotation_factor = 0.0f,
+    float end_life_time_per = 0.0f,
+    float speed_min_value = 0.0f,
+    float speed_max_value = 0.0f,
+    float acceleration_min_value = 0.0f,
+    float acceleration_max_value = 0.0f,
+    uint32_t init_color_min_value = 0,
+    uint32_t init_color_max_value = 0,
+    uint32_t trans_color_min_value = 0,
+    uint32_t trans_color_max_value = 0,
+    float disprange_min_value = 0.0f,
+    float disprange_max_value = 0.0f,
+    float size_x_min_value = 0.0f,
+    float size_x_max_value = 0.0f,
+    float size_y_min_value = 0.0f,
+    float size_y_max_value = 0.0f,
+    float scale_factor_min_value = 0.0f,
+    float scale_factor_max_value = 0.0f,
+    float trans_size_x_min_value = 0.0f,
+    float trans_size_x_max_value = 0.0f,
+    float trans_size_y_min_value = 0.0f,
+    float trans_size_y_max_value = 0.0f,
+    float trans_scale_factor_min_value = 0.0f,
+    float trans_scale_factor_max_value = 0.0f,
+    float point_gravity_position_x = 0.0f,
+    float point_gravity_position_y = 0.0f,
+    float point_gravity_power = 0.0f,
+    float rotation = 0.0f,
+    int32_t infinitie_emit_flag = 0) {
   EffectNodeBuilder builder_(_fbb);
-  builder_.add_behavior(behavior);
-  builder_.add_behavior_type(behavior_type);
-  builder_.add_num_behavior(num_behavior);
+  builder_.add_infinitie_emit_flag(infinitie_emit_flag);
+  builder_.add_rotation(rotation);
+  builder_.add_point_gravity_power(point_gravity_power);
+  builder_.add_point_gravity_position_y(point_gravity_position_y);
+  builder_.add_point_gravity_position_x(point_gravity_position_x);
+  builder_.add_trans_scale_factor_max_value(trans_scale_factor_max_value);
+  builder_.add_trans_scale_factor_min_value(trans_scale_factor_min_value);
+  builder_.add_trans_size_y_max_value(trans_size_y_max_value);
+  builder_.add_trans_size_y_min_value(trans_size_y_min_value);
+  builder_.add_trans_size_x_max_value(trans_size_x_max_value);
+  builder_.add_trans_size_x_min_value(trans_size_x_min_value);
+  builder_.add_scale_factor_max_value(scale_factor_max_value);
+  builder_.add_scale_factor_min_value(scale_factor_min_value);
+  builder_.add_size_y_max_value(size_y_max_value);
+  builder_.add_size_y_min_value(size_y_min_value);
+  builder_.add_size_x_max_value(size_x_max_value);
+  builder_.add_size_x_min_value(size_x_min_value);
+  builder_.add_disprange_max_value(disprange_max_value);
+  builder_.add_disprange_min_value(disprange_min_value);
+  builder_.add_trans_color_max_value(trans_color_max_value);
+  builder_.add_trans_color_min_value(trans_color_min_value);
+  builder_.add_init_color_max_value(init_color_max_value);
+  builder_.add_init_color_min_value(init_color_min_value);
+  builder_.add_acceleration_max_value(acceleration_max_value);
+  builder_.add_acceleration_min_value(acceleration_min_value);
+  builder_.add_speed_max_value(speed_max_value);
+  builder_.add_speed_min_value(speed_min_value);
+  builder_.add_end_life_time_per(end_life_time_per);
+  builder_.add_rotation_factor(rotation_factor);
+  builder_.add_rotation_add_max_value(rotation_add_max_value);
+  builder_.add_rotation_add_min_value(rotation_add_min_value);
+  builder_.add_rotation_max_value(rotation_max_value);
+  builder_.add_rotation_min_value(rotation_min_value);
+  builder_.add_offset_y_max_value(offset_y_max_value);
+  builder_.add_offset_y_min_value(offset_y_min_value);
+  builder_.add_offset_x_max_value(offset_x_max_value);
+  builder_.add_offset_x_min_value(offset_x_min_value);
+  builder_.add_gravity_y(gravity_y);
+  builder_.add_gravity_x(gravity_x);
+  builder_.add_delay_time(delay_time);
+  builder_.add_seed(seed);
+  builder_.add_behavior_flags(behavior_flags);
+  builder_.add_basic_behavior(basic_behavior);
   builder_.add_cell_index(cell_index);
   builder_.add_parent_index(parent_index);
   builder_.add_array_index(array_index);
   builder_.add_blend_type(blend_type);
   builder_.add_type(type);
   return builder_.Finish();
-}
-
-inline flatbuffers::Offset<EffectNode> CreateEffectNodeDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    int16_t array_index = 0,
-    int16_t parent_index = 0,
-    EffectNodeType type = EffectNodeType_Root,
-    int16_t cell_index = 0,
-    EffectRenderBlendType blend_type = EffectRenderBlendType_Mix,
-    int16_t num_behavior = 0,
-    const std::vector<uint8_t> *behavior_type = nullptr,
-    const std::vector<flatbuffers::Offset<void>> *behavior = nullptr) {
-  auto behavior_type__ = behavior_type ? _fbb.CreateVector<uint8_t>(*behavior_type) : 0;
-  auto behavior__ = behavior ? _fbb.CreateVector<flatbuffers::Offset<void>>(*behavior) : 0;
-  return ss::ssfb::CreateEffectNode(
-      _fbb,
-      array_index,
-      parent_index,
-      type,
-      cell_index,
-      blend_type,
-      num_behavior,
-      behavior_type__,
-      behavior__);
 }
 
 flatbuffers::Offset<EffectNode> CreateEffectNode(flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
@@ -2730,7 +2321,7 @@ struct UserDataItemT : public flatbuffers::NativeTable {
   typedef UserDataItem TableType;
   UserDataFlag flags;
   int16_t array_index;
-  int32_t inteegr;
+  int32_t integer;
   int32_t rect_x;
   int32_t rect_y;
   int32_t rect_w;
@@ -2742,7 +2333,7 @@ struct UserDataItemT : public flatbuffers::NativeTable {
   UserDataItemT()
       : flags(static_cast<UserDataFlag>(0)),
         array_index(0),
-        inteegr(0),
+        integer(0),
         rect_x(0),
         rect_y(0),
         rect_w(0),
@@ -2757,7 +2348,7 @@ inline bool operator==(const UserDataItemT &lhs, const UserDataItemT &rhs) {
   return
       (lhs.flags == rhs.flags) &&
       (lhs.array_index == rhs.array_index) &&
-      (lhs.inteegr == rhs.inteegr) &&
+      (lhs.integer == rhs.integer) &&
       (lhs.rect_x == rhs.rect_x) &&
       (lhs.rect_y == rhs.rect_y) &&
       (lhs.rect_w == rhs.rect_w) &&
@@ -2778,7 +2369,7 @@ struct UserDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_FLAGS = 4,
     VT_ARRAY_INDEX = 6,
-    VT_INTEEGR = 8,
+    VT_INTEGER = 8,
     VT_RECT_X = 10,
     VT_RECT_Y = 12,
     VT_RECT_W = 14,
@@ -2794,8 +2385,8 @@ struct UserDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t array_index() const {
     return GetField<int16_t>(VT_ARRAY_INDEX, 0);
   }
-  int32_t inteegr() const {
-    return GetField<int32_t>(VT_INTEEGR, 0);
+  int32_t integer() const {
+    return GetField<int32_t>(VT_INTEGER, 0);
   }
   int32_t rect_x() const {
     return GetField<int32_t>(VT_RECT_X, 0);
@@ -2825,7 +2416,7 @@ struct UserDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyField<uint8_t>(verifier, VT_FLAGS) &&
            VerifyField<int16_t>(verifier, VT_ARRAY_INDEX) &&
-           VerifyField<int32_t>(verifier, VT_INTEEGR) &&
+           VerifyField<int32_t>(verifier, VT_INTEGER) &&
            VerifyField<int32_t>(verifier, VT_RECT_X) &&
            VerifyField<int32_t>(verifier, VT_RECT_Y) &&
            VerifyField<int32_t>(verifier, VT_RECT_W) &&
@@ -2851,8 +2442,8 @@ struct UserDataItemBuilder {
   void add_array_index(int16_t array_index) {
     fbb_.AddElement<int16_t>(UserDataItem::VT_ARRAY_INDEX, array_index, 0);
   }
-  void add_inteegr(int32_t inteegr) {
-    fbb_.AddElement<int32_t>(UserDataItem::VT_INTEEGR, inteegr, 0);
+  void add_integer(int32_t integer) {
+    fbb_.AddElement<int32_t>(UserDataItem::VT_INTEGER, integer, 0);
   }
   void add_rect_x(int32_t rect_x) {
     fbb_.AddElement<int32_t>(UserDataItem::VT_RECT_X, rect_x, 0);
@@ -2894,7 +2485,7 @@ inline flatbuffers::Offset<UserDataItem> CreateUserDataItem(
     flatbuffers::FlatBufferBuilder &_fbb,
     UserDataFlag flags = static_cast<UserDataFlag>(0),
     int16_t array_index = 0,
-    int32_t inteegr = 0,
+    int32_t integer = 0,
     int32_t rect_x = 0,
     int32_t rect_y = 0,
     int32_t rect_w = 0,
@@ -2912,7 +2503,7 @@ inline flatbuffers::Offset<UserDataItem> CreateUserDataItem(
   builder_.add_rect_w(rect_w);
   builder_.add_rect_y(rect_y);
   builder_.add_rect_x(rect_x);
-  builder_.add_inteegr(inteegr);
+  builder_.add_integer(integer);
   builder_.add_array_index(array_index);
   builder_.add_flags(flags);
   return builder_.Finish();
@@ -2922,7 +2513,7 @@ inline flatbuffers::Offset<UserDataItem> CreateUserDataItemDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     UserDataFlag flags = static_cast<UserDataFlag>(0),
     int16_t array_index = 0,
-    int32_t inteegr = 0,
+    int32_t integer = 0,
     int32_t rect_x = 0,
     int32_t rect_y = 0,
     int32_t rect_w = 0,
@@ -2936,7 +2527,7 @@ inline flatbuffers::Offset<UserDataItem> CreateUserDataItemDirect(
       _fbb,
       flags,
       array_index,
-      inteegr,
+      integer,
       rect_x,
       rect_y,
       rect_w,
@@ -4527,9 +4118,49 @@ inline void EffectNode::UnPackTo(EffectNodeT *_o, const flatbuffers::resolver_fu
   { auto _e = type(); _o->type = _e; };
   { auto _e = cell_index(); _o->cell_index = _e; };
   { auto _e = blend_type(); _o->blend_type = _e; };
-  { auto _e = num_behavior(); _o->num_behavior = _e; };
-  { auto _e = behavior_type(); if (_e) { _o->behavior.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->behavior[_i].type = static_cast<EffectNodeBehavior>(_e->Get(_i)); } } };
-  { auto _e = behavior(); if (_e) { _o->behavior.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->behavior[_i].value = EffectNodeBehaviorUnion::UnPack(_e->Get(_i), behavior_type()->GetEnum<EffectNodeBehavior>(_i), _resolver); } } };
+  { auto _e = basic_behavior(); if (_e) _o->basic_behavior = std::unique_ptr<EffectParticleElementBasic>(new EffectParticleElementBasic(*_e)); };
+  { auto _e = behavior_flags(); _o->behavior_flags = _e; };
+  { auto _e = seed(); _o->seed = _e; };
+  { auto _e = delay_time(); _o->delay_time = _e; };
+  { auto _e = gravity_x(); _o->gravity_x = _e; };
+  { auto _e = gravity_y(); _o->gravity_y = _e; };
+  { auto _e = offset_x_min_value(); _o->offset_x_min_value = _e; };
+  { auto _e = offset_x_max_value(); _o->offset_x_max_value = _e; };
+  { auto _e = offset_y_min_value(); _o->offset_y_min_value = _e; };
+  { auto _e = offset_y_max_value(); _o->offset_y_max_value = _e; };
+  { auto _e = rotation_min_value(); _o->rotation_min_value = _e; };
+  { auto _e = rotation_max_value(); _o->rotation_max_value = _e; };
+  { auto _e = rotation_add_min_value(); _o->rotation_add_min_value = _e; };
+  { auto _e = rotation_add_max_value(); _o->rotation_add_max_value = _e; };
+  { auto _e = rotation_factor(); _o->rotation_factor = _e; };
+  { auto _e = end_life_time_per(); _o->end_life_time_per = _e; };
+  { auto _e = speed_min_value(); _o->speed_min_value = _e; };
+  { auto _e = speed_max_value(); _o->speed_max_value = _e; };
+  { auto _e = acceleration_min_value(); _o->acceleration_min_value = _e; };
+  { auto _e = acceleration_max_value(); _o->acceleration_max_value = _e; };
+  { auto _e = init_color_min_value(); _o->init_color_min_value = _e; };
+  { auto _e = init_color_max_value(); _o->init_color_max_value = _e; };
+  { auto _e = trans_color_min_value(); _o->trans_color_min_value = _e; };
+  { auto _e = trans_color_max_value(); _o->trans_color_max_value = _e; };
+  { auto _e = disprange_min_value(); _o->disprange_min_value = _e; };
+  { auto _e = disprange_max_value(); _o->disprange_max_value = _e; };
+  { auto _e = size_x_min_value(); _o->size_x_min_value = _e; };
+  { auto _e = size_x_max_value(); _o->size_x_max_value = _e; };
+  { auto _e = size_y_min_value(); _o->size_y_min_value = _e; };
+  { auto _e = size_y_max_value(); _o->size_y_max_value = _e; };
+  { auto _e = scale_factor_min_value(); _o->scale_factor_min_value = _e; };
+  { auto _e = scale_factor_max_value(); _o->scale_factor_max_value = _e; };
+  { auto _e = trans_size_x_min_value(); _o->trans_size_x_min_value = _e; };
+  { auto _e = trans_size_x_max_value(); _o->trans_size_x_max_value = _e; };
+  { auto _e = trans_size_y_min_value(); _o->trans_size_y_min_value = _e; };
+  { auto _e = trans_size_y_max_value(); _o->trans_size_y_max_value = _e; };
+  { auto _e = trans_scale_factor_min_value(); _o->trans_scale_factor_min_value = _e; };
+  { auto _e = trans_scale_factor_max_value(); _o->trans_scale_factor_max_value = _e; };
+  { auto _e = point_gravity_position_x(); _o->point_gravity_position_x = _e; };
+  { auto _e = point_gravity_position_y(); _o->point_gravity_position_y = _e; };
+  { auto _e = point_gravity_power(); _o->point_gravity_power = _e; };
+  { auto _e = rotation(); _o->rotation = _e; };
+  { auto _e = infinitie_emit_flag(); _o->infinitie_emit_flag = _e; };
 }
 
 inline flatbuffers::Offset<EffectNode> EffectNode::Pack(flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -4545,9 +4176,49 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNode(flatbuffers::FlatBufferB
   auto _type = _o->type;
   auto _cell_index = _o->cell_index;
   auto _blend_type = _o->blend_type;
-  auto _num_behavior = _o->num_behavior;
-  auto _behavior_type = _o->behavior.size() ? _fbb.CreateVector<uint8_t>(_o->behavior.size(), [](size_t i, _VectorArgs *__va) { return static_cast<uint8_t>(__va->__o->behavior[i].type); }, &_va) : 0;
-  auto _behavior = _o->behavior.size() ? _fbb.CreateVector<flatbuffers::Offset<void>>(_o->behavior.size(), [](size_t i, _VectorArgs *__va) { return __va->__o->behavior[i].Pack(*__va->__fbb, __va->__rehasher); }, &_va) : 0;
+  auto _basic_behavior = _o->basic_behavior ? _o->basic_behavior.get() : 0;
+  auto _behavior_flags = _o->behavior_flags;
+  auto _seed = _o->seed;
+  auto _delay_time = _o->delay_time;
+  auto _gravity_x = _o->gravity_x;
+  auto _gravity_y = _o->gravity_y;
+  auto _offset_x_min_value = _o->offset_x_min_value;
+  auto _offset_x_max_value = _o->offset_x_max_value;
+  auto _offset_y_min_value = _o->offset_y_min_value;
+  auto _offset_y_max_value = _o->offset_y_max_value;
+  auto _rotation_min_value = _o->rotation_min_value;
+  auto _rotation_max_value = _o->rotation_max_value;
+  auto _rotation_add_min_value = _o->rotation_add_min_value;
+  auto _rotation_add_max_value = _o->rotation_add_max_value;
+  auto _rotation_factor = _o->rotation_factor;
+  auto _end_life_time_per = _o->end_life_time_per;
+  auto _speed_min_value = _o->speed_min_value;
+  auto _speed_max_value = _o->speed_max_value;
+  auto _acceleration_min_value = _o->acceleration_min_value;
+  auto _acceleration_max_value = _o->acceleration_max_value;
+  auto _init_color_min_value = _o->init_color_min_value;
+  auto _init_color_max_value = _o->init_color_max_value;
+  auto _trans_color_min_value = _o->trans_color_min_value;
+  auto _trans_color_max_value = _o->trans_color_max_value;
+  auto _disprange_min_value = _o->disprange_min_value;
+  auto _disprange_max_value = _o->disprange_max_value;
+  auto _size_x_min_value = _o->size_x_min_value;
+  auto _size_x_max_value = _o->size_x_max_value;
+  auto _size_y_min_value = _o->size_y_min_value;
+  auto _size_y_max_value = _o->size_y_max_value;
+  auto _scale_factor_min_value = _o->scale_factor_min_value;
+  auto _scale_factor_max_value = _o->scale_factor_max_value;
+  auto _trans_size_x_min_value = _o->trans_size_x_min_value;
+  auto _trans_size_x_max_value = _o->trans_size_x_max_value;
+  auto _trans_size_y_min_value = _o->trans_size_y_min_value;
+  auto _trans_size_y_max_value = _o->trans_size_y_max_value;
+  auto _trans_scale_factor_min_value = _o->trans_scale_factor_min_value;
+  auto _trans_scale_factor_max_value = _o->trans_scale_factor_max_value;
+  auto _point_gravity_position_x = _o->point_gravity_position_x;
+  auto _point_gravity_position_y = _o->point_gravity_position_y;
+  auto _point_gravity_power = _o->point_gravity_power;
+  auto _rotation = _o->rotation;
+  auto _infinitie_emit_flag = _o->infinitie_emit_flag;
   return ss::ssfb::CreateEffectNode(
       _fbb,
       _array_index,
@@ -4555,9 +4226,49 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNode(flatbuffers::FlatBufferB
       _type,
       _cell_index,
       _blend_type,
-      _num_behavior,
-      _behavior_type,
-      _behavior);
+      _basic_behavior,
+      _behavior_flags,
+      _seed,
+      _delay_time,
+      _gravity_x,
+      _gravity_y,
+      _offset_x_min_value,
+      _offset_x_max_value,
+      _offset_y_min_value,
+      _offset_y_max_value,
+      _rotation_min_value,
+      _rotation_max_value,
+      _rotation_add_min_value,
+      _rotation_add_max_value,
+      _rotation_factor,
+      _end_life_time_per,
+      _speed_min_value,
+      _speed_max_value,
+      _acceleration_min_value,
+      _acceleration_max_value,
+      _init_color_min_value,
+      _init_color_max_value,
+      _trans_color_min_value,
+      _trans_color_max_value,
+      _disprange_min_value,
+      _disprange_max_value,
+      _size_x_min_value,
+      _size_x_max_value,
+      _size_y_min_value,
+      _size_y_max_value,
+      _scale_factor_min_value,
+      _scale_factor_max_value,
+      _trans_size_x_min_value,
+      _trans_size_x_max_value,
+      _trans_size_y_min_value,
+      _trans_size_y_max_value,
+      _trans_scale_factor_min_value,
+      _trans_scale_factor_max_value,
+      _point_gravity_position_x,
+      _point_gravity_position_y,
+      _point_gravity_power,
+      _rotation,
+      _infinitie_emit_flag);
 }
 
 inline EffectFileT *EffectFile::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
@@ -4831,7 +4542,7 @@ inline void UserDataItem::UnPackTo(UserDataItemT *_o, const flatbuffers::resolve
   (void)_resolver;
   { auto _e = flags(); _o->flags = _e; };
   { auto _e = array_index(); _o->array_index = _e; };
-  { auto _e = inteegr(); _o->inteegr = _e; };
+  { auto _e = integer(); _o->integer = _e; };
   { auto _e = rect_x(); _o->rect_x = _e; };
   { auto _e = rect_y(); _o->rect_y = _e; };
   { auto _e = rect_w(); _o->rect_w = _e; };
@@ -4852,7 +4563,7 @@ inline flatbuffers::Offset<UserDataItem> CreateUserDataItem(flatbuffers::FlatBuf
   struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const UserDataItemT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _flags = _o->flags;
   auto _array_index = _o->array_index;
-  auto _inteegr = _o->inteegr;
+  auto _integer = _o->integer;
   auto _rect_x = _o->rect_x;
   auto _rect_y = _o->rect_y;
   auto _rect_w = _o->rect_w;
@@ -4865,7 +4576,7 @@ inline flatbuffers::Offset<UserDataItem> CreateUserDataItem(flatbuffers::FlatBuf
       _fbb,
       _flags,
       _array_index,
-      _inteegr,
+      _integer,
       _rect_x,
       _rect_y,
       _rect_w,
@@ -5278,394 +4989,6 @@ inline flatbuffers::Offset<ProjectData> CreateProjectData(flatbuffers::FlatBuffe
       _num_cells,
       _num_animePacks,
       _num_effectFileList);
-}
-
-inline bool VerifyEffectNodeBehavior(flatbuffers::Verifier &verifier, const void *obj, EffectNodeBehavior type) {
-  switch (type) {
-    case EffectNodeBehavior_NONE: {
-      return true;
-    }
-    case EffectNodeBehavior_EffectParticleElementBasic: {
-      return verifier.Verify<EffectParticleElementBasic>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      return verifier.Verify<EffectParticleElementRndSeedChange>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleElementDelay: {
-      return verifier.Verify<EffectParticleElementDelay>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleElementGravity: {
-      return verifier.Verify<EffectParticleElementGravity>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleElementPosition: {
-      return verifier.Verify<EffectParticleElementPosition>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleElementRotation: {
-      return verifier.Verify<EffectParticleElementRotation>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      return verifier.Verify<EffectParticleElementRotationTrans>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      return verifier.Verify<EffectParticleElementTransSpeed>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      return verifier.Verify<EffectParticleElementTangentialAcceleration>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleElementInitColor: {
-      return verifier.Verify<EffectParticleElementInitColor>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleElementTransColor: {
-      return verifier.Verify<EffectParticleElementTransColor>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      return verifier.Verify<EffectParticleElementAlphaFade>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleElementSize: {
-      return verifier.Verify<EffectParticleElementSize>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSize: {
-      return verifier.Verify<EffectParticleElementTransSize>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticlePointGravity: {
-      return verifier.Verify<EffectParticlePointGravity>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      return verifier.Verify<EffectParticleTurnToDirectionEnabled>(static_cast<const uint8_t *>(obj), 0);
-    }
-    case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      return verifier.Verify<EffectParticleInfiniteEmitEnabled>(static_cast<const uint8_t *>(obj), 0);
-    }
-    default: return false;
-  }
-}
-
-inline bool VerifyEffectNodeBehaviorVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types) {
-  if (!values || !types) return !values && !types;
-  if (values->size() != types->size()) return false;
-  for (flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
-    if (!VerifyEffectNodeBehavior(
-        verifier,  values->Get(i), types->GetEnum<EffectNodeBehavior>(i))) {
-      return false;
-    }
-  }
-  return true;
-}
-
-inline void *EffectNodeBehaviorUnion::UnPack(const void *obj, EffectNodeBehavior type, const flatbuffers::resolver_function_t *resolver) {
-  switch (type) {
-    case EffectNodeBehavior_EffectParticleElementBasic: {
-      auto ptr = reinterpret_cast<const EffectParticleElementBasic *>(obj);
-      return new EffectParticleElementBasic(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRndSeedChange *>(obj);
-      return new EffectParticleElementRndSeedChange(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementDelay: {
-      auto ptr = reinterpret_cast<const EffectParticleElementDelay *>(obj);
-      return new EffectParticleElementDelay(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementGravity: {
-      auto ptr = reinterpret_cast<const EffectParticleElementGravity *>(obj);
-      return new EffectParticleElementGravity(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementPosition: {
-      auto ptr = reinterpret_cast<const EffectParticleElementPosition *>(obj);
-      return new EffectParticleElementPosition(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementRotation: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotation *>(obj);
-      return new EffectParticleElementRotation(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotationTrans *>(obj);
-      return new EffectParticleElementRotationTrans(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSpeed *>(obj);
-      return new EffectParticleElementTransSpeed(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(obj);
-      return new EffectParticleElementTangentialAcceleration(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementInitColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementInitColor *>(obj);
-      return new EffectParticleElementInitColor(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementTransColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransColor *>(obj);
-      return new EffectParticleElementTransColor(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      auto ptr = reinterpret_cast<const EffectParticleElementAlphaFade *>(obj);
-      return new EffectParticleElementAlphaFade(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementSize *>(obj);
-      return new EffectParticleElementSize(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSize *>(obj);
-      return new EffectParticleElementTransSize(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticlePointGravity: {
-      auto ptr = reinterpret_cast<const EffectParticlePointGravity *>(obj);
-      return new EffectParticlePointGravity(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(obj);
-      return new EffectParticleTurnToDirectionEnabled(*ptr);
-    }
-    case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(obj);
-      return new EffectParticleInfiniteEmitEnabled(*ptr);
-    }
-    default: return nullptr;
-  }
-}
-
-inline flatbuffers::Offset<void> EffectNodeBehaviorUnion::Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher) const {
-  switch (type) {
-    case EffectNodeBehavior_EffectParticleElementBasic: {
-      auto ptr = reinterpret_cast<const EffectParticleElementBasic *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRndSeedChange *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementDelay: {
-      auto ptr = reinterpret_cast<const EffectParticleElementDelay *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementGravity: {
-      auto ptr = reinterpret_cast<const EffectParticleElementGravity *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementPosition: {
-      auto ptr = reinterpret_cast<const EffectParticleElementPosition *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementRotation: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotation *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotationTrans *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSpeed *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementInitColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementInitColor *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementTransColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransColor *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      auto ptr = reinterpret_cast<const EffectParticleElementAlphaFade *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementSize *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSize *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticlePointGravity: {
-      auto ptr = reinterpret_cast<const EffectParticlePointGravity *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(value);
-      return _fbb.CreateStruct(*ptr).Union();
-    }
-    default: return 0;
-  }
-}
-
-inline EffectNodeBehaviorUnion::EffectNodeBehaviorUnion(const EffectNodeBehaviorUnion &u) FLATBUFFERS_NOEXCEPT : type(u.type), value(nullptr) {
-  switch (type) {
-    case EffectNodeBehavior_EffectParticleElementBasic: {
-      value = new EffectParticleElementBasic(*reinterpret_cast<EffectParticleElementBasic *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      value = new EffectParticleElementRndSeedChange(*reinterpret_cast<EffectParticleElementRndSeedChange *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementDelay: {
-      value = new EffectParticleElementDelay(*reinterpret_cast<EffectParticleElementDelay *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementGravity: {
-      value = new EffectParticleElementGravity(*reinterpret_cast<EffectParticleElementGravity *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementPosition: {
-      value = new EffectParticleElementPosition(*reinterpret_cast<EffectParticleElementPosition *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementRotation: {
-      value = new EffectParticleElementRotation(*reinterpret_cast<EffectParticleElementRotation *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      value = new EffectParticleElementRotationTrans(*reinterpret_cast<EffectParticleElementRotationTrans *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      value = new EffectParticleElementTransSpeed(*reinterpret_cast<EffectParticleElementTransSpeed *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      value = new EffectParticleElementTangentialAcceleration(*reinterpret_cast<EffectParticleElementTangentialAcceleration *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementInitColor: {
-      value = new EffectParticleElementInitColor(*reinterpret_cast<EffectParticleElementInitColor *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransColor: {
-      value = new EffectParticleElementTransColor(*reinterpret_cast<EffectParticleElementTransColor *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      value = new EffectParticleElementAlphaFade(*reinterpret_cast<EffectParticleElementAlphaFade *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementSize: {
-      value = new EffectParticleElementSize(*reinterpret_cast<EffectParticleElementSize *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSize: {
-      value = new EffectParticleElementTransSize(*reinterpret_cast<EffectParticleElementTransSize *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticlePointGravity: {
-      value = new EffectParticlePointGravity(*reinterpret_cast<EffectParticlePointGravity *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      value = new EffectParticleTurnToDirectionEnabled(*reinterpret_cast<EffectParticleTurnToDirectionEnabled *>(u.value));
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      value = new EffectParticleInfiniteEmitEnabled(*reinterpret_cast<EffectParticleInfiniteEmitEnabled *>(u.value));
-      break;
-    }
-    default:
-      break;
-  }
-}
-
-inline void EffectNodeBehaviorUnion::Reset() {
-  switch (type) {
-    case EffectNodeBehavior_EffectParticleElementBasic: {
-      auto ptr = reinterpret_cast<EffectParticleElementBasic *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      auto ptr = reinterpret_cast<EffectParticleElementRndSeedChange *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementDelay: {
-      auto ptr = reinterpret_cast<EffectParticleElementDelay *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementGravity: {
-      auto ptr = reinterpret_cast<EffectParticleElementGravity *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementPosition: {
-      auto ptr = reinterpret_cast<EffectParticleElementPosition *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementRotation: {
-      auto ptr = reinterpret_cast<EffectParticleElementRotation *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      auto ptr = reinterpret_cast<EffectParticleElementRotationTrans *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      auto ptr = reinterpret_cast<EffectParticleElementTransSpeed *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      auto ptr = reinterpret_cast<EffectParticleElementTangentialAcceleration *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementInitColor: {
-      auto ptr = reinterpret_cast<EffectParticleElementInitColor *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransColor: {
-      auto ptr = reinterpret_cast<EffectParticleElementTransColor *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      auto ptr = reinterpret_cast<EffectParticleElementAlphaFade *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementSize: {
-      auto ptr = reinterpret_cast<EffectParticleElementSize *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleElementTransSize: {
-      auto ptr = reinterpret_cast<EffectParticleElementTransSize *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticlePointGravity: {
-      auto ptr = reinterpret_cast<EffectParticlePointGravity *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      auto ptr = reinterpret_cast<EffectParticleTurnToDirectionEnabled *>(value);
-      delete ptr;
-      break;
-    }
-    case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      auto ptr = reinterpret_cast<EffectParticleInfiniteEmitEnabled *>(value);
-      delete ptr;
-      break;
-    }
-    default: break;
-  }
-  value = nullptr;
-  type = EffectNodeBehavior_NONE;
 }
 
 inline const ss::ssfb::ProjectData *GetProjectData(const void *buf) {
