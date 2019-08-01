@@ -31,7 +31,7 @@ enum PartFlag:uint (bit_flags) {
   PivotY,
   RotationX,
   RotationY,
-  RotationnZ,
+  RotationZ,
   ScaleX,
   ScaleY,
   LocalScaleX,

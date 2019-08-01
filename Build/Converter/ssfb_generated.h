@@ -169,7 +169,7 @@ enum PartFlag {
   PartFlag_PivotY = 256,
   PartFlag_RotationX = 512,
   PartFlag_RotationY = 1024,
-  PartFlag_RotationnZ = 2048,
+  PartFlag_RotationZ = 2048,
   PartFlag_ScaleX = 4096,
   PartFlag_ScaleY = 8192,
   PartFlag_LocalScaleX = 16384,
@@ -207,7 +207,7 @@ inline const PartFlag (&EnumValuesPartFlag())[32] {
     PartFlag_PivotY,
     PartFlag_RotationX,
     PartFlag_RotationY,
-    PartFlag_RotationnZ,
+    PartFlag_RotationZ,
     PartFlag_ScaleX,
     PartFlag_ScaleY,
     PartFlag_LocalScaleX,
@@ -245,7 +245,7 @@ inline const char *EnumNamePartFlag(PartFlag e) {
     case PartFlag_PivotY: return "PivotY";
     case PartFlag_RotationX: return "RotationX";
     case PartFlag_RotationY: return "RotationY";
-    case PartFlag_RotationnZ: return "RotationnZ";
+    case PartFlag_RotationZ: return "RotationZ";
     case PartFlag_ScaleX: return "ScaleX";
     case PartFlag_ScaleY: return "ScaleY";
     case PartFlag_LocalScaleX: return "LocalScaleX";
