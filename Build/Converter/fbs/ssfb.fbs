@@ -375,18 +375,39 @@ table AnimationInitialData {
   effect_value_loop_flag:int;
 }
 
+enum BoundsType:byte {
+  invalid = -1,
+  none,
+  quad,
+  aabb,
+  circle,
+  circle_smin,
+  circle_smax,
+}
+
+enum BlendType:byte {
+  invalid=-1,
+  mix,
+  mul,
+  add,
+  sub,
+  mulalpha,
+  screen,
+  exclusion,
+  invert,
+}
 
 table PartData {
   name:string;
   index:short;
   parent_index:short;
   type:SsPartType;
-  bounds_type:short;
-  alpha_blend_type:short;
+  bounds_type:BoundsType;
+  alpha_blend_type:BlendType;
   refname:string;
   effectfilename:string;
   colorLabel:string;
-  mask_influence:short;    
+  mask_influence:bool;
 }
 
 table AnimePackData {
@@ -398,7 +419,6 @@ table AnimePackData {
 table ProjectData {
   dataId:uint;
   version:uint;
-  flags:int;
   image_base_dir:string;
   cells:[Cell];
   anime_packs:[AnimePackData];

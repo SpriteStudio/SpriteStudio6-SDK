@@ -943,12 +943,12 @@ private:
 		partDataT.index = GETS16(partDataItemVec[1]);
 		partDataT.parent_index = GETS16(partDataItemVec[2]);
 		partDataT.type = (ss::ssfb::SsPartType)GETS16(partDataItemVec[3]);
-		partDataT.bounds_type = GETS16(partDataItemVec[4]);
-		partDataT.alpha_blend_type = GETS16(partDataItemVec[5]);
+		partDataT.bounds_type = (ss::ssfb::BoundsType)GETS16(partDataItemVec[4]);
+		partDataT.alpha_blend_type = (ss::ssfb::BlendType )GETS16(partDataItemVec[5]);
 		partDataT.refname = GETSTRING(partDataItemVec[7], m_encoding);
 		partDataT.effectfilename = GETSTRING(partDataItemVec[8], m_encoding);
 		partDataT.colorLabel = GETSTRING(partDataItemVec[9], m_encoding);
-		partDataT.mask_influence = GETS16(partDataItemVec[10]);
+		partDataT.mask_influence = (bool)GETS16(partDataItemVec[10]);
 
 		// search same cellMap from cellMap caches.
 		auto result = std::find(m_partDataVec.begin(), m_partDataVec.end(), partDataT);
@@ -1706,7 +1706,7 @@ private:
 		auto serializeSsfbCells = m_ssfbBuilder.CreateVector(m_ssfbCells);
 		auto serializeSsfbAnimePackData = m_ssfbBuilder.CreateVector(m_ssfbAnimePacks);
 		auto serializeSsfbEffectFileList = m_ssfbBuilder.CreateVector(m_ssfbEffectFileList);
-		m_ssfbProjectData = ss::ssfb::CreateProjectData(m_ssfbBuilder, m_dataId, m_version, 0,
+		m_ssfbProjectData = ss::ssfb::CreateProjectData(m_ssfbBuilder, m_dataId, m_version,
 													  m_ssfbImageBaseDir,
 													  serializeSsfbCells,
 													  serializeSsfbAnimePackData,
