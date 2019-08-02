@@ -757,6 +757,102 @@ inline const char *EnumNameTexFilterMode(TexFilterMode e) {
   return EnumNamesTexFilterMode()[index];
 }
 
+enum BoundsType : int8_t {
+  BoundsType_invalid = -1,
+  BoundsType_none = 0,
+  BoundsType_quad = 1,
+  BoundsType_aabb = 2,
+  BoundsType_circle = 3,
+  BoundsType_circle_smin = 4,
+  BoundsType_circle_smax = 5,
+  BoundsType_MIN = BoundsType_invalid,
+  BoundsType_MAX = BoundsType_circle_smax
+};
+
+inline const BoundsType (&EnumValuesBoundsType())[7] {
+  static const BoundsType values[] = {
+    BoundsType_invalid,
+    BoundsType_none,
+    BoundsType_quad,
+    BoundsType_aabb,
+    BoundsType_circle,
+    BoundsType_circle_smin,
+    BoundsType_circle_smax
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesBoundsType() {
+  static const char * const names[8] = {
+    "invalid",
+    "none",
+    "quad",
+    "aabb",
+    "circle",
+    "circle_smin",
+    "circle_smax",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameBoundsType(BoundsType e) {
+  if (flatbuffers::IsOutRange(e, BoundsType_invalid, BoundsType_circle_smax)) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(BoundsType_invalid);
+  return EnumNamesBoundsType()[index];
+}
+
+enum BlendType : int8_t {
+  BlendType_invalid = -1,
+  BlendType_mix = 0,
+  BlendType_mul = 1,
+  BlendType_add = 2,
+  BlendType_sub = 3,
+  BlendType_mulalpha = 4,
+  BlendType_screen = 5,
+  BlendType_exclusion = 6,
+  BlendType_invert = 7,
+  BlendType_MIN = BlendType_invalid,
+  BlendType_MAX = BlendType_invert
+};
+
+inline const BlendType (&EnumValuesBlendType())[9] {
+  static const BlendType values[] = {
+    BlendType_invalid,
+    BlendType_mix,
+    BlendType_mul,
+    BlendType_add,
+    BlendType_sub,
+    BlendType_mulalpha,
+    BlendType_screen,
+    BlendType_exclusion,
+    BlendType_invert
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesBlendType() {
+  static const char * const names[10] = {
+    "invalid",
+    "mix",
+    "mul",
+    "add",
+    "sub",
+    "mulalpha",
+    "screen",
+    "exclusion",
+    "invert",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameBlendType(BlendType e) {
+  if (flatbuffers::IsOutRange(e, BlendType_invalid, BlendType_invert)) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(BlendType_invalid);
+  return EnumNamesBlendType()[index];
+}
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementBasic FLATBUFFERS_FINAL_CLASS {
  private:
   int32_t ss_effect_function_type_;
@@ -3292,12 +3388,12 @@ struct PartDataT : public flatbuffers::NativeTable {
   int16_t index = 0;
   int16_t parent_index = 0;
   ss::ssfb::SsPartType type = ss::ssfb::SsPartType_Nulltype;
-  int16_t bounds_type = 0;
-  int16_t alpha_blend_type = 0;
+  ss::ssfb::BoundsType bounds_type = ss::ssfb::BoundsType_none;
+  ss::ssfb::BlendType alpha_blend_type = ss::ssfb::BlendType_mix;
   std::string refname{};
   std::string effectfilename{};
   std::string colorLabel{};
-  int16_t mask_influence = 0;
+  bool mask_influence = false;
 };
 
 struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -3327,11 +3423,11 @@ struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   ss::ssfb::SsPartType type() const {
     return static_cast<ss::ssfb::SsPartType>(GetField<int8_t>(VT_TYPE, 0));
   }
-  int16_t bounds_type() const {
-    return GetField<int16_t>(VT_BOUNDS_TYPE, 0);
+  ss::ssfb::BoundsType bounds_type() const {
+    return static_cast<ss::ssfb::BoundsType>(GetField<int8_t>(VT_BOUNDS_TYPE, 0));
   }
-  int16_t alpha_blend_type() const {
-    return GetField<int16_t>(VT_ALPHA_BLEND_TYPE, 0);
+  ss::ssfb::BlendType alpha_blend_type() const {
+    return static_cast<ss::ssfb::BlendType>(GetField<int8_t>(VT_ALPHA_BLEND_TYPE, 0));
   }
   const flatbuffers::String *refname() const {
     return GetPointer<const flatbuffers::String *>(VT_REFNAME);
@@ -3342,8 +3438,8 @@ struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::String *colorLabel() const {
     return GetPointer<const flatbuffers::String *>(VT_COLORLABEL);
   }
-  int16_t mask_influence() const {
-    return GetField<int16_t>(VT_MASK_INFLUENCE, 0);
+  bool mask_influence() const {
+    return GetField<uint8_t>(VT_MASK_INFLUENCE, 0) != 0;
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -3352,15 +3448,15 @@ struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int16_t>(verifier, VT_INDEX) &&
            VerifyField<int16_t>(verifier, VT_PARENT_INDEX) &&
            VerifyField<int8_t>(verifier, VT_TYPE) &&
-           VerifyField<int16_t>(verifier, VT_BOUNDS_TYPE) &&
-           VerifyField<int16_t>(verifier, VT_ALPHA_BLEND_TYPE) &&
+           VerifyField<int8_t>(verifier, VT_BOUNDS_TYPE) &&
+           VerifyField<int8_t>(verifier, VT_ALPHA_BLEND_TYPE) &&
            VerifyOffset(verifier, VT_REFNAME) &&
            verifier.VerifyString(refname()) &&
            VerifyOffset(verifier, VT_EFFECTFILENAME) &&
            verifier.VerifyString(effectfilename()) &&
            VerifyOffset(verifier, VT_COLORLABEL) &&
            verifier.VerifyString(colorLabel()) &&
-           VerifyField<int16_t>(verifier, VT_MASK_INFLUENCE) &&
+           VerifyField<uint8_t>(verifier, VT_MASK_INFLUENCE) &&
            verifier.EndTable();
   }
   PartDataT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -3384,11 +3480,11 @@ struct PartDataBuilder {
   void add_type(ss::ssfb::SsPartType type) {
     fbb_.AddElement<int8_t>(PartData::VT_TYPE, static_cast<int8_t>(type), 0);
   }
-  void add_bounds_type(int16_t bounds_type) {
-    fbb_.AddElement<int16_t>(PartData::VT_BOUNDS_TYPE, bounds_type, 0);
+  void add_bounds_type(ss::ssfb::BoundsType bounds_type) {
+    fbb_.AddElement<int8_t>(PartData::VT_BOUNDS_TYPE, static_cast<int8_t>(bounds_type), 0);
   }
-  void add_alpha_blend_type(int16_t alpha_blend_type) {
-    fbb_.AddElement<int16_t>(PartData::VT_ALPHA_BLEND_TYPE, alpha_blend_type, 0);
+  void add_alpha_blend_type(ss::ssfb::BlendType alpha_blend_type) {
+    fbb_.AddElement<int8_t>(PartData::VT_ALPHA_BLEND_TYPE, static_cast<int8_t>(alpha_blend_type), 0);
   }
   void add_refname(flatbuffers::Offset<flatbuffers::String> refname) {
     fbb_.AddOffset(PartData::VT_REFNAME, refname);
@@ -3399,8 +3495,8 @@ struct PartDataBuilder {
   void add_colorLabel(flatbuffers::Offset<flatbuffers::String> colorLabel) {
     fbb_.AddOffset(PartData::VT_COLORLABEL, colorLabel);
   }
-  void add_mask_influence(int16_t mask_influence) {
-    fbb_.AddElement<int16_t>(PartData::VT_MASK_INFLUENCE, mask_influence, 0);
+  void add_mask_influence(bool mask_influence) {
+    fbb_.AddElement<uint8_t>(PartData::VT_MASK_INFLUENCE, static_cast<uint8_t>(mask_influence), 0);
   }
   explicit PartDataBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -3419,22 +3515,22 @@ inline flatbuffers::Offset<PartData> CreatePartData(
     int16_t index = 0,
     int16_t parent_index = 0,
     ss::ssfb::SsPartType type = ss::ssfb::SsPartType_Nulltype,
-    int16_t bounds_type = 0,
-    int16_t alpha_blend_type = 0,
+    ss::ssfb::BoundsType bounds_type = ss::ssfb::BoundsType_none,
+    ss::ssfb::BlendType alpha_blend_type = ss::ssfb::BlendType_mix,
     flatbuffers::Offset<flatbuffers::String> refname = 0,
     flatbuffers::Offset<flatbuffers::String> effectfilename = 0,
     flatbuffers::Offset<flatbuffers::String> colorLabel = 0,
-    int16_t mask_influence = 0) {
+    bool mask_influence = false) {
   PartDataBuilder builder_(_fbb);
   builder_.add_colorLabel(colorLabel);
   builder_.add_effectfilename(effectfilename);
   builder_.add_refname(refname);
   builder_.add_name(name);
+  builder_.add_parent_index(parent_index);
+  builder_.add_index(index);
   builder_.add_mask_influence(mask_influence);
   builder_.add_alpha_blend_type(alpha_blend_type);
   builder_.add_bounds_type(bounds_type);
-  builder_.add_parent_index(parent_index);
-  builder_.add_index(index);
   builder_.add_type(type);
   return builder_.Finish();
 }
@@ -3445,12 +3541,12 @@ inline flatbuffers::Offset<PartData> CreatePartDataDirect(
     int16_t index = 0,
     int16_t parent_index = 0,
     ss::ssfb::SsPartType type = ss::ssfb::SsPartType_Nulltype,
-    int16_t bounds_type = 0,
-    int16_t alpha_blend_type = 0,
+    ss::ssfb::BoundsType bounds_type = ss::ssfb::BoundsType_none,
+    ss::ssfb::BlendType alpha_blend_type = ss::ssfb::BlendType_mix,
     const char *refname = nullptr,
     const char *effectfilename = nullptr,
     const char *colorLabel = nullptr,
-    int16_t mask_influence = 0) {
+    bool mask_influence = false) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
   auto refname__ = refname ? _fbb.CreateString(refname) : 0;
   auto effectfilename__ = effectfilename ? _fbb.CreateString(effectfilename) : 0;
@@ -3569,7 +3665,6 @@ struct ProjectDataT : public flatbuffers::NativeTable {
   typedef ProjectData TableType;
   uint32_t dataId = 0;
   uint32_t version = 0;
-  int32_t flags = 0;
   std::string image_base_dir{};
   std::vector<std::unique_ptr<ss::ssfb::CellT>> cells{};
   std::vector<std::unique_ptr<ss::ssfb::AnimePackDataT>> anime_packs{};
@@ -3585,23 +3680,19 @@ struct ProjectData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_DATAID = 4,
     VT_VERSION = 6,
-    VT_FLAGS = 8,
-    VT_IMAGE_BASE_DIR = 10,
-    VT_CELLS = 12,
-    VT_ANIME_PACKS = 14,
-    VT_EFFECT_FILE_LIST = 16,
-    VT_NUM_CELLS = 18,
-    VT_NUM_ANIMEPACKS = 20,
-    VT_NUM_EFFECTFILELIST = 22
+    VT_IMAGE_BASE_DIR = 8,
+    VT_CELLS = 10,
+    VT_ANIME_PACKS = 12,
+    VT_EFFECT_FILE_LIST = 14,
+    VT_NUM_CELLS = 16,
+    VT_NUM_ANIMEPACKS = 18,
+    VT_NUM_EFFECTFILELIST = 20
   };
   uint32_t dataId() const {
     return GetField<uint32_t>(VT_DATAID, 0);
   }
   uint32_t version() const {
     return GetField<uint32_t>(VT_VERSION, 0);
-  }
-  int32_t flags() const {
-    return GetField<int32_t>(VT_FLAGS, 0);
   }
   const flatbuffers::String *image_base_dir() const {
     return GetPointer<const flatbuffers::String *>(VT_IMAGE_BASE_DIR);
@@ -3628,7 +3719,6 @@ struct ProjectData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_DATAID) &&
            VerifyField<uint32_t>(verifier, VT_VERSION) &&
-           VerifyField<int32_t>(verifier, VT_FLAGS) &&
            VerifyOffset(verifier, VT_IMAGE_BASE_DIR) &&
            verifier.VerifyString(image_base_dir()) &&
            VerifyOffset(verifier, VT_CELLS) &&
@@ -3659,9 +3749,6 @@ struct ProjectDataBuilder {
   }
   void add_version(uint32_t version) {
     fbb_.AddElement<uint32_t>(ProjectData::VT_VERSION, version, 0);
-  }
-  void add_flags(int32_t flags) {
-    fbb_.AddElement<int32_t>(ProjectData::VT_FLAGS, flags, 0);
   }
   void add_image_base_dir(flatbuffers::Offset<flatbuffers::String> image_base_dir) {
     fbb_.AddOffset(ProjectData::VT_IMAGE_BASE_DIR, image_base_dir);
@@ -3699,7 +3786,6 @@ inline flatbuffers::Offset<ProjectData> CreateProjectData(
     flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t dataId = 0,
     uint32_t version = 0,
-    int32_t flags = 0,
     flatbuffers::Offset<flatbuffers::String> image_base_dir = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<ss::ssfb::Cell>>> cells = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<ss::ssfb::AnimePackData>>> anime_packs = 0,
@@ -3712,7 +3798,6 @@ inline flatbuffers::Offset<ProjectData> CreateProjectData(
   builder_.add_anime_packs(anime_packs);
   builder_.add_cells(cells);
   builder_.add_image_base_dir(image_base_dir);
-  builder_.add_flags(flags);
   builder_.add_version(version);
   builder_.add_dataId(dataId);
   builder_.add_num_effectFileList(num_effectFileList);
@@ -3725,7 +3810,6 @@ inline flatbuffers::Offset<ProjectData> CreateProjectDataDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t dataId = 0,
     uint32_t version = 0,
-    int32_t flags = 0,
     const char *image_base_dir = nullptr,
     const std::vector<flatbuffers::Offset<ss::ssfb::Cell>> *cells = nullptr,
     const std::vector<flatbuffers::Offset<ss::ssfb::AnimePackData>> *anime_packs = nullptr,
@@ -3741,7 +3825,6 @@ inline flatbuffers::Offset<ProjectData> CreateProjectDataDirect(
       _fbb,
       dataId,
       version,
-      flags,
       image_base_dir__,
       cells__,
       anime_packs__,
@@ -4905,7 +4988,6 @@ inline bool operator==(const ProjectDataT &lhs, const ProjectDataT &rhs) {
   return
       (lhs.dataId == rhs.dataId) &&
       (lhs.version == rhs.version) &&
-      (lhs.flags == rhs.flags) &&
       (lhs.image_base_dir == rhs.image_base_dir) &&
       (lhs.cells == rhs.cells) &&
       (lhs.anime_packs == rhs.anime_packs) &&
@@ -4931,7 +5013,6 @@ inline void ProjectData::UnPackTo(ProjectDataT *_o, const flatbuffers::resolver_
   (void)_resolver;
   { auto _e = dataId(); _o->dataId = _e; }
   { auto _e = version(); _o->version = _e; }
-  { auto _e = flags(); _o->flags = _e; }
   { auto _e = image_base_dir(); if (_e) _o->image_base_dir = _e->str(); }
   { auto _e = cells(); if (_e) { _o->cells.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->cells[_i]) { _e->Get(_i)->UnPackTo(_o->cells[_i].get(), _resolver); } else { _o->cells[_i] = std::unique_ptr<ss::ssfb::CellT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
   { auto _e = anime_packs(); if (_e) { _o->anime_packs.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->anime_packs[_i]) { _e->Get(_i)->UnPackTo(_o->anime_packs[_i].get(), _resolver); } else { _o->anime_packs[_i] = std::unique_ptr<ss::ssfb::AnimePackDataT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
@@ -4951,7 +5032,6 @@ inline flatbuffers::Offset<ProjectData> CreateProjectData(flatbuffers::FlatBuffe
   struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const ProjectDataT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _dataId = _o->dataId;
   auto _version = _o->version;
-  auto _flags = _o->flags;
   auto _image_base_dir = _o->image_base_dir.empty() ? 0 : _fbb.CreateString(_o->image_base_dir);
   auto _cells = _o->cells.size() ? _fbb.CreateVector<flatbuffers::Offset<ss::ssfb::Cell>> (_o->cells.size(), [](size_t i, _VectorArgs *__va) { return CreateCell(*__va->__fbb, __va->__o->cells[i].get(), __va->__rehasher); }, &_va ) : 0;
   auto _anime_packs = _o->anime_packs.size() ? _fbb.CreateVector<flatbuffers::Offset<ss::ssfb::AnimePackData>> (_o->anime_packs.size(), [](size_t i, _VectorArgs *__va) { return CreateAnimePackData(*__va->__fbb, __va->__o->anime_packs[i].get(), __va->__rehasher); }, &_va ) : 0;
@@ -4963,7 +5043,6 @@ inline flatbuffers::Offset<ProjectData> CreateProjectData(flatbuffers::FlatBuffe
       _fbb,
       _dataId,
       _version,
-      _flags,
       _image_base_dir,
       _cells,
       _anime_packs,
