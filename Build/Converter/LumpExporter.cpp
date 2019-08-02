@@ -797,8 +797,8 @@ private:
 		cellMapT.name = GETSTRING(cellMapVec[0], m_encoding);
 		cellMapT.image_path = GETSTRING(cellMapVec[1], m_encoding);
 		cellMapT.index = GETS16(cellMapVec[2]);
-		cellMapT.wrap_mode = GETS16(cellMapVec[3]);
-		cellMapT.filter_mode = GETS16(cellMapVec[4]);
+		cellMapT.wrap_mode = (ss::ssfb::TexWrapMode)GETS16(cellMapVec[3]);
+		cellMapT.filter_mode = (ss::ssfb::TexFilterMode)GETS16(cellMapVec[4]);
 		// 5:reserved(s16)
 
 		// search same cellMap from cellMap caches.

@@ -73,6 +73,10 @@ enum InstanceLoopFlag:ubyte (bit_flags) {
   Independent,
 }
 
+enum EffectLoopFlag:ubyte (bit_flags) {
+  Independent,
+}
+
 enum UserDataFlag:ubyte (bit_flags) {
   Integer,
   Rect,
@@ -232,12 +236,25 @@ table EffectFile {
   effect_node:[EffectNode];
 }
 
+enum TexWrapMode:byte {
+  invalid = -1,
+  clamp,
+  repeat,
+  mirror,
+}
+
+enum TexFilterMode:byte {
+  invalid = -1,
+  nearlest,
+  linear,
+}
+
 table CellMap {
   name:string;
   image_path:string;
   index:short;
-  wrap_mode:short;
-  filter_mode:short;
+  wrap_mode:TexWrapMode;
+  filter_mode:TexFilterMode;
 }
 
 table Cell {

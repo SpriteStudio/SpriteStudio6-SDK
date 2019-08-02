@@ -403,6 +403,33 @@ inline const char *EnumNameInstanceLoopFlag(InstanceLoopFlag e) {
   return EnumNamesInstanceLoopFlag()[index];
 }
 
+enum EffectLoopFlag : uint8_t {
+  EffectLoopFlag_Independent = 1,
+  EffectLoopFlag_NONE = 0,
+  EffectLoopFlag_ANY = 1
+};
+
+inline const EffectLoopFlag (&EnumValuesEffectLoopFlag())[1] {
+  static const EffectLoopFlag values[] = {
+    EffectLoopFlag_Independent
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesEffectLoopFlag() {
+  static const char * const names[2] = {
+    "Independent",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameEffectLoopFlag(EffectLoopFlag e) {
+  if (flatbuffers::IsOutRange(e, EffectLoopFlag_Independent, EffectLoopFlag_Independent)) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(EffectLoopFlag_Independent);
+  return EnumNamesEffectLoopFlag()[index];
+}
+
 enum UserDataFlag : uint8_t {
   UserDataFlag_Integer = 1,
   UserDataFlag_Rect = 2,
@@ -659,6 +686,75 @@ inline const char *EnumNameEffectRenderBlendType(EffectRenderBlendType e) {
   if (flatbuffers::IsOutRange(e, EffectRenderBlendType_Invalid, EffectRenderBlendType_Add)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(EffectRenderBlendType_Invalid);
   return EnumNamesEffectRenderBlendType()[index];
+}
+
+enum TexWrapMode : int8_t {
+  TexWrapMode_invalid = -1,
+  TexWrapMode_clamp = 0,
+  TexWrapMode_repeat = 1,
+  TexWrapMode_mirror = 2,
+  TexWrapMode_MIN = TexWrapMode_invalid,
+  TexWrapMode_MAX = TexWrapMode_mirror
+};
+
+inline const TexWrapMode (&EnumValuesTexWrapMode())[4] {
+  static const TexWrapMode values[] = {
+    TexWrapMode_invalid,
+    TexWrapMode_clamp,
+    TexWrapMode_repeat,
+    TexWrapMode_mirror
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesTexWrapMode() {
+  static const char * const names[5] = {
+    "invalid",
+    "clamp",
+    "repeat",
+    "mirror",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameTexWrapMode(TexWrapMode e) {
+  if (flatbuffers::IsOutRange(e, TexWrapMode_invalid, TexWrapMode_mirror)) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(TexWrapMode_invalid);
+  return EnumNamesTexWrapMode()[index];
+}
+
+enum TexFilterMode : int8_t {
+  TexFilterMode_invalid = -1,
+  TexFilterMode_nearlest = 0,
+  TexFilterMode_linear = 1,
+  TexFilterMode_MIN = TexFilterMode_invalid,
+  TexFilterMode_MAX = TexFilterMode_linear
+};
+
+inline const TexFilterMode (&EnumValuesTexFilterMode())[3] {
+  static const TexFilterMode values[] = {
+    TexFilterMode_invalid,
+    TexFilterMode_nearlest,
+    TexFilterMode_linear
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesTexFilterMode() {
+  static const char * const names[4] = {
+    "invalid",
+    "nearlest",
+    "linear",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameTexFilterMode(TexFilterMode e) {
+  if (flatbuffers::IsOutRange(e, TexFilterMode_invalid, TexFilterMode_linear)) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(TexFilterMode_invalid);
+  return EnumNamesTexFilterMode()[index];
 }
 
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementBasic FLATBUFFERS_FINAL_CLASS {
@@ -1495,8 +1591,8 @@ struct CellMapT : public flatbuffers::NativeTable {
   std::string name{};
   std::string image_path{};
   int16_t index = 0;
-  int16_t wrap_mode = 0;
-  int16_t filter_mode = 0;
+  ss::ssfb::TexWrapMode wrap_mode = ss::ssfb::TexWrapMode_clamp;
+  ss::ssfb::TexFilterMode filter_mode = ss::ssfb::TexFilterMode_nearlest;
 };
 
 struct CellMap FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -1518,11 +1614,11 @@ struct CellMap FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t index() const {
     return GetField<int16_t>(VT_INDEX, 0);
   }
-  int16_t wrap_mode() const {
-    return GetField<int16_t>(VT_WRAP_MODE, 0);
+  ss::ssfb::TexWrapMode wrap_mode() const {
+    return static_cast<ss::ssfb::TexWrapMode>(GetField<int8_t>(VT_WRAP_MODE, 0));
   }
-  int16_t filter_mode() const {
-    return GetField<int16_t>(VT_FILTER_MODE, 0);
+  ss::ssfb::TexFilterMode filter_mode() const {
+    return static_cast<ss::ssfb::TexFilterMode>(GetField<int8_t>(VT_FILTER_MODE, 0));
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -1531,8 +1627,8 @@ struct CellMap FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffset(verifier, VT_IMAGE_PATH) &&
            verifier.VerifyString(image_path()) &&
            VerifyField<int16_t>(verifier, VT_INDEX) &&
-           VerifyField<int16_t>(verifier, VT_WRAP_MODE) &&
-           VerifyField<int16_t>(verifier, VT_FILTER_MODE) &&
+           VerifyField<int8_t>(verifier, VT_WRAP_MODE) &&
+           VerifyField<int8_t>(verifier, VT_FILTER_MODE) &&
            verifier.EndTable();
   }
   CellMapT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -1553,11 +1649,11 @@ struct CellMapBuilder {
   void add_index(int16_t index) {
     fbb_.AddElement<int16_t>(CellMap::VT_INDEX, index, 0);
   }
-  void add_wrap_mode(int16_t wrap_mode) {
-    fbb_.AddElement<int16_t>(CellMap::VT_WRAP_MODE, wrap_mode, 0);
+  void add_wrap_mode(ss::ssfb::TexWrapMode wrap_mode) {
+    fbb_.AddElement<int8_t>(CellMap::VT_WRAP_MODE, static_cast<int8_t>(wrap_mode), 0);
   }
-  void add_filter_mode(int16_t filter_mode) {
-    fbb_.AddElement<int16_t>(CellMap::VT_FILTER_MODE, filter_mode, 0);
+  void add_filter_mode(ss::ssfb::TexFilterMode filter_mode) {
+    fbb_.AddElement<int8_t>(CellMap::VT_FILTER_MODE, static_cast<int8_t>(filter_mode), 0);
   }
   explicit CellMapBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -1575,14 +1671,14 @@ inline flatbuffers::Offset<CellMap> CreateCellMap(
     flatbuffers::Offset<flatbuffers::String> name = 0,
     flatbuffers::Offset<flatbuffers::String> image_path = 0,
     int16_t index = 0,
-    int16_t wrap_mode = 0,
-    int16_t filter_mode = 0) {
+    ss::ssfb::TexWrapMode wrap_mode = ss::ssfb::TexWrapMode_clamp,
+    ss::ssfb::TexFilterMode filter_mode = ss::ssfb::TexFilterMode_nearlest) {
   CellMapBuilder builder_(_fbb);
   builder_.add_image_path(image_path);
   builder_.add_name(name);
+  builder_.add_index(index);
   builder_.add_filter_mode(filter_mode);
   builder_.add_wrap_mode(wrap_mode);
-  builder_.add_index(index);
   return builder_.Finish();
 }
 
@@ -1591,8 +1687,8 @@ inline flatbuffers::Offset<CellMap> CreateCellMapDirect(
     const char *name = nullptr,
     const char *image_path = nullptr,
     int16_t index = 0,
-    int16_t wrap_mode = 0,
-    int16_t filter_mode = 0) {
+    ss::ssfb::TexWrapMode wrap_mode = ss::ssfb::TexWrapMode_clamp,
+    ss::ssfb::TexFilterMode filter_mode = ss::ssfb::TexFilterMode_nearlest) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
   auto image_path__ = image_path ? _fbb.CreateString(image_path) : 0;
   return ss::ssfb::CreateCellMap(
