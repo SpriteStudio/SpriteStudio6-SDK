@@ -707,7 +707,6 @@ private:
 	flatbuffers::Offset<ss::ssfb::ProjectData> m_ssfbProjectData;
 	int32_t m_dataId{};
 	int32_t m_version{};
-	int32_t m_flags{};
 	flatbuffers::Offset<flatbuffers::String> m_ssfbImageBaseDir;
 	std::vector<flatbuffers::Offset<ss::ssfb::Cell>> m_ssfbCells;
 	std::vector<flatbuffers::Offset<ss::ssfb::AnimePackData>> m_ssfbAnimePacks;
@@ -752,7 +751,7 @@ private:
 		auto rootChildVec = m_root->getChildren();
 		m_dataId = GETS32(rootChildVec[0]);
 		m_version = GETS32(rootChildVec[1]);
-		m_flags = GETS32(rootChildVec[2]);
+		// GETS32(rootChildVec[2]); // unuse
 		m_ssfbImageBaseDir = GETSSFBSTRING(m_ssfbBuilder, rootChildVec[3], m_encoding);
 	}
 
@@ -1066,7 +1065,7 @@ private:
 	}
 	
 	flatbuffers::Offset<ss::ssfb::PartState>
-	createSharedPartState(int16_t index, uint32_t flag1, uint32_t flag2, const std::vector<uint32_t> &dataPrimitive) {
+	createSharedPartState(int16_t index, ss::ssfb::PartFlag flag1, ss::ssfb::PartFlag2 flag2, const std::vector<uint32_t> &dataPrimitive) {
 		flatbuffers::Offset<ss::ssfb::PartState> partState;
 		
 		struct ss::ssfb::PartStateT partStateT;
@@ -1256,8 +1255,8 @@ private:
 					struct ss::ssfb::PartStateT partStateTItem;
 					std::vector<struct ss::ssfb::PartStateT> partStateTVec;
 
-					uint32_t flag1;
-					uint32_t flag2;
+					ss::ssfb::PartFlag flag1;
+					ss::ssfb::PartFlag2 flag2;
 					int outPartsCount = -1;
 					int16_t index;
 					std::string tagname;
@@ -1279,19 +1278,19 @@ private:
 
 							index = GETS16(frameDataItem);
 							tagname = "part_" + std::to_string(outPartsCount) + "_";
-							flag1 = 0;
-							flag2 = 0;
+							flag1 = ss::ssfb::PartFlag::PartFlag_NONE;
+							flag2 = ss::ssfb::PartFlag2::PartFlag2_NONE;
 							partStateData = {};
 							continue;
 						}
 
 						if(frameDataItem->name == tagname + "flag1") {
-							flag1 = GETU32(frameDataItem);
+							flag1 = (ss::ssfb::PartFlag)GETU32(frameDataItem);
 							continue;
 						}
 
 						if(frameDataItem->name == tagname + "flag2") {
-							flag2 = GETU32(frameDataItem);
+							flag2 = (ss::ssfb::PartFlag2)GETU32(frameDataItem);
 							continue;
 						}
 

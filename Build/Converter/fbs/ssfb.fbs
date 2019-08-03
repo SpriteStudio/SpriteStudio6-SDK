@@ -282,8 +282,8 @@ table MeshDataIndices {
 
 table PartState {
   index:short;
-  flag1:uint;
-  flag2:uint;
+  flag1:PartFlag;
+  flag2:PartFlag2;
   data:[uint];
 }
 
