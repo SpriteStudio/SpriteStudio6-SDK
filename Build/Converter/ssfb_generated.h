@@ -2144,8 +2144,8 @@ flatbuffers::Offset<MeshDataIndices> CreateMeshDataIndices(flatbuffers::FlatBuff
 struct PartStateT : public flatbuffers::NativeTable {
   typedef PartState TableType;
   int16_t index = 0;
-  uint32_t flag1 = 0;
-  uint32_t flag2 = 0;
+  ss::ssfb::PartFlag flag1 = static_cast<ss::ssfb::PartFlag>(0);
+  ss::ssfb::PartFlag2 flag2 = static_cast<ss::ssfb::PartFlag2>(0);
   std::vector<uint32_t> data{};
 };
 
@@ -2161,11 +2161,11 @@ struct PartState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t index() const {
     return GetField<int16_t>(VT_INDEX, 0);
   }
-  uint32_t flag1() const {
-    return GetField<uint32_t>(VT_FLAG1, 0);
+  ss::ssfb::PartFlag flag1() const {
+    return static_cast<ss::ssfb::PartFlag>(GetField<uint32_t>(VT_FLAG1, 0));
   }
-  uint32_t flag2() const {
-    return GetField<uint32_t>(VT_FLAG2, 0);
+  ss::ssfb::PartFlag2 flag2() const {
+    return static_cast<ss::ssfb::PartFlag2>(GetField<uint32_t>(VT_FLAG2, 0));
   }
   const flatbuffers::Vector<uint32_t> *data() const {
     return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_DATA);
@@ -2191,11 +2191,11 @@ struct PartStateBuilder {
   void add_index(int16_t index) {
     fbb_.AddElement<int16_t>(PartState::VT_INDEX, index, 0);
   }
-  void add_flag1(uint32_t flag1) {
-    fbb_.AddElement<uint32_t>(PartState::VT_FLAG1, flag1, 0);
+  void add_flag1(ss::ssfb::PartFlag flag1) {
+    fbb_.AddElement<uint32_t>(PartState::VT_FLAG1, static_cast<uint32_t>(flag1), 0);
   }
-  void add_flag2(uint32_t flag2) {
-    fbb_.AddElement<uint32_t>(PartState::VT_FLAG2, flag2, 0);
+  void add_flag2(ss::ssfb::PartFlag2 flag2) {
+    fbb_.AddElement<uint32_t>(PartState::VT_FLAG2, static_cast<uint32_t>(flag2), 0);
   }
   void add_data(flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data) {
     fbb_.AddOffset(PartState::VT_DATA, data);
@@ -2214,8 +2214,8 @@ struct PartStateBuilder {
 inline flatbuffers::Offset<PartState> CreatePartState(
     flatbuffers::FlatBufferBuilder &_fbb,
     int16_t index = 0,
-    uint32_t flag1 = 0,
-    uint32_t flag2 = 0,
+    ss::ssfb::PartFlag flag1 = static_cast<ss::ssfb::PartFlag>(0),
+    ss::ssfb::PartFlag2 flag2 = static_cast<ss::ssfb::PartFlag2>(0),
     flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data = 0) {
   PartStateBuilder builder_(_fbb);
   builder_.add_data(data);
@@ -2228,8 +2228,8 @@ inline flatbuffers::Offset<PartState> CreatePartState(
 inline flatbuffers::Offset<PartState> CreatePartStateDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     int16_t index = 0,
-    uint32_t flag1 = 0,
-    uint32_t flag2 = 0,
+    ss::ssfb::PartFlag flag1 = static_cast<ss::ssfb::PartFlag>(0),
+    ss::ssfb::PartFlag2 flag2 = static_cast<ss::ssfb::PartFlag2>(0),
     const std::vector<uint32_t> *data = nullptr) {
   auto data__ = data ? _fbb.CreateVector<uint32_t>(*data) : 0;
   return ss::ssfb::CreatePartState(
