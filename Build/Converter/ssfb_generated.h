@@ -758,98 +758,98 @@ inline const char *EnumNameTexFilterMode(TexFilterMode e) {
 }
 
 enum BoundsType : int8_t {
-  BoundsType_invalid = -1,
-  BoundsType_none = 0,
-  BoundsType_quad = 1,
-  BoundsType_aabb = 2,
-  BoundsType_circle = 3,
-  BoundsType_circle_smin = 4,
-  BoundsType_circle_smax = 5,
-  BoundsType_MIN = BoundsType_invalid,
-  BoundsType_MAX = BoundsType_circle_smax
+  BoundsType_Invalid = -1,
+  BoundsType_None = 0,
+  BoundsType_Quad = 1,
+  BoundsType_Qabb = 2,
+  BoundsType_Circle = 3,
+  BoundsType_CircleSmin = 4,
+  BoundsType_CircleSmax = 5,
+  BoundsType_MIN = BoundsType_Invalid,
+  BoundsType_MAX = BoundsType_CircleSmax
 };
 
 inline const BoundsType (&EnumValuesBoundsType())[7] {
   static const BoundsType values[] = {
-    BoundsType_invalid,
-    BoundsType_none,
-    BoundsType_quad,
-    BoundsType_aabb,
-    BoundsType_circle,
-    BoundsType_circle_smin,
-    BoundsType_circle_smax
+    BoundsType_Invalid,
+    BoundsType_None,
+    BoundsType_Quad,
+    BoundsType_Qabb,
+    BoundsType_Circle,
+    BoundsType_CircleSmin,
+    BoundsType_CircleSmax
   };
   return values;
 }
 
 inline const char * const *EnumNamesBoundsType() {
   static const char * const names[8] = {
-    "invalid",
-    "none",
-    "quad",
-    "aabb",
-    "circle",
-    "circle_smin",
-    "circle_smax",
+    "Invalid",
+    "None",
+    "Quad",
+    "Qabb",
+    "Circle",
+    "CircleSmin",
+    "CircleSmax",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameBoundsType(BoundsType e) {
-  if (flatbuffers::IsOutRange(e, BoundsType_invalid, BoundsType_circle_smax)) return "";
-  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(BoundsType_invalid);
+  if (flatbuffers::IsOutRange(e, BoundsType_Invalid, BoundsType_CircleSmax)) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(BoundsType_Invalid);
   return EnumNamesBoundsType()[index];
 }
 
 enum BlendType : int8_t {
-  BlendType_invalid = -1,
-  BlendType_mix = 0,
-  BlendType_mul = 1,
-  BlendType_add = 2,
-  BlendType_sub = 3,
-  BlendType_mulalpha = 4,
-  BlendType_screen = 5,
-  BlendType_exclusion = 6,
-  BlendType_invert = 7,
-  BlendType_MIN = BlendType_invalid,
-  BlendType_MAX = BlendType_invert
+  BlendType_Invalid = -1,
+  BlendType_Mix = 0,
+  BlendType_Mul = 1,
+  BlendType_Add = 2,
+  BlendType_Sub = 3,
+  BlendType_MulAlpha = 4,
+  BlendType_Screen = 5,
+  BlendType_Exclusion = 6,
+  BlendType_Invert = 7,
+  BlendType_MIN = BlendType_Invalid,
+  BlendType_MAX = BlendType_Invert
 };
 
 inline const BlendType (&EnumValuesBlendType())[9] {
   static const BlendType values[] = {
-    BlendType_invalid,
-    BlendType_mix,
-    BlendType_mul,
-    BlendType_add,
-    BlendType_sub,
-    BlendType_mulalpha,
-    BlendType_screen,
-    BlendType_exclusion,
-    BlendType_invert
+    BlendType_Invalid,
+    BlendType_Mix,
+    BlendType_Mul,
+    BlendType_Add,
+    BlendType_Sub,
+    BlendType_MulAlpha,
+    BlendType_Screen,
+    BlendType_Exclusion,
+    BlendType_Invert
   };
   return values;
 }
 
 inline const char * const *EnumNamesBlendType() {
   static const char * const names[10] = {
-    "invalid",
-    "mix",
-    "mul",
-    "add",
-    "sub",
-    "mulalpha",
-    "screen",
-    "exclusion",
-    "invert",
+    "Invalid",
+    "Mix",
+    "Mul",
+    "Add",
+    "Sub",
+    "MulAlpha",
+    "Screen",
+    "Exclusion",
+    "Invert",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameBlendType(BlendType e) {
-  if (flatbuffers::IsOutRange(e, BlendType_invalid, BlendType_invert)) return "";
-  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(BlendType_invalid);
+  if (flatbuffers::IsOutRange(e, BlendType_Invalid, BlendType_Invert)) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(BlendType_Invalid);
   return EnumNamesBlendType()[index];
 }
 
@@ -3388,8 +3388,8 @@ struct PartDataT : public flatbuffers::NativeTable {
   int16_t index = 0;
   int16_t parent_index = 0;
   ss::ssfb::SsPartType type = ss::ssfb::SsPartType_Nulltype;
-  ss::ssfb::BoundsType bounds_type = ss::ssfb::BoundsType_none;
-  ss::ssfb::BlendType alpha_blend_type = ss::ssfb::BlendType_mix;
+  ss::ssfb::BoundsType bounds_type = ss::ssfb::BoundsType_None;
+  ss::ssfb::BlendType alpha_blend_type = ss::ssfb::BlendType_Mix;
   std::string refname{};
   std::string effectfilename{};
   std::string colorLabel{};
@@ -3515,8 +3515,8 @@ inline flatbuffers::Offset<PartData> CreatePartData(
     int16_t index = 0,
     int16_t parent_index = 0,
     ss::ssfb::SsPartType type = ss::ssfb::SsPartType_Nulltype,
-    ss::ssfb::BoundsType bounds_type = ss::ssfb::BoundsType_none,
-    ss::ssfb::BlendType alpha_blend_type = ss::ssfb::BlendType_mix,
+    ss::ssfb::BoundsType bounds_type = ss::ssfb::BoundsType_None,
+    ss::ssfb::BlendType alpha_blend_type = ss::ssfb::BlendType_Mix,
     flatbuffers::Offset<flatbuffers::String> refname = 0,
     flatbuffers::Offset<flatbuffers::String> effectfilename = 0,
     flatbuffers::Offset<flatbuffers::String> colorLabel = 0,
@@ -3541,8 +3541,8 @@ inline flatbuffers::Offset<PartData> CreatePartDataDirect(
     int16_t index = 0,
     int16_t parent_index = 0,
     ss::ssfb::SsPartType type = ss::ssfb::SsPartType_Nulltype,
-    ss::ssfb::BoundsType bounds_type = ss::ssfb::BoundsType_none,
-    ss::ssfb::BlendType alpha_blend_type = ss::ssfb::BlendType_mix,
+    ss::ssfb::BoundsType bounds_type = ss::ssfb::BoundsType_None,
+    ss::ssfb::BlendType alpha_blend_type = ss::ssfb::BlendType_Mix,
     const char *refname = nullptr,
     const char *effectfilename = nullptr,
     const char *colorLabel = nullptr,
