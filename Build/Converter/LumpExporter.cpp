@@ -701,6 +701,7 @@ private:
 	const Lump *m_root{};
 	std::vector<int16_t> m_frameIndexVec;
 	int m_frameIndex;
+	std::string m_curEffectFile;
 
 	flatbuffers::FlatBufferBuilder m_ssfbBuilder;
 	flatbuffers::Offset<ss::ssfb::ProjectData> m_ssfbProjectData;
@@ -737,6 +738,19 @@ private:
 
 	std::vector<std::shared_ptr<struct ss::ssfb::FrameDataIndexT>> m_frameDataIndexVec;
 	std::vector<flatbuffers::Offset<ss::ssfb::FrameDataIndex>> m_ssfbFrameDataIndexVec;
+
+	std::vector<std::shared_ptr<struct ss::ssfb::EffectParticleElementBasicT>> m_effectParticleElementBasicVec;
+    std::vector<flatbuffers::Offset<ss::ssfb::EffectParticleElementBasic>> m_ssfbEffectParticleElementBasicVec;
+
+	std::vector<std::shared_ptr<struct ss::ssfb::EffectNodeT>> m_effectNodeVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::EffectNode>> m_ssfbEffectNodeVec;
+
+    std::map<std::string, std::map<int, std::shared_ptr<struct ss::ssfb::EffectNodeT>>> m_effectNodeCatalog;
+	std::map<std::string, std::map<int, flatbuffers::Offset<ss::ssfb::EffectNode>>> m_ssfbEffectNodeCatalog;
+
+	std::map<std::string, flatbuffers::Offset<ss::ssfb::EffectFile>> m_ssfbEffectFileCatalog;
+	std::vector<std::shared_ptr<struct ss::ssfb::EffectFileT>> m_effectFileVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::EffectFile>> m_ssfbEffectFileVec;
 
 	void createHeader()
 	{
@@ -903,7 +917,18 @@ private:
 		partDataT->bounds_type = (ss::ssfb::BoundsType)GETS16(partDataItemVec[4]);
 		partDataT->alpha_blend_type = (ss::ssfb::BlendType )GETS16(partDataItemVec[5]);
 		partDataT->refname = GETSTRING(partDataItemVec[7], m_encoding);
-		partDataT->effectfilename = GETSTRING(partDataItemVec[8], m_encoding);
+		auto effectfilename = GETSTRING(partDataItemVec[8], m_encoding);
+		auto effect_result = std::find_if(m_effectFileVec.begin(), m_effectFileVec.end(), [effectfilename](const std::shared_ptr<ss::ssfb::EffectFileT> &c) {
+            return effectfilename == c->name;
+		});
+		int ssfbEffectFileIdx = -1;
+		if(effect_result == m_effectFileVec.end()) {
+		    partDataT->effect = nullptr;
+		} else {
+		    partDataT->effect = *effect_result;
+		    ssfbEffectFileIdx = std::distance(m_effectFileVec.begin(), effect_result);
+		}
+
 		partDataT->colorLabel = GETSTRING(partDataItemVec[9], m_encoding);
 		partDataT->mask_influence = (bool)GETS16(partDataItemVec[10]);
 
@@ -917,11 +942,11 @@ private:
 			// create ssfb partData
 			auto ssfbPartDataName =  m_ssfbBuilder.CreateSharedString(partDataT->name);
 			auto ssfbRefname = m_ssfbBuilder.CreateSharedString(partDataT->refname);
-			auto ssfbEffectfilename = m_ssfbBuilder.CreateSharedString(partDataT->effectfilename);
+			auto ssfbEffectFile = (ssfbEffectFileIdx >=0)? m_ssfbEffectFileVec[ssfbEffectFileIdx] : 0;
 			auto ssfbColorLabel = m_ssfbBuilder.CreateSharedString(partDataT->colorLabel);
 
 			partData = ss::ssfb::CreatePartData(m_ssfbBuilder, ssfbPartDataName,partDataT->index, partDataT->parent_index, (ss::ssfb::SsPartType)partDataT->type,
-												partDataT->bounds_type, partDataT->alpha_blend_type, ssfbRefname, ssfbEffectfilename, ssfbColorLabel,
+												partDataT->bounds_type, partDataT->alpha_blend_type, ssfbRefname, ssfbEffectFile, ssfbColorLabel,
 												partDataT->mask_influence);
 			// cache ssfb cellMap
 			m_partDataVec.push_back(partDataT);
@@ -1400,6 +1425,239 @@ private:
 		return ssfbAnimationDataList;
 	}
 
+	flatbuffers::Offset<ss::ssfb::EffectNode> createSharedEffectNode(const Lump *EffectNodeArrayItem, std::shared_ptr<ss::ssfb::EffectNodeT> &effectNodeItem) {
+        auto EffectNodeVec = EffectNodeArrayItem->getChildren();
+
+        //std::shared_ptr<ss::ssfb::EffectNodeT> effectNodeItem(new ss::ssfb::EffectNodeT());
+        flatbuffers::Offset<ss::ssfb::EffectNode> ssfbEffectNodeItem;
+
+        effectNodeItem->array_index = GETS16(EffectNodeVec[0]);
+        effectNodeItem->parent_index = GETS16(EffectNodeVec[1]);
+        effectNodeItem->type = (ss::ssfb::EffectNodeType) GETS16(EffectNodeVec[2]);
+        effectNodeItem->cell_index = GETS16(EffectNodeVec[3]);
+        effectNodeItem->blend_type = (ss::ssfb::EffectRenderBlendType) GETS16(EffectNodeVec[4]);
+        // GETS16(EffectNodeVec[5]); unused
+
+        auto effectBehaviorArrayVec = EffectNodeVec[6]->getChildren();
+
+        uint32_t behaviorFlags = ss::ssfb::EffectBehaviorFlags_NONE;
+        std::shared_ptr<ss::ssfb::EffectParticleElementBasicT> basicBehavior(new ss::ssfb::EffectParticleElementBasicT());
+        flatbuffers::Offset<ss::ssfb::EffectParticleElementBasic> ssfbBasicBehavior;
+
+        for (auto effectBehaviorArrayItem : effectBehaviorArrayVec) {
+            auto effectBehaviorArrayItemVec = effectBehaviorArrayItem->getChildren();
+            auto SsEffectFunctionType = (ss::ssfb::SsEffectFunctionType) GETS32(effectBehaviorArrayItemVec[0]);
+            switch (SsEffectFunctionType) {
+                case ss::ssfb::SsEffectFunctionType_Basic: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Basic;
+                    basicBehavior->priority = GETS32(effectBehaviorArrayItemVec[1]);
+                    basicBehavior->maximum_particle = GETS32(effectBehaviorArrayItemVec[2]);
+                    basicBehavior->attime_create = GETS32(effectBehaviorArrayItemVec[3]);
+                    basicBehavior->interval = GETS32(effectBehaviorArrayItemVec[4]);
+                    basicBehavior->lifetime = GETS32(effectBehaviorArrayItemVec[5]);
+                    basicBehavior->speed_min_value = GETFLOAT(effectBehaviorArrayItemVec[6]);
+                    basicBehavior->speed_max_value = GETFLOAT(effectBehaviorArrayItemVec[7]);
+                    basicBehavior->lifespan_min_value = GETS32(effectBehaviorArrayItemVec[8]);
+                    basicBehavior->lifespan_max_value = GETS32(effectBehaviorArrayItemVec[9]);
+                    basicBehavior->angle = GETFLOAT(effectBehaviorArrayItemVec[10]);
+                    basicBehavior->angle_variance = GETFLOAT(effectBehaviorArrayItemVec[11]);
+
+                    auto result = std::find_if(m_effectParticleElementBasicVec.begin(), m_effectParticleElementBasicVec.end(),
+                        [basicBehavior](const std::shared_ptr<ss::ssfb::EffectParticleElementBasicT> &c) {
+                            return *(c.get()) == *(basicBehavior.get());
+                        });
+                    if (result == m_effectParticleElementBasicVec.end()) {
+                        // not found
+                        ssfbBasicBehavior = ss::ssfb::CreateEffectParticleElementBasic(m_ssfbBuilder, basicBehavior.get());
+                        m_effectParticleElementBasicVec.push_back(basicBehavior);
+                        m_ssfbEffectParticleElementBasicVec.push_back(ssfbBasicBehavior);
+                    } else {
+                        // found cache
+                        auto idx = std::distance(m_effectParticleElementBasicVec.begin(), result);
+                        ssfbBasicBehavior = m_ssfbEffectParticleElementBasicVec[idx];
+                    }
+                    effectNodeItem->basic_behavior = basicBehavior;
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_RndSeedChange: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_RndSeedChange;
+                    effectNodeItem->seed = GETS32(effectBehaviorArrayItemVec[1]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_Delay: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Delay;
+                    effectNodeItem->delay_time = GETS32(effectBehaviorArrayItemVec[1]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_Gravity: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Gravity;
+                    effectNodeItem->gravity_x = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->gravity_y = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_Position: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Position;
+                    effectNodeItem->offset_x_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->offset_x_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    effectNodeItem->offset_y_min_value = GETFLOAT(effectBehaviorArrayItemVec[3]);
+                    effectNodeItem->offset_y_max_value = GETFLOAT(effectBehaviorArrayItemVec[4]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_Rotation: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Rotation;
+                    effectNodeItem->rotation_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->rotation_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    effectNodeItem->rotation_add_min_value = GETFLOAT(effectBehaviorArrayItemVec[3]);
+                    effectNodeItem->rotation_add_max_value = GETFLOAT(effectBehaviorArrayItemVec[4]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_TransRotation: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TransRotation;
+                    effectNodeItem->rotation_factor = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->end_life_time_per = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_TransSpeed: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TransSpeed;
+                    effectNodeItem->speed_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->speed_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_TangentialAcceleration: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TangentialAcceleration;
+                    effectNodeItem->acceleration_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->acceleration_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_InitColor: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_InitColor;
+                    effectNodeItem->init_color_min_value = GETU32(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->init_color_max_value = GETU32(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_TransColor: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TransColor;
+                    effectNodeItem->trans_color_min_value = GETU32(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->trans_color_max_value = GETU32(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_AlphaFade: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_AlphaFade;
+                    effectNodeItem->disprange_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->disprange_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_Size: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Size;
+                    effectNodeItem->size_x_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->size_x_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    effectNodeItem->size_y_min_value = GETFLOAT(effectBehaviorArrayItemVec[3]);
+                    effectNodeItem->size_y_max_value = GETFLOAT(effectBehaviorArrayItemVec[4]);
+                    effectNodeItem->scale_factor_min_value = GETFLOAT(effectBehaviorArrayItemVec[5]);
+                    effectNodeItem->scale_factor_max_value = GETFLOAT(effectBehaviorArrayItemVec[6]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_TransSize: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TransSize;
+                    effectNodeItem->trans_size_x_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->trans_size_x_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    effectNodeItem->trans_size_y_min_value = GETFLOAT(effectBehaviorArrayItemVec[3]);
+                    effectNodeItem->trans_size_y_max_value = GETFLOAT(effectBehaviorArrayItemVec[4]);
+                    effectNodeItem->trans_scale_factor_min_value = GETFLOAT(effectBehaviorArrayItemVec[5]);
+                    effectNodeItem->trans_scale_factor_max_value = GETFLOAT(effectBehaviorArrayItemVec[6]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_PointGravity: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_PointGravity;
+                    effectNodeItem->point_gravity_position_x = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->point_gravity_position_y = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    effectNodeItem->point_gravity_power = GETFLOAT(effectBehaviorArrayItemVec[3]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_TurnToDirectionEnabled: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TurnToDirectionEnabled;
+                    effectNodeItem->rotation = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_InfiniteEmitEnabled: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_InfiniteEmitEnabled;
+                    effectNodeItem->infinitie_emit_flag = GETS32(effectBehaviorArrayItemVec[1]);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        auto result = std::find_if(m_effectNodeVec.begin(), m_effectNodeVec.end(), [effectNodeItem](const std::shared_ptr<ss::ssfb::EffectNodeT> &c) {
+            return *(c.get()) == *(effectNodeItem.get());
+        });
+        if (result ==  m_effectNodeVec.end()) {
+            // not found
+            ssfbEffectNodeItem = ss::ssfb::CreateEffectNode(m_ssfbBuilder,
+                                                            effectNodeItem->array_index,
+                                                            effectNodeItem->parent_index,
+                                                            effectNodeItem->type,
+                                                            effectNodeItem->cell_index,
+                                                            effectNodeItem->blend_type,
+                                                            ssfbBasicBehavior,
+                                                            effectNodeItem->behavior_flags,
+                                                            effectNodeItem->seed,
+                                                            effectNodeItem->delay_time,
+                                                            effectNodeItem->gravity_x,
+                                                            effectNodeItem->gravity_y,
+                                                            effectNodeItem->offset_x_min_value,
+                                                            effectNodeItem->offset_x_max_value,
+                                                            effectNodeItem->offset_y_min_value,
+                                                            effectNodeItem->offset_y_max_value,
+                                                            effectNodeItem->rotation_min_value,
+                                                            effectNodeItem->rotation_max_value,
+                                                            effectNodeItem->rotation_add_min_value,
+                                                            effectNodeItem->rotation_add_max_value,
+                                                            effectNodeItem->rotation_factor,
+                                                            effectNodeItem->end_life_time_per,
+                                                            effectNodeItem->speed_min_value,
+                                                            effectNodeItem->speed_max_value,
+                                                            effectNodeItem->acceleration_min_value,
+                                                            effectNodeItem->acceleration_max_value,
+                                                            effectNodeItem->init_color_min_value,
+                                                            effectNodeItem->init_color_max_value,
+                                                            effectNodeItem->trans_color_min_value,
+                                                            effectNodeItem->trans_color_max_value,
+                                                            effectNodeItem->disprange_min_value,
+                                                            effectNodeItem->disprange_max_value,
+                                                            effectNodeItem->size_x_min_value,
+                                                            effectNodeItem->size_x_max_value,
+                                                            effectNodeItem->size_y_min_value,
+                                                            effectNodeItem->size_y_max_value,
+                                                            effectNodeItem->scale_factor_min_value,
+                                                            effectNodeItem->scale_factor_max_value,
+                                                            effectNodeItem->trans_size_x_min_value,
+                                                            effectNodeItem->trans_size_x_max_value,
+                                                            effectNodeItem->trans_size_y_min_value,
+                                                            effectNodeItem->trans_size_y_max_value,
+                                                            effectNodeItem->trans_scale_factor_min_value,
+                                                            effectNodeItem->trans_scale_factor_max_value,
+                                                            effectNodeItem->point_gravity_position_x,
+                                                            effectNodeItem->point_gravity_position_y,
+                                                            effectNodeItem->point_gravity_power,
+                                                            effectNodeItem->rotation,
+                                                            effectNodeItem->infinitie_emit_flag);
+            m_effectNodeVec.push_back(effectNodeItem);
+            m_ssfbEffectNodeVec.push_back(ssfbEffectNodeItem);
+            m_effectNodeCatalog[m_curEffectFile][effectNodeItem->array_index] = effectNodeItem;
+            m_ssfbEffectNodeCatalog[m_curEffectFile][effectNodeItem->array_index] = ssfbEffectNodeItem;
+        } else {
+            // found
+            auto idx = std::distance(m_effectNodeVec.begin(), result);
+            ssfbEffectNodeItem = m_ssfbEffectNodeVec[idx];
+
+            m_effectNodeCatalog[m_curEffectFile][effectNodeItem->array_index] = effectNodeItem;
+            m_ssfbEffectNodeCatalog[m_curEffectFile][effectNodeItem->array_index] = ssfbEffectNodeItem;
+        }
+        return ssfbEffectNodeItem;
+    }
+
 	void createEffectFile() {
 		auto rootChildVec = m_root->getChildren();
 		auto effectFileLump = rootChildVec[6];
@@ -1408,261 +1666,40 @@ private:
 		auto effectFileLumpVec = effectFileLump->getChildren();
 		for(auto effectFileLumpItem : effectFileLumpVec) {
 			auto effectFileLumpItemVec = effectFileLumpItem->getChildren();
+
+            std::shared_ptr<ss::ssfb::EffectFileT> effectFile(new ss::ssfb::EffectFileT());
+		    flatbuffers::Offset<ss::ssfb::EffectFile> ssfbEffectFile;
+
+			m_curEffectFile = GETSTRING(effectFileLumpItemVec[0], m_encoding);
+			effectFile->name = m_curEffectFile;
 			auto ssfbEffectFileName = GETSSFBSTRING(m_ssfbBuilder, effectFileLumpItemVec[0], m_encoding);
-			auto fps = GETS16(effectFileLumpItemVec[1]);
-			auto isLockRandSeed = GETS16(effectFileLumpItemVec[2]);
-			auto LockRandSeed = GETS16(effectFileLumpItemVec[3]);
-			auto layoutScaleX = GETS16(effectFileLumpItemVec[4]);
-			auto layoutScaleY = GETS16(effectFileLumpItemVec[5]);
-			auto numNodeList = GETS16(effectFileLumpItemVec[6]);
+			effectFile->fps = GETS16(effectFileLumpItemVec[1]);
+			effectFile->is_lock_rand_seed = GETS16(effectFileLumpItemVec[2]);
+			effectFile->lock_rand_seed = GETS16(effectFileLumpItemVec[3]);
+			effectFile->layout_scale_x = GETS16(effectFileLumpItemVec[4]);
+			effectFile->layout_scale_y = GETS16(effectFileLumpItemVec[5]);
+            // auto numNodeList = GETS16(effectFileLumpItemVec[6]); unused
+
 			auto EffectNodeArray = effectFileLumpItemVec[7];
 			auto EffectNodeArrayVec = EffectNodeArray->getChildren();
-
 			std::vector<flatbuffers::Offset<ss::ssfb::EffectNode>> ssfbEffectNode;
 			for(auto EffectNodeArrayItem : EffectNodeArrayVec) {
-				auto EffectNodeVec = EffectNodeArrayItem->getChildren();
+			    std::shared_ptr<ss::ssfb::EffectNodeT> effectNodeItem(new ss::ssfb::EffectNodeT());
+                auto ssfbEffectNodeItem = createSharedEffectNode(EffectNodeArrayItem, effectNodeItem);
 
-				auto arrayIndex = GETS16(EffectNodeVec[0]);
-				auto parentIndex = GETS16(EffectNodeVec[1]);
-				auto type = (ss::ssfb::EffectNodeType)GETS16(EffectNodeVec[2]);
-				auto cellIndex = GETS16(EffectNodeVec[3]);
-				auto blendType = (ss::ssfb::EffectRenderBlendType)GETS16(EffectNodeVec[4]);
-				auto numBehavior = GETS16(EffectNodeVec[5]);
-				auto effectBehaviorArrayVec = EffectNodeVec[6]->getChildren();
-
-                uint32_t behaviorFlags = ss::ssfb::EffectBehaviorFlags_NONE;
-                ss::ssfb::EffectParticleElementBasic *basicBehavior = nullptr;
-                int32_t seed = 0;
-                int32_t delay_time = 0;
-                float gravity_x = 0.0f;
-                float gravity_y = 0.0f;
-                float offset_x_min_value = 0.0f;
-                float offset_x_max_value = 0.0f;
-                float offset_y_min_value = 0.0f;
-                float offset_y_max_value = 0.0f;
-                float rotation_min_value = 0.0f;
-                float rotation_max_value = 0.0f;
-                float rotation_add_min_value = 0.0f;
-                float rotation_add_max_value = 0.0f;
-                float rotation_factor = 0.0f;
-                float end_life_time_per = 0.0f;
-                float speed_min_value = 0.0f;
-                float speed_max_value = 0.0f;
-                float acceleration_min_value = 0.0f;
-                float acceleration_max_value = 0.0f;
-                uint32_t init_color_min_value = 0;
-                uint32_t init_color_max_value = 0;
-                uint32_t trans_color_min_value = 0;
-                uint32_t trans_color_max_value = 0;
-                float disprange_min_value = 0.0f;
-                float disprange_max_value = 0.0f;
-                float size_x_min_value = 0.0f;
-                float size_x_max_value = 0.0f;
-                float size_y_min_value = 0.0f;
-                float size_y_max_value = 0.0f;
-                float scale_factor_min_value = 0.0f;
-                float scale_factor_max_value = 0.0f;
-                float trans_size_x_min_value = 0.0f;
-                float trans_size_x_max_value = 0.0f;
-                float trans_size_y_min_value = 0.0f;
-                float trans_size_y_max_value = 0.0f;
-                float trans_scale_factor_min_value = 0.0f;
-                float trans_scale_factor_max_value = 0.0f;
-                float point_gravity_position_x = 0.0f;
-                float point_gravity_position_y = 0.0f;
-                float point_gravity_power = 0.0f;
-                float rotation = 0.0f;
-                int32_t infinitie_emit_flag = 0;
-
-				for(auto effectBehaviorArrayItem : effectBehaviorArrayVec) {
-					auto effectBehaviorArrayItemVec = effectBehaviorArrayItem->getChildren();
-
-
-					auto SsEffectFunctionType = (ss::ssfb::SsEffectFunctionType)GETS32(effectBehaviorArrayItemVec[0]);
-					switch(SsEffectFunctionType) {
-						case ss::ssfb::SsEffectFunctionType_Basic: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Basic;
-
-							auto priority = GETS32(effectBehaviorArrayItemVec[1]);
-							auto maximumParticle = GETS32(effectBehaviorArrayItemVec[2]);
-							auto attimeCreate = GETS32(effectBehaviorArrayItemVec[3]);
-							auto interval = GETS32(effectBehaviorArrayItemVec[4]);
-							auto lifetime = GETS32(effectBehaviorArrayItemVec[5]);
-							auto speedMinValue = GETFLOAT(effectBehaviorArrayItemVec[6]);
-							auto speedMaxValue = GETFLOAT(effectBehaviorArrayItemVec[7]);
-							auto lifespanMinValue = GETS32(effectBehaviorArrayItemVec[8]);
-							auto lifespanMaxValue = GETS32(effectBehaviorArrayItemVec[9]);
-							auto angle = GETFLOAT(effectBehaviorArrayItemVec[10]);
-							auto angleVariance = GETFLOAT(effectBehaviorArrayItemVec[11]);
-                            basicBehavior = new ss::ssfb::EffectParticleElementBasic(SsEffectFunctionType, priority, maximumParticle, attimeCreate, interval, lifetime, speed_min_value, speed_max_value, lifespanMinValue, lifespanMaxValue, angle, angleVariance);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_RndSeedChange: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_RndSeedChange;
-							seed = GETS32(effectBehaviorArrayItemVec[1]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_Delay: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Delay;
-						    delay_time = GETS32(effectBehaviorArrayItemVec[1]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_Gravity: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Gravity;
-							gravity_x = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							gravity_y = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_Position: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Position;
-							offset_x_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							offset_x_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							offset_y_min_value = GETFLOAT(effectBehaviorArrayItemVec[3]);
-							offset_y_max_value = GETFLOAT(effectBehaviorArrayItemVec[4]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_Rotation: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Rotation;
-							rotation_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							rotation_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							rotation_add_min_value = GETFLOAT(effectBehaviorArrayItemVec[3]);
-							rotation_add_max_value = GETFLOAT(effectBehaviorArrayItemVec[4]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_TransRotation: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TransRotation;
-							rotation_factor = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							end_life_time_per = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_TransSpeed: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TransSpeed;
-							speed_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							speed_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							break;
-						}
-						case  ss::ssfb::SsEffectFunctionType_TangentialAcceleration: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TangentialAcceleration;
-							acceleration_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							acceleration_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_InitColor: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_InitColor;
-							init_color_min_value = GETU32(effectBehaviorArrayItemVec[1]);
-							init_color_max_value = GETU32(effectBehaviorArrayItemVec[2]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_TransColor: {
-                            behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TransColor;
-							trans_color_min_value = GETU32(effectBehaviorArrayItemVec[1]);
-							trans_color_max_value = GETU32(effectBehaviorArrayItemVec[2]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_AlphaFade: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_AlphaFade;
-							disprange_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							disprange_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_Size: {
-                            behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Size;
-							size_x_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							size_x_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							size_y_min_value = GETFLOAT(effectBehaviorArrayItemVec[3]);
-							size_y_max_value = GETFLOAT(effectBehaviorArrayItemVec[4]);
-							scale_factor_min_value = GETFLOAT(effectBehaviorArrayItemVec[5]);
-							scale_factor_max_value = GETFLOAT(effectBehaviorArrayItemVec[6]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_TransSize: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TransSize;
-							trans_size_x_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
-                            trans_size_x_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							trans_size_y_min_value = GETFLOAT(effectBehaviorArrayItemVec[3]);
-							trans_size_y_max_value = GETFLOAT(effectBehaviorArrayItemVec[4]);
-							trans_scale_factor_min_value = GETFLOAT(effectBehaviorArrayItemVec[5]);
-							trans_scale_factor_max_value = GETFLOAT(effectBehaviorArrayItemVec[6]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_PointGravity: {
-                            behaviorFlags |= ss::ssfb::EffectBehaviorFlags_PointGravity;
-							point_gravity_position_x = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							point_gravity_position_y = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							point_gravity_power = GETFLOAT(effectBehaviorArrayItemVec[3]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_TurnToDirectionEnabled: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TurnToDirectionEnabled;
-							rotation = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							break;
-						}
-						case ss::ssfb::SsEffectFunctionType_InfiniteEmitEnabled: {
-						    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_InfiniteEmitEnabled;
-							infinitie_emit_flag = GETS32(effectBehaviorArrayItemVec[1]);
-							break;
-						}
-						default:
-							break;
-					}
-				}
-				auto ssfbEffectNodeItem = ss::ssfb::CreateEffectNode(m_ssfbBuilder,
-                                                                     arrayIndex,
-                                                                     parentIndex,
-                                                                     type,
-                                                                     cellIndex,
-                                                                     blendType,
-                                                                     basicBehavior,
-                                                                     (ss::ssfb::EffectBehaviorFlags)behaviorFlags,
-                                                                     seed,
-                                                                     delay_time,
-                                                                     gravity_x,
-                                                                     gravity_y,
-                                                                     offset_x_min_value,
-                                                                     offset_x_max_value,
-                                                                     offset_y_min_value,
-                                                                     offset_y_max_value,
-                                                                     rotation_min_value,
-                                                                     rotation_max_value,
-                                                                     rotation_add_min_value,
-                                                                     rotation_add_max_value,
-                                                                     rotation_factor,
-                                                                     end_life_time_per,
-                                                                     speed_min_value,
-                                                                     speed_max_value,
-                                                                     acceleration_min_value,
-                                                                     acceleration_max_value,
-                                                                     init_color_min_value,
-                                                                     init_color_max_value,
-                                                                     trans_color_min_value,
-                                                                     trans_color_max_value,
-                                                                     disprange_min_value,
-                                                                     disprange_max_value,
-                                                                     size_x_min_value,
-                                                                     size_x_max_value,
-                                                                     size_y_min_value,
-                                                                     size_y_max_value,
-                                                                     scale_factor_min_value,
-                                                                     scale_factor_max_value,
-                                                                     trans_size_x_min_value,
-                                                                     trans_size_x_max_value,
-                                                                     trans_size_y_min_value,
-                                                                     trans_size_y_max_value,
-                                                                     trans_scale_factor_min_value,
-                                                                     trans_scale_factor_max_value,
-                                                                     point_gravity_position_x,
-                                                                     point_gravity_position_y,
-                                                                     point_gravity_power,
-                                                                     rotation,
-                                                                     infinitie_emit_flag);
-				ssfbEffectNode.push_back(ssfbEffectNodeItem);
-			}
+                ssfbEffectNode.push_back(ssfbEffectNodeItem);
+                effectFile->effect_node.push_back(effectNodeItem);
+            }
 			auto serializeSsfbEffectNode = m_ssfbBuilder.CreateVector(ssfbEffectNode);
-			auto ssfbEffectFile = ss::ssfb::CreateEffectFile(m_ssfbBuilder, ssfbEffectFileName,
-                                                             fps, isLockRandSeed, LockRandSeed,
-                                                             layoutScaleX, layoutScaleY,
-                                                             (int16_t)(ssfbEffectNode.size()), serializeSsfbEffectNode);
+            ssfbEffectFile = ss::ssfb::CreateEffectFile(m_ssfbBuilder, ssfbEffectFileName,
+                                                        effectFile->fps, effectFile->is_lock_rand_seed, effectFile->lock_rand_seed,
+                                                        effectFile->layout_scale_x, effectFile->layout_scale_y,
+                                                        serializeSsfbEffectNode);
 			m_ssfbEffectFileList.push_back(ssfbEffectFile);
+			m_ssfbEffectFileCatalog[effectFile->name] = ssfbEffectFile;
+
+			m_effectFileVec.push_back(effectFile);
+			m_ssfbEffectFileVec.push_back(ssfbEffectFile);
 		}
 	}
 
