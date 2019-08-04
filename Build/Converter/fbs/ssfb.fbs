@@ -376,25 +376,25 @@ table AnimationInitialData {
 }
 
 enum BoundsType:byte {
-  invalid = -1,
-  none,
-  quad,
-  aabb,
-  circle,
-  circle_smin,
-  circle_smax,
+  Invalid = -1,
+  None,
+  Quad,
+  Qabb,
+  Circle,
+  CircleSmin,
+  CircleSmax,
 }
 
 enum BlendType:byte {
-  invalid=-1,
-  mix,
-  mul,
-  add,
-  sub,
-  mulalpha,
-  screen,
-  exclusion,
-  invert,
+  Invalid=-1,
+  Mix,
+  Mul,
+  Add,
+  Sub,
+  MulAlpha,
+  Screen,
+  Exclusion,
+  Invert,
 }
 
 table PartData {
