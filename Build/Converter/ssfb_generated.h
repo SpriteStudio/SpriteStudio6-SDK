@@ -10,6 +10,7 @@ namespace ss {
 namespace ssfb {
 
 struct EffectParticleElementBasic;
+struct EffectParticleElementBasicT;
 
 struct EffectNode;
 struct EffectNodeT;
@@ -59,8 +60,8 @@ struct AnimePackDataT;
 struct ProjectData;
 struct ProjectDataT;
 
-bool operator==(const EffectParticleElementBasic &lhs, const EffectParticleElementBasic &rhs);
-bool operator!=(const EffectParticleElementBasic &lhs, const EffectParticleElementBasic &rhs);
+bool operator==(const EffectParticleElementBasicT &lhs, const EffectParticleElementBasicT &rhs);
+bool operator!=(const EffectParticleElementBasicT &lhs, const EffectParticleElementBasicT &rhs);
 bool operator==(const EffectNodeT &lhs, const EffectNodeT &rhs);
 bool operator!=(const EffectNodeT &lhs, const EffectNodeT &rhs);
 bool operator==(const EffectFileT &lhs, const EffectFileT &rhs);
@@ -837,98 +838,212 @@ inline const char *EnumNameBlendType(BlendType e) {
   return EnumNamesBlendType()[index];
 }
 
-FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementBasic FLATBUFFERS_FINAL_CLASS {
- private:
-  int32_t ss_effect_function_type_;
-  int32_t priority_;
-  int32_t maximum_particle_;
-  int32_t attime_create_;
-  int32_t interval_;
-  int32_t lifetime_;
-  float speed_min_value_;
-  float speed_max_value_;
-  int32_t lifespan_min_value_;
-  int32_t lifespan_max_value_;
-  float angle_;
-  float angle_variance_;
-
- public:
-  EffectParticleElementBasic() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementBasic));
-  }
-  EffectParticleElementBasic(int32_t _ss_effect_function_type, int32_t _priority, int32_t _maximum_particle, int32_t _attime_create, int32_t _interval, int32_t _lifetime, float _speed_min_value, float _speed_max_value, int32_t _lifespan_min_value, int32_t _lifespan_max_value, float _angle, float _angle_variance)
-      : ss_effect_function_type_(flatbuffers::EndianScalar(_ss_effect_function_type)),
-        priority_(flatbuffers::EndianScalar(_priority)),
-        maximum_particle_(flatbuffers::EndianScalar(_maximum_particle)),
-        attime_create_(flatbuffers::EndianScalar(_attime_create)),
-        interval_(flatbuffers::EndianScalar(_interval)),
-        lifetime_(flatbuffers::EndianScalar(_lifetime)),
-        speed_min_value_(flatbuffers::EndianScalar(_speed_min_value)),
-        speed_max_value_(flatbuffers::EndianScalar(_speed_max_value)),
-        lifespan_min_value_(flatbuffers::EndianScalar(_lifespan_min_value)),
-        lifespan_max_value_(flatbuffers::EndianScalar(_lifespan_max_value)),
-        angle_(flatbuffers::EndianScalar(_angle)),
-        angle_variance_(flatbuffers::EndianScalar(_angle_variance)) {
-  }
-  int32_t ss_effect_function_type() const {
-    return flatbuffers::EndianScalar(ss_effect_function_type_);
-  }
-  int32_t priority() const {
-    return flatbuffers::EndianScalar(priority_);
-  }
-  int32_t maximum_particle() const {
-    return flatbuffers::EndianScalar(maximum_particle_);
-  }
-  int32_t attime_create() const {
-    return flatbuffers::EndianScalar(attime_create_);
-  }
-  int32_t interval() const {
-    return flatbuffers::EndianScalar(interval_);
-  }
-  int32_t lifetime() const {
-    return flatbuffers::EndianScalar(lifetime_);
-  }
-  float speed_min_value() const {
-    return flatbuffers::EndianScalar(speed_min_value_);
-  }
-  float speed_max_value() const {
-    return flatbuffers::EndianScalar(speed_max_value_);
-  }
-  int32_t lifespan_min_value() const {
-    return flatbuffers::EndianScalar(lifespan_min_value_);
-  }
-  int32_t lifespan_max_value() const {
-    return flatbuffers::EndianScalar(lifespan_max_value_);
-  }
-  float angle() const {
-    return flatbuffers::EndianScalar(angle_);
-  }
-  float angle_variance() const {
-    return flatbuffers::EndianScalar(angle_variance_);
+struct EffectParticleElementBasicT : public flatbuffers::NativeTable {
+  typedef EffectParticleElementBasic TableType;
+  int32_t ss_effect_function_type;
+  int32_t priority;
+  int32_t maximum_particle;
+  int32_t attime_create;
+  int32_t interval;
+  int32_t lifetime;
+  float speed_min_value;
+  float speed_max_value;
+  int32_t lifespan_min_value;
+  int32_t lifespan_max_value;
+  float angle;
+  float angle_variance;
+  EffectParticleElementBasicT()
+      : ss_effect_function_type(0),
+        priority(0),
+        maximum_particle(0),
+        attime_create(0),
+        interval(0),
+        lifetime(0),
+        speed_min_value(0.0f),
+        speed_max_value(0.0f),
+        lifespan_min_value(0),
+        lifespan_max_value(0),
+        angle(0.0f),
+        angle_variance(0.0f) {
   }
 };
-FLATBUFFERS_STRUCT_END(EffectParticleElementBasic, 48);
 
-inline bool operator==(const EffectParticleElementBasic &lhs, const EffectParticleElementBasic &rhs) {
+inline bool operator==(const EffectParticleElementBasicT &lhs, const EffectParticleElementBasicT &rhs) {
   return
-      (lhs.ss_effect_function_type() == rhs.ss_effect_function_type()) &&
-      (lhs.priority() == rhs.priority()) &&
-      (lhs.maximum_particle() == rhs.maximum_particle()) &&
-      (lhs.attime_create() == rhs.attime_create()) &&
-      (lhs.interval() == rhs.interval()) &&
-      (lhs.lifetime() == rhs.lifetime()) &&
-      (lhs.speed_min_value() == rhs.speed_min_value()) &&
-      (lhs.speed_max_value() == rhs.speed_max_value()) &&
-      (lhs.lifespan_min_value() == rhs.lifespan_min_value()) &&
-      (lhs.lifespan_max_value() == rhs.lifespan_max_value()) &&
-      (lhs.angle() == rhs.angle()) &&
-      (lhs.angle_variance() == rhs.angle_variance());
+      (lhs.ss_effect_function_type == rhs.ss_effect_function_type) &&
+      (lhs.priority == rhs.priority) &&
+      (lhs.maximum_particle == rhs.maximum_particle) &&
+      (lhs.attime_create == rhs.attime_create) &&
+      (lhs.interval == rhs.interval) &&
+      (lhs.lifetime == rhs.lifetime) &&
+      (lhs.speed_min_value == rhs.speed_min_value) &&
+      (lhs.speed_max_value == rhs.speed_max_value) &&
+      (lhs.lifespan_min_value == rhs.lifespan_min_value) &&
+      (lhs.lifespan_max_value == rhs.lifespan_max_value) &&
+      (lhs.angle == rhs.angle) &&
+      (lhs.angle_variance == rhs.angle_variance);
 }
 
-inline bool operator!=(const EffectParticleElementBasic &lhs, const EffectParticleElementBasic &rhs) {
+inline bool operator!=(const EffectParticleElementBasicT &lhs, const EffectParticleElementBasicT &rhs) {
     return !(lhs == rhs);
 }
 
+
+struct EffectParticleElementBasic FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef EffectParticleElementBasicT NativeTableType;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_SS_EFFECT_FUNCTION_TYPE = 4,
+    VT_PRIORITY = 6,
+    VT_MAXIMUM_PARTICLE = 8,
+    VT_ATTIME_CREATE = 10,
+    VT_INTERVAL = 12,
+    VT_LIFETIME = 14,
+    VT_SPEED_MIN_VALUE = 16,
+    VT_SPEED_MAX_VALUE = 18,
+    VT_LIFESPAN_MIN_VALUE = 20,
+    VT_LIFESPAN_MAX_VALUE = 22,
+    VT_ANGLE = 24,
+    VT_ANGLE_VARIANCE = 26
+  };
+  int32_t ss_effect_function_type() const {
+    return GetField<int32_t>(VT_SS_EFFECT_FUNCTION_TYPE, 0);
+  }
+  int32_t priority() const {
+    return GetField<int32_t>(VT_PRIORITY, 0);
+  }
+  int32_t maximum_particle() const {
+    return GetField<int32_t>(VT_MAXIMUM_PARTICLE, 0);
+  }
+  int32_t attime_create() const {
+    return GetField<int32_t>(VT_ATTIME_CREATE, 0);
+  }
+  int32_t interval() const {
+    return GetField<int32_t>(VT_INTERVAL, 0);
+  }
+  int32_t lifetime() const {
+    return GetField<int32_t>(VT_LIFETIME, 0);
+  }
+  float speed_min_value() const {
+    return GetField<float>(VT_SPEED_MIN_VALUE, 0.0f);
+  }
+  float speed_max_value() const {
+    return GetField<float>(VT_SPEED_MAX_VALUE, 0.0f);
+  }
+  int32_t lifespan_min_value() const {
+    return GetField<int32_t>(VT_LIFESPAN_MIN_VALUE, 0);
+  }
+  int32_t lifespan_max_value() const {
+    return GetField<int32_t>(VT_LIFESPAN_MAX_VALUE, 0);
+  }
+  float angle() const {
+    return GetField<float>(VT_ANGLE, 0.0f);
+  }
+  float angle_variance() const {
+    return GetField<float>(VT_ANGLE_VARIANCE, 0.0f);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int32_t>(verifier, VT_SS_EFFECT_FUNCTION_TYPE) &&
+           VerifyField<int32_t>(verifier, VT_PRIORITY) &&
+           VerifyField<int32_t>(verifier, VT_MAXIMUM_PARTICLE) &&
+           VerifyField<int32_t>(verifier, VT_ATTIME_CREATE) &&
+           VerifyField<int32_t>(verifier, VT_INTERVAL) &&
+           VerifyField<int32_t>(verifier, VT_LIFETIME) &&
+           VerifyField<float>(verifier, VT_SPEED_MIN_VALUE) &&
+           VerifyField<float>(verifier, VT_SPEED_MAX_VALUE) &&
+           VerifyField<int32_t>(verifier, VT_LIFESPAN_MIN_VALUE) &&
+           VerifyField<int32_t>(verifier, VT_LIFESPAN_MAX_VALUE) &&
+           VerifyField<float>(verifier, VT_ANGLE) &&
+           VerifyField<float>(verifier, VT_ANGLE_VARIANCE) &&
+           verifier.EndTable();
+  }
+  EffectParticleElementBasicT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(EffectParticleElementBasicT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static flatbuffers::Offset<EffectParticleElementBasic> Pack(flatbuffers::FlatBufferBuilder &_fbb, const EffectParticleElementBasicT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+};
+
+struct EffectParticleElementBasicBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_ss_effect_function_type(int32_t ss_effect_function_type) {
+    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_SS_EFFECT_FUNCTION_TYPE, ss_effect_function_type, 0);
+  }
+  void add_priority(int32_t priority) {
+    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_PRIORITY, priority, 0);
+  }
+  void add_maximum_particle(int32_t maximum_particle) {
+    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_MAXIMUM_PARTICLE, maximum_particle, 0);
+  }
+  void add_attime_create(int32_t attime_create) {
+    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_ATTIME_CREATE, attime_create, 0);
+  }
+  void add_interval(int32_t interval) {
+    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_INTERVAL, interval, 0);
+  }
+  void add_lifetime(int32_t lifetime) {
+    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_LIFETIME, lifetime, 0);
+  }
+  void add_speed_min_value(float speed_min_value) {
+    fbb_.AddElement<float>(EffectParticleElementBasic::VT_SPEED_MIN_VALUE, speed_min_value, 0.0f);
+  }
+  void add_speed_max_value(float speed_max_value) {
+    fbb_.AddElement<float>(EffectParticleElementBasic::VT_SPEED_MAX_VALUE, speed_max_value, 0.0f);
+  }
+  void add_lifespan_min_value(int32_t lifespan_min_value) {
+    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_LIFESPAN_MIN_VALUE, lifespan_min_value, 0);
+  }
+  void add_lifespan_max_value(int32_t lifespan_max_value) {
+    fbb_.AddElement<int32_t>(EffectParticleElementBasic::VT_LIFESPAN_MAX_VALUE, lifespan_max_value, 0);
+  }
+  void add_angle(float angle) {
+    fbb_.AddElement<float>(EffectParticleElementBasic::VT_ANGLE, angle, 0.0f);
+  }
+  void add_angle_variance(float angle_variance) {
+    fbb_.AddElement<float>(EffectParticleElementBasic::VT_ANGLE_VARIANCE, angle_variance, 0.0f);
+  }
+  explicit EffectParticleElementBasicBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  EffectParticleElementBasicBuilder &operator=(const EffectParticleElementBasicBuilder &);
+  flatbuffers::Offset<EffectParticleElementBasic> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<EffectParticleElementBasic>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<EffectParticleElementBasic> CreateEffectParticleElementBasic(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    int32_t ss_effect_function_type = 0,
+    int32_t priority = 0,
+    int32_t maximum_particle = 0,
+    int32_t attime_create = 0,
+    int32_t interval = 0,
+    int32_t lifetime = 0,
+    float speed_min_value = 0.0f,
+    float speed_max_value = 0.0f,
+    int32_t lifespan_min_value = 0,
+    int32_t lifespan_max_value = 0,
+    float angle = 0.0f,
+    float angle_variance = 0.0f) {
+  EffectParticleElementBasicBuilder builder_(_fbb);
+  builder_.add_angle_variance(angle_variance);
+  builder_.add_angle(angle);
+  builder_.add_lifespan_max_value(lifespan_max_value);
+  builder_.add_lifespan_min_value(lifespan_min_value);
+  builder_.add_speed_max_value(speed_max_value);
+  builder_.add_speed_min_value(speed_min_value);
+  builder_.add_lifetime(lifetime);
+  builder_.add_interval(interval);
+  builder_.add_attime_create(attime_create);
+  builder_.add_maximum_particle(maximum_particle);
+  builder_.add_priority(priority);
+  builder_.add_ss_effect_function_type(ss_effect_function_type);
+  return builder_.Finish();
+}
+
+flatbuffers::Offset<EffectParticleElementBasic> CreateEffectParticleElementBasic(flatbuffers::FlatBufferBuilder &_fbb, const EffectParticleElementBasicT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
 struct EffectNodeT : public flatbuffers::NativeTable {
   typedef EffectNode TableType;
@@ -937,7 +1052,7 @@ struct EffectNodeT : public flatbuffers::NativeTable {
   EffectNodeType type;
   int16_t cell_index;
   EffectRenderBlendType blend_type;
-  std::shared_ptr<EffectParticleElementBasic> basic_behavior;
+  std::shared_ptr<EffectParticleElementBasicT> basic_behavior;
   EffectBehaviorFlags behavior_flags;
   int32_t seed;
   int32_t delay_time;
@@ -1156,7 +1271,7 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return static_cast<EffectRenderBlendType>(GetField<int8_t>(VT_BLEND_TYPE, 0));
   }
   const EffectParticleElementBasic *basic_behavior() const {
-    return GetStruct<const EffectParticleElementBasic *>(VT_BASIC_BEHAVIOR);
+    return GetPointer<const EffectParticleElementBasic *>(VT_BASIC_BEHAVIOR);
   }
   EffectBehaviorFlags behavior_flags() const {
     return static_cast<EffectBehaviorFlags>(GetField<uint32_t>(VT_BEHAVIOR_FLAGS, 0));
@@ -1291,7 +1406,8 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int8_t>(verifier, VT_TYPE) &&
            VerifyField<int16_t>(verifier, VT_CELL_INDEX) &&
            VerifyField<int8_t>(verifier, VT_BLEND_TYPE) &&
-           VerifyField<EffectParticleElementBasic>(verifier, VT_BASIC_BEHAVIOR) &&
+           VerifyOffset(verifier, VT_BASIC_BEHAVIOR) &&
+           verifier.VerifyTable(basic_behavior()) &&
            VerifyField<uint32_t>(verifier, VT_BEHAVIOR_FLAGS) &&
            VerifyField<int32_t>(verifier, VT_SEED) &&
            VerifyField<int32_t>(verifier, VT_DELAY_TIME) &&
@@ -1359,8 +1475,8 @@ struct EffectNodeBuilder {
   void add_blend_type(EffectRenderBlendType blend_type) {
     fbb_.AddElement<int8_t>(EffectNode::VT_BLEND_TYPE, static_cast<int8_t>(blend_type), 0);
   }
-  void add_basic_behavior(const EffectParticleElementBasic *basic_behavior) {
-    fbb_.AddStruct(EffectNode::VT_BASIC_BEHAVIOR, basic_behavior);
+  void add_basic_behavior(flatbuffers::Offset<EffectParticleElementBasic> basic_behavior) {
+    fbb_.AddOffset(EffectNode::VT_BASIC_BEHAVIOR, basic_behavior);
   }
   void add_behavior_flags(EffectBehaviorFlags behavior_flags) {
     fbb_.AddElement<uint32_t>(EffectNode::VT_BEHAVIOR_FLAGS, static_cast<uint32_t>(behavior_flags), 0);
@@ -1507,7 +1623,7 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNode(
     EffectNodeType type = EffectNodeType_Root,
     int16_t cell_index = 0,
     EffectRenderBlendType blend_type = EffectRenderBlendType_Mix,
-    const EffectParticleElementBasic *basic_behavior = 0,
+    flatbuffers::Offset<EffectParticleElementBasic> basic_behavior = 0,
     EffectBehaviorFlags behavior_flags = static_cast<EffectBehaviorFlags>(0),
     int32_t seed = 0,
     int32_t delay_time = 0,
@@ -1612,15 +1728,13 @@ struct EffectFileT : public flatbuffers::NativeTable {
   int16_t lock_rand_seed;
   int16_t layout_scale_x;
   int16_t layout_scale_y;
-  int16_t num_node_list;
   std::vector<std::shared_ptr<EffectNodeT>> effect_node;
   EffectFileT()
       : fps(0),
         is_lock_rand_seed(0),
         lock_rand_seed(0),
         layout_scale_x(0),
-        layout_scale_y(0),
-        num_node_list(0) {
+        layout_scale_y(0) {
   }
 };
 
@@ -1632,7 +1746,6 @@ inline bool operator==(const EffectFileT &lhs, const EffectFileT &rhs) {
       (lhs.lock_rand_seed == rhs.lock_rand_seed) &&
       (lhs.layout_scale_x == rhs.layout_scale_x) &&
       (lhs.layout_scale_y == rhs.layout_scale_y) &&
-      (lhs.num_node_list == rhs.num_node_list) &&
       (lhs.effect_node == rhs.effect_node);
 }
 
@@ -1650,8 +1763,7 @@ struct EffectFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_LOCK_RAND_SEED = 10,
     VT_LAYOUT_SCALE_X = 12,
     VT_LAYOUT_SCALE_Y = 14,
-    VT_NUM_NODE_LIST = 16,
-    VT_EFFECT_NODE = 18
+    VT_EFFECT_NODE = 16
   };
   const flatbuffers::String *name() const {
     return GetPointer<const flatbuffers::String *>(VT_NAME);
@@ -1671,9 +1783,6 @@ struct EffectFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t layout_scale_y() const {
     return GetField<int16_t>(VT_LAYOUT_SCALE_Y, 0);
   }
-  int16_t num_node_list() const {
-    return GetField<int16_t>(VT_NUM_NODE_LIST, 0);
-  }
   const flatbuffers::Vector<flatbuffers::Offset<EffectNode>> *effect_node() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<EffectNode>> *>(VT_EFFECT_NODE);
   }
@@ -1686,7 +1795,6 @@ struct EffectFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int16_t>(verifier, VT_LOCK_RAND_SEED) &&
            VerifyField<int16_t>(verifier, VT_LAYOUT_SCALE_X) &&
            VerifyField<int16_t>(verifier, VT_LAYOUT_SCALE_Y) &&
-           VerifyField<int16_t>(verifier, VT_NUM_NODE_LIST) &&
            VerifyOffset(verifier, VT_EFFECT_NODE) &&
            verifier.VerifyVector(effect_node()) &&
            verifier.VerifyVectorOfTables(effect_node()) &&
@@ -1718,9 +1826,6 @@ struct EffectFileBuilder {
   void add_layout_scale_y(int16_t layout_scale_y) {
     fbb_.AddElement<int16_t>(EffectFile::VT_LAYOUT_SCALE_Y, layout_scale_y, 0);
   }
-  void add_num_node_list(int16_t num_node_list) {
-    fbb_.AddElement<int16_t>(EffectFile::VT_NUM_NODE_LIST, num_node_list, 0);
-  }
   void add_effect_node(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<EffectNode>>> effect_node) {
     fbb_.AddOffset(EffectFile::VT_EFFECT_NODE, effect_node);
   }
@@ -1744,12 +1849,10 @@ inline flatbuffers::Offset<EffectFile> CreateEffectFile(
     int16_t lock_rand_seed = 0,
     int16_t layout_scale_x = 0,
     int16_t layout_scale_y = 0,
-    int16_t num_node_list = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<EffectNode>>> effect_node = 0) {
   EffectFileBuilder builder_(_fbb);
   builder_.add_effect_node(effect_node);
   builder_.add_name(name);
-  builder_.add_num_node_list(num_node_list);
   builder_.add_layout_scale_y(layout_scale_y);
   builder_.add_layout_scale_x(layout_scale_x);
   builder_.add_lock_rand_seed(lock_rand_seed);
@@ -1766,7 +1869,6 @@ inline flatbuffers::Offset<EffectFile> CreateEffectFileDirect(
     int16_t lock_rand_seed = 0,
     int16_t layout_scale_x = 0,
     int16_t layout_scale_y = 0,
-    int16_t num_node_list = 0,
     const std::vector<flatbuffers::Offset<EffectNode>> *effect_node = nullptr) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
   auto effect_node__ = effect_node ? _fbb.CreateVector<flatbuffers::Offset<EffectNode>>(*effect_node) : 0;
@@ -1778,7 +1880,6 @@ inline flatbuffers::Offset<EffectFile> CreateEffectFileDirect(
       lock_rand_seed,
       layout_scale_x,
       layout_scale_y,
-      num_node_list,
       effect_node__);
 }
 
@@ -3773,7 +3874,7 @@ struct PartDataT : public flatbuffers::NativeTable {
   BoundsType bounds_type;
   BlendType alpha_blend_type;
   std::string refname;
-  std::string effectfilename;
+  std::shared_ptr<EffectFileT> effect;
   std::string colorLabel;
   bool mask_influence;
   PartDataT()
@@ -3795,7 +3896,7 @@ inline bool operator==(const PartDataT &lhs, const PartDataT &rhs) {
       (lhs.bounds_type == rhs.bounds_type) &&
       (lhs.alpha_blend_type == rhs.alpha_blend_type) &&
       (lhs.refname == rhs.refname) &&
-      (lhs.effectfilename == rhs.effectfilename) &&
+      (lhs.effect == rhs.effect) &&
       (lhs.colorLabel == rhs.colorLabel) &&
       (lhs.mask_influence == rhs.mask_influence);
 }
@@ -3815,7 +3916,7 @@ struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_BOUNDS_TYPE = 12,
     VT_ALPHA_BLEND_TYPE = 14,
     VT_REFNAME = 16,
-    VT_EFFECTFILENAME = 18,
+    VT_EFFECT = 18,
     VT_COLORLABEL = 20,
     VT_MASK_INFLUENCE = 22
   };
@@ -3840,8 +3941,8 @@ struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::String *refname() const {
     return GetPointer<const flatbuffers::String *>(VT_REFNAME);
   }
-  const flatbuffers::String *effectfilename() const {
-    return GetPointer<const flatbuffers::String *>(VT_EFFECTFILENAME);
+  const EffectFile *effect() const {
+    return GetPointer<const EffectFile *>(VT_EFFECT);
   }
   const flatbuffers::String *colorLabel() const {
     return GetPointer<const flatbuffers::String *>(VT_COLORLABEL);
@@ -3860,8 +3961,8 @@ struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int8_t>(verifier, VT_ALPHA_BLEND_TYPE) &&
            VerifyOffset(verifier, VT_REFNAME) &&
            verifier.VerifyString(refname()) &&
-           VerifyOffset(verifier, VT_EFFECTFILENAME) &&
-           verifier.VerifyString(effectfilename()) &&
+           VerifyOffset(verifier, VT_EFFECT) &&
+           verifier.VerifyTable(effect()) &&
            VerifyOffset(verifier, VT_COLORLABEL) &&
            verifier.VerifyString(colorLabel()) &&
            VerifyField<uint8_t>(verifier, VT_MASK_INFLUENCE) &&
@@ -3896,8 +3997,8 @@ struct PartDataBuilder {
   void add_refname(flatbuffers::Offset<flatbuffers::String> refname) {
     fbb_.AddOffset(PartData::VT_REFNAME, refname);
   }
-  void add_effectfilename(flatbuffers::Offset<flatbuffers::String> effectfilename) {
-    fbb_.AddOffset(PartData::VT_EFFECTFILENAME, effectfilename);
+  void add_effect(flatbuffers::Offset<EffectFile> effect) {
+    fbb_.AddOffset(PartData::VT_EFFECT, effect);
   }
   void add_colorLabel(flatbuffers::Offset<flatbuffers::String> colorLabel) {
     fbb_.AddOffset(PartData::VT_COLORLABEL, colorLabel);
@@ -3926,12 +4027,12 @@ inline flatbuffers::Offset<PartData> CreatePartData(
     BoundsType bounds_type = BoundsType_None,
     BlendType alpha_blend_type = BlendType_Mix,
     flatbuffers::Offset<flatbuffers::String> refname = 0,
-    flatbuffers::Offset<flatbuffers::String> effectfilename = 0,
+    flatbuffers::Offset<EffectFile> effect = 0,
     flatbuffers::Offset<flatbuffers::String> colorLabel = 0,
     bool mask_influence = false) {
   PartDataBuilder builder_(_fbb);
   builder_.add_colorLabel(colorLabel);
-  builder_.add_effectfilename(effectfilename);
+  builder_.add_effect(effect);
   builder_.add_refname(refname);
   builder_.add_name(name);
   builder_.add_parent_index(parent_index);
@@ -3952,12 +4053,11 @@ inline flatbuffers::Offset<PartData> CreatePartDataDirect(
     BoundsType bounds_type = BoundsType_None,
     BlendType alpha_blend_type = BlendType_Mix,
     const char *refname = nullptr,
-    const char *effectfilename = nullptr,
+    flatbuffers::Offset<EffectFile> effect = 0,
     const char *colorLabel = nullptr,
     bool mask_influence = false) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
   auto refname__ = refname ? _fbb.CreateString(refname) : 0;
-  auto effectfilename__ = effectfilename ? _fbb.CreateString(effectfilename) : 0;
   auto colorLabel__ = colorLabel ? _fbb.CreateString(colorLabel) : 0;
   return ss::ssfb::CreatePartData(
       _fbb,
@@ -3968,7 +4068,7 @@ inline flatbuffers::Offset<PartData> CreatePartDataDirect(
       bounds_type,
       alpha_blend_type,
       refname__,
-      effectfilename__,
+      effect,
       colorLabel__,
       mask_influence);
 }
@@ -4281,6 +4381,65 @@ inline flatbuffers::Offset<ProjectData> CreateProjectDataDirect(
 
 flatbuffers::Offset<ProjectData> CreateProjectData(flatbuffers::FlatBufferBuilder &_fbb, const ProjectDataT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
+inline EffectParticleElementBasicT *EffectParticleElementBasic::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = new EffectParticleElementBasicT();
+  UnPackTo(_o, _resolver);
+  return _o;
+}
+
+inline void EffectParticleElementBasic::UnPackTo(EffectParticleElementBasicT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+  (void)_o;
+  (void)_resolver;
+  { auto _e = ss_effect_function_type(); _o->ss_effect_function_type = _e; };
+  { auto _e = priority(); _o->priority = _e; };
+  { auto _e = maximum_particle(); _o->maximum_particle = _e; };
+  { auto _e = attime_create(); _o->attime_create = _e; };
+  { auto _e = interval(); _o->interval = _e; };
+  { auto _e = lifetime(); _o->lifetime = _e; };
+  { auto _e = speed_min_value(); _o->speed_min_value = _e; };
+  { auto _e = speed_max_value(); _o->speed_max_value = _e; };
+  { auto _e = lifespan_min_value(); _o->lifespan_min_value = _e; };
+  { auto _e = lifespan_max_value(); _o->lifespan_max_value = _e; };
+  { auto _e = angle(); _o->angle = _e; };
+  { auto _e = angle_variance(); _o->angle_variance = _e; };
+}
+
+inline flatbuffers::Offset<EffectParticleElementBasic> EffectParticleElementBasic::Pack(flatbuffers::FlatBufferBuilder &_fbb, const EffectParticleElementBasicT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+  return CreateEffectParticleElementBasic(_fbb, _o, _rehasher);
+}
+
+inline flatbuffers::Offset<EffectParticleElementBasic> CreateEffectParticleElementBasic(flatbuffers::FlatBufferBuilder &_fbb, const EffectParticleElementBasicT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+  (void)_rehasher;
+  (void)_o;
+  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const EffectParticleElementBasicT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _ss_effect_function_type = _o->ss_effect_function_type;
+  auto _priority = _o->priority;
+  auto _maximum_particle = _o->maximum_particle;
+  auto _attime_create = _o->attime_create;
+  auto _interval = _o->interval;
+  auto _lifetime = _o->lifetime;
+  auto _speed_min_value = _o->speed_min_value;
+  auto _speed_max_value = _o->speed_max_value;
+  auto _lifespan_min_value = _o->lifespan_min_value;
+  auto _lifespan_max_value = _o->lifespan_max_value;
+  auto _angle = _o->angle;
+  auto _angle_variance = _o->angle_variance;
+  return ss::ssfb::CreateEffectParticleElementBasic(
+      _fbb,
+      _ss_effect_function_type,
+      _priority,
+      _maximum_particle,
+      _attime_create,
+      _interval,
+      _lifetime,
+      _speed_min_value,
+      _speed_max_value,
+      _lifespan_min_value,
+      _lifespan_max_value,
+      _angle,
+      _angle_variance);
+}
+
 inline EffectNodeT *EffectNode::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   auto _o = new EffectNodeT();
   UnPackTo(_o, _resolver);
@@ -4295,7 +4454,7 @@ inline void EffectNode::UnPackTo(EffectNodeT *_o, const flatbuffers::resolver_fu
   { auto _e = type(); _o->type = _e; };
   { auto _e = cell_index(); _o->cell_index = _e; };
   { auto _e = blend_type(); _o->blend_type = _e; };
-  { auto _e = basic_behavior(); if (_e) _o->basic_behavior = std::shared_ptr<EffectParticleElementBasic>(new EffectParticleElementBasic(*_e)); };
+  { auto _e = basic_behavior(); if (_e) _o->basic_behavior = std::shared_ptr<EffectParticleElementBasicT>(_e->UnPack(_resolver)); };
   { auto _e = behavior_flags(); _o->behavior_flags = _e; };
   { auto _e = seed(); _o->seed = _e; };
   { auto _e = delay_time(); _o->delay_time = _e; };
@@ -4353,7 +4512,7 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNode(flatbuffers::FlatBufferB
   auto _type = _o->type;
   auto _cell_index = _o->cell_index;
   auto _blend_type = _o->blend_type;
-  auto _basic_behavior = _o->basic_behavior ? _o->basic_behavior.get() : 0;
+  auto _basic_behavior = _o->basic_behavior ? CreateEffectParticleElementBasic(_fbb, _o->basic_behavior.get(), _rehasher) : 0;
   auto _behavior_flags = _o->behavior_flags;
   auto _seed = _o->seed;
   auto _delay_time = _o->delay_time;
@@ -4463,7 +4622,6 @@ inline void EffectFile::UnPackTo(EffectFileT *_o, const flatbuffers::resolver_fu
   { auto _e = lock_rand_seed(); _o->lock_rand_seed = _e; };
   { auto _e = layout_scale_x(); _o->layout_scale_x = _e; };
   { auto _e = layout_scale_y(); _o->layout_scale_y = _e; };
-  { auto _e = num_node_list(); _o->num_node_list = _e; };
   { auto _e = effect_node(); if (_e) { _o->effect_node.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->effect_node[_i] = std::shared_ptr<EffectNodeT>(_e->Get(_i)->UnPack(_resolver)); } } };
 }
 
@@ -4481,7 +4639,6 @@ inline flatbuffers::Offset<EffectFile> CreateEffectFile(flatbuffers::FlatBufferB
   auto _lock_rand_seed = _o->lock_rand_seed;
   auto _layout_scale_x = _o->layout_scale_x;
   auto _layout_scale_y = _o->layout_scale_y;
-  auto _num_node_list = _o->num_node_list;
   auto _effect_node = _o->effect_node.size() ? _fbb.CreateVector<flatbuffers::Offset<EffectNode>> (_o->effect_node.size(), [](size_t i, _VectorArgs *__va) { return CreateEffectNode(*__va->__fbb, __va->__o->effect_node[i].get(), __va->__rehasher); }, &_va ) : 0;
   return ss::ssfb::CreateEffectFile(
       _fbb,
@@ -4491,7 +4648,6 @@ inline flatbuffers::Offset<EffectFile> CreateEffectFile(flatbuffers::FlatBufferB
       _lock_rand_seed,
       _layout_scale_x,
       _layout_scale_y,
-      _num_node_list,
       _effect_node);
 }
 
@@ -5046,7 +5202,7 @@ inline void PartData::UnPackTo(PartDataT *_o, const flatbuffers::resolver_functi
   { auto _e = bounds_type(); _o->bounds_type = _e; };
   { auto _e = alpha_blend_type(); _o->alpha_blend_type = _e; };
   { auto _e = refname(); if (_e) _o->refname = _e->str(); };
-  { auto _e = effectfilename(); if (_e) _o->effectfilename = _e->str(); };
+  { auto _e = effect(); if (_e) _o->effect = std::shared_ptr<EffectFileT>(_e->UnPack(_resolver)); };
   { auto _e = colorLabel(); if (_e) _o->colorLabel = _e->str(); };
   { auto _e = mask_influence(); _o->mask_influence = _e; };
 }
@@ -5066,7 +5222,7 @@ inline flatbuffers::Offset<PartData> CreatePartData(flatbuffers::FlatBufferBuild
   auto _bounds_type = _o->bounds_type;
   auto _alpha_blend_type = _o->alpha_blend_type;
   auto _refname = _o->refname.empty() ? 0 : _fbb.CreateString(_o->refname);
-  auto _effectfilename = _o->effectfilename.empty() ? 0 : _fbb.CreateString(_o->effectfilename);
+  auto _effect = _o->effect ? CreateEffectFile(_fbb, _o->effect.get(), _rehasher) : 0;
   auto _colorLabel = _o->colorLabel.empty() ? 0 : _fbb.CreateString(_o->colorLabel);
   auto _mask_influence = _o->mask_influence;
   return ss::ssfb::CreatePartData(
@@ -5078,7 +5234,7 @@ inline flatbuffers::Offset<PartData> CreatePartData(flatbuffers::FlatBufferBuild
       _bounds_type,
       _alpha_blend_type,
       _refname,
-      _effectfilename,
+      _effect,
       _colorLabel,
       _mask_influence);
 }

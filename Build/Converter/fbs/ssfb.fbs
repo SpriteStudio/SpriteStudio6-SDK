@@ -141,7 +141,7 @@ enum EffectRenderBlendType:byte {
   Add,
 }
 
-struct EffectParticleElementBasic {
+table EffectParticleElementBasic {
   ss_effect_function_type:int;
   
   priority:int;
@@ -232,7 +232,6 @@ table EffectFile {
   lock_rand_seed:short;
   layout_scale_x:short;
   layout_scale_y:short;
-  num_node_list:short;
   effect_node:[EffectNode];
 }
 
@@ -405,7 +404,7 @@ table PartData {
   bounds_type:BoundsType;
   alpha_blend_type:BlendType;
   refname:string;
-  effectfilename:string;
+  effect:EffectFile;
   colorLabel:string;
   mask_influence:bool;
 }
