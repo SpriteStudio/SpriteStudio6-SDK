@@ -22,7 +22,7 @@ FLATC=$(pwd)/flatc
 popd > /dev/null # flatbuffers
 
 # generate ssfb code
-${FLATC} -c fbs/ssfb.fbs --gen-compare --gen-object-api 
+${FLATC} -c fbs/ssfb.fbs --gen-compare --gen-object-api --cpp-ptr-type std::shared_ptr
 xxd -i fbs/ssfb.fbs > ./ssfb_fbs_array.h
 ${FLATC} -T fbs/ssfb.fbs --no-fb-import 
 

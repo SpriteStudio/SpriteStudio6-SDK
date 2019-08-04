@@ -712,13 +712,13 @@ private:
 	std::vector<flatbuffers::Offset<ss::ssfb::AnimePackData>> m_ssfbAnimePacks;
 	std::vector<flatbuffers::Offset<ss::ssfb::EffectFile>> m_ssfbEffectFileList;
 
-	std::vector<struct ss::ssfb::CellMapT> m_cellMaps;
+	std::vector<std::shared_ptr<struct ss::ssfb::CellMapT>> m_cellMaps;
 	std::vector<flatbuffers::Offset<ss::ssfb::CellMap>> m_ssfbCellMaps;
 
-	std::vector<struct ss::ssfb::AnimationInitialDataT> m_animationInitialDataVec;
+	std::vector<std::shared_ptr<struct ss::ssfb::AnimationInitialDataT>> m_animationInitialDataVec;
 	std::vector<flatbuffers::Offset<ss::ssfb::AnimationInitialData>> m_ssfbAnimationInitialDataVec;
 
-	std::vector<struct ss::ssfb::PartDataT> m_partDataVec;
+	std::vector<std::shared_ptr<struct ss::ssfb::PartDataT>> m_partDataVec;
 	std::vector<flatbuffers::Offset<ss::ssfb::PartData>> m_ssfbPartDataVec;
 
 	std::vector<std::vector<uint32_t>> m_uint32VecVec;
@@ -727,24 +727,17 @@ private:
 	std::vector<std::vector<float>> m_floatVecVec;
 	std::vector<flatbuffers::Offset<flatbuffers::Vector<float>>> m_ssfbFloatVecVec;
 
-	std::vector<struct ss::ssfb::MeshDataUVT> m_meshDataUVVec;
+	std::vector<std::shared_ptr<struct ss::ssfb::MeshDataUVT>> m_meshDataUVVec;
 	std::vector<flatbuffers::Offset<ss::ssfb::MeshDataUV>> m_ssfbMeshDataUVVec;
 
-	std::vector<struct ss::ssfb::MeshDataIndicesT> m_meshDataIndicesVec;
+	std::vector<std::shared_ptr<struct ss::ssfb::MeshDataIndicesT>> m_meshDataIndicesVec;
 	std::vector<flatbuffers::Offset<ss::ssfb::MeshDataIndices>> m_ssfbMeshDataIndicesVec;
 
-	std::vector<struct ss::ssfb::PartStateT> m_partStateVec;
+	std::vector<std::shared_ptr<struct ss::ssfb::PartStateT>> m_partStateVec;
 	std::vector<flatbuffers::Offset<ss::ssfb::PartState>> m_ssfbPartStateVec;
 
-	std::vector<struct ss::ssfb::FrameDataIndexT> m_frameDataIndexVec;
+	std::vector<std::shared_ptr<struct ss::ssfb::FrameDataIndexT>> m_frameDataIndexVec;
 	std::vector<flatbuffers::Offset<ss::ssfb::FrameDataIndex>> m_ssfbFrameDataIndexVec;
-
-	enum {
-		USER_DATA_FLAG_INTEGER	= 1 << 0,
-		USER_DATA_FLAG_RECT	= 1 << 1,
-		USER_DATA_FLAG_POINT	= 1 << 2,
-		USER_DATA_FLAG_STRING	= 1 << 3
-	};
 
 	void createHeader()
 	{
@@ -793,24 +786,26 @@ private:
 
 		auto cellMapVec = lump->getChildren();
 
-		struct ss::ssfb::CellMapT cellMapT;
-		cellMapT.name = GETSTRING(cellMapVec[0], m_encoding);
-		cellMapT.image_path = GETSTRING(cellMapVec[1], m_encoding);
-		cellMapT.index = GETS16(cellMapVec[2]);
-		cellMapT.wrap_mode = (ss::ssfb::TexWrapMode)GETS16(cellMapVec[3]);
-		cellMapT.filter_mode = (ss::ssfb::TexFilterMode)GETS16(cellMapVec[4]);
+		std::shared_ptr<struct ss::ssfb::CellMapT> cellMapT(new ss::ssfb::CellMapT());
+		cellMapT->name = GETSTRING(cellMapVec[0], m_encoding);
+		cellMapT->image_path = GETSTRING(cellMapVec[1], m_encoding);
+		cellMapT->index = GETS16(cellMapVec[2]);
+		cellMapT->wrap_mode = (ss::ssfb::TexWrapMode)GETS16(cellMapVec[3]);
+		cellMapT->filter_mode = (ss::ssfb::TexFilterMode)GETS16(cellMapVec[4]);
 		// 5:reserved(s16)
 
 		// search same cellMap from cellMap caches.
-		auto result = std::find(m_cellMaps.begin(), m_cellMaps.end(), cellMapT);
+		auto result = std::find_if(m_cellMaps.begin(), m_cellMaps.end(), [cellMapT](const std::shared_ptr<ss::ssfb::CellMapT> &c) {
+		    return *(c.get()) == *(cellMapT.get());
+		});
 		if (result == m_cellMaps.end()) {
 			// not found
 
 			// create ssfb cellMap
-			auto ssfbCellMapName = m_ssfbBuilder.CreateSharedString(cellMapT.name);
-			auto ssfbCellMapImagePath = m_ssfbBuilder.CreateSharedString(cellMapT.image_path);
+			auto ssfbCellMapName = m_ssfbBuilder.CreateSharedString(cellMapT->name);
+			auto ssfbCellMapImagePath = m_ssfbBuilder.CreateSharedString(cellMapT->image_path);
 			cellMap = ss::ssfb::CreateCellMap(m_ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath,
-											  cellMapT.index, cellMapT.wrap_mode, cellMapT.filter_mode);
+											  cellMapT->index, cellMapT->wrap_mode, cellMapT->filter_mode);
 			// cache ssfb cellMap
 			m_cellMaps.push_back(cellMapT);
 			m_ssfbCellMaps.push_back(cellMap);
@@ -828,97 +823,61 @@ private:
 		flatbuffers::Offset<ss::ssfb::AnimationInitialData> animationInitialData;
 		auto AnimationInitialDataItemVec = lump->getChildren();
 
-		struct ss::ssfb::AnimationInitialDataT animationInitialDataT;
+		std::shared_ptr<struct ss::ssfb::AnimationInitialDataT> animationInitialDataT(new ss::ssfb::AnimationInitialDataT());
 
-		animationInitialDataT.index = GETS16(AnimationInitialDataItemVec[0]);
+		animationInitialDataT->index = GETS16(AnimationInitialDataItemVec[0]);
 		// 1:reserve
-		animationInitialDataT.lowflag = GETS32(AnimationInitialDataItemVec[2]);
-		animationInitialDataT.highflag = GETS32(AnimationInitialDataItemVec[3]);
-		animationInitialDataT.priority = GETS16(AnimationInitialDataItemVec[4]);
-		animationInitialDataT.cell_index = GETS16(AnimationInitialDataItemVec[5]);
-		animationInitialDataT.opacity = GETS16(AnimationInitialDataItemVec[6]);
-		animationInitialDataT.local_opacity = GETS16(AnimationInitialDataItemVec[7]);
-		animationInitialDataT.masklimen = GETS16(AnimationInitialDataItemVec[8]);
+		animationInitialDataT->lowflag = GETS32(AnimationInitialDataItemVec[2]);
+		animationInitialDataT->highflag = GETS32(AnimationInitialDataItemVec[3]);
+		animationInitialDataT->priority = GETS16(AnimationInitialDataItemVec[4]);
+		animationInitialDataT->cell_index = GETS16(AnimationInitialDataItemVec[5]);
+		animationInitialDataT->opacity = GETS16(AnimationInitialDataItemVec[6]);
+		animationInitialDataT->local_opacity = GETS16(AnimationInitialDataItemVec[7]);
+		animationInitialDataT->masklimen = GETS16(AnimationInitialDataItemVec[8]);
 		// 9:reserved
-		animationInitialDataT.position_x = GETFLOAT(AnimationInitialDataItemVec[10]);
-		animationInitialDataT.position_y = GETFLOAT(AnimationInitialDataItemVec[11]);
-		animationInitialDataT.position_z = GETFLOAT(AnimationInitialDataItemVec[12]);
-		animationInitialDataT.pivot_x = GETFLOAT(AnimationInitialDataItemVec[13]);
-		animationInitialDataT.pivot_y = GETFLOAT(AnimationInitialDataItemVec[14]);
-		animationInitialDataT.rotation_x = GETFLOAT(AnimationInitialDataItemVec[15]);
-		animationInitialDataT.rotation_y = GETFLOAT(AnimationInitialDataItemVec[16]);
-		animationInitialDataT.rotation_z = GETFLOAT(AnimationInitialDataItemVec[17]);
-		animationInitialDataT.scale_x = GETFLOAT(AnimationInitialDataItemVec[18]);
-		animationInitialDataT.scale_y = GETFLOAT(AnimationInitialDataItemVec[19]);
-		animationInitialDataT.local_scale_x = GETFLOAT(AnimationInitialDataItemVec[20]);
-		animationInitialDataT.local_scale_y = GETFLOAT(AnimationInitialDataItemVec[21]);
-		animationInitialDataT.size_x = GETFLOAT(AnimationInitialDataItemVec[22]);
-		animationInitialDataT.size_y = GETFLOAT(AnimationInitialDataItemVec[23]);
-		animationInitialDataT.uv_move_x = GETFLOAT(AnimationInitialDataItemVec[24]);
-		animationInitialDataT.uv_move_y = GETFLOAT(AnimationInitialDataItemVec[25]);
-		animationInitialDataT.uv_rotation = GETFLOAT(AnimationInitialDataItemVec[26]);
-		animationInitialDataT.uv_scale_x = GETFLOAT(AnimationInitialDataItemVec[27]);
-		animationInitialDataT.uv_scale_y = GETFLOAT(AnimationInitialDataItemVec[28]);
-		animationInitialDataT.bounding_radius = GETFLOAT(AnimationInitialDataItemVec[29]);
+		animationInitialDataT->position_x = GETFLOAT(AnimationInitialDataItemVec[10]);
+		animationInitialDataT->position_y = GETFLOAT(AnimationInitialDataItemVec[11]);
+		animationInitialDataT->position_z = GETFLOAT(AnimationInitialDataItemVec[12]);
+		animationInitialDataT->pivot_x = GETFLOAT(AnimationInitialDataItemVec[13]);
+		animationInitialDataT->pivot_y = GETFLOAT(AnimationInitialDataItemVec[14]);
+		animationInitialDataT->rotation_x = GETFLOAT(AnimationInitialDataItemVec[15]);
+		animationInitialDataT->rotation_y = GETFLOAT(AnimationInitialDataItemVec[16]);
+		animationInitialDataT->rotation_z = GETFLOAT(AnimationInitialDataItemVec[17]);
+		animationInitialDataT->scale_x = GETFLOAT(AnimationInitialDataItemVec[18]);
+		animationInitialDataT->scale_y = GETFLOAT(AnimationInitialDataItemVec[19]);
+		animationInitialDataT->local_scale_x = GETFLOAT(AnimationInitialDataItemVec[20]);
+		animationInitialDataT->local_scale_y = GETFLOAT(AnimationInitialDataItemVec[21]);
+		animationInitialDataT->size_x = GETFLOAT(AnimationInitialDataItemVec[22]);
+		animationInitialDataT->size_y = GETFLOAT(AnimationInitialDataItemVec[23]);
+		animationInitialDataT->uv_move_x = GETFLOAT(AnimationInitialDataItemVec[24]);
+		animationInitialDataT->uv_move_y = GETFLOAT(AnimationInitialDataItemVec[25]);
+		animationInitialDataT->uv_rotation = GETFLOAT(AnimationInitialDataItemVec[26]);
+		animationInitialDataT->uv_scale_x = GETFLOAT(AnimationInitialDataItemVec[27]);
+		animationInitialDataT->uv_scale_y = GETFLOAT(AnimationInitialDataItemVec[28]);
+		animationInitialDataT->bounding_radius = GETFLOAT(AnimationInitialDataItemVec[29]);
 		//インスタンス関連
-		animationInitialDataT.instance_value_cur_keyframe = GETS32(AnimationInitialDataItemVec[30]);
-		animationInitialDataT.instance_value_start_frame = GETS32(AnimationInitialDataItemVec[31]);
-		animationInitialDataT.instance_value_end_frame = GETS32(AnimationInitialDataItemVec[32]);
-		animationInitialDataT.instance_value_loop_num = GETS32(AnimationInitialDataItemVec[33]);
-		animationInitialDataT.instance_value_speed = GETFLOAT(AnimationInitialDataItemVec[34]);
-		animationInitialDataT.instance_value_loop_flag = GETS32(AnimationInitialDataItemVec[35]);
+		animationInitialDataT->instance_value_cur_keyframe = GETS32(AnimationInitialDataItemVec[30]);
+		animationInitialDataT->instance_value_start_frame = GETS32(AnimationInitialDataItemVec[31]);
+		animationInitialDataT->instance_value_end_frame = GETS32(AnimationInitialDataItemVec[32]);
+		animationInitialDataT->instance_value_loop_num = GETS32(AnimationInitialDataItemVec[33]);
+		animationInitialDataT->instance_value_speed = GETFLOAT(AnimationInitialDataItemVec[34]);
+		animationInitialDataT->instance_value_loop_flag = GETS32(AnimationInitialDataItemVec[35]);
 		//エフェクト関連
-		animationInitialDataT.effect_value_cur_keyframe = GETS32(AnimationInitialDataItemVec[36]);
-		animationInitialDataT.effect_value_start_time = GETS32(AnimationInitialDataItemVec[37]);
-		animationInitialDataT.effect_value_speed = GETFLOAT(AnimationInitialDataItemVec[38]);
-		animationInitialDataT.effect_value_loop_flag = GETS32(AnimationInitialDataItemVec[39]);
+		animationInitialDataT->effect_value_cur_keyframe = GETS32(AnimationInitialDataItemVec[36]);
+		animationInitialDataT->effect_value_start_time = GETS32(AnimationInitialDataItemVec[37]);
+		animationInitialDataT->effect_value_speed = GETFLOAT(AnimationInitialDataItemVec[38]);
+		animationInitialDataT->effect_value_loop_flag = GETS32(AnimationInitialDataItemVec[39]);
 
 		// search same cellMap from cellMap caches.
-		auto result = std::find(m_animationInitialDataVec.begin(), m_animationInitialDataVec.end(), animationInitialDataT);
+		auto result = std::find_if(m_animationInitialDataVec.begin(), m_animationInitialDataVec.end(), [animationInitialDataT](const std::shared_ptr<ss::ssfb::AnimationInitialDataT> &c) {
+		    return *(c.get()) == *(animationInitialDataT.get());
+		});
 		if (result == m_animationInitialDataVec.end()) {
 			// not found
 
 			// create ssfb partData
 			//animationInitialData = m_ssfbBuilder.Create
-			animationInitialData = ss::ssfb::CreateAnimationInitialData(m_ssfbBuilder,
-																		animationInitialDataT.index,
-																		animationInitialDataT.lowflag,
-																		animationInitialDataT.highflag,
-																		animationInitialDataT.priority,
-																		animationInitialDataT.cell_index,
-																		animationInitialDataT.opacity,
-																		animationInitialDataT.local_opacity,
-																		animationInitialDataT.masklimen,
-																		animationInitialDataT.position_x,
-																		animationInitialDataT.position_y,
-																		animationInitialDataT.position_z,
-																		animationInitialDataT.pivot_x,
-																		animationInitialDataT.pivot_y,
-																		animationInitialDataT.rotation_x,
-																		animationInitialDataT.rotation_y,
-																		animationInitialDataT.rotation_z,
-																		animationInitialDataT.scale_x,
-																		animationInitialDataT.scale_y,
-																		animationInitialDataT.local_scale_x,
-																		animationInitialDataT.local_scale_y,
-																		animationInitialDataT.size_x,
-																		animationInitialDataT.size_y,
-																		animationInitialDataT.uv_move_x,
-																		animationInitialDataT.uv_move_y,
-																		animationInitialDataT.uv_rotation,
-																		animationInitialDataT.uv_scale_x,
-																		animationInitialDataT.uv_scale_y,
-																		animationInitialDataT.bounding_radius,
-																		animationInitialDataT.instance_value_cur_keyframe,
-																		animationInitialDataT.instance_value_start_frame,
-																		animationInitialDataT.instance_value_end_frame,
-																		animationInitialDataT.instance_value_loop_num,
-																		animationInitialDataT.instance_value_speed,
-																		animationInitialDataT.instance_value_loop_flag,
-																		animationInitialDataT.effect_value_cur_keyframe,
-																		animationInitialDataT.effect_value_start_time,
-																		animationInitialDataT.effect_value_speed,
-																		animationInitialDataT.effect_value_loop_flag);
+			animationInitialData = ss::ssfb::CreateAnimationInitialData(m_ssfbBuilder, animationInitialDataT.get());
 			// cache ssfb cellMap
 			m_animationInitialDataVec.push_back(animationInitialDataT);
 			m_ssfbAnimationInitialDataVec.push_back(animationInitialData);
@@ -936,33 +895,35 @@ private:
 		flatbuffers::Offset<ss::ssfb::PartData> partData;
 		auto partDataItemVec = lump->getChildren();
 
-		struct ss::ssfb::PartDataT partDataT;
+		std::shared_ptr<struct ss::ssfb::PartDataT> partDataT(new ss::ssfb::PartDataT());
 
-		partDataT.name = GETSTRING(partDataItemVec[0], m_encoding);
-		partDataT.index = GETS16(partDataItemVec[1]);
-		partDataT.parent_index = GETS16(partDataItemVec[2]);
-		partDataT.type = (ss::ssfb::SsPartType)GETS16(partDataItemVec[3]);
-		partDataT.bounds_type = (ss::ssfb::BoundsType)GETS16(partDataItemVec[4]);
-		partDataT.alpha_blend_type = (ss::ssfb::BlendType )GETS16(partDataItemVec[5]);
-		partDataT.refname = GETSTRING(partDataItemVec[7], m_encoding);
-		partDataT.effectfilename = GETSTRING(partDataItemVec[8], m_encoding);
-		partDataT.colorLabel = GETSTRING(partDataItemVec[9], m_encoding);
-		partDataT.mask_influence = (bool)GETS16(partDataItemVec[10]);
+		partDataT->name = GETSTRING(partDataItemVec[0], m_encoding);
+		partDataT->index = GETS16(partDataItemVec[1]);
+		partDataT->parent_index = GETS16(partDataItemVec[2]);
+		partDataT->type = (ss::ssfb::SsPartType)GETS16(partDataItemVec[3]);
+		partDataT->bounds_type = (ss::ssfb::BoundsType)GETS16(partDataItemVec[4]);
+		partDataT->alpha_blend_type = (ss::ssfb::BlendType )GETS16(partDataItemVec[5]);
+		partDataT->refname = GETSTRING(partDataItemVec[7], m_encoding);
+		partDataT->effectfilename = GETSTRING(partDataItemVec[8], m_encoding);
+		partDataT->colorLabel = GETSTRING(partDataItemVec[9], m_encoding);
+		partDataT->mask_influence = (bool)GETS16(partDataItemVec[10]);
 
 		// search same cellMap from cellMap caches.
-		auto result = std::find(m_partDataVec.begin(), m_partDataVec.end(), partDataT);
+		auto result = std::find_if(m_partDataVec.begin(), m_partDataVec.end(), [partDataT](const std::shared_ptr<ss::ssfb::PartDataT> &c) {
+		    return *(c.get()) == *(partDataT.get());
+		});
 		if (result == m_partDataVec.end()) {
 			// not found
 
 			// create ssfb partData
-			auto ssfbPartDataName =  m_ssfbBuilder.CreateSharedString(partDataT.name);
-			auto ssfbRefname = m_ssfbBuilder.CreateSharedString(partDataT.refname);
-			auto ssfbEffectfilename = m_ssfbBuilder.CreateSharedString(partDataT.effectfilename);
-			auto ssfbColorLabel = m_ssfbBuilder.CreateSharedString(partDataT.colorLabel);
+			auto ssfbPartDataName =  m_ssfbBuilder.CreateSharedString(partDataT->name);
+			auto ssfbRefname = m_ssfbBuilder.CreateSharedString(partDataT->refname);
+			auto ssfbEffectfilename = m_ssfbBuilder.CreateSharedString(partDataT->effectfilename);
+			auto ssfbColorLabel = m_ssfbBuilder.CreateSharedString(partDataT->colorLabel);
 
-			partData = ss::ssfb::CreatePartData(m_ssfbBuilder, ssfbPartDataName,partDataT.index, partDataT.parent_index, (ss::ssfb::SsPartType)partDataT.type,
-												partDataT.bounds_type, partDataT.alpha_blend_type, ssfbRefname, ssfbEffectfilename, ssfbColorLabel,
-												partDataT.mask_influence);
+			partData = ss::ssfb::CreatePartData(m_ssfbBuilder, ssfbPartDataName,partDataT->index, partDataT->parent_index, (ss::ssfb::SsPartType)partDataT->type,
+												partDataT->bounds_type, partDataT->alpha_blend_type, ssfbRefname, ssfbEffectfilename, ssfbColorLabel,
+												partDataT->mask_influence);
 			// cache ssfb cellMap
 			m_partDataVec.push_back(partDataT);
 			m_ssfbPartDataVec.push_back(partData);
@@ -1020,10 +981,12 @@ private:
 	flatbuffers::Offset<ss::ssfb::MeshDataUV> createSharedMeshDataUV(const std::vector<float> &uvPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &uv) {
 		flatbuffers::Offset<ss::ssfb::MeshDataUV> meshDataUV;
 
-		struct ss::ssfb::MeshDataUVT meshDataUVT;
-		meshDataUVT.uv = uvPrimitive;
+		std::shared_ptr<struct ss::ssfb::MeshDataUVT> meshDataUVT(new ss::ssfb::MeshDataUVT());
+		meshDataUVT->uv = uvPrimitive;
 
-		auto result = std::find(m_meshDataUVVec.begin(), m_meshDataUVVec.end(), meshDataUVT);
+		auto result = std::find_if(m_meshDataUVVec.begin(), m_meshDataUVVec.end(), [meshDataUVT](const std::shared_ptr<ss::ssfb::MeshDataUVT> &c) {
+		    return *(c.get()) == *(meshDataUVT.get());
+		});
 		if (result == m_meshDataUVVec.end()) {
 			// not found
 
@@ -1044,9 +1007,11 @@ private:
 	flatbuffers::Offset<ss::ssfb::MeshDataIndices> createSharedMeshDataIndices(const std::vector<float> &indicesPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &indices) {
 		flatbuffers::Offset<ss::ssfb::MeshDataIndices> meshDataIndices;
 
-		struct ss::ssfb::MeshDataIndicesT meshDataIndicesT;
-		meshDataIndicesT.indices = indicesPrimitive;
-		auto result = std::find(m_meshDataIndicesVec.begin(), m_meshDataIndicesVec.end(), meshDataIndicesT);
+		std::shared_ptr<struct ss::ssfb::MeshDataIndicesT> meshDataIndicesT(new ss::ssfb::MeshDataIndicesT());
+		meshDataIndicesT->indices = indicesPrimitive;
+		auto result = std::find_if(m_meshDataIndicesVec.begin(), m_meshDataIndicesVec.end(), [meshDataIndicesT](const std::shared_ptr<ss::ssfb::MeshDataIndicesT> &c) {
+		    return *(c.get()) == *(meshDataIndicesT.get());
+		});
 		if (result == m_meshDataIndicesVec.end()) {
 			// not found
 
@@ -1068,16 +1033,18 @@ private:
 	createSharedPartState(int16_t index, ss::ssfb::PartFlag flag1, ss::ssfb::PartFlag2 flag2, const std::vector<uint32_t> &dataPrimitive) {
 		flatbuffers::Offset<ss::ssfb::PartState> partState;
 		
-		struct ss::ssfb::PartStateT partStateT;
-		partStateT.index = index;
-		partStateT.flag1 = flag1;
-		partStateT.flag2 = flag2;
-		partStateT.data = dataPrimitive;
-		auto result = std::find(m_partStateVec.begin(), m_partStateVec.end(), partStateT);
+		std::shared_ptr<struct ss::ssfb::PartStateT> partStateT(new ss::ssfb::PartStateT());
+		partStateT->index = index;
+		partStateT->flag1 = flag1;
+		partStateT->flag2 = flag2;
+		partStateT->data = dataPrimitive;
+		auto result = std::find_if(m_partStateVec.begin(), m_partStateVec.end(), [partStateT](const std::shared_ptr<ss::ssfb::PartStateT> &c) {
+		    return *(c.get()) == *(partStateT.get());
+		});
 		if (result == m_partStateVec.end()) {
 			// not found
 			auto serializePartStateData = createSharedUint32Vec(dataPrimitive);
-			partState = ss::ssfb::CreatePartState(m_ssfbBuilder, partStateT.index, partStateT.flag1, partStateT.flag2, serializePartStateData);
+			partState = ss::ssfb::CreatePartState(m_ssfbBuilder, partStateT->index, partStateT->flag1, partStateT->flag2, serializePartStateData);
 
 			m_partStateVec.push_back(partStateT);
 			m_ssfbPartStateVec.push_back(partState);
@@ -1092,22 +1059,22 @@ private:
 	flatbuffers::Offset<ss::ssfb::FrameDataIndex> createSharedFrameDataIndex(const std::vector<ss::ssfb::PartStateT> &statesPrimitive) {
 		flatbuffers::Offset<ss::ssfb::FrameDataIndex> frameDataIndex;
 
-		struct ss::ssfb::FrameDataIndexT frameDataIndexT1;
+		std::shared_ptr<struct ss::ssfb::FrameDataIndexT> frameDataIndexT1(new ss::ssfb::FrameDataIndexT());
 		for(auto state : statesPrimitive) {
 			std::unique_ptr<ss::ssfb::PartStateT> p(new ss::ssfb::PartStateT());
 			p->index = state.index;
 			p->flag1 = state.flag1;
 			p->flag2 = state.flag2;
 			p->data = state.data;
-			frameDataIndexT1.states.push_back(std::move(p));
+			frameDataIndexT1->states.push_back(std::move(p));
 		}
-		auto result = std::find_if(m_frameDataIndexVec.begin(), m_frameDataIndexVec.end(), [&frameDataIndexT1](const struct ss::ssfb::FrameDataIndexT &item) {
-			if(frameDataIndexT1.states.size() != item.states.size())
+		auto result = std::find_if(m_frameDataIndexVec.begin(), m_frameDataIndexVec.end(), [&frameDataIndexT1](const struct std::shared_ptr<ss::ssfb::FrameDataIndexT> &item) {
+			if(frameDataIndexT1->states.size() != item->states.size())
 				return false;
 
 			int idx = 0;
-			for(auto &p : frameDataIndexT1.states) {
-				auto &i = item.states[idx];
+			for(auto &p : frameDataIndexT1->states) {
+				auto &i = item->states[idx];
 				if(p->index != i->index) return false;
 				if(p->flag1 != i->flag1) return false;
 				if(p->flag2 != i->flag2) return false;

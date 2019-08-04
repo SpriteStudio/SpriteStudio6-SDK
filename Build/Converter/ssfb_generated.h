@@ -937,7 +937,7 @@ struct EffectNodeT : public flatbuffers::NativeTable {
   EffectNodeType type;
   int16_t cell_index;
   EffectRenderBlendType blend_type;
-  std::unique_ptr<EffectParticleElementBasic> basic_behavior;
+  std::shared_ptr<EffectParticleElementBasic> basic_behavior;
   EffectBehaviorFlags behavior_flags;
   int32_t seed;
   int32_t delay_time;
@@ -1613,7 +1613,7 @@ struct EffectFileT : public flatbuffers::NativeTable {
   int16_t layout_scale_x;
   int16_t layout_scale_y;
   int16_t num_node_list;
-  std::vector<std::unique_ptr<EffectNodeT>> effect_node;
+  std::vector<std::shared_ptr<EffectNodeT>> effect_node;
   EffectFileT()
       : fps(0),
         is_lock_rand_seed(0),
@@ -1921,7 +1921,7 @@ flatbuffers::Offset<CellMap> CreateCellMap(flatbuffers::FlatBufferBuilder &_fbb,
 struct CellT : public flatbuffers::NativeTable {
   typedef Cell TableType;
   std::string name;
-  std::unique_ptr<CellMapT> cell_map;
+  std::shared_ptr<CellMapT> cell_map;
   int16_t index_in_cell_map;
   int16_t x;
   int16_t y;
@@ -2437,7 +2437,7 @@ flatbuffers::Offset<PartState> CreatePartState(flatbuffers::FlatBufferBuilder &_
 
 struct FrameDataIndexT : public flatbuffers::NativeTable {
   typedef FrameDataIndex TableType;
-  std::vector<std::unique_ptr<PartStateT>> states;
+  std::vector<std::shared_ptr<PartStateT>> states;
   FrameDataIndexT() {
   }
 };
@@ -2735,7 +2735,7 @@ flatbuffers::Offset<UserDataItem> CreateUserDataItem(flatbuffers::FlatBufferBuil
 struct UserDataPerFrameT : public flatbuffers::NativeTable {
   typedef UserDataPerFrame TableType;
   int16_t frame_index;
-  std::vector<std::unique_ptr<UserDataItemT>> data;
+  std::vector<std::shared_ptr<UserDataItemT>> data;
   UserDataPerFrameT()
       : frame_index(0) {
   }
@@ -2912,12 +2912,12 @@ flatbuffers::Offset<LabelDataItem> CreateLabelDataItem(flatbuffers::FlatBufferBu
 struct AnimationDataT : public flatbuffers::NativeTable {
   typedef AnimationData TableType;
   std::string name;
-  std::vector<std::unique_ptr<AnimationInitialDataT>> default_data;
-  std::vector<std::unique_ptr<FrameDataIndexT>> frame_data;
-  std::vector<std::unique_ptr<UserDataPerFrameT>> user_data;
-  std::vector<std::unique_ptr<LabelDataItemT>> label_data;
-  std::vector<std::unique_ptr<MeshDataUVT>> meshs_data_UV;
-  std::vector<std::unique_ptr<MeshDataIndicesT>> meshs_data_indices;
+  std::vector<std::shared_ptr<AnimationInitialDataT>> default_data;
+  std::vector<std::shared_ptr<FrameDataIndexT>> frame_data;
+  std::vector<std::shared_ptr<UserDataPerFrameT>> user_data;
+  std::vector<std::shared_ptr<LabelDataItemT>> label_data;
+  std::vector<std::shared_ptr<MeshDataUVT>> meshs_data_UV;
+  std::vector<std::shared_ptr<MeshDataIndicesT>> meshs_data_indices;
   int16_t start_frames;
   int16_t end_frames;
   int16_t total_frames;
@@ -3978,8 +3978,8 @@ flatbuffers::Offset<PartData> CreatePartData(flatbuffers::FlatBufferBuilder &_fb
 struct AnimePackDataT : public flatbuffers::NativeTable {
   typedef AnimePackData TableType;
   std::string name;
-  std::vector<std::unique_ptr<PartDataT>> parts;
-  std::vector<std::unique_ptr<AnimationDataT>> animations;
+  std::vector<std::shared_ptr<PartDataT>> parts;
+  std::vector<std::shared_ptr<AnimationDataT>> animations;
   AnimePackDataT() {
   }
 };
@@ -4087,9 +4087,9 @@ struct ProjectDataT : public flatbuffers::NativeTable {
   uint32_t dataId;
   uint32_t version;
   std::string image_base_dir;
-  std::vector<std::unique_ptr<CellT>> cells;
-  std::vector<std::unique_ptr<AnimePackDataT>> anime_packs;
-  std::vector<std::unique_ptr<EffectFileT>> effect_file_list;
+  std::vector<std::shared_ptr<CellT>> cells;
+  std::vector<std::shared_ptr<AnimePackDataT>> anime_packs;
+  std::vector<std::shared_ptr<EffectFileT>> effect_file_list;
   int16_t num_cells;
   int16_t num_animePacks;
   int16_t num_effectFileList;
@@ -4295,7 +4295,7 @@ inline void EffectNode::UnPackTo(EffectNodeT *_o, const flatbuffers::resolver_fu
   { auto _e = type(); _o->type = _e; };
   { auto _e = cell_index(); _o->cell_index = _e; };
   { auto _e = blend_type(); _o->blend_type = _e; };
-  { auto _e = basic_behavior(); if (_e) _o->basic_behavior = std::unique_ptr<EffectParticleElementBasic>(new EffectParticleElementBasic(*_e)); };
+  { auto _e = basic_behavior(); if (_e) _o->basic_behavior = std::shared_ptr<EffectParticleElementBasic>(new EffectParticleElementBasic(*_e)); };
   { auto _e = behavior_flags(); _o->behavior_flags = _e; };
   { auto _e = seed(); _o->seed = _e; };
   { auto _e = delay_time(); _o->delay_time = _e; };
@@ -4464,7 +4464,7 @@ inline void EffectFile::UnPackTo(EffectFileT *_o, const flatbuffers::resolver_fu
   { auto _e = layout_scale_x(); _o->layout_scale_x = _e; };
   { auto _e = layout_scale_y(); _o->layout_scale_y = _e; };
   { auto _e = num_node_list(); _o->num_node_list = _e; };
-  { auto _e = effect_node(); if (_e) { _o->effect_node.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->effect_node[_i] = std::unique_ptr<EffectNodeT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = effect_node(); if (_e) { _o->effect_node.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->effect_node[_i] = std::shared_ptr<EffectNodeT>(_e->Get(_i)->UnPack(_resolver)); } } };
 }
 
 inline flatbuffers::Offset<EffectFile> EffectFile::Pack(flatbuffers::FlatBufferBuilder &_fbb, const EffectFileT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -4543,7 +4543,7 @@ inline void Cell::UnPackTo(CellT *_o, const flatbuffers::resolver_function_t *_r
   (void)_o;
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); };
-  { auto _e = cell_map(); if (_e) _o->cell_map = std::unique_ptr<CellMapT>(_e->UnPack(_resolver)); };
+  { auto _e = cell_map(); if (_e) _o->cell_map = std::shared_ptr<CellMapT>(_e->UnPack(_resolver)); };
   { auto _e = index_in_cell_map(); _o->index_in_cell_map = _e; };
   { auto _e = x(); _o->x = _e; };
   { auto _e = y(); _o->y = _e; };
@@ -4691,7 +4691,7 @@ inline FrameDataIndexT *FrameDataIndex::UnPack(const flatbuffers::resolver_funct
 inline void FrameDataIndex::UnPackTo(FrameDataIndexT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = states(); if (_e) { _o->states.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->states[_i] = std::unique_ptr<PartStateT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = states(); if (_e) { _o->states.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->states[_i] = std::shared_ptr<PartStateT>(_e->Get(_i)->UnPack(_resolver)); } } };
 }
 
 inline flatbuffers::Offset<FrameDataIndex> FrameDataIndex::Pack(flatbuffers::FlatBufferBuilder &_fbb, const FrameDataIndexT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -4774,7 +4774,7 @@ inline void UserDataPerFrame::UnPackTo(UserDataPerFrameT *_o, const flatbuffers:
   (void)_o;
   (void)_resolver;
   { auto _e = frame_index(); _o->frame_index = _e; };
-  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i] = std::unique_ptr<UserDataItemT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i] = std::shared_ptr<UserDataItemT>(_e->Get(_i)->UnPack(_resolver)); } } };
 }
 
 inline flatbuffers::Offset<UserDataPerFrame> UserDataPerFrame::Pack(flatbuffers::FlatBufferBuilder &_fbb, const UserDataPerFrameT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -4832,12 +4832,12 @@ inline void AnimationData::UnPackTo(AnimationDataT *_o, const flatbuffers::resol
   (void)_o;
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); };
-  { auto _e = default_data(); if (_e) { _o->default_data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->default_data[_i] = std::unique_ptr<AnimationInitialDataT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = frame_data(); if (_e) { _o->frame_data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->frame_data[_i] = std::unique_ptr<FrameDataIndexT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = user_data(); if (_e) { _o->user_data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->user_data[_i] = std::unique_ptr<UserDataPerFrameT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = label_data(); if (_e) { _o->label_data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->label_data[_i] = std::unique_ptr<LabelDataItemT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = meshs_data_UV(); if (_e) { _o->meshs_data_UV.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->meshs_data_UV[_i] = std::unique_ptr<MeshDataUVT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = meshs_data_indices(); if (_e) { _o->meshs_data_indices.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->meshs_data_indices[_i] = std::unique_ptr<MeshDataIndicesT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = default_data(); if (_e) { _o->default_data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->default_data[_i] = std::shared_ptr<AnimationInitialDataT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = frame_data(); if (_e) { _o->frame_data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->frame_data[_i] = std::shared_ptr<FrameDataIndexT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = user_data(); if (_e) { _o->user_data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->user_data[_i] = std::shared_ptr<UserDataPerFrameT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = label_data(); if (_e) { _o->label_data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->label_data[_i] = std::shared_ptr<LabelDataItemT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = meshs_data_UV(); if (_e) { _o->meshs_data_UV.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->meshs_data_UV[_i] = std::shared_ptr<MeshDataUVT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = meshs_data_indices(); if (_e) { _o->meshs_data_indices.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->meshs_data_indices[_i] = std::shared_ptr<MeshDataIndicesT>(_e->Get(_i)->UnPack(_resolver)); } } };
   { auto _e = start_frames(); _o->start_frames = _e; };
   { auto _e = end_frames(); _o->end_frames = _e; };
   { auto _e = total_frames(); _o->total_frames = _e; };
@@ -5093,8 +5093,8 @@ inline void AnimePackData::UnPackTo(AnimePackDataT *_o, const flatbuffers::resol
   (void)_o;
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); };
-  { auto _e = parts(); if (_e) { _o->parts.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->parts[_i] = std::unique_ptr<PartDataT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = animations(); if (_e) { _o->animations.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->animations[_i] = std::unique_ptr<AnimationDataT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = parts(); if (_e) { _o->parts.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->parts[_i] = std::shared_ptr<PartDataT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = animations(); if (_e) { _o->animations.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->animations[_i] = std::shared_ptr<AnimationDataT>(_e->Get(_i)->UnPack(_resolver)); } } };
 }
 
 inline flatbuffers::Offset<AnimePackData> AnimePackData::Pack(flatbuffers::FlatBufferBuilder &_fbb, const AnimePackDataT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -5127,9 +5127,9 @@ inline void ProjectData::UnPackTo(ProjectDataT *_o, const flatbuffers::resolver_
   { auto _e = dataId(); _o->dataId = _e; };
   { auto _e = version(); _o->version = _e; };
   { auto _e = image_base_dir(); if (_e) _o->image_base_dir = _e->str(); };
-  { auto _e = cells(); if (_e) { _o->cells.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->cells[_i] = std::unique_ptr<CellT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = anime_packs(); if (_e) { _o->anime_packs.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->anime_packs[_i] = std::unique_ptr<AnimePackDataT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = effect_file_list(); if (_e) { _o->effect_file_list.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->effect_file_list[_i] = std::unique_ptr<EffectFileT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = cells(); if (_e) { _o->cells.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->cells[_i] = std::shared_ptr<CellT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = anime_packs(); if (_e) { _o->anime_packs.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->anime_packs[_i] = std::shared_ptr<AnimePackDataT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = effect_file_list(); if (_e) { _o->effect_file_list.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->effect_file_list[_i] = std::shared_ptr<EffectFileT>(_e->Get(_i)->UnPack(_resolver)); } } };
   { auto _e = num_cells(); _o->num_cells = _e; };
   { auto _e = num_animePacks(); _o->num_animePacks = _e; };
   { auto _e = num_effectFileList(); _o->num_effectFileList = _e; };
@@ -5204,10 +5204,10 @@ inline void FinishSizePrefixedProjectDataBuffer(
   fbb.FinishSizePrefixed(root, ProjectDataIdentifier());
 }
 
-inline std::unique_ptr<ProjectDataT> UnPackProjectData(
+inline std::shared_ptr<ProjectDataT> UnPackProjectData(
     const void *buf,
     const flatbuffers::resolver_function_t *res = nullptr) {
-  return std::unique_ptr<ProjectDataT>(GetProjectData(buf)->UnPack(res));
+  return std::shared_ptr<ProjectDataT>(GetProjectData(buf)->UnPack(res));
 }
 
 }  // namespace ssfb
