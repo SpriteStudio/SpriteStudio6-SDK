@@ -41,6 +41,9 @@ public:
 		Value	loop;
 		Value	packIndex;
 		Value	animeIndex;
+
+		Value	camera_x;
+		Value	camera_y;
 	};
 	State *	getState();
     //==============================================================================
@@ -58,6 +61,11 @@ private:
 	std::unique_ptr<Slider>			slider_frame;
 	std::unique_ptr<TreeView>		animeTreeView;
 	std::unique_ptr<PropertyPanel>	propertyPanel;
+
+	std::unique_ptr<Slider>			slider_viewcamera_x;
+	std::unique_ptr<Slider>			slider_viewcamera_y;
+
+
 	SafePointer<ColourSelectorWindow>	colourSelectorWindow;
 	SafePointer<LicenseWindow>		licenseWindow;
 	// レイアウト

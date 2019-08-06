@@ -24,6 +24,8 @@ ViewerMainWindow::ViewerMainWindow()
 	state.fps.addListener(controller);
 	state.loop.addListener(controller);
 	state.endFrame.addListener(this);
+	state.camera_x.addListener(this);
+	state.camera_y.addListener(this);
 
 	build();
 }
@@ -137,6 +139,8 @@ void ViewerMainWindow::buildControlPanel()
 	controlPanel->addAndMakeVisible(button_reset.get());
 	controlPanel->addAndMakeVisible(button_loop.get());
 	controlPanel->addAndMakeVisible(slider_frame.get());
+	controlPanel->addAndMakeVisible(slider_viewcamera_x.get());
+	controlPanel->addAndMakeVisible(slider_viewcamera_y.get());
 
 	auto * player = Player::get();
 	if (player->getState()->animeName == "Setup")
@@ -255,6 +259,25 @@ void ViewerMainWindow::valueChanged(Value & value)
 {
 	auto * view = ViewerMainWindow::get();
 	auto * model = Player::get();
+
+
+	if (value.refersToSameSourceAs(opengl->view_camera_x))
+	{
+		view->getState()->camera_x = value.getValue();
+	}
+	if (value.refersToSameSourceAs(opengl->view_camera_y))
+	{
+		view->getState()->camera_y = value.getValue();
+	}
+
+	if (value.refersToSameSourceAs(view->getState()->camera_x))
+	{
+		opengl->view_camera_x = getState()->camera_x.getValue();
+	}
+	if (value.refersToSameSourceAs(view->getState()->camera_y))
+	{
+		opengl->view_camera_y = getState()->camera_y.getValue();
+	}
 
 	//------------------------
 	// モデルが変更された場合
@@ -410,6 +433,16 @@ void ViewerMainWindow::buildSlider()
 	slider_frame->getMaxValueObject().referTo(state.endFrame);
 	slider_frame->getValueObject().referTo(state.frame);
 	slider_frame->setInterceptsMouseClicks(true, true);
+
+
+	slider_viewcamera_x.reset(new Slider(Slider::ThreeValueHorizontal, Slider::TextEntryBoxPosition::TextBoxLeft));
+	slider_viewcamera_x->setRange(-2000, 2000, 0.1f);
+	slider_viewcamera_x->getValueObject().referTo(state.camera_x);
+
+	slider_viewcamera_y.reset(new Slider(Slider::ThreeValueHorizontal, Slider::TextEntryBoxPosition::TextBoxLeft));
+	slider_viewcamera_y->setRange(-2000, 2000, 0.1f);
+	slider_viewcamera_x->getValueObject().referTo(state.camera_y);
+
 }
 
 ValueTree ViewerMainWindow::createTreeItem(const String & name, int _packIndex, int _animeIndex)
@@ -477,6 +510,10 @@ void ViewerMainWindow::buildPropertyPanel()
 	items.add(new TextPropertyComponent(state.endFrame, "endFrame", 10, false, false));
 	items.add(new TextPropertyComponent(state.length, "length", 10, false, false));
 	items.add(new SliderPropertyComponent(state.fps, "fps", 1, 60, 1));
+
+	items.add(new SliderPropertyComponent(state.camera_x, "camera.X", -1000, 1000 , 1));
+	items.add(new SliderPropertyComponent(state.camera_y, "camera.Y", -1000, 1000 , 1));
+
 
 	propertyPanel.reset(new PropertyPanel("Property"));
 	propertyPanel->addProperties(items);
