@@ -28,9 +28,11 @@ public:
 	virtual void mouseMove(const MouseEvent& event);
 	virtual void mouseUp(const MouseEvent& event);
 	virtual void mouseDrag(const MouseEvent& event);
+	virtual void mouseWheelMove(const MouseEvent& event, const MouseWheelDetails& wheel);
 
 	Value	view_camera_x;
 	Value	view_camera_y;
+	Value	view_camera_scale;
 
 private:
 	std::unique_ptr<SSTextureFactory>	texfactory;

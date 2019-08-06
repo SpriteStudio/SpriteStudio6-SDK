@@ -44,6 +44,7 @@ public:
 
 		Value	camera_x;
 		Value	camera_y;
+		Value	camera_scale;
 	};
 	State *	getState();
     //==============================================================================
@@ -64,6 +65,7 @@ private:
 
 	std::unique_ptr<Slider>			slider_viewcamera_x;
 	std::unique_ptr<Slider>			slider_viewcamera_y;
+	std::unique_ptr<Slider>			slider_viewcamera_scale;
 
 
 	SafePointer<ColourSelectorWindow>	colourSelectorWindow;
