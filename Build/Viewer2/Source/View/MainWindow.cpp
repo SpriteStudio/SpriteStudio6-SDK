@@ -26,6 +26,7 @@ ViewerMainWindow::ViewerMainWindow()
 	state.endFrame.addListener(this);
 	state.camera_x.addListener(this);
 	state.camera_y.addListener(this);
+	state.camera_scale.addListener(this);
 
 	build();
 }
@@ -141,6 +142,7 @@ void ViewerMainWindow::buildControlPanel()
 	controlPanel->addAndMakeVisible(slider_frame.get());
 	controlPanel->addAndMakeVisible(slider_viewcamera_x.get());
 	controlPanel->addAndMakeVisible(slider_viewcamera_y.get());
+	controlPanel->addAndMakeVisible(slider_viewcamera_scale.get());
 
 	auto * player = Player::get();
 	if (player->getState()->animeName == "Setup")
@@ -269,14 +271,23 @@ void ViewerMainWindow::valueChanged(Value & value)
 	{
 		view->getState()->camera_y = value.getValue();
 	}
+	if (value.refersToSameSourceAs(opengl->view_camera_scale))
+	{
+		view->getState()->camera_scale = value.getValue();
+	}
 
 	if (value.refersToSameSourceAs(view->getState()->camera_x))
 	{
 		opengl->view_camera_x = getState()->camera_x.getValue();
 	}
+
 	if (value.refersToSameSourceAs(view->getState()->camera_y))
 	{
 		opengl->view_camera_y = getState()->camera_y.getValue();
+	}
+	if (value.refersToSameSourceAs(view->getState()->camera_scale))
+	{
+		opengl->view_camera_scale = getState()->camera_scale.getValue();
 	}
 
 	//------------------------
@@ -443,6 +454,11 @@ void ViewerMainWindow::buildSlider()
 	slider_viewcamera_y->setRange(-2000, 2000, 0.1f);
 	slider_viewcamera_x->getValueObject().referTo(state.camera_y);
 
+	
+	slider_viewcamera_scale.reset(new Slider(Slider::ThreeValueHorizontal, Slider::TextEntryBoxPosition::TextBoxLeft));
+	slider_viewcamera_scale->setRange( 0, 5.0 , 0.1f);
+	slider_viewcamera_scale->getValueObject().referTo(state.camera_scale);
+	state.camera_scale = 1.0f;
 }
 
 ValueTree ViewerMainWindow::createTreeItem(const String & name, int _packIndex, int _animeIndex)
@@ -513,6 +529,7 @@ void ViewerMainWindow::buildPropertyPanel()
 
 	items.add(new SliderPropertyComponent(state.camera_x, "camera.X", -1000, 1000 , 1));
 	items.add(new SliderPropertyComponent(state.camera_y, "camera.Y", -1000, 1000 , 1));
+	items.add(new SliderPropertyComponent(state.camera_scale, "camera.scale", 0 , 5 , 0.1));
 
 
 	propertyPanel.reset(new PropertyPanel("Property"));
