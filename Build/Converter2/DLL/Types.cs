@@ -262,6 +262,32 @@ namespace Types
 					^ z.GetHashCode()
 				);
 		}
+
+		public bool BinaryGet(ref int sizeData, SS6ConverterVer2_DLL.ChunkExport chunkData, SS6ConverterVer2_DLL.ChunkExport chunkString)
+		{
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(x);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(y);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(z);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			return(true);
+		}
 		#endregion Functions
 
 		/* ----------------------------------------------- Operators & Casts */
@@ -415,6 +441,39 @@ namespace Types
 					^ z.GetHashCode()
 					^ w.GetHashCode()
 				);
+		}
+
+		public bool BinaryGet(ref int sizeData, SS6ConverterVer2_DLL.ChunkExport chunkData, SS6ConverterVer2_DLL.ChunkExport chunkString)
+		{
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(x);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(y);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(z);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(w);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			return(true);
 		}
 		#endregion Functions
 
@@ -573,6 +632,39 @@ namespace Types
 					^ z.GetHashCode()
 					^ w.GetHashCode()
 				);
+		}
+
+		public bool BinaryGet(ref int sizeData, SS6ConverterVer2_DLL.ChunkExport chunkData, SS6ConverterVer2_DLL.ChunkExport chunkString)
+		{
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(x);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(y);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(z);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(w);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			return(true);
 		}
 		#endregion Functions
 
@@ -785,6 +877,8 @@ namespace Types
 			column1.w = pos.y;
 			column2.w = pos.z;
 		}
+
+		/* MEMO: 今のところ出力する予定がないので、BinaryGet関数は積んでいません。 */
 		#endregion Functions
 
 		/* ----------------------------------------------- Operators & Casts */
@@ -901,6 +995,45 @@ namespace Types
 					^ yMax.GetHashCode()
 				);
 		}
+
+		public bool BinaryGet(ref int sizeData, SS6ConverterVer2_DLL.ChunkExport chunkData, SS6ConverterVer2_DLL.ChunkExport chunkString)
+		{
+			/* MEMO: 出力時はx/y/width/heightで出しています。 */
+
+			if(null != chunkData)
+			{
+//				byte[] data = System.BitConverter.GetBytes(xMin);
+				byte[] data = System.BitConverter.GetBytes(x);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+//				byte[] data = System.BitConverter.GetBytes(yMin);
+				byte[] data = System.BitConverter.GetBytes(y);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+//				byte[] data = System.BitConverter.GetBytes(xMax);
+				byte[] data = System.BitConverter.GetBytes(width);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+//				byte[] data = System.BitConverter.GetBytes(yMax);
+				byte[] data = System.BitConverter.GetBytes(height);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			return(true);
+		}
 		#endregion Functions
 
 		/* ----------------------------------------------- Operators & Casts */
@@ -977,6 +1110,39 @@ namespace Types
 					^ b.GetHashCode()
 					^ a.GetHashCode()
 				);
+		}
+
+		public bool BinaryGet(ref int sizeData, SS6ConverterVer2_DLL.ChunkExport chunkData, SS6ConverterVer2_DLL.ChunkExport chunkString)
+		{
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(r);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(g);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(b);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(a);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			return(true);
 		}
 		#endregion Functions
 
@@ -1093,6 +1259,8 @@ namespace Types
 					^ a.GetHashCode()
 				);
 		}
+
+		/* MEMO: argbの32bitで出そうにもuintになるしなぁ……。 */
 		#endregion Functions
 
 		/* ----------------------------------------------- Operators & Casts */
