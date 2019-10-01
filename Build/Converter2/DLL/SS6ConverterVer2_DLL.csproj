@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5AB89A47-BE93-43F8-8894-22481ADB9685}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SS6ConverterVer2_DLL</RootNamespace>
+    <AssemblyName>SS6ConverterVer2_DLL</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;_FOR_SS6CONVERTER_</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>TRACE;_FOR_SS6CONVERTER_</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets.cs" />
+    <Compile Include="Math.cs" />
+    <Compile Include="Script\Script_SpriteStudio6_DataAnimation.cs" />
+    <Compile Include="Script\Script_SpriteStudio6_DataCellMap.cs" />
+    <Compile Include="Script\Script_SpriteStudio6_DataEffect.cs" />
+    <Compile Include="Script\Script_SpriteStudio6_DataProject.cs" />
+    <Compile Include="Types.cs" />
+    <Compile Include="Editor\Import\Setting.cs" />
+    <Compile Include="Editor\Import\SSAE.cs" />
+    <Compile Include="Editor\Import\SSCE.cs" />
+    <Compile Include="Editor\Import\SSEE.cs" />
+    <Compile Include="Editor\Import\SSPJ.cs" />
+    <Compile Include="Editor\LibraryEditor_SpriteStudio6.cs" />
+    <Compile Include="Library\Data\Animation\Attribute.cs" />
+    <Compile Include="Library\Data\Animation\AttributeImporter.cs" />
+    <Compile Include="Library\Data\Animation\PackAttributeContainer.cs" />
+    <Compile Include="Library\Data\Animation\PackAttributeFunction.cs" />
+    <Compile Include="Library\Data\Animation\PackAttribute_Codec\CPE_Fiyweifgt.cs" />
+    <Compile Include="Library\Data\Animation\PackAttribute_Codec\CPE_Interpolate.cs" />
+    <Compile Include="Library\Data\Animation\PackAttribute_Codec\StandardCPE.cs" />
+    <Compile Include="Library\Data\Animation\PackAttribute_Codec\StandardUncompressed.cs" />
+    <Compile Include="Library\Library_SpriteStudio6.cs" />
+    <Compile Include="Library\Utility\Random\MersenneTwister.cs" />
+    <Compile Include="Library\Utility\Random\XorShift32.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Script\RootEffect\" />
+    <Folder Include="Script\Root\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
