@@ -89,7 +89,8 @@ namespace Types
 		public override bool Equals(object obj)
 		{
 			/* MEMO: 構造体なので省略判定しています。 */
-			if(false == (obj is Vector2))	{
+			if(false == (obj is Vector2))
+			{
 				return(false);
 			}
 
@@ -97,6 +98,25 @@ namespace Types
 			return(	(x == rhs.x)
 					&& (y == rhs.y)
 				);	/* ? true : false */
+		}
+
+		public bool BinaryGet(ref int sizeData, SS6ConverterVer2_DLL.ChunkExport chunkData, SS6ConverterVer2_DLL.ChunkExport chunkString)
+		{
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(x);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			if(null != chunkData)
+			{
+				byte[] data = System.BitConverter.GetBytes(y);
+				chunkData.Data.AddRange(data);
+			}
+			sizeData += 4;
+
+			return(true);
 		}
 		#endregion Functions
 

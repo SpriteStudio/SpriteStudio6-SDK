@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets.cs" />
+    <Compile Include="Exporter.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Script\Script_SpriteStudio6_DataAnimation.cs" />
     <Compile Include="Script\Script_SpriteStudio6_DataCellMap.cs" />
