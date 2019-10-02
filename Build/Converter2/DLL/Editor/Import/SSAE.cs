@@ -5212,6 +5212,20 @@ public static partial class LibraryEditor_SpriteStudio6
 										informationParts.Data.NameAnimationUnderControl = informationParts.NameAnimationUnderControl;
 									}
 								}
+#else
+								informationParts.Data.IndexAnimationPackUnderControl = -1;
+								informationParts.Data.IndexEffectUnderControl = -1;
+								informationParts.Data.NameAnimationUnderControl = "";
+								if(false == string.IsNullOrEmpty(informationParts.NameUnderControl))
+								{
+									indexUnderControl = informationSSPJ.IndexGetAnimation(informationParts.NameUnderControl);
+									if(0 <= indexUnderControl)
+									{
+										informationParts.Data.IndexAnimationPackUnderControl = indexUnderControl;
+//										informationParts.Data.IndexEffectUnderControl =
+										informationParts.Data.NameAnimationUnderControl = informationParts.NameAnimationUnderControl;;
+									}
+								}
 #endif
 								break;
 
@@ -5226,6 +5240,20 @@ public static partial class LibraryEditor_SpriteStudio6
 									if(0 <= indexUnderControl)
 									{
 										informationParts.Data.PrefabUnderControl = informationSSPJ.TableInformationSSEE[indexUnderControl].PrefabEffectSS6PU.TableData[0];
+									}
+								}
+#else
+								informationParts.Data.IndexAnimationPackUnderControl = -1;
+								informationParts.Data.IndexEffectUnderControl = -1;
+								informationParts.Data.NameAnimationUnderControl = "";
+								if(false == string.IsNullOrEmpty(informationParts.NameUnderControl))
+								{
+									indexUnderControl = informationSSPJ.IndexGetAnimation(informationParts.NameUnderControl);
+									if(0 <= indexUnderControl)
+									{
+//										informationParts.Data.IndexAnimationPackUnderControl =
+										informationParts.Data.IndexEffectUnderControl = indexUnderControl;
+//										informationParts.Data.NameAnimationUnderControl = informationParts.NameAnimationUnderControl;;
 									}
 								}
 #endif

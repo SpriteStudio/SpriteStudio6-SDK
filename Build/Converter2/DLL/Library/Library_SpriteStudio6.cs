@@ -1256,8 +1256,11 @@ public static partial class Library_SpriteStudio6
 
 #if !_FOR_SS6CONVERTER_
 				public Object PrefabUnderControl;
-				public string NameAnimationUnderControl;
+#else
+				public int IndexAnimationPackUnderControl;
+				public int IndexEffectUnderControl;
 #endif
+				public string NameAnimationUnderControl;
 				#endregion Variables & Properties
 
 				/* ----------------------------------------------- Functions */
@@ -1280,8 +1283,11 @@ public static partial class Library_SpriteStudio6
 
 #if !_FOR_SS6CONVERTER_
 					PrefabUnderControl = null;
-					NameAnimationUnderControl = "";
+#else
+					IndexAnimationPackUnderControl = -1;
+					IndexEffectUnderControl = -1;
 #endif
+					NameAnimationUnderControl = "";
 				}
 				#endregion Functions
 
