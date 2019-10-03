@@ -1,0 +1,492 @@
+namespace ss.ssfb2;
+
+file_identifier "SFB2";
+
+struct Vector2 {
+    x:float;
+    y:float;
+}
+
+struct Vector3 {
+    x:float;
+    y:float;
+    z:float;
+}
+
+struct Rect {
+    x_min:float;
+    y_min:float;
+    x_max:float;
+    y_max:float;
+}
+
+table DataMesh {
+    table_coordinate:[Vector2];
+    table_index_vertex:[int];
+}
+
+table Cell {
+    name:string;
+    rectangle:Rect;
+    pivot:Vector2;
+    mesh:DataMesh;
+}
+
+table LibraryDataCellMap {
+    name:string;
+    size_original:Vector2;
+    table_cell:[Cell];
+}
+
+table DataCellMap {
+    version:int;
+    table_cell_map:[LibraryDataCellMap];
+}
+
+enum KindFeature:byte {
+    Root = 0,	/* Root-Parts (Subspecies of "NULL"-Parts) */
+    Null,
+    Normal,
+
+    Instance,
+    Effect,
+
+    Mask,
+
+    Joint,
+    Bone,
+    MoveNode,
+    Constraint,
+    BonePoint,
+    Mesh,
+
+    Terminator,
+}
+
+enum KindCollision:byte {
+    Non = 0,
+    Square,
+    Aabb,
+    Circle,
+    CircleScaleMinimum,
+    CircleScaleMaximum,
+}
+
+table Bone {
+    index:short;
+    weight:float;
+    coordinate_offset:Vector3;
+}
+
+table Vertex {
+    table_bone:[Bone];
+}
+
+table BindMesh {
+    count_vertex:int;
+    table_vertex:[Vertex];
+    table_rate_uv:[Vector2];
+    table_index_vertex:[int];
+
+    count_vertex_deform:int;
+}
+
+enum KindForm:byte {
+    Non = 0,
+
+    Red,
+    Orange,
+    Yellow,
+    Green,
+    Blue,
+    Violet,
+    Gray,
+
+    Terminator,
+    // Custom = Terminator 代入できない
+}
+
+struct Color32 {
+    r:ubyte;
+    g:ubyte;
+    b:ubyte;
+    a:ubyte;
+}
+
+struct Color {
+    r:float;
+    g:float;
+    b:float;
+    a:float;   
+}
+
+table ColorLabel {
+    form:KindForm;
+    color:Color32;
+}
+
+enum KindOperationBlend:byte {
+    // TERMINATOR_TABLEMATERIAL = TERMINATOR - INITIATOR,	/* - (-x) = +(x) */
+    // TERMINATOR_PARTSCOLOR = MUL_NA,
+    // INITIATOR = MASK_PRE,
+
+    MaskPre = -2,
+    Mask = -1,
+    // Non = -1, TODO: 同じ値はできなさそう
+
+    Mix = 0,
+    Add,
+    Sub,
+    Mul,
+
+    MulNa,
+    Scr,
+    Exc,
+    Inv,
+
+    Terminator,
+}
+
+table Catalog {
+    table_id_parts_null:[ushort];
+    table_id_parts_normal:[ushort];
+    table_id_parts_instance:[ushort];
+    table_id_parts_effect:[ushort];
+    table_id_parts_mask:[ushort];
+    table_id_parts_joint:[ushort];
+    table_id_parts_bone:[ushort];
+    table_id_parts_move_node:[ushort];
+    table_id_parts_constraint:[ushort];
+    table_id_parts_bone_point:[ushort];
+    table_id_parts_mesh:[ushort];
+}
+
+table DataModelParts {
+    name:string;
+    id:ushort;
+    id_parent:ushort;
+    table_id_children:[ushort];
+    feature:KindFeature;
+    count_mesh:int;
+    mesh:BindMesh;
+    label_color:ColorLabel;
+    operation_blend_target:KindOperationBlend;
+    shape_collision:KindCollision;
+    size_collision:float;
+    index_animation_pack_under_control:int;
+    index_effect_under_control:int;
+    name_animation_under_control:string;
+
+}
+
+enum KindModeSort:byte {
+    Priority = 0,
+    PositionZ,
+}
+
+table Label {
+    name:string;
+    frame:int;
+}
+
+enum FlagBitStatus:uint {
+    Clear = 0x00000000,
+
+    NoEffect = 0x00010000,
+    NoInstance = 0x00020000,
+    NoPartsColor = 0x00040000,
+    NoUserData = 0x00080000,
+
+    NoTransformationTexture = 0x00100000,
+    NoScaling = 0x00200000,
+    NoRotation = 0x00400000,
+    NoPosition = 0x00800000,
+
+    NotMasking = 0x08000000,
+
+    HideFull = 0x10000000,
+    NotUsed = 0x20000000,
+    Valid = 0x40000000,
+}
+
+enum KindOperationBlendEffect:byte {
+    // TERMINATOR_TABLEMATERIAL = TERMINATOR - INITIATOR,	/* - (-x) = +(x) */
+    // Initiator = MIX,
+
+    Non = -1,
+
+    Mix = 0,
+    Add,
+
+    Terminator,
+}
+
+table RangeFloat {
+    main:float;
+    sub:float;
+}
+
+table RangeVector2 {
+    main:Vector2;
+    sub:Vector2;
+}
+
+table RangeColor {
+    main:Color;
+    sub:Color;
+}
+
+table PatternEmit {
+    index_generate:int;
+    duration:int;
+    cycle:int;
+}
+
+table DataAnimationParts {
+    status_parts:FlagBitStatus;
+
+    operation_blend_target:KindOperationBlendEffect;
+    index_cell_map:int;
+    index_cell:int;
+
+    angle:RangeFloat;
+
+    gravity_directional:Vector2;
+    gravity_point_position:Vector2;
+    gravity_point_power:float;
+
+    position:RangeVector2;
+
+    rotation:RangeFloat;
+    rotation_fluctuation:RangeFloat;
+    rotation_fluctuation_rate:float;
+    rotation_fluctuation_rate_time:float;
+
+    rate_tangential_acceleration:RangeFloat;
+
+    scale_start:RangeVector2;
+    scale_rate_start:RangeFloat;
+
+    scale_end:RangeVector2;
+    scale_rate_end:RangeFloat;
+
+    delay:int;
+
+    color_vertex:RangeColor;
+    color_vertex_fluctuation:RangeColor;
+
+    alpha_fade_start:float;
+    alpha_fade_end:float;
+
+    speed:RangeFloat;
+    speed_fluctuation:RangeFloat;
+
+    turn_direction_fluctuation:float;
+
+    seed_random:long;
+
+    // Datas for Emitter
+    duration_emitter:int;
+    interval:int;
+    duration_particle:RangeFloat;
+
+    count_particle_max:int;
+    count_particle_emit:int;
+
+    count_parts_maximum:int;	/* Disuse?? */
+    table_pattern_emit:[PatternEmit];
+    table_pattern_offset:[int];
+    table_seed_particle:[long];
+}
+
+table LibraryDataAnimation {
+    name:string;
+    frame_per_second:int;
+    count_frame:int;
+
+    size_canvas_x:int;
+    size_canvas_y:int;
+
+    frame_valid_start:int;
+    frame_valid_end:int;
+    count_frame_valid:int;
+
+    depth_ik:int;
+    mode_sort:KindModeSort;
+
+    table_label:[Label];
+    table_parts:[DataAnimationParts];
+}
+
+enum UserDataFlagBit:uint {
+    CLEAR = 0x00000000,
+    NUMBER = 0x00000001,
+    RECTANGLE = 0x00000002,
+    COORDINATE = 0x00000004,
+    TEXT = 0x00000008,
+
+    VALID = 0x40000000,
+}
+
+
+table UserData {
+    flags:UserDataFlagBit;
+    number_int:int;
+    rectangle:Rect;
+    coordinate:Vector2;
+    text:string;
+}
+
+table DataSetup {
+    user_data:UserData;
+}
+
+table DataAnimation {
+    version:int;
+    table_parts:[DataModelParts];
+    catalog_parts:Catalog;
+    table_animation:[LibraryDataAnimation];
+    table_animation_parts_setup:[DataSetup];
+}
+
+enum DataEffectFlagBit:uint {
+    Clear = 0x00000000,
+
+    SeedRandomLock = 0x00000001,
+}
+
+enum DataEffectPartsKindFeature:byte {
+    Root = 0,
+    Emitter,
+    Particle,
+
+    Terminator,
+}
+
+table DataEffectParts {
+    name:string;
+
+    id:int;
+    id_parent:int;
+    table_id_child:[int];
+
+    feature:DataEffectPartsKindFeature;
+    index_emitter:int;
+}
+
+enum DataEffectEmitterFlagBit:uint {
+    Clear = 0x00000000,
+
+    Basic = 0x00000001,	/* (Reserved) */
+    TangentialAccelation = 0x00000002,
+    TurnDirection = 0x00000004,
+    SeedRandom = 0x00000008,
+    Delay = 0x00000010,
+
+    Position = 0x00000100,
+    PositionFluctuation = 0x00000200,	/* (Reserved) */
+    Rotation = 0x00000400,
+    RotationFluctuation = 0x00000800,
+    ScaleStart = 0x00001000,
+    ScaleEnd = 0x00002000,
+
+    Speed = 0x00010000,	/* (Reserved) */
+    SpeedFluctuation = 0x00020000,
+    GravityDirection = 0x00040000,
+    GravityPoint = 0x00080000,
+
+    ColorVertex = 0x00100000,
+    ColorVertexFluctuation = 0x00200000,
+    FadeAlpha = 0x00400000,
+
+    MaskParticle = 0x00ffffff,
+
+    EmitInfinite = 0x01000000,
+
+
+    MaskEmitter = 0x7f000000,
+    MaskValid = 0x7fffffff,
+}
+
+table DataEffectEmitter {
+    flag_data:DataEffectEmitterFlagBit;
+
+    operation_blend_target:KindOperationBlendEffect;
+    index_cell_map:int;
+    index_cell:int;
+
+    angle:RangeFloat;
+
+    gravity_directional:Vector2;
+    gravity_point_position:Vector2;
+    gravity_point_power:float;
+
+    position:RangeVector2;
+
+    rotation:RangeFloat;
+    rotation_fluctuation:RangeFloat;
+    rotation_fluctuation_rate:float;
+    rotation_fluctuation_rate_time:float;
+
+    rate_tangential_acceleration:RangeFloat;
+
+    scale_start:RangeVector2;
+    scale_rate_start:RangeFloat;
+
+    scale_end:RangeVector2;
+    scale_rate_end:RangeFloat;
+
+    delay:int;
+
+    color_vertex:RangeColor;
+    color_vertex_fluctuation:RangeColor;
+
+    alpha_fade_start:float;
+    alpha_fade_end:float;
+
+    speed:RangeFloat;
+    speed_fluctuation:RangeFloat;
+
+    turn_direction_fluctuation:float;
+
+    seed_random:long;
+
+    duration_emitter:int;
+    interval:int;
+    duration_particle:RangeFloat;
+
+    count_particle_max:int;
+    count_particle_emit:int;
+
+    count_parts_maximum:int;
+    table_pattern_emit:[PatternEmit];
+    table_pattern_offset:[int];
+    table_deed_particle:[long];
+}
+
+table DataEffect {
+    version:int;
+    flag_data:DataEffectFlagBit;
+
+    seed_random:int;
+    version_renderer:int;
+
+    count_max_particle:int;
+    count_frame_per_second:int;
+
+    scale_layout:Vector2;
+
+	table_parts:[DataEffectParts];
+	table_emitter:[DataEffectEmitter];
+	table_index_emitter_order_draw:[int];
+
+}
+
+table ProjectData {
+    version:int;
+    cell_map:DataCellMap;
+    animation:[DataAnimation];
+    effect:[DataEffect];
+}
+
+root_type ProjectData;
