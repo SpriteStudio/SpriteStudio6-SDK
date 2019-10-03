@@ -2,18 +2,18 @@ namespace ss.ssfb2;
 
 file_identifier "SFB2";
 
-struct Vector2 {
+table Vector2 {
     x:float;
     y:float;
 }
 
-struct Vector3 {
+table Vector3 {
     x:float;
     y:float;
     z:float;
 }
 
-struct Rect {
+table Rect {
     x_min:float;
     y_min:float;
     x_max:float;
@@ -22,7 +22,7 @@ struct Rect {
 
 table DataMesh {
     table_coordinate:[Vector2];
-    table_index_vertex:[int];
+    table_index_vertex:[ushort];
 }
 
 table Cell {
@@ -39,11 +39,11 @@ table LibraryDataCellMap {
 }
 
 table DataCellMap {
-    version:int;
+    version:uint;
     table_cell_map:[LibraryDataCellMap];
 }
 
-enum KindFeature:byte {
+enum DataModelPartsKindFeature:ubyte {
     Root = 0,	/* Root-Parts (Subspecies of "NULL"-Parts) */
     Null,
     Normal,
@@ -63,7 +63,7 @@ enum KindFeature:byte {
     Terminator,
 }
 
-enum KindCollision:byte {
+enum KindCollision:ubyte {
     Non = 0,
     Square,
     Aabb,
@@ -73,7 +73,7 @@ enum KindCollision:byte {
 }
 
 table Bone {
-    index:short;
+    index:ushort;
     weight:float;
     coordinate_offset:Vector3;
 }
@@ -91,7 +91,7 @@ table BindMesh {
     count_vertex_deform:int;
 }
 
-enum KindForm:byte {
+enum ColorLabelKindForm:ubyte {
     Non = 0,
 
     Red,
@@ -106,14 +106,14 @@ enum KindForm:byte {
     // Custom = Terminator 代入できない
 }
 
-struct Color32 {
+table Color32 {
     r:ubyte;
     g:ubyte;
     b:ubyte;
     a:ubyte;
 }
 
-struct Color {
+table Color {
     r:float;
     g:float;
     b:float;
@@ -121,7 +121,7 @@ struct Color {
 }
 
 table ColorLabel {
-    form:KindForm;
+    form:ColorLabelKindForm;
     color:Color32;
 }
 
@@ -166,30 +166,30 @@ table DataModelParts {
     id:ushort;
     id_parent:ushort;
     table_id_children:[ushort];
-    feature:KindFeature;
-    count_mesh:int;
+    feature:DataModelPartsKindFeature;
+    count_mesh:ushort;
     mesh:BindMesh;
     label_color:ColorLabel;
     operation_blend_target:KindOperationBlend;
     shape_collision:KindCollision;
     size_collision:float;
-    index_animation_pack_under_control:int;
-    index_effect_under_control:int;
+    index_animation_pack_under_control:ushort;
+    index_effect_under_control:ushort;
     name_animation_under_control:string;
 
 }
 
-enum KindModeSort:byte {
+enum KindModeSort:ubyte {
     Priority = 0,
     PositionZ,
 }
 
 table Label {
     name:string;
-    frame:int;
+    frame:ushort;
 }
 
-enum FlagBitStatus:uint {
+enum DataAnimationPartsFlagBitStatus:uint {
     Clear = 0x00000000,
 
     NoEffect = 0x00010000,
@@ -243,11 +243,11 @@ table PatternEmit {
 }
 
 table DataAnimationParts {
-    status_parts:FlagBitStatus;
+    status_parts:DataAnimationPartsFlagBitStatus;
 
     operation_blend_target:KindOperationBlendEffect;
-    index_cell_map:int;
-    index_cell:int;
+    index_cell_map:ushort;
+    index_cell:ushort;
 
     angle:RangeFloat;
 
@@ -342,7 +342,7 @@ table DataSetup {
 }
 
 table DataAnimation {
-    version:int;
+    version:uint;
     table_parts:[DataModelParts];
     catalog_parts:Catalog;
     table_animation:[LibraryDataAnimation];
@@ -355,7 +355,7 @@ enum DataEffectFlagBit:uint {
     SeedRandomLock = 0x00000001,
 }
 
-enum DataEffectPartsKindFeature:byte {
+enum DataEffectPartsKindFeature:ubyte {
     Root = 0,
     Emitter,
     Particle,
@@ -366,12 +366,12 @@ enum DataEffectPartsKindFeature:byte {
 table DataEffectParts {
     name:string;
 
-    id:int;
-    id_parent:int;
-    table_id_child:[int];
+    id:ushort;
+    id_parent:ushort;
+    table_id_child:[ushort];
 
     feature:DataEffectPartsKindFeature;
-    index_emitter:int;
+    index_emitter:ushort;
 }
 
 enum DataEffectEmitterFlagBit:uint {
@@ -412,8 +412,8 @@ table DataEffectEmitter {
     flag_data:DataEffectEmitterFlagBit;
 
     operation_blend_target:KindOperationBlendEffect;
-    index_cell_map:int;
-    index_cell:int;
+    index_cell_map:ushort;
+    index_cell:ushort;
 
     angle:RangeFloat;
 
@@ -465,7 +465,7 @@ table DataEffectEmitter {
 }
 
 table DataEffect {
-    version:int;
+    version:uint;
     flag_data:DataEffectFlagBit;
 
     seed_random:int;
@@ -483,7 +483,7 @@ table DataEffect {
 }
 
 table ProjectData {
-    version:int;
+    version:uint;
     cell_map:DataCellMap;
     animation:[DataAnimation];
     effect:[DataEffect];
