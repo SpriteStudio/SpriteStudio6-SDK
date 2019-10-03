@@ -4442,7 +4442,11 @@ public static partial class LibraryEditor_SpriteStudio6
 					}
 					informationSSAE.DataAnimationSS6PU.TableData[0] = dataAnimation;
 
+#if !_FOR_SS6CONVERTER_
 					dataAnimation.Version = Script_SpriteStudio6_DataAnimation.KindVersion.SUPPORT_LATEST;
+#else
+					dataAnimation.Version = (int)Script_SpriteStudio6_DataAnimation.KindVersion.SUPPORT_LATEST;
+#endif
 
 					int countParts = informationSSAE.TableParts.Length;
 					Library_SpriteStudio6.Data.Parts.Animation[] tablePartsRuntime = new Library_SpriteStudio6.Data.Parts.Animation[countParts];

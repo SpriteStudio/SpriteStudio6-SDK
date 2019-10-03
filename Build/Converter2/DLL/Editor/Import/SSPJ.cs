@@ -1189,7 +1189,11 @@ public static partial class LibraryEditor_SpriteStudio6
 					informationSSPJ.DataCellMapSS6PU.TableData[0] = dataCellMap;
 
 					int countSSCE = informationSSPJ.TableInformationSSCE.Length;
+#if !_FOR_SS6CONVERTER_
 					dataCellMap.Version = Script_SpriteStudio6_DataCellMap.KindVersion.SUPPORT_LATEST;
+#else
+					dataCellMap.Version = (int)Script_SpriteStudio6_DataCellMap.KindVersion.SUPPORT_LATEST;
+#endif
 					dataCellMap.TableCellMap = new Library_SpriteStudio6.Data.CellMap[countSSCE];
 					for(int i=0; i<countSSCE; i++)
 					{

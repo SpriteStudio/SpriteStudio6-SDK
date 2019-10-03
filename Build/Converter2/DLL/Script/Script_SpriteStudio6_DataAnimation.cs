@@ -21,7 +21,11 @@ public class Script_SpriteStudio6_DataAnimation : ScriptableObject
 {
 	/* ----------------------------------------------- Variables & Properties */
 	#region Variables & Properties
+#if !_FOR_SS6CONVERTER_
 	public KindVersion Version;
+#else
+	public int Version;
+#endif
 
 #if !_FOR_SS6CONVERTER_
 	public Material[] TableMaterial;
@@ -82,7 +86,11 @@ public class Script_SpriteStudio6_DataAnimation : ScriptableObject
 	#region Functions
 	public void CleanUp()
 	{
+#if !_FOR_SS6CONVERTER_
 		Version = (KindVersion)(-1);
+#else
+		Version = -1;
+#endif
 #if !_FOR_SS6CONVERTER_
 		TableMaterial = null;
 #endif
@@ -98,7 +106,11 @@ public class Script_SpriteStudio6_DataAnimation : ScriptableObject
 
 	public bool VersionCheckRuntime()
 	{
+#if !_FOR_SS6CONVERTER_
 		return(((KindVersion.SUPPORT_EARLIEST <= Version) && (KindVersion.SUPPORT_LATEST >= Version)));	/* ? true : false */
+#else
+		return((((int)KindVersion.SUPPORT_EARLIEST <= Version) && ((int)KindVersion.SUPPORT_LATEST >= Version)));	/* ? true : false */
+#endif
 	}
 
 	public int CountGetParts()
@@ -109,7 +121,11 @@ public class Script_SpriteStudio6_DataAnimation : ScriptableObject
 	public int CountGetPartsSprite()
 	{
 		int count = 0;
+#if !_FOR_SS6CONVERTER_
 		if(KindVersion.CODE_010001 > Version)
+#else
+		if((int)KindVersion.CODE_010001 > Version)
+#endif
 		{	/* "CatalogParts" not implemented */
 			int countParts = TableParts.Length;
 			for(int i=0; i<countParts; i++)
@@ -165,7 +181,11 @@ public class Script_SpriteStudio6_DataAnimation : ScriptableObject
 	public int CountGetPartsDraw()
 	{
 		int count = 0;
+#if !_FOR_SS6CONVERTER_
 		if(KindVersion.CODE_010001 > Version)
+#else
+		if((int)KindVersion.CODE_010001 > Version)
+#endif
 		{	/* "CatalogParts" not implemented */
 			int countParts = TableParts.Length;
 			for(int i=0; i<countParts; i++)
@@ -220,7 +240,11 @@ public class Script_SpriteStudio6_DataAnimation : ScriptableObject
 	public int CountGetPartsPreDraw()
 	{
 		int count = 0;
+#if !_FOR_SS6CONVERTER_
 		if(KindVersion.CODE_010001 > Version)
+#else
+		if((int)KindVersion.CODE_010001 > Version)
+#endif
 		{	/* "CatalogParts" not implemented */
 			int countParts = TableParts.Length;
 			for(int i=0; i<countParts; i++)

@@ -19,7 +19,11 @@ public class Script_SpriteStudio6_DataCellMap : ScriptableObject
 {
 	/* ----------------------------------------------- Variables & Properties */
 	#region Variables & Properties
+#if !_FOR_SS6CONVERTER_
 	public KindVersion Version;
+#else
+	public int Version;
+#endif
 	public Library_SpriteStudio6.Data.CellMap[] TableCellMap;
 	#endregion Variables & Properties
 
@@ -27,13 +31,21 @@ public class Script_SpriteStudio6_DataCellMap : ScriptableObject
 	#region Functions
 	public void CleanUp()
 	{
+#if !_FOR_SS6CONVERTER_
 		Version = (KindVersion)(-1);
+#else
+		Version = -1;
+#endif
 		TableCellMap = null;
 	}
 
 	public bool VersionCheckRuntime()
 	{
+#if !_FOR_SS6CONVERTER_
 		return(((KindVersion.SUPPORT_EARLIEST <= Version) && (KindVersion.SUPPORT_LATEST >= Version)));	/* ? true : false */
+#else
+		return((((int)KindVersion.SUPPORT_EARLIEST <= Version) && ((int)KindVersion.SUPPORT_LATEST >= Version)));	/* ? true : false */
+#endif
 	}
 
 	public int CountGetCellMap()

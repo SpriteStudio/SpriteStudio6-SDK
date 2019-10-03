@@ -24,7 +24,8 @@ public class Script_SpriteStudio6_DataProject : ScriptableObject
 {
 	/* ----------------------------------------------- Variables & Properties */
 	#region Variables & Properties
-	public KindVersion Version;
+//	public KindVersion Version;
+	public int Version;
 
 #if true
 	/* MEMO: SS6PUのそのままのデータ */
@@ -42,12 +43,14 @@ public class Script_SpriteStudio6_DataProject : ScriptableObject
 	#region Functions
 	public void CleanUp()
 	{
-		Version = (KindVersion)(-1);
+//		Version = (KindVersion)(-1);
+		Version = -1;
 	}
 
 	public bool VersionCheckRuntime()
 	{
-		return(((KindVersion.SUPPORT_EARLIEST <= Version) && (KindVersion.SUPPORT_LATEST >= Version)));	/* ? true : false */
+//		return(((KindVersion.SUPPORT_EARLIEST <= Version) && (KindVersion.SUPPORT_LATEST >= Version)));	/* ? true : false */
+		return((((int)KindVersion.SUPPORT_EARLIEST <= Version) && ((int)KindVersion.SUPPORT_LATEST >= Version)));	/* ? true : false */
 	}
 	#endregion Functions
 

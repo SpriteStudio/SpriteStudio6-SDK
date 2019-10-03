@@ -1173,7 +1173,11 @@ public static partial class LibraryEditor_SpriteStudio6
 					}
 					informationSSEE.DataEffectSS6PU.TableData[0] = dataEffect;
 
+#if !_FOR_SS6CONVERTER_
 					dataEffect.Version = Script_SpriteStudio6_DataEffect.KindVersion.SUPPORT_LATEST;
+#else
+					dataEffect.Version = (int)Script_SpriteStudio6_DataEffect.KindVersion.SUPPORT_LATEST;
+#endif
 					dataEffect.TableParts = informationSSEE.TablePartsSS6PU;
 					dataEffect.TableEmitter = informationSSEE.TableEmitterSS6PU;
 					dataEffect.TableIndexEmitterOrderDraw = informationSSEE.TableIndexEmitterOrderDrawSS6PU;

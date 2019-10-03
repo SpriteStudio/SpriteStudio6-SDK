@@ -19,7 +19,11 @@ public class Script_SpriteStudio6_DataEffect : ScriptableObject
 {
 	/* ----------------------------------------------- Variables & Properties */
 	#region Variables & Properties
+#if !_FOR_SS6CONVERTER_
 	public KindVersion Version;
+#else
+	public int Version;
+#endif
 
 #if !_FOR_SS6CONVERTER_
 	public Material[] TableMaterial;
@@ -71,12 +75,20 @@ public class Script_SpriteStudio6_DataEffect : ScriptableObject
 	#region Functions
 	public void CleanUp()
 	{
+#if !_FOR_SS6CONVERTER_
 		Version = (KindVersion)(-1);
+#else
+		Version = -1;
+#endif
 	}
 
 	public bool VersionCheckRuntime()
 	{
+#if !_FOR_SS6CONVERTER_
 		return(((KindVersion.SUPPORT_EARLIEST <= Version) && (KindVersion.SUPPORT_LATEST >= Version)));	/* ? true : false */
+#else
+		return((((int)KindVersion.SUPPORT_EARLIEST <= Version) && ((int)KindVersion.SUPPORT_LATEST >= Version)));	/* ? true : false */
+#endif
 	}
 
 	public int CountGetParts()

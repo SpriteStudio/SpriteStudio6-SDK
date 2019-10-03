@@ -937,7 +937,11 @@ public static partial class LibraryEditor_SpriteStudio6
 			informationSSPJ.DataProject.BootUp(1);	/* Always 1 */
 			informationSSPJ.DataProject.TableData[0] = dataProject;
 
+#if !_FOR_SS6CONVERTER_
 			dataProject.Version = Script_SpriteStudio6_DataProject.KindVersion.SUPPORT_LATEST;
+#else
+			dataProject.Version = (int)Script_SpriteStudio6_DataProject.KindVersion.SUPPORT_LATEST;
+#endif
 
 			dataProject.CellMap = informationSSPJ.DataCellMapSS6PU.TableData[0];	/* Now only 1 */
 
