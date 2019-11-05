@@ -16,6 +16,7 @@ using SS6ConverterVer2_DLL.Types;
 using UnityEngine = SS6ConverterVer2_DLL.Assets;
 #endif
 
+
 public static partial class Library_SpriteStudio6
 {
 	/* ----------------------------------------------- Signatures */

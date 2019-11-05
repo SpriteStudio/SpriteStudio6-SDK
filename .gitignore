@@ -77,3 +77,11 @@ Build/Viewer2/JuceLibraryCode/
 
 Build/Converter/build/
 Build/Viewer/build/
+Build/Converter2/bin/
+
+Build/Converter2/CUI/.vs/
+Build/Converter2/DLL/.vs/
+
+Build/Converter2/DLL/ssfb2.cs
+Build/Converter2/flatc.exe
+Build/Converter2/ssfb2.cs

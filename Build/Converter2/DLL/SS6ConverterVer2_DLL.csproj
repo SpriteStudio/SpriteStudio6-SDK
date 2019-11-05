@@ -48,6 +48,7 @@
     <Compile Include="Script\Script_SpriteStudio6_DataCellMap.cs" />
     <Compile Include="Script\Script_SpriteStudio6_DataEffect.cs" />
     <Compile Include="Script\Script_SpriteStudio6_DataProject.cs" />
+    <Compile Include="ssfb2.cs" />
     <Compile Include="Types.cs" />
     <Compile Include="Editor\Import\Setting.cs" />
     <Compile Include="Editor\Import\SSAE.cs" />
@@ -71,6 +72,12 @@
   <ItemGroup>
     <Folder Include="Script\RootEffect\" />
     <Folder Include="Script\Root\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Converter\flatbuffers\net\FlatBuffers\FlatBuffers.csproj">
+      <Project>{28c00774-1e73-4a75-ad8f-844cd21a064d}</Project>
+      <Name>FlatBuffers</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
