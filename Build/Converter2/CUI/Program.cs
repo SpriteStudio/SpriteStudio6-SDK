@@ -81,13 +81,28 @@ namespace SS6ConverterVer2_CUI
 				goto Main_UsageDisplayEnd;
 			}
 			pathInput = textTemp;
-			if(false == LibraryEditor_SpriteStudio6.Utility.File.PathSplit(out directoryInput, out fileBodyInput, out extensionInput, pathInput))	{	/* エラー */
+
+
+
+            if (false == LibraryEditor_SpriteStudio6.Utility.File.PathSplit(out directoryInput, out fileBodyInput, out extensionInput, pathInput))	{	/* エラー */
 				Console.WriteLine("Error: Input file path is invalid. \"" + pathInput + "\"");
 			}
 			if(ExtensionSS6Project != extensionInput)	{	/* 拡張子が規定ではない */
 				pathInput += ExtensionSS6Project;
 			}
-			Console.WriteLine("[Input file] " + pathInput);
+
+            if ((true == string.IsNullOrEmpty(directoryInput)) || ("/" == directoryInput))
+            {   /* ディレクトリが空もしくはカレントディレクトリ */
+                /* MEMO: カレントディレクトリを適用 。    */
+                /*       ※ディレクトリは正規化しておく。 */
+                /* MEMO: LibraryEditor_SpriteStudio6.Utility.File.PathSplitがディレクトリ末尾に「/」を補完してくるので「/」だけの場合カレント。 */
+                directoryInput = PathNormalize(System.IO.Directory.GetCurrentDirectory(), true);
+            }
+
+
+            pathInput = directoryInput + fileBodyInput + extensionInput;
+
+            Console.WriteLine("[Input file] " + pathInput);
 			if(false == System.IO.File.Exists(pathInput))	{	/* ファイルが存在していない */
 				Console.WriteLine("Error: File is not found. \"" + pathInput + "\"");
 
