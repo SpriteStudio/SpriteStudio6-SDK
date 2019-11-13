@@ -966,7 +966,10 @@ public static partial class LibraryEditor_SpriteStudio6
 			}
 #endif
 
-			return(true);
+            ExportSSFB2.output_ssfb2(dataProject);
+
+
+            return (true);
 
 		ExecSS6PU_ErrorEnd:;
 			return(false);
