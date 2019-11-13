@@ -163,11 +163,11 @@ table Catalog {
 
 table DataModelParts {
     name:string;
-    id:ushort;
-    id_parent:ushort;
-    table_id_children:[ushort];
+    id:int;
+    id_parent:int;
+    table_id_children:[int];
     feature:DataModelPartsKindFeature;
-    count_mesh:ushort;
+    count_mesh:int;
     mesh:BindMesh;
     label_color:ColorLabel;
     operation_blend_target:KindOperationBlend;
