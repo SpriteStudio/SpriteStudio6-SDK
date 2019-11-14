@@ -242,62 +242,260 @@ table PatternEmit {
     cycle:int;
 }
 
-table DataAnimationParts {
-    status_parts:DataAnimationPartsFlagBitStatus;
+enum KindTypePack:short
+{
+	STANDARD_UNCOMPRESSED = 0,	/* Standard-Uncompressed (Plain Array) */
+	STANDARD_CPE,	/* Standard-Compressed (Changing-Point Extracting) */
+	CPE_FLYWEIGHT,	/* CPE & GoF-Flyweight (Commonized CPE's dictionary) */
+	CPE_INTERPOLATE,	/* CPE & Interpolate (Linear,Acceleration and Deceleration: Interpolate / Other: CPE) */
 
-    operation_blend_target:KindOperationBlendEffect;
-    index_cell_map:ushort;
-    index_cell:ushort;
-
-    angle:RangeFloat;
-
-    gravity_directional:Vector2;
-    gravity_point_position:Vector2;
-    gravity_point_power:float;
-
-    position:RangeVector2;
-
-    rotation:RangeFloat;
-    rotation_fluctuation:RangeFloat;
-    rotation_fluctuation_rate:float;
-    rotation_fluctuation_rate_time:float;
-
-    rate_tangential_acceleration:RangeFloat;
-
-    scale_start:RangeVector2;
-    scale_rate_start:RangeFloat;
-
-    scale_end:RangeVector2;
-    scale_rate_end:RangeFloat;
-
-    delay:int;
-
-    color_vertex:RangeColor;
-    color_vertex_fluctuation:RangeColor;
-
-    alpha_fade_start:float;
-    alpha_fade_end:float;
-
-    speed:RangeFloat;
-    speed_fluctuation:RangeFloat;
-
-    turn_direction_fluctuation:float;
-
-    seed_random:long;
-
-    // Datas for Emitter
-    duration_emitter:int;
-    interval:int;
-    duration_particle:RangeFloat;
-
-    count_particle_max:int;
-    count_particle_emit:int;
-
-    count_parts_maximum:int;	/* Disuse?? */
-    table_pattern_emit:[PatternEmit];
-    table_pattern_offset:[int];
-    table_seed_particle:[long];
+	TERMINATOR,
 }
+
+
+enum AnimationAttributeFlagBit : int
+{
+	VALID = 0x40000000,
+	HIDE = 0x20000000,	/* Store as assistant data for skip useless processing. */
+
+	FLIP_X = 0x08000000,
+	FLIP_Y = 0x04000000,
+	FLIP_TEXTURE_X = 0x02000000,
+	FLIP_TEXTURE_Y = 0x01000000,
+
+	ID_PARTS_NEXTDRAW = 0x00000fff,
+	ID_PARTS_NEXTPREDRAW = 0x00fff000,
+
+	CLEAR = 0x00000000,
+	MASK = (VALID | HIDE | FLIP_X | FLIP_Y | FLIP_TEXTURE_X | FLIP_TEXTURE_Y | ID_PARTS_NEXTPREDRAW | ID_PARTS_NEXTDRAW),
+	INITIAL = (VALID | ID_PARTS_NEXTDRAW | ID_PARTS_NEXTPREDRAW),
+}
+
+
+table AnimationAttributeCell
+{
+	IndexCellMap:int;
+	IndexCell:int;
+}
+
+
+enum Library_SpriteStudio6KindBoundBlend : short  
+{
+	NON = 0,
+	OVERALL,
+	VERTEX
+}
+
+enum Library_SpriteStudio6KindOperationBlend : int
+{
+	TERMINATOR_TABLEMATERIAL = TERMINATOR - INITIATOR,	/* - (-x) = +(x) */
+	TERMINATOR_PARTSCOLOR = MUL_NA,
+	INITIATOR = MASK_PRE,
+
+	MASK_PRE = -2,
+	MASK = -1,
+	NON = -1,	/* for Control.AdditionalColor */
+
+	MIX = 0,
+	ADD,
+	SUB,
+	MUL,
+
+	MUL_NA,
+	SCR,
+	EXC,
+	INV,
+
+	TERMINATOR,
+}
+
+
+table AnimationAttributePartsColor
+{
+	Bound:Library_SpriteStudio6KindBoundBlend;
+	Operation:Library_SpriteStudio6KindOperationBlend;
+	VertexColor:[Color];
+	RateAlpha:[float];
+}
+
+
+table CodeValueContainer
+{
+	TableCode:[int];
+}
+
+
+table ContainerStatus
+{
+	TypePack:KindTypePack;
+	TableCodeValue:[CodeValueContainer];
+	TableValue:[AnimationAttributeFlagBit];
+}
+
+table ContainerCell
+{
+	TypePack:KindTypePack;
+	TableCodeValue:[CodeValueContainer];
+	TableValue:[AnimationAttributeCell];
+}
+
+table ContainerVector3
+{
+	TypePack:KindTypePack;
+	TableCodeValue:[CodeValueContainer];
+	TableValue:[Vector3];
+}
+
+table ContainerVector2
+{
+	TypePack:KindTypePack;
+	TableCodeValue:[CodeValueContainer];
+	TableValue:[Vector2];
+}
+
+table ContainerFloat
+{
+	TypePack:KindTypePack;
+	TableCodeValue:[CodeValueContainer];
+	TableValue:[float];
+}
+
+table ContainerInt
+{
+	TypePack:KindTypePack;
+	TableCodeValue:[CodeValueContainer]
+	TableValue:[int];
+}
+
+table ContainerPartsColor
+{
+	TypePack:KindTypePack;
+	TableCodeValue:[CodeValueContainer];
+	
+	TableValue:[AnimationAttributePartsColor];
+}
+
+
+table VertexCorrection
+{
+	Coordinate:[Vector2];
+}
+
+table ContainerVertexCorrection
+{
+	TypePack:KindTypePack;
+	TableCodeValue:[CodeValueContainer];
+	
+	TableValue:[VertexCorrection];
+}
+
+table ContainerUserData
+{
+	TypePack:KindTypePack;
+	TableCodeValue:[CodeValueContainer];
+	TableValue:[UserData];
+}
+
+
+enum AnimationAttributeInstanceFlagBit : int 
+{
+	VALID = 0x40000000,
+
+	INDEPENDENT = 0x00000002,
+	PINGPONG = 0x00000001,
+
+	CLEAR = 0x00000000,
+}
+
+
+table AnimationAttributeInstance
+{
+	 Flags:AnimationAttributeInstanceFlagBit;
+	 PlayCount:int;
+	 RateTime:float;
+	 OffsetStart:int;
+	 OffsetEnd:int;
+	 LabelStart:string;
+	 LabelEnd:string;
+}
+
+
+table ContainerInstance
+{
+	TypePack:KindTypePack;
+	TableCodeValue:[CodeValueContainer];
+	TableValue:[AnimationAttributeInstance];
+}
+
+enum AnimationAttributeEffectFlagBit : int
+{
+	VALID = 0x40000000,
+
+	INDEPENDENT = 0x00000002,
+	PINGPONG = 0x00000001,	/* (Reserved) */
+
+	CLEAR = 0x00000000,
+}
+
+table AnimationAttributeEffect
+{
+	Flags:AnimationAttributeEffectFlagBit;
+	FrameStart:int;
+	RateTime:float;
+}
+
+
+table ContainerEffect
+{
+	TypePack:KindTypePack;
+	TableCodeValue:[CodeValueContainer];
+	TableValue:[AnimationAttributeEffect];
+}
+
+
+
+table AnimationAttributeDeform
+{
+	TableCoordinate:[Vector2];
+}
+
+table ContainerDeform
+{
+	TypePack:KindTypePack;
+	TableCodeValue:[CodeValueContainer];
+	TableValue:[AnimationAttributeDeform];
+
+}
+
+
+table DataAnimationParts
+{
+
+	StatusParts:DataAnimationPartsFlagBitStatus;
+
+	Status:ContainerStatus;
+	Cell:ContainerCell;
+	Position:ContainerVector3;
+	Rotation:ContainerVector3;
+	Scaling:ContainerVector2;
+	ScalingLocal:ContainerVector2;
+	RateOpacity:ContainerFloat;
+	Priority:ContainerInt;
+	PartsColor:ContainerPartsColor;
+	VertexCorrection:ContainerVertexCorrection;
+	OffsetPivot:ContainerVector2;
+	PositionAnchor:ContainerVector2;
+	SizeForce:ContainerVector2;
+	PositionTexture:ContainerVector2;
+	RotationTexture:ContainerFloat;
+	ScalingTexture:ContainerVector2;
+	RadiusCollision:ContainerFloat;
+	UserData:ContainerUserData;
+	Instance:ContainerInstance;
+	Effect:ContainerEffect;
+	Deform:ContainerDeform;
+}
+
 
 table LibraryDataAnimation {
     name:string;
@@ -463,6 +661,7 @@ table DataEffectEmitter {
     table_pattern_offset:[int];
     table_deed_particle:[long];
 }
+
 
 table DataEffect {
     version:uint;

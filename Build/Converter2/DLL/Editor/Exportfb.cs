@@ -201,14 +201,34 @@ public static partial class LibraryEditor_SpriteStudio6
                 return ss.ssfb2.DataSetup.CreateDataSetup(fbb,
                     makeUserData(fbb,setup.UserData)
                     );
+            }
 
-
+            static Offset<ss.ssfb2.DataAnimationParts> makeDataAnimationParts(FlatBufferBuilder fbb , Library_SpriteStudio6.Data.Animation.Parts _parts)
+            {
+                return ss.ssfb2.DataAnimationParts.CreateDataAnimationParts(fbb);
             }
 
 
             static Offset<ss.ssfb2.LibraryDataAnimation> makeLibraryDataAnimation(FlatBufferBuilder fbb , Library_SpriteStudio6.Data.Animation animeData)
             {
-                return ss.ssfb2.LibraryDataAnimation.CreateLibraryDataAnimation(fbb);
+
+
+                return ss.ssfb2.LibraryDataAnimation.CreateLibraryDataAnimation(
+                    fbb,
+                    fbb.CreateString(animeData.Name),
+                    animeData.FramePerSecond,
+                    animeData.CountFrame,
+                    animeData.SizeCanvasX,
+                    animeData.SizeCanvasY,
+                    animeData.FrameValidStart,
+                    animeData.FrameValidEnd,
+                    animeData.CountFrameValid,
+                    animeData.DepthIK,
+                    (ss.ssfb2.KindModeSort)animeData.ModeSort,
+                    animeData.TableLabel,
+                    animeData.TableParts
+                    
+                    );
             }
 
 
