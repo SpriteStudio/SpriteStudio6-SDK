@@ -966,7 +966,7 @@ public static partial class LibraryEditor_SpriteStudio6
 			}
 #endif
 
-            ExportSSFB2.output_ssfb2(dataProject);
+            ExportSSFB2.output_ssfb2(dataProject , "c:\\temp\\test.fb2" );
 
 
             return (true);

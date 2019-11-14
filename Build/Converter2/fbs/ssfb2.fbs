@@ -214,10 +214,8 @@ enum KindOperationBlendEffect:byte {
     // Initiator = MIX,
 
     Non = -1,
-
     Mix = 0,
     Add,
-
     Terminator,
 }
 
@@ -253,23 +251,20 @@ enum KindTypePack:short
 }
 
 
-enum AnimationAttributeFlagBit : int
-{
-	VALID = 0x40000000,
-	HIDE = 0x20000000,	/* Store as assistant data for skip useless processing. */
-
-	FLIP_X = 0x08000000,
-	FLIP_Y = 0x04000000,
-	FLIP_TEXTURE_X = 0x02000000,
-	FLIP_TEXTURE_Y = 0x01000000,
-
-	ID_PARTS_NEXTDRAW = 0x00000fff,
-	ID_PARTS_NEXTPREDRAW = 0x00fff000,
-
-	CLEAR = 0x00000000,
-	MASK = (VALID | HIDE | FLIP_X | FLIP_Y | FLIP_TEXTURE_X | FLIP_TEXTURE_Y | ID_PARTS_NEXTPREDRAW | ID_PARTS_NEXTDRAW),
-	INITIAL = (VALID | ID_PARTS_NEXTDRAW | ID_PARTS_NEXTPREDRAW),
-}
+//enum AnimationAttributeFlagBit : int
+//{
+//	CLEAR = 0x00000000,
+//	ID_PARTS_NEXTDRAW = 0x00000fff,
+//	ID_PARTS_NEXTPREDRAW = 0x00fff000,
+//	FLIP_TEXTURE_Y = 0x01000000,
+//	FLIP_TEXTURE_X = 0x02000000,
+//	FLIP_Y = 0x04000000,
+//	FLIP_X = 0x08000000,
+//	HIDE   = 0x20000000,	
+//	VALID  = 0x40000000,
+//	MASK = (VALID | HIDE | FLIP_X | FLIP_Y | FLIP_TEXTURE_X | FLIP_TEXTURE_Y | ID_PARTS_NEXTPREDRAW | ID_PARTS_NEXTDRAW),
+//	INITIAL = (VALID | ID_PARTS_NEXTDRAW | ID_PARTS_NEXTPREDRAW),
+//}
 
 
 table AnimationAttributeCell
@@ -279,41 +274,10 @@ table AnimationAttributeCell
 }
 
 
-enum Library_SpriteStudio6KindBoundBlend : short  
-{
-	NON = 0,
-	OVERALL,
-	VERTEX
-}
-
-enum Library_SpriteStudio6KindOperationBlend : int
-{
-	TERMINATOR_TABLEMATERIAL = TERMINATOR - INITIATOR,	/* - (-x) = +(x) */
-	TERMINATOR_PARTSCOLOR = MUL_NA,
-	INITIATOR = MASK_PRE,
-
-	MASK_PRE = -2,
-	MASK = -1,
-	NON = -1,	/* for Control.AdditionalColor */
-
-	MIX = 0,
-	ADD,
-	SUB,
-	MUL,
-
-	MUL_NA,
-	SCR,
-	EXC,
-	INV,
-
-	TERMINATOR,
-}
-
-
 table AnimationAttributePartsColor
 {
-	Bound:Library_SpriteStudio6KindBoundBlend;
-	Operation:Library_SpriteStudio6KindOperationBlend;
+	Bound:short;
+	Operation:short;
 	VertexColor:[Color];
 	RateAlpha:[float];
 }
@@ -329,7 +293,7 @@ table ContainerStatus
 {
 	TypePack:KindTypePack;
 	TableCodeValue:[CodeValueContainer];
-	TableValue:[AnimationAttributeFlagBit];
+	TableValue:[int];
 }
 
 table ContainerCell
@@ -363,7 +327,7 @@ table ContainerFloat
 table ContainerInt
 {
 	TypePack:KindTypePack;
-	TableCodeValue:[CodeValueContainer]
+	TableCodeValue:[CodeValueContainer];
 	TableValue:[int];
 }
 
@@ -397,20 +361,9 @@ table ContainerUserData
 }
 
 
-enum AnimationAttributeInstanceFlagBit : int 
-{
-	VALID = 0x40000000,
-
-	INDEPENDENT = 0x00000002,
-	PINGPONG = 0x00000001,
-
-	CLEAR = 0x00000000,
-}
-
-
 table AnimationAttributeInstance
 {
-	 Flags:AnimationAttributeInstanceFlagBit;
+	 Flags:int;
 	 PlayCount:int;
 	 RateTime:float;
 	 OffsetStart:int;
@@ -427,19 +380,10 @@ table ContainerInstance
 	TableValue:[AnimationAttributeInstance];
 }
 
-enum AnimationAttributeEffectFlagBit : int
-{
-	VALID = 0x40000000,
-
-	INDEPENDENT = 0x00000002,
-	PINGPONG = 0x00000001,	/* (Reserved) */
-
-	CLEAR = 0x00000000,
-}
 
 table AnimationAttributeEffect
 {
-	Flags:AnimationAttributeEffectFlagBit;
+	Flags:int;
 	FrameStart:int;
 	RateTime:float;
 }
@@ -471,29 +415,29 @@ table ContainerDeform
 table DataAnimationParts
 {
 
-	StatusParts:DataAnimationPartsFlagBitStatus;
+	status_parts:DataAnimationPartsFlagBitStatus;
 
-	Status:ContainerStatus;
-	Cell:ContainerCell;
-	Position:ContainerVector3;
-	Rotation:ContainerVector3;
-	Scaling:ContainerVector2;
-	ScalingLocal:ContainerVector2;
-	RateOpacity:ContainerFloat;
-	Priority:ContainerInt;
-	PartsColor:ContainerPartsColor;
-	VertexCorrection:ContainerVertexCorrection;
-	OffsetPivot:ContainerVector2;
-	PositionAnchor:ContainerVector2;
-	SizeForce:ContainerVector2;
-	PositionTexture:ContainerVector2;
-	RotationTexture:ContainerFloat;
-	ScalingTexture:ContainerVector2;
-	RadiusCollision:ContainerFloat;
-	UserData:ContainerUserData;
-	Instance:ContainerInstance;
-	Effect:ContainerEffect;
-	Deform:ContainerDeform;
+	status:ContainerStatus;
+	cell:ContainerCell;
+	position:ContainerVector3;
+	rotation:ContainerVector3;
+	scaling:ContainerVector2;
+	scalingLocal:ContainerVector2;
+	rateOpacity:ContainerFloat;
+	priority:ContainerInt;
+	partsColor:ContainerPartsColor;
+	vertexCorrection:ContainerVertexCorrection;
+	offsetPivot:ContainerVector2;
+	positionAnchor:ContainerVector2;
+	sizeForce:ContainerVector2;
+	positionTexture:ContainerVector2;
+	rotationTexture:ContainerFloat;
+	scalingTexture:ContainerVector2;
+	radiusCollision:ContainerFloat;
+	user_data:ContainerUserData;
+	instance:ContainerInstance;
+	effect:ContainerEffect;
+	deform:ContainerDeform;
 }
 
 
