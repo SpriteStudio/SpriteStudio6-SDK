@@ -24,21 +24,37 @@ public static partial class LibraryEditor_SpriteStudio6
         /// </summary>
         public static partial class ExportSSFB2
         {
+
+            public static void fb_test(string outputfilename)
+            {
+                var fbb = new FlatBufferBuilder(16);
+
+                ss.ssfb2.ProjectData.StartProjectData(fbb);
+                ss.ssfb2.ProjectData.AddVersion(fbb, 1);
+                var buf = ss.ssfb2.ProjectData.EndProjectData(fbb);
+
+                ss.ssfb2.ProjectData.FinishProjectDataBuffer(fbb, buf);
+                var data = fbb.DataBuffer.ToSizedArray();
+
+                var writer = new BinaryWriter(new FileStream(outputfilename, FileMode.Create));
+                writer.Write(data);
+                writer.Close();
+            }
+
+
             public static void output_ssfb2(Script_SpriteStudio6_DataProject outdata , string outputfilename)
             {
                 var fbb = new FlatBufferBuilder(16);
 
-                Offset<ss.ssfb2.ProjectData>  ProjectData = makeProjectData(fbb, outdata);
-                ss.ssfb2.ProjectData.FinishProjectDataBuffer(fbb, ProjectData);
 
-//                ss.ssfb2.ProjectData test_proj = ss.ssfb2.ProjectData.GetRootAsProjectData(fbb.DataBuffer);
-//                if ( test_proj.AnimationLength == outdata.Animation.Length )
- //                   ss.ssfb2.DataAnimation? anime = test_proj.Animation(0);
+                var  projdata = makeProjectData(fbb, outdata);
+                ss.ssfb2.ProjectData.FinishProjectDataBuffer(fbb, projdata);
+                var buf = fbb.DataBuffer.ToSizedArray();
 
                 //ファイル出力
                 var writer = new BinaryWriter(new FileStream( outputfilename , FileMode.Create));
 
-                writer.Write(fbb.DataBuffer.ToFullArray());
+                writer.Write(buf);
                 writer.Close();
 
             }
