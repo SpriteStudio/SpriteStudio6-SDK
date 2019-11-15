@@ -64,8 +64,8 @@ public static partial class LibraryEditor_SpriteStudio6
             public static Offset<ss.ssfb2.ProjectData> makeProjectData(FlatBufferBuilder fbb , Script_SpriteStudio6_DataProject project )
             {
 
-                Offset<ss.ssfb2.DataAnimation>[] animelist = new Offset<ss.ssfb2.DataAnimation>[project.Animation.Length];
-                Offset<ss.ssfb2.DataEffect>[] effectlist = new Offset<ss.ssfb2.DataEffect>[project.Effect.Length];
+                var animelist = new Offset<ss.ssfb2.DataAnimation>[project.Animation.Length];
+                var effectlist = new Offset<ss.ssfb2.DataEffect>[project.Effect.Length];
 
                 for (int i =0; i < project.Animation.Length; i ++)
                 {
@@ -107,7 +107,13 @@ public static partial class LibraryEditor_SpriteStudio6
 
             public static VectorOffset makeVertex(FlatBufferBuilder fbb , Library_SpriteStudio6.Data.Parts.Animation.BindMesh.Vertex[] v)
             {
-                Offset<ss.ssfb2.Vertex>[] _vertex = new Offset<ss.ssfb2.Vertex>[v.Length];
+                if ( v == null )
+                {
+                    var tempv = new Offset<ss.ssfb2.Vertex>[0];
+                    return ss.ssfb2.BindMesh.CreateTableVertexVector(fbb , tempv);
+                }
+
+                var _vertex = new Offset<ss.ssfb2.Vertex>[v.Length];
 
                 for (int i = 0; i < v.Length; i++ )
                 {
@@ -127,7 +133,8 @@ public static partial class LibraryEditor_SpriteStudio6
 
             public static Offset<ss.ssfb2.Vector2>[] convertArrayVector2(FlatBufferBuilder fbb , Vector2[] array_vec2)
             {
-                Offset<ss.ssfb2.Vector2>[] ret = new Offset<ss.ssfb2.Vector2>[array_vec2.Length];
+                 
+                var ret = new Offset<ss.ssfb2.Vector2>[array_vec2.Length];
                 for ( int i = 0; i < array_vec2.Length; i++)
                 {
                     ret[i] = ss.ssfb2.Vector2.CreateVector2(fbb , array_vec2[i].x, array_vec2[i].y);
@@ -144,9 +151,16 @@ public static partial class LibraryEditor_SpriteStudio6
                     fbb,
                     bindmesh.CountVertex,
                     makeVertex(fbb, bindmesh.TableVertex),
-                    ss.ssfb2.BindMesh.CreateTableRateUvVector(fbb, convertArrayVector2(fbb, bindmesh.TableRateUV)),
-                    ss.ssfb2.BindMesh.CreateTableIndexVertexVector(fbb, bindmesh.TableIndexVertex),
-                    bindmesh.CountVertexDeform
+
+                    bindmesh.TableRateUV == null ?
+                            default(VectorOffset) :
+                            ss.ssfb2.BindMesh.CreateTableRateUvVector(fbb, convertArrayVector2(fbb, bindmesh.TableRateUV)),
+
+                    bindmesh.TableIndexVertex == null ? 
+                            default(VectorOffset) : 
+                            ss.ssfb2.BindMesh.CreateTableIndexVertexVector(fbb, bindmesh.TableIndexVertex),
+
+                        bindmesh.CountVertexDeform
                     );
             }
 
@@ -247,7 +261,7 @@ public static partial class LibraryEditor_SpriteStudio6
             static VectorOffset makeCodeValueContainerTable(FlatBufferBuilder fbb,
                 Library_SpriteStudio6.Data.Animation.PackAttribute.CodeValueContainer[] codevalue)
             {
-                Offset<ss.ssfb2.CodeValueContainer>[] ret = new Offset<ss.ssfb2.CodeValueContainer>[codevalue.Length];
+                var ret = new Offset<ss.ssfb2.CodeValueContainer>[codevalue.Length];
                 for ( int i = 0; i < codevalue.Length; i++)
                 {
                     ret[i] = makeCodeValueContainer(fbb, codevalue[i]);
@@ -280,7 +294,7 @@ public static partial class LibraryEditor_SpriteStudio6
                     Library_SpriteStudio6.Data.Animation.Attribute.Cell[] cells
                 )
             {
-                Offset<ss.ssfb2.AnimationAttributeCell>[] ret = new Offset<ss.ssfb2.AnimationAttributeCell>[cells.Length];
+                var ret = new Offset<ss.ssfb2.AnimationAttributeCell>[cells.Length];
 
                 for (int i = 0;  i < cells.Length; i++ )
                 {
@@ -314,7 +328,7 @@ public static partial class LibraryEditor_SpriteStudio6
                 )
             {
 
-                Offset<ss.ssfb2.Vector3>[] table = new Offset<ss.ssfb2.Vector3>[vec3.TableValue.Length];
+                var table = new Offset<ss.ssfb2.Vector3>[vec3.TableValue.Length];
                 for ( int i = 0; i < vec3.TableValue.Length; i ++)
                 {
                     table[i] = ss.ssfb2.Vector3.CreateVector3( fbb,
@@ -339,7 +353,7 @@ public static partial class LibraryEditor_SpriteStudio6
                 )
             {
 
-                Offset<ss.ssfb2.Vector2>[] table = new Offset<ss.ssfb2.Vector2>[vec2.TableValue.Length];
+                var table = new Offset<ss.ssfb2.Vector2>[vec2.TableValue.Length];
                 for (int i = 0; i < vec2.TableValue.Length; i++)
                 {
                     table[i] = ss.ssfb2.Vector2.CreateVector2(fbb,
@@ -395,7 +409,7 @@ public static partial class LibraryEditor_SpriteStudio6
                     Library_SpriteStudio6.Data.Animation.Attribute.PartsColor[] pcolor
                 )
             {
-                Offset<ss.ssfb2.AnimationAttributePartsColor>[] ret = new Offset<ss.ssfb2.AnimationAttributePartsColor>[pcolor.Length];
+                var ret = new Offset<ss.ssfb2.AnimationAttributePartsColor>[pcolor.Length];
 
                 for (int i = 0; i < pcolor.Length; i++)
                 {
@@ -443,7 +457,7 @@ public static partial class LibraryEditor_SpriteStudio6
                 )
             {
 
-                Offset<ss.ssfb2.VertexCorrection>[] _rettable = new Offset<ss.ssfb2.VertexCorrection>[_in.Length];
+                var _rettable = new Offset<ss.ssfb2.VertexCorrection>[_in.Length];
                 for (int i = 0; i < _in.Length; i ++)
                 {
 
@@ -484,7 +498,7 @@ public static partial class LibraryEditor_SpriteStudio6
                 )
             {
 
-                Offset<ss.ssfb2.UserData>[] _table = new Offset<ss.ssfb2.UserData>[_in.TableValue.Length];
+                var _table = new Offset<ss.ssfb2.UserData>[_in.TableValue.Length];
                 for ( int i = 0; i < _in.TableValue.Length; i ++ )
                 {
                     _table[i] = makeUserData(fbb, _in.TableValue[i]);
@@ -501,7 +515,7 @@ public static partial class LibraryEditor_SpriteStudio6
                     Library_SpriteStudio6.Data.Animation.Attribute.Instance[] _in                
                 )
             {
-                Offset<ss.ssfb2.AnimationAttributeInstance>[] _table = new Offset<ss.ssfb2.AnimationAttributeInstance>[_in.Length];
+                var _table = new Offset<ss.ssfb2.AnimationAttributeInstance>[_in.Length];
                 for ( int i = 0; i < _in.Length; i ++ )
                 {
                     Library_SpriteStudio6.Data.Animation.Attribute.Instance inst = _in[i];
@@ -540,7 +554,7 @@ public static partial class LibraryEditor_SpriteStudio6
                     Library_SpriteStudio6.Data.Animation.Attribute.Effect[] _in
                 )
             {
-                Offset<ss.ssfb2.AnimationAttributeEffect>[] _table = new Offset<ss.ssfb2.AnimationAttributeEffect>[_in.Length];
+                var _table = new Offset<ss.ssfb2.AnimationAttributeEffect>[_in.Length];
                 for (int i = 0; i < _in.Length; i++)
                 {
                     Library_SpriteStudio6.Data.Animation.Attribute.Effect inst = _in[i];
@@ -576,12 +590,12 @@ public static partial class LibraryEditor_SpriteStudio6
                     Library_SpriteStudio6.Data.Animation.Attribute.Deform[] _in
                 )
             {
-                Offset<ss.ssfb2.AnimationAttributeDeform>[] _table = new Offset<ss.ssfb2.AnimationAttributeDeform>[_in.Length];
+                var _table = new Offset<ss.ssfb2.AnimationAttributeDeform>[_in.Length];
                 for (int i = 0; i < _in.Length; i++)
                 {
                     Library_SpriteStudio6.Data.Animation.Attribute.Deform inst = _in[i];
 
-                    Offset<ss.ssfb2.Vector2>[] vector_offset = new Offset<ss.ssfb2.Vector2>[inst.TableCoordinate.Length];
+                    var vector_offset = new Offset<ss.ssfb2.Vector2>[inst.TableCoordinate.Length];
                     for ( int n = 0; n < inst.TableCoordinate.Length; n ++ )
                     {
                         Vector2 v = inst.TableCoordinate[n];
@@ -645,11 +659,11 @@ public static partial class LibraryEditor_SpriteStudio6
 
             static Offset<ss.ssfb2.LibraryDataAnimation> makeLibraryDataAnimation(FlatBufferBuilder fbb , Library_SpriteStudio6.Data.Animation animeData)
             {
-                Offset<ss.ssfb2.Label>[] label_offsets = new Offset<ss.ssfb2.Label>[animeData.TableLabel.Length];
+                var label_offsets = new Offset<ss.ssfb2.Label>[animeData.TableLabel.Length];
                 for ( int i = 0 ; i < animeData.TableLabel.Length; i++ )
                     label_offsets[i] = makeLabel(fbb, animeData.TableLabel[i]);
 
-                Offset<ss.ssfb2.DataAnimationParts>[] parts_offsets = new Offset<ss.ssfb2.DataAnimationParts>[animeData.TableParts.Length];
+                var parts_offsets = new Offset<ss.ssfb2.DataAnimationParts>[animeData.TableParts.Length];
                 for (int i = 0; i < animeData.TableParts.Length; i++)
                     parts_offsets[i] = makeDataAnimationParts(fbb, animeData.TableParts[i]);
 
@@ -675,15 +689,17 @@ public static partial class LibraryEditor_SpriteStudio6
             public static Offset<ss.ssfb2.DataAnimation> makeDataAnimation(FlatBufferBuilder fbb , Script_SpriteStudio6_DataAnimation anime)
             {
 
-                Offset<ss.ssfb2.DataModelParts>[] modelparts = new Offset<ss.ssfb2.DataModelParts>[anime.TableParts.Length];
+                var modelparts = new Offset<ss.ssfb2.DataModelParts>[anime.TableParts.Length];
+                for ( var i = 0; i < anime.TableParts.Length; i ++ )
+                    modelparts[i] = makeDataModelParts(fbb , anime.TableParts[i]);
 
-                Offset<ss.ssfb2.LibraryDataAnimation>[] table_animation = new Offset<ss.ssfb2.LibraryDataAnimation>[anime.TableAnimation.Length];
+                var table_animation = new Offset<ss.ssfb2.LibraryDataAnimation>[anime.TableAnimation.Length];
                 for ( int i= 0; i < anime.TableAnimation.Length; i++ )
                 {
                     table_animation[i] = makeLibraryDataAnimation(fbb, anime.TableAnimation[i]);
                 }
 
-                Offset<ss.ssfb2.DataSetup>[] table_animation_parts_setup = new Offset<ss.ssfb2.DataSetup>[anime.TableAnimationPartsSetup.Length];
+                var table_animation_parts_setup = new Offset<ss.ssfb2.DataSetup>[anime.TableAnimationPartsSetup.Length];
                 for (int i = 0; i < anime.TableAnimationPartsSetup.Length; i++)
                 {
                     table_animation_parts_setup[i] = makeLibraryDataSetup(fbb, anime.TableAnimationPartsSetup[i]);
@@ -735,12 +751,12 @@ public static partial class LibraryEditor_SpriteStudio6
                 //Cell単品の格納
                 StringOffset _name = fbb.CreateString(cell.Name);
 
-                Offset<ss.ssfb2.Rect> _rectangle = ss.ssfb2.Rect.CreateRect(fbb, 0, 0, 0, 0);
+                var _rectangle = ss.ssfb2.Rect.CreateRect(fbb, 0, 0, 0, 0);
 
-                Offset<ss.ssfb2.Vector2> _pivot = ss.ssfb2.Vector2.CreateVector2(fbb, 0, 0);
+                var _pivot = ss.ssfb2.Vector2.CreateVector2(fbb, 0, 0);
 
                 //メッシュの格納
-                Offset<ss.ssfb2.DataMesh> _mesh = makeDataMesh(fbb,cell.Mesh);
+                var _mesh = makeDataMesh(fbb,cell.Mesh);
 
                 return ss.ssfb2.Cell.CreateCell(fbb, _name, _rectangle, _pivot, _mesh );
             }
@@ -751,17 +767,17 @@ public static partial class LibraryEditor_SpriteStudio6
                                                                                     Library_SpriteStudio6.Data.CellMap cellmap)
             {
                 StringOffset _name = fbb.CreateString(cellmap.Name);
-                Offset<ss.ssfb2.Vector2> _size_original = ss.ssfb2.Vector2.CreateVector2(fbb ,cellmap.SizeOriginal.x , cellmap.SizeOriginal.y);
+                var _size_original = ss.ssfb2.Vector2.CreateVector2(fbb ,cellmap.SizeOriginal.x , cellmap.SizeOriginal.y);
 
                 int cell_num = cellmap.TableCell.Length;
-                Offset<ss.ssfb2.Cell>[] _cell_array = new Offset<ss.ssfb2.Cell>[cell_num];
+                var _cell_array = new Offset<ss.ssfb2.Cell>[cell_num];
 
                 for (int i = 0; i < cell_num; i++)
                 {
                     _cell_array[i] = makeCell(fbb, cellmap.TableCell[i]);
                 }
 
-                Offset<ss.ssfb2.LibraryDataCellMap> ret = ss.ssfb2.LibraryDataCellMap.CreateLibraryDataCellMap(
+                var ret = ss.ssfb2.LibraryDataCellMap.CreateLibraryDataCellMap(
                     fbb,
                     _name,
                     _size_original,
@@ -778,7 +794,7 @@ public static partial class LibraryEditor_SpriteStudio6
                 //Cellmapの格納元array
                 //LibraryDataCellMap Cellmapの本体データ
                 int cellmap_size = cellmap.TableCellMap.Length;
-                FlatBuffers.Offset<ss.ssfb2.LibraryDataCellMap>[] listoffset = new FlatBuffers.Offset<ss.ssfb2.LibraryDataCellMap>[cellmap_size];
+                var listoffset = new FlatBuffers.Offset<ss.ssfb2.LibraryDataCellMap>[cellmap_size];
 
                 //セルマップリストの作成
                 for (int i = 0; i < cellmap_size; i++)
@@ -810,7 +826,7 @@ public static partial class LibraryEditor_SpriteStudio6
             public static VectorOffset makeDataEffectPartsTable(FlatBufferBuilder fbb , Library_SpriteStudio6.Data.Parts.Effect[] effectPart)
             {
 
-                Offset<ss.ssfb2.DataEffectParts>[] table = new Offset<ss.ssfb2.DataEffectParts>[effectPart.Length];
+                var table = new Offset<ss.ssfb2.DataEffectParts>[effectPart.Length];
 
                 for (int i = 0; i < effectPart.Length; i ++ )
                 {
@@ -834,7 +850,7 @@ public static partial class LibraryEditor_SpriteStudio6
             public static Offset<ss.ssfb2.DataEffectEmitter> makeDataEffectEmitter(FlatBufferBuilder fbb , Library_SpriteStudio6.Data.Effect.Emitter e)
             {
 
-                Offset<ss.ssfb2.PatternEmit>[] table_pattern_emit = new Offset<ss.ssfb2.PatternEmit>[e.TablePatternEmit.Length];
+                var table_pattern_emit = new Offset<ss.ssfb2.PatternEmit>[e.TablePatternEmit.Length];
                 for ( int i = 0; i < e.TablePatternEmit.Length; i ++ )
                 {
                     table_pattern_emit[i] = makePatternEmit(fbb, e.TablePatternEmit[i]);
@@ -950,7 +966,7 @@ public static partial class LibraryEditor_SpriteStudio6
 
             public static VectorOffset makeDataEffectEmitterTable(FlatBufferBuilder fbb, Library_SpriteStudio6.Data.Effect.Emitter[] emmiterPart)
             {
-                Offset<ss.ssfb2.DataEffectEmitter>[] table = new Offset<ss.ssfb2.DataEffectEmitter>[emmiterPart.Length];
+                var table = new Offset<ss.ssfb2.DataEffectEmitter>[emmiterPart.Length];
 
                 for ( int i = 0; i < emmiterPart.Length; i ++ )
                 {
