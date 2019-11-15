@@ -34,8 +34,10 @@ public static partial class LibraryEditor_SpriteStudio6
 			int countProgressNow = 0;
 			int countProgressMax = 0;
 
-			/* Select Project(SSPJ) */
-			string nameDirectory = "";
+            string outputfile = nameOutputAssetFolderBase;
+
+            /* Select Project(SSPJ) */
+            string nameDirectory = "";
 			string nameFileBody = "";
 			string nameFileExtension = "";
 			nameInputFullPathSSPJ = LibraryEditor_SpriteStudio6.Utility.File.PathNormalize(nameInputFullPathSSPJ);
@@ -152,8 +154,9 @@ public static partial class LibraryEditor_SpriteStudio6
 			informationSSPJ.TableNameSSAE = null;
 			informationSSPJ.TableNameSSEE = null;
 
-			/* Create Destination Base-Folder */
-			nameOutputAssetFolderBase = LibraryEditor_SpriteStudio6.Utility.File.AssetFolderCreate(LibraryEditor_SpriteStudio6.Utility.File.PathNormalize(nameOutputAssetFolderBase));
+#if false
+            /* Create Destination Base-Folder */
+            nameOutputAssetFolderBase = LibraryEditor_SpriteStudio6.Utility.File.AssetFolderCreate(LibraryEditor_SpriteStudio6.Utility.File.PathNormalize(nameOutputAssetFolderBase));
 			if(false == nameOutputAssetFolderBase.EndsWith("/"))
 			{
 				nameOutputAssetFolderBase += "/";
@@ -162,7 +165,7 @@ public static partial class LibraryEditor_SpriteStudio6
 			{
 				nameOutputAssetFolderBase += informationSSPJ.NameFileBody + "/";
 			}
-
+#endif
 			/* Get Convert-Order SSAE */
 			informationSSPJ.QueueConvertSSAE = informationSSPJ.QueueGetConvertSSAE(ref setting);
 			if(null == informationSSPJ.QueueConvertSSAE)
@@ -966,7 +969,10 @@ public static partial class LibraryEditor_SpriteStudio6
 			}
 #endif
 
-            ExportSSFB2.output_ssfb2(dataProject , "c:\\temp\\test.fb2" );
+//            ExportSSFB2.output_ssfb2(dataProject , "c:\\temp\\test.fb2" );
+            ExportSSFB2.output_ssfb2(dataProject, nameOutputAssetFolderBase);
+
+            
 
 
             return (true);
@@ -1260,10 +1266,10 @@ public static partial class LibraryEditor_SpriteStudio6
 #endif
 			step++;
 		}
-		#endregion Functions
+#endregion Functions
 
 		/* ----------------------------------------------- Enums & Constants */
-		#region Enums & Constants
+#region Enums & Constants
 		public enum KindFile
 		{
 			NON = -1,	/* Through */
@@ -1287,24 +1293,24 @@ public static partial class LibraryEditor_SpriteStudio6
 		public const ReplacePrefabOptions OptionPrefabReplace = ReplacePrefabOptions.ReplaceNameBased;
 #endif
 #endif
-		#endregion Enums & Constants
+#endregion Enums & Constants
 
 		/* ----------------------------------------------- Classes, Structs & Interfaces */
-		#region Classes, Structs & Interfaces
+#region Classes, Structs & Interfaces
 		public struct Assets<_Type>
 			where _Type : class
 		{
 			/* ----------------------------------------------- Variables & Properties */
-			#region Variables & Properties
+#region Variables & Properties
 			public bool[] FlagUpdate;
 			public bool[] FlagInUse;						/* MEMO: Basically used only in materials */
 			public int[] Version;
 			public string[] TableName;
 			public _Type[] TableData;
-			#endregion Variables & Properties
+#endregion Variables & Properties
 
 			/* ----------------------------------------------- Functions */
-			#region Functions
+#region Functions
 			public void CleanUp()
 			{
 				FlagUpdate = null;
@@ -1330,7 +1336,7 @@ public static partial class LibraryEditor_SpriteStudio6
 					TableData[i] = null;
 				}
 			}
-			#endregion Functions
+#endregion Functions
 		}
 
 		public static partial class SSPJ
@@ -1359,17 +1365,17 @@ public static partial class LibraryEditor_SpriteStudio6
 		}
 
 		/* Part: SpriteStudio6/Editor/Import/Setting.cs */
-		#endregion Classes, Structs & Interfaces
+#endregion Classes, Structs & Interfaces
 	}
 
 	public static partial class Utility
 	{
 		/* ----------------------------------------------- Classes, Structs & Interfaces */
-		#region Classes, Structs & Interfaces
+#region Classes, Structs & Interfaces
 		public static partial class File
 		{
 			/* ----------------------------------------------- Functions */
-			#region Functions
+#region Functions
 #if !_FOR_SS6CONVERTER_
 			public static bool NamesGetFileDialogLoad(	out string nameDirectory,
 														out string nameFileBody,
@@ -1628,10 +1634,10 @@ public static partial class LibraryEditor_SpriteStudio6
 			{	/* MEMO: Create another function separately, since possibility that can not be checked with IsPathRooted. */
 				return(System.IO.Path.IsPathRooted(namePath));
 			}
-			#endregion Functions
+#endregion Functions
 
 			/* ----------------------------------------------- Enums & Constants */
-			#region Enums & Constants
+#region Enums & Constants
 			private readonly static char[] TextSplitFolder = 
 			{
 				'/',
@@ -1642,13 +1648,13 @@ public static partial class LibraryEditor_SpriteStudio6
 			internal readonly static string NamePathRootNative = Application.dataPath;
 			internal const string NamePathRootAsset = "Assets";
 #endif
-			#endregion Enums & Constants
+#endregion Enums & Constants
 		}
 
 		public static partial class Prefs
 		{
 			/* ----------------------------------------------- Functions */
-			#region Functions
+#region Functions
 #if !_FOR_SS6CONVERTER_
 			public static void StringSave(string prefsKey, string text)
 			{
@@ -1663,13 +1669,13 @@ public static partial class LibraryEditor_SpriteStudio6
 				return(System.Text.UTF8Encoding.UTF8.GetString(System.Convert.FromBase64String(text64)));
 			}
 #endif
-			#endregion Functions
+#endregion Functions
 		}
 
 		public static partial class Text
 		{
 			/* ----------------------------------------------- Functions */
-			#region Functions
+#region Functions
 			public static bool ValueGetBool<_Type>(_Type source)
 			{
 				return((0 != ValueGetInt(source)) ? true : false);
@@ -1805,13 +1811,13 @@ public static partial class LibraryEditor_SpriteStudio6
 
 				return(rv);
 			}
-			#endregion Functions
+#endregion Functions
 		}
 
 		public static partial class XML
 		{
 			/* ----------------------------------------------- Functions */
-			#region Functions
+#region Functions
 			public static System.Xml.XmlNodeList ListGetNode(System.Xml.XmlNode node, string namePath, System.Xml.XmlNamespaceManager manager)
 			{
 				return(node.SelectNodes(namePath, manager));
@@ -1850,13 +1856,13 @@ public static partial class LibraryEditor_SpriteStudio6
 				}
 				return(version);
 			}
-			#endregion Functions
+#endregion Functions
 		}
 
 		public static partial class ExternalText
 		{
 			/* ----------------------------------------------- Functions */
-			#region Functions
+#region Functions
 			public static KindType TypeGetLine(out string textValid, string text)
 			{
 				textValid = TextTrim(text);
@@ -2008,10 +2014,10 @@ public static partial class LibraryEditor_SpriteStudio6
 				}
 				return(value);
 			}
-			#endregion Functions
+#endregion Functions
 
 			/* ----------------------------------------------- Enums & Constants */
-			#region Enums & Constants
+#region Enums & Constants
 			public enum KindType
 			{
 				NORMAL = 0,
@@ -2039,18 +2045,18 @@ public static partial class LibraryEditor_SpriteStudio6
 
 			private const string ArgumentBoolTrue = "true";
 			private const string ArgumentBoolFalse = "false";
-			#endregion Enums & Constants
+#endregion Enums & Constants
 		}
 
 		public static partial class Log
 		{
 			/* ----------------------------------------------- Variables & Properties */
-			#region Variables & Properties
+#region Variables & Properties
 			public static System.IO.StreamWriter StreamExternal = null;
-			#endregion Variables & Properties
+#endregion Variables & Properties
 
 			/* ----------------------------------------------- Functions */
-			#region Functions
+#region Functions
 			public static void Error(string message, bool flagExternalOnly=false, bool flagIndentExternal=true)
 			{
 #if !_FOR_SS6CONVERTER_
@@ -2107,13 +2113,13 @@ public static partial class LibraryEditor_SpriteStudio6
 				}
 #endif
 			}
-			#endregion Functions
+#endregion Functions
 		}
 #if !_FOR_SS6CONVERTER_
 		public static partial class Inspector
 		{
 			/* ----------------------------------------------- Functions */
-			#region Functions
+#region Functions
 			public static void TableMaterialAnimation(Material[] tableMaterial, SerializedProperty propertyTableMaterial, int levelIndent)
 			{
 				if(null == tableMaterial)
@@ -2214,10 +2220,10 @@ public static partial class LibraryEditor_SpriteStudio6
 
 				}
 			}
-			#endregion Functions
+#endregion Functions
 
 			/* ----------------------------------------------- Enums & Constants */
-			#region Enums & Constants
+#region Enums & Constants
 			private readonly static string[][] NameItemTableMaterialAnimation = new string[2][]
 			{
 				new string[(int)Library_SpriteStudio6.KindOperationBlend.TERMINATOR_TABLEMATERIAL]
@@ -2261,14 +2267,14 @@ public static partial class LibraryEditor_SpriteStudio6
 					"Add(M)",
 				}
 			};
-			#endregion Enums & Constants
+#endregion Enums & Constants
 		}
 #endif
 
 		public static partial class Miscellaneous
 		{
 			/* ----------------------------------------------- Functions */
-			#region Functions
+#region Functions
 			public static void ProgressBarUpdate(string title, string nameTask, bool flagSwitch, int step, int stepFull)
 			{
 #if !_FOR_SS6CONVERTER_
@@ -2295,9 +2301,9 @@ public static partial class LibraryEditor_SpriteStudio6
 #endif
 				System.GC.Collect();
 			}
-			#endregion Functions
+#endregion Functions
 		}
-		#endregion Classes, Structs & Interfaces
+#endregion Classes, Structs & Interfaces
 	}
-	#endregion Classes, Structs & Interfaces
+#endregion Classes, Structs & Interfaces
 }

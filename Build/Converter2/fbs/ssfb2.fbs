@@ -510,9 +510,10 @@ table DataEffectParts {
 
     id:ushort;
     id_parent:ushort;
-    table_id_child:[ushort];
+    table_id_child:[int];
 
-    feature:DataEffectPartsKindFeature;
+//    feature:DataEffectPartsKindFeature;
+    feature:ushort;
     index_emitter:ushort;
 }
 
@@ -551,9 +552,12 @@ enum DataEffectEmitterFlagBit:uint {
 }
 
 table DataEffectEmitter {
-    flag_data:DataEffectEmitterFlagBit;
+//    flag_data:DataEffectEmitterFlagBit;
+    flag_data:uint;
 
-    operation_blend_target:KindOperationBlendEffect;
+//    operation_blend_target:KindOperationBlendEffect;
+    operation_blend_target:uint;
+
     index_cell_map:ushort;
     index_cell:ushort;
 
@@ -603,13 +607,15 @@ table DataEffectEmitter {
     count_parts_maximum:int;
     table_pattern_emit:[PatternEmit];
     table_pattern_offset:[int];
-    table_deed_particle:[long];
+    table_seed_particle:[long];
 }
 
 
 table DataEffect {
     version:uint;
-    flag_data:DataEffectFlagBit;
+
+//    flag_data:DataEffectFlagBit;
+    flag_data:int;
 
     seed_random:int;
     version_renderer:int;

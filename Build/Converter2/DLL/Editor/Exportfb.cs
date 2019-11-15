@@ -12,6 +12,7 @@ using UnityEngine = SS6ConverterVer2_DLL.Assets;
 //using ss.ssfb2;
 using FlatBuffers;
 using System.IO;
+using System.Text;
 
 public static partial class LibraryEditor_SpriteStudio6
 {
@@ -25,16 +26,19 @@ public static partial class LibraryEditor_SpriteStudio6
         {
             public static void output_ssfb2(Script_SpriteStudio6_DataProject outdata , string outputfilename)
             {
-                var fbb = new FlatBufferBuilder(1);
+                var fbb = new FlatBufferBuilder(16);
 
                 Offset<ss.ssfb2.ProjectData>  ProjectData = makeProjectData(fbb, outdata);
-                fbb.Finish(ProjectData.Value);
+                ss.ssfb2.ProjectData.FinishProjectDataBuffer(fbb, ProjectData);
+
+//                ss.ssfb2.ProjectData test_proj = ss.ssfb2.ProjectData.GetRootAsProjectData(fbb.DataBuffer);
+//                if ( test_proj.AnimationLength == outdata.Animation.Length )
+ //                   ss.ssfb2.DataAnimation? anime = test_proj.Animation(0);
 
                 //ファイル出力
                 var writer = new BinaryWriter(new FileStream( outputfilename , FileMode.Create));
 
                 writer.Write(fbb.DataBuffer.ToFullArray());
-              
                 writer.Close();
 
             }
@@ -45,15 +49,22 @@ public static partial class LibraryEditor_SpriteStudio6
             {
 
                 Offset<ss.ssfb2.DataAnimation>[] animelist = new Offset<ss.ssfb2.DataAnimation>[project.Animation.Length];
-                for(int i =0; i < project.Animation.Length; i ++)
+                Offset<ss.ssfb2.DataEffect>[] effectlist = new Offset<ss.ssfb2.DataEffect>[project.Effect.Length];
+
+                for (int i =0; i < project.Animation.Length; i ++)
                 {
                     animelist[i] = makeDataAnimation(fbb, project.Animation[i]);
+                }
+                for (int i = 0; i < project.Effect.Length; i++)
+                {
+                    effectlist[i] = makeDataEffect(fbb, project.Effect[i]);
                 }
 
                 return ss.ssfb2.ProjectData.CreateProjectData(fbb,
                     (uint)project.Version,
                     makeDataCellMap(fbb, project.CellMap),
-                    ss.ssfb2.ProjectData.CreateAnimationVector(fbb, animelist)
+                    ss.ssfb2.ProjectData.CreateAnimationVector(fbb, animelist),
+                    ss.ssfb2.ProjectData.CreateEffectVector(fbb, effectlist)
                     );
             }
 
@@ -764,6 +775,192 @@ public static partial class LibraryEditor_SpriteStudio6
                                                             (uint)cellmap.Version,
                                                             fbb.CreateVectorOfTables(listoffset));
 
+            }
+
+
+            public static Offset<ss.ssfb2.DataEffectParts> makeDataEffectParts(FlatBufferBuilder fbb , Library_SpriteStudio6.Data.Parts.Effect e)
+            {
+                return ss.ssfb2.DataEffectParts.CreateDataEffectParts(
+                        fbb,
+                        fbb.CreateString(e.Name),
+                        (ushort)e.ID,
+                        (ushort)e.IDParent,
+                        ss.ssfb2.DataEffectParts.CreateTableIdChildVector(fbb, e.TableIDChild),
+                        (ushort)e.Feature,
+                        (ushort)e.IndexEmitter
+                    );
+            }
+
+            public static VectorOffset makeDataEffectPartsTable(FlatBufferBuilder fbb , Library_SpriteStudio6.Data.Parts.Effect[] effectPart)
+            {
+
+                Offset<ss.ssfb2.DataEffectParts>[] table = new Offset<ss.ssfb2.DataEffectParts>[effectPart.Length];
+
+                for (int i = 0; i < effectPart.Length; i ++ )
+                {
+                    Library_SpriteStudio6.Data.Parts.Effect e = effectPart[i];
+                    table[i] = makeDataEffectParts(fbb, e);
+                }
+
+                return ss.ssfb2.DataEffect.CreateTablePartsVector(fbb, table);
+            }
+
+            public static Offset<ss.ssfb2.PatternEmit> makePatternEmit(FlatBufferBuilder fbb, Library_SpriteStudio6.Data.Effect.Emitter.PatternEmit p)
+            {
+                return ss.ssfb2.PatternEmit.CreatePatternEmit(
+                        fbb,
+                        p.IndexGenerate,
+                        p.Duration,
+                        p.Cycle
+                    );
+            }
+
+            public static Offset<ss.ssfb2.DataEffectEmitter> makeDataEffectEmitter(FlatBufferBuilder fbb , Library_SpriteStudio6.Data.Effect.Emitter e)
+            {
+
+                Offset<ss.ssfb2.PatternEmit>[] table_pattern_emit = new Offset<ss.ssfb2.PatternEmit>[e.TablePatternEmit.Length];
+                for ( int i = 0; i < e.TablePatternEmit.Length; i ++ )
+                {
+                    table_pattern_emit[i] = makePatternEmit(fbb, e.TablePatternEmit[i]);
+                }
+                
+                ss.ssfb2.DataEffectEmitter.CreateDataEffectEmitter(fbb,
+                    (uint)e.FlagData,
+                    (uint)e.OperationBlendTarget,
+                    (ushort)e.IndexCellMap,
+                    (ushort)e.IndexCell,
+                    ss.ssfb2.RangeFloat.CreateRangeFloat( fbb , e.Angle.Main , e.Angle.Sub ),
+                    ss.ssfb2.Vector2.CreateVector2(fbb ,e.GravityDirectional.x , e.GravityDirectional.y ),
+                    ss.ssfb2.Vector2.CreateVector2(fbb, e.GravityPointPosition.x, e.GravityPointPosition.y),
+                    e.GravityPointPower,
+                    ss.ssfb2.RangeVector2.CreateRangeVector2( fbb , 
+                                ss.ssfb2.Vector2.CreateVector2( fbb , e.Position.Main.x , e.Position.Main.y ),
+                                ss.ssfb2.Vector2.CreateVector2(fbb, e.Position.Sub.x, e.Position.Sub.y) ),
+                    //rotation
+                    ss.ssfb2.RangeFloat.CreateRangeFloat( fbb , e.Rotation.Main , e.Rotation.Sub ),
+                    //rotation_fluctuation
+                    ss.ssfb2.RangeFloat.CreateRangeFloat(fbb, e.RotationFluctuation.Main, e.RotationFluctuation.Sub),
+                    //rotation_fluctuation_rate
+                    e.RotationFluctuationRate,
+                    //rotation_fluctuation_rate
+                    e.RotationFluctuationRateTime,
+
+                    //rate_tangential_acceleration
+                    ss.ssfb2.RangeFloat.CreateRangeFloat(fbb, e.RateTangentialAcceleration.Main, e.RateTangentialAcceleration.Sub),
+
+                    //scale_start
+                    ss.ssfb2.RangeVector2.CreateRangeVector2(fbb,
+                                ss.ssfb2.Vector2.CreateVector2(fbb, e.ScaleStart.Main.x, e.ScaleStart.Main.y),
+                                ss.ssfb2.Vector2.CreateVector2(fbb, e.ScaleStart.Sub.x, e.ScaleStart.Sub.y)),
+                    //scale_rate_start
+                    ss.ssfb2.RangeFloat.CreateRangeFloat(fbb, e.ScaleRateStart.Main, e.ScaleRateStart.Sub),
+
+                    //scale_end
+                    ss.ssfb2.RangeVector2.CreateRangeVector2(fbb,
+                                ss.ssfb2.Vector2.CreateVector2(fbb, e.ScaleEnd.Main.x, e.ScaleEnd.Main.y),
+                                ss.ssfb2.Vector2.CreateVector2(fbb, e.ScaleEnd.Sub.x, e.ScaleEnd.Sub.y)),
+                    //scale_rate_end
+                    ss.ssfb2.RangeFloat.CreateRangeFloat(fbb, e.ScaleRateEnd.Main, e.ScaleRateEnd.Sub),
+
+                    //delay
+                    e.Delay,
+
+                    //color_vertex
+                    ss.ssfb2.RangeColor.CreateRangeColor( fbb,
+                                ss.ssfb2.Color.CreateColor( fbb ,   
+                                                            e.ColorVertex.Main.r ,
+                                                            e.ColorVertex.Main.g , 
+                                                            e.ColorVertex.Main.b ,
+                                                            e.ColorVertex.Main.a ),
+                                ss.ssfb2.Color.CreateColor(fbb,     
+                                                            e.ColorVertex.Sub.r ,
+                                                            e.ColorVertex.Sub.g, 
+                                                            e.ColorVertex.Sub.b, 
+                                                            e.ColorVertex.Sub.a) ),
+
+                    //color_vertex_fluctuation
+                    ss.ssfb2.RangeColor.CreateRangeColor(fbb,
+                                ss.ssfb2.Color.CreateColor(fbb, 
+                                                            e.ColorVertexFluctuation.Main.r ,
+                                                            e.ColorVertexFluctuation.Main.g, 
+                                                            e.ColorVertexFluctuation.Main.b, 
+                                                            e.ColorVertexFluctuation.Main.a),
+                                ss.ssfb2.Color.CreateColor(fbb, 
+                                                            e.ColorVertexFluctuation.Sub.r ,
+                                                            e.ColorVertexFluctuation.Sub.g, 
+                                                            e.ColorVertexFluctuation.Sub.b, 
+                                                            e.ColorVertexFluctuation.Sub.a)),
+                    //alpha_fade_start
+                    e.AlphaFadeStart,
+
+                    //alpha_fade_end
+                    e.AlphaFadeEnd,
+
+                    //speed
+                    ss.ssfb2.RangeFloat.CreateRangeFloat(fbb, e.Speed.Main, e.Speed.Sub),
+
+                    //speed_fluctuation
+                    ss.ssfb2.RangeFloat.CreateRangeFloat(fbb, e.SpeedFluctuation.Main, e.SpeedFluctuation.Sub),
+
+                    //turn_direction_fluctuation
+                    e.TurnDirectionFluctuation,
+
+                    e.SeedRandom,
+
+                    e.DurationEmitter,
+                    e.Interval,
+
+                    //duration_particle
+                    ss.ssfb2.RangeFloat.CreateRangeFloat(fbb, e.DurationParticle.Main, e.DurationParticle.Sub),
+
+                    //count_particle_max
+                    e.CountParticleMax,
+                    //count_particle_emit
+                    e.CountParticleEmit,
+
+                    //count_parts_maximum
+                    e.CountPartsMaximum,
+
+                    //table_pattern_emit
+                    ss.ssfb2.DataEffectEmitter.CreateTablePatternEmitVector(fbb , table_pattern_emit ),
+                    ss.ssfb2.DataEffectEmitter.CreateTablePatternOffsetVector(fbb , e.TablePatternOffset ),
+                    ss.ssfb2.DataEffectEmitter.CreateTableSeedParticleVector(fbb , e.TableSeedParticle )
+                    );
+
+
+                return ss.ssfb2.DataEffectEmitter.CreateDataEffectEmitter(fbb);
+            }
+
+
+            public static VectorOffset makeDataEffectEmitterTable(FlatBufferBuilder fbb, Library_SpriteStudio6.Data.Effect.Emitter[] emmiterPart)
+            {
+                Offset<ss.ssfb2.DataEffectEmitter>[] table = new Offset<ss.ssfb2.DataEffectEmitter>[emmiterPart.Length];
+
+                for ( int i = 0; i < emmiterPart.Length; i ++ )
+                {
+                    table[i] = makeDataEffectEmitter(fbb, emmiterPart[i]);
+                }
+
+                return ss.ssfb2.DataEffect.CreateTableEmitterVector(fbb, table);
+            }
+
+
+            //DataEffect
+            public static Offset<ss.ssfb2.DataEffect> makeDataEffect(FlatBufferBuilder fbb, Script_SpriteStudio6_DataEffect effect)
+            {
+                return ss.ssfb2.DataEffect.CreateDataEffect(
+                        fbb,
+                        (uint)effect.Version,
+                        (int)effect.FlagData,
+                        effect.SeedRandom,
+                        effect.VersionRenderer,
+                        effect.CountMaxParticle,
+                        effect.CountFramePerSecond,
+                        ss.ssfb2.Vector2.CreateVector2( fbb , effect.ScaleLayout.x , effect.ScaleLayout.y ),
+                        makeDataEffectPartsTable( fbb , effect.TableParts ),
+                        makeDataEffectEmitterTable( fbb , effect.TableEmitter ),
+                        ss.ssfb2.DataEffect.CreateTableIndexEmitterOrderDrawVector(fbb, effect.TableIndexEmitterOrderDraw )
+                    );
             }
 
         }
