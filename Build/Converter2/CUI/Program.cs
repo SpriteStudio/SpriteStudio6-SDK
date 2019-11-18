@@ -143,7 +143,7 @@ namespace SS6ConverterVer2_CUI
 			} else {	/* 拡張子が存在 */
 				/* MEMO: ここで勝手に規定拡張子を付けるかどうかは検討の余地あり。 */
 				if(ExtensionBinary != extensionOutput)	{	/* 規定拡張子ではない */
-					fileBodyOutput += extensionOutput;	/* 今の拡張子はファイル名に付けてしまう */
+					//fileBodyOutput += extensionOutput;	/* 今の拡張子はファイル名に付けてしまう */
 					extensionOutput = ExtensionBinary;
 				}
 			}
@@ -315,7 +315,7 @@ namespace SS6ConverterVer2_CUI
 		/* ----------------------------------------------- Enums & Constants */
 		#region Enums & Constants
 		private const string ExtensionSS6Project = ".sspj";
-		private const string ExtensionBinary = ".ssbp2";
+		private const string ExtensionBinary = ".ssfb2";
 		#endregion Enums & Constants
 
 		/* ----------------------------------------------- Classes, Structs & Interfaces */

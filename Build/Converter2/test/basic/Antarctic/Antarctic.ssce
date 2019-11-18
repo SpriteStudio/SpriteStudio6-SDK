@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<SpriteStudioCellMap version="2.00.00">
+	<name>Antarctic</name>
+	<exportPath></exportPath>
+	<generator>SpriteStudio</generator>
+	<packed>0</packed>
+	<imagePath>Antarctic.png</imagePath>
+	<pixelSize>512 512</pixelSize>
+	<overrideTexSettings>0</overrideTexSettings>
+	<wrapMode>clamp</wrapMode>
+	<filterMode>linear</filterMode>
+	<imagePathAtImport>L:/endo/NewSpriteStudio/TestProjects/ssax/antarctic/antarctic.png</imagePathAtImport>
+	<packInfoFilePath></packInfoFilePath>
+	<texPackSettings>
+		<maxSize>4096 4096</maxSize>
+		<forcePo2>1</forcePo2>
+		<forceSquare>0</forceSquare>
+		<margin>0</margin>
+		<padding>1</padding>
+	</texPackSettings>
+	<cells>
+		<cell>
+			<name>BackGround</name>
+			<tags>
+				<value>Background</value>
+			</tags>
+			<pos>0 144</pos>
+			<size>400 160</size>
+			<pivot>0 0</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>FlyingPenguin</name>
+			<tags>
+				<value>Character</value>
+			</tags>
+			<pos>64 0</pos>
+			<size>80 112</size>
+			<pivot>0 0</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>PenguinFoot_1</name>
+			<tags>
+				<value>Character</value>
+				<value>Motion</value>
+			</tags>
+			<pos>16 112</pos>
+			<size>48 31</size>
+			<pivot>0 -0.5</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>PenguinFoot_2</name>
+			<tags>
+				<value>Character</value>
+				<value>Motion</value>
+			</tags>
+			<pos>64 112</pos>
+			<size>48 31</size>
+			<pivot>0 -0.5</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>PenguinFoot_3</name>
+			<tags>
+				<value>Character</value>
+				<value>Motion</value>
+			</tags>
+			<pos>112 112</pos>
+			<size>48 31</size>
+			<pivot>0 -0.5</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>PenguinFoot_4</name>
+			<tags>
+				<value>Character</value>
+				<value>Motion</value>
+			</tags>
+			<pos>160 112</pos>
+			<size>48 31</size>
+			<pivot>0 -0.5</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>PenguinFoot_5</name>
+			<tags>
+				<value>Character</value>
+				<value>Motion</value>
+			</tags>
+			<pos>208 112</pos>
+			<size>48 31</size>
+			<pivot>0 -0.5</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>PenguinFoot_6</name>
+			<tags>
+				<value>Character</value>
+				<value>Motion</value>
+			</tags>
+			<pos>256 112</pos>
+			<size>48 31</size>
+			<pivot>0 -0.5</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>PenguinFoot_7</name>
+			<tags>
+				<value>Character</value>
+				<value>Motion</value>
+			</tags>
+			<pos>304 112</pos>
+			<size>48 31</size>
+			<pivot>0 -0.5</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>PenguinFoot_8</name>
+			<tags>
+				<value>Character</value>
+				<value>Motion</value>
+			</tags>
+			<pos>352 112</pos>
+			<size>48 31</size>
+			<pivot>0 -0.5</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>UpperBody</name>
+			<tags>
+				<value>Character</value>
+			</tags>
+			<pos>0 0</pos>
+			<size>64 64</size>
+			<pivot>0 -0.5</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>WholeBody</name>
+			<tags>
+				<value>Character</value>
+			</tags>
+			<pos>0 0</pos>
+			<size>64 96</size>
+			<pivot>0 -0.5</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>Splash_1</name>
+			<tags>
+				<value>Motion</value>
+			</tags>
+			<pos>175 64</pos>
+			<size>32 32</size>
+			<pivot>0 -0.34375</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>Splash_2</name>
+			<tags>
+				<value>Motion</value>
+			</tags>
+			<pos>207 64</pos>
+			<size>32 32</size>
+			<pivot>0 -0.34375</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>Splash_3</name>
+			<tags>
+				<value>Motion</value>
+			</tags>
+			<pos>239 64</pos>
+			<size>32 32</size>
+			<pivot>0 -0.34375</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>Splash_4</name>
+			<tags>
+				<value>Motion</value>
+			</tags>
+			<pos>271 64</pos>
+			<size>32 32</size>
+			<pivot>0 -0.34375</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>Splash_5</name>
+			<tags>
+				<value>Motion</value>
+			</tags>
+			<pos>303 64</pos>
+			<size>32 32</size>
+			<pivot>0 -0.34375</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>Splash_6</name>
+			<tags>
+				<value>Motion</value>
+			</tags>
+			<pos>336 64</pos>
+			<size>32 32</size>
+			<pivot>0 -0.34375</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>Splash_7</name>
+			<tags>
+				<value>Motion</value>
+			</tags>
+			<pos>368 64</pos>
+			<size>32 32</size>
+			<pivot>0 -0.34375</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+	</cells>
+</SpriteStudioCellMap>
