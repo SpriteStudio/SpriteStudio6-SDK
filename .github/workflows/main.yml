@@ -9,10 +9,9 @@ jobs:
         platform: [macos-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-    - name: "update submodules"
-      uses: "srt32/git-actions@v0.0.3"
-      with:
-        args: "git submodule update --init --recursive"
+    - uses: actions/checkout@v1
+    - name: "git submodule"
+      run: git submodule update --init --recursive
     - name: prepare build environment
       run: ./Build/Depends/prepare_macos.sh
     - name: release build
