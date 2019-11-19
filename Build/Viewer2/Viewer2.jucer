@@ -3,7 +3,7 @@
 <JUCERPROJECT id="pETMlY" name="SSViewer2" displaySplashScreen="1" reportAppUsage="1"
               splashScreenColour="Dark" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.NewProject" includeBinaryInAppConfig="1"
-              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.4.3"
+              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.4.5"
               headerPath="">
   <MAINGROUP id="PqiQba" name="SSViewer2">
     <GROUP id="{9D43D578-FD48-58A0-B214-36284BAFD7DC}" name="Source">
@@ -205,6 +205,22 @@
         <MODULEPATH id="juce_gui_extra" path="C:/JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
+    <VS2019 targetFolder="Builds/VisualStudio2019">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Viewer2" headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;..\..\lib\glew-2.1.0\include"/>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;..\..\lib\glew-2.1.0\include"
+                       targetName="Viewer2"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_opengl"/>
+        <MODULEPATH id="juce_gui_extra"/>
+        <MODULEPATH id="juce_gui_basics"/>
+        <MODULEPATH id="juce_graphics"/>
+        <MODULEPATH id="juce_events"/>
+        <MODULEPATH id="juce_data_structures"/>
+        <MODULEPATH id="juce_core"/>
+      </MODULEPATHS>
+    </VS2019>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
