@@ -8,6 +8,7 @@
 #elif _WIN32 || _WIN64
     #include <Windows.h>
     #include <vector>
+    #include <system_error>
 #else
 
 #endif

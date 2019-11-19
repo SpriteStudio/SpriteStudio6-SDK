@@ -25,7 +25,7 @@ jobs:
   win_build:
     strategy:
       matrix:
-        platform: [windows-2016]
+        platform: [windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
     - uses: actions/checkout@v1
@@ -45,7 +45,7 @@ jobs:
         cmake --version
         cmake -h
     - name: Install Qt
-      uses: jurplel/install-qt-action@v1
+      uses: jurplel/install-qt-action@v2
     - name: "set QT_PREFIX"
       run: $env:QT_PREFIX = $env:Qt5_Dir
     - name: "download dependency libraries"
