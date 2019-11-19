@@ -16,6 +16,11 @@ jobs:
       run: ./Build/Depends/prepare_macos.sh
     - name: release build
       run: ./Scripts/release_macos.sh
+    - name: Upload Tools
+      uses: actions/upload-artifact@v1
+      with:
+        name: macos
+        path: Tools
 
   win_build:
     strategy:
@@ -48,3 +53,8 @@ jobs:
     - name: release build
       shell: cmd
       run: Scripts\release_win.bat
+    - name: Upload Tools
+      uses: actions/upload-artifact@v1
+      with:
+        name: windows
+        path: Tools
