@@ -833,7 +833,7 @@ namespace Types
 			}
 			set
 			{
-				xMax = value - xMin;
+				xMax = xMin + value;
 			}
 		}
 		public float height
@@ -845,7 +845,7 @@ namespace Types
 			}
 			set
 			{
-				yMax = value - yMin;
+				yMax = yMin + value;
 			}
 		}
 		#endregion Variables & Properties
@@ -856,8 +856,8 @@ namespace Types
 		{
 			xMin = _x;
 			yMin = _y;
-			xMax = Math.Abs(_width - _x);
-			yMax = Math.Abs(_height - _y);
+			xMax = Math.Abs(_x + _width);
+			yMax = Math.Abs(_y + _height);
 		}
 
 		public override bool Equals(object obj)
