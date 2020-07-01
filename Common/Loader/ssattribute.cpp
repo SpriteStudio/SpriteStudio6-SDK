@@ -140,6 +140,17 @@ void	GetSsColorValue( const SsKeyframe* key , SsColorAnime& v )
 
 }
 
+//シェーダーアニメデータの取得
+void	GetSsShaderValue( const SsKeyframe* key , SsShaderAnime& v )
+{
+	v.id = key->value["id"].get<SsString>();
+	v.param[0] = key->value["param0"].get<float>();
+	v.param[1] = key->value["param1"].get<float>();
+	v.param[2] = key->value["param2"].get<float>();
+	v.param[3] = key->value["param3"].get<float>();
+
+}
+
 void	GetSsVertexAnime( const SsKeyframe* key , SsVertexAnime& v )
 {
 	const SsString& sLT = key->value["LT"].get<SsString>();

@@ -519,6 +519,50 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 
 }
 
+void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsShaderAnime& v )
+{
+	//☆Mapを使っての参照なので高速化必須
+	if ( rightkey == 0 )
+	{
+		GetSsShaderValue( leftkey , v );
+		return ;
+	}
+	
+	SsShaderAnime leftv;
+	SsShaderAnime rightv;
+
+	GetSsShaderValue( leftkey , leftv );
+	GetSsShaderValue( rightkey , rightv );
+
+
+	SsCurve curve;
+	curve = leftkey->curve;
+	if (leftkey->ipType == SsInterpolationType::bezier)
+	{
+		// ベジェのみキーの開始・終了時間が必要
+		curve.startKeyTime = leftkey->time;
+		curve.endKeyTime = rightkey->time;
+	}
+
+	int range = rightkey->time - leftkey->time;
+	float now = (float)(time - leftkey->time) / range;
+
+	//初期化しておく
+	v.id = leftv.id;
+	v.param[0] = 0.0f;	
+	v.param[1] = 0.0f;	
+	v.param[2] = 0.0f;	
+	v.param[3] = 0.0f;	
+
+	now = SsInterpolate( leftkey->ipType , now , 0.0f , 1.0f , &curve );	
+
+	v.param[0] = SsInterpolate( SsInterpolationType::linear , now , leftv.param[0] , rightv.param[0]  , &curve );
+	v.param[1] = SsInterpolate( SsInterpolationType::linear , now , leftv.param[1] , rightv.param[1]  , &curve );
+	v.param[2] = SsInterpolate( SsInterpolationType::linear , now , leftv.param[2] , rightv.param[2]  , &curve );
+	v.param[3] = SsInterpolate( SsInterpolationType::linear , now , leftv.param[3] , rightv.param[3]  , &curve );
+
+}
+
 
 void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsCellValue& v )
 {
@@ -911,6 +955,10 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 //					SsGetKeyValue( part, nowTime , attr , state->colorValue );
 //					state->is_color_blend = true;
 //					break;
+				case SsAttributeKind::shader:	///< シェーダー
+					SsGetKeyValue( part, nowTime , attr , state->shaderValue);
+					state->is_shader = true;
+					break;
 				case SsAttributeKind::vertex:	///< 頂点変形
 					SsGetKeyValue( part, nowTime , attr , state->vertexValue );
 					state->is_vertex_transform = true;
