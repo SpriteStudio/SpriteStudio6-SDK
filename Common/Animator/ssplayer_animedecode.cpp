@@ -278,6 +278,12 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	
 }
 
+void	SsAnimeDecoder::setSequence( SsSequence* sequence , SsProject* sspj )
+{
+	//プロジェクト情報の保存
+	project = sspj;	
+}
+
 
 
 //頂点変形アニメデータの取得

@@ -26,6 +26,14 @@ struct SampleScene::AnimePackSelecterType
 	SampleScene*	myclass;
 };
 
+struct SampleScene::SequencePackSelecterType
+{
+	std::string		name;
+	int				packindex;
+	int				sequenceindex;
+	SampleScene*	myclass;
+};
+
 void	SampleScene::destroy()
 {
 	delete m_player;
@@ -151,6 +159,18 @@ void TW_CALL AnimeSelectCB(void *clientData)
 
 }
 
+void TW_CALL SequenceSelectCB(void *clientData)
+{
+	SampleScene::SequencePackSelecterType* data = (SampleScene::SequencePackSelecterType*)clientData;
+	data->myclass->AnimeReset();
+
+	
+	data->myclass->ChangeSequence( data->packindex ,  data->sequenceindex );
+
+	data->myclass->AnimePlay();
+
+}
+
 void	SampleScene::AnimePackSelecterRelease()
 {
 	for ( size_t i = 0 ; i < AnimePackSelecter.size() ; i++ )
@@ -158,6 +178,15 @@ void	SampleScene::AnimePackSelecterRelease()
 		delete AnimePackSelecter[i];
 	}
 	AnimePackSelecter.clear();
+}
+
+void	SampleScene::SequencePackSelecterRelease()
+{
+	for ( size_t i = 0 ; i < SequencePackSelecter.size() ; i++ )
+	{
+		delete SequencePackSelecter[i];
+	}
+	SequencePackSelecter.clear();
 }
 
 
@@ -233,6 +262,26 @@ void	SampleScene::ChangeAnimation( int packIndex , int animeIndex )
 //		abort();	//インスタンスのみのアニメでは使用しているセルが０があり得るためコメント
 	}
 	m_player->setAnimation( model , anime , m_cellmap , m_proj );
+
+	AnimeReset();
+
+	m_isLoading = false;
+	m_framereset = true;
+
+}
+
+void	SampleScene::ChangeSequence( int packIndex , int sequenceIndex )
+{
+	m_isLoading = true;
+
+	//シーケンスパックを選択
+	SsSequencePack* sequencepack = m_proj->getSequencePackList()[packIndex]; 
+
+	//シーケンスパック内のシーケンスを選択
+	SsSequence* sequence = sequencepack->sequenceList[sequenceIndex]; 
+
+	//シーケンスからアニメ再生情報を作成する
+	m_player->setSequence( sequence , m_proj );
 
 	AnimeReset();
 
@@ -320,6 +369,27 @@ void	SampleScene::ProjectFileLoad()
 
 		ChangeAnimation( 0 , 0 );
 
+		SequencePackSelecterRelease();
+		SsSequencePackList& lpackseq =  m_proj->getSequencePackList();
+		for ( size_t i = 0 ; i < lpackseq.size() ; i++ )
+		{
+			for ( size_t n = 0 ; n < lpackseq[i]->sequenceList.size() ; n++ )
+			{
+				SequencePackSelecterType* temp = new SequencePackSelecterType();
+
+				std::string disp_name = lpackseq[i]->name + " : " + lpackseq[i]->sequenceList[n]->name;
+
+				temp->packindex = i;
+				temp->sequenceindex = n;
+				temp->myclass = this;
+				temp->name = disp_name;
+				SequencePackSelecter.push_back( temp );
+
+				TwAddButton( g_twbar , disp_name.c_str() , SequenceSelectCB , temp , "group='Sequence'" );
+			}
+		}
+
+		ChangeSequence( 0 , 0 );
 	}
 }
 

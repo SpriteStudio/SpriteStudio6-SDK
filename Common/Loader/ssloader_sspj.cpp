@@ -2,6 +2,7 @@
 #include "ssloader_ssae.h"
 #include "ssloader_ssce.h"
 #include "ssloader_ssee.h"
+#include "ssloader_ssqe.h"
 
 #include "ssstring_uty.h"
 #include "../Helper/DebugPrint.h"
@@ -26,6 +27,12 @@ SsString	SsProject::getSseeBasepath()
 }
 
 
+SsString	SsProject::getSsqeBasepath()
+{ 
+	return getFullPath( m_proj_filepath , settings.animeBaseDirectory );
+}
+
+
 
 
 SsString	SsProject::getImageBasepath()
@@ -41,6 +48,8 @@ SsProject::~SsProject()
 		itr != cellmapList.end() ; itr ++ ) delete (*itr);	
 	for ( SsEffectFileList::iterator itr = effectfileList.begin() ; 
 		itr != effectfileList.end() ; itr ++ ) delete (*itr);	
+	for ( SsSequencePackList::iterator itr = sequenceList.begin() ; 
+		itr != sequenceList.end() ; itr ++ ) delete (*itr);	
 
 }
 
@@ -81,6 +90,33 @@ SsEffectFile*		SsProject::findEffect( SsString& effectName )
 		{
 			return (*itr);
 		}
+	}
+
+	return 0;
+}
+
+SsSequencePack*		SsProject::findSequencePack( SsString& sequencePackName )
+{
+	for ( SsSequencePackList::iterator itr = sequenceList.begin()
+		; itr != sequenceList.end() ; ++itr )
+	{
+		if ( (*itr)->name == sequencePackName )
+		{
+			return (*itr);
+		}
+	}
+
+	return 0;
+}
+
+
+
+SsSequence*		SsProject::findSequence( SsString& sequencePackName , SsString& SequenceName )
+{
+	SsSequencePack* p = findSequencePack( sequencePackName );
+	if ( p )
+	{
+		return p->findSequence(SequenceName);
 	}
 
 	return 0;
@@ -183,6 +219,24 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 			}
 */
 
+		}
+
+		//シーケンスリストを元に読み込みます。
+		for ( size_t i = 0 ;i < proj->getSequencePackNum() ; i++ )
+		{
+			SsString ssqepath = SsCharConverter::convert_path_string(proj->getSequencePackFilePath(i));
+			SsSequencePack* sequence = ssloader_ssqe::Load( ssqepath );
+
+			if ( ( sequence ) && ( checkFileVersion(sequence->version, SPRITESTUDIO6_SSQEVERSION) == true ) ) 
+			{
+				proj->sequenceList.push_back( sequence );
+			}else{
+				//エラー
+				DEBUG_PRINTF( "Sequence load error : %s" , ssqepath.c_str() );
+				DEBUG_PRINTF( "ssqe old version" );
+				delete proj;
+				return 0;
+			}
 		}
 		return proj;
 	}	

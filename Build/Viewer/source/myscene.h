@@ -13,6 +13,7 @@ class SampleScene : public tkScene
 {
 public:
 	struct AnimePackSelecterType;
+	struct SequencePackSelecterType;
 	bool		isLoop;
 
 
@@ -29,6 +30,7 @@ private:
 	int			m_select_anime_index;
 
 	std::vector<AnimePackSelecterType*>	AnimePackSelecter;
+	std::vector<SequencePackSelecterType*>	SequencePackSelecter;
 	SsVector2	m_animeOffsetpos;
 	int			m_nowPlayFrame;
 	double		m_nowPlayFrameD;
@@ -64,7 +66,9 @@ public:
 	void	UIRebuild();
 
 	void	AnimePackSelecterRelease();
+	void	SequencePackSelecterRelease();
 	void	ChangeAnimation( int packIndex , int animeIndex );
+	void	ChangeSequence( int packIndex , int sequenceIndex );
 
 
 	void	AnimePlay(){ m_isAnimeAutoPlay = true; }

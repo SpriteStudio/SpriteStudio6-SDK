@@ -11,6 +11,7 @@ set(ssLoader_SRCS
     ssloader_ssae.cpp
     ssloader_ssce.cpp
     ssloader_ssee.cpp
+    ssloader_ssqe.cpp
     SsEffectBehavior.cpp
     SsEffectElement.cpp
     ssstring_uty.cpp
@@ -34,6 +35,7 @@ set(ssLoader_HEADERS
     ssloader_ssae.h
     ssloader_ssce.h
     ssloader_ssee.h
+    ssloader_ssqe.h
     sstypes.h
     ssvalue.h
     ssInterpolation.h

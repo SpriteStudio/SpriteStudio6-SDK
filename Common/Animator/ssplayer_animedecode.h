@@ -115,6 +115,7 @@ public:
 
 	void	setAnimation( SsModel*	model , SsAnimation* anime , SsCellMapList* cellmap , SsProject* sspj=0 );
 //	void	setAnimation(SsModel*	model, SsAnimation* anime, SsAnimePack *animepack , SsCellMapList* cellmap, SsProject* sspj = 0);
+	void	setSequence( SsSequence* sequence , SsProject* sspj=0 );
 
 	void	setPlayFrame( float time ) { nowPlatTime = time; }
 	int		getAnimeStartFrame() { return curAnimeStartFrame; }

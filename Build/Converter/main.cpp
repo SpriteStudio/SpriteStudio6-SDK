@@ -282,6 +282,10 @@ bool isZenkaku( const SsString* str )
 
 static std::vector<int16_t> s_frameIndexVec;
 
+static void parseParts_ssqe(Lump* topLump, SsProject* proj, const std::string& imageBaseDir)
+{
+}
+
 static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 {
 //	static SsPartStateLess _ssPartStateLess;
@@ -329,6 +333,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 	topLump->add(Lump::s16Data((int)proj->animeList.size(), "numAnimePacks"));
 	
 	topLump->add(Lump::s16Data((int)proj->effectfileList.size(), "numEffectFileList"));
+
+	topLump->add(Lump::s16Data((int)proj->sequenceList.size(), "numSequencePacks"));
 
 	//セルマップ警告
 	if (proj->cellmapList.size() == 0)
@@ -1651,6 +1657,9 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			}
 		}
 	}
+
+	// シーケンス情報
+	parseParts_ssqe( topLump, proj, imageBaseDir );
 
 	std::cerr << "convert end" << "\n";
 
