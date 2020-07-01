@@ -564,6 +564,7 @@ namespace SsAttributeKind
 		boundr,		///< [BNDR]当たり判定用の半径
 		mask,		///< [MASK]マスク閾値
 		user,		///< [USER]ユーザーデータ
+		signal,		///< [SIGN]シグナル
 		instance,	///< [IPRM]インスタンスパーツパラメータ
 		effect,		///< [EFCT]エフェクトパラメータ
 		deform,		///< [DEFM]デフォーム用パラメータ
@@ -701,6 +702,19 @@ namespace SsIkRotationArrow
 
 SS_DECLARE_ENUM_STRING_DEF(SsIkRotationArrow);
 
+namespace SsSignalParamType
+{
+	enum _enum
+	{
+		none,
+		index,
+		integer,
+		floating,
+		num
+	};
+};
+SS_DECLARE_ENUM_STRING_DEF( SsSignalParamType );
+
 
 class SsEffectAttr
 {
@@ -761,6 +775,55 @@ public:
 		useRect(false),
 		useString(false)
 	{}
+};
+
+union SsSignalParamValue
+{
+	int			i;
+	float		f;
+};
+
+class SsSignalParam
+{
+public:
+	SsString					paramId;	///<
+	SsSignalParamType::_enum	type;		///<
+	SsSignalParamValue			value;		///<
+
+	SsSignalParam()
+	:	paramId	("")
+	,	type	(SsSignalParamType::none)
+	{
+		value.i = 0;
+	}
+};
+
+class SsSignalCommand
+{
+public:
+	bool						active;		///<
+	SsString					commandId;	///<
+	std::vector<SsSignalParam>	params;		///<
+	SsString					note;		///<
+
+	SsSignalCommand()
+	:	active		(true)
+	,	commandId	("")
+	,	note		("")
+	{
+		params.clear();
+	}
+};
+
+class SsSignalAttr
+{
+public:
+	std::vector<SsSignalCommand>	commands;	///<
+
+	SsSignalAttr()
+	{
+		commands.clear();
+	}
 };
 
 class SsInstanceAttr
