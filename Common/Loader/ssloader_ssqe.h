@@ -12,21 +12,51 @@ class SsSequence;
 
 
 
-class SsSequence
+class SsSequenceItem
 {
 public:
-	SsString	name;							/// シーケンスの名称
+	SsString				refAnimePack;	/// 参照アニメパック名
+	SsString				refAnime;		/// 参照アニメ名
+	int						repeatCount;	/// 繰り返し再生回数
 
 public:
-	SsSequence(){}
-	virtual ~SsSequence()
+	SsSequenceItem(){}
+	virtual ~SsSequenceItem()
 	{
 	}
 
 	///シリアライズのための宣言です。
 	SSSERIALIZE_BLOCK
 	{
+		SSAR_DECLARE( refAnimePack );
+		SSAR_DECLARE( refAnime );
+		SSAR_DECLARE( repeatCount );
+	}
+};
+
+class SsSequence
+{
+public:
+	SsString	name;							/// シーケンスの名称
+	int								index;		/// このシーケンスがもつ固有の番号
+	SsSequenceType::_enum			type;		/// このシーケンスのタイプ
+	std::vector<SsSequenceItem*>	list;		/// このシーケンスがもつアイテムのリスト
+
+public:
+	SsSequence(){}
+	virtual ~SsSequence()
+	{
+		for ( std::vector<SsSequenceItem*>::iterator itr = list.begin() ; 
+			itr != list.end() ; itr ++ ) delete (*itr);		
+	}
+
+	///シリアライズのための宣言です。
+	SSSERIALIZE_BLOCK
+	{
 		SSAR_DECLARE( name );
+		SSAR_DECLARE( index );
+		SSAR_DECLARE_ENUM( type );
+		SSAR_DECLARE_LISTEX( list , "value" );
 	}
 };
 
