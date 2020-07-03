@@ -131,8 +131,16 @@ void	SampleScene::update(double delta)
 				sceneLoop++;
 			}
 			if ( bUpdateRepeat ) {
+				bool bErr = false;
+
 				//アニメパックを選択
 				SsAnimePack* animepack = m_proj->findAnimationPack( m_player->getSequenceItem( m_nowPlaySequenceIndex )->refAnimePack ); 
+
+				if ( !animepack )
+				{
+					DEBUG_PRINTF( "error : animepack == 0" );
+					bErr = true;
+				}
 
 				//アニメパックのパーツ構造を取得
 				SsModel* model = &animepack->Model;
@@ -140,16 +148,23 @@ void	SampleScene::update(double delta)
 				//アニメパック内のアニメーションを選択
 				SsAnimation* anime = animepack->findAnimation( m_player->getSequenceItem( m_nowPlaySequenceIndex )->refAnime ); 
 
-				//セルマップ情報を作成
-				m_cellmap->set( m_proj , animepack );
-
-				//パーツ構造　アニメーション　セルマップからアニメ再生情報を作成する
-				if ( m_cellmap->size() == 0 )
+				if ( !anime )
 				{
-					DEBUG_PRINTF( "error : cellmap array size == 0" );
-			//		abort();	//インスタンスのみのアニメでは使用しているセルが０があり得るためコメント
+					DEBUG_PRINTF( "error : anime == 0" );
+					bErr = true;
 				}
-				m_player->setAnimation( model , anime , m_cellmap , m_proj );
+
+				if ( !bErr ) {
+					//セルマップ情報を作成
+					m_cellmap->set( m_proj, animepack );
+
+					//パーツ構造　アニメーション　セルマップからアニメ再生情報を作成する
+					if ( m_cellmap->size() == 0 ) {
+						DEBUG_PRINTF( "error : cellmap array size == 0" );
+				//		abort();	//インスタンスのみのアニメでは使用しているセルが０があり得るためコメント
+					}
+					m_player->setAnimation( model, anime, m_cellmap, m_proj );
+				}
 			}
 			if ( bUpdateFrame ) {
 				//次のループの開始フレームを設定する
@@ -305,6 +320,9 @@ void	SampleScene::ChangeAnimation( int packIndex , int animeIndex )
 {
 	m_isLoading = true;
 
+	m_nowPlaySequenceIndex = -1;
+	m_nowPlaySequenceRepeat = 0;
+
 	//アニメパックを選択
 	SsAnimePack* animepack = m_proj->getAnimePackList()[packIndex]; 
 
@@ -326,8 +344,6 @@ void	SampleScene::ChangeAnimation( int packIndex , int animeIndex )
 	m_player->setAnimation( model , anime , m_cellmap , m_proj );
 
 	m_isSequence = false;
-	m_nowPlaySequenceIndex = -1;
-	m_nowPlaySequenceRepeat = 0;
 
 	AnimeReset();
 
@@ -340,27 +356,57 @@ void	SampleScene::ChangeSequence( int packIndex , int sequenceIndex )
 {
 	m_isLoading = true;
 
+	if ( m_proj->getSequencePackNum() <= packIndex ) {
+		m_isLoading = false;
+		return;
+	}
+
 	//シーケンスパックを選択
 	SsSequencePack* sequencepack = m_proj->getSequencePackList()[packIndex]; 
+
+	if ( sequencepack->sequenceList.size() <= sequenceIndex ) {
+		m_isLoading = false;
+		return;
+	}
 
 	//シーケンスパック内のシーケンスを選択
 	SsSequence* sequence = sequencepack->sequenceList[sequenceIndex]; 
 
-	//シーケンスからアニメ再生情報を作成する
-	m_player->setSequence( sequence , m_proj );
+	if ( sequence->list.size() == 0 )
+	{
+		DEBUG_PRINTF( "error : sequence array size == 0" );
+		m_isLoading = false;
+		return;
+	}
 
-	m_isSequence = true;
 	m_nowPlaySequenceIndex = 0;
 	m_nowPlaySequenceRepeat = 0;
 
 	//アニメパックを選択
 	SsAnimePack* animepack = m_proj->findAnimationPack( sequence->list[m_nowPlaySequenceIndex]->refAnimePack ); 
 
+	if ( !animepack ) {
+		DEBUG_PRINTF( "error : animepack == 0" );
+		m_isLoading = false;
+		return;
+	}
+
 	//アニメパックのパーツ構造を取得
 	SsModel* model = &animepack->Model;
 
 	//アニメパック内のアニメーションを選択
 	SsAnimation* anime = animepack->findAnimation( sequence->list[m_nowPlaySequenceIndex]->refAnime ); 
+
+	if ( !anime ) {
+		DEBUG_PRINTF( "error : anime == 0" );
+		m_isLoading = false;
+		return;
+	}
+
+	//シーケンスからアニメ再生情報を作成する
+	m_player->setSequence( sequence , m_proj );
+
+	m_isSequence = true;
 
 	//セルマップ情報を作成
 	m_cellmap->set( m_proj , animepack );
@@ -403,6 +449,10 @@ void	SampleScene::init()
 	m_Zoom = 1.0f;
 	m_Speed = 1.0f;
 	isLoop = true;
+
+	m_isSequence = false;
+	m_nowPlaySequenceIndex = -1;
+	m_nowPlaySequenceRepeat = 0;
 	
     g_twbar = TwNewBar("Main Panel");
 	UIRebuild();
@@ -479,7 +529,7 @@ void	SampleScene::ProjectFileLoad()
 			}
 		}
 
-		ChangeSequence( 0 , 0 );
+//		ChangeSequence( 0 , 0 );
 	}
 }
 
