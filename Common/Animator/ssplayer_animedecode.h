@@ -78,6 +78,7 @@ private:
 	bool			instancePartsHide;
 	bool			maskFuncFlag;						//マスク機能（初期化、描画）を有効にするか？インスタンスパーツ内のマスク対応
 	bool			maskParentSetting;					//親のマスク対象
+	SsSequence*		curSequence;
 
 	size_t			stateNum;
 
@@ -122,6 +123,9 @@ public:
 	int		getAnimeEndFrame() { return curAnimeEndFrame; }
 	int		getAnimeTotalFrame() { return curAnimeTotalFrame; }
 	int		getAnimeFPS() {	return curAnimeFPS; }		
+
+	int		getSequenceItemCount() { return curSequence->list.size(); }
+	SsSequenceItem*	getSequenceItem( int iIndex ) { return curSequence->list[iIndex]; }
 
 	size_t	getStateNum() { return stateNum; }
 	SsPartState*  getPartState() { return partState; }

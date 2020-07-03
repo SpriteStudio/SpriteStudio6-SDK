@@ -282,6 +282,8 @@ void	SsAnimeDecoder::setSequence( SsSequence* sequence , SsProject* sspj )
 {
 	//プロジェクト情報の保存
 	project = sspj;	
+
+	curSequence = sequence;
 }
 
 

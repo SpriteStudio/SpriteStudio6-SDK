@@ -48,6 +48,9 @@ private:
 
 	bool		m_isLoading;
 	bool		m_framereset;
+	bool		m_isSequence;
+	int			m_nowPlaySequenceIndex;
+	int			m_nowPlaySequenceRepeat;
 
 public:
 	SampleScene() : m_isAnimeAutoPlay (false),sceneLoop(0) , m_isLoading(false),m_framereset(false){}

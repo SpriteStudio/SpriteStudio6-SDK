@@ -96,6 +96,68 @@ void	SampleScene::update(double delta)
 		
 		m_player->setSeedOffset( sceneLoop );
 
+		if ( m_isSequence ) {
+			bool bUpdateFrame = false;
+			bool bUpdateRepeat = false;
+			bool bUpdateSequence = false;
+
+			if ( m_player->getAnimeEndFrame() < (int)m_nowPlayFrame )
+			{
+				m_nowPlaySequenceRepeat++;
+
+				bUpdateFrame = true;
+			}
+
+			if ( m_player->getSequenceItem( m_nowPlaySequenceIndex )->repeatCount <= m_nowPlaySequenceRepeat )
+			{
+				m_nowPlaySequenceIndex++;
+				m_nowPlaySequenceRepeat = 0;
+
+				bUpdateFrame = true;
+				bUpdateRepeat = true;
+			}
+
+			if ( m_player->getSequenceItemCount() <= m_nowPlaySequenceIndex )
+			{
+				m_nowPlaySequenceIndex = 0;
+				m_nowPlaySequenceRepeat = 0;
+
+				bUpdateFrame = true;
+				bUpdateRepeat = true;
+				bUpdateSequence = true;
+			}
+
+			if ( bUpdateSequence ) {
+				sceneLoop++;
+			}
+			if ( bUpdateRepeat ) {
+				//アニメパックを選択
+				SsAnimePack* animepack = m_proj->findAnimationPack( m_player->getSequenceItem( m_nowPlaySequenceIndex )->refAnimePack ); 
+
+				//アニメパックのパーツ構造を取得
+				SsModel* model = &animepack->Model;
+
+				//アニメパック内のアニメーションを選択
+				SsAnimation* anime = animepack->findAnimation( m_player->getSequenceItem( m_nowPlaySequenceIndex )->refAnime ); 
+
+				//セルマップ情報を作成
+				m_cellmap->set( m_proj , animepack );
+
+				//パーツ構造　アニメーション　セルマップからアニメ再生情報を作成する
+				if ( m_cellmap->size() == 0 )
+				{
+					DEBUG_PRINTF( "error : cellmap array size == 0" );
+			//		abort();	//インスタンスのみのアニメでは使用しているセルが０があり得るためコメント
+				}
+				m_player->setAnimation( model , anime , m_cellmap , m_proj );
+			}
+			if ( bUpdateFrame ) {
+				//次のループの開始フレームを設定する
+				m_nowPlayFrame = m_player->getAnimeStartFrame();
+				m_nowPlayFrameD = m_player->getAnimeStartFrame();
+			}
+		}
+
 		if ( isLoop )
 		{
 			if ( m_player->getAnimeEndFrame() < (int)m_nowPlayFrame )
@@ -263,6 +325,10 @@ void	SampleScene::ChangeAnimation( int packIndex , int animeIndex )
 	}
 	m_player->setAnimation( model , anime , m_cellmap , m_proj );
 
+	m_isSequence = false;
+	m_nowPlaySequenceIndex = -1;
+	m_nowPlaySequenceRepeat = 0;
+
 	AnimeReset();
 
 	m_isLoading = false;
@@ -282,6 +348,30 @@ void	SampleScene::ChangeSequence( int packIndex , int sequenceIndex )
 
 	//シーケンスからアニメ再生情報を作成する
 	m_player->setSequence( sequence , m_proj );
+
+	m_isSequence = true;
+	m_nowPlaySequenceIndex = 0;
+	m_nowPlaySequenceRepeat = 0;
+
+	//アニメパックを選択
+	SsAnimePack* animepack = m_proj->findAnimationPack( sequence->list[m_nowPlaySequenceIndex]->refAnimePack ); 
+
+	//アニメパックのパーツ構造を取得
+	SsModel* model = &animepack->Model;
+
+	//アニメパック内のアニメーションを選択
+	SsAnimation* anime = animepack->findAnimation( sequence->list[m_nowPlaySequenceIndex]->refAnime ); 
+
+	//セルマップ情報を作成
+	m_cellmap->set( m_proj , animepack );
+
+	//パーツ構造　アニメーション　セルマップからアニメ再生情報を作成する
+	if ( m_cellmap->size() == 0 )
+	{
+		DEBUG_PRINTF( "error : cellmap array size == 0" );
+//		abort();	//インスタンスのみのアニメでは使用しているセルが０があり得るためコメント
+	}
+	m_player->setAnimation( model , anime , m_cellmap , m_proj );
 
 	AnimeReset();
 
