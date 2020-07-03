@@ -150,6 +150,9 @@
           <FILE id="bOCIyg" name="ssloader_sspj.cpp" compile="1" resource="0"
                 file="../../Common/Loader/ssloader_sspj.cpp"/>
           <FILE id="UL613C" name="ssloader_sspj.h" compile="0" resource="0" file="../../Common/Loader/ssloader_sspj.h"/>
+          <FILE id="DF5gVz" name="ssloader_ssqe.cpp" compile="1" resource="0"
+                file="../../Common/Loader/ssloader_ssqe.cpp"/>
+          <FILE id="mlQ2pS" name="ssloader_ssqe.h" compile="0" resource="0" file="../../Common/Loader/ssloader_ssqe.h"/>
           <FILE id="ZoNT8H" name="ssstring_uty.cpp" compile="1" resource="0"
                 file="../../Common/Loader/ssstring_uty.cpp"/>
           <FILE id="rPOPIV" name="ssstring_uty.h" compile="0" resource="0" file="../../Common/Loader/ssstring_uty.h"/>
