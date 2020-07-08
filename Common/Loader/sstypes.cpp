@@ -275,6 +275,7 @@ SsString	__EnumToString_( SsAttributeKind::_enum n )
 	if ( SsAttributeKind::mask == n)		return "MASK";
 	if ( SsAttributeKind::boundr == n)		return "BNDR";
 	if ( SsAttributeKind::user == n)		return "USER";
+	if ( SsAttributeKind::signal == n)		return "SIGN";
 	if ( SsAttributeKind::instance == n)    return "IPRM";
 	if ( SsAttributeKind::mask == n)	    return "MASK";
 	if ( SsAttributeKind::deform == n)	    return "DEFM";
@@ -324,6 +325,7 @@ void	__StringToEnum_( SsString n , SsAttributeKind::_enum &out )
 	if ( n == "UVSY") out = SsAttributeKind::uvsy;
 	if ( n == "BNDR") out = SsAttributeKind::boundr;
 	if ( n == "USER") out = SsAttributeKind::user;
+	if ( n == "SIGN") out = SsAttributeKind::signal;
 	if ( n == "IPRM") out = SsAttributeKind::instance;
 	if ( n == "EFCT") out = SsAttributeKind::effect;
 	if ( n == "MASK") out = SsAttributeKind::mask;
@@ -416,5 +418,21 @@ void 	__StringToEnum_(SsString n, SsIkRotationArrow::_enum& out)
 	if (n == "anticlockwise") out = SsIkRotationArrow::anticlockwise;
 }
 
+//---------------------------------------------------------------
+//相互変換 SsSignalParamType
+SsString	__EnumToString_(SsSignalParamType::_enum n)
+{
+	if (n == SsSignalParamType::index) return "index";
+	if (n == SsSignalParamType::integer) return "integer";
+	if (n == SsSignalParamType::floating) return "floating";
 
+	return "none";
+}
 
+void 	__StringToEnum_(SsString n, SsSignalParamType::_enum& out)
+{
+	out = SsSignalParamType::none;
+	if (n == "index") out = SsSignalParamType::index;
+	if (n == "integer") out = SsSignalParamType::integer;
+	if (n == "floating") out = SsSignalParamType::floating;
+}

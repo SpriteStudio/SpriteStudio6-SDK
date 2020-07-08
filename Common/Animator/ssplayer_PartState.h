@@ -63,6 +63,8 @@ struct SsPartState
 	bool			is_localAlpha;			/// ローカル不透明度を使用している
 	bool			is_defrom;				/// デフォームアトリビュートを使用している
 
+	SsSignalAttr	signalValue;
+
 	SsInstanceAttr	instanceValue;
 
 	SsBlendType::_enum	alphaBlendType;
