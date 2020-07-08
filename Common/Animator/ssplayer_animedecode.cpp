@@ -539,6 +539,12 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 
 }
 
+void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsSignalAttr& v )
+{
+	//補間は行わないので、常に左のキーを出力する
+	GetSsSignalAnime( leftkey , v );
+}
+
 //インスタンスアニメデータ
 void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsInstanceAttr& v )
 {
@@ -968,6 +974,9 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 					SsGetKeyValue( part, nowTime , attr , state->boundingRadius );
 					break;
 				case SsAttributeKind::user:		///< Ver.4 互換ユーザーデータ
+					break;
+				case SsAttributeKind::signal:	///< シグナル
+					SsGetKeyValue( part, nowTime , attr , state->signalValue );
 					break;
 				case SsAttributeKind::instance:	///インスタンスパラメータ
 					{
