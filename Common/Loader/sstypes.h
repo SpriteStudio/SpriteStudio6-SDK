@@ -702,6 +702,20 @@ namespace SsIkRotationArrow
 
 SS_DECLARE_ENUM_STRING_DEF(SsIkRotationArrow);
 
+/// シーケンスタイプ
+namespace SsSequenceType
+{
+	enum _enum
+	{
+		invalid=-1,
+		last,		///< 0 最後のアイテムを繰り返し再生
+		keep,		///< 1 最終フレームを維持
+		top,		///< 2 全体を繰り返し再生
+		num,
+	};
+};
+SS_DECLARE_ENUM_STRING_DEF( SsSequenceType );
+
 namespace SsSignalParamType
 {
 	enum _enum

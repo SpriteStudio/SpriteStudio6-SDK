@@ -69,6 +69,8 @@ class SsAnimation;
 class SsAnimePack;
 class SsCellMap;
 class SsEffectFile;
+class SsSequence;
+class SsSequencePack;
 
 
 typedef std::vector<SsAnimePack*> SsAnimePackList;
@@ -80,6 +82,9 @@ typedef std::vector<SsCellMap*>::iterator SsSsCellMapListItr;
 
 typedef std::vector<SsEffectFile*> SsEffectFileList;
 typedef std::vector<SsEffectFile*>::iterator SsEffectFileListItr;
+
+typedef std::vector<SsSequencePack*> SsSequencePackList;
+typedef std::vector<SsSequencePack*>::iterator SsSequencePackListItr;
 
 /// XMLドキュメントとなっているsspjファイルのデータ保持を提供するクラスです。
 ///以下はエディタ情報のため読み飛ばします。
@@ -95,11 +100,13 @@ public:
 	std::vector<SsString>	animepackNames;		//!< アニメファイルのリスト
 	std::vector<SsString>	effectFileNames;	//!< エフェクトファイルのリスト
 	std::vector<SsString>	textureList;		//!< セルマップから取得したテクスチャのリスト
+	std::vector<SsString>	sequencepackNames;	//!< シーケンスファイルのリスト
 
 
 	SsAnimePackList		animeList;		//!< アニメーションのリスト	
 	SsSsCellMapList		cellmapList;	//!< セルマップリスト
 	SsEffectFileList	effectfileList;
+	SsSequencePackList	sequenceList;	//!< シーケンスのリスト	
 
 	//ロード時に作成されるワーク
 	SsString	m_proj_filepath;	///プロジェクトファイルのパス
@@ -120,6 +127,9 @@ public:
 	///セルマップデータの数量を取得
 	const size_t getEffectFileNum(){ return effectFileNames.size(); }
 
+	///シーケンスパックの数量を取得する
+	const size_t getSequencePackNum(){ return sequencepackNames.size(); }
+
 
 	///アニメパックデータのコンテナを取得する
 	SsAnimePackList&	getAnimePackList(){ return animeList;}
@@ -130,6 +140,9 @@ public:
 	//エフェクトファイルのリスト
 	SsEffectFileList&	getEffectFileList(){ return effectfileList;}
 
+	///シーケンスパックデータのコンテナを取得する
+	SsSequencePackList&	getSequencePackList(){ return sequenceList;}
+
 
 	//アニメパック名とアニメ名からアニメーションを取得する
 	SsAnimation*		findAnimation( SsString& animePackName , SsString& AnimeName );
@@ -138,6 +151,12 @@ public:
 
 	//エフェクトの名前からエフェクトを取得する
 	SsEffectFile*		findEffect( SsString& effectName );
+
+
+	//シーケンスパック名とシーケンス名からシーケンスを取得する
+	SsSequence*			findSequence( SsString& sequencePackName , SsString& SequenceName );
+
+	SsSequencePack*		findSequencePack( SsString& sequencePackName );
 
 	
 
@@ -155,6 +174,7 @@ public:
 		SSAR_DECLARE( cellmapNames );
 		SSAR_DECLARE( animepackNames );
 		SSAR_DECLARE( effectFileNames );
+		SSAR_DECLARE( sequencepackNames );
 
 	}
 
@@ -175,6 +195,9 @@ public:
 	SsString	getSseeBasepath();
 
 	SsString	getImageBasepath();
+
+	///ssqeデータの読み込み元の基準パスを取得する。
+	SsString	getSsqeBasepath();
 
 
 	///AnimePack(ssae)のファイル名をパス付きで取得する
@@ -209,6 +232,12 @@ public:
 	SsString	getCelMapFileOriginalPath( size_t index ) { 
 		if ( cellmapNames.size() <= index ) return "";
 		return cellmapNames[index] ;
+	}
+
+	///SequencePack(ssqe)のファイル名をパス付きで取得する
+	SsString	getSequencePackFilePath( size_t index ) { 
+		if ( sequencepackNames.size() <= index ) return "";
+		return getSsqeBasepath() + sequencepackNames[index];
 	}
 
 };

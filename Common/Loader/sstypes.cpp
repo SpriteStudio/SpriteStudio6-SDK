@@ -419,6 +419,24 @@ void 	__StringToEnum_(SsString n, SsIkRotationArrow::_enum& out)
 }
 
 //---------------------------------------------------------------
+//相互変換 SsSequenceType
+SsString	__EnumToString_(SsSequenceType::_enum n)
+{
+	if (n == SsSequenceType::last) return "LAST";
+	if (n == SsSequenceType::keep) return "KEEP";
+	if (n == SsSequenceType::top) return "TOP";
+
+	return "invalid";
+}
+
+void 	__StringToEnum_(SsString n, SsSequenceType::_enum& out)
+{
+	out = SsSequenceType::invalid;
+	if (n == "LAST") out = SsSequenceType::last;
+	if (n == "KEEP") out = SsSequenceType::keep;
+	if (n == "TOP") out = SsSequenceType::top;
+}
+
 //相互変換 SsSignalParamType
 SsString	__EnumToString_(SsSignalParamType::_enum n)
 {

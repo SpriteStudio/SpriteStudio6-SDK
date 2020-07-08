@@ -78,6 +78,7 @@ private:
 	bool			instancePartsHide;
 	bool			maskFuncFlag;						//マスク機能（初期化、描画）を有効にするか？インスタンスパーツ内のマスク対応
 	bool			maskParentSetting;					//親のマスク対象
+	SsSequence*		curSequence;
 
 	size_t			stateNum;
 
@@ -115,12 +116,16 @@ public:
 
 	void	setAnimation( SsModel*	model , SsAnimation* anime , SsCellMapList* cellmap , SsProject* sspj=0 );
 //	void	setAnimation(SsModel*	model, SsAnimation* anime, SsAnimePack *animepack , SsCellMapList* cellmap, SsProject* sspj = 0);
+	void	setSequence( SsSequence* sequence , SsProject* sspj=0 );
 
 	void	setPlayFrame( float time ) { nowPlatTime = time; }
 	int		getAnimeStartFrame() { return curAnimeStartFrame; }
 	int		getAnimeEndFrame() { return curAnimeEndFrame; }
 	int		getAnimeTotalFrame() { return curAnimeTotalFrame; }
 	int		getAnimeFPS() {	return curAnimeFPS; }		
+
+	int		getSequenceItemCount() { return curSequence->list.size(); }
+	SsSequenceItem*	getSequenceItem( int iIndex ) { return curSequence->list[iIndex]; }
 
 	size_t	getStateNum() { return stateNum; }
 	SsPartState*  getPartState() { return partState; }
