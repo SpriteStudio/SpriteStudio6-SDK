@@ -68,6 +68,7 @@ void	SsPartState::init()
 
 	is_parts_color = false;
 	is_color_blend = false;
+	is_shader = false;
 	is_vertex_transform = false;
 	inheritRates = 0; 
 

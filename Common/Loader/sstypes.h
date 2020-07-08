@@ -547,6 +547,7 @@ namespace SsAttributeKind
 		hide,		///< [HIDE]非表示
 		partsColor,	///< [PCOL]パーツカラー
 		color,		///< [VCOL]カラーブレンド
+		shader,		///< [SHDR]シェーダー
 		vertex,		///< [VERT]頂点変形
 		pivotx,		///< [PVTX]原点オフセット.X
 		pivoty,		///< [PVTY]原点オフセット.Y
@@ -653,6 +654,22 @@ struct SsColorAnime
 	SsColorAnime() : 
 			target( SsColorBlendTarget::invalid ) ,
 				blendType( SsBlendType::invalid ){}
+
+};
+
+///シェーダー使用時のシェーダータイプとシェーダー値
+struct SsShaderAnime
+{
+	SsString				id;				// シェーダータイプ
+	float					param[4];		// シェーダー値
+
+	SsShaderAnime()
+	{
+		id = "";
+		for ( int i = 0; i < 4; i++ ) {
+			param[i] = 0.0f;
+		}
+	}
 
 };
 

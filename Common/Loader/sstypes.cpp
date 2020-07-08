@@ -258,6 +258,7 @@ SsString	__EnumToString_( SsAttributeKind::_enum n )
 	if ( SsAttributeKind::hide == n)		return "HIDE";
 	if ( SsAttributeKind::partsColor == n)	return "PCOL";
 	if ( SsAttributeKind::color == n)		return "VCOL";
+	if ( SsAttributeKind::shader == n)		return "SHDR";
 	if ( SsAttributeKind::vertex == n)		return "VERT";
 	if ( SsAttributeKind::pivotx == n)		return "PVTX";
 	if ( SsAttributeKind::pivoty == n)		return "PVTY";
@@ -309,6 +310,7 @@ void	__StringToEnum_( SsString n , SsAttributeKind::_enum &out )
 	if ( n == "HIDE") out = SsAttributeKind::hide;
 	if ( n == "PCOL") out = SsAttributeKind::partsColor;
 	if ( n == "VCOL") out = SsAttributeKind::color;
+	if ( n == "SHDR") out = SsAttributeKind::shader;
 	if ( n == "VERT") out = SsAttributeKind::vertex;
 	if ( n == "PVTX") out = SsAttributeKind::pivotx;
 	if ( n == "PVTY") out = SsAttributeKind::pivoty;

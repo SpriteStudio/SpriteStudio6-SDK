@@ -97,6 +97,7 @@ public:
 
 void	GetSsPartsColorValue( const SsKeyframe* key , SsPartsColorAnime& v );
 void	GetSsColorValue(const SsKeyframe* key, SsColorAnime& v);
+void	GetSsShaderValue(const SsKeyframe* key, SsShaderAnime& v);
 void	GetSsVertexAnime( const SsKeyframe* key , SsVertexAnime& v );
 void	GetSsRefCell( const SsKeyframe* key , SsRefCell& v );
 void	GetSsUserDataAnime( const SsKeyframe* key , SsUserDataAnime& v );
