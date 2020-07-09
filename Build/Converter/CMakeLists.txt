@@ -28,7 +28,6 @@ endif()
 if(NOT TARGET ssHelper)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common Ss6Converter_Common)
 endif()
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../Depends Ss6Converter_Depends)
 
 set(FlatBuffers_Library_SRCS
     flatbuffers/include/flatbuffers/code_generators.h
