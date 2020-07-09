@@ -14,7 +14,7 @@ pushd %BASEDIR%
 rmdir /S /Q viewer_sample_2
 mkdir viewer_sample_2
 copy %BUILDDIR%\Viewer2\cmakeBuild\Release\App\Viewer2.exe viewer_sample_2\
-zip -r viewer_sample_2.zip viewer_sample_2
+powershell compress-archive viewer_sample_2 viewer_sample_2.zip
 move /y viewer_sample_2.zip %TOOLSDIR%\
 rmdir /S /Q viewer_sample_2
 popd

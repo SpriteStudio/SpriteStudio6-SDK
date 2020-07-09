@@ -13,7 +13,8 @@ jobs:
     - name: "git submodule"
       run: git submodule update --init --recursive
     - name: prepare build environment
-      run: ./Build/Depends/prepare_macos.sh
+      run: |
+        brew install qt
     - name: release build
       run: ./Scripts/release_macos.sh
     - name: Upload Tools
@@ -31,15 +32,10 @@ jobs:
     - uses: actions/checkout@v1
     - name: "git submodule"
       run: git submodule update --init --recursive
-    - name: prepare build environment
-      run: |
-        choco install -y unzip
-        choco install -y curl
-        choco install -y zip
     - name: install cmake
       run: |
-        curl -O https://cmake.org/files/v3.15/cmake-3.15.5-win64-x64.zip
-        7z x cmake-3.15.5-win64-x64.zip -oC:\projects\deps
+        curl -O https://cmake.org/files/v3.17/cmake-3.17.3-win64-x64.zip
+        7z x cmake-3.17.3-win64-x64.zip -oC:\projects\deps
         move C:\projects\deps\cmake-* C:\projects\deps\cmake
         $env:Path = "C:\projects\deps\cmake\bin" + ";" + $env:Path
         cmake --version
@@ -48,8 +44,6 @@ jobs:
       uses: jurplel/install-qt-action@v2
     - name: "set QT_PREFIX"
       run: $env:QT_PREFIX = $env:Qt5_Dir
-    - name: "download dependency libraries"
-      run: Build\Depends\allDownload.bat
     - name: release build
       shell: cmd
       run: Scripts\release_win.bat

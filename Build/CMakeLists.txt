@@ -8,7 +8,6 @@ if(MSVC)
 else()
     set(DEFAULT_STATIC_OPTION NO)
 endif()
-option(ENABLE_PYTHON "Enable Python binding" OFF)
 option(ENABLE_STATIC "static link" ${DEFAULT_STATIC_OPTION})
 
 # enable ccache
@@ -38,28 +37,15 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 IF(WIN32)
-    #環境により変更してください
-    #SET(BOOST_ROOT "C:/boost-1_64_0")
-    #SET(BOOST_ROOT "C:/Boost/include/boost-1_64/")
-    #SET(BOOST_PYTHON_LIB "C:/Boost/lib" )
-    #SET(PYTHON_IHNCLUDE "C:/Python27/include")
-    #SET(PYTHON_LIB "C:/Python27/libs")
 ELSEIF(APPLE)
-    SET(PYTHON_LIB "/usr/local/lib")
 ELSEIF(CMAKE_COMPILER_IS_GNUCXX)
     ADD_DEFINITIONS(-std=gnu++14)
 ENDIF()
 
 enable_testing()
-# add_subdirectory(UnitTest)
 
 # viewer_sample_gl and viewer_sample_dx9
 add_subdirectory(Viewer)
-
-# scriptbase_converter
-if(ENABLE_PYTHON)
-    add_subdirectory(PythonBinder)
-endif()
 
 # Ss6Converter
 add_subdirectory(Converter)
