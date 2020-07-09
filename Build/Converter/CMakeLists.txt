@@ -62,7 +62,6 @@ set(Ss6Converter_SRCS
 
 set(Ss6Converter_HEADERS
     ssfb_generated.h
-    ssfb_fbs_array.h
     BinaryDataWriter.h
     FileUtil.h
     Lump.h
