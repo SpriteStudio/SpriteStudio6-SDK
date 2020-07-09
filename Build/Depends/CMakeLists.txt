@@ -116,15 +116,4 @@ macro(Depends_Lib DEPSDIR)
     # TODO:
     endif()
 
-    # python include directories
-    if (DEFINED $ENV{PYTHON_INCLUDE_PATH})
-        include_directories($ENV{PYTHON_INCLUDE_PATH})
-    else()
-        if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
-            # TODO:
-            include_directories(${DEPSDIR}/python/Frameworks/Python.framework/Versions/3.7/Headers)
-        elseif(MSVC)
-            include_directories(${DEPSDIR}/boost_1_66_0)
-        endif()
-    endif()
 endmacro()
