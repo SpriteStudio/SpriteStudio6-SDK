@@ -24,7 +24,7 @@ mkdir Ss6Converter
 copy %BUILDDIR%\Converter\build\Release\Ss6Converter.exe Ss6Converter\
 copy %BUILDDIR%\Ss6ConverterGUI\Ss6ConverterGUI\Release\Ss6ConverterGUI.exe Ss6Converter\
 %WINDEPLOYQT% --release Ss6Converter\Ss6ConverterGUI.exe || exit /b 1
-zip -r Ss6Converter.zip Ss6Converter
+powershell compress-archive Ss6Converter Ss6Converter.zip
 move /y Ss6Converter.zip %TOOLSDIR%\
 rmdir /S /Q Ss6Converter
 popd
