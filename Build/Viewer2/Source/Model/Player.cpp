@@ -16,11 +16,15 @@
 #include "Loader.h"
 
 Player*	Player::myInst = 0;
-Value	Player::State::packIndex;
+Value	Player::State::animepackIndex;
 Value	Player::State::animeIndex;
 Value	Player::State::animeName;
+Value	Player::State::sequencepackIndex;
+Value	Player::State::sequenceIndex;
+Value	Player::State::sequenceName;
 Value	Player::State::startFrame;
 Value	Player::State::endFrame;
+Value	Player::State::loopFrame;
 Value	Player::State::length;
 Value	Player::State::frame;
 Value	Player::State::fps;
@@ -48,15 +52,19 @@ Player::Player()
 {
 	myInst = this;
 
-	currentState->packIndex		= 0;
-	currentState->animeIndex	= 0;
-	currentState->animeName		= "";
-	currentState->startFrame	= 0;
-	currentState->endFrame		= 10;
-	currentState->length		= 10;
-	currentState->frame			= 0;
-	currentState->fps			= 30;
-	currentState->loop			= false;
+	currentState->animepackIndex	= 0;
+	currentState->animeIndex		= 0;
+	currentState->animeName			= "";
+	currentState->sequencepackIndex	= 0;
+	currentState->sequenceIndex		= 0;
+	currentState->sequenceName		= "";
+	currentState->startFrame		= 0;
+	currentState->endFrame			= 10;
+	currentState->loopFrame			= 0;
+	currentState->length			= 10;
+	currentState->frame				= 0;
+	currentState->fps				= 30;
+	currentState->loop				= false;
 
 	auto * view = ViewerMainWindow::get();
 	currentState->animeName.addListener(view);
@@ -97,6 +105,7 @@ void Player::tick()
 	int		frame		= currentState->frame.getValue();
 	int		startFrame	= currentState->startFrame.getValue();
 	int		endFrame	= currentState->endFrame.getValue();
+	int		loopFrame	= currentState->loopFrame.getValue();
 	bool	loop		= currentState->loop.getValue();
 
 	frame++;
@@ -105,7 +114,7 @@ void Player::tick()
 	{
 		if (loop)
 		{
-			frame = startFrame;
+			frame = loopFrame > startFrame ? ( loopFrame < endFrame ? loopFrame : endFrame ) : startFrame;
 		}
 		else
 		{
@@ -130,6 +139,11 @@ void Player::loadProj(const String & name)
 void Player::loadAnime(int packIndex, int animeIndex)
 {
 	currentState->loadAnime(this, packIndex, animeIndex);
+}
+
+void Player::loadSequence(int packIndex, int sequenceIndex)
+{
+	currentState->loadSequence(this, packIndex, sequenceIndex);
 }
 
 Player::State * Player::getState()
@@ -209,4 +223,11 @@ void Player::State::loadAnime(Player * p, int packIndex, int animeIndex)
 	auto* asyncAnimeLoader = new AsyncAnimeLoader();
 	asyncAnimeLoader->setAnimeIndex(packIndex, animeIndex);
 	asyncAnimeLoader->launchThread();
+}
+
+void Player::State::loadSequence(Player * p, int packIndex, int sequenceIndex)
+{
+	auto* asyncSequenceLoader = new AsyncSequenceLoader();
+	asyncSequenceLoader->setSequenceIndex(packIndex, sequenceIndex);
+	asyncSequenceLoader->launchThread();
 }

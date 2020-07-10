@@ -72,13 +72,13 @@ private:
 	float			frameDelta;
 	int				curAnimeStartFrame;
 	int				curAnimeEndFrame;
+	int				curAnimeLoopFrame;
 	int				curAnimeTotalFrame;
 	int				curAnimeFPS;
 	SsAnimation*	curAnimation;
 	bool			instancePartsHide;
 	bool			maskFuncFlag;						//マスク機能（初期化、描画）を有効にするか？インスタンスパーツ内のマスク対応
 	bool			maskParentSetting;					//親のマスク対象
-	SsSequence*		curSequence;
 
 	size_t			stateNum;
 
@@ -116,16 +116,14 @@ public:
 
 	void	setAnimation( SsModel*	model , SsAnimation* anime , SsCellMapList* cellmap , SsProject* sspj=0 );
 //	void	setAnimation(SsModel*	model, SsAnimation* anime, SsAnimePack *animepack , SsCellMapList* cellmap, SsProject* sspj = 0);
-	void	setSequence( SsSequence* sequence , SsProject* sspj=0 );
 
 	void	setPlayFrame( float time ) { nowPlatTime = time; }
+	float	getPlayFrame() { return nowPlatTime; }
 	int		getAnimeStartFrame() { return curAnimeStartFrame; }
 	int		getAnimeEndFrame() { return curAnimeEndFrame; }
+	int		getAnimeLoopFrame() { return curAnimeLoopFrame; }
 	int		getAnimeTotalFrame() { return curAnimeTotalFrame; }
 	int		getAnimeFPS() {	return curAnimeFPS; }		
-
-	int		getSequenceItemCount() { return curSequence->list.size(); }
-	SsSequenceItem*	getSequenceItem( int iIndex ) { return curSequence->list[iIndex]; }
 
 	size_t	getStateNum() { return stateNum; }
 	SsPartState*  getPartState() { return partState; }
@@ -160,8 +158,47 @@ public:
 	void setMaskParentSetting(bool flg);							//親のマスク対象を設定する
 	bool getMaskParentSetting(void) { return maskParentSetting; };	//設定された親のマスク対象を取得する
 
+protected:
+	void setProject( SsProject* sspj=0 ) { project = sspj; }
+	SsProject* getProject() { return project; }
 };
 
+class SsSequenceDecoder : public SsAnimeDecoder
+{
+public:
+	SsSequenceDecoder();
+
+	virtual void	update( float frameDelta = 1.0f );
+
+	void	setSequence( SsSequence* sequence , SsProject* sspj=0 );
+
+	int		getAnimeStartFrame() { return curSequenceStartFrame; }
+	int		getAnimeEndFrame() { return curSequenceEndFrame; }
+	int		getAnimeLoopFrame() { return curSequenceLoopFrame; }
+	int		getAnimeTotalFrame() { return curSequenceTotalFrame; }
+	int		getAnimeFPS() {	return curSequenceFPS; }		
+
+	int		getSequenceItemCount() { return curSequence->list.size(); }
+	SsSequenceItem*	getSequenceItem( int iIndex ) { return curSequence->list[iIndex]; }
+
+private:
+	std::vector<int>				listTotalFrame;
+	std::vector<int>				listRepeatCount;
+
+	SsCellMapList*					cellmap;///アニメに関連付けられているセルマップ
+
+	int				curSequenceStartFrame;
+	int				curSequenceEndFrame;
+	int				curSequenceLoopFrame;
+	int				curSequenceTotalFrame;
+	int				curSequenceFPS;
+	SsSequence*		curSequence;
+	SsSequenceItem*	curSequenceItem;
+
+	void	setSequenceItem( SsSequenceItem* sequenceItem );
+
+	SsSequenceItem*	seekSequenceItem( int& iTime );
+};
 
 
 #endif

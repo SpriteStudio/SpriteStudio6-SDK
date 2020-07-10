@@ -34,16 +34,18 @@ void AsyncAnimeLoader::run()
 
 		int startFrame = static_cast<int>(p->decoder->getAnimeStartFrame());
 		int endFrame = static_cast<int>(p->decoder->getAnimeEndFrame());
+		int loopFrame = static_cast<int>(p->decoder->getAnimeLoopFrame());
 		int fps = static_cast<int>(p->decoder->getAnimeFPS());
 		String animeName = anime->name;
 
-		p->currentState->packIndex = packIndex;
+		p->currentState->animepackIndex = packIndex;
 		p->currentState->animeIndex = animeIndex;
 		p->getState()->animeName = animeName;
 		p->getState()->length = endFrame;
 		p->getState()->startFrame = startFrame;
 		p->getState()->frame = startFrame;
 		p->getState()->endFrame = endFrame;
+		p->getState()->loopFrame = loopFrame;
 		p->getState()->fps = fps;
 
 		p->changeState(p->statePaused.get());
@@ -64,6 +66,67 @@ void AsyncAnimeLoader::setAnimeIndex(int _packIndex, int _animeIndex)
 {
 	packIndex = _packIndex;
 	animeIndex = _animeIndex;
+}
+
+AsyncSequenceLoader::AsyncSequenceLoader()
+	: ThreadWithProgressWindow("Loading...", true, false)
+{
+	setStatusMessage("Preparing...");
+}
+
+void AsyncSequenceLoader::run()
+{
+	auto* p = Player::get();
+
+	setProgress(-1.0);
+	setStatusMessage("Analysing sequence...");
+
+	// GLのスレッドにリクエスト
+	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
+	{
+		p->changeState(p->stateLoading.get());
+		SsSequencePackList & slist = p->currentProj->getSequencePackList();
+		SsSequencePack * sequencePack = slist[packIndex];
+		SsSequence * sequence = sequencePack->sequenceList[sequenceIndex];
+		SsSequenceDecoder * decoder = new SsSequenceDecoder();
+
+		p->decoder.reset(decoder);
+		decoder->setSequence(sequence, p->currentProj.get());
+
+		int startFrame = static_cast<int>(decoder->getAnimeStartFrame());
+		int endFrame = static_cast<int>(decoder->getAnimeEndFrame());
+		int loopFrame = static_cast<int>(decoder->getAnimeLoopFrame());
+		int fps = static_cast<int>(decoder->getAnimeFPS());
+		String sequenceName = sequence->name;
+
+		p->currentState->sequencepackIndex = packIndex;
+		p->currentState->sequenceIndex = sequenceIndex;
+		p->getState()->sequenceName = sequenceName;
+		p->getState()->length = endFrame;
+		p->getState()->startFrame = startFrame;
+		p->getState()->frame = startFrame;
+		p->getState()->endFrame = endFrame;
+		p->getState()->loopFrame = loopFrame;
+		p->getState()->fps = fps;
+
+		p->changeState(p->statePaused.get());
+	}, true);
+
+	wait(100);
+}
+
+void AsyncSequenceLoader::threadComplete(bool userPressedCancel)
+{
+	auto* pC = MainContentComponent::get();
+
+	pC->repaint();
+	delete this;
+}
+
+void AsyncSequenceLoader::setSequenceIndex(int _packIndex, int _sequenceIndex)
+{
+	packIndex = _packIndex;
+	sequenceIndex = _sequenceIndex;
 }
 
 AsyncProjectLoader::AsyncProjectLoader()

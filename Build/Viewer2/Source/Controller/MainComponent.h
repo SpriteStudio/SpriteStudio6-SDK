@@ -19,6 +19,7 @@ enum CommandIDs
 	STOP,
 	RESET,
 	LOAD_ANIME,
+	LOAD_SEQUENCE,
 	EXIT,
 };
 

@@ -6,6 +6,12 @@ class ColourSelectorWindow;
 class LicenseWindow;
 class DocumentView3D;
 
+enum PackType {
+	None = 0,
+	Animation,
+	Sequence,
+};
+
 class ViewerMainWindow :	public Component,
 							public MenuBarModel,
 							public Value::Listener
@@ -39,8 +45,10 @@ public:
 		Value	length;
 		Value	fps;
 		Value	loop;
-		Value	packIndex;
+		Value	animepackIndex;
 		Value	animeIndex;
+		Value	sequencepackIndex;
+		Value	sequenceIndex;
 
 		Value	camera_x;
 		Value	camera_y;
@@ -84,7 +92,7 @@ private:
 	void			buildTreeView();
 	void			buildPropertyPanel();
 	ValueTree		createTree();
-	ValueTree		createTreeItem(const String & name, int _packIndex, int _animeIndex);
+	ValueTree		createTreeItem(const String & name, PackType _packType, int _packIndex, int _itemIndex);
     //==============================================================================
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ViewerMainWindow)
 };
@@ -99,8 +107,9 @@ public:
 	void	paintItem(Graphics& g, int width, int height) override;
 	void	itemOpennessChanged(bool isNowOpen) override;
 	void	itemClicked(const MouseEvent & e) override;
+	PackType	getPackType();
 	int		getPackIndex();
-	int		getAnimeIndex();
+	int		getItemIndex();
 private:
 	ValueTree	tree;
 	void		refreshSubItems();

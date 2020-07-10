@@ -461,12 +461,13 @@ void ViewerMainWindow::buildSlider()
 	state.camera_scale = 1.0f;
 }
 
-ValueTree ViewerMainWindow::createTreeItem(const String & name, int _packIndex, int _animeIndex)
+ValueTree ViewerMainWindow::createTreeItem(const String & name, PackType _packType, int _packIndex, int _itemIndex)
 {
 	ValueTree t("Item");
 	t.setProperty("name", name, nullptr);
+	t.setProperty("packType", _packType, nullptr);
 	t.setProperty("packIndex", _packIndex, nullptr);
-	t.setProperty("animeIndex", _animeIndex, nullptr);
+	t.setProperty("itemIndex", _itemIndex, nullptr);
 	return t;
 }
 
@@ -474,11 +475,13 @@ ValueTree ViewerMainWindow::createTree()
 {
 	if (Player::get()->currentProj == 0)
 	{
-		return createTreeItem("", 0, -1);
+		return createTreeItem("", PackType::None, 0, -1);
 	}
 
 	SsProject * proj = Player::get()->currentProj.get();
-	auto root = createTreeItem("proj", -1, -1);
+	auto root = createTreeItem("proj", PackType::None, -1, -1);
+	ValueTree animeRoot = createTreeItem("Animations", PackType::None, -1, -1);
+	root.appendChild(animeRoot, nullptr);
 	SsAnimePackList & alist = proj->getAnimePackList();
 	for (int i = 0; i < alist.size(); i++)
 	{
@@ -486,7 +489,7 @@ ValueTree ViewerMainWindow::createTree()
 		SsAnimePack* animepack = alist[i];
 
 		String animepackName(animepack->name);
-		ValueTree ssae = createTreeItem(animepackName, i, -1);
+		ValueTree ssae = createTreeItem(animepackName, PackType::None, i, -1);
 		for (int j = 0; j < animepack->animeList.size(); j++)
 		{
 			SsAnimation* anime = animepack->animeList[j];
@@ -494,14 +497,33 @@ ValueTree ViewerMainWindow::createTree()
 			String animeName(anime->name);
 			if (animeName == "Setup")
 			{
-				ssae.addChild(createTreeItem(animeName, i, j), 0, nullptr);
+				ssae.addChild(createTreeItem(animeName, PackType::Animation, i, j), 0, nullptr);
 			}
 			else
 			{
-				ssae.addChild(createTreeItem(animeName, i, j), -1, nullptr);
+				ssae.addChild(createTreeItem(animeName, PackType::Animation, i, j), -1, nullptr);
 			}
 		}
-		root.appendChild(ssae, nullptr);
+		animeRoot.appendChild(ssae, nullptr);
+	}
+	ValueTree sequenceRoot = createTreeItem("Sequences", PackType::None, -1, -1);
+	root.appendChild(sequenceRoot, nullptr);
+	SsSequencePackList & slist = proj->getSequencePackList();
+	for (int i = 0; i < slist.size(); i++)
+	{
+		// シーケンスパック名
+		SsSequencePack* sequencepack = slist[i];
+
+		String sequencepackName(sequencepack->name);
+		ValueTree ssqe = createTreeItem(sequencepackName, PackType::None, i, -1);
+		for (int j = 0; j < sequencepack->sequenceList.size(); j++)
+		{
+			SsSequence* sequence = sequencepack->sequenceList[j];
+			// シーケンス名
+			String sequenceName(sequence->name);
+			ssqe.addChild(createTreeItem(sequenceName, PackType::Sequence, i, j), -1, nullptr);
+		}
+		sequenceRoot.appendChild(ssqe, nullptr);
 	}
 	return root;
 }
@@ -570,11 +592,25 @@ void ViewerTreeViewItem::itemOpennessChanged(bool isNowOpen)
 
 void ViewerTreeViewItem::itemClicked(const MouseEvent & e)
 {
-	ViewerMainWindow::get()->getState()->packIndex = getPackIndex();
-	ViewerMainWindow::get()->getState()->animeIndex = getAnimeIndex();
-	//コマンドを発行
-	ApplicationCommandTarget::InvocationInfo info(CommandIDs::LOAD_ANIME);
-	MainContentComponent::get()->commandManager.invoke(info, true);
+	if ( getPackType() == PackType::Animation ) {
+		ViewerMainWindow::get()->getState()->animepackIndex = getPackIndex();
+		ViewerMainWindow::get()->getState()->animeIndex = getItemIndex();
+		//コマンドを発行
+		ApplicationCommandTarget::InvocationInfo info( CommandIDs::LOAD_ANIME );
+		MainContentComponent::get()->commandManager.invoke( info, true );
+	}else
+	if ( getPackType() == PackType::Sequence ) {
+		ViewerMainWindow::get()->getState()->sequencepackIndex = getPackIndex();
+		ViewerMainWindow::get()->getState()->sequenceIndex = getItemIndex();
+		//コマンドを発行
+		ApplicationCommandTarget::InvocationInfo info( CommandIDs::LOAD_SEQUENCE );
+		MainContentComponent::get()->commandManager.invoke( info, true );
+	}
+}
+
+PackType ViewerTreeViewItem::getPackType()
+{
+	return (PackType)( (int)( tree["packType"] ) );
 }
 
 int ViewerTreeViewItem::getPackIndex()
@@ -582,9 +618,9 @@ int ViewerTreeViewItem::getPackIndex()
 	return tree["packIndex"];
 }
 
-int ViewerTreeViewItem::getAnimeIndex()
+int ViewerTreeViewItem::getItemIndex()
 {
-	return tree["animeIndex"];
+	return tree["itemIndex"];
 }
 
 void ViewerTreeViewItem::refreshSubItems()

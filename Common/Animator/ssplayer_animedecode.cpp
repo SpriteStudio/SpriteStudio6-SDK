@@ -31,6 +31,7 @@ SsAnimeDecoder::SsAnimeDecoder() :
 	curAnimeFPS(0),
 	curAnimeStartFrame(0), 
 	curAnimeEndFrame(0),
+	curAnimeLoopFrame(0), 
 	curAnimeTotalFrame(0),
 	nowPlatTime(0) ,
 	nowPlatTimeOld(0),
@@ -267,6 +268,7 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	//アニメの最大フレーム数を取得
 	curAnimeStartFrame = anime->settings.startFrame;	//Ver6.0.0開始終了フレーム対応
 	curAnimeEndFrame = anime->settings.endFrame;
+	curAnimeLoopFrame = curAnimeStartFrame;
 	curAnimeTotalFrame = anime->settings.frameCount;
 	curAnimeFPS = anime->settings.fps;
 
@@ -276,14 +278,6 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	meshAnimator->makeMeshBoneList();
 
 	
-}
-
-void	SsAnimeDecoder::setSequence( SsSequence* sequence , SsProject* sspj )
-{
-	//プロジェクト情報の保存
-	project = sspj;	
-
-	curSequence = sequence;
 }
 
 
@@ -1676,3 +1670,144 @@ void	SsAnimeDecoder::draw()
 	SsCurrentRenderer::getRender()->enableMask(false);
 }
 
+SsSequenceDecoder::SsSequenceDecoder() : 
+	curSequenceFPS(0),
+	curSequenceStartFrame(0), 
+	curSequenceEndFrame(0),
+	curSequenceLoopFrame(0), 
+	curSequenceTotalFrame(0),
+	cellmap(0)
+	{
+	}
+
+void	SsSequenceDecoder::update(float frameDelta)
+{
+	float	ftime = getPlayFrame();
+	int		itime = (int)ftime;
+	float	fdiff = ftime - itime;
+
+	SsSequenceItem * item = seekSequenceItem( itime );
+
+	setPlayFrame( itime + fdiff );
+
+	if ( item != curSequenceItem ) {
+		setSequenceItem( item );
+	}
+
+	SsAnimeDecoder::update( frameDelta );
+}
+
+void	SsSequenceDecoder::setSequence( SsSequence* sequence , SsProject* sspj )
+{
+	//プロジェクト情報の保存
+	setProject( sspj );	
+
+	listTotalFrame.clear();
+	listRepeatCount.clear();
+
+	curSequence = sequence;
+	curSequenceItem = NULL;
+
+	if ( !sequence ) {
+		return;
+	}
+
+	int		iSequenceItemCount = getSequenceItemCount();
+
+	if ( iSequenceItemCount ) {
+		SsSequenceItem * item = getSequenceItem( 0 );
+
+		setSequenceItem( item );
+
+		SsAnimePack * animePack = sspj->findAnimationPack( item->refAnimePack );
+		SsAnimation * anime = animePack ? animePack->findAnimation( item->refAnime ) : NULL;
+
+		curSequenceStartFrame = anime->settings.startFrame;	//Ver6.0.0開始終了フレーム対応
+		curSequenceFPS = anime->settings.fps;
+	}
+
+	int iPreTotal = 0;
+	curSequenceTotalFrame = 0;
+
+	for ( int i = 0; i < iSequenceItemCount; i++ ) {
+		SsSequenceItem * item = getSequenceItem( i );
+		SsAnimePack * animePack = sspj->findAnimationPack( item->refAnimePack );
+		SsAnimation * anime = animePack ? animePack->findAnimation( item->refAnime ) : NULL;
+		int iTotal = 0;
+
+		if ( anime ) {
+			iTotal = anime->settings.endFrame - anime->settings.startFrame + 1;
+
+			//シーケンスの最大フレーム数を取得
+			iPreTotal = curSequenceTotalFrame;
+			curSequenceTotalFrame += iTotal;
+		}
+
+		listTotalFrame.push_back( iTotal );
+		listRepeatCount.push_back( item->repeatCount );
+	}
+
+	curSequenceEndFrame = curSequenceTotalFrame ? curSequenceTotalFrame - 1 : 0;
+
+	if ( sequence->type == SsSequenceType::last ) {
+		curSequenceLoopFrame = iPreTotal;
+	}else
+	if ( sequence->type == SsSequenceType::last ) {
+		curSequenceLoopFrame = curSequenceEndFrame;
+	}else
+	if ( sequence->type == SsSequenceType::last ) {
+		curSequenceLoopFrame = curSequenceStartFrame;
+	}
+}
+
+void	SsSequenceDecoder::setSequenceItem( SsSequenceItem* sequenceItem )
+{
+	SsProject* sspj = getProject();
+
+	if ( !sspj || !sequenceItem ) {
+		return;
+	}
+
+	curSequenceItem = sequenceItem;
+
+	if ( cellmap )
+		delete cellmap;
+
+	SsAnimePack * animePack = sspj->findAnimationPack( sequenceItem->refAnimePack );
+	SsAnimation * anime = animePack ? animePack->findAnimation( sequenceItem->refAnime ) : NULL;
+	SsModel* model = animePack ? &animePack->Model : NULL;
+
+	cellmap = new SsCellMapList();
+	cellmap->set(sspj, animePack);
+	setAnimation(model, anime, cellmap, sspj);
+}
+
+SsSequenceItem*	SsSequenceDecoder::seekSequenceItem( int& iTime )
+{
+	if ( !curSequence ) {
+		return	NULL;
+	}
+
+	SsSequenceItem*		pItem = NULL;
+	int					iSequenceItemCount = getSequenceItemCount();
+	int					iSeek = iTime;
+
+	for ( int i = 0; i < iSequenceItemCount; i++ ) {
+		int		iTotal = listTotalFrame[i];
+		int		iRepeat = iTotal * listRepeatCount[i];
+
+		if ( iSeek < iRepeat ) {
+			iSeek %= iTotal;
+			pItem = getSequenceItem( i );
+			break;
+		}
+
+		iSeek -= iRepeat;
+	}
+
+	if ( pItem ) {
+		iTime = iSeek;
+	}
+
+	return	pItem;
+}

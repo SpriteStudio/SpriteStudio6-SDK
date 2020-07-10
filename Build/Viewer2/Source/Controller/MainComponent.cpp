@@ -76,6 +76,10 @@ void MainContentComponent::getCommandInfo(CommandID commandID, ApplicationComman
 		result.setActive(true);
 		result.shortName = "Load anime";
 		break;
+	case CommandIDs::LOAD_SEQUENCE:
+		result.setActive(true);
+		result.shortName = "Load sequence";
+		break;
 	case CommandIDs::EXIT:
 		result.setActive(true);
 		result.shortName = "Exit";
@@ -94,6 +98,7 @@ void MainContentComponent::getAllCommands(Array<CommandID>& c)
 		CommandIDs::STOP,
 		CommandIDs::RESET,
 		CommandIDs::LOAD_ANIME,
+		CommandIDs::LOAD_SEQUENCE,
 		CommandIDs::EXIT,
 	};
 
@@ -127,14 +132,26 @@ bool MainContentComponent::perform(const InvocationInfo & info)
 		break;
 	case CommandIDs::LOAD_ANIME:
 	{
-		int packIndex = ViewerMainWindow::get()->getState()->packIndex.getValue();
+		int animepackIndex = ViewerMainWindow::get()->getState()->animepackIndex.getValue();
 		int animeIndex = ViewerMainWindow::get()->getState()->animeIndex.getValue();
-		if (packIndex < 0 || animeIndex < 0)
+		if (animepackIndex < 0 || animeIndex < 0)
 		{
 			break;
 		}
 		//アニメーションを読み込み
-		animePlayer->loadAnime(packIndex, animeIndex);
+		animePlayer->loadAnime(animepackIndex, animeIndex);
+		break;
+	}
+	case CommandIDs::LOAD_SEQUENCE:
+	{
+		int sequencepackIndex = ViewerMainWindow::get()->getState()->sequencepackIndex.getValue();
+		int sequenceIndex = ViewerMainWindow::get()->getState()->sequenceIndex.getValue();
+		if (sequencepackIndex < 0 || sequenceIndex < 0)
+		{
+			break;
+		}
+		//シーケンスを読み込み
+		animePlayer->loadSequence(sequencepackIndex, sequenceIndex);
 		break;
 	}
 	case CommandIDs::EXIT:

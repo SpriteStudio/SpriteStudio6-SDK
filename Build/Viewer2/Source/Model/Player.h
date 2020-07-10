@@ -30,11 +30,15 @@ class Player : public juce::HighResolutionTimer
 	public:
 		State() {};
 		virtual ~State() {};
-		static Value	packIndex;
+		static Value	animepackIndex;
 		static Value	animeIndex;
 		static Value	animeName;
+		static Value	sequencepackIndex;
+		static Value	sequenceIndex;
+		static Value	sequenceName;
 		static Value	startFrame;
 		static Value	endFrame;
+		static Value	loopFrame;
 		static Value	length;
 		static Value	frame;
 		static Value	fps;
@@ -49,6 +53,7 @@ class Player : public juce::HighResolutionTimer
 		virtual void	draw(Player * p);
 		virtual void	loadProj(Player * p, const String & name);
 		virtual void	loadAnime(Player * p, int packIndex, int animeIndex);
+		virtual void	loadSequence(Player * p, int packIndex, int sequenceIndex);
 		virtual void	onEnter(Player * p) {};
 		virtual void	onLeave(Player * p) {};
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(State)
@@ -113,6 +118,7 @@ public:
 	void	reset();
 	void	loadProj(const String & name);
 	void	loadAnime(int packIndex, int animeIndex);
+	void	loadSequence(int packIndex, int sequenceIndex);
 	State *	getState();
 	static void	drawAnime();
 
@@ -126,6 +132,7 @@ public:
 	SsCellMapList *						cellmap = nullptr; // decoderのデストラクタでdeleteされる
 
 	friend class AsyncAnimeLoader;
+	friend class AsyncSequenceLoader;
 	friend class AsyncProjectLoader;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Player)
