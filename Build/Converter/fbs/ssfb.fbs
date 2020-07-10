@@ -3,428 +3,392 @@ namespace ss.ssfb;
 file_identifier "SSFB";
 
 // Animation Part Type
-enum SsPartType:byte {
-  Invalid = -1,
-  Nulltype = 0,
-  Normal,
-  Text,
-  Instance,
-  Armature,
-  Effect,
-  Mesh,
-  Movenode,
-  Constraint,
-  Mask,
-  Joint,
-  Bonepoint,
+enum SsPartType : byte {
+    Invalid = -1,
+    Nulltype = 0,
+    Normal,
+    Text,
+    Instance,
+    Armature,
+    Effect,
+    Mesh,
+    Movenode,
+    Constraint,
+    Mask,
+    Joint,
+    Bonepoint,
 }
 
-enum PartFlag:uint (bit_flags) {
-  Invisible,
-  FlipH,
-  FlipV,
-  CellIndex,
-  PositionX,
-  PositionY,
-  PositionZ,
-  PivotX,
-  PivotY,
-  RotationX,
-  RotationY,
-  RotationZ,
-  ScaleX,
-  ScaleY,
-  LocalScaleX,
-  LocalScaleY,
-  Opacity,
-  LocalOpacity,
-  PartsColor,
-  VertexTransform,
-  SizeX,
-  SizeY,
-  UMove,
-  VMove,
-  UvRotation,
-  UScale,
-  VScale,
-  BoundingRadius,
-  Mask,
-  Priority,
-  InstanceKeyframe,
-  EffectKeyframe,
+enum PART_FLAG : int (bit_flags) {
+    INVISIBLE,
+	FLIP_H,
+	FLIP_V,
+	CELL_INDEX,
+	POSITION_X,
+	POSITION_Y,
+	POSITION_Z,
+	PIVOT_X,
+	PIVOT_Y,
+	ROTATIONX,
+	ROTATIONY,
+	ROTATIONZ,
+	SCALE_X,
+	SCALE_Y,
+	LOCALSCALE_X,
+	LOCALSCALE_Y,
+	OPACITY,
+	LOCALOPACITY,
+	PARTS_COLOR,
+	VERTEX_TRANSFORM,
+	SIZE_X,
+	SIZE_Y,
+	U_MOVE,
+	V_MOVE,
+	UV_ROTATION,
+	U_SCALE,
+	V_SCALE,
+	BOUNDINGRADIUS,
+	MASK,
+	PRIORITY,
+	INSTANCE_KEYFRAME,
+	EFFECT_KEYFRAME,
 }
 
-enum PartFlag2:uint (bit_flags) {
-  MeshData,
+enum PART_FLAG2 : int (bit_flags) {
+    MESHDATA,
 }
 
-enum VertexFlag:ubyte (bit_flags) {
-  LT,
-  RT,
-  LB,	
-  RB,	
-  ONE,
+enum VERTEX_FLAG : int (bit_flags) {
+    LT,
+    RT,
+    LB,	
+    RB,	
+    ONE,
 }
 
-enum InstanceLoopFlag:ubyte (bit_flags) {
-  Infinity,
-  Reverse,
-  PingPong,
-  Independent,
+struct EffectParticleInfiniteEmitEnabled {
+    flag : int;
 }
 
-enum EffectLoopFlag:ubyte (bit_flags) {
-  Independent,
+struct EffectParticleTurnToDirectionEnabled {
+    Rotation : float;
 }
 
-enum UserDataFlag:ubyte (bit_flags) {
-  Integer,
-  Rect,
-  Point,
-  String,
+struct EffectParticlePointGravity {
+    Position_x : float;
+    Position_y : float;
+    Power : float;
 }
 
-enum SsEffectFunctionType:ubyte {
-  Base,
-  Basic,
-  RndSeedChange,
-  Delay,
-  Gravity,
-  Position,
-  //TransPosition,
-  Rotation,
-  TransRotation,
-  TransSpeed,
-  TangentialAcceleration,
-  InitColor,
-  TransColor,
-  AlphaFade,
-  Size,
-  TransSize,
-  PointGravity,
-  TurnToDirectionEnabled,
-  InfiniteEmitEnabled,
+struct EffectParticleElementTransSize {
+    SizeXMinValue : float;
+    SizeXMaxValue : float;
+    SizeYMinValue : float;
+    SizeYMaxValue : float;
+    ScaleFactorMinValue : float;
+    ScaleFactorMaxValue : float;
 }
 
-enum EffectBehaviorFlags:uint (bit_flags) {
-  Base,
-  Basic,
-  RndSeedChange,
-  Delay,
-  Gravity,
-  Position,
-  //TransPosition,
-  Rotation,
-  TransRotation,
-  TransSpeed,
-  TangentialAcceleration,
-  InitColor,
-  TransColor,
-  AlphaFade,
-  Size,
-  TransSize,
-  PointGravity,
-  TurnToDirectionEnabled,
-  InfiniteEmitEnabled,
+struct EffectParticleElementSize {
+    SizeXMinValue : float;
+    SizeXMaxValue : float;
+    SizeYMinValue : float;
+    SizeYMaxValue : float;
+    ScaleFactorMinValue : float;
+    ScaleFactorMaxValue : float;
 }
 
-enum EffectNodeType:byte {
-  Invalid = -1,
-  Root,
-  Emitter,
-  Particle,
+struct EffectParticleElementAlphaFade {
+    disprangeMinValue : float;
+    disprangeMaxValue : float;
 }
 
-enum EffectRenderBlendType:byte {
-  Invalid = -1,
-  Mix,
-  Add,
+struct EffectParticleElementTransColor {
+    ColorMinValue : uint;
+    ColorMaxValue : uint;
 }
 
-table EffectParticleElementBasic {
-  ss_effect_function_type:int;
-  
-  priority:int;
-  maximum_particle:int;
-  attime_create:int;
-  interval:int;
-  lifetime:int;
-  speed_min_value:float;
-  speed_max_value:float;
-  lifespan_min_value:int;
-  lifespan_max_value:int;
-  angle:float;
-  angle_variance:float;
+struct EffectParticleElementInitColor {
+    ColorMinValue : uint;
+    ColorMaxValue : uint;
+}
+
+struct EffectParticleElementTangentialAcceleration {
+    AccelerationMinValue : float;
+    AccelerationMaxValue : float;
+}
+
+struct EffectParticleElementTransSpeed {
+	SpeedMinValue : float;
+	SpeedMaxValue : float;
+}
+
+struct EffectParticleElementRotationTrans {
+    RotationFactor : float;
+    EndLifeTimePer : float;
+}
+
+struct EffectParticleElementRotation {
+    RotationMinValue : float;
+    RotationMaxValue : float;
+    RotationAddMinValue : float;
+    RotationAddMaxValue : float;
+}
+
+struct EffectParticleElementPosition {
+    OffsetXMinValue : float;
+    OffsetXMaxValue : float;
+    OffsetYMinValue : float;
+    OffsetYMaxValue : float;
+}
+
+struct EffectParticleElementGravity {
+    Gravity_x : float;
+    Gravity_y : float;
+}
+
+struct EffectParticleElementDelay {
+    DelayTime : int;
+}
+
+struct EffectParticleElementRndSeedChange {
+    Seed : int;
+}
+
+struct EffectParticleElementBasic {
+    SsEffectFunctionType : int;
+    
+    priority : int;
+    maximumParticle : int;
+    attimeCreate : int;
+    interval : int;
+    lifetime : int;
+    speedMinValue : float;
+    speedMaxValue : float;
+    lifespanMinValue : int;
+    lifespanMaxValue : int;
+    angle : float;
+    angleVariance : float;
+}
+
+union EffectNodeBehavior {
+    EffectParticleElementBasic,
+    EffectParticleElementRndSeedChange,
+    EffectParticleElementDelay,
+    EffectParticleElementGravity,
+    EffectParticleElementPosition,
+    EffectParticleElementRotation,
+    EffectParticleElementRotationTrans,
+    EffectParticleElementTransSpeed,
+    EffectParticleElementTangentialAcceleration,
+    EffectParticleElementInitColor,
+    EffectParticleElementTransColor,
+    EffectParticleElementAlphaFade,
+    EffectParticleElementSize,
+    EffectParticleElementTransSize,
+    EffectParticlePointGravity,
+    EffectParticleTurnToDirectionEnabled,
+    EffectParticleInfiniteEmitEnabled,
 }
 
 table EffectNode {
-  array_index:short;
-  parent_index:short;
-  type:EffectNodeType;
-  cell_index:short;	
-  blend_type:EffectRenderBlendType;
-  basic_behavior:EffectParticleElementBasic;
-  behavior_flags:EffectBehaviorFlags;
-
-  // RndSeedChange
-  seed:int;
-  // Delay
-  delay_time:int;
-  // Gravity
-  gravity_x:float;
-  gravity_y:float;
-  // Position
-  offset_x_min_value:float;
-  offset_x_max_value:float;
-  offset_y_min_value:float;
-  offset_y_max_value:float;
-  // Rotation
-  rotation_min_value:float;
-  rotation_max_value:float;
-  rotation_add_min_value:float;
-  rotation_add_max_value:float;
-  // TransRotation
-  rotation_factor:float;
-  end_life_time_per:float;
-  // TrannsSeed
-  speed_min_value:float;
-  speed_max_value:float;
-  // TangentialAcceleration
-  acceleration_min_value:float;
-  acceleration_max_value:float;
-  // InitColor
-  init_color_min_value:uint;
-  init_color_max_value:uint;
-  // TransColor
-  trans_color_min_value:uint;
-  trans_color_max_value:uint;
-  // AlphaFade
-  disprange_min_value:float;
-  disprange_max_value:float;
-  // Size
-  size_x_min_value:float;
-  size_x_max_value:float;
-  size_y_min_value:float;
-  size_y_max_value:float;
-  scale_factor_min_value:float;
-  scale_factor_max_value:float;
-  // TransSize
-  trans_size_x_min_value:float;
-  trans_size_x_max_value:float;
-  trans_size_y_min_value:float;
-  trans_size_y_max_value:float;
-  trans_scale_factor_min_value:float;
-  trans_scale_factor_max_value:float;
-  // PointGravity
-  point_gravity_position_x:float;
-  point_gravity_position_y:float;
-  point_gravity_power:float;
-  // TurnToDirectionEnabled
-  rotation:float;
-  // InfiniteEmitEnabled
-  infinitie_emit_flag:int;
+    arrayIndex : short;
+    parentIndex : short;
+    type : short;
+    cellIndex : short;	
+    blendType : short;
+    numBehavior : short;
+    Behavior : [EffectNodeBehavior];
 }
 
 table EffectFile {
-  name:string;
-  fps:short;
-  is_lock_rand_seed:short;
-  lock_rand_seed:short;
-  layout_scale_x:short;
-  layout_scale_y:short;
-  effect_node:[EffectNode];
-}
-
-enum TexWrapMode:byte {
-  invalid = -1,
-  clamp,
-  repeat,
-  mirror,
-}
-
-enum TexFilterMode:byte {
-  invalid = -1,
-  nearlest,
-  linear,
+    name : string;
+    fps : short;
+    isLockRandSeed : short;
+    lockRandSeed : short;
+    layoutScaleX : short;
+    layoutScaleY : short;
+    numNodeList : short;
+    effectNode : [EffectNode];
 }
 
 table CellMap {
-  name:string;
-  image_path:string;
-  index:short;
-  wrap_mode:TexWrapMode;
-  filter_mode:TexFilterMode;
+    name : string;
+    imagePath : string;
+    index : short;
+    wrapmode : short;
+    filtermode : short;
 }
 
 table Cell {
-  name:string;
-  cell_map:CellMap;
-  index_in_cell_map:short;
-  x:short;
-  y:short;
-  width:short;
-  height:short;
-  pivot_x:float;
-  pivot_y:float;
-  u1:float;
-  v1:float;
-  u2:float;
-  v2:float;
+    name : string;
+    cellMap : CellMap;
+    indexInCellMap : short;
+    x : short;
+    y : short;
+    width : short;
+    height : short;
+    pivot_x : float;
+    pivot_y : float;
+    u1 : float;
+    v1 : float;
+    u2 : float;
+    v2 : float;
 }
 
-table MeshDataUV {
-  uv:[float];
+table meshDataUV {
+    uv : [float];
 }
-table MeshDataIndices {
-  indices:[float];
-}
-
-table PartState {
-  index:short;
-  flag1:PartFlag;
-  flag2:PartFlag2;
-  data:[uint];
+table meshDataIndices {
+    indices : [float];
 }
 
-table FrameDataIndex {
-  states:[PartState];
+table partState {
+    index: short;
+    flag1: uint;
+    flag2: uint;
+    data: [uint];
 }
 
-table UserDataItem {
-  flags:UserDataFlag;
-  array_index:short;
-  integer:int;
-  rect_x:int;
-  rect_y:int;
-  rect_w:int;
-  rect_h:int;
-  point_x:int;
-  point_y:int;
-  user_string_length:int;
-  user_string:string;
+table frameDataIndex {
+    states: [partState];
 }
 
-table UserDataPerFrame {
-  frame_index:short;
-  data:[UserDataItem];
+struct userDataInteger {
+    integer : int;
 }
 
-table LabelDataItem {
-  label:string;
-  frame_index:short;
+struct userDataRect {
+    x : int;
+    y : int;
+    w : int;
+    h : int;
+}
+
+struct userDataPoint {
+    x : int;
+    y : int;
+}
+
+table userDataString {
+    length : int;
+    data : string;
+}
+
+union userDataValue { 
+    userDataInteger,
+    userDataRect,
+    userDataPoint,
+    userDataString,
+}
+
+table userDataItem {
+    flags : short;
+    arrayIndex : short;
+    data : [userDataValue];
+}
+
+table userDataPerFrame {
+    frameIndex : short;
+    data : [userDataItem];
+}
+
+table labelDataItem {
+    label : string;
+    frameIndex : short;
 }
 
 table AnimationData {
-  name:string;
-  default_data:[AnimationInitialData];
-  frame_data:[FrameDataIndex];
-  user_data:[UserDataPerFrame];
-  label_data:[LabelDataItem];
-  meshs_data_UV:[MeshDataUV];
-  meshs_data_indices:[MeshDataIndices];
-  start_frames:short;
-  end_frames:short;
-  total_frames:short;
-  fps:short;
-  labelNum:short;
-  canvas_size_w:short;
-  canvas_size_h:short;
-  canvas_pvot_x:float;
-  canvas_pvot_y:float;
+    name : string;
+    defaultData : [AnimationInitialData];
+    frameData : [frameDataIndex];
+    userData : [userDataPerFrame];
+    labelData : [labelDataItem];
+    meshsDataUV : [meshDataUV];
+    meshsDataIndices : [meshDataIndices];
+    startFrames : short;
+    endFrames : short;
+    totalFrames : short;
+    fps : short;
+    labelNum : short;
+    canvasSizeW : short;
+    canvasSizeH : short;
+    canvasPvotX : float;
+    canvasPvotY : float;
 }
 
 table AnimationInitialData {
-  index:short;
-  lowflag:int;
-  highflag:int;
-  priority:short;
-  cell_index:short;
-  opacity:short;
-  local_opacity:short;
-  masklimen:short;
-  position_x:float;
-  position_y:float;
-  position_z:float;
-  pivot_x:float;
-  pivot_y:float;
-  rotation_x:float;
-  rotation_y:float;
-  rotation_z:float;
-  scale_x:float;
-  scale_y:float;
-  local_scale_x:float;
-  local_scale_y:float;
-  size_x:float;
-  size_y:float;
-  uv_move_x:float;
-  uv_move_y:float;
-  uv_rotation:float;
-  uv_scale_x:float;
-  uv_scale_y:float;
-  bounding_radius:float;
-  instance_value_cur_keyframe:int;
-  instance_value_start_frame:int;
-  instance_value_end_frame:int;
-  instance_value_loop_num:int;
-  instance_value_speed:float;
-  instance_value_loop_flag:int;
-  effect_value_cur_keyframe:int;
-  effect_value_start_time:int;
-  effect_value_speed:float;
-  effect_value_loop_flag:int;
+    index : short;
+    lowflag : int;
+    highflag : int;
+    priority : short;
+    cellIndex : short;
+    opacity : short;
+    localopacity : short;
+    masklimen : short;
+    positionX : float;
+    positionY : float;
+    positionZ : float;
+    pivotX : float;
+    pivotY : float;
+    rotationX : float;
+    rotationY : float;
+    rotationZ : float;
+    scaleX : float;
+    scaleY : float;
+    localscaleX : float;
+    localscaleY : float;
+    size_X : float;
+    size_Y : float;
+    uv_move_X : float;
+    uv_move_Y : float;
+    uv_rotation : float;
+    uv_scale_X : float;
+    uv_scale_Y : float;
+    boundingRadius : float;
+    instanceValue_curKeyframe : int;
+    instanceValue_startFrame : int;
+    instanceValue_endFrame : int;
+    instanceValue_loopNum : int;
+    instanceValue_speed : float;
+    instanceValue_loopflag : int;
+    effectValue_curKeyframe : int;
+    effectValue_startTime : int;
+    effectValue_speed : float;
+    effectValue_loopflag : int;
 }
 
-enum BoundsType:byte {
-  Invalid = -1,
-  None,
-  Quad,
-  Qabb,
-  Circle,
-  CircleSmin,
-  CircleSmax,
-}
-
-enum BlendType:byte {
-  Invalid=-1,
-  Mix,
-  Mul,
-  Add,
-  Sub,
-  MulAlpha,
-  Screen,
-  Exclusion,
-  Invert,
-}
 
 table PartData {
-  name:string;
-  index:short;
-  parent_index:short;
-  type:SsPartType;
-  bounds_type:BoundsType;
-  alpha_blend_type:BlendType;
-  refname:string;
-  effect:EffectFile;
-  colorLabel:string;
-  mask_influence:bool;
+    name : string;
+    index : short;
+    parentIndex : short;
+    type : SsPartType;
+    boundsType : short;
+    alphaBlendType : short;
+    refname : string;
+    effectfilename : string;
+    colorLabel : string;
+    maskInfluence : short;    
 }
 
 table AnimePackData {
-  name:string;
-  parts:[PartData];
-  animations:[AnimationData];
+    name : string;
+    parts : [PartData];
+    animations : [AnimationData];
 }
 
 table ProjectData {
-  dataId:uint;
-  version:uint;
-  image_base_dir:string;
-  cells:[Cell];
-  anime_packs:[AnimePackData];
-  effect_file_list:[EffectFile];
-  num_cells:short;
-  num_animePacks:short;
-  num_effectFileList:short;
+    dataId : uint;
+    version : uint;
+    flags : uint;
+    imageBaseDir : string;
+    cells : [Cell];
+    animePacks : [AnimePackData];
+    effectFileList : [EffectFile];
+    numCells : short;
+    numAnimePacks : short;
+    numEffectFileList : short;
 }
 
 root_type ProjectData;
