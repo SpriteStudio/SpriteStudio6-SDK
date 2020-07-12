@@ -13,7 +13,7 @@ pushd ${BUILDDIR}/Viewer2
 git clone --branch=6.0.1 --depth=1 --single-branch https://github.com/WeAreROLI/JUCE.git
 git clone https://github.com/McMartin/FRUT.git
 
-# create Jucer2Reprojucer command
+# create Jucer2CMake command
 pushd FRUT
 mkdir build 
 pushd build
