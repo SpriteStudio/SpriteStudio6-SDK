@@ -34,6 +34,20 @@ Player::~Player()
 {
 	stopTimer();
 	myInst = nullptr;
+
+	Player::State::animepackIndex = 0;
+	Player::State::animeIndex = 0;
+	Player::State::animeName = 0;
+	Player::State::sequencepackIndex = 0;
+	Player::State::sequenceIndex = 0;
+	Player::State::sequenceName = 0;
+	Player::State::startFrame = 0;
+	Player::State::endFrame = 0;
+	Player::State::loopFrame = 0;
+	Player::State::length = 0;
+	Player::State::frame = 0;
+	Player::State::fps = 0;
+	Player::State::loop = 0;
 }
 
 Player * Player::get()

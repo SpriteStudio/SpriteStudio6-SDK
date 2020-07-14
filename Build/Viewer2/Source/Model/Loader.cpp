@@ -48,8 +48,6 @@ void AsyncAnimeLoader::run()
 		p->getState()->loopFrame = loopFrame;
 		p->getState()->fps = fps;
 
-		animeName.~String();
-
 		p->changeState(p->statePaused.get());
 	}, true);
 
@@ -110,8 +108,6 @@ void AsyncSequenceLoader::run()
 		p->getState()->endFrame = endFrame;
 		p->getState()->loopFrame = loopFrame;
 		p->getState()->fps = fps;
-
-		sequenceName.~String();
 
 		p->changeState(p->statePaused.get());
 	}, true);
