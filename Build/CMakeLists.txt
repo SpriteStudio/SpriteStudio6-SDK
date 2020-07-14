@@ -44,8 +44,5 @@ ENDIF()
 
 enable_testing()
 
-# viewer_sample_gl and viewer_sample_dx9
-add_subdirectory(Viewer)
-
 # Ss6Converter
 add_subdirectory(Converter)
