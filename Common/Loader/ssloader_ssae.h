@@ -264,6 +264,8 @@ public:
 	{
 		for ( std::vector<SsPart*>::iterator itr = partList.begin() ; 
 			itr != partList.end() ; itr ++ ) delete (*itr);
+		for ( std::vector<SsMeshBind*>::iterator itr = meshList.begin() ; 
+			itr != meshList.end() ; itr ++ ) delete (*itr);
 	}
 
 	///シリアライズのための宣言です。

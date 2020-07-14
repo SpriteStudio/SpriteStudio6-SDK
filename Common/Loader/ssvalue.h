@@ -114,6 +114,7 @@ public:
 		if (this != &x) {
 		  this->release();
 		  name.~SsString();
+		  org_txt.~SsString();
 		  new (this) SsValue(x);
 		}
 		return *this;

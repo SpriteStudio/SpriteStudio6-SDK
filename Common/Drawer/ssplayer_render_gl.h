@@ -14,7 +14,7 @@ private:
 
 public:
 	SsRenderGL(){}
-	virtual ~SsRenderGL(){}
+	virtual ~SsRenderGL();
 
 	static void clearShaderCache();
 	virtual void	initialize();

@@ -21,7 +21,10 @@ public:
 
 public:
 	SsEffectBehavior() : refCell(0),BlendType(SsRenderBlendType::invalid) {}
-	virtual ~SsEffectBehavior(){}
+	virtual ~SsEffectBehavior(){
+		for ( std::vector<SsEffectElementBase*>::iterator itr = plist.begin() ; 
+			itr != plist.end() ; itr ++ ) delete (*itr);		
+	}
 
 	SSSERIALIZE_BLOCK
 	{

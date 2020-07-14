@@ -281,16 +281,28 @@ static SSOpenGLProgramObject* createProgramObject( const SsString& name, const S
 	pPo->Attach( pVs );
 	pPo->Attach( pFs );
 
+	delete pVs;
+	delete pFs;
+	pVs = NULL;
+	pFs = NULL;
+
 	if ( pPo->Link() != 0 ) {
-		delete pVs;
-		delete pFs;
 		delete pPo;
-		pVs = NULL;
-		pFs = NULL;
 		pPo = NULL;
 	}
 
 	return	pPo;
+}
+
+SsRenderGL::~SsRenderGL()
+{
+	for ( std::map<SsString, SSOpenGLProgramObject*>::const_iterator itr = s_DefaultShaderMap.begin();
+			itr != s_DefaultShaderMap.end() ; itr++ )
+	{
+		delete itr->second;
+	}
+    s_DefaultShaderMap.clear();
+	clearShaderCache();
 }
 
 void SsRenderGL::clearShaderCache()
@@ -320,6 +332,10 @@ void	SsRenderGL::initialize()
 	pgo2->Attach( fs2 );
 	pgo2->Link();
 	SSOpenGLShaderMan::PushPgObject( pgo2 );
+
+	delete vs;
+	delete fs1;
+	delete fs2;
 
 	s_DefaultShaderMap.clear();
 	for ( int i = 0; glshader_default[i].name != NULL; i++ ) {

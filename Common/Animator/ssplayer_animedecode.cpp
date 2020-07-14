@@ -45,6 +45,18 @@ SsAnimeDecoder::SsAnimeDecoder() :
 	{
 	}
 
+SsAnimeDecoder::~SsAnimeDecoder()
+{
+	if ( curCellMapManager )
+		delete curCellMapManager;
+
+	if ( partState )
+		delete [] partState;
+
+	if ( meshAnimator )
+		delete meshAnimator;
+}
+
 
 void	SsAnimeDecoder::reset()
 {
@@ -271,6 +283,9 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	curAnimeLoopFrame = curAnimeStartFrame;
 	curAnimeTotalFrame = anime->settings.frameCount;
 	curAnimeFPS = anime->settings.fps;
+
+	if ( meshAnimator )
+		delete meshAnimator;
 
 	//メッシュアニメーションを初期化
 	meshAnimator = new SsMeshAnimator();
