@@ -1420,7 +1420,7 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			int	parentIndex = node->parentIndex;			//親の番号
 			SsEffectNodeType::_enum	type = node->type;		//ノードの種類
 			//			bool visible = = node->visible;					//エディター用
-			SsEffectBehavior behavior = node->behavior;		//動作パラメータ
+			SsEffectBehavior& behavior = node->behavior;		//動作パラメータ
 			SsRenderBlendType::_enum blendType = behavior.BlendType;	//描画方法
 			//セル番号
 			SsCell*	refCell = behavior.refCell;
