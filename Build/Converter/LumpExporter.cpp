@@ -19,7 +19,11 @@ namespace LumpExporter {
 static std::string format(const char* fmt, std::va_list arg)
 {
 	char buffer[0x1000];
+#if defined(_MSC_VER) && (_MSC_VER >= 1400 )
 	vsprintf_s(buffer, fmt, arg);
+#else
+	vsprintf(buffer, fmt, arg);
+#endif
 	return std::string(buffer);
 }
 

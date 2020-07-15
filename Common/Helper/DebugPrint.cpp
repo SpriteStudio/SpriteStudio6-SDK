@@ -36,7 +36,11 @@ void DEBUG_PRINTF( const char* strFormat, ...   )
 void	THROW_ERROR_MESSAGE_MAIN( std::string str , char* fname , size_t line )
 {
 	char	___str__buffer[1024];
+#if defined(_MSC_VER) && (_MSC_VER >= 1400 )
 	sprintf_s( ___str__buffer , "%s(%d) : %s \n" , fname , (int)line , str.c_str() );
+#else
+	sprintf( ___str__buffer , "%s(%d) : %s \n" , fname , (int)line , str.c_str() );
+#endif
 	std::string ___err_message = ___str__buffer;
 
 	DEBUG_PRINTF( ___str__buffer );
