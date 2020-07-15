@@ -41,13 +41,13 @@ void	split_string( const std::string &in_str ,
 
 
 std::string path2dir(const std::string &path) {
-	const std::string::size_type pos = std::max<size_t>(path.find_last_of('/'), path.find_last_of('\\'));
+	const std::string::size_type pos = std::max<signed>((signed)path.find_last_of('/'), (signed)path.find_last_of('\\'));
 	return (pos == std::string::npos) ? std::string()
 		: path.substr(0, pos + 1);
 }
 
 std::string path2file(const std::string &path) {
-	return path.substr(std::max<size_t>(path.find_last_of('/'), path.find_last_of('\\')) + 1);
+	return path.substr(std::max<signed>((signed)path.find_last_of('/'), (signed)path.find_last_of('\\')) + 1);
 }
 
 
