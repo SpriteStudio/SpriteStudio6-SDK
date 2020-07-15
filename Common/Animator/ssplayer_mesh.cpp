@@ -53,10 +53,10 @@ void	SsMeshPart::makeMesh()
 	offs.x -= targetCell->pivot.x * targetCell->size.x;
 	offs.y -= targetCell->pivot.y * targetCell->size.y;
 
-	ver_size = targetCell->meshPointList.size();
+	ver_size = (int)targetCell->meshPointList.size();
 
-	float txsizew = this->targetTexture->getWidth();
-	float txsizeh = this->targetTexture->getHeight();
+	float txsizew = (float)this->targetTexture->getWidth();
+	float txsizeh = (float)this->targetTexture->getHeight();
 
 	float uvpixel_x = 1.0f / txsizew;
 	float uvpixel_y = 1.0f / txsizeh;
@@ -100,15 +100,15 @@ void	SsMeshPart::makeMesh()
 	}
 
 
-	tri_size = targetCell->meshTriList.size();
+	tri_size = (int)targetCell->meshTriList.size();
 
 	indices = new unsigned short[tri_size * 3];
 	for (size_t i = 0; i < targetCell->meshTriList.size(); i++)
 	{
 		SsTriangle& t = targetCell->meshTriList[i];
-		indices[i * 3 + 0] = t.idxPo1;
-		indices[i * 3 + 1] = t.idxPo2;
-		indices[i * 3 + 2] = t.idxPo3;
+		indices[i * 3 + 0] = (unsigned short)t.idxPo1;
+		indices[i * 3 + 1] = (unsigned short)t.idxPo2;
+		indices[i * 3 + 2] = (unsigned short)t.idxPo3;
 	}
 }
 
@@ -151,7 +151,6 @@ void	SsMeshPart::Cleanup()
 
 void    SsMeshPart::updateTransformMesh()
 {
-	float matrix[16];
 	for (int i = 0; i < ver_size; i++)
 	{
 		StBoneWeight& info = bindBoneInfo[i];
@@ -219,10 +218,10 @@ void    SsMeshPart::updateTransformMesh()
 				SsOpenGLMatrix mtx;
 
 				// ボーンにより影響を受けた座標(ローカル座標)
-				SsVector3   out;
+				SsVector3   outlocal;
 				mtx.pushMatrix(myPartState->matrix);
 				mtx.inverseMatrix();
-				mtx.TransformVector3(outtotal, out);
+				mtx.TransformVector3(outtotal, outlocal);
 
 				// デフォームによる影響(ローカル座標)
 				SsVector3   vec;
@@ -230,13 +229,13 @@ void    SsMeshPart::updateTransformMesh()
 				vec.y = getOffsetLocalVertices(i).y;
 				vec.z = 0.0f;
 
-				outtotal = SsVector3(out.x + vec.x, out.y + vec.y, out.z + vec.z);
+				outtotal = SsVector3(outlocal.x + vec.x, outlocal.y + vec.y, outlocal.z + vec.z);
 
 				// ワールド座標に変換
 				mtx.pushMatrix(myPartState->matrix);
-				mtx.TransformVector3(outtotal, out);
+				mtx.TransformVector3(outtotal, outlocal);
 
-				outtotal = out;
+				outtotal = outlocal;
 			}
 
 			draw_vertices[i * 3 + 0] = outtotal.x * 1.0f;
@@ -354,7 +353,7 @@ void	SsMeshAnimator::makeMeshBoneList()
 
 	size_t num = bindAnime->getStateNum();
 	SsPartState* indexState = bindAnime->getPartState();
-	for (int i = 0; i < num; i++)
+	for (size_t i = 0; i < num; i++)
 	{
 		if (indexState[i].partType == SsPartType::mesh)
 		{
@@ -383,7 +382,7 @@ void	SsMeshAnimator::update()
 	{
 		SsPartState* state = (*it);
 
-		SsMeshPart* meshPart = (*it)->meshPart;
+		SsMeshPart* meshPart = state->meshPart;
 		if (meshPart)
 			meshPart->updateTransformMesh();
 	}
@@ -394,8 +393,6 @@ void	SsMeshAnimator::update()
 
 void	SsMeshAnimator::copyToSsMeshPart(SsMeshBind* src, SsMeshPart* dst, std::map<int, SsPartState*> boneIdxList)
 {
-	int bnum = (int)boneIdxList.size();
-
 	bool isbind = false;	//バインドするボーンが存在するか？
 
 	for (size_t i = 0; i < src->meshVerticesBindArray.size(); i++)

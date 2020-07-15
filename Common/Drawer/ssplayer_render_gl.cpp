@@ -28,13 +28,16 @@
 #define PROGRAMABLE_SHADER_ON (1)
 
 static const char* glshader_sprite_vs = 
-#include "GLSL/sprite.vs";
+#include "GLSL/sprite.vs"
+;
 
 static const char* glshader_sprite_fs = 
-#include "GLSL/sprite.fs";
+#include "GLSL/sprite.fs"
+;
 
 static const char* glshader_sprite_fs_pot = 
-#include "GLSL/sprite_pot.fs";
+#include "GLSL/sprite_pot.fs"
+;
 
 class SSOpenGLProgramObject;
 
@@ -151,10 +154,10 @@ inline void __fastcall rgbaByteToFloat_(float* dest, const SsColorBlendValue& sr
 {
 	const SsColor* srcColor = &src.rgba;
 
-	dest[0] = floatFromByte_(srcColor->r);
-	dest[1] = floatFromByte_(srcColor->g);
-	dest[2] = floatFromByte_(srcColor->b);
-	dest[3] = floatFromByte_(srcColor->a);
+	dest[0] = floatFromByte_((u8)srcColor->r);
+	dest[1] = floatFromByte_((u8)srcColor->g);
+	dest[2] = floatFromByte_((u8)srcColor->b);
+	dest[3] = floatFromByte_((u8)srcColor->a);
 }
 
 struct ShaderVArg;
@@ -480,8 +483,8 @@ void	SsRenderGL::SetTexture( SsCellValue* cellvalue )
 	}
 
 	SsPoint2 texturePixelSize;
-	texturePixelSize.x = cellvalue->texture->getWidth();
-	texturePixelSize.y = cellvalue->texture->getHeight();
+	texturePixelSize.x = (float)cellvalue->texture->getWidth();
+	texturePixelSize.y = (float)cellvalue->texture->getHeight();
 
 	if (texture)
 	{
@@ -541,12 +544,12 @@ void	SsRenderGL::execMask(SsPartState* state)
 
 		if (!(state->maskInfluence )) { //マスクが有効では無い＝重ね合わせる
 
-			glStencilFunc(GL_ALWAYS, 1, ~0);  //常に通過
+			glStencilFunc(GL_ALWAYS, 1, (GLuint)~0);  //常に通過
 			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 			//描画部分を1へ
 		}
 		else {
-			glStencilFunc(GL_ALWAYS, 1, ~0);  //常に通過
+			glStencilFunc(GL_ALWAYS, 1, (GLuint)~0);  //常に通過
 			glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
 		}
 
@@ -779,7 +782,6 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 void	SsRenderGL::renderPart( SsPartState* state )
 {
 	bool texture_is_pow2 = true;
-	bool color_blend_v4 = false;
 	float fTexW = 16.0f;
 	float fTexH = 16.0f;
 	float fPixTX = 1.0f;
@@ -793,7 +795,6 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	float vertexID[10];
 //	bool colorBlendEnabled = false;
 	bool partsColorEnabled = false;
-	bool alphaBlendMix = false;
 
 	int		gl_target = GL_TEXTURE_2D;
 	float	rates[5];
@@ -810,8 +811,8 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	if ( texture == 0 ) return ;
 
 	SsPoint2 texturePixelSize;
-	texturePixelSize.x = state->cellValue.texture->getWidth();
-	texturePixelSize.y = state->cellValue.texture->getHeight();
+	texturePixelSize.x = (float)state->cellValue.texture->getWidth();
+	texturePixelSize.y = (float)state->cellValue.texture->getHeight();
 
 	execMask(state);
 
@@ -1109,8 +1110,8 @@ void	SsRenderGL::renderPart( SsPartState* state )
 					state->colors[i * 4 + 3] *= alpha;
 				}
 				rates[i] = 1.0f;
-				vertexID[i * 2] = i;
-				vertexID[i * 2 + 1] = i;
+				vertexID[i * 2] = (float)i;
+				vertexID[i * 2 + 1] = (float)i;
 			}
 
 #if USE_TRIANGLE_FIN
@@ -1171,7 +1172,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 
 			if ( state->meshPart && cell && cell->ismesh )
 			{
-				int		iCount = state->meshPart->targetCell->meshPointList.size();
+				int		iCount = (int)state->meshPart->targetCell->meshPointList.size();
 
 				if ( s_iVArgCount < iCount ) {
 					clearShaderCache();

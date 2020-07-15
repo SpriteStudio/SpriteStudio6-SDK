@@ -136,10 +136,10 @@ void	SsCellMapList::addIndex(SsCellMap* cellmap)
 SsCelMapLinker*	SsCellMapList::getCellMapLink( const SsString& name )
 {
 
-	std::map<SsString,SsCelMapLinker*>::iterator itr = CellMapDic.find(name);
-	if ( itr != CellMapDic.end() )
+	std::map<SsString,SsCelMapLinker*>::iterator it = CellMapDic.find(name);
+	if ( it != CellMapDic.end() )
 	{
-		return itr->second;
+		return it->second;
 	}else{
 
 		for ( std::map<SsString,SsCelMapLinker*>::iterator itr=CellMapDic.begin() ; itr != CellMapDic.end() ; itr++)

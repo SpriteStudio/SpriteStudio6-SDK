@@ -227,7 +227,7 @@ public:
 
 	virtual void	draw(){};
 //	virtual void	update(){};
-	virtual void	update(double delta){};
+	virtual void	update(double){};
 	virtual void	init(){};
 
 };

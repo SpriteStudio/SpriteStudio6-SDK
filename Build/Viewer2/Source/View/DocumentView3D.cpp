@@ -33,7 +33,7 @@ DocumentView3D::~DocumentView3D()
 void DocumentView3D::initialise()
 {
 #if JUCE_WINDOWS
-	GLenum err = glewInit();
+	glewInit();
 #endif
 
 	rendererGL.reset(new SsRenderGL());
@@ -102,7 +102,7 @@ void DocumentView3D::setBackGroundColour(const Colour & colour)
 }
 
 
-void DocumentView3D::mouseDown(const MouseEvent& event)
+void DocumentView3D::mouseDown(const MouseEvent&)
 {
 	view_camera_org_x = view_camera_x.getValue();
 	view_camera_org_y = view_camera_y.getValue();
@@ -110,12 +110,12 @@ void DocumentView3D::mouseDown(const MouseEvent& event)
 
 }
 
-void DocumentView3D::mouseMove(const MouseEvent& event)
+void DocumentView3D::mouseMove(const MouseEvent&)
 {
 
 }
 
-void DocumentView3D::mouseUp(const MouseEvent& event)
+void DocumentView3D::mouseUp(const MouseEvent&)
 {
 }
 
@@ -127,7 +127,7 @@ void DocumentView3D::mouseDrag(const MouseEvent& event)
 
 }
 
-void DocumentView3D::mouseWheelMove(const MouseEvent& event, const MouseWheelDetails& wheel)
+void DocumentView3D::mouseWheelMove(const MouseEvent&, const MouseWheelDetails& wheel)
 {
 
 	//DBG(wheel.deltaY);

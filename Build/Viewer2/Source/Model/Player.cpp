@@ -191,8 +191,8 @@ void Player::State::start(Player * p)
 {
 	p->changeState(p->statePlaying.get());
 
-	float fps = p->currentState->fps.getValue();
-	p->startTimer((int)(1000.0f / std::max(fps, 1.0f)));
+	float _fps = p->currentState->fps.getValue();
+	p->startTimer((int)(1000.0f / std::max(_fps, 1.0f)));
 }
 
 void Player::State::stop(Player * p)
@@ -219,29 +219,29 @@ void Player::State::draw(Player * p)
 {
 	if (p->decoder)
 	{
-		p->decoder->setPlayFrame((int)p->currentState->frame.getValue());
+		p->decoder->setPlayFrame((float)p->currentState->frame.getValue());
 		p->decoder->update(1);
 		p->decoder->draw();
 	}
 }
 
-void Player::State::loadProj(Player * p, const String & name)
+void Player::State::loadProj(Player *, const String & name)
 {
 	auto* projectLoader = new AsyncProjectLoader();
 	projectLoader->setProjectName(name);
 	projectLoader->launchThread();
 }
 
-void Player::State::loadAnime(Player * p, int packIndex, int animeIndex)
+void Player::State::loadAnime(Player *, int _packIndex, int _animeIndex)
 {
 	auto* asyncAnimeLoader = new AsyncAnimeLoader();
-	asyncAnimeLoader->setAnimeIndex(packIndex, animeIndex);
+	asyncAnimeLoader->setAnimeIndex(_packIndex, _animeIndex);
 	asyncAnimeLoader->launchThread();
 }
 
-void Player::State::loadSequence(Player * p, int packIndex, int sequenceIndex)
+void Player::State::loadSequence(Player *, int _packIndex, int _sequenceIndex)
 {
 	auto* asyncSequenceLoader = new AsyncSequenceLoader();
-	asyncSequenceLoader->setSequenceIndex(packIndex, sequenceIndex);
+	asyncSequenceLoader->setSequenceIndex(_packIndex, _sequenceIndex);
 	asyncSequenceLoader->launchThread();
 }

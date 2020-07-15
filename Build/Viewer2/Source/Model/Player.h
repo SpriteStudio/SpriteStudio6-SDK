@@ -54,8 +54,8 @@ class Player : public juce::HighResolutionTimer
 		virtual void	loadProj(Player * p, const String & name);
 		virtual void	loadAnime(Player * p, int packIndex, int animeIndex);
 		virtual void	loadSequence(Player * p, int packIndex, int sequenceIndex);
-		virtual void	onEnter(Player * p) {};
-		virtual void	onLeave(Player * p) {};
+		virtual void	onEnter(Player *) {};
+		virtual void	onLeave(Player *) {};
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(State)
 	};
 
@@ -66,9 +66,9 @@ class Player : public juce::HighResolutionTimer
 	{
 	public:
 		StatePlaying() {};
-		void	start(Player * p) override {}
-		void	loadProj(Player * p, const String & name) override {}
-		void	loadAnime(Player * p, int packIndex, int animeIndex) override {}
+		void	start(Player *) override {}
+		void	loadProj(Player *, const String &) override {}
+		void	loadAnime(Player *, int, int) override {}
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StatePlaying)
 	};
 
@@ -76,8 +76,8 @@ class Player : public juce::HighResolutionTimer
 	{
 	public:
 		StatePaused() {};
-		void	stop(Player * p) override {}
-		void	hiResTimerCallback(Player * p) override {}
+		void	stop(Player *) override {}
+		void	hiResTimerCallback(Player *) override {}
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StatePaused)
 	};
 
@@ -85,13 +85,13 @@ class Player : public juce::HighResolutionTimer
 	{
 	public:
 		StateLoading() {};
-		void	start(Player * p) override {}
-		void	stop(Player * p) override {}
-		void	reset(Player * p) override {}
-		void	hiResTimerCallback(Player * p) override {}
-		void	draw(Player * p) {};
-		void	loadProj(Player * p, const String & name) override {}
-		void	loadAnime(Player * p, int packIndex, int animeIndex) override {}
+		void	start(Player *) override {}
+		void	stop(Player *) override {}
+		void	reset(Player *) override {}
+		void	hiResTimerCallback(Player *) override {}
+		void	draw(Player *) {};
+		void	loadProj(Player *, const String &) override {}
+		void	loadAnime(Player *, int, int) override {}
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StateLoading)
 	};
 
@@ -99,11 +99,11 @@ class Player : public juce::HighResolutionTimer
 	{
 	public:
 		StateInitial() {};
-		void	start(Player * p) override {}
-		void	stop(Player * p) override {}
-		void	reset(Player * p) override {}
-		void	hiResTimerCallback(Player * p) override {}
-		void	draw(Player * p) {};
+		void	start(Player *) override {}
+		void	stop(Player *) override {}
+		void	reset(Player *) override {}
+		void	hiResTimerCallback(Player *) override {}
+		void	draw(Player *) {};
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StateInitial)
 	};
 

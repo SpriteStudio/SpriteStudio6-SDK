@@ -962,8 +962,8 @@ public:
 		return !(*this == r);
 	}
 
-	bool	operator ==(int n) const { return false; }
-	bool	operator !=(int n) const { return false; }
+	bool	operator ==(int) const { return false; }
+	bool	operator !=(int) const { return false; }
 
 	SsDeformAttr		operator +(const SsDeformAttr& rhs) const
 	{

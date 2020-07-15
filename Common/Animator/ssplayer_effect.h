@@ -111,11 +111,11 @@ public:
 		m_isCreateChild = false;
 		m_isInit = false;
 	}
-	virtual bool	genarate( SsEffectRenderer* render ){return true;}
+	virtual bool	genarate( SsEffectRenderer* ){return true;}
 
 
-    virtual void	update(float delta){}
-	virtual void	draw(SsEffectRenderer* render){}
+    virtual void	update(float){}
+	virtual void	draw(SsEffectRenderer*){}
 
 	virtual void	debugdraw(){}
 
@@ -140,9 +140,9 @@ public:
 	{
 #ifdef _WIN32
         
-		rotation = std::fmod( z , 360 ) ;
+		rotation = (float)std::fmod( z , 360 ) ;
 #else
-        rotation = fmod( z , 360 ) ;
+        rotation = (float)fmod( z , 360 ) ;
         
 #endif
         

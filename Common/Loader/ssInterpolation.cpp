@@ -162,6 +162,7 @@ float	SsInterpolate(SsInterpolationType::_enum type, float time, float start, fl
 		break;
 	default:
 		//SS_ASSERT_ID(type);
+		r = 0;
 		break;
 	}
 	return r;

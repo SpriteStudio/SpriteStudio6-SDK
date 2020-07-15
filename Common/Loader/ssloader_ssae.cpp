@@ -20,13 +20,13 @@ SsAnimePack*	ssloader_ssae::Load(const std::string& filename )
 }
 
 
-SsAnimation*	SsAnimePack::findAnimation(SsString& name)
+SsAnimation*	SsAnimePack::findAnimation(SsString& _name)
 {
 
 	for ( std::vector<SsAnimation*>::iterator itr = animeList.begin()
 		; itr != animeList.end() ; ++itr )
 	{
-		if ( (*itr)->name == name )
+		if ( (*itr)->name == _name )
 		{
 			return (*itr);
 		}
@@ -76,8 +76,6 @@ void	SsMeshBindInfo::fromString(SsString str)
 
 	SsStringTokenizer tokenizer(str, ' ');
 
-	bool ret = true;
-	int cnt = 0;
 
 	tokenizer.get(&bindBoneNum);
 

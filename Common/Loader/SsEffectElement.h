@@ -708,7 +708,7 @@ public:
 	}
 	virtual ~ParticleInfiniteEmitEnabled(){}
 
-	SSSERIALIZE_BLOCK
+	SSSERIALIZE_BLOCK_UNUSED
 	{
 
 	}

@@ -196,7 +196,7 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 
 		//継承率の設定
 		partState[i].inheritRates = p->inheritRates;
-		partState[i].index = i;
+		partState[i].index = (int)i;
 		partState[i].partType = p->type;
 		partState[i].maskInfluence = p->maskInfluence && getMaskParentSetting();
 
@@ -258,9 +258,8 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 				partState[i].meshPart = mesh;
 				mesh->myPartState = &partState[i];
 				//使用するセルを調査する
-				bool ret;
 				SsCellValue cellv;
-				if (ret = getFirstCell(p, cellv))
+				if (getFirstCell(p, cellv))
 				{
 					mesh->targetCell = cellv.cell;
 					mesh->targetTexture = cellv.texture;
@@ -322,8 +321,8 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 	if (leftkey->ipType == SsInterpolationType::bezier)
 	{
 		// ベジェのみキーの開始・終了時間が必要
-		curve.startKeyTime = leftkey->time;
-		curve.endKeyTime = rightkey->time;
+		curve.startKeyTime = (float)leftkey->time;
+		curve.endKeyTime = (float)rightkey->time;
 	}
 	
 	float rate = SsInterpolate( leftkey->ipType , now , 0.0f , 1.0f , &curve );	
@@ -371,8 +370,8 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 	if (leftkey->ipType == SsInterpolationType::bezier)
 	{
 		// ベジェのみキーの開始・終了時間が必要
-		curve.startKeyTime = leftkey->time;
-		curve.endKeyTime = rightkey->time;
+		curve.startKeyTime = (float)leftkey->time;
+		curve.endKeyTime = (float)rightkey->time;
 	}
 
 	int range = rightkey->time - leftkey->time;
@@ -396,10 +395,10 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 			for (int i = 0; i < 4; i++)
 			{
 				v.colors[i].rate = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rate, rightv.colors[i].rate, &curve), 0.0f, 1.0f);
-				v.colors[i].rgba.a = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.a, rightv.colors[i].rgba.a, &curve), 0.0f, 255.0f);
-				v.colors[i].rgba.r = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.r, rightv.colors[i].rgba.r, &curve), 0.0f, 255.0f);
-				v.colors[i].rgba.g = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.g, rightv.colors[i].rgba.g, &curve), 0.0f, 255.0f);
-				v.colors[i].rgba.b = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.b, rightv.colors[i].rgba.b, &curve), 0.0f, 255.0f);
+				v.colors[i].rgba.a = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.colors[i].rgba.a, (float)rightv.colors[i].rgba.a, &curve), 0.0f, 255.0f);
+				v.colors[i].rgba.r = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.colors[i].rgba.r, (float)rightv.colors[i].rgba.r, &curve), 0.0f, 255.0f);
+				v.colors[i].rgba.g = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.colors[i].rgba.g, (float)rightv.colors[i].rgba.g, &curve), 0.0f, 255.0f);
+				v.colors[i].rgba.b = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.colors[i].rgba.b, (float)rightv.colors[i].rgba.b, &curve), 0.0f, 255.0f);
 			}
 		}
 		else
@@ -408,10 +407,10 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 			for (int i = 0; i < 4; i++)
 			{
 				v.colors[i].rate = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rate, rightv.color.rate, &curve), 0.0f, 1.0f);
-				v.colors[i].rgba.a = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.a, rightv.color.rgba.a, &curve), 0.0f, 255.0f);
-				v.colors[i].rgba.r = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.r, rightv.color.rgba.r, &curve), 0.0f, 255.0f);
-				v.colors[i].rgba.g = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.g, rightv.color.rgba.g, &curve), 0.0f, 255.0f);
-				v.colors[i].rgba.b = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.colors[i].rgba.b, rightv.color.rgba.b, &curve), 0.0f, 255.0f);
+				v.colors[i].rgba.a = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.colors[i].rgba.a, (float)rightv.color.rgba.a, &curve), 0.0f, 255.0f);
+				v.colors[i].rgba.r = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.colors[i].rgba.r, (float)rightv.color.rgba.r, &curve), 0.0f, 255.0f);
+				v.colors[i].rgba.g = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.colors[i].rgba.g, (float)rightv.color.rgba.g, &curve), 0.0f, 255.0f);
+				v.colors[i].rgba.b = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.colors[i].rgba.b, (float)rightv.color.rgba.b, &curve), 0.0f, 255.0f);
 			}
 		}
 	}
@@ -423,20 +422,20 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 			for (int i = 0; i < 4; i++)
 			{
 				v.colors[i].rate = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rate, rightv.colors[i].rate, &curve), 0.0f, 1.0f);
-				v.colors[i].rgba.a = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.a, rightv.colors[i].rgba.a, &curve), 0.0f, 255.0f);
-				v.colors[i].rgba.r = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.r, rightv.colors[i].rgba.r, &curve), 0.0f, 255.0f);
-				v.colors[i].rgba.g = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.g, rightv.colors[i].rgba.g, &curve), 0.0f, 255.0f);
-				v.colors[i].rgba.b = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.b, rightv.colors[i].rgba.b, &curve), 0.0f, 255.0f);
+				v.colors[i].rgba.a = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.color.rgba.a, (float)rightv.colors[i].rgba.a, &curve), 0.0f, 255.0f);
+				v.colors[i].rgba.r = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.color.rgba.r, (float)rightv.colors[i].rgba.r, &curve), 0.0f, 255.0f);
+				v.colors[i].rgba.g = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.color.rgba.g, (float)rightv.colors[i].rgba.g, &curve), 0.0f, 255.0f);
+				v.colors[i].rgba.b = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.color.rgba.b, (float)rightv.colors[i].rgba.b, &curve), 0.0f, 255.0f);
 			}
 		}
 		else
 		{
 			//両方とも単色
 			v.color.rate = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rate, rightv.color.rate, &curve), 0.0f, 1.0f);
-			v.color.rgba.a = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.a, rightv.color.rgba.a, &curve), 0.0f, 255.0f);
-			v.color.rgba.r = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.r, rightv.color.rgba.r, &curve), 0.0f, 255.0f);
-			v.color.rgba.g = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.g, rightv.color.rgba.g, &curve), 0.0f, 255.0f);
-			v.color.rgba.b = clamp(SsInterpolate(SsInterpolationType::linear, now, leftv.color.rgba.b, rightv.color.rgba.b, &curve), 0.0f, 255.0f);
+			v.color.rgba.a = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.color.rgba.a, (float)rightv.color.rgba.a, &curve), 0.0f, 255.0f);
+			v.color.rgba.r = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.color.rgba.r, (float)rightv.color.rgba.r, &curve), 0.0f, 255.0f);
+			v.color.rgba.g = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.color.rgba.g, (float)rightv.color.rgba.g, &curve), 0.0f, 255.0f);
+			v.color.rgba.b = (u32)clamp(SsInterpolate(SsInterpolationType::linear, now, (float)leftv.color.rgba.b, (float)rightv.color.rgba.b, &curve), 0.0f, 255.0f);
 			v.target = SsColorBlendTarget::whole;
 		}
 	}
@@ -464,8 +463,8 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 	if (leftkey->ipType == SsInterpolationType::bezier)
 	{
 		// ベジェのみキーの開始・終了時間が必要
-		curve.startKeyTime = leftkey->time;
-		curve.endKeyTime = rightkey->time;
+		curve.startKeyTime = (float)leftkey->time;
+		curve.endKeyTime = (float)rightkey->time;
 	}
 
 	int range = rightkey->time - leftkey->time;
@@ -489,10 +488,10 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 			for ( int i = 0 ; i < 4 ; i++ )
 			{
 				v.colors[i].rate = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.colors[i].rate , rightv.colors[i].rate  , &curve ) , 0.0f , 1.0f );	
-				v.colors[i].rgba.a = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.colors[i].rgba.a , rightv.colors[i].rgba.a  , &curve ) , 0.0f , 255.0f );	
-				v.colors[i].rgba.r = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.colors[i].rgba.r , rightv.colors[i].rgba.r  , &curve ) , 0.0f , 255.0f );	
-				v.colors[i].rgba.g = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.colors[i].rgba.g , rightv.colors[i].rgba.g  , &curve ) , 0.0f , 255.0f );	
-				v.colors[i].rgba.b = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.colors[i].rgba.b , rightv.colors[i].rgba.b  , &curve ) , 0.0f , 255.0f );	
+				v.colors[i].rgba.a = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.colors[i].rgba.a , (float)rightv.colors[i].rgba.a  , &curve ) , 0.0f , 255.0f );	
+				v.colors[i].rgba.r = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.colors[i].rgba.r , (float)rightv.colors[i].rgba.r  , &curve ) , 0.0f , 255.0f );	
+				v.colors[i].rgba.g = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.colors[i].rgba.g , (float)rightv.colors[i].rgba.g  , &curve ) , 0.0f , 255.0f );	
+				v.colors[i].rgba.b = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.colors[i].rgba.b , (float)rightv.colors[i].rgba.b  , &curve ) , 0.0f , 255.0f );	
 			}
 		}
 		else
@@ -501,10 +500,10 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 			for ( int i = 0 ; i < 4 ; i++ )
 			{
 				v.colors[i].rate = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.colors[i].rate , rightv.color.rate  , &curve ) , 0.0f , 1.0f );	
-				v.colors[i].rgba.a = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.colors[i].rgba.a , rightv.color.rgba.a  , &curve ) , 0.0f , 255.0f );	
-				v.colors[i].rgba.r = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.colors[i].rgba.r , rightv.color.rgba.r  , &curve ) , 0.0f , 255.0f );	
-				v.colors[i].rgba.g = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.colors[i].rgba.g , rightv.color.rgba.g  , &curve ) , 0.0f , 255.0f );	
-				v.colors[i].rgba.b = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.colors[i].rgba.b , rightv.color.rgba.b  , &curve ) , 0.0f , 255.0f );	
+				v.colors[i].rgba.a = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.colors[i].rgba.a , (float)rightv.color.rgba.a  , &curve ) , 0.0f , 255.0f );	
+				v.colors[i].rgba.r = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.colors[i].rgba.r , (float)rightv.color.rgba.r  , &curve ) , 0.0f , 255.0f );	
+				v.colors[i].rgba.g = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.colors[i].rgba.g , (float)rightv.color.rgba.g  , &curve ) , 0.0f , 255.0f );	
+				v.colors[i].rgba.b = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.colors[i].rgba.b , (float)rightv.color.rgba.b  , &curve ) , 0.0f , 255.0f );	
 			}
 		}
 	}
@@ -516,20 +515,20 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 			for ( int i = 0 ; i < 4 ; i++ )
 			{
 				v.colors[i].rate = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.color.rate , rightv.colors[i].rate  , &curve ) , 0.0f , 1.0f );	
-				v.colors[i].rgba.a = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.color.rgba.a , rightv.colors[i].rgba.a  , &curve ) , 0.0f , 255.0f );		
-				v.colors[i].rgba.r = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.color.rgba.r , rightv.colors[i].rgba.r  , &curve ) , 0.0f , 255.0f );		
-				v.colors[i].rgba.g = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.color.rgba.g , rightv.colors[i].rgba.g  , &curve ) , 0.0f , 255.0f );		
-				v.colors[i].rgba.b = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.color.rgba.b , rightv.colors[i].rgba.b  , &curve ) , 0.0f , 255.0f );		
+				v.colors[i].rgba.a = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.color.rgba.a , (float)rightv.colors[i].rgba.a  , &curve ) , 0.0f , 255.0f );		
+				v.colors[i].rgba.r = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.color.rgba.r , (float)rightv.colors[i].rgba.r  , &curve ) , 0.0f , 255.0f );		
+				v.colors[i].rgba.g = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.color.rgba.g , (float)rightv.colors[i].rgba.g  , &curve ) , 0.0f , 255.0f );		
+				v.colors[i].rgba.b = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.color.rgba.b , (float)rightv.colors[i].rgba.b  , &curve ) , 0.0f , 255.0f );		
 			}
 		}
 		else
 		{
 			//両方とも単色
 			v.color.rate = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.color.rate , rightv.color.rate  , &curve ) , 0.0f , 1.0f );	
-			v.color.rgba.a = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.color.rgba.a , rightv.color.rgba.a  , &curve ) , 0.0f , 255.0f );	
-			v.color.rgba.r = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.color.rgba.r , rightv.color.rgba.r  , &curve ) , 0.0f , 255.0f );	
-			v.color.rgba.g = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.color.rgba.g , rightv.color.rgba.g  , &curve ) , 0.0f , 255.0f );	
-			v.color.rgba.b = clamp( SsInterpolate( SsInterpolationType::linear , now , leftv.color.rgba.b , rightv.color.rgba.b  , &curve) , 0.0f , 255.0f );	
+			v.color.rgba.a = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.color.rgba.a , (float)rightv.color.rgba.a  , &curve ) , 0.0f , 255.0f );	
+			v.color.rgba.r = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.color.rgba.r , (float)rightv.color.rgba.r  , &curve ) , 0.0f , 255.0f );	
+			v.color.rgba.g = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.color.rgba.g , (float)rightv.color.rgba.g  , &curve ) , 0.0f , 255.0f );	
+			v.color.rgba.b = (u32)clamp( SsInterpolate( SsInterpolationType::linear , now , (float)leftv.color.rgba.b , (float)rightv.color.rgba.b  , &curve) , 0.0f , 255.0f );	
 			v.target = SsColorBlendTarget::whole;
 		}
 	}
@@ -557,8 +556,8 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 	if (leftkey->ipType == SsInterpolationType::bezier)
 	{
 		// ベジェのみキーの開始・終了時間が必要
-		curve.startKeyTime = leftkey->time;
-		curve.endKeyTime = rightkey->time;
+		curve.startKeyTime = (float)leftkey->time;
+		curve.endKeyTime = (float)rightkey->time;
 	}
 
 	int range = rightkey->time - leftkey->time;
@@ -581,7 +580,7 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 }
 
 
-void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsCellValue& v )
+void	SsAnimeDecoder::SsInterpolationValue( int , const SsKeyframe* leftkey , const SsKeyframe* , SsCellValue& v )
 {
 	SsRefCell cell;
 	GetSsRefCell( leftkey , cell );
@@ -592,20 +591,20 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 
 }
 
-void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsSignalAttr& v )
+void	SsAnimeDecoder::SsInterpolationValue( int , const SsKeyframe* leftkey , const SsKeyframe* , SsSignalAttr& v )
 {
 	//補間は行わないので、常に左のキーを出力する
 	GetSsSignalAnime( leftkey , v );
 }
 
 //インスタンスアニメデータ
-void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsInstanceAttr& v )
+void	SsAnimeDecoder::SsInterpolationValue( int , const SsKeyframe* leftkey , const SsKeyframe* , SsInstanceAttr& v )
 {
 	//補間は行わないので、常に左のキーを出力する
 	GetSsInstparamAnime( leftkey , v );
 }
 
-void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsEffectAttr& v )
+void	SsAnimeDecoder::SsInterpolationValue( int , const SsKeyframe* leftkey , const SsKeyframe* , SsEffectAttr& v )
 {
 	//補間は行わないので、常に左のキーを出力する
 	GetSsEffectParamAnime( leftkey , v );
@@ -637,8 +636,8 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 	if (leftkey->ipType == SsInterpolationType::bezier)
 	{
 		// ベジェのみキーの開始・終了時間が必要
-		curve.startKeyTime = leftkey->time;
-		curve.endKeyTime = rightkey->time;
+		curve.startKeyTime = (float)leftkey->time;
+		curve.endKeyTime = (float)rightkey->time;
 	}
 
 	float rate = SsInterpolate(leftkey->ipType, now, 0.0f, 1.0f, &curve);
@@ -648,14 +647,14 @@ void	SsAnimeDecoder::SsInterpolationValue(int time, const SsKeyframe* leftkey, c
 
 	std::vector<SsVector2> start = startValue.verticeChgList;
 	//start.resize(numPoints);
-	for (int i = start.size(); i < numPoints; i++)
+	for (int i = (int)start.size(); i < numPoints; i++)
 	{
 		start.push_back(SsVector2(0, 0));
 	}
 
 	std::vector<SsVector2> end = endValue.verticeChgList;
 	//end.resize(numPoints);
-	for (int i = end.size(); i < numPoints; i++)
+	for (int i = (int)end.size(); i < numPoints; i++)
 	{
 		end.push_back(SsVector2(0, 0));
 	}
@@ -696,12 +695,12 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 		// ベジェのみキーの開始・終了時間が必要
 		SsCurve curve;
 		curve = leftkey->curve;
-		curve.startKeyTime = leftkey->time;
+		curve.startKeyTime = (float)leftkey->time;
 		curve.endKeyTime = (float)rightkey->time;
-		v = SsInterpolate( leftkey->ipType , now , v1 , v2 , &curve );
+		v = (mytype)SsInterpolate( leftkey->ipType , now , v1 , v2 , &curve );
 	}
 	else{
-		v = SsInterpolate( leftkey->ipType , now , v1 , v2 , &leftkey->curve );
+		v = (mytype)SsInterpolate( leftkey->ipType , now , v1 , v2 , &leftkey->curve );
 	}
 
 }
@@ -809,14 +808,6 @@ static void	CoordinateGetDiagonalIntersection( SsVector2& out , const SsVector2&
 	}
 }
 
-static SsVector2 GetLocalScale( float matrix[16] )
-{
-	float sx = SsVector2::distance( SsVector2( matrix[0] , matrix[1] ) , SsVector2( 0 , 0 ) );
-	float sy = SsVector2::distance( SsVector2( matrix[4 * 1 + 0] , matrix[4 * 1 + 1] ) , SsVector2( 0 , 0 ) );
-
-	return SsVector2( sx , sy );
-}
-
 
 ///現在の時間からパーツのアトリビュートの補間値を計算する
 void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anime , SsPartState* state )
@@ -855,7 +846,6 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 	state->alphaBlendType = part->alphaBlendType;
 
 	bool hidekey_find = false;
-	bool hideTriger = false;
 	state->masklimen = 0;
 	state->is_localAlpha = false;
 	state->is_defrom = false;
@@ -1062,7 +1052,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 							if ( !state->effectValue.attrInitialized )
 							{
 								state->effectValue.attrInitialized  = true;
-								state->effectTimeTotal = state->effectValue.startTime;
+								state->effectTimeTotal = (float)state->effectValue.startTime;
 								state->effectTime = t;//state->effectValue.startTime;
 							}
 						}
@@ -1138,7 +1128,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 
 }
 
-void	SsAnimeDecoder::updateMatrix(SsPart* part , SsPartAnime* anime , SsPartState* state)
+void	SsAnimeDecoder::updateMatrix(SsPart* , SsPartAnime* , SsPartState* state)
 {
 	int num = 1;
 	if ((state->localscale.x != 1.0f) || (state->localscale.y != 1.0f))
@@ -1166,12 +1156,12 @@ void	SsAnimeDecoder::updateMatrix(SsPart* part , SsPartAnime* anime , SsPartStat
 		if ( state->parent )
 		{
 			const SsVector2& parentSize = state->parent->size;
-			state->position.x = state->position.x + state->parent->size.x * state->anchor.x;
-			state->position.y = state->position.y + state->parent->size.y * state->anchor.y;
+			state->position.x = state->position.x + parentSize.x * state->anchor.x;
+			state->position.y = state->position.y + parentSize.y * state->anchor.y;
 		}
 
 		TranslationMatrixM( pmat , state->position.x, state->position.y, state->position.z );//
-		RotationXYZMatrixM( pmat , DegreeToRadian(state->rotation.x) , DegreeToRadian(state->rotation.y) , DegreeToRadian( state->rotation.z) );
+		RotationXYZMatrixM( pmat , (float)DegreeToRadian(state->rotation.x) , (float)DegreeToRadian(state->rotation.y) , (float)DegreeToRadian( state->rotation.z) );
 		float sx = state->scale.x;
 		float sy = state->scale.y;
 		if (matcnt > 0)
@@ -1192,7 +1182,7 @@ void	SsAnimeDecoder::updateMatrix(SsPart* part , SsPartAnime* anime , SsPartStat
 }
 
 
-void	SsAnimeDecoder::updateVertices(SsPart* part , SsPartAnime* anime , SsPartState* state)
+void	SsAnimeDecoder::updateVertices(SsPart* , SsPartAnime* , SsPartState* state)
 {
 
 	SsCell * cell = state->cellValue.cell;
@@ -1308,7 +1298,7 @@ void	SsAnimeDecoder::updateVertices(SsPart* part , SsPartAnime* anime , SsPartSt
 
 
 
-void	SsAnimeDecoder::updateInstance( int nowTime , SsPart* part , SsPartAnime* partanime , SsPartState* state )
+void	SsAnimeDecoder::updateInstance( int nowTime , SsPart* , SsPartAnime* , SsPartState* state )
 {
 	if ( state->refAnime == 0 ) return ;
 	//state->refAnime->setPlayFrame( nowTime );
@@ -1346,7 +1336,7 @@ void	SsAnimeDecoder::updateInstance( int nowTime , SsPart* part , SsPartAnime* p
     int	selfTopKeyframe = instanceValue.curKeyframe;
 
 
-    int reftime = ( time - selfTopKeyframe) * instanceValue.speed;
+    int reftime = (int)( ( time - selfTopKeyframe) * instanceValue.speed );
     //int	reftime = (time*instanceValue.speed) - selfTopKeyframe; //開始から現在の経過時間
 	if ( reftime < 0 ) return ; //そもそも生存時間に存在していない
 	if ( selfTopKeyframe > time ) return ;
@@ -1402,7 +1392,7 @@ void	SsAnimeDecoder::updateInstance( int nowTime , SsPart* part , SsPartAnime* p
     }
 
 	state->refAnime->setInstancePartsHide(state->hide);
-	state->refAnime->setPlayFrame(_time);
+	state->refAnime->setPlayFrame((float)_time);
 
 	//Ver6 ローカルスケール対応
 	//ローカルスケールを適用するために一時的に継承マトリクスを入れ替える
@@ -1446,7 +1436,6 @@ int		SsAnimeDecoder::CalcAnimeLabel2Frame(const SsString& str, int offset, SsAni
 {
 
 	//10フレームのアニメだと11が入ってるため計算がずれるため-1する
-	int maxframe = Animation->settings.frameCount - 1;
 	int startframe = Animation->settings.startFrame;	//Ver6.0対応
 	int endframe = Animation->settings.endFrame;		//Ver6.0対応
 	int ret2 = offset;
@@ -1465,11 +1454,11 @@ int		SsAnimeDecoder::CalcAnimeLabel2Frame(const SsString& str, int offset, SsAni
 
         if ( ret != -1 )
         {
-			int ret2 = ret + offset;
-			if ( ret2 < startframe ) ret2 = startframe;
-			if ( ret2 > endframe ) ret2 = endframe;
+			int ret3 = ret + offset;
+			if ( ret3 < startframe ) ret3 = startframe;
+			if ( ret3 > endframe ) ret3 = endframe;
 
-        	return ret2;
+        	return ret3;
 		}
 		//警告など出すべき？
 	}
@@ -1502,11 +1491,11 @@ static SsPartStateLess _ssPartStateLess;
 
 ///SS5の場合  SsPartのarrayIndexは、親子順　（子は親より先にいない）と
 ///なっているためそのまま木構造を作らずUpdateを行う
-void	SsAnimeDecoder::update(float frameDelta)
+void	SsAnimeDecoder::update(float _frameDelta)
 {
 	int	time = (int)nowPlatTime;
 
-	this->frameDelta = frameDelta;
+	this->frameDelta = _frameDelta;
 
 	int cnt = 0;
 	foreach( std::vector<SsPartAndAnime> , partAnime , e )
@@ -1527,7 +1516,7 @@ void	SsAnimeDecoder::update(float frameDelta)
 		if ( part->type == SsPartType::effect)
 		{
 			updateMatrix( part , anime , &partState[cnt]);
-			updateEffect(frameDelta, time, part, anime, &partState[cnt]);
+			updateEffect(_frameDelta, time, part, anime, &partState[cnt]);
 		}
 
 		cnt++;
@@ -1554,7 +1543,7 @@ void	SsAnimeDecoder::update(float frameDelta)
 }
 
 
-void	SsAnimeDecoder::updateEffect( float frameDelta , int nowTime , SsPart* part , SsPartAnime* part_anime , SsPartState* state )
+void	SsAnimeDecoder::updateEffect( float _frameDelta , int nowTime , SsPart* , SsPartAnime* , SsPartState* state )
 {
 	if ( state->hide ) return ;
 
@@ -1562,7 +1551,7 @@ void	SsAnimeDecoder::updateEffect( float frameDelta , int nowTime , SsPart* part
 	{
 		if (state && state->refEffect && state->effectValue.attrInitialized )
 		{
-			state->effectTimeTotal += frameDelta* state->effectValue.speed;
+			state->effectTimeTotal += _frameDelta* state->effectValue.speed;
 			state->refEffect->setLoop(true);
 			state->refEffect->setFrame( state->effectTimeTotal );
 			state->refEffect->play();
@@ -1571,7 +1560,7 @@ void	SsAnimeDecoder::updateEffect( float frameDelta , int nowTime , SsPart* part
 	}else{
 		if (state && state->refEffect)
 		{
-			float _time = nowTime - state->effectTime;
+			float _time = (float)( nowTime - state->effectTime );
 			if ( _time < 0 )
 			{
 				return ;
@@ -1695,7 +1684,7 @@ SsSequenceDecoder::SsSequenceDecoder() :
 	{
 	}
 
-void	SsSequenceDecoder::update(float frameDelta)
+void	SsSequenceDecoder::update(float _frameDelta)
 {
 	float	ftime = getPlayFrame();
 	int		itime = (int)ftime;
@@ -1709,7 +1698,7 @@ void	SsSequenceDecoder::update(float frameDelta)
 		setSequenceItem( item );
 	}
 
-	SsAnimeDecoder::update( frameDelta );
+	SsAnimeDecoder::update( _frameDelta );
 }
 
 void	SsSequenceDecoder::setSequence( SsSequence* sequence , SsProject* sspj )

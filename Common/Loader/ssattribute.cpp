@@ -28,8 +28,8 @@ const SsKeyframe*	SsAttribute::findLeftKey( int time )
     if ( it == key_dic.end())
     {
 		it = --it;
-        SsKeyframe* key = it->second;
-        return key;
+        SsKeyframe* _key = it->second;
+        return _key;
     }
     
 		
@@ -232,7 +232,6 @@ void	GetSsSignalAnime( const SsKeyframe* key , SsSignalAttr& v )
 			SsSignalParam param;
 			const SsValue& val2 = itr2->second;
 			SsSignalParamType::_enum type;
-			SsSignalParamValue value;
 
 			param.paramId = val2["paramId"].get<SsString>();
 

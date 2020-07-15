@@ -66,7 +66,7 @@ static float VarianceCalcFin( SsEffectRenderEmitter* e ,  float base , float var
 
 static u8 blendNumber( u8 a , u8 b , float rate )
 {
-	return ( a + ( b - a ) * rate );
+	return (u8)( a + ( b - a ) * rate );
 }
 
 
@@ -82,13 +82,13 @@ public:
 	EffectFuncBase(){}
 	virtual ~EffectFuncBase(){}
 
-	virtual void	initalizeEmmiter ( SsEffectElementBase* ele , SsEffectRenderEmitter* emmiter){}
-	virtual void	updateEmmiter( SsEffectElementBase* ele , SsEffectRenderEmitter* emmiter){}
-	virtual void	initializeParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle ){}
-	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle ){}
+	virtual void	initalizeEmmiter ( SsEffectElementBase* , SsEffectRenderEmitter*){}
+	virtual void	updateEmmiter( SsEffectElementBase* , SsEffectRenderEmitter*){}
+	virtual void	initializeParticle( SsEffectElementBase* , SsEffectRenderEmitter* , SsEffectRenderParticle* ){}
+	virtual void	updateParticle( SsEffectElementBase* , SsEffectRenderEmitter* , SsEffectRenderParticle* ){}
 
 
-	virtual void	initalizeEffect ( SsEffectElementBase* ele , SsEffectEmitter* emmiter){}
+	virtual void	initalizeEffect ( SsEffectElementBase* , SsEffectEmitter*){}
 };
 
 
@@ -108,9 +108,9 @@ public:
 		ParticleElementBasic* source = static_cast<ParticleElementBasic*>(ele);
 
 		e->maxParticle = source->maximumParticle;
-		e->interval = source->interval;
-		e->_lifetime = source->lifetime;
-		e->_life = source->lifetime;
+		e->interval = (float)source->interval;
+		e->_lifetime = (float)source->lifetime;
+		e->_life = (float)source->lifetime;
 		e->burst = source->attimeCreate;
 
 		e->undead = false;
@@ -141,11 +141,11 @@ public:
 
 		p->_backposition = p->_position;
 
-		p->_lifetime   = VarianceCalc( e , source->lifespan.getMinValue() , source->lifespan.getMaxValue() );
-		p->_life = source->lifetime;
+		p->_lifetime   = VarianceCalc( e , (float)source->lifespan.getMinValue() , (float)source->lifespan.getMaxValue() );
+		p->_life = (float)source->lifetime;
 		float temp_angle = VarianceCalcFin( e ,  source->angle+eAngle , source->angleVariance/2.0f);
 
-		float angle_rad = DegreeToRadian( (temp_angle+90.0f) );
+		float angle_rad = (float)DegreeToRadian( (temp_angle+90.0f) );
 		float lspeed = VarianceCalc(  e , source->speed.getMinValue() , source->speed.getMaxValue() );
 
 		p->speed = lspeed;
@@ -191,8 +191,8 @@ public:
 		e->particle.speed = source->speed.getMinValue();
 		e->particle.speed2 = source->speed.getMaxValue() - source->speed.getMinValue();
 
-		e->particle.angle = DegreeToRadian( (source->angle+90.0f) );
-		e->particle.angleVariance = DegreeToRadian( source->angleVariance );
+		e->particle.angle = (float)DegreeToRadian( (source->angle+90.0f) );
+		e->particle.angleVariance = (float)DegreeToRadian( source->angleVariance );
 
 		e->particle.useTanAccel = false;
 
@@ -293,7 +293,7 @@ public:
 	virtual void	initalizeEffect ( SsEffectElementBase* ele , SsEffectEmitter* e)
 	{
 		ParticleElementDelay* source = static_cast<ParticleElementDelay*>(ele);
-		e->particle.delay = source->DelayTime;
+		e->particle.delay = (float)source->DelayTime;
 
 	}
 	
@@ -309,12 +309,12 @@ public:
 	FuncParticleElementGravity(){}
 	virtual ~FuncParticleElementGravity(){}
 
-	virtual void	initializeParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* p )
+	virtual void	initializeParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* , SsEffectRenderParticle* p )
 	{
 		ParticleElementGravity* source = static_cast<ParticleElementGravity*>(ele);
 		p->_gravity = source->Gravity;
 	}
-	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle )
+	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* , SsEffectRenderParticle* particle )
 	{
 		ParticleElementGravity* source = static_cast<ParticleElementGravity*>(ele);
 		particle->_gravity = source->Gravity * particle->_exsitTime;	
@@ -347,7 +347,7 @@ public:
 		p->_position.y = p->_baseEmiterPosition.y + VarianceCalc( e , source->OffsetY.getMinValue() , source->OffsetY.getMaxValue() );
 	}
 
-	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle ){}
+	virtual void	updateParticle( SsEffectElementBase* , SsEffectRenderEmitter* , SsEffectRenderParticle* ){}
 
 	virtual void	initalizeEffect ( SsEffectElementBase* ele , SsEffectEmitter* e)
 	{
@@ -418,7 +418,7 @@ public:
 	FuncParticleElementRotationTrans(){}
 	virtual ~FuncParticleElementRotationTrans(){}
 
-	virtual void	initializeParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* p )
+	virtual void	initializeParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* , SsEffectRenderParticle* p )
 	{
 		ParticleElementRotationTrans* source = static_cast<ParticleElementRotationTrans*>(ele);
 		if ( p->_lifetime == 0 ) return ;
@@ -431,7 +431,7 @@ public:
 		p->_rotationAddDst = p->_rotationAdd * source->RotationFactor;
 		p->_rotationAddOrg = p->_rotationAdd;
 	}
-	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* p )
+	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* , SsEffectRenderParticle* p )
 	{
 		ParticleElementRotationTrans* source = static_cast<ParticleElementRotationTrans*>(ele);
 
@@ -473,7 +473,7 @@ public:
 		p->lastspeed = VarianceCalc( e, source->Speed.getMinValue() , source->Speed.getMaxValue() );
 	}
 
-	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* p )
+	virtual void	updateParticle( SsEffectElementBase* , SsEffectRenderEmitter* , SsEffectRenderParticle* p )
 	{
 		//ParticleElementTransSpeed* source = static_cast<ParticleElementTransSpeed*>(ele);
 		float per = ( (float)p->_exsitTime / (float)p->_lifetime );
@@ -575,7 +575,7 @@ public:
 		VarianceCalcColor( e , p->_endcolor , source->Color.getMinValue() , source->Color.getMaxValue() );
 	}
 
-	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* p )
+	virtual void	updateParticle( SsEffectElementBase* , SsEffectRenderEmitter* , SsEffectRenderParticle* p )
 	{
 		float per = ( (float)p->_exsitTime / (float)p->_lifetime );
 
@@ -614,7 +614,7 @@ public:
 	FuncParticleElementAlphaFade(){}
 	virtual ~FuncParticleElementAlphaFade(){}
 
-	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle )
+	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* , SsEffectRenderParticle* particle )
 	{
 		ParticleElementAlphaFade* source = static_cast<ParticleElementAlphaFade*>(ele);
 	
@@ -628,7 +628,7 @@ public:
 		if ( per < start )
 		{
 			float alpha = (start - per) / start;
-			particle->_color.a*= 1.0f - alpha;
+			particle->_color.a*= (u8)( 1.0f - alpha );
 			return;
 		}
 
@@ -641,7 +641,7 @@ public:
 				return;
 			}
 			float alpha = (per-end) / (100.0f-end);
-			particle->_color.a*= 1.0f - alpha;
+			particle->_color.a*= (u8)( 1.0f - alpha );
 			return;
 		}
 
@@ -724,7 +724,7 @@ public:
 
 		p->_divsize = ( endsize - p->_startsize ) / p->_lifetime;	
 	}
-	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* p )
+	virtual void	updateParticle( SsEffectElementBase* , SsEffectRenderEmitter* , SsEffectRenderParticle* p )
 	{
 	
 		p->_size = p->_startsize + ( p->_divsize * ( p->_exsitTime ) );
@@ -759,13 +759,13 @@ public:
 	FuncParticlePointGravity(){}
 	virtual ~FuncParticlePointGravity(){}
 
-	virtual void	initalizeEmmiter ( SsEffectElementBase* ele , SsEffectRenderEmitter* emmiter){}
-	virtual void	updateEmmiter( SsEffectElementBase* ele , SsEffectRenderEmitter* emmiter){}
-	virtual void	initializeParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* p )
+	virtual void	initalizeEmmiter ( SsEffectElementBase* , SsEffectRenderEmitter*){}
+	virtual void	updateEmmiter( SsEffectElementBase* , SsEffectRenderEmitter*){}
+	virtual void	initializeParticle( SsEffectElementBase* , SsEffectRenderEmitter* , SsEffectRenderParticle* )
 	{
 		//p->_orggravity = p->_gravity;	
 	}
-	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* p )
+	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* , SsEffectRenderParticle* p )
 	{
 		ParticlePointGravity* source = static_cast<ParticlePointGravity*>(ele);
 
@@ -805,7 +805,7 @@ public:
 	FuncParticleTurnToDirectionEnabled(){}
 	virtual ~FuncParticleTurnToDirectionEnabled(){}
 
-	virtual void	initializeParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle )
+	virtual void	initializeParticle( SsEffectElementBase* , SsEffectRenderEmitter* , SsEffectRenderParticle* particle )
 	{
 		particle->isTurnDirection = true;
 	}
@@ -830,11 +830,11 @@ public:
 	FuncParticleInfiniteEmitEnabled(){}
 	virtual ~FuncParticleInfiniteEmitEnabled(){}
 
-	virtual void	initializeParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle )
+	virtual void	initializeParticle( SsEffectElementBase* , SsEffectRenderEmitter* , SsEffectRenderParticle* )
 	{
 	}
 
-	virtual void	initalizeEffect ( SsEffectElementBase* ele , SsEffectEmitter* e)
+	virtual void	initalizeEffect ( SsEffectElementBase* , SsEffectEmitter* e)
 	{
 		e->emitter.Infinite = true;
 	}

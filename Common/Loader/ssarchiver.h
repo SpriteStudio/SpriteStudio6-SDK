@@ -204,6 +204,7 @@ public:
 
 
 #define SSSERIALIZE_BLOCK	void __Serialize(ISsXmlArchiver* ar)
+#define SSSERIALIZE_BLOCK_UNUSED	void __Serialize(ISsXmlArchiver*)
 
 #define	SSAR_DECLARE(t)  ar->dc(#t,t)
 #define	SSAR_DECLARE_ATTRIBUTE(t)  ar->dc_attr(#t,t)

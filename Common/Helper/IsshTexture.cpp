@@ -35,12 +35,12 @@ ISSTexture*	SSTextureFactory::loadTexture(SsString filePath)
 			return _tex;
 		}
 		else {
-			ISSTexture* _tex = m_myInst->textureCache[filePath];
-			if (_tex)
+			ISSTexture* _tex2 = m_myInst->textureCache[filePath];
+			if (_tex2)
 			{
 				DEBUG_PRINTF("Texture Cached : %s \n", filePath.c_str());
-				_tex->addref();
-				return _tex;
+				_tex2->addref();
+				return _tex2;
 			}
 		}
 	}

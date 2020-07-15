@@ -171,7 +171,7 @@ public:
 	int		getAnimeTotalFrame() { return curSequenceTotalFrame; }
 	int		getAnimeFPS() {	return curSequenceFPS; }		
 
-	int		getSequenceItemCount() { return curSequence->list.size(); }
+	int		getSequenceItemCount() { return (int)curSequence->list.size(); }
 	SsSequenceItem*	getSequenceItem( int iIndex ) { return curSequence->list[iIndex]; }
 
 private:

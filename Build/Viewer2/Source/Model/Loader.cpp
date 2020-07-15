@@ -19,7 +19,7 @@ void AsyncAnimeLoader::run()
 	setStatusMessage("Analysing animation...");
 
 	// GLのスレッドにリクエスト
-	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
+	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext&)
 	{
 		p->changeState(p->stateLoading.get());
 		SsAnimePackList & alist = p->currentProj->getAnimePackList();
@@ -54,7 +54,7 @@ void AsyncAnimeLoader::run()
 	wait(100);
 }
 
-void AsyncAnimeLoader::threadComplete(bool userPressedCancel)
+void AsyncAnimeLoader::threadComplete(bool)
 {
 	auto* pC = MainContentComponent::get();
 
@@ -82,7 +82,7 @@ void AsyncSequenceLoader::run()
 	setStatusMessage("Analysing sequence...");
 
 	// GLのスレッドにリクエスト
-	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
+	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext&)
 	{
 		p->changeState(p->stateLoading.get());
 		SsSequencePackList & slist = p->currentProj->getSequencePackList();
@@ -115,7 +115,7 @@ void AsyncSequenceLoader::run()
 	wait(100);
 }
 
-void AsyncSequenceLoader::threadComplete(bool userPressedCancel)
+void AsyncSequenceLoader::threadComplete(bool)
 {
 	auto* pC = MainContentComponent::get();
 
@@ -143,7 +143,7 @@ void AsyncProjectLoader::run()
 	setStatusMessage("Analysing project...");
 
 	// GLのスレッドにリクエスト
-	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
+	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext&)
 	{
 		p->changeState(p->stateLoading.get());
 
@@ -177,7 +177,7 @@ void AsyncProjectLoader::run()
 	wait(100);
 }
 
-void AsyncProjectLoader::threadComplete(bool userPressedCancel)
+void AsyncProjectLoader::threadComplete(bool)
 {
 	auto* pV = ViewerMainWindow::get();
 	auto* pC = MainContentComponent::get();

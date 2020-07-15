@@ -42,7 +42,6 @@ int SsGL_CheckShaderReady( void )
 	return 0;
 
 
-  return -1;
 }
 
 SSOpenGLShader::SSOpenGLShader( const std::string&  name , const std::string& str, const GLenum shader_type )
@@ -51,7 +50,7 @@ SSOpenGLShader::SSOpenGLShader( const std::string&  name , const std::string& st
 	h = glCreateShaderObjectARB( shader_type );
 
 	const char	*s = str.c_str();
-	int l = str.length();
+	int l = (int)str.length();
 
 	glShaderSourceARB( h, 1, &s, &l );
 	if ( glGetError() != GL_NO_ERROR ) {
@@ -90,7 +89,7 @@ SSOpenGLShader::SSOpenGLShader( const std::string& filename, const GLenum shader
 
 	// set shader source
 	const char	*s = source.c_str();
-	int l = source.length();
+	int l = (int)source.length();
 
 	glShaderSourceARB( h, 1, &s, &l );
 	if ( glGetError() != GL_NO_ERROR ) {

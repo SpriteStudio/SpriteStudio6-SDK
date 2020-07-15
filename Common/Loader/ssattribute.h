@@ -73,8 +73,8 @@ public:
 		for ( AttributeKeyList::iterator itr = key.begin() ; itr != key.end() ; itr++)
 		{
 			int time = (*itr)->time;
-			SsKeyframe* key = (*itr);
-			key_dic[time] = key;
+			SsKeyframe* _key = (*itr);
+			key_dic[time] = _key;
 		}
 	}
 

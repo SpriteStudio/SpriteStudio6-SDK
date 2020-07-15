@@ -13,13 +13,13 @@ SsString	__EnumToString_( SsPartType::_enum n )
 	if ( SsPartType::effect == n) return "effect";
 
 
-	if (SsPartType::armature) return "armature";
-	if (SsPartType::mesh) return "mesh";
-	if (SsPartType::movenode) return "movenode";
-	if (SsPartType::constraint) return "constraint";
-	if (SsPartType::mask) return "mask";
-	if (SsPartType::joint) return "joint";
-	if (SsPartType::bonepoint) return "bonepoint";
+	if (SsPartType::armature == n) return "armature";
+	if (SsPartType::mesh == n) return "mesh";
+	if (SsPartType::movenode == n) return "movenode";
+	if (SsPartType::constraint == n) return "constraint";
+	if (SsPartType::mask == n) return "mask";
+	if (SsPartType::joint == n) return "joint";
+	if (SsPartType::bonepoint == n) return "bonepoint";
 
 
 	return "invalid";	
@@ -73,7 +73,7 @@ SsString	__EnumToString_( SsBoundsType::_enum n )
 	if ( SsBoundsType::none == n) return "none";
 	if ( SsBoundsType::quad == n) return "quad";
 	if ( SsBoundsType::aabb == n) return "aabb";
-	if ( SsBoundsType::circle ) return "circle";
+	if ( SsBoundsType::circle == n) return "circle";
 	if ( SsBoundsType::circle_smin == n) return "circle_smin";
 	if ( SsBoundsType::circle_smax == n) return "circle_smax";
 	return "invalid";	

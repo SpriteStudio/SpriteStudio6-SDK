@@ -99,7 +99,7 @@ public:
 	SsCelMapLinker*	getCellMapLink( const SsString& name );
 	SsCelMapLinker*	getCellMapLink( int index )
 	{	
-		if (CellMapList.size() <= index) return 0;
+		if ((int)CellMapList.size() <= index) return 0;
 		return CellMapList[index];
 	}
 	

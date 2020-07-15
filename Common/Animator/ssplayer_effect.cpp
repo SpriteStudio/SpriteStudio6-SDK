@@ -168,8 +168,6 @@ SsEffectRenderAtom* SsEffectRenderer::CreateAtom( unsigned int seed , SsEffectRe
 		SsCelMapLinker* link = this->curCellMapManager->getCellMapLink( p->data->behavior.CellMapName );
 		if ( link )
 		{
-			SsCell * cell = link->findCell( p->data->behavior.CellName );
-		
 			getCellValue(	this->curCellMapManager , 
 				p->data->behavior.CellMapName ,
 				p->data->behavior.CellName , 
@@ -290,7 +288,7 @@ bool	SsEffectRenderEmitter::genarate( SsEffectRenderer* render )
 	if ( create_count <= 0 ) create_count = 1;
 
 
-	int pc = particleCount;
+	int pc = (int)particleCount;
 
 	while(1)
 	{
@@ -369,8 +367,6 @@ void	SsEffectRenderParticle::Initialize()
 
 	if ( !m_isInit )
 	{
-		SsEffectNode* n = static_cast<SsEffectNode*>(this->data->ctop);
-
 		//子要素を解析  基本的にエミッターのみの生成のはず　（Ｐではエラーでいい）
 		//処理を省いてエミッター生成のつもりで作成する
 		//パーティクルに紐づいたエミッターが生成される
@@ -553,7 +549,7 @@ void	SsEffectRenderParticle::draw(SsEffectRenderer* render)
 
 	TranslationMatrixM( matrix , _position.x, _position.y, 0.0f );
 
-	RotationXYZMatrixM( matrix , 0 , 0 , DegreeToRadian(_rotation)+direction );
+	RotationXYZMatrixM( matrix , 0 , 0 , (float)DegreeToRadian(_rotation)+direction );
 
     ScaleMatrixM(  matrix , _size.x, _size.y, 1.0f );
 
@@ -574,7 +570,7 @@ void	SsEffectRenderParticle::draw(SsEffectRenderer* render)
 
 		SsCurrentRenderer::getRender()->renderSpriteSimple(
 			matrix,
-			dispscale.x , dispscale.y ,  pivot,
+			(int)dispscale.x , (int)dispscale.y ,  pivot,
 					dispCell->uvs[0],
 					dispCell->uvs[3], fcolor );
 	}
@@ -734,8 +730,6 @@ void	SsEffectRenderer::clearUpdateList()
 {
 
 
-	size_t s = createlist.size();
-	size_t s2 = updatelist.size();
 
 
 #if PFMEM_TEST
@@ -793,9 +787,6 @@ void    SsEffectRenderer::reload()
 	//子要素だけつくってこれを種にする
 	while( n )
 	{
-		SsEffectNode* enode = static_cast<SsEffectNode*>(n);
-		SsEffectRenderAtom* effectr = CreateAtom( seed , render_root , enode );
-
 		n = n->next;
 	}
 

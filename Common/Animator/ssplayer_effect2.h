@@ -14,7 +14,7 @@
 class SsEffectModel;
 class SsRenderEffectBase;
 class SsEffectNode;
-class SsPartState;
+struct SsPartState;
 class SsEffectRenderAtom;
 class SsCell;
 
@@ -318,7 +318,7 @@ public:
 
 #if  LOOP_TYPE3
 
-	int	getParticleIDMax() { return _offsetPattern.size(); }
+	int	getParticleIDMax() { return (int)_offsetPattern.size(); }
 
 	const 	particleExistSt*	getParticleDataFromID(int id);
 	void	updateEmitter( double time  , int slide );

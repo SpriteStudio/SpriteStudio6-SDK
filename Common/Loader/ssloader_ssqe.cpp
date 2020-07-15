@@ -20,13 +20,13 @@ SsSequencePack*	ssloader_ssqe::Load(const std::string& filename )
 }
 
 
-SsSequence*	SsSequencePack::findSequence(SsString& name)
+SsSequence*	SsSequencePack::findSequence(SsString& _name)
 {
 
 	for ( std::vector<SsSequence*>::iterator itr = sequenceList.begin()
 		; itr != sequenceList.end() ; ++itr )
 	{
-		if ( (*itr)->name == name )
+		if ( (*itr)->name == _name )
 		{
 			return (*itr);
 		}

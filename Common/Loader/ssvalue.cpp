@@ -24,17 +24,6 @@ void	SsValueSeriarizer( ISsXmlArchiver* ar , SsValue& v , const std::string key)
 
 			if (str==0)
 			{
-				const char* err_log1 = e->Parent()->Value();
-
-				if ( e->Parent()->ToElement() )
-				{
-					const char* err_log2 = e->Parent()->ToElement()->GetText();
-
-					if ( e->Parent()->Parent()->ToElement()->FirstAttribute() )
-					{
-						const char* err_log3 = e->Parent()->Parent()->ToElement()->FirstAttribute()->Value();
-					}
-				}
 				return ;
 			}
 			
@@ -56,10 +45,10 @@ void	SsValueSeriarizer( ISsXmlArchiver* ar , SsValue& v , const std::string key)
 					//さらに子構造があるようだ
 					//さらに子構造があるようだ
 					//ce = 0 ;
-					SsXmlIArchiver ar(ce);
+					SsXmlIArchiver _ar(ce);
 
 					SsValue tempv;
-					SsValueSeriarizer( &ar , tempv , "");
+					SsValueSeriarizer( &_ar , tempv , "");
 					hash[ce->Name()] = tempv;					
 					ce = (XMLElement*)ce->NextSibling();
 				}

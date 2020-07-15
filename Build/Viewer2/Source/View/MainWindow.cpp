@@ -72,12 +72,12 @@ void ViewerMainWindow::resized()
 		if (controlPanel)
 		{
 			controlPanel->setBounds(area.removeFromBottom(50));
-			auto area = controlPanel->getLocalBounds();
-			button_start->setBounds(area.removeFromLeft(50));
-			button_stop->setBounds(area.removeFromLeft(50));
-			button_reset->setBounds(area.removeFromLeft(50));
-			button_loop->setBounds(area.removeFromLeft(50));
-			slider_frame->setBounds(area);
+			auto area2 = controlPanel->getLocalBounds();
+			button_start->setBounds(area2.removeFromLeft(50));
+			button_stop->setBounds(area2.removeFromLeft(50));
+			button_reset->setBounds(area2.removeFromLeft(50));
+			button_loop->setBounds(area2.removeFromLeft(50));
+			slider_frame->setBounds(area2);
 		}
 		if (sidePanel)
 		{
@@ -220,7 +220,7 @@ OpenGLContext & ViewerMainWindow::getOpenGLContext()
 	return opengl->openGLContext;
 }
 
-void ViewerMainWindow::paint (Graphics& g)
+void ViewerMainWindow::paint (Graphics&)
 {
 }
 
@@ -590,7 +590,7 @@ void ViewerTreeViewItem::itemOpennessChanged(bool isNowOpen)
 		clearSubItems();
 }
 
-void ViewerTreeViewItem::itemClicked(const MouseEvent & e)
+void ViewerTreeViewItem::itemClicked(const MouseEvent &)
 {
 	if ( getPackType() == PackType::Animation ) {
 		ViewerMainWindow::get()->getState()->animepackIndex = getPackIndex();

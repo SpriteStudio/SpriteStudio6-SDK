@@ -1192,8 +1192,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 								}
 								else
 								{
-									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].x, tagname_x));
-									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].y, tagname_y));
+									frameData->add(Lump::floatData((float)(int)state->vertexValue.offsets[vtxNo].x, tagname_x));
+									frameData->add(Lump::floatData((float)(int)state->vertexValue.offsets[vtxNo].y, tagname_y));
 								}
 							}
 						}
@@ -1374,8 +1374,8 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			animeData->add(Lump::s16Data(decoder.getAnimeTotalFrame(), "totalFrames"));
 			animeData->add(Lump::s16Data(anime->settings.fps, "fps"));
 			animeData->add(Lump::s16Data(label_idx, "labelNum"));							//ラベルデータ数
-			animeData->add(Lump::s16Data(anime->settings.canvasSize.x, "canvasSizeW"));		//基準枠W
-			animeData->add(Lump::s16Data(anime->settings.canvasSize.y, "canvasSizeH"));		//基準枠H
+			animeData->add(Lump::s16Data((int)anime->settings.canvasSize.x, "canvasSizeW"));		//基準枠W
+			animeData->add(Lump::s16Data((int)anime->settings.canvasSize.y, "canvasSizeH"));		//基準枠H
 			animeData->add(Lump::s16Data(0, "reserved"));									//ダミーデータ
 			animeData->add(Lump::floatData(anime->settings.pivot.x, "canvasPvotX"));			//基準枠位置
 			animeData->add(Lump::floatData(anime->settings.pivot.y, "canvasPvotY"));			//基準枠位置
