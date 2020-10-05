@@ -1699,31 +1699,54 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 	}
 	else
 	{
-
 		std::fstream out;
+		static const std::string messageErrorFileOpen = "出力ファイルのオープンに失敗しました: ";
 
 		if (outputFormat == OUTPUT_FORMAT_FLAG_JSON)
 		{
-			out.open((outPath + ".json").c_str(), std::ios_base::out);
-			LumpExporter::saveJson(out, encoding, lump, creatorComment);
+//			out.open((outPath + ".json").c_str(), std::ios_base::out);
+			std::string outPathJson = outPath + ".json";
+			out.open(outPathJson.c_str(), std::ios_base::out);
+			if(out)
+			{
+				LumpExporter::saveJson(out, encoding, lump, creatorComment);
+			}
+			else
+			{
+				std::cerr << messageErrorFileOpen << outPathJson << std::endl;
+			}
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_CSOURCE)
 		{
-
 			// out.open((outPath + ".c").c_str(), std::ios_base::out);
 			// LumpExporter::saveCSource(out, encoding, lump, "topLabel", creatorComment);
 			std::cerr << "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***"  << std::endl;
-
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{
-			out.open((outPath + ".ssfb").c_str(), std::ios_base::binary | std::ios_base::out);
-            LumpExporter::saveSsfb(out, encoding, lump, creatorComment, s_frameIndexVec);
+//			out.open((outPath + ".ssfb").c_str(), std::ios_base::binary | std::ios_base::out);
+			std::string outPathSsfb = outPath + ".ssfb";
+			out.open(outPathSsfb.c_str(), std::ios_base::binary | std::ios_base::out);
+			if(out)
+			{
+				LumpExporter::saveSsfb(out, encoding, lump, creatorComment, s_frameIndexVec);
+			}
+			else
+			{
+				std::cerr << messageErrorFileOpen << outPathSsfb << std::endl;
+			}
 		}
 		else
 		{
 			out.open(outPath.c_str(), std::ios_base::binary | std::ios_base::out);
-			LumpExporter::saveBinary(out, encoding, lump, creatorComment);
+			if(out)
+			{
+				LumpExporter::saveBinary(out, encoding, lump, creatorComment);
+			}
+			else
+			{
+				std::cerr << messageErrorFileOpen << outPath << std::endl;
+			}
 		}
 
 	/////////////
