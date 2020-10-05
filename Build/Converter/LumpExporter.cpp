@@ -36,7 +36,7 @@ static std::string encode(const std::string& str, StringEncoding encoding)
 {
 	switch (encoding) {
 		case UTF8: return str;
-		case SJIS: return SsCharConverter::utf8_to_sjis(str); // TODO:
+		case SJIS: return spritestudio6::SsCharConverter::utf8_to_sjis(str); // TODO:
 		default:
 			break;
 	}
@@ -1212,7 +1212,7 @@ private:
 					for(auto frameDataItem : frameDataVec) {
 						switch (frameDataItem->type) {
 						case Lump::DataType::S32:
-							ssfbUV.push_back(GETS32(frameDataItem));
+							ssfbUV.push_back((float)(GETS32(frameDataItem)));
 							break;
 						case Lump::DataType::FLOAT:
 							ssfbUV.push_back(GETFLOAT(frameDataItem));
@@ -1235,7 +1235,7 @@ private:
 				    std::vector<float> ssfbIndices;
 					auto meshsDataVec = meshsDataIndicesItem->getChildren();
 					for(auto meshDataItem : meshsDataVec) {
-						ssfbIndices.push_back(GETS32(meshDataItem));
+						ssfbIndices.push_back((float)(GETS32(meshDataItem)));
 					}
 
 					auto serializeSsfbIndices = createSharedFloatVec(ssfbIndices);
@@ -1699,7 +1699,7 @@ private:
 			auto ssfbEffectFile = ss::ssfb::CreateEffectFile(m_ssfbBuilder, ssfbEffectFileName,
                                                              fps, isLockRandSeed, LockRandSeed,
                                                              layoutScaleX, layoutScaleY,
-                                                             ssfbEffectNode.size(), serializeSsfbEffectNode);
+                                                             (int16_t)(ssfbEffectNode.size()), serializeSsfbEffectNode);
 			m_ssfbEffectFileList.push_back(ssfbEffectFile);
 		}
 	}
