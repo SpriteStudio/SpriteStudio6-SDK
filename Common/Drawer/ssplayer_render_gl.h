@@ -3,6 +3,9 @@
 
 #include "../Animator/ssplayer_render.h"
 
+namespace spritestudio6
+{
+
 struct SsPartState;
 class SsMeshPart;
 
@@ -39,5 +42,7 @@ public:
 
 
 };
+
+}	// namespace spritestudio6
 
 #endif

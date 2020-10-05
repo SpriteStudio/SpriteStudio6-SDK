@@ -1,13 +1,16 @@
 ﻿#include "ssloader_ssqe.h"
 
+namespace spritestudio6
+{
+
 
 SsSequencePack*	ssloader_ssqe::Load(const std::string& filename )
 {
 
 	SsSequencePack* sequence = new SsSequencePack();
 
-	XMLDocument xml;
-	if ( XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
+	libXML::XMLDocument xml;
+	if ( libXML::XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioSequencePack" );
 		sequence->__Serialize( &ar );
@@ -33,3 +36,5 @@ SsSequence*	SsSequencePack::findSequence(SsString& name)
 	}
 	return 0;
 }
+
+}	// namespace spritestudio6

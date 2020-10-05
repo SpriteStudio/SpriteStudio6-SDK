@@ -12,6 +12,9 @@
 #include	<sstream>
 
 
+namespace spritestudio6
+{
+
 
 SSOpenGLProgramObject*			glpgObject = 0 ;
 SSOpenGLShaderMan*              SSOpenGLShaderMan::m_Myinst = 0;
@@ -263,7 +266,7 @@ SSOpenGLProgramObject::Use( void )
 {
 	glUseProgramObjectARB( h );
 	if ( glGetError() != GL_NO_ERROR ) {
-#if PUT_UNIFORM_WARNIG
+#if SPRITESTUDIO6DSK_PUT_UNIFORM_WARNIG
 //		SsLogInfo( _D("SSOpenGLProgramObject: glUseProgramObjectARB cannot use object\n") );
 #endif
 	}
@@ -271,3 +274,4 @@ SSOpenGLProgramObject::Use( void )
 
 
 
+}	// namespace spritestudio6

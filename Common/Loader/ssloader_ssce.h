@@ -6,6 +6,9 @@
 
 #define SPRITESTUDIO6_SSCEVERSION "2.00.00"
 
+namespace spritestudio6
+{
+
 ///パーツに使用される画素の矩形範囲を示した構造です。
 class SsCell 
 {
@@ -50,23 +53,23 @@ public:
 
 
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( name );
-		SSAR_DECLARE( pos );
-		SSAR_DECLARE( size );
-		SSAR_DECLARE( pivot );
-		SSAR_DECLARE( rotated );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( name );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( pos );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( size );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( pivot );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( rotated );
 
-		SSAR_DECLARE(ismesh);
+		SPRITESTUDIO6DSK_SSAR_DECLARE(ismesh);
 		//SsVerctor2のリストのシリアライズが必要
-		SSAR_DECLARE(innerPoint );
-		SSAR_DECLARE(outerPoint);
-		SSAR_DECLARE(meshPointList);
-		SSAR_DECLARE(meshTriList);
-		SSAR_DECLARE_ENUM(divtype);
-		SSAR_DECLARE(divw);
-		SSAR_DECLARE(divh);
+		SPRITESTUDIO6DSK_SSAR_DECLARE(innerPoint );
+		SPRITESTUDIO6DSK_SSAR_DECLARE(outerPoint);
+		SPRITESTUDIO6DSK_SSAR_DECLARE(meshPointList);
+		SPRITESTUDIO6DSK_SSAR_DECLARE(meshTriList);
+		SPRITESTUDIO6DSK_SSAR_DECLARE_ENUM(divtype);
+		SPRITESTUDIO6DSK_SSAR_DECLARE(divw);
+		SPRITESTUDIO6DSK_SSAR_DECLARE(divh);
 	}
 };
 
@@ -107,17 +110,17 @@ public:
 	}
 
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE_ATTRIBUTE(version);
-		SSAR_DECLARE( name );
-		SSAR_DECLARE( imagePath );
-		SSAR_DECLARE( pixelSize );
-		SSAR_DECLARE( overrideTexSettings );
-		SSAR_DECLARE_ENUM( wrapMode );
-		SSAR_DECLARE_ENUM( filterMode );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_ATTRIBUTE(version);
+		SPRITESTUDIO6DSK_SSAR_DECLARE( name );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( imagePath );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( pixelSize );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( overrideTexSettings );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_ENUM( wrapMode );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_ENUM( filterMode );
 
-		SSAR_DECLARE_LISTEX( cells ,"cell" );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_LISTEX( cells ,"cell" );
 	}
 };
 
@@ -133,5 +136,6 @@ public:
 
 };
 
+}	// namespace spritestudio6
 
 #endif

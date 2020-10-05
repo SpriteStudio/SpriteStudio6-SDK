@@ -4,6 +4,9 @@
 #include "SsTypes.h"
 #include <memory>
 
+namespace spritestudio6
+{
+
 void	IdentityMatrix( float* matrix );
 void    ScaleMatrix( float* _matrix , const float x , const float y , const float z);
 void    TranslationMatrix( float* _matrix , const float x , const float y , const float z );
@@ -160,6 +163,8 @@ private:
 
 };
 
+
+}	// namespace spritestudio6
 
 #endif
 

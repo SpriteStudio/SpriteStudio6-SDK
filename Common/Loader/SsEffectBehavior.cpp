@@ -1,9 +1,10 @@
 ﻿#include "SsEffectBehavior.h"
 
 
+namespace spritestudio6
+{
 
-
-SsEffectElementBase*	SsEffectBehavior::Factory(const char* name , XMLElement* e )
+SsEffectElementBase*	SsEffectBehavior::Factory(const char* name , libXML::XMLElement* e )
 {
 	SsEffectElementBase * ret = 0;
 
@@ -40,7 +41,7 @@ void	SsEffectBehavior::EffectElementLoader(ISsXmlArchiver* ar)
 {
 	SsXmlIArchiver list_ar( ar , "list" );
 
-	XMLElement* e = list_ar.getxml()->FirstChildElement();
+	libXML::XMLElement* e = list_ar.getxml()->FirstChildElement();
 
 	while( e )
 	{
@@ -56,3 +57,6 @@ void	SsEffectBehavior::EffectElementLoader(ISsXmlArchiver* ar)
 	}
 
 }
+
+}	// namespace spritestudio6
+

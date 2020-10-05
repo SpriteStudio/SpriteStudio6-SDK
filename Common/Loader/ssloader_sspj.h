@@ -9,6 +9,9 @@
 
 #define SPRITESTUDIO6_SSPJVERSION "2.00.00"
 
+namespace spritestudio6
+{
+
 /// プロジェクトファイルの設定が記載されているデータです。
 /// 以下のタグはエディタ編集用のデータなので読み飛ばします。
 //	編集時設定のためよまない
@@ -48,18 +51,18 @@ public:
 	}
 	
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE(animeBaseDirectory);
-		SSAR_DECLARE(cellMapBaseDirectory);
-		SSAR_DECLARE(imageBaseDirectory);
-		SSAR_DECLARE(effectBaseDirectory);
+		SPRITESTUDIO6DSK_SSAR_DECLARE(animeBaseDirectory);
+		SPRITESTUDIO6DSK_SSAR_DECLARE(cellMapBaseDirectory);
+		SPRITESTUDIO6DSK_SSAR_DECLARE(imageBaseDirectory);
+		SPRITESTUDIO6DSK_SSAR_DECLARE(effectBaseDirectory);
 
-		SSAR_DECLARE(exportBaseDirectory);
-		SSAR_DECLARE(queryExportBaseDirectory);
-		SSAR_DECLARE_ENUM( wrapMode );
-		SSAR_DECLARE_ENUM( filterMode );
-		SSAR_DECLARE_ENUM(vertexAnimeFloat);
+		SPRITESTUDIO6DSK_SSAR_DECLARE(exportBaseDirectory);
+		SPRITESTUDIO6DSK_SSAR_DECLARE(queryExportBaseDirectory);
+		SPRITESTUDIO6DSK_SSAR_DECLARE_ENUM( wrapMode );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_ENUM( filterMode );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_ENUM(vertexAnimeFloat);
 
 	}
 };
@@ -167,14 +170,14 @@ public:
 
 
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE_ATTRIBUTE(version);
-		SSAR_STRUCT_DECLARE( settings );
-		SSAR_DECLARE( cellmapNames );
-		SSAR_DECLARE( animepackNames );
-		SSAR_DECLARE( effectFileNames );
-		SSAR_DECLARE( sequencepackNames );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_ATTRIBUTE(version);
+		SPRITESTUDIO6DSK_SSAR_STRUCT_DECLARE( settings );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( cellmapNames );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( animepackNames );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( effectFileNames );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( sequencepackNames );
 
 	}
 
@@ -255,5 +258,6 @@ public:
 };
 
 
+}	// namespace spritestudio6
 
 #endif

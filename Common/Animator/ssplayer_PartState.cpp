@@ -2,6 +2,10 @@
 #include "ssplayer_animedecode.h"
 #include "ssplayer_PartState.h"
 
+namespace spritestudio6
+{
+
+
 SsPartState::SsPartState() : refAnime(0), index(-1), parent(nullptr), noCells(false), alphaBlendType(SsBlendType::invalid),	refEffect(0) , 	meshPart(0)
 {
 	init();
@@ -115,3 +119,5 @@ void	SsPartState::reset()
 	effectValue.startTime = 0;
 
 }
+
+}	// namespace spritestudio6

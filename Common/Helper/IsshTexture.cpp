@@ -2,6 +2,9 @@
 #include "IsshTexture.h"
 #include "../Helper/DebugPrint.h"
 
+namespace spritestudio6
+{
+
 
 ISSTexture*	SSTextureFactory::m_texture_base_class = 0;
 SSTextureFactory*	SSTextureFactory::m_myInst = 0;
@@ -124,3 +127,6 @@ void SSTextureFactory::releaseAllTexture()
 	}
 	m_myInst->textureCache.clear();
 }
+
+
+}	// namespace spritestudio6

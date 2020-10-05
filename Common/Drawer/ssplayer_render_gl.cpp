@@ -22,10 +22,13 @@
 #include "ssplayer_cellmap.h"
 #include "ssplayer_mesh.h"
 
+#define SPRITESTUDIO6DSK_PROGRAMABLE_SHADER_ON (1)
+
+namespace spritestudio6
+{
+
 
 //ISsRenderer*	SsCurrentRenderer::m_currentrender = 0;
-
-#define PROGRAMABLE_SHADER_ON (1)
 
 static const char* glshader_sprite_vs = 
 #include "GLSL/sprite.vs";
@@ -832,7 +835,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 
 		glEnable(gl_target);
 
-#if PROGRAMABLE_SHADER_ON
+#if SPRITESTUDIO6DSK_PROGRAMABLE_SHADER_ON
 		if ( state->is_shader ) {
 			std::map<SsString, SSOpenGLProgramObject*>::const_iterator it = s_DefaultShaderMap.find( state->shaderValue.id );
 			if ( it != s_DefaultShaderMap.end() ) {
@@ -982,7 +985,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 				uvs[idx * 2] = state->cellValue.uvs[i].x * texturePixelSize.x;
 				uvs[idx * 2 + 1] = state->cellValue.uvs[i].y * texturePixelSize.y;
 
-#if USE_TRIANGLE_FIN
+#if SPRITESTUDIO6SDK_USE_TRIANGLE_FIN
 				//きれいな頂点変形への対応
 				uvs[4 * 2] += uvs[idx * 2];
 				uvs[4 * 2 + 1] += uvs[idx * 2 + 1];
@@ -993,7 +996,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 				uvs[idx * 2] = state->cellValue.uvs[i].x;
 				uvs[idx * 2 + 1] = state->cellValue.uvs[i].y;
 
-#if USE_TRIANGLE_FIN
+#if SPRITESTUDIO6SDK_USE_TRIANGLE_FIN
 				//きれいな頂点変形への対応
 				uvs[4 * 2] += uvs[idx * 2];
 				uvs[4 * 2 + 1] += uvs[idx * 2 + 1];
@@ -1018,7 +1021,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 			++uvorder;
 		}
 
-#if USE_TRIANGLE_FIN
+#if SPRITESTUDIO6SDK_USE_TRIANGLE_FIN
 		//きれいな頂点変形への対応
 		uvs[4*2]/=4.0f;
 		uvs[4*2+1]/=4.0f;
@@ -1097,7 +1100,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 				vertexID[i * 2 + 1] = i;
 			}
 
-#if USE_TRIANGLE_FIN
+#if SPRITESTUDIO6SDK_USE_TRIANGLE_FIN
 			// 中央頂点(index=4)のRGBA%値の計算
 			calcCenterVertexColor(state->colors, rates, vertexID);
 #else
@@ -1143,7 +1146,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 		//セルが無いので描画を行わない
 	}else{
 
-#if PROGRAMABLE_SHADER_ON
+#if SPRITESTUDIO6DSK_PROGRAMABLE_SHADER_ON
 
 	if ( state->is_shader )
 	{
@@ -1233,7 +1236,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	}
 
 #endif
-#if USE_TRIANGLE_FIN
+#if SPRITESTUDIO6SDK_USE_TRIANGLE_FIN
 		if ( state->is_vertex_transform || state->is_parts_color)
 		{
 			static const GLubyte indices[] = { 4 , 3, 1, 0, 2 , 3};
@@ -1249,7 +1252,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 #endif
 	}
 
-#if PROGRAMABLE_SHADER_ON
+#if SPRITESTUDIO6DSK_PROGRAMABLE_SHADER_ON
 //	if ( glpgObject )
 	{
 		if ( state->is_shader )
@@ -1278,3 +1281,5 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	glBlendEquation( GL_FUNC_ADD );
 
 }
+
+}	// namespace spritestudio6

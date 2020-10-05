@@ -1,7 +1,8 @@
 ﻿#include "ssloader.h"
 #include "ssInterpolation.h"
 
-
+namespace spritestudio6
+{
 
 //---------------------------------------------------------------------------
 /**
@@ -166,3 +167,5 @@ float	SsInterpolate(SsInterpolationType::_enum type, float time, float start, fl
 	}
 	return r;
 }
+
+}	// namespace spritestudio6

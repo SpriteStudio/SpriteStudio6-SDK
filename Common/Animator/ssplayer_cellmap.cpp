@@ -10,6 +10,8 @@
 
 #include "../Helper/DebugPrint.h"
 
+namespace spritestudio6
+{
 
 bool SsCellMapList::preloadTexture(SsProject* proj)
 {
@@ -247,3 +249,6 @@ void calcUvs( SsCellValue* cellv )
 		cellv->uvs[2].y = cellv->uvs[3].y = bottom;
 	}
 }
+
+}	// namespace spritestudio6
+

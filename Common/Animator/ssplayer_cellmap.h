@@ -1,7 +1,8 @@
 ﻿#ifndef __SSPLAYER_CELLMAP__
 #define __SSPLAYER_CELLMAP__
 
-
+namespace spritestudio6
+{
 
 class SsAnimeDecoder;
 class SsCelMapLinker;
@@ -115,5 +116,8 @@ void getCellValue( SsCellMapList* cellList, int cellMapid , SsString& cellName ,
 void getCellValue( SsCellMapList* cellList, SsString& cellMapName , SsString& cellName , SsCellValue& v );
 
 void calcUvs( SsCellValue* cellv );
+
+
+}	// namespace spritestudio6
 
 #endif

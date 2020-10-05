@@ -13,6 +13,9 @@
 
 #endif
 
+namespace spritestudio6
+{
+
 std::string SsCharConverter::utf8_to_sjis(const std::string &src) {
 #if __APPLE__ && TARGET_OS_MAC
     CFStringRef srcStr = CFStringCreateWithBytes(kCFAllocatorDefault, (const UInt8 *) src.c_str(), src.length(), kCFStringEncodingUTF8, FALSE);
@@ -36,7 +39,7 @@ std::string SsCharConverter::utf8_to_sjis(const std::string &src) {
 #elif _WIN32 || _WIN64
     auto const srcWCharSize = ::MultiByteToWideChar(CP_UTF8, 0U, src.data(), -1, nullptr, 0U);
     std::vector<wchar_t> srcWCharData(srcWCharSize, L'\0');
-    if (::MultiByteToWideChar(CP_UTF8, 0U, src.data(), -1, srcWCharData.data(), srcWCharData.size()) == 0) {
+    if (::MultiByteToWideChar(CP_UTF8, 0U, src.data(), -1, srcWCharData.data(), (int)(srcWCharData.size())) == 0) {
         throw std::system_error{ static_cast<int>(::GetLastError()), std::system_category() };
     }
     srcWCharData.resize(std::char_traits<wchar_t>::length(srcWCharData.data()));
@@ -45,7 +48,7 @@ std::string SsCharConverter::utf8_to_sjis(const std::string &src) {
     std::wstring srcWChar(srcWCharData.begin(), srcWCharData.end());
     auto const destSize = ::WideCharToMultiByte(CP_ACP, 0U, srcWChar.data(), -1, nullptr, 0, nullptr, nullptr);
     std::vector<char> dest(destSize, '\0');
-    if (::WideCharToMultiByte(CP_ACP, 0U, srcWChar.data(), -1, dest.data(), dest.size(), nullptr, nullptr) == 0) {
+    if (::WideCharToMultiByte(CP_ACP, 0U, srcWChar.data(), -1, dest.data(), (int)(dest.size()), nullptr, nullptr) == 0) {
         throw std::system_error{ static_cast<int>(::GetLastError()), std::system_category() };
     }
     dest.resize(std::char_traits<char>::length(dest.data()));
@@ -68,3 +71,4 @@ std::string SsCharConverter::convert_path_string(const std::string &str) {
     return dst;
 }
 
+}   // namespace spritestudio6

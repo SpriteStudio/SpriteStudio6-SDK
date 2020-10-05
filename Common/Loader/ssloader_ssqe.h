@@ -6,6 +6,9 @@
 
 #define SPRITESTUDIO6_SSQEVERSION "1.00.00"
 
+namespace spritestudio6
+{
+
 class SsSequence;
 
 
@@ -26,11 +29,11 @@ public:
 	}
 
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( refAnimePack );
-		SSAR_DECLARE( refAnime );
-		SSAR_DECLARE( repeatCount );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( refAnimePack );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( refAnime );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( repeatCount );
 	}
 };
 
@@ -51,12 +54,12 @@ public:
 	}
 
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( name );
-		SSAR_DECLARE( index );
-		SSAR_DECLARE_ENUM( type );
-		SSAR_DECLARE_LISTEX( list , "value" );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( name );
+		SPRITESTUDIO6DSK_SSAR_DECLARE( index );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_ENUM( type );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_LISTEX( list , "value" );
 	}
 };
 
@@ -80,11 +83,11 @@ public:
 	}
 
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE_ATTRIBUTE(version);
-		SSAR_DECLARE( name );
-		SSAR_DECLARE_LISTEX( sequenceList , "sequence" );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_ATTRIBUTE(version);
+		SPRITESTUDIO6DSK_SSAR_DECLARE( name );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_LISTEX( sequenceList , "sequence" );
 
 
 	}
@@ -113,5 +116,6 @@ public:
 
 
 
+}	// namespace spritestudio6
 
 #endif

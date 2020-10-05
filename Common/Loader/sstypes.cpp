@@ -1,5 +1,7 @@
-﻿
-#include "sstypes.h"
+﻿#include "sstypes.h"
+
+namespace spritestudio6
+{
 
 //---------------------------------------------------------------
 //相互変換 SsPartType
@@ -337,7 +339,7 @@ void	__StringToEnum_( SsString n , SsAttributeKind::_enum &out )
 }
 
 
-SS_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
 
 //---------------------------------------------------------------
 //相互変換 SsPartType
@@ -361,7 +363,7 @@ void 	__StringToEnum_( SsString n , SsEffectNodeType::_enum& out)
 }
 
 
-SS_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
 
 //---------------------------------------------------------------
 //相互変換 SsPartType
@@ -456,3 +458,6 @@ void 	__StringToEnum_(SsString n, SsSignalParamType::_enum& out)
 	if (n == "integer") out = SsSignalParamType::integer;
 	if (n == "floating") out = SsSignalParamType::floating;
 }
+
+
+}	// namespace spritestudio6

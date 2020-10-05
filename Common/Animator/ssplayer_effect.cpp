@@ -11,6 +11,9 @@
 #include "ssplayer_effectfunction.h"
 
 
+namespace spritestudio6
+{
+
 
 class SsEffectRenderParticle;
 
@@ -53,9 +56,8 @@ static  int seed_table[] =
 //--------
 
 
-
-#define ONEFRAME ( 1.0f / 60.0f )
-
+// #define ONEFRAME ( 1.0f / 60.0f )
+constexpr auto ONEFRAME = ( 1.0f / 60.0f );
 
 
 //------------------------------------------------------------------------------
@@ -64,7 +66,7 @@ static  int seed_table[] =
 SsEffectDrawBatch*	SsEffectRenderer::findBatchListSub(SsEffectNode* n)
 {
 	SsEffectDrawBatch* bl = 0;
-	foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
+	SPRITESTUDIO6DSK_foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
 	{
 		if ( (*e)->targetNode == n )
 		{
@@ -108,7 +110,7 @@ SsEffectRenderAtom* SsEffectRenderer::CreateAtom( unsigned int seed , SsEffectRe
 
 	if ( type == SsEffectNodeType::particle )
 	{
-#if PFMEM_TEST
+#if SPRITESTUDIO6SDK_PFMEM_TEST
 		if ( SSEFFECTRENDER_PARTICLE_MAX <= pa_pool_count )
 		{
 			 return 0;
@@ -136,7 +138,7 @@ SsEffectRenderAtom* SsEffectRenderer::CreateAtom( unsigned int seed , SsEffectRe
 	if ( type == SsEffectNodeType::emmiter )
 	{
 
-#if PFMEM_TEST
+#if SPRITESTUDIO6SDK_PFMEM_TEST
 		if ( SSEFFECTRENDER_EMMITER_MAX <= em_pool_count )
 		{
 			return 0;
@@ -290,7 +292,7 @@ bool	SsEffectRenderEmitter::genarate( SsEffectRenderer* render )
 	if ( create_count <= 0 ) create_count = 1;
 
 
-	int pc = particleCount;
+	int pc = (int)particleCount;
 
 	while(1)
 	{
@@ -553,7 +555,7 @@ void	SsEffectRenderParticle::draw(SsEffectRenderer* render)
 
 	TranslationMatrixM( matrix , _position.x, _position.y, 0.0f );
 
-	RotationXYZMatrixM( matrix , 0 , 0 , DegreeToRadian(_rotation)+direction );
+	RotationXYZMatrixM( matrix , 0.0f , 0.0f , (float)(DegreeToRadian(_rotation)+direction) );
 
     ScaleMatrixM(  matrix , _size.x, _size.y, 1.0f );
 
@@ -574,7 +576,7 @@ void	SsEffectRenderParticle::draw(SsEffectRenderer* render)
 
 		SsCurrentRenderer::getRender()->renderSpriteSimple(
 			matrix,
-			dispscale.x , dispscale.y ,  pivot,
+			(int)dispscale.x , (int)dispscale.y ,  pivot,
 					dispCell->uvs[0],
 					dispCell->uvs[3], fcolor );
 	}
@@ -677,7 +679,7 @@ void	SsEffectRenderer::draw()
 
 	int cnt = 0;
 
-	foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
+	SPRITESTUDIO6DSK_foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
 	{
 		//セットアップ
 		if ( (*e)->dispCell )
@@ -694,7 +696,7 @@ void	SsEffectRenderer::draw()
 			SsCurrentRenderer::getRender()->SetTexture( (*e)->dispCell );
 		}
 
-		foreach( std::list<SsEffectRenderAtom*> , (*e)->drawlist , e2 )
+		SPRITESTUDIO6DSK_foreach( std::list<SsEffectRenderAtom*> , (*e)->drawlist , e2 )
 		{
 			if ( (*e2) )
 			{
@@ -738,7 +740,7 @@ void	SsEffectRenderer::clearUpdateList()
 	size_t s2 = updatelist.size();
 
 
-#if PFMEM_TEST
+#if SPRITESTUDIO6SDK_PFMEM_TEST
 	em_pool_count = 0;
 	pa_pool_count = 0;
 	dpr_pool_count = 0;
@@ -753,7 +755,7 @@ void	SsEffectRenderer::clearUpdateList()
 	updatelist.clear();
 	createlist.clear();
 
-	foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
+	SPRITESTUDIO6DSK_foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
 	{
 		(*e)->drawlist.clear();
 	}
@@ -837,5 +839,6 @@ bool	SsEffectRenderer::getPlayStatus(void)
 
 
 
+}	// namespace spritestudio6
 
 

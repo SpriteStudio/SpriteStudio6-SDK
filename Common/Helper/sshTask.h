@@ -8,6 +8,9 @@
 #include <vector>
 #include <list>
 
+namespace spritestudio6
+{
+
 class	treeitem_uid
 {
 private:
@@ -321,5 +324,7 @@ inline	void task_manager_destroy()
 	}
 }
 
+
+}	// namespace spritestudio6
 
 #endif

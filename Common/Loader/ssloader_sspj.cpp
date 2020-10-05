@@ -9,6 +9,9 @@
 #include "sscharconverter.h"
 
 
+namespace spritestudio6
+{
+
 
 SsString	SsProject::getSsceBasepath(){ 
 	return getFullPath( m_proj_filepath , settings.cellMapBaseDirectory );
@@ -126,8 +129,8 @@ SsSequence*		SsProject::findSequence( SsString& sequencePackName , SsString& Seq
 SsProject*	ssloader_sspj::Load(const std::string& filename )
 {
 
-	XMLDocument xml;
-	if ( XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
+	libXML::XMLDocument xml;
+	if ( libXML::XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioProject" );
 
@@ -268,3 +271,6 @@ SsCellMap* SsProject::getCellMap( int index )
 {
 	return cellmapList[index];
 }
+
+
+}	// namespace spritestudio6

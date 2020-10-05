@@ -10,12 +10,13 @@
 //===============================================================
 //Macros 
 //===============================================================
-#define	SS_DECLARE_ENUM_STRING_DEF(type) \
+#define	SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF(type) \
 	SsString	__EnumToString_( type::_enum n );\
 	void	__StringToEnum_( SsString n , type::_enum& out);\
 
 
-
+namespace spritestudio6
+{
 
 //===============================================================
 // Declare Type
@@ -378,7 +379,7 @@ namespace SsPartsSortMode
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsPartsSortMode );
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsPartsSortMode );
 
 //---------------------------------------------------------------
 /// Animation Part Type
@@ -403,7 +404,7 @@ namespace SsPartType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsPartType );
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsPartType );
 
 
 //---------------------------------------------------------------
@@ -422,7 +423,7 @@ namespace SsBoundsType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsBoundsType );
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsBoundsType );
 
 
 //---------------------------------------------------------------
@@ -437,7 +438,7 @@ namespace SsInheritType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsInheritType );
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsInheritType );
 
 //---------------------------------------------------------------
 /// ブレンドタイプ
@@ -456,7 +457,7 @@ namespace SsBlendType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsBlendType );
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsBlendType );
 
 
 ///カラーブレンドキーが使用されている際のカラー適用範囲の定義
@@ -469,7 +470,7 @@ namespace SsColorBlendTarget
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsColorBlendTarget );
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsColorBlendTarget );
 
 
 
@@ -488,7 +489,7 @@ namespace SsInterpolationType
 		num,
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsInterpolationType );
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsInterpolationType );
 
 
 /// テクスチャラップモード
@@ -504,7 +505,7 @@ namespace SsTexWrapMode
 	};
 };
 
-SS_DECLARE_ENUM_STRING_DEF(SsTexWrapMode);
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF(SsTexWrapMode);
 
 /// テクスチャフィルターモード 画素補間方法
 namespace SsTexFilterMode
@@ -517,7 +518,7 @@ namespace SsTexFilterMode
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF(SsTexFilterMode);
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF(SsTexFilterMode);
 
 
 
@@ -574,7 +575,7 @@ namespace SsAttributeKind
 };
 
 
-SS_DECLARE_ENUM_STRING_DEF(SsAttributeKind);
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF(SsAttributeKind);
 
 namespace SsKeyValueType
 {
@@ -686,7 +687,7 @@ namespace SsEffectNodeType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
 
 
 
@@ -701,7 +702,7 @@ namespace SsRenderBlendType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
 
 
 //2.0.1で追加　IKの方向
@@ -717,7 +718,7 @@ namespace SsIkRotationArrow
 	};
 };
 
-SS_DECLARE_ENUM_STRING_DEF(SsIkRotationArrow);
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF(SsIkRotationArrow);
 
 /// シーケンスタイプ
 namespace SsSequenceType
@@ -731,7 +732,7 @@ namespace SsSequenceType
 		num,
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsSequenceType );
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsSequenceType );
 
 namespace SsSignalParamType
 {
@@ -744,7 +745,7 @@ namespace SsSignalParamType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsSignalParamType );
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsSignalParamType );
 
 
 class SsEffectAttr
@@ -923,7 +924,7 @@ namespace SsMeshDivType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF(SsMeshDivType);
+SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF(SsMeshDivType);
 
 struct SsTriangle
 {
@@ -986,5 +987,6 @@ public:
 
 };
 
+}	// namespace spritestudio6
 
 #endif

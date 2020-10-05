@@ -1,6 +1,8 @@
 ﻿#ifndef __ISSEFFECTRENDER__
 #define __ISSEFFECTRENDER__
 
+namespace spritestudio6
+{
 
 class SsPartState;
 class SsEffectModel;
@@ -44,5 +46,6 @@ public:
 
 };
 
+}	// namespace spritestudio6
 
 #endif

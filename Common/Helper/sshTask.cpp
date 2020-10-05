@@ -2,6 +2,10 @@
 #include "sshTask.h"
 //#include "Debug.h"
 
+namespace spritestudio6
+{
+
+
 task_manager_singleton* task_manager_singleton::g_myinst = 0;
 unsigned long	treeitem_uid::m_tree_item_uid	 = 0;
 
@@ -128,3 +132,4 @@ void	task_manager::debug_print_tasks()
 */
 
 
+}	// namespace spritestudio6

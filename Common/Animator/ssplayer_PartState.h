@@ -5,6 +5,9 @@
 //#include "../Helper/ssHelper.h"
 
 
+namespace spritestudio6
+{
+
 class SsAnimeDecoder;
 //class SsEffectRenderer;
 class SsEffectRenderV2;
@@ -100,5 +103,6 @@ struct SsPartState
 };
 
 
+}	//	namespace spritestudio6
 
 #endif
