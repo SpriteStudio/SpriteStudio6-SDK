@@ -4,19 +4,22 @@
 #include "sscharconverter.h"
 
 
+namespace spritestudio6
+{
+
 //SsValue用のシリアライザ
 void	SsValueSeriarizer( ISsXmlArchiver* ar , SsValue& v , const std::string key) 
 {
 
 	//インプット
-	XMLElement* e = ar->getxml();
+	libXML::XMLElement* e = ar->getxml();
 	if ( key != "" )
 	{
 		e = e->FirstChildElement( key.c_str() );
 	}
 	if ( e )
 	{
-		XMLElement* child = e->FirstChildElement();
+		libXML::XMLElement* child = e->FirstChildElement();
 
 		if ( child == 0 )
 		{
@@ -41,7 +44,7 @@ void	SsValueSeriarizer( ISsXmlArchiver* ar , SsValue& v , const std::string key)
 			std::string enc_str = str;
 			v = SsValueSeriarizer__MakeValue( enc_str.c_str() );
 		}else{
-			XMLElement* ce = child;
+			libXML::XMLElement* ce = child;
 
 			SsHash hash;
 			while(ce)
@@ -51,7 +54,7 @@ void	SsValueSeriarizer( ISsXmlArchiver* ar , SsValue& v , const std::string key)
 				{
 					std::string enc_str = str;
 					hash[ce->Name()] = SsValueSeriarizer__MakeValue( enc_str.c_str() );
-					ce = (XMLElement*)ce->NextSibling();
+					ce = (libXML::XMLElement*)ce->NextSibling();
 				}else{
 					//さらに子構造があるようだ
 					//さらに子構造があるようだ
@@ -61,7 +64,7 @@ void	SsValueSeriarizer( ISsXmlArchiver* ar , SsValue& v , const std::string key)
 					SsValue tempv;
 					SsValueSeriarizer( &ar , tempv , "");
 					hash[ce->Name()] = tempv;					
-					ce = (XMLElement*)ce->NextSibling();
+					ce = (libXML::XMLElement*)ce->NextSibling();
 				}
 			}
 
@@ -74,3 +77,5 @@ void	SsValueSeriarizer( ISsXmlArchiver* ar , SsValue& v , const std::string key)
 	//assert(e);
 
 }
+
+}	// namespace spritestudio6

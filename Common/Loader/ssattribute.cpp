@@ -3,7 +3,8 @@
 #include "ssattribute.h"
 #include "../Helper/DebugPrint.h"
 
-
+namespace spritestudio6
+{
 
 
 const SsKeyframe*	SsAttribute::firstKey()
@@ -232,7 +233,7 @@ void	GetSsSignalAnime( const SsKeyframe* key , SsSignalAttr& v )
 			SsSignalParam param;
 			const SsValue& val2 = itr2->second;
 			SsSignalParamType::_enum type;
-			SsSignalParamValue value;
+//			SsSignalParamValue value;
 
 			param.paramId = val2["paramId"].get<SsString>();
 
@@ -379,3 +380,5 @@ void	GetSsDeformAnime(const SsKeyframe* key, SsDeformAttr& v)
 	}
 }
 
+
+}	// namespace spritestudio6

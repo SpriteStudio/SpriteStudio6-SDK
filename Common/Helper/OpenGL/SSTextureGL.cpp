@@ -15,6 +15,9 @@
 #include "SSTextureGL.h"
 
 
+namespace spritestudio6
+{
+
 /* =====================================================================================
 	テクスチャファイルの読み込み
 ===================================================================================== */
@@ -92,3 +95,5 @@ bool SSTextureGL::Load( const char* fname )
 	tex = LoadTextureGL( fname , tex_width , tex_height );
 	return tex != 0;
 }
+
+}	// namespace spritestudio6

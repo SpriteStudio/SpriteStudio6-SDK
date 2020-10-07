@@ -7,6 +7,9 @@
 #include <vector>
 #include <cassert>
 
+namespace spritestudio6
+{
+
 class SsValue;
 
 typedef	wchar_t		SsChar;
@@ -174,7 +177,7 @@ public:
 		return false;
 	}
 
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
 	{
 		SsValueSeriarizer( ar , *this ,"" );	
 	}
@@ -333,5 +336,6 @@ inline static  SsValue	SsValueSeriarizer__MakeValue( const char* v )
 
 
 
+}	// namespace spritestudio6
 
 #endif

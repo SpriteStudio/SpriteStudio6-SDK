@@ -3,6 +3,8 @@
 
 #include <string>
 
+namespace spritestudio6
+{
 
 void DEBUG_PRINTF( const char* strFormat, ...   );
 
@@ -13,14 +15,15 @@ struct ThrowErrorMessage{
 	ThrowErrorMessage( int no , std::string str ){ error_no = no ; message = str; }
 };
 
-
-#define THROW_ERROR_MESSAGE(str) \
+// MEMO: 外部名前空間からアクセスされた時の防備で、念のため完全修飾してあります。
+#define SPRITESTUDIO6DSK_THROW_ERROR_MESSAGE(str) \
 {\
-THROW_ERROR_MESSAGE_MAIN( str , __FILE__ , __LINE__ );\
+spritestudio6::THROW_ERROR_MESSAGE_MAIN( str , __FILE__ , __LINE__ );\
 }\
 
 void	THROW_ERROR_MESSAGE_MAIN( std::string str , char* fname , size_t line );
 
 
+}	// namespace spritestudio6
 
 #endif

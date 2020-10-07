@@ -10,6 +10,9 @@
 //#include "ssplayer_shader_gl.h"
 
 
+namespace spritestudio6
+{
+
 enum{
 	PG_SHADER_NPOT,
 	PG_SHADER_POT,
@@ -71,3 +74,5 @@ void	SsRenderDX9::renderPart( SsPartState* state )
 
 
 }
+
+}	// namespace spritestudio6

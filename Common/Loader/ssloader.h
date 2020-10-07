@@ -127,9 +127,8 @@
 #include "ssInterpolation.h"
 
 //SDKを更新する場合はバージョン番号を変更してください
+// MEMO: 本マクロについては、SPRITESTUDIO6SDKに限らないラベルのため、SPRITESTUDIO6_の接頭にしていません。
 #define SPRITESTUDIOSDK_VERSION "SpriteStudio 6 SDK Version 1.7.4"
-
-
 
 
 #endif

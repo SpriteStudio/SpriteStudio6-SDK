@@ -7,7 +7,10 @@
 #include "ssplayer_mesh.h"
 #include "ssplayer_macro.h"
 #include "ssplayer_matrix.h"
-#include "ssplayer_animedecode.h"
+// #include "ssplayer_animedecode.h"
+
+namespace spritestudio6
+{
 
 
 void	SsMeshPart::makeMesh()
@@ -53,10 +56,10 @@ void	SsMeshPart::makeMesh()
 	offs.x -= targetCell->pivot.x * targetCell->size.x;
 	offs.y -= targetCell->pivot.y * targetCell->size.y;
 
-	ver_size = targetCell->meshPointList.size();
+	ver_size = (int)(targetCell->meshPointList.size());
 
-	float txsizew = this->targetTexture->getWidth();
-	float txsizeh = this->targetTexture->getHeight();
+	float txsizew = (float)(this->targetTexture->getWidth());
+	float txsizeh = (float)(this->targetTexture->getHeight());
 
 	float uvpixel_x = 1.0f / txsizew;
 	float uvpixel_y = 1.0f / txsizeh;
@@ -100,7 +103,7 @@ void	SsMeshPart::makeMesh()
 	}
 
 
-	tri_size = targetCell->meshTriList.size();
+	tri_size = (int)(targetCell->meshTriList.size());
 
 	indices = new unsigned short[tri_size * 3];
 	for (size_t i = 0; i < targetCell->meshTriList.size(); i++)
@@ -151,7 +154,7 @@ void	SsMeshPart::Cleanup()
 
 void    SsMeshPart::updateTransformMesh()
 {
-	float matrix[16];
+//	float matrix[16];
 	for (int i = 0; i < ver_size; i++)
 	{
 		StBoneWeight& info = bindBoneInfo[i];
@@ -379,7 +382,7 @@ void	SsMeshAnimator::update()
 {
 	if (bindAnime == 0)return;
 
-	foreach(std::vector<SsPartState*>, meshList, it)
+	SPRITESTUDIO6DSK_foreach(std::vector<SsPartState*>, meshList, it)
 	{
 		SsPartState* state = (*it);
 
@@ -459,3 +462,5 @@ void	SsMeshAnimator::modelLoad()
 
 
 }
+
+}	// namespace spritestudio6

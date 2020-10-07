@@ -2,12 +2,16 @@
 #ifndef __SSPLAYER_MESH__
 #define __SSPLAYER_MESH__
 
+namespace spritestudio6
+{
 
 class ISSTexture;
 
-#define SSMESHPART_BONEMAX	(128)
-#define SSMESHPART_CHECKRANGE (4)
-
+enum
+{
+	SSMESHPART_BONEMAX = 128,
+	SSMESHPART_CHECKRANGE = 4,
+};
 struct StBoneWeight
 {
 	int		   		weight[SSMESHPART_BONEMAX];
@@ -148,5 +152,6 @@ public:
 
 
 
+}	// namespace spritestudio6
 
 #endif

@@ -4,8 +4,10 @@
 #include <string>
 #include <vector>
 
-#define PUT_UNIFORM_WARNIG	(1)
+#define SPRITESTUDIO6DSK_PUT_UNIFORM_WARNIG	(1)
 
+namespace spritestudio6
+{
 
 class	SSOpenGLShader {
 public:
@@ -123,6 +125,7 @@ public:
 int SsGL_CheckShaderReady( void );
 extern	SSOpenGLShaderMan*              glshaderMan;
 
+}	// namespace spritestudio6
 
 #endif
 

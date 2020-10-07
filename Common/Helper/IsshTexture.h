@@ -4,6 +4,9 @@
 #include "../Loader/sstypes.h"
 #include <map>
 
+namespace spritestudio6
+{
+
 
 // nが2のべき乗かどうかチェックする
 inline bool SsUtTextureisPow2(int n)
@@ -95,6 +98,7 @@ public:
 };
 
 
+}	// namespace spritestudio6
 
 #endif //ifdef __ISSGraphTexture__
 

@@ -8,6 +8,8 @@
 #include "../Helper/DebugPrint.h"
 #include "sscharconverter.h"
 
+namespace spritestudio6
+{
 
 
 SsString	SsProject::getSsceBasepath(){ 
@@ -125,9 +127,8 @@ SsSequence*		SsProject::findSequence( SsString& sequencePackName , SsString& Seq
 
 SsProject*	ssloader_sspj::Load(const std::string& filename )
 {
-
-	XMLDocument xml;
-	if ( XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
+	libXML::XMLDocument xml;
+	if ( libXML::XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioProject" );
 
@@ -197,6 +198,7 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 			proj->textureList.push_back(i->first);
 		}
 
+		//エフェクトリストを元に読み込みます。
 		for ( size_t i = 0 ;i < proj->getEffectFileNum() ; i++ )
 		{
 			SsString sscepath = SsCharConverter::convert_path_string(proj->getEffectFilePath(i));
@@ -238,6 +240,7 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 				return 0;
 			}
 		}
+
 		return proj;
 	}	
 
@@ -268,3 +271,6 @@ SsCellMap* SsProject::getCellMap( int index )
 {
 	return cellmapList[index];
 }
+
+
+}	// namespace spritestudio6

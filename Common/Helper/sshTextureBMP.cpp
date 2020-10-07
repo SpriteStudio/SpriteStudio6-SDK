@@ -5,6 +5,9 @@
 #include "ssHelper.h"
 #include "sshTextureBMP.h"
 
+namespace spritestudio6
+{
+
 
 
 
@@ -28,3 +31,7 @@ bool SSTextureBMP::Load( const char* fname )
 	stbi_image_free (image);
 	return true;
 }
+
+
+
+}	// namespace spritestudio6

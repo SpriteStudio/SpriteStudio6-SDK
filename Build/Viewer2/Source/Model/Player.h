@@ -117,13 +117,13 @@ public:
 	static void	drawAnime();
 
 	// アニメーションの状態
-	std::unique_ptr<StatePlaying>		statePlaying;
-	std::unique_ptr<StatePaused>		statePaused;
-	std::unique_ptr<StateLoading>		stateLoading;
-	std::unique_ptr<StateInitial>		stateInitial;
-	std::unique_ptr<SsProject>			currentProj;
-	std::unique_ptr<SsAnimeDecoder>		decoder;
-	SsCellMapList *						cellmap = nullptr; // decoderのデストラクタでdeleteされる
+	std::unique_ptr<StatePlaying>	statePlaying;
+	std::unique_ptr<StatePaused>	statePaused;
+	std::unique_ptr<StateLoading>	stateLoading;
+	std::unique_ptr<StateInitial>	stateInitial;
+	std::unique_ptr<SsProject>		currentProj;
+	std::unique_ptr<SsAnimeDecoder>	decoder;
+	SsCellMapList *					cellmap = nullptr; // decoderのデストラクタでdeleteされる
 
 	friend class AsyncAnimeLoader;
 	friend class AsyncProjectLoader;

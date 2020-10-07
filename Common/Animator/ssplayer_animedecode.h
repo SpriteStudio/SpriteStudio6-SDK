@@ -10,18 +10,18 @@
 #include "ssplayer_PartState.h"
 #include "ssplayer_macro.h"
 
+//きれいな頂点変形に対応する場合は1にする。
+//４ポリゴンで変形します。
+//0の場合はZ型の２ポリゴンで変形します。
+#define SPRITESTUDIO6SDK_USE_TRIANGLE_FIN (1)
 
-
+namespace spritestudio6
+{
 
 class SsAnimeDecoder;
 class SsCelMapLinker;
 class SsMeshAnimator;
 
-
-//きれいな頂点変形に対応する場合は1にする。
-//４ポリゴンで変形します。
-//0の場合はZ型の２ポリゴンで変形します。
-#define USE_TRIANGLE_FIN (1)
 
 //パーツとアニメを関連付ける
 typedef std::pair<SsPart*,SsPartAnime*>	SsPartAndAnime;
@@ -124,7 +124,7 @@ public:
 	int		getAnimeTotalFrame() { return curAnimeTotalFrame; }
 	int		getAnimeFPS() {	return curAnimeFPS; }		
 
-	int		getSequenceItemCount() { return curSequence->list.size(); }
+	int		getSequenceItemCount() { return (int)(curSequence->list.size()); }
 	SsSequenceItem*	getSequenceItem( int iIndex ) { return curSequence->list[iIndex]; }
 
 	size_t	getStateNum() { return stateNum; }
@@ -163,5 +163,6 @@ public:
 };
 
 
+}	// namespace spritestudio6
 
 #endif

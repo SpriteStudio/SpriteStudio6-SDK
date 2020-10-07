@@ -8,7 +8,8 @@
 #include	<map>
 
 
-
+namespace spritestudio6
+{
 
 
 //アニメーション中のキーフレームの内容を表現するクラス
@@ -26,14 +27,14 @@ public:
 	  {}
 	virtual ~SsKeyframe(){}
 
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE_ATTRIBUTE( time );
-		SSAR_DECLARE_ATTRIBUTE_ENUM( ipType );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_ATTRIBUTE( time );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_ATTRIBUTE_ENUM( ipType );
 
 		if ( SsNeedsCurveParams(ipType) )
 		{
-			SSAR_DECLARE( curve );
+			SPRITESTUDIO6DSK_SSAR_DECLARE( curve );
 		}
 		
 		SsValueSeriarizer( ar , value );
@@ -64,10 +65,10 @@ public:
 	}
 
 
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE_ATTRIBUTE_ENUM( tag );
-		SSAR_DECLARE_LISTEX( key ,  "" );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_ATTRIBUTE_ENUM( tag );
+		SPRITESTUDIO6DSK_SSAR_DECLARE_LISTEX( key ,  "" );
 
 		key_dic.clear();
 		for ( AttributeKeyList::iterator itr = key.begin() ; itr != key.end() ; itr++)
@@ -106,5 +107,7 @@ void	GetSsInstparamAnime( const SsKeyframe* key , SsInstanceAttr& v );
 void	GetSsEffectParamAnime( const SsKeyframe* key , SsEffectAttr& v );
 void	GetSsDeformAnime(const SsKeyframe* key, SsDeformAttr& v);
 
+
+}	// namespace spritestudio6
 
 #endif

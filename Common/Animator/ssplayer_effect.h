@@ -6,6 +6,12 @@
 #include "ssplayer_cellmap.h"
 
 
+// PFMEM_TEST
+#define SPRITESTUDIO6SDK_PFMEM_TEST ( 1 )
+
+namespace spritestudio6
+{
+
 class SsEffectModel;
 class SsRenderEffectBase;
 class SsEffectNode;
@@ -16,10 +22,6 @@ class SsCell;
 
 class SsEffectBehavior;
 class SsEffectRenderer;
-
-
-#define PFMEM_TEST ( 1 )
-
 
 
 namespace SsRenderType
@@ -140,7 +142,7 @@ public:
 	{
 #ifdef _WIN32
         
-		rotation = std::fmod( z , 360 ) ;
+		rotation = (float)( std::fmod( z , 360 ) ) ;
 #else
         rotation = fmod( z , 360 ) ;
         
@@ -391,12 +393,12 @@ public:
 // アニメーション初期化時にバッファ確保の時間が長くなります。
 // 再生するアニメーションにエフェクトパーツがない場合は初期化が行われなわれないので負荷は発生しません。
 //SpriteStudio本体の設定
-#define SSEFFECTRENDER_EMMITER_MAX (1024)
-#define SSEFFECTRENDER_PARTICLE_MAX (4096)
-//#define SSEFFECTRENDER_EMMITER_MAX (256)
-//#define SSEFFECTRENDER_PARTICLE_MAX (2048)
+constexpr auto SSEFFECTRENDER_EMMITER_MAX = 1024;
+constexpr auto SSEFFECTRENDER_PARTICLE_MAX = 4096;
+// constexpr auto SSEFFECTRENDER_EMMITER_MAX = 256;
+// constexpr auto SSEFFECTRENDER_PARTICLE_MAX = 2048;
 //-------------------------------------------------------------
-#define SSEFFECTRENDER_BACTH_MAX (256)
+constexpr auto SSEFFECTRENDER_BACTH_MAX = 256;
 
 
 
@@ -420,7 +422,7 @@ private:
 	SsCellMapList*	curCellMapManager;/// セルマップのリスト（アニメデコーダーからもらう
 
 
-#if PFMEM_TEST
+#if SPRITESTUDIO6SDK_PFMEM_TEST
 	SsEffectRenderEmitter    em_pool[SSEFFECTRENDER_EMMITER_MAX+1];
 	SsEffectRenderParticle   pa_pool[SSEFFECTRENDER_PARTICLE_MAX+1];
 
@@ -451,7 +453,7 @@ public:
 
 public:
 	SsEffectRenderer() : effectData(0) , parentState(0) ,mySeed(0) , render_root(0),parentAnimeStartFrame(0) , m_isLoop(false)
-#if PFMEM_TEST
+#if SPRITESTUDIO6SDK_PFMEM_TEST
 	,em_pool_count(0)
 	,pa_pool_count(0)
 	,dpr_pool_count(0)
@@ -517,6 +519,6 @@ public:
 };
 
 
-
+}	// namespace spritestudio6
 
 #endif

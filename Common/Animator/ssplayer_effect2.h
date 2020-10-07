@@ -9,23 +9,25 @@
 
 //#include "ISSEffectRender.h"
 
+// MEMO: コンパイル設定
+#define SPRITESTUDIO6SDK_LOOP_TYPE1 (0)
+#define SPRITESTUDIO6SDK_LOOP_TYPE2 (0)
+#define SPRITESTUDIO6SDK_LOOP_TYPE3 (1)
 
+namespace spritestudio6
+{
 
 class SsEffectModel;
 class SsRenderEffectBase;
 class SsEffectNode;
-class SsPartState;
+struct SsPartState;
 class SsEffectRenderAtom;
 class SsCell;
 
 
-#define SEED_MAGIC (7573)
-#define LIFE_EXTEND_SCALE (8)
-#define LIFE_EXTEND_MIN	  (64)
-
-#define LOOP_TYPE1 (0)
-#define LOOP_TYPE2 (0)
-#define LOOP_TYPE3 (1)
+constexpr auto SEED_MAGIC = 7573;
+constexpr auto LIFE_EXTEND_SCALE = 8;
+constexpr auto LIFE_EXTEND_MIN = 64;
 
 
 struct TimeAndValue
@@ -316,9 +318,9 @@ public:
 
 //	const particleLifeSt*	getParticleDataFromID(int id) { return &particleList[id]; }
 
-#if  LOOP_TYPE3
+#if  SPRITESTUDIO6SDK_LOOP_TYPE3
 
-	int	getParticleIDMax() { return _offsetPattern.size(); }
+	int	getParticleIDMax() { return (int)(_offsetPattern.size()); }
 
 	const 	particleExistSt*	getParticleDataFromID(int id);
 	void	updateEmitter( double time  , int slide );
@@ -467,5 +469,6 @@ public:
 
 };
 
+}	// namespace spritestudio6
 
 #endif
