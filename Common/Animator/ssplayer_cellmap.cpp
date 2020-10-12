@@ -10,6 +10,13 @@
 
 #include "../Helper/DebugPrint.h"
 
+#if 1	/* Smart-Ptr */
+#include <memory>
+#include <utility>
+#else
+#endif	/* Smart-Ptr */
+
+
 namespace spritestudio6
 {
 
@@ -72,12 +79,20 @@ void	SsCellMapList::clear()
 	{
 		for (CellMapDicItr itr = CellMapDic.begin(); itr != CellMapDic.end();)
 		{
+#if 1	/* Smart-Ptr */
+			if (itr->second)
+			{
+				itr->second.reset();
+				continue;
+			}
+#else
 			if (itr->second != NULL)
 			{
 				delete itr->second;
 				itr->second = NULL;
 				continue;
 			}
+#endif	/* Smart-Ptr */
 			itr++;
 		}
 	}
@@ -123,21 +138,43 @@ void	SsCellMapList::set(SsProject* proj , SsAnimePack* animepack )
 }
 void	SsCellMapList::addMap(SsCellMap* cellmap)
 {
+#if 1	/* Smart-Ptr */
+	CellMapDic[ cellmap->name+".ssce" ].reset( new SsCelMapLinker(cellmap , this->CellMapPath ) );
+#else
 	SsCelMapLinker* linker = new SsCelMapLinker(cellmap , this->CellMapPath );
 	CellMapDic[ cellmap->name+".ssce" ] = linker ;
-
+#endif	/* Smart-Ptr */
 }
 
 void	SsCellMapList::addIndex(SsCellMap* cellmap)
 {
+#if 1	/* Smart-Ptr */
+	std::unique_ptr<SsCelMapLinker> cellmapLinker( new SsCelMapLinker(cellmap , this->CellMapPath ) );
+	CellMapList.push_back( std::move( cellmapLinker ) );
+#else
 	SsCelMapLinker* linker = new SsCelMapLinker(cellmap , this->CellMapPath );
 	CellMapList.push_back( linker );
-
+#endif	/* Smart-Ptr */
 }
 
 SsCelMapLinker*	SsCellMapList::getCellMapLink( const SsString& name )
 {
+#if 1	/* Smart-Ptr */
+	CellMapDicItr itr = CellMapDic.find(name);
+	if ( itr != CellMapDic.end() )
+	{
+		return itr->second.get();
+	}else{
 
+		for ( CellMapDicItr itr=CellMapDic.begin() ; itr != CellMapDic.end() ; itr++)
+		{
+			if ( (itr->second.get())->cellMap->loadFilepath == name )
+			{
+				return itr->second.get();
+			}
+		}
+	}
+#else
 	std::map<SsString,SsCelMapLinker*>::iterator itr = CellMapDic.find(name);
 	if ( itr != CellMapDic.end() )
 	{
@@ -152,6 +189,7 @@ SsCelMapLinker*	SsCellMapList::getCellMapLink( const SsString& name )
 			}
 		}
 	}
+#endif	/* Smart-Ptr */
 
 	return 0;
 

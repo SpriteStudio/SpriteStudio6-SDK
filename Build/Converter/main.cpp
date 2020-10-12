@@ -135,8 +135,11 @@ CellList* makeCellList(spritestudio6::SsProject* proj)
 
 	for (size_t mapIndex = 0; mapIndex < proj->cellmapList.size(); mapIndex++)
 	{
+#if 1	/* Smart-Ptr */
+		const spritestudio6::SsCellMap* cellMap = proj->getCellMap((int)mapIndex);
+#else
 		const spritestudio6::SsCellMap* cellMap = proj->cellmapList[mapIndex];
-
+#endif	/* Smart-Ptr */
 		for (size_t cellIndex = 0; cellIndex < cellMap->cells.size(); cellIndex++)
 		{
 			const spritestudio6::SsCell* cell = cellMap->cells[cellIndex];
@@ -346,7 +349,11 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	// セルの情報
 	for (size_t mapIndex = 0; mapIndex < proj->cellmapList.size(); mapIndex++)
 	{
+#if 1	/* Smart-Ptr */
+		const spritestudio6::SsCellMap* cellMap = proj->cellmapList[mapIndex].get();
+#else
 		const spritestudio6::SsCellMap* cellMap = proj->cellmapList[mapIndex];
+#endif	/* Smart-Ptr */
 
 		Lump* cellMapData = Lump::set("ss::CellMap", true, "CellMap");
 		cellMapData->add(Lump::stringData(cellMap->name, "name"));
@@ -434,7 +441,11 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	// パーツ、アニメ情報
 	for (int packIndex = 0; packIndex < (int)proj->animeList.size(); packIndex++)
 	{
+#if 1	/* Smart-Ptr */
+		const spritestudio6::SsAnimePack* animePack = proj->animeList[packIndex].get();
+#else
 		const spritestudio6::SsAnimePack* animePack = proj->animeList[packIndex];
+#endif	/* Smart-Ptr */
 		const spritestudio6::SsModel& model = animePack->Model;
 		
 		// AnimePackData
@@ -573,7 +584,11 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 		for (int animeIndex = 0; animeIndex < (int)animePack->animeList.size(); animeIndex++)
 		{
+#if 1	/* Smart-Ptr */
+			spritestudio6::SsAnimePack* animePack = proj->getAnimePack(packIndex);
+#else
 			spritestudio6::SsAnimePack* animePack = proj->getAnimePackList()[packIndex];
+#endif	/* Smart-Ptr */
 			spritestudio6::SsModel* model = &animePack->Model;
 			spritestudio6::SsAnimation* anime = animePack->animeList[animeIndex];
 			
@@ -752,10 +767,19 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 						meshData->add(Lump::s32Data((int)state->meshPart->isBind, "isBind"));	//バインドの有無
 						meshData->add(Lump::s32Data(meshsize, "meshsize"));	//サイズ
 						int i;
+#if 1	/* Smart-Ptr */
+						std::vector<float>& uvsRaw = *(state->meshPart->uvs.get());
+#else
+#endif	/* Smart-Ptr */
 						for (i = 0; i < meshsize; i++)
 						{
+#if 1	/* Smart-Ptr */
+							float u = uvsRaw[i * 2 + 0];
+							float v = uvsRaw[i * 2 + 1];
+#else
 							float u = state->meshPart->uvs[i * 2 + 0];
 							float v = state->meshPart->uvs[i * 2 + 1];
+#endif	/* Smart-Ptr */
 							meshData->add(Lump::floatData(u, "u"));
 							meshData->add(Lump::floatData(v, "v"));
 						}
@@ -789,11 +813,21 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 						int tri_size = state->meshPart->tri_size;
 						meshData->add(Lump::s32Data(tri_size, "tri_size"));	//サイズ
 						int i;
+#if 1	/* Smart-Ptr */
+						std::vector<unsigned short>& indicesRaw = *(state->meshPart->indices.get());
+#else
+#endif	/* Smart-Ptr */
 						for (i = 0; i < tri_size; i++)
 						{
+#if 1	/* Smart-Ptr */
+							int po1 = indicesRaw[i * 3 + 0];
+							int po2 = indicesRaw[i * 3 + 1];
+							int po3 = indicesRaw[i * 3 + 2];
+#else
 							int po1 = (int)state->meshPart->indices[i * 3 + 0];
 							int po2 = (int)state->meshPart->indices[i * 3 + 1];
 							int po3 = (int)state->meshPart->indices[i * 3 + 2];
+#endif	/* Smart-Ptr */
 							meshData->add(Lump::s32Data(po1, "po1"));
 							meshData->add(Lump::s32Data(po2, "po2"));
 							meshData->add(Lump::s32Data(po3, "po3"));
@@ -1231,15 +1265,25 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 						//頂点情報を出力
 						int i;
 						int size = state->meshPart->ver_size;
+#if 1	/* Smart-Ptr */
+						std::vector<float>& draw_verticesRaw = *(state->meshPart->draw_vertices.get());
+#else
+#endif	/* Smart-Ptr */
 						for (i = 0; i < size; i++)
 						{
 							std::string tagname_mesh_x = tagname + "mesh_" + std::to_string(i) + "_x";
 							std::string tagname_mesh_y = tagname + "mesh_" + std::to_string(i) + "_y";
 							std::string tagname_mesh_z = tagname + "mesh_" + std::to_string(i) + "_z";
 
+#if 1	/* Smart-Ptr */
+							float mesh_x = draw_verticesRaw[i * 3 + 0];
+							float mesh_y = draw_verticesRaw[i * 3 + 1];
+							float mesh_z = draw_verticesRaw[i * 3 + 2];
+#else
 							float mesh_x = state->meshPart->draw_vertices[i * 3 + 0];
 							float mesh_y = state->meshPart->draw_vertices[i * 3 + 1];
 							float mesh_z = state->meshPart->draw_vertices[i * 3 + 2];
+#endif	/* Smart-Ptr */
 							frameData->add(Lump::floatData(mesh_x, tagname_mesh_x));		//x
 							frameData->add(Lump::floatData(mesh_y, tagname_mesh_y));		//y
 							frameData->add(Lump::floatData(mesh_z, tagname_mesh_z));		//z
@@ -1388,7 +1432,11 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		Lump* effectFile = Lump::set("ss::EffectFile", false, "EffectFile");
 		effectfileArray->add(effectFile);
 
+#if 1	/* Smart-Ptr */
+		const spritestudio6::SsEffectFile* effectfile = proj->getEffectFile(effectIndex);
+#else
 		const spritestudio6::SsEffectFile* effectfile = proj->effectfileList[effectIndex];
+#endif	/* Smart-Ptr */
 		effectFile->add(Lump::stringData(effectfile->name, "name"));				//エフェクト名
 
 		const spritestudio6::SsEffectModel *effectmodel = &effectfile->effectData;
@@ -1420,7 +1468,12 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			int	parentIndex = node->parentIndex;			//親の番号
 			spritestudio6::SsEffectNodeType::_enum	type = node->type;		//ノードの種類
 			//			bool visible = = node->visible;					//エディター用
+#if 1	/* Smart-Ptr */
+			//MEMO: 参照を付けずに実体をコピーしようとすると。所有権の問題でエラーがでるので注意（所有権は移動してはならない）
+			spritestudio6::SsEffectBehavior& behavior = node->behavior;		//動作パラメータ
+#else
 			spritestudio6::SsEffectBehavior behavior = node->behavior;		//動作パラメータ
+#endif	/* Smart-Ptr */
 			spritestudio6::SsRenderBlendType::_enum blendType = behavior.BlendType;	//描画方法
 			//セル番号
 			spritestudio6::SsCell*	refCell = behavior.refCell;
@@ -1448,7 +1501,11 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				Lump* effectBehavior = Lump::set("ss::ss_u16[]", true, "effectBehavior");
 				effectBehaviorArray->add(effectBehavior);
 
+#if 1	/* Smart-Ptr */
+				spritestudio6::SsEffectElementBase *elementbase = behavior.plist[plistindex].get();
+#else
 				spritestudio6::SsEffectElementBase *elementbase = behavior.plist[plistindex];
+#endif	/* Smart-Ptr */
 				spritestudio6::SsEffectFunctionType::enum_ myType = elementbase->myType;
 				effectBehavior->add(Lump::s32Data(myType, "SsEffectFunctionType"));	//コマンドタイプ
 

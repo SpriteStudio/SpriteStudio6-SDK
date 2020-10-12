@@ -115,17 +115,39 @@ public:
     SsValue& operator=(const SsValue& x)
 	{
 		if (this != &x) {
+#if 1	/* Smart-Ptr */
+			this->release();
+			new (this) SsValue(x);
+#else
 		  this->release();
 		  name.~SsString();
 		  new (this) SsValue(x);
+#endif	/* Smart-Ptr */
 		}
 		return *this;
 	}
 
-
 	void	release()
 	{
-        
+#if 1	/* Smart-Ptr */
+		name.~SsString();
+		org_txt.~SsString();
+
+		if(type == string_type && _str) {
+			delete _str;
+			return;
+		}
+
+		if(type == array_type && _array) {
+			delete _array;
+			return;
+		}
+		if(type == hash_type && _hash)
+		{
+			delete _hash;
+			return;
+		}
+#else
 		if ( type == string_type && _str) {
             delete _str;
             return;
@@ -141,6 +163,7 @@ public:
             
             return;
         }
+#endif	/* Smart-Ptr */
 
 	}
 

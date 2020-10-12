@@ -10,6 +10,13 @@
 #include "ssplayer_PartState.h"
 #include "ssplayer_macro.h"
 
+#if 1	/* Smart-Ptr */
+#include "ssplayer_mesh.h"
+
+#include <memory>
+#else
+#endif
+
 //きれいな頂点変形に対応する場合は1にする。
 //４ポリゴンで変形します。
 //0の場合はZ型の２ポリゴンで変形します。
@@ -20,7 +27,10 @@ namespace spritestudio6
 
 class SsAnimeDecoder;
 class SsCelMapLinker;
+#if 1	/* Smart-Ptr */
+#else
 class SsMeshAnimator;
+#endif
 
 
 //パーツとアニメを関連付ける
@@ -58,9 +68,15 @@ private:
 	std::map<SsString,SsPartAnime*> partAnimeDic;
 	std::map<SsString, SsPartAnime*>setupPartAnimeDic;	///セットアップデータ
 
+#if 1	/* Smart-Ptr */
+	std::unique_ptr<SsCellMapList>	curCellMapManager;		///アニメに関連付けられているセルマップ
+
+	std::unique_ptr<std::vector<SsPartState>>	partState;	///パーツの現在の状態が格納されています。
+#else
 	SsCellMapList*					curCellMapManager;///アニメに関連付けられているセルマップ
 
 	SsPartState*					partState;			///パーツの現在の状態が格納されています。
+#endif	/* Smart-Ptr */
 	std::list<SsPartState*>			sortList;			///ソート状態
 	std::list<SsPartState*>			partStatesMask_;	///マスクテンポラリ
 	std::vector<SsPartState*>		maskIndexList;
@@ -82,7 +98,11 @@ private:
 
 	size_t			stateNum;
 
+#if 1	/* Smart-Ptr */
+	std::unique_ptr<SsMeshAnimator>	meshAnimator;
+#else
 	SsMeshAnimator*	meshAnimator;
+#endif	/* Smart-Ptr */
 	SsModel*		myModel;
 
 private:
@@ -104,11 +124,18 @@ public:
 	SsAnimeDecoder();
 	virtual ~SsAnimeDecoder()
 	{
+#if 1	/* Smart-Ptr */
+		//念のため解放（スマートポインタなので実用上問題ないはずだが明示性として）
+		curCellMapManager.reset();
+		partState.reset();
+		meshAnimator.reset();
+#else
 		if ( curCellMapManager )
 			delete curCellMapManager;
 
 		if ( partState )
 			delete [] partState;
+#endif	/* Smart-Ptr */
 	}
 
 	virtual void	update( float frameDelta = 1.0f );
@@ -128,7 +155,11 @@ public:
 	SsSequenceItem*	getSequenceItem( int iIndex ) { return curSequence->list[iIndex]; }
 
 	size_t	getStateNum() { return stateNum; }
+#if 1	/* Smart-Ptr */
+	std::vector<SsPartState>& getPartState() { return *(partState.get()); }
+#else
 	SsPartState*  getPartState() { return partState; }
+#endif	/* Smart-Ptr */
 	SsModel*	getMyModel(){return myModel;}
 
 	std::list<SsPartState*>&		getPartSortList(){return sortList;}

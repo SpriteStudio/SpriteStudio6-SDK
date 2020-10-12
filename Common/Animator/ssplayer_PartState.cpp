@@ -6,12 +6,30 @@ namespace spritestudio6
 {
 
 
-SsPartState::SsPartState() : refAnime(0), index(-1), parent(nullptr), noCells(false), alphaBlendType(SsBlendType::invalid),	refEffect(0) , 	meshPart(0)
+SsPartState::SsPartState() :
+#if 1	/* Smart-Ptr */
+	refAnime(),
+#else
+	refAnime(0),
+#endif	/* Smart-Ptr */
+	index(-1),
+	parent(nullptr),
+	noCells(false),
+	alphaBlendType(SsBlendType::invalid),
+#if 1	/* Smart-Ptr */
+	refEffect(),
+	meshPart()
+#else
+	refEffect(0),
+	meshPart(0)
+#endif	/* Smart-Ptr */
 {
 	init();
 	effectValue.attrInitialized = false;
+#if 1	/* Smart-Ptr */
+#else
 	meshPart = 0;
-
+#endif	/* Smart-Ptr */
 }
 
 SsPartState::~SsPartState(){
@@ -21,6 +39,11 @@ SsPartState::~SsPartState(){
 
 void	SsPartState::destroy()
 {
+#if 1	/* Smart-Ptr */
+	if ( refAnime ) refAnime.reset();
+	if ( refEffect ) refEffect.reset();
+	if ( meshPart ) meshPart.reset();
+#else
 	if ( refAnime )	
 	{
 		delete refAnime;
@@ -37,6 +60,7 @@ void	SsPartState::destroy()
 		delete meshPart;
 		meshPart = 0;
 	}
+#endif	/* Smart-Ptr */
 }
 
 void	SsPartState::init()

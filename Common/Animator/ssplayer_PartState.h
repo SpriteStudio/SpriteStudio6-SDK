@@ -4,13 +4,22 @@
 //#include "../Loader/ssloader.h"
 //#include "../Helper/ssHelper.h"
 
+#if 1	/* Smart-Ptr */
+#include "ssplayer_effect2.h"
+
+#include <memory>
+#else
+#endif	/* Smart-Ptr */
 
 namespace spritestudio6
 {
 
 class SsAnimeDecoder;
 //class SsEffectRenderer;
+#if 1	/* Smart-Ptr */
+#else
 class SsEffectRenderV2;
+#endif	/* Smart-Ptr */
 class SsMeshPart;
 
 
@@ -74,8 +83,13 @@ struct SsPartState
 
 	SsBlendType::_enum	alphaBlendType;
 		
+#if 1	/* Smart-Ptr */
+	std::unique_ptr<SsAnimeDecoder>		refAnime;
+	std::unique_ptr<SsEffectRenderV2>	refEffect;
+#else
 	SsAnimeDecoder*		refAnime;
 	SsEffectRenderV2*	refEffect;
+#endif	/* Smart-Ptr */
 
 	//V4互換計算用
 	SsVector3		_temp_position;
@@ -87,7 +101,11 @@ struct SsPartState
 	int				masklimen;
 	bool			maskInfluence;
 
+#if 1	/* Smart-Ptr */
+	std::unique_ptr<SsMeshPart>	meshPart;
+#else
 	SsMeshPart*		meshPart;
+#endif	/* Smart-Ptr */
 
 	SsDeformAttr	deformValue;
 

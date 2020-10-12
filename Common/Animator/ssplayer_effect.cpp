@@ -129,7 +129,7 @@ SsEffectRenderAtom* SsEffectRenderer::CreateAtom( unsigned int seed , SsEffectRe
 		updatelist.push_back( p );
 		createlist.push_back( p );
 		SsEffectRenderEmitter*	em = (SsEffectRenderEmitter*)parent;
-        em->myBatchList->drawlist.push_back( p );
+		em->myBatchList->drawlist.push_back( p );
 	
 		ret = p;
 	}
@@ -236,13 +236,20 @@ bool particleDeleteAll(SsEffectRenderAtom* d)
 //------------------------------------------------------------------------------
 void	SsEffectRenderEmitter::setMySeed( unsigned int seed )
 {
-
+#if 1	/* Smart-Ptr */
+	if ( seed > 31 ){
+		(this->MT.get())->init_genrand( seed );
+	}else{
+		(this->MT.get())->init_genrand( seed_table[seed] );
+	}
+#else
 	if ( seed > 31 ){
 		this->MT->init_genrand( seed );
 
 	}else{
 		this->MT->init_genrand( seed_table[seed] );
 	}
+#endif	/* Smart-Ptr */
 	myseed = seed ;
 }
 
@@ -550,7 +557,11 @@ void	SsEffectRenderParticle::draw(SsEffectRenderer* render)
 	if (render->parentState)
 	{
 		memcpy( matrix , render->parentState->matrix , sizeof( float ) * 16 );
+#if 1	/* Smart-Ptr */
+		this->alpha = (render->render_root.get())->alpha;
+#else
 		this->alpha = render->render_root->alpha;
+#endif	/* Smart-Ptr */
 	}
 
 	TranslationMatrixM( matrix , _position.x, _position.y, 0.0f );
@@ -601,7 +612,11 @@ void	SsEffectRenderer::update(float delta)
 
 	if (m_isPause) return;
 	if (!m_isPlay) return;
+#if 1	/* Smart-Ptr */
+    if ( !(this->render_root) ) return ;
+#else
     if ( this->render_root == 0 ) return ;
+#endif	/* Smart-Ptr */
 
 	frameDelta = delta;
 
@@ -614,11 +629,20 @@ void	SsEffectRenderer::update(float delta)
 
 		layoutPosition = pos;
 
+#if 1	/* Smart-Ptr */
+		SsEffectRenderAtom* effectRendererAtomRaw = this->render_root.get();
+		effectRendererAtomRaw->setPosistion( 0 , 0 , 0 );
+
+		effectRendererAtomRaw->rotation = 0;
+		effectRendererAtomRaw->scale = SsVector2(1.0f, 1.0f);
+		effectRendererAtomRaw->alpha = parentState->alpha;
+#else
 		this->render_root->setPosistion( 0 , 0 , 0 );
 
 		this->render_root->rotation = 0;
 		this->render_root->scale = SsVector2(1.0f,1.0f);
 		this->render_root->alpha = parentState->alpha;
+#endif	/* Smart-Ptr */
 	}
 
 	size_t loopnum = updatelist.size();
@@ -663,10 +687,6 @@ void	SsEffectRenderer::update(float delta)
 		  reload();
 		}
 	}
-
-
-
-
 }
 
 //extern int g_particle_draw_num;
@@ -723,9 +743,12 @@ SsEffectRenderer::~SsEffectRenderer()
 {
 	clearUpdateList();
 
+#if 1	/* Smart-Ptr */
+	render_root.reset();
+#else
 	delete render_root;
 	render_root = 0;
-
+#endif	/* Smart-Ptr */
 }
 
 
@@ -773,10 +796,17 @@ void    SsEffectRenderer::reload()
 	clearUpdateList();
 
 	//座標操作のためのルートノードを作成する
+#if 1	/* Smart-Ptr */
+	if ( render_root == false )
+	{
+		render_root.reset( new SsEffectRenderAtom() );
+	}
+#else
 	if ( render_root == 0 )
 	{
 		render_root = new SsEffectRenderAtom();
 	}
+#endif	/* Smart-Ptr */
 
 	//ルートの子要素を調査して作成する
 	SsEffectNode* root = this->effectData->GetRoot();
@@ -786,9 +816,9 @@ void    SsEffectRenderer::reload()
 
 	if ( this->effectData->isLockRandSeed )
 	{
-    	seed = this->effectData->lockRandSeed;
+		seed = this->effectData->lockRandSeed;
 	}else{
-        seed = mySeed;
+		seed = mySeed;
 	}
 
 	SimpleTree* n = root->ctop;
@@ -796,7 +826,11 @@ void    SsEffectRenderer::reload()
 	while( n )
 	{
 		SsEffectNode* enode = static_cast<SsEffectNode*>(n);
+#if 1	/* Smart-Ptr */
+		SsEffectRenderAtom* effectr = CreateAtom( seed , render_root.get() , enode );
+#else
 		SsEffectRenderAtom* effectr = CreateAtom( seed , render_root , enode );
+#endif	/* Smart-Ptr */
 
 		n = n->next;
 	}

@@ -44,6 +44,16 @@ SsString	SsProject::getImageBasepath()
 
 SsProject::~SsProject()
 {
+#if 1	/* Smart-Ptr */
+	for ( SsAnimePackListItr itr = animeList.begin() ; 
+		itr != animeList.end() ; itr ++ ) itr->reset();	
+	for ( SsSsCellMapList::iterator itr = cellmapList.begin() ; 
+		itr != cellmapList.end() ; itr ++ ) itr->reset();	
+	for ( SsEffectFileList::iterator itr = effectfileList.begin() ; 
+		itr != effectfileList.end() ; itr ++ ) itr->reset();	
+	for ( SsSequencePackList::iterator itr = sequenceList.begin() ; 
+		itr != sequenceList.end() ; itr ++ ) itr->reset();	
+#else
 	for ( SsAnimePackList::iterator itr = animeList.begin() ; 
 		itr != animeList.end() ; itr ++ ) delete (*itr);	
 	for ( SsSsCellMapList::iterator itr = cellmapList.begin() ; 
@@ -52,12 +62,24 @@ SsProject::~SsProject()
 		itr != effectfileList.end() ; itr ++ ) delete (*itr);	
 	for ( SsSequencePackList::iterator itr = sequenceList.begin() ; 
 		itr != sequenceList.end() ; itr ++ ) delete (*itr);	
-
+#endif	/* Smart-Ptr */
 }
 
 
 SsAnimePack*		SsProject::findAnimationPack( SsString& animePackName )
 {
+#if 1	/* Smart-Ptr */
+	SsAnimePack* anime;
+	for ( SsAnimePackListItr itr = animeList.begin()
+		; itr != animeList.end() ; ++itr )
+	{
+		anime = itr->get();
+		if ( anime->name == animePackName )
+		{
+			return anime;
+		}
+	}
+#else
 	for ( SsAnimePackList::iterator itr = animeList.begin()
 		; itr != animeList.end() ; ++itr )
 	{
@@ -66,6 +88,7 @@ SsAnimePack*		SsProject::findAnimationPack( SsString& animePackName )
 			return (*itr);
 		}
 	}
+#endif	/* Smart-Ptr */
 
 	return 0;
 }
@@ -85,6 +108,18 @@ SsAnimation*	SsProject::findAnimation( SsString& animePackName , SsString& Anime
 
 SsEffectFile*		SsProject::findEffect( SsString& effectName )
 {
+#if 1	/* Smart-Ptr */
+	SsEffectFile* effect;
+	for ( SsEffectFileListItr itr = effectfileList.begin()
+		; itr != effectfileList.end() ; ++itr )
+	{
+		effect = itr->get();
+		if ( effect->name == effectName )
+		{
+			return effect;
+		}
+	}
+#else
 	for ( SsEffectFileList::iterator itr = effectfileList.begin()
 		; itr != effectfileList.end() ; ++itr )
 	{
@@ -93,12 +128,25 @@ SsEffectFile*		SsProject::findEffect( SsString& effectName )
 			return (*itr);
 		}
 	}
+#endif	/* Smart-Ptr */
 
 	return 0;
 }
 
 SsSequencePack*		SsProject::findSequencePack( SsString& sequencePackName )
 {
+#if 1	/* Smart-Ptr */
+	SsSequencePack* sequence;
+	for ( SsSequencePackListItr itr = sequenceList.begin()
+		; itr != sequenceList.end() ; ++itr )
+	{
+		sequence = itr->get();
+		if ( sequence->name == sequencePackName )
+		{
+			return sequence;
+		}
+	}
+#else
 	for ( SsSequencePackList::iterator itr = sequenceList.begin()
 		; itr != sequenceList.end() ; ++itr )
 	{
@@ -107,6 +155,7 @@ SsSequencePack*		SsProject::findSequencePack( SsString& sequencePackName )
 			return (*itr);
 		}
 	}
+#endif	/* Smart-Ptr */
 
 	return 0;
 }
@@ -150,7 +199,20 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 		{
 			SsString ssaepath = SsCharConverter::convert_path_string(proj->getAnimePackFilePath(i));
 			SsAnimePack* anime = ssloader_ssae::Load( ssaepath );
+#if 1	/* Smart-Ptr */
+			if ( ( anime ) && ( checkFileVersion(anime->version, SPRITESTUDIO6_SSAEVERSION) == true ) ) 
+			{
+				proj->animeList.push_back( std::move( std::unique_ptr<SsAnimePack>( anime ) ) );
+			}else{
+				//エラー
+				DEBUG_PRINTF( "Animation load error : %s" , ssaepath.c_str() );
+				DEBUG_PRINTF( "ssae old version" );
 
+				if ( anime ) delete anime;
+				delete proj;
+				return 0;
+			}
+#else
 			if ( ( anime ) && ( checkFileVersion(anime->version, SPRITESTUDIO6_SSAEVERSION) == true ) ) 
 			{
 				proj->animeList.push_back( anime );
@@ -158,9 +220,12 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 				//エラー
 				DEBUG_PRINTF( "Animation load error : %s" , ssaepath.c_str() );
 				DEBUG_PRINTF( "ssae old version" );
+
+				if ( anime ) delete anime;
 				delete proj;
 				return 0;
 			}
+#endif	/* Smart-Ptr */
 		}
 
 		std::map<std::string, std::string> textures;
@@ -169,10 +234,15 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 		for ( size_t i = 0 ;i < proj->getCellMapNum() ; i++ )
 		{
 			SsString sscepath = SsCharConverter::convert_path_string(proj->getCellMapFilePath(i));
-
+			SsCellMap* cell = ssloader_ssce::Load( sscepath );
+#if 1	/* Smart-Ptr */
+			cell->loadFilepath = proj->getCelMapFileOriginalPath(i);
+			proj->cellmapList.push_back( std::move( std::unique_ptr<SsCellMap>( cell ) ) );
+#else
 			SsCellMap* cell = ssloader_ssce::Load( sscepath );
 			cell->loadFilepath = proj->getCelMapFileOriginalPath(i);
 			proj->cellmapList.push_back(cell);
+#endif	/* Smart-Ptr */
 
 			//セルマップリストからテクスチャを取得
 			textures[cell->imagePath] = sscepath;
@@ -202,10 +272,14 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 		for ( size_t i = 0 ;i < proj->getEffectFileNum() ; i++ )
 		{
 			SsString sscepath = SsCharConverter::convert_path_string(proj->getEffectFilePath(i));
-
 			SsEffectFile* efile = ssloader_ssee::Load( sscepath );
+#if 1	/* Smart-Ptr */
+			ssloader_ssee::loadPostProcessing( efile, proj );
+			proj->effectfileList.push_back( std::move( std::unique_ptr<SsEffectFile>( efile ) ) );
+#else
 			proj->effectfileList.push_back(efile);
 			ssloader_ssee::loadPostProcessing(efile, proj);
+#endif	/* Smart-Ptr */
 /*
 			if ( ( efile ) && ( checkFileVersion(efile->version, SPRITESTUDIO6_SSCEVERSION) == true ) )
 			{
@@ -228,7 +302,20 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 		{
 			SsString ssqepath = SsCharConverter::convert_path_string(proj->getSequencePackFilePath(i));
 			SsSequencePack* sequence = ssloader_ssqe::Load( ssqepath );
+#if 1	/* Smart-Ptr */
+			if ( ( sequence ) && ( checkFileVersion( sequence->version, SPRITESTUDIO6_SSQEVERSION) == true ) ) 
+			{
+				proj->sequenceList.push_back( std::move( std::unique_ptr<SsSequencePack>( sequence ) ) );
+			}else{
+				//エラー
+				DEBUG_PRINTF( "Sequence load error : %s" , ssqepath.c_str() );
+				DEBUG_PRINTF( "ssqe old version" );
 
+				if ( sequence ) delete sequence;
+				delete proj;
+				return 0;
+			}
+#else
 			if ( ( sequence ) && ( checkFileVersion(sequence->version, SPRITESTUDIO6_SSQEVERSION) == true ) ) 
 			{
 				proj->sequenceList.push_back( sequence );
@@ -239,6 +326,7 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 				delete proj;
 				return 0;
 			}
+#endif	/* Smart-Ptr */
 		}
 
 		return proj;
@@ -252,6 +340,18 @@ SsCellMap* SsProject::findCellMap( SsString& str )
 	for ( SsSsCellMapListItr itr = cellmapList.begin() ; 
 		itr != cellmapList.end() ; itr ++) 
 	{
+#if 1	/* Smart-Ptr */
+//		SsString _name = (*itr)->name;
+		//_name+=".ssce";
+		//sspjの参照名とXMLが無いnameタグが一致していないケースがあったのでファイル名で取得
+///		SsString _name = (*itr)->fname;
+		SsCellMap* cellmap = itr->get();
+		SsString _name = cellmap->loadFilepath;
+		if ( _name == str )
+		{
+			return cellmap;
+		}
+#else
 //		SsString _name = (*itr)->name;
 		//_name+=".ssce";
 		//sspjの参照名とXML無いのnameタグが一致していないケースがあったのでファイル名で取得
@@ -263,14 +363,18 @@ SsCellMap* SsProject::findCellMap( SsString& str )
 		{
 			return (*itr);
 		}
+#endif	/* Smart-Ptr */
 	}
 	return 0;
 }
 
+#if 1	/* Smart-Ptr */
+#else
 SsCellMap* SsProject::getCellMap( int index )
 {
 	return cellmapList[index];
 }
+#endif	/* Smart-Ptr */
 
 
 }	// namespace spritestudio6

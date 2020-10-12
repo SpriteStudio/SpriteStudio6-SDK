@@ -11,13 +11,21 @@
 #include	<iostream>
 #include	<sstream>
 
+#if 1	/* Smart-Ptr */
+#include	<memory>
+#else
+#endif	/* Smart-Ptr */
 
 namespace spritestudio6
 {
 
 
 SSOpenGLProgramObject*			glpgObject = 0 ;
+#if 1	/* Smart-Ptr */
+std::unique_ptr<SSOpenGLShaderMan>	SSOpenGLShaderMan::m_Myinst;
+#else
 SSOpenGLShaderMan*              SSOpenGLShaderMan::m_Myinst = 0;
+#endif	/* Smart-Ptr */
 
 
 
@@ -140,6 +148,7 @@ int SSOpenGLShader::Compile( void )
 								   &length );
 		if ( length > 0 ) {
 			int	l;
+			// MEMO: ここはテンポラリを作って（すぐ消して）いるだけなので、スマートポインタ化していません
 			GLcharARB *info_log = new GLcharARB[ length ];
 			glGetInfoLogARB( h, length, &l, info_log );
 //			SsLogDbg( info_log );
@@ -249,6 +258,7 @@ SSOpenGLProgramObject::Link( void )
 		glGetObjectParameterivARB( h, GL_OBJECT_INFO_LOG_LENGTH_ARB,
 								   &length );
 		if ( length > 0 ) {
+			// MEMO: ここはテンポラリを作って（すぐ消して）いるだけなので、スマートポインタ化していません
 			int	l;
 			GLcharARB *info_log = new GLcharARB[ length ];
 			glGetInfoLogARB( h, length, &l, info_log );

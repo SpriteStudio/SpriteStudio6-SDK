@@ -8,6 +8,11 @@
 #include <vector>
 #include <list>
 
+#if 1	/* Smart-Ptr */
+#include <memory>
+#else
+#endif	/* Smart-Ptr */
+
 namespace spritestudio6
 {
 
@@ -245,7 +250,11 @@ class task_manager{
 private:
 	
 	int			m_priority_max;
+#if 1	/* Smart-Ptr */
+	std::unique_ptr<task_base> m_root;
+#else
 	task_base*  m_root;
+#endif	/* Smart-Ptr */
 
 	void exec_resist_tasks_sub(task_base* task ,double delta_time);	
 	void draw_resist_tasks_sub(task_base* task );
@@ -260,7 +269,14 @@ public:
 
 	void exec_resist_tasks(double delta_time);
 	void draw_resist_tasks();
-	task_base* get_root(){ return m_root;} 	
+	task_base* get_root()
+	{
+#if 1	/* Smart-Ptr */
+		return m_root.get();
+#else
+		return m_root;
+#endif	/* Smart-Ptr */
+	}
 	void destroy_tasks();
 
 

@@ -9,6 +9,12 @@
 
 //#include "ISSEffectRender.h"
 
+#if 1	/* Smart-Ptr */
+#include <memory>
+#include <utility>
+#else
+#endif	/* Smart-Ptr */
+
 // MEMO: コンパイル設定
 #define SPRITESTUDIO6SDK_LOOP_TYPE1 (0)
 #define SPRITESTUDIO6SDK_LOOP_TYPE2 (0)
@@ -46,6 +52,20 @@ struct particleExistSt
     int	 born;
 	long stime;
 	long endtime;
+
+#if 1	/* Smart-Ptr */
+	inline void Cleanup()
+	{
+		id = 0;
+		cycle = 0;
+		exist = 0;
+		born = 0;
+		stime = 0;
+		endtime = 0;
+	}
+#else
+#endif	/* Smart-Ptr */
+
 };
 
 
@@ -266,16 +286,22 @@ public:
 	//生成用のリングバッファ
 	std::vector<emitPattern>    	_emitpattern;
 	std::vector<int>				_offsetPattern;
-
+#if 1	/* Smart-Ptr */
+	std::unique_ptr<std::vector<particleExistSt>>	particleExistList;
+#else
     particleExistSt*     particleExistList;
-
+#endif	/* Smart-Ptr */
 
 	//事前計算バッファ
 	//particleLifeSt*				particleList;
 	int							particleIdMax;
 
 	size_t						particleListBufferSize;
+#if 1	/* Smart-Ptr */
+	std::unique_ptr<std::vector<unsigned long>>	seedList;
+#else
     unsigned long*              seedList;
+#endif	/* Smart-Ptr */
 
 
 	SsVector2   				position;
@@ -296,10 +322,18 @@ public:
 	SsEffectEmitter() :
 //			particleList(0),
 			_parentIndex(-1),
+#if 1	/* Smart-Ptr */
+			seedList(),
+#else
 			seedList(0),
+#endif	/* Smart-Ptr */
 			particleListBufferSize(180*100),  //生成出来るパーティクルの最大値
 			_emitpattern(0),
+#if 1	/* Smart-Ptr */
+			particleExistList(),
+#else
 			particleExistList(0),
+#endif	/* Smart-Ptr */
 			globaltime(0),
 			seedOffset(0)
 	{
@@ -307,9 +341,13 @@ public:
 	}
 	virtual ~SsEffectEmitter()
 	{
+#if 1	/* Smart-Ptr */
+		particleExistList.reset();
+		seedList.reset();
+#else
 		delete [] particleExistList;
 		delete [] seedList;
-
+#endif	/* Smart-Ptr */
 	}
 
 	void	setSeedOffset( int offset ) { 
@@ -354,8 +392,13 @@ public:
 	SsEffectModel*		effectData;
 
 	//Modelに記載されているエミッタのリスト
+#if 1	/* Smart-Ptr */
+	std::vector<std::unique_ptr<SsEffectEmitter>>	emmiterList;
+#else
 	std::vector<SsEffectEmitter*>   emmiterList;
+#endif	/* Smart-Ptr */
 
+	//MEMO: updateListは、更新用でemitterListの内容への参照なのでスマートポインタ化しない
 	std::vector<SsEffectEmitter*>   updateList;
 
 	//ランダムシード

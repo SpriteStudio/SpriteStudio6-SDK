@@ -5,6 +5,12 @@
 #include "MersenneTwister.h"
 #include "ssplayer_cellmap.h"
 
+#if 1	/* Smart-Ptr */
+#include "ssplayer_effect.h"
+
+#include <memory>
+#else
+#endif	/* Smart-Ptr */
 
 // PFMEM_TEST
 #define SPRITESTUDIO6SDK_PFMEM_TEST ( 1 )
@@ -190,7 +196,11 @@ public:
 	//パーティクルパラメータ
     SsEffectNode*		param_particle;
 
+#if 1	/* Smart-Ptr */
+	std::unique_ptr<CMersenneTwister>	MT;
+#else
 	CMersenneTwister*	     MT;
+#endif	/* Smart-Ptr */
 
 	//以前からの移植
 	int				maxParticle;    //
@@ -219,7 +229,11 @@ public:
 public:
 	void	InitParameter()
 	{
+#if 1	/* Smart-Ptr */
+		if ( !MT ) MT.reset( new CMersenneTwister() );
+#else
 		if ( MT ==0 ) MT = new CMersenneTwister();
+#endif	/* Smart-Ptr */
 
         SsEffectRenderAtom::Initialize();
 		delay = 0;
@@ -237,7 +251,14 @@ public:
 
 	}
 
-	SsEffectRenderEmitter() : MT(0){}
+	SsEffectRenderEmitter() :
+#if 1	/* Smart-Ptr */
+		MT()
+#else
+		MT(0)
+#endif	/* Smart-Ptr */
+	{
+	}
 	SsEffectRenderEmitter( SsEffectNode* refdata , SsEffectRenderAtom* _p){
 		data = refdata;
 		parent = _p;
@@ -246,17 +267,25 @@ public:
 
 	virtual ~SsEffectRenderEmitter()
 	{
+#if 1	/* Smart-Ptr */
+		MT.reset();
+#else
 		if ( MT )
 		{
 			delete MT;
 		}
+#endif	/* Smart-Ptr */
 	}
 	SsRenderType::_enum		getMyType(){ return SsRenderType::EmmiterNode;}
 	void			setMySeed( unsigned int seed );
 	void			TrushRandom(int loop)
 	{
 		for ( int i = 0 ; i < loop ; i++ )
+#if 1	/* Smart-Ptr */
+			(MT.get())->genrand_uint32();
+#else
 			MT->genrand_uint32();
+#endif	/* Smart-Ptr */
 	}
 
 	virtual void	Initialize();
@@ -436,7 +465,11 @@ private:
 
 public:
 	//アップデート物のリスト
+#if 1	/* Smart-Ptr */
+	std::unique_ptr<SsEffectRenderAtom>	render_root;
+#else
 	SsEffectRenderAtom* render_root;
+#endif	/* Smart-Ptr */
 
 	bool			usePreMultiTexture;
 	u32				parentAnimeStartFrame;
@@ -452,14 +485,24 @@ public:
 
 
 public:
-	SsEffectRenderer() : effectData(0) , parentState(0) ,mySeed(0) , render_root(0),parentAnimeStartFrame(0) , m_isLoop(false)
+	SsEffectRenderer() :
+		effectData(0)
+		,parentState(0)
+		,mySeed(0)
+#if 1	/* Smart-Ptr */
+		,render_root()
+#else
+		,render_root(0)
+#endif	/* Smart-Ptr */
+		,parentAnimeStartFrame(0)
+		,m_isLoop(false)
 #if SPRITESTUDIO6SDK_PFMEM_TEST
-	,em_pool_count(0)
-	,pa_pool_count(0)
-	,dpr_pool_count(0)
-	,usePreMultiTexture(true)
-	,renderTexture(false)
-	,frameDelta(0)
+		,em_pool_count(0)
+		,pa_pool_count(0)
+		,dpr_pool_count(0)
+		,usePreMultiTexture(true)
+		,renderTexture(false)
+		,frameDelta(0)
 #endif
 	{}
 
