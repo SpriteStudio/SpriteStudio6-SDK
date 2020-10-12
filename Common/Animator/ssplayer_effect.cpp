@@ -797,7 +797,7 @@ void    SsEffectRenderer::reload()
 
 	//座標操作のためのルートノードを作成する
 #if 1	/* Smart-Ptr */
-	if ( render_root == false )
+	if ( !render_root )
 	{
 		render_root.reset( new SsEffectRenderAtom() );
 	}
