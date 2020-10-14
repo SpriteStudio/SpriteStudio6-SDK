@@ -105,7 +105,7 @@ public:
 	static  void	Create()
 	{
 #if 1	/* Smart-Ptr */
-		if ( m_Myinst == false )
+		if ( !m_Myinst )
 			m_Myinst.reset( new SSOpenGLShaderMan() );
 #else
 		if ( m_Myinst == 0)
