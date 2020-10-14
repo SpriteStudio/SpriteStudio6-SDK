@@ -79,14 +79,6 @@ public:
 };
 
 
-class SsAnimation;
-class SsAnimePack;
-class SsCellMap;
-class SsEffectFile;
-class SsSequence;
-class SsSequencePack;
-
-
 #if 1	/* Smart-Ptr */
 typedef std::vector<std::unique_ptr<SsAnimePack>> SsAnimePackList;
 typedef SsAnimePackList::iterator SsAnimePackListItr;
@@ -101,6 +93,14 @@ typedef SsEffectFileList::iterator SsEffectFileListItr;
 typedef std::vector<std::unique_ptr<SsSequencePack>> SsSequencePackList;
 typedef SsSequencePackList::iterator SsSequencePackListItr;
 #else
+class SsAnimation;
+class SsAnimePack;
+class SsCellMap;
+class SsEffectFile;
+class SsSequence;
+class SsSequencePack;
+
+
 typedef std::vector<SsAnimePack*> SsAnimePackList;
 typedef std::vector<SsAnimePack*>::iterator SsAnimePackListItr;
 

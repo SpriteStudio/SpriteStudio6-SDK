@@ -1,4 +1,4 @@
-﻿#ifndef __SSPLAYER_ANIMEDECODE__
+#ifndef __SSPLAYER_ANIMEDECODE__
 #define __SSPLAYER_ANIMEDECODE__
 
 #include "../Loader/ssloader.h"
@@ -25,10 +25,10 @@
 namespace spritestudio6
 {
 
-class SsAnimeDecoder;
-class SsCelMapLinker;
 #if 1	/* Smart-Ptr */
 #else
+class SsAnimeDecoder;
+class SsCelMapLinker;
 class SsMeshAnimator;
 #endif
 

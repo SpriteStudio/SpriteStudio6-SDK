@@ -151,7 +151,7 @@ public:
 	static void	PushPgObject(SSOpenGLProgramObject *obj)
 	{
 #if 1	/* Smart-Ptr */
-		(m_Myinst.get())->m_shader_list.push_back( std::move( std::unique_ptr( obj ) ) );
+		(m_Myinst.get())->m_shader_list.push_back( std::move( std::unique_ptr<SSOpenGLProgramObject>( obj ) ) );
 #else
     	m_Myinst->m_shader_list.push_back(obj);
 #endif	/* Smart-Ptr */

@@ -51,16 +51,6 @@ struct ShaderSetting
 	char*	name;
 	char*	vs;
 	char*	fs;
-
-#if 1	/* Smart-Ptr */
-	ShaderSetting() :
-		name(nullptr)
-		, vs(nullptr)
-		, fs(nullptr)
-	{
-	}
-#else
-#endif	/* Smart-Ptr */
 };
 
 #if 1	/* Smart-Ptr */
@@ -175,10 +165,10 @@ inline void __fastcall rgbaByteToFloat_(float* dest, const SsColorBlendValue& sr
 {
 	const SsColor* srcColor = &src.rgba;
 
-	dest[0] = floatFromByte_(srcColor->r);
-	dest[1] = floatFromByte_(srcColor->g);
-	dest[2] = floatFromByte_(srcColor->b);
-	dest[3] = floatFromByte_(srcColor->a);
+	dest[0] = floatFromByte_((u8)srcColor->r);
+	dest[1] = floatFromByte_((u8)srcColor->g);
+	dest[2] = floatFromByte_((u8)srcColor->b);
+	dest[3] = floatFromByte_((u8)srcColor->a);
 }
 
 struct ShaderVArg;
@@ -722,7 +712,7 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 
 	// パーツカラーの指定
 #if 1	/* Smart-Ptr */
-	float* colorsRaw = mesh->colors.get();
+	std::vector<float>& colorsRaw = *(mesh->colors.get());
 #else
 #endif	/* Smart-Ptr */
 	if (state->is_parts_color)
@@ -1138,7 +1128,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	//メッシュの場合描画
 	if (state->partType == SsPartType::mesh)
 	{
-		this->renderMesh(state->meshPart , alpha );
+		this->renderMesh(state->meshPart.get() , alpha );
 		return;
 	}
 
