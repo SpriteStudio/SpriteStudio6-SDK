@@ -127,7 +127,7 @@ void	SsMeshPart::makeMesh()
 		uvsRaw[i * 2 + 0] = (targetCell->pos.x + v.x) * uvpixel_x;
 		uvsRaw[i * 2 + 1] = (targetCell->pos.y + v.y) * uvpixel_y;
 
-		draw_verticesRaw[i * 3 + 0] = verticesRaw[i * 3];
+		draw_verticesRaw[i * 3 + 0] = verticesRaw[i * 3 + 0];
 		draw_verticesRaw[i * 3 + 1] = verticesRaw[i * 3 + 1];
 		draw_verticesRaw[i * 3 + 2] = verticesRaw[i * 3 + 2];
 	}

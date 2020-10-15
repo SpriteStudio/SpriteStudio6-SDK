@@ -789,15 +789,15 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 	glEnableClientState(GL_VERTEX_ARRAY);
 #if 1	/* Smart-Ptr */
 	// UV 配列を指定する
-	glTexCoordPointer(2, GL_FLOAT, 0, (GLvoid *)(mesh->uvs.get()));
+	glTexCoordPointer(2, GL_FLOAT, 0, (GLvoid *)((mesh->uvs.get())->data()));
 
 	// 頂点色を指定する
-	glColorPointer(4, GL_FLOAT, 0, (GLvoid *)(mesh->colors.get()));
+	glColorPointer(4, GL_FLOAT, 0, (GLvoid *)((mesh->colors.get())->data()));
 
 	// 頂点バッファの設定
-	glVertexPointer(3, GL_FLOAT, 0, (GLvoid *)(mesh->draw_vertices.get()));
+	glVertexPointer(3, GL_FLOAT, 0, (GLvoid *)((mesh->draw_vertices.get())->data()));
 
-	glDrawElements(GL_TRIANGLES, mesh->tri_size * 3, GL_UNSIGNED_SHORT, mesh->indices.get());
+	glDrawElements(GL_TRIANGLES, mesh->tri_size * 3, GL_UNSIGNED_SHORT, (mesh->indices.get())->data());
 #else
 	// UV 配列を指定する
 	glTexCoordPointer(2, GL_FLOAT, 0, (GLvoid *)mesh->uvs);

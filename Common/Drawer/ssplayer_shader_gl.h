@@ -81,7 +81,7 @@ class   SSOpenGLShaderMan
 {
 private:
 #if 1	/* Smart-Ptr */
-    std::vector<std::unique_ptr<SSOpenGLProgramObject>> m_shader_list;
+	std::vector<std::unique_ptr<SSOpenGLProgramObject>> m_shader_list;
 	static	std::unique_ptr<SSOpenGLShaderMan>	m_Myinst;
 #else
     std::vector<SSOpenGLProgramObject*> m_shader_list;
