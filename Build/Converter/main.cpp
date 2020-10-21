@@ -153,13 +153,13 @@ CellList* makeCellList(spritestudio6::SsProject* proj)
 
 static const spritestudio6::SsKeyframe* findDefaultKeyframe(spritestudio6::SsAnimeDecoder& decoder, int partIndex, spritestudio6::SsAttributeKind::_enum tag)
 {
-	SPRITESTUDIO6DSK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
+	SPRITESTUDIO6SDK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
 	{
 		spritestudio6::SsPartAnime* partAnime = it->second;
 		spritestudio6::SsPart* part = it->first;
 		if (part->arrayIndex != partIndex) continue;
 
-		SPRITESTUDIO6DSK_foreach(spritestudio6::SsAttributeList, partAnime->attributes, attrIt)
+		SPRITESTUDIO6SDK_foreach(spritestudio6::SsAttributeList, partAnime->attributes, attrIt)
 		{
 			spritestudio6::SsAttribute* attr = *attrIt;
 			if (attr->tag != tag) continue;
@@ -175,7 +175,7 @@ static const spritestudio6::SsKeyframe* findDefaultKeyframe(spritestudio6::SsAni
 
 static spritestudio6::SsAttribute* findAttribute(spritestudio6::SsPartAnime* partAnime, spritestudio6::SsAttributeKind::_enum tag)
 {
-	SPRITESTUDIO6DSK_foreach(spritestudio6::SsAttributeList, partAnime->attributes, attrIt)
+	SPRITESTUDIO6SDK_foreach(spritestudio6::SsAttributeList, partAnime->attributes, attrIt)
 	{
 		spritestudio6::SsAttribute* attr = *attrIt;
 		if (attr->tag == tag) return attr;
@@ -197,7 +197,7 @@ static const spritestudio6::SsKeyframe* findFirstKey(spritestudio6::SsPartAnime*
 
 static const spritestudio6::SsPartState* findState(std::list<spritestudio6::SsPartState*>& partList, int partIndex)
 {
-	SPRITESTUDIO6DSK_foreach(std::list<spritestudio6::SsPartState*>, partList, it)
+	SPRITESTUDIO6SDK_foreach(std::list<spritestudio6::SsPartState*>, partList, it)
 	{
 		const spritestudio6::SsPartState* state = *it;
 		if (state->index == partIndex) return state;
@@ -610,7 +610,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 			Lump* initialDataArray = Lump::set("ss::AnimationInitialData[]", true, "AnimationInitialData");
 			int sortedOrder = 0;
-			SPRITESTUDIO6DSK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
+			SPRITESTUDIO6SDK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
 			{
 				spritestudio6::SsPart* part = it->first;
 //				spritestudio6::SsPartAnime* partAnime = it->second;
@@ -751,7 +751,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				decoder.setPlayFrame(0);
 				decoder.update();
 
-				SPRITESTUDIO6DSK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
+				SPRITESTUDIO6SDK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
 				{
 					spritestudio6::SsPart* part = it->first;
 					const spritestudio6::SsPartState* state = findState(partList, part->arrayIndex);
@@ -798,7 +798,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				decoder.setPlayFrame(0);
 				decoder.update();
 
-				SPRITESTUDIO6DSK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
+				SPRITESTUDIO6SDK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
 				{
 					spritestudio6::SsPart* part = it->first;
 					const spritestudio6::SsPartState* state = findState(partList, part->arrayIndex);
@@ -872,7 +872,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 //				frameData->add(frameFlag);
 
 				int outPartsCount = 0;
-				SPRITESTUDIO6DSK_foreach(std::list<spritestudio6::SsPartState*>, partList, it)
+				SPRITESTUDIO6SDK_foreach(std::list<spritestudio6::SsPartState*>, partList, it)
 				{
 					const spritestudio6::SsPartState* state = *it;
 					//セルに設定された原点補正を取得
@@ -1305,13 +1305,13 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				Lump* userData = Lump::set("ss::ss_u16[]", true, "userData");
 				int partsCount = 0;
 
-				SPRITESTUDIO6DSK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
+				SPRITESTUDIO6SDK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
 				{
 					spritestudio6::SsPart* part = it->first;
 					spritestudio6::SsPartAnime* partAnime = it->second;
 					if (!partAnime) continue;
 
-					SPRITESTUDIO6DSK_foreach(spritestudio6::SsAttributeList, partAnime->attributes, attrIt)
+					SPRITESTUDIO6SDK_foreach(spritestudio6::SsAttributeList, partAnime->attributes, attrIt)
 					{
 						spritestudio6::SsAttribute* attr = *attrIt;
 						if (attr->tag != spritestudio6::SsAttributeKind::user) continue;
