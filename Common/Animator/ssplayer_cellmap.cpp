@@ -165,8 +165,7 @@ SsCelMapLinker*	SsCellMapList::getCellMapLink( const SsString& name )
 	{
 		return itr->second.get();
 	}else{
-
-		for ( CellMapDicItr itr=CellMapDic.begin() ; itr != CellMapDic.end() ; itr++)
+		for ( itr=CellMapDic.begin() ; itr != CellMapDic.end() ; itr++)
 		{
 			if ( (itr->second.get())->cellMap->loadFilepath == name )
 			{

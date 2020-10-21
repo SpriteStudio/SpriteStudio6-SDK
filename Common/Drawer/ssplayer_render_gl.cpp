@@ -27,7 +27,7 @@
 #include "ssplayer_cellmap.h"
 #include "ssplayer_mesh.h"
 
-#define SPRITESTUDIO6DSK_PROGRAMABLE_SHADER_ON (1)
+#define SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON (1)
 
 namespace spritestudio6
 {
@@ -900,7 +900,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 
 		glEnable(gl_target);
 
-#if SPRITESTUDIO6DSK_PROGRAMABLE_SHADER_ON
+#if SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON
 		if ( state->is_shader ) {
 #if 1	/* Smart-Ptr */
 			std::map<SsString, std::unique_ptr<SSOpenGLProgramObject>>::const_iterator it = s_DefaultShaderMap.find( state->shaderValue.id );
@@ -1224,7 +1224,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 		//セルが無いので描画を行わない
 	}else{
 
-#if SPRITESTUDIO6DSK_PROGRAMABLE_SHADER_ON
+#if SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON
 
 	if ( state->is_shader )
 	{
@@ -1330,7 +1330,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 #endif
 	}
 
-#if SPRITESTUDIO6DSK_PROGRAMABLE_SHADER_ON
+#if SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON
 //	if ( glpgObject )
 	{
 		if ( state->is_shader )

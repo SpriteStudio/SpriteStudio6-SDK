@@ -548,7 +548,7 @@ void	SsMeshAnimator::update()
 	if (bindAnime == 0)return;
 
 #if 1	/* Smart-Ptr */
-	SPRITESTUDIO6DSK_foreach(std::vector<SsPartState*>, meshList, it)
+	SPRITESTUDIO6SDK_foreach(std::vector<SsPartState*>, meshList, it)
 	{
 		SsPartState* state = (*it);
 		SsMeshPart* meshPart = state->meshPart.get();
@@ -556,7 +556,7 @@ void	SsMeshAnimator::update()
 			meshPart->updateTransformMesh();
 	}
 #else
-	SPRITESTUDIO6DSK_foreach(std::vector<SsPartState*>, meshList, it)
+	SPRITESTUDIO6SDK_foreach(std::vector<SsPartState*>, meshList, it)
 	{
 		SsPartState* state = (*it);
 

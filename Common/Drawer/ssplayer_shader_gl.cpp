@@ -276,7 +276,7 @@ SSOpenGLProgramObject::Use( void )
 {
 	glUseProgramObjectARB( h );
 	if ( glGetError() != GL_NO_ERROR ) {
-#if SPRITESTUDIO6DSK_PUT_UNIFORM_WARNIG
+#if SPRITESTUDIO6SDK_PUT_UNIFORM_WARNING
 //		SsLogInfo( _D("SSOpenGLProgramObject: glUseProgramObjectARB cannot use object\n") );
 #endif
 	}

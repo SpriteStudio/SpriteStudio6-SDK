@@ -119,11 +119,17 @@ public:
 		m_isCreateChild = false;
 		m_isInit = false;
 	}
-	virtual bool	genarate( SsEffectRenderer* render ){return true;}
+#if 1	/* Smart-Ptr */
+	virtual bool	genarate( SsEffectRenderer* render ){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(render);	return true; }
 
+    virtual void	update(float delta){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(delta); }
+	virtual void	draw(SsEffectRenderer* render){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(render); }
+#else
+	virtual bool	genarate( SsEffectRenderer* render ){return true;}
 
     virtual void	update(float delta){}
 	virtual void	draw(SsEffectRenderer* render){}
+#endif	/* Smart-Ptr */
 
 	virtual void	debugdraw(){}
 

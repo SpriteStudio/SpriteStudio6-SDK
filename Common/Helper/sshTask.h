@@ -13,6 +13,14 @@
 #else
 #endif	/* Smart-Ptr */
 
+#if 1	/* Smart-Ptr */
+// 未使用引数の警告避け
+#ifndef SPRITESTUDIO6SDK_NOUSE_ARGUMENT
+	#define	SPRITESTUDIO6SDK_NOUSE_ARGUMENT(_name_)	( void )( &_name_ );
+#endif
+#else
+#endif	/* Smart-Ptr */
+
 namespace spritestudio6
 {
 
@@ -235,7 +243,11 @@ public:
 
 	virtual void	draw(){};
 //	virtual void	update(){};
+#if 1	/* Smart-Ptr */
+	virtual void	update(double delta){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(delta); };
+#else
 	virtual void	update(double delta){};
+#endif	/* Smart-Ptr */
 	virtual void	init(){};
 
 };

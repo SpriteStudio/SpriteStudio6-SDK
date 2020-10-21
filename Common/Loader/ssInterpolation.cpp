@@ -140,6 +140,34 @@ SsVector2	SsInterpolate(SsInterpolationType::_enum ipType, float time, SsVector2
 //----------------------------------------------------------------------------
 float	SsInterpolate(SsInterpolationType::_enum type, float time, float start, float end, const SsCurve * curve)
 {
+#if 1	/* Smart-Ptr */
+	float r = start;
+	switch (type)
+	{
+	case SsInterpolationType::none:
+//		r = start;
+		break;
+	case SsInterpolationType::linear:
+		r = linear_(start, end, time);
+		break;
+	case SsInterpolationType::acceleration:
+		r = accelerating_(start, end, time);
+		break;
+	case SsInterpolationType::deceleration:
+		r = decelerating_(start, end, time);
+		break;
+	case SsInterpolationType::bezier:
+		r = bezier_(start, end, time, curve);
+		break;
+	case SsInterpolationType::hermite:
+		r = hermite_(start, end, time, curve);
+		break;
+	default:
+		//SS_ASSERT_ID(type);
+		break;
+	}
+	return r;
+#else
 	float r;
 	switch (type)
 	{
@@ -166,6 +194,7 @@ float	SsInterpolate(SsInterpolationType::_enum type, float time, float start, fl
 		break;
 	}
 	return r;
+#endif	/* Smart-Ptr */
 }
 
 }	// namespace spritestudio6

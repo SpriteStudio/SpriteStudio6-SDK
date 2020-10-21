@@ -66,7 +66,7 @@ constexpr auto ONEFRAME = ( 1.0f / 60.0f );
 SsEffectDrawBatch*	SsEffectRenderer::findBatchListSub(SsEffectNode* n)
 {
 	SsEffectDrawBatch* bl = 0;
-	SPRITESTUDIO6DSK_foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
+	SPRITESTUDIO6SDK_foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
 	{
 		if ( (*e)->targetNode == n )
 		{
@@ -699,7 +699,7 @@ void	SsEffectRenderer::draw()
 
 	int cnt = 0;
 
-	SPRITESTUDIO6DSK_foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
+	SPRITESTUDIO6SDK_foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
 	{
 		//セットアップ
 		if ( (*e)->dispCell )
@@ -716,7 +716,7 @@ void	SsEffectRenderer::draw()
 			SsCurrentRenderer::getRender()->SetTexture( (*e)->dispCell );
 		}
 
-		SPRITESTUDIO6DSK_foreach( std::list<SsEffectRenderAtom*> , (*e)->drawlist , e2 )
+		SPRITESTUDIO6SDK_foreach( std::list<SsEffectRenderAtom*> , (*e)->drawlist , e2 )
 		{
 			if ( (*e2) )
 			{
@@ -778,7 +778,7 @@ void	SsEffectRenderer::clearUpdateList()
 	updatelist.clear();
 	createlist.clear();
 
-	SPRITESTUDIO6DSK_foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
+	SPRITESTUDIO6SDK_foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
 	{
 		(*e)->drawlist.clear();
 	}

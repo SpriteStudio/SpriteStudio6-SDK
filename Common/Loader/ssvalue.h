@@ -200,7 +200,7 @@ public:
 		return false;
 	}
 
-	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
 		SsValueSeriarizer( ar , *this ,"" );	
 	}

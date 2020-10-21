@@ -10,7 +10,7 @@
 #else
 #endif	/* Smart-Ptr */
 
-#define SPRITESTUDIO6DSK_PUT_UNIFORM_WARNIG	(1)
+#define SPRITESTUDIO6SDK_PUT_UNIFORM_WARNING	(1)
 
 namespace spritestudio6
 {

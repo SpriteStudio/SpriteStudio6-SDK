@@ -95,10 +95,10 @@ public:
 	EffectFuncBase(){}
 	virtual ~EffectFuncBase(){}
 
-	virtual void	initalizeEmmiter ( SsEffectElementBase* ele , SsEffectRenderEmitter* emmiter){}
-	virtual void	updateEmmiter( SsEffectElementBase* ele , SsEffectRenderEmitter* emmiter){}
-	virtual void	initializeParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle ){}
-	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle ){}
+	virtual void	initalizeEmmiter ( SsEffectElementBase* ele , SsEffectRenderEmitter* emmiter){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(ele); SPRITESTUDIO6SDK_NOUSE_ARGUMENT(emmiter); }
+	virtual void	updateEmmiter( SsEffectElementBase* ele , SsEffectRenderEmitter* emmiter){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(ele); SPRITESTUDIO6SDK_NOUSE_ARGUMENT(emmiter); }
+	virtual void	initializeParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle ){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(ele); SPRITESTUDIO6SDK_NOUSE_ARGUMENT(e); SPRITESTUDIO6SDK_NOUSE_ARGUMENT(particle); }
+	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle ){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(ele); SPRITESTUDIO6SDK_NOUSE_ARGUMENT(e); SPRITESTUDIO6SDK_NOUSE_ARGUMENT(particle); }
 
 
 	virtual void	initalizeEffect ( SsEffectElementBase* ele , SsEffectEmitter* emmiter){}
@@ -895,14 +895,14 @@ static EffectFuncBase* callTable[] =
 void	SsEffectFunctionExecuter::initalize( SsEffectBehavior* beh ,  SsEffectRenderEmitter* emmiter)
 {
 #if 1	/* Smart-Ptr */
-	SPRITESTUDIO6DSK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
 	{
 		SsEffectElementBase* elementBase = e->get();
 		EffectFuncBase* cf = callTable[elementBase->myType];
 		cf->initalizeEmmiter( elementBase , emmiter );
 	}
 #else
-	SPRITESTUDIO6DSK_foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
 	{
 		EffectFuncBase* cf = callTable[(*e)->myType];
 		cf->initalizeEmmiter( (*e) , emmiter );
@@ -913,14 +913,14 @@ void	SsEffectFunctionExecuter::initalize( SsEffectBehavior* beh ,  SsEffectRende
 void	SsEffectFunctionExecuter::updateEmmiter( SsEffectBehavior* beh , SsEffectRenderEmitter* emmiter)
 {
 #if 1	/* Smart-Ptr */
-	SPRITESTUDIO6DSK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
 	{
 		SsEffectElementBase* elementBase = e->get();
 		EffectFuncBase* cf = callTable[elementBase->myType];
 		cf->updateEmmiter( elementBase , emmiter );
 	}
 #else
-	SPRITESTUDIO6DSK_foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
 	{
 		EffectFuncBase* cf = callTable[(*e)->myType];
 		cf->updateEmmiter( (*e) , emmiter );
@@ -931,14 +931,14 @@ void	SsEffectFunctionExecuter::updateEmmiter( SsEffectBehavior* beh , SsEffectRe
 void	SsEffectFunctionExecuter::initializeParticle( SsEffectBehavior* beh ,  SsEffectRenderEmitter* emmiter , SsEffectRenderParticle* particle )
 {
 #if 1	/* Smart-Ptr */
-	SPRITESTUDIO6DSK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
 	{
 		SsEffectElementBase* elementBase = e->get();
 		EffectFuncBase* cf = callTable[elementBase->myType];
 		cf->initializeParticle( elementBase , emmiter , particle );
 	}
 #else
-	SPRITESTUDIO6DSK_foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
 	{
 		EffectFuncBase* cf = callTable[(*e)->myType];
 		cf->initializeParticle( (*e) , emmiter , particle );
@@ -949,14 +949,14 @@ void	SsEffectFunctionExecuter::initializeParticle( SsEffectBehavior* beh ,  SsEf
 void	SsEffectFunctionExecuter::updateParticle(  SsEffectBehavior* beh , SsEffectRenderEmitter* emmiter , SsEffectRenderParticle* particle )
 {
 #if 1	/* Smart-Ptr */
-	SPRITESTUDIO6DSK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
 	{
 		SsEffectElementBase* elementBase = e->get();
 		EffectFuncBase* cf = callTable[elementBase->myType];
 		cf->updateParticle( elementBase , emmiter , particle );
 	}
 #else
-	SPRITESTUDIO6DSK_foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
 	{
 		EffectFuncBase* cf = callTable[(*e)->myType];
 		cf->updateParticle( (*e) , emmiter , particle );
@@ -968,14 +968,14 @@ void	SsEffectFunctionExecuter::updateParticle(  SsEffectBehavior* beh , SsEffect
 void	SsEffectFunctionExecuter::initializeEffect( SsEffectBehavior* beh ,  SsEffectEmitter* emmiter)
 {
 #if 1	/* Smart-Ptr */
-	SPRITESTUDIO6DSK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
 	{
 		SsEffectElementBase* elementBase = e->get();
 		EffectFuncBase* cf = callTable[elementBase->myType];
 		cf->initalizeEffect( elementBase , emmiter );
 	}
 #else
-	SPRITESTUDIO6DSK_foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
 	{
 		EffectFuncBase* cf = callTable[(*e)->myType];
 		cf->initalizeEffect( (*e) , emmiter );

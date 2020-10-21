@@ -17,7 +17,7 @@ template<typename T> inline double DegreeToRadian(T Degree)
 	return((double)Degree * (__PI__ / 180.0f));
 }
 
-#define SPRITESTUDIO6DSK_foreach(T, c, i) for(T::iterator i = c.begin(); i!=c.end(); ++i)
+#define SPRITESTUDIO6SDK_foreach(T, c, i) for(T::iterator i = c.begin(); i!=c.end(); ++i)
 
 }	// namespace spritestudio6
 

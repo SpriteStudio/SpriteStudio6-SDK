@@ -210,12 +210,12 @@ public:
 };
 
 
-#define SPRITESTUDIO6DSK_SERIALIZE_BLOCK	void __Serialize(ISsXmlArchiver* ar)
+#define SPRITESTUDIO6SDK_SERIALIZE_BLOCK	void __Serialize(ISsXmlArchiver* ar)
 
-#define	SPRITESTUDIO6DSK_SSAR_DECLARE(t)  ar->dc(#t,t)
-#define	SPRITESTUDIO6DSK_SSAR_DECLARE_ATTRIBUTE(t)  ar->dc_attr(#t,t)
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE(t)  ar->dc(#t,t)
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE(t)  ar->dc_attr(#t,t)
 
-#define	SPRITESTUDIO6DSK_SSAR_STRUCT_DECLARE(t)  {SsXmlIArchiver _ar( ar , #t );\
+#define	SPRITESTUDIO6SDK_SSAR_STRUCT_DECLARE(t)  {SsXmlIArchiver _ar( ar , #t );\
 t.__Serialize( &_ar );}\
 
 template<class myclass>
@@ -234,9 +234,9 @@ inline bool	__SSAR_DECLARE_LIST__( ISsXmlArchiver* ar , std::vector<myclass*>& l
 }
 
 
-#define	SPRITESTUDIO6DSK_SSAR_DECLARE_LIST(t)  spritestudio6::__SSAR_DECLARE_LIST__( ar , t , #t)
-#define	SPRITESTUDIO6DSK_SSAR_DECLARE_LIST2(t,s)  spritestudio6::__SSAR_DECLARE_LIST__( ar , t , s)
-#define	SPRITESTUDIO6DSK_SSAR_DECLARE_LISTEX(t,key)  spritestudio6::__SSAR_DECLARE_LIST__( ar , t , #t , key )
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE_LIST(t)  spritestudio6::__SSAR_DECLARE_LIST__( ar , t , #t)
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE_LIST2(t,s)  spritestudio6::__SSAR_DECLARE_LIST__( ar , t , s)
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE_LISTEX(t,key)  spritestudio6::__SSAR_DECLARE_LIST__( ar , t , #t , key )
 
 template<class myclass>
 inline bool	__SSAR_DECLARE_ENUM__( ISsXmlArchiver* ar ,myclass& type, const char* name  )
@@ -268,8 +268,8 @@ inline bool	__SSAR_DECLARE_ATTRIBUTE_ENUM__( ISsXmlArchiver* ar ,myclass& type, 
 
 
 
-#define SPRITESTUDIO6DSK_SSAR_DECLARE_ENUM(t) spritestudio6::__SSAR_DECLARE_ENUM__( ar , t , #t)
-#define SPRITESTUDIO6DSK_SSAR_DECLARE_ATTRIBUTE_ENUM(t) spritestudio6::__SSAR_DECLARE_ATTRIBUTE_ENUM__( ar , t , #t)
+#define SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM(t) spritestudio6::__SSAR_DECLARE_ENUM__( ar , t , #t)
+#define SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE_ENUM(t) spritestudio6::__SSAR_DECLARE_ATTRIBUTE_ENUM__( ar , t , #t)
 
 
 bool	StringToPoint2( const std::string& str , SsPoint2& point );
@@ -281,7 +281,7 @@ bool	StringToTriangle(const std::string& str, SsTriangle& tri);
 void	SsArchiverInit();
 
 
-#define SPRITESTUDIO6DSK_AR_SELF_CHECK() if ( this->getxml() == 0 ) return false;
+#define SPRITESTUDIO6SDK_AR_SELF_CHECK() if ( this->getxml() == 0 ) return false;
 
 
 

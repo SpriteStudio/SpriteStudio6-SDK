@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <cstdlib>
 #include <time.h>   //時間
 
@@ -59,7 +59,7 @@ SsAnimeDecoder::SsAnimeDecoder() :
 
 void	SsAnimeDecoder::reset()
 {
-	SPRITESTUDIO6DSK_foreach( std::list<SsPartState*> , sortList , e )
+	SPRITESTUDIO6SDK_foreach( std::list<SsPartState*> , sortList , e )
 	{
 		SsPartState* state = (*e);
 		if ( state->refEffect )
@@ -76,7 +76,7 @@ void	SsAnimeDecoder::reset()
 void	SsAnimeDecoder::restart()
 {
 #if 0
-	SPRITESTUDIO6DSK_foreach( std::list<SsPartState*> , sortList , e )
+	SPRITESTUDIO6SDK_foreach( std::list<SsPartState*> , sortList , e )
 	{
 		SsPartState* state = (*e);
 		if ( state->refEffect )
@@ -100,7 +100,7 @@ bool	SsAnimeDecoder::getFirstCell(SsPart* part , SsCellValue& out)
 		SsAttributeList attList;
 		attList = setupAnime->attributes;
 
-		SPRITESTUDIO6DSK_foreach(SsAttributeList, attList, e)
+		SPRITESTUDIO6SDK_foreach(SsAttributeList, attList, e)
 		{
 			SsAttribute* attr = (*e);
 			switch (attr->tag)
@@ -826,7 +826,7 @@ template<typename mytype> int	SsAnimeDecoder::SsGetKeyValue(SsPart* part, int ti
 			{
 				SsAttributeList attList;
 				attList = setupAnime->attributes;
-				SPRITESTUDIO6DSK_foreach(SsAttributeList, attList, e)
+				SPRITESTUDIO6SDK_foreach(SsAttributeList, attList, e)
 				{
 					SsAttribute* setupattr = (*e);
 					if (setupattr->tag == attr->tag)
@@ -991,7 +991,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 			}
 			attList = anime->attributes;
 		}
-		SPRITESTUDIO6DSK_foreach( SsAttributeList , attList , e )
+		SPRITESTUDIO6SDK_foreach( SsAttributeList , attList , e )
 		{
 			SsAttribute* attr = (*e);
 			switch( attr->tag )
@@ -1604,7 +1604,7 @@ void	SsAnimeDecoder::update(float frameDelta)
 	this->frameDelta = frameDelta;
 
 	int cnt = 0;
-	SPRITESTUDIO6DSK_foreach( std::vector<SsPartAndAnime> , partAnime , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<SsPartAndAnime> , partAnime , e )
 	{
 		SsPart* part = e->first;
 		SsPartAnime* anime = e->second;
@@ -1735,7 +1735,7 @@ void	SsAnimeDecoder::draw()
 
 	int mask_index = 0;
 
-	SPRITESTUDIO6DSK_foreach( std::list<SsPartState*> , sortList , e )
+	SPRITESTUDIO6SDK_foreach( std::list<SsPartState*> , sortList , e )
 	{
 		SsPartState* state = (*e);
 

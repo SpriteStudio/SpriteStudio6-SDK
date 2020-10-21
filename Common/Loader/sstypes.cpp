@@ -339,7 +339,7 @@ void	__StringToEnum_( SsString n , SsAttributeKind::_enum &out )
 }
 
 
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
 
 //---------------------------------------------------------------
 //相互変換 SsPartType
@@ -363,7 +363,7 @@ void 	__StringToEnum_( SsString n , SsEffectNodeType::_enum& out)
 }
 
 
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
 
 //---------------------------------------------------------------
 //相互変換 SsPartType

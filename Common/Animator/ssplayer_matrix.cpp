@@ -363,7 +363,11 @@ void 	SsOpenGLMatrix::inverseMatrix()
 
 
 				//オーバーフロー対策
+#if 1	/* Smart-Ptr */
+	for (i = 0; i < 16; i++)
+#else
 	for (int i = 0; i < 16; i++)
+#endif	/* Smart-Ptr */
 	{
 		if (_matrix[i] > 0)
 		{
