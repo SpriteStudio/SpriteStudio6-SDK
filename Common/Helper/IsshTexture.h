@@ -72,7 +72,7 @@ public:
 
 	virtual ~ISSTexture()
 	{
-		filenamepath.~SsString();
+//		filenamepath.~SsString();
 	}
 #else
 	ISSTexture() : refCount(0)
