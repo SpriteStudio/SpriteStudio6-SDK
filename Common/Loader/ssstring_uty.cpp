@@ -44,14 +44,14 @@ void	split_string( const std::string &in_str ,
 
 
 std::string path2dir(const std::string &path) {
-	// MEMO: find_last_ofが未発見時に-1を返すので、maxをsize_tで実体かしたらダメ
+	// MEMO: find_last_ofが未発見時に-1を返すので、maxをsize_tで実体化したらダメ
 	const std::string::size_type pos = std::max<signed>((signed)path.find_last_of('/'), (signed)path.find_last_of('\\'));
 	return (pos == std::string::npos) ? std::string()
 		: path.substr(0, pos + 1);
 }
 
 std::string path2file(const std::string &path) {
-	// MEMO: find_last_ofが未発見時に-1を返すので、maxをsize_tで実体かしたらダメ
+	// MEMO: find_last_ofが未発見時に-1を返すので、maxをsize_tで実体化したらダメ
 	//       ※一度posに入れているのは、C26451の警告回避のため
 	signed pos = std::max<signed>((signed)path.find_last_of('/'), (signed)path.find_last_of('\\')) + 1;
 	return path.substr((size_t)pos);
