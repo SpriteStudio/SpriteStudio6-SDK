@@ -122,10 +122,6 @@ std::string getFullPath( const std::string& basePath , const std::string &relPat
         std::string temp = relPath;
         realpath(temp.c_str(),buffer_ );
         //std::string ret_str = relPath + "/";
-#if 0	// MEMO: エンバグしていると困るので、一応まだ残しておく
-        chdir(curPath);
-#else
-#endif
         return relPath;
     }else{
         chdir( basePath.c_str());
