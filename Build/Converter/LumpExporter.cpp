@@ -19,7 +19,6 @@ namespace LumpExporter {
 static std::string format(const char* fmt, std::va_list arg)
 {
 	char buffer[0x1000];
-	// MEMO: Windows以外には、vsprintf_sがないので、とりあえず警告放置
 	vsprintf(buffer, fmt, arg);
 	return std::string(buffer);
 }

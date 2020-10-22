@@ -18,7 +18,6 @@ inline bool SsUtTextureisPow2(int n)
 	return false;
 }
 
-#if 1	/* Smart-Ptr */
 class	SSTextureLoader
 {
 public:
@@ -44,8 +43,6 @@ public:
 	static const char* MessageGetFailureLoadFromFile();
 	static bool CheckSizePow2( int width, int height );
 };
-#else
-#endif	/* Smart-Ptr */
 
 class SSTextureFactory;
 class ISSTexture
@@ -60,28 +57,15 @@ private:
 		return --refCount; }
 
 	SsString filenamepath;
-#if 1	/* Smart-Ptr */
 	SSTextureLoader::DataHandle dataHandle;
-#else
-#endif	/* Smart-Ptr */
 
 public:
-#if 1	/* Smart-Ptr */
 	ISSTexture() : refCount(0), dataHandle(SSTextureLoader::InvalidDataHandle), filenamepath()
 	{}
 
 	virtual ~ISSTexture()
 	{
-//		filenamepath.~SsString();
 	}
-#else
-	ISSTexture() : refCount(0)
-	{}
-
-	virtual ~ISSTexture()
-	{
-	}
-#endif	/* Smart-Ptr */
 
 	virtual int	getWidth() = 0;
 	virtual int	getHeight() = 0;

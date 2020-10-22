@@ -4,11 +4,7 @@
 
 #include "sstypes.h"
 #include "ssarchiver.h"
-
-#if 1	/* Smart-Ptr */
 #include "SsEffectElement.h"
-#else
-#endif	/* Smart-Ptr */
 
 namespace spritestudio6
 {

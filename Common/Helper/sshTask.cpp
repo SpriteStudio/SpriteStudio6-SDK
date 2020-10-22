@@ -11,20 +11,11 @@ unsigned long	treeitem_uid::m_tree_item_uid	 = 0;
 
 
 task_manager::task_manager()
-#if 1	/* Smart-Ptr */
 	: m_root()
-#else
-	:m_root(0)
-#endif	/* Smart-Ptr */
 	, m_priority_max(0)
 {
-#if 1	/* Smart-Ptr */
 	m_root.reset( new task_base() );
 	(m_root.get())->setIdentify( "task_root" );
-#else
-	m_root = new task_base();
-	m_root->setIdentify( "task_root" );
-#endif	/* Smart-Ptr */
 }
 
 task_manager::~task_manager()
@@ -35,12 +26,7 @@ task_manager::~task_manager()
 void task_manager::destroy_tasks()
 {
 //	get_root()->destroy();
-#if 1	/* Smart-Ptr */
 	m_root.reset();
-#else
-	delete(m_root);
-	m_root = 0;
-#endif	/* Smart-Ptr */
 }
 
 

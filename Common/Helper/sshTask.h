@@ -8,18 +8,12 @@
 #include <vector>
 #include <list>
 
-#if 1	/* Smart-Ptr */
 #include <memory>
-#else
-#endif	/* Smart-Ptr */
 
-#if 1	/* Smart-Ptr */
 // 未使用引数の警告避け
 #ifndef SPRITESTUDIO6SDK_NOUSE_ARGUMENT
 	#define	SPRITESTUDIO6SDK_NOUSE_ARGUMENT(_name_)	( void )( &_name_ );
 #endif
-#else
-#endif	/* Smart-Ptr */
 
 namespace spritestudio6
 {
@@ -243,11 +237,7 @@ public:
 
 	virtual void	draw(){};
 //	virtual void	update(){};
-#if 1	/* Smart-Ptr */
 	virtual void	update(double delta){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(delta); };
-#else
-	virtual void	update(double delta){};
-#endif	/* Smart-Ptr */
 	virtual void	init(){};
 
 };
@@ -262,11 +252,7 @@ class task_manager{
 private:
 	
 	int			m_priority_max;
-#if 1	/* Smart-Ptr */
 	std::unique_ptr<task_base> m_root;
-#else
-	task_base*  m_root;
-#endif	/* Smart-Ptr */
 
 	void exec_resist_tasks_sub(task_base* task ,double delta_time);	
 	void draw_resist_tasks_sub(task_base* task );
@@ -283,11 +269,7 @@ public:
 	void draw_resist_tasks();
 	task_base* get_root()
 	{
-#if 1	/* Smart-Ptr */
 		return m_root.get();
-#else
-		return m_root;
-#endif	/* Smart-Ptr */
 	}
 	void destroy_tasks();
 

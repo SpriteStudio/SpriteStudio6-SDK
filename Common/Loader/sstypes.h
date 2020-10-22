@@ -14,13 +14,10 @@
 	SsString	__EnumToString_( type::_enum n );\
 	void	__StringToEnum_( SsString n , type::_enum& out);\
 
-#if 1	/* Smart-Ptr */
 // 未使用引数の警告避け
 #ifndef SPRITESTUDIO6SDK_NOUSE_ARGUMENT
 	#define	SPRITESTUDIO6SDK_NOUSE_ARGUMENT(_name_)	( void )( &_name_ );
 #endif
-#else
-#endif	/* Smart-Ptr */
 
 namespace spritestudio6
 {
@@ -970,13 +967,8 @@ public:
 		return !(*this == r);
 	}
 
-#if 1	/* Smart-Ptr */
 	bool	operator ==(int n) const { SPRITESTUDIO6SDK_NOUSE_ARGUMENT(n);	return false; }
 	bool	operator !=(int n) const { SPRITESTUDIO6SDK_NOUSE_ARGUMENT(n);	return false; }
-#else
-	bool	operator ==(int n) const { return false; }
-	bool	operator !=(int n) const { return false; }
-#endif	/* Smart-Ptr */
 
 	SsDeformAttr		operator +(const SsDeformAttr& rhs) const
 	{

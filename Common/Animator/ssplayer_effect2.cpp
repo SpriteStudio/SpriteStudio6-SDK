@@ -57,12 +57,8 @@ void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recal
 
 	//_t = 0時点の値を作る
 	//シード値で固定化されることが前提
-#if 1	/* Smart-Ptr */
 	std::vector<unsigned long>&	seedListRaw = *(seedList.get());
 	unsigned long pseed = seedListRaw[p->id % seedTableLen];
-#else
-  	unsigned long pseed = seedList[p->id % seedTableLen];
-#endif	/* Smart-Ptr */
 
 	//自身のシード値、エミッターのシード値、親パーティクルのＩＤをシード値とする
 	rand.init_genrand(( pseed + emitterSeed + p->pid + seedOffset ));
@@ -380,7 +376,6 @@ void	SsEffectEmitter::precalculate2()
 	//_lifeExtend.clear();
 	_offsetPattern.clear();
 
-#if 1	/* Smart-Ptr */
 	if ( !particleExistList )
 	{
 		particleExistList.reset( new std::vector<particleExistSt>(emitter.emitmax) ); //存在しているパーティクルが入る計算用バッファ
@@ -391,14 +386,6 @@ void	SsEffectEmitter::precalculate2()
 	{
 		particleExistListRaw[i].Cleanup();
 	}
-#else
-	if ( particleExistList == 0 )
-	{
-		particleExistList = new particleExistSt[emitter.emitmax]; //存在しているパーティクルが入る計算用バッファ
-	}
-
-	memset( particleExistList , 0 , sizeof(particleExistSt) * emitter.emitmax );
-#endif	/* Smart-Ptr */
 
 	if ( emitter.emitnum < 1 ) emitter.emitnum = 1;
 
@@ -441,14 +428,7 @@ void	SsEffectEmitter::precalculate2()
 	}
 
 
-#if 1	/* Smart-Ptr */
 	seedList.reset();
-#else
-	if (seedList != NULL)
-	{
-		delete[] seedList;
-	}
-#endif	/* Smart-Ptr */
 
     particleListBufferSize = emitter.emitmax;
 
@@ -456,7 +436,6 @@ void	SsEffectEmitter::precalculate2()
 	rand.init_genrand((emitterSeed));
 
 	seedTableLen = particleListBufferSize * 3;
-#if 1	/* Smart-Ptr */
 	seedList.reset( new std::vector<unsigned long>(seedTableLen) );
 	//各パーティクルＩＤから参照するシード値をテーブルとして作成する
 	std::vector<unsigned long>&	seedListRaw = *(seedList.get());
@@ -464,15 +443,6 @@ void	SsEffectEmitter::precalculate2()
 	{
     	seedListRaw[i] = rand.genrand_uint32();
 	}
-#else
-	seedList = new unsigned long[seedTableLen];
-	//各パーティクルＩＤから参照するシード値をテーブルとして作成する
-	for ( size_t i = 0 ; i < seedTableLen ; i++ )
-	{
-    	seedList[i] = rand.genrand_uint32();
-	}
-#endif	/* Smart-Ptr */
-
 }
 
 
@@ -488,10 +458,7 @@ void SsEffectEmitter::updateEmitter( double _time , int slide )
 	int pnum = (int)(_emitpattern.size());
 	slide = slide * SEED_MAGIC;
 
-#if 1	/* Smart-Ptr */
 	std::vector<particleExistSt>& particleExistListRaw = *(particleExistList.get());
-#else
-#endif	/* Smart-Ptr */
 	for ( int i = 0 ; i < onum ; i ++ )
 	{
 		int slide_num = ( i + slide ) % pnum;
@@ -500,20 +467,14 @@ void SsEffectEmitter::updateEmitter( double _time , int slide )
 
 		int t = (int)(_time - _offsetPattern[i]);
 
-#if 1	/* Smart-Ptr */
 		particleExistListRaw[i].exist = false;
 		particleExistListRaw[i].born = false;
-#else
-		particleExistList[i].exist = false;
-		particleExistList[i].born = false;
-#endif	/* Smart-Ptr */
 
 		if ( targetEP->cycle != 0 )
 		{
 			int loopnum = t / targetEP->cycle;
 			int cycle_top = loopnum * targetEP->cycle;
 
-#if 1	/* Smart-Ptr */
 			particleExistListRaw[i].cycle = loopnum;
 
 			particleExistListRaw[i].stime = cycle_top + _offsetPattern[i];
@@ -550,44 +511,6 @@ void SsEffectEmitter::updateEmitter( double _time , int slide )
 				 particleExistListRaw[i].exist = false;
 				 particleExistListRaw[i].born = false;
 			}
-#else
-            particleExistList[i].cycle = loopnum;
-
-			particleExistList[i].stime = cycle_top + _offsetPattern[i];
-			particleExistList[i].endtime = particleExistList[i].stime + targetEP->life;// + _lifeExtend[slide_num];
-
-			if ( (double)particleExistList[i].stime <= _time &&  (double)particleExistList[i].endtime > _time )
-			{
-				particleExistList[i].exist = true;
-				particleExistList[i].born = true;
-			}
-
-			if ( !this->emitter.Infinite )
-			{
-				if ( particleExistList[i].stime >= this->emitter.life ) //エミッターが終了している
-				{
-					particleExistList[i].exist = false;    //作られてない
-
-					//最終的な値に計算し直し <-事前計算しておくといいかも・
-					int t = this->emitter.life - _offsetPattern[i];
-					int loopnum = t / targetEP->cycle;
-
-					int cycle_top = loopnum * targetEP->cycle;
-
-					particleExistList[i].stime = cycle_top + _offsetPattern[i];
-
-					particleExistList[i].endtime = particleExistList[i].stime + targetEP->life;// + _lifeExtend[slide_num];
-					particleExistList[i].born = false;
-				}else{
-					particleExistList[i].born = true;
-				}
-			}
-
-			if ( t < 0 ){
-				 particleExistList[i].exist = false;
-				 particleExistList[i].born = false;
-			}
-#endif	/* Smart-Ptr */
 		}
 	}
 
@@ -596,12 +519,8 @@ void SsEffectEmitter::updateEmitter( double _time , int slide )
 
 const particleExistSt*	SsEffectEmitter::getParticleDataFromID(int id)
 {
-#if 1	/* Smart-Ptr */
 	std::vector<particleExistSt>& particleExistListRaw = *(particleExistList.get());
 	return &particleExistListRaw[id];
-#else
-	return &particleExistList[id];
-#endif	/* Smart-Ptr */
 }
 
 
@@ -805,11 +724,7 @@ void	SsEffectRenderV2::clearEmitterList()
 {
 	for ( size_t i = 0 ; i < this->emmiterList.size(); i++)
 	{
-#if 1	/* Smart-Ptr */
 		emmiterList[i].reset();
-#else
-		delete emmiterList[i];
-#endif	/* Smart-Ptr */
 	}
 
 	emmiterList.clear();
@@ -927,17 +842,12 @@ void    SsEffectRenderV2::reload()
 	layoutScale.x = (float)(this->effectData->layoutScaleX) / 100.0f;
 	layoutScale.y = (float)(this->effectData->layoutScaleY) / 100.0f;
 
-#if 1	/* Smart-Ptr */
-	//MEMO: スコープ内ワークなので、スマートポインタ化していません。
+	//MEMO: cnumはスコープ内ワークなので、スマートポインタ化していません。
 	int* cnum = new int[list.size()];
 	for(size_t i=0; i<list.size(); i++)
 	{
 		cnum[i] = 0;
 	}
-#else
-	int* cnum = new int[list.size()];
-    memset( cnum , 0 , sizeof(int) * list.size() );
-#endif	/* Smart-Ptr */
 
 	bool _Infinite = false;
 	//パラメータを取得
@@ -963,11 +873,8 @@ void    SsEffectRenderV2::reload()
 			cnum[e->_parentIndex]++;
 			if ( cnum[e->_parentIndex] > 10 )
 			{
-#if 1	/* Smart-Ptr */
 				delete e;
 				e = 0;
-#else
-#endif	/* Smart-Ptr */
 				_isWarningData = true;
 				continue; //子１０ノード表示制限
 			}
@@ -979,11 +886,8 @@ void    SsEffectRenderV2::reload()
 				if ( a != 0 )
 				{
 				   if ( list[a]->parentIndex > 0 ) {
-#if 1	/* Smart-Ptr */
 						delete e;
 						e = 0;
-#else
-#endif	/* Smart-Ptr */
 						_isWarningData = true;
 						continue;
 				   }
@@ -991,28 +895,16 @@ void    SsEffectRenderV2::reload()
 			}
 
 			initEmitter( e , node );
-#if 1	/* Smart-Ptr */
 			this->emmiterList.push_back( std::move( std::unique_ptr<SsEffectEmitter>(e) ) );
-#else
-			this->emmiterList.push_back(e);
-#endif	/* Smart-Ptr */
 			if ( e->emitter.Infinite ) _Infinite = true;
 		}else
 		{
 			//エミッター同士を繋ぎたいので
-#if 1	/* Smart-Ptr */
 			this->emmiterList.push_back( std::move( std::unique_ptr<SsEffectEmitter>() ) );
-#else
-			this->emmiterList.push_back(0);
-#endif	/* Smart-Ptr */
 		}
 	}
 
-#if 1	/* Smart-Ptr */
 	delete[] cnum;
-#else
-	delete[] cnum;
-#endif	/* Smart-Ptr */
 	Infinite = _Infinite;
 
 
@@ -1021,13 +913,9 @@ void    SsEffectRenderV2::reload()
 
 	effectTimeLength = 0;
 	//事前計算計算  updateListにルートの子を配置し親子関係を結ぶ
-#if 1	/* Smart-Ptr */
 	SsEffectEmitter* emitter;
-#else
-#endif	/* Smart-Ptr */
 	for ( size_t i = 0 ; i < this->emmiterList.size(); i++)
 	{
-#if 1	/* Smart-Ptr */
 		emitter = emmiterList[i].get();
 		if ( emitter != 0 )
 		{
@@ -1059,38 +947,6 @@ void    SsEffectRenderV2::reload()
 				effectTimeLength = emitter->globaltime;
 			}
 		}
-#else
-		if (emmiterList[i] != 0 )
-		{
-			emmiterList[i]->uid = (int)i;
-			//emmiterList[i]->precalculate();
-			emmiterList[i]->precalculate2(); //ループ対応形式
-
-
-			int  pi =  emmiterList[i]->_parentIndex;
-
-			if ( emmiterList[i]->_parentIndex == 0 )  //ルート直下
-			{
-				emmiterList[i]->_parent = 0;
-				emmiterList[i]->globaltime = emmiterList[i]->getTimeLength();
-				updateList.push_back(emmiterList[i]);
-			}else{
-
-				void* t = this->emmiterList[pi];
-
-                emmiterList[i]->_parent = emmiterList[pi];
-
-				emmiterList[i]->globaltime = (size_t)(emmiterList[i]->getTimeLength()) + (size_t)(this->emmiterList[pi]->getTimeLength());
-
-				updateList.push_back(emmiterList[i]);
-			}
-
-			if ( emmiterList[i]->globaltime > effectTimeLength )
-			{
-				effectTimeLength = emmiterList[i]->globaltime;
-			}
-		}
-#endif	/* Smart-Ptr */
 	}
 	//プライオリティソート
 	std::sort( updateList.begin() , updateList.end() , compare_priority );

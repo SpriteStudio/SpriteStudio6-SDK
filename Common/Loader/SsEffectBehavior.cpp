@@ -1,15 +1,11 @@
 ﻿#include "SsEffectBehavior.h"
 
-#if 1	/* Smart-Ptr */
 #include <memory>
 #include <utility>
-#else
-#endif	/* Smart-Ptr */
 
 namespace spritestudio6
 {
 
-#if 1	/* Smart-Ptr */
 SsEffectBehavior::~SsEffectBehavior()
 {
 	for( std::vector<std::unique_ptr<SsEffectElementBase>>::iterator itr = plist.begin();
@@ -18,8 +14,6 @@ SsEffectBehavior::~SsEffectBehavior()
 		itr->reset();
 	}
 }
-#else
-#endif	/* Smart-Ptr */
 
 SsEffectElementBase*	SsEffectBehavior::Factory(const char* name , libXML::XMLElement* e )
 {
@@ -67,11 +61,7 @@ void	SsEffectBehavior::EffectElementLoader(ISsXmlArchiver* ar)
 		SsEffectElementBase* v = Factory( value , e );
 		if ( v )
 		{
-#if 1	/* Smart-Ptr */
 			plist.push_back( std::move( std::unique_ptr<SsEffectElementBase>(v) ) );
-#else
-			plist.push_back( v );
-#endif	/* Smart-Ptr */
 		}
 		e = e->NextSiblingElement();
 	}

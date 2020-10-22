@@ -4,13 +4,9 @@
 #include "../Loader/ssloader.h"
 #include "MersenneTwister.h"
 #include "ssplayer_cellmap.h"
-
-#if 1	/* Smart-Ptr */
 #include "ssplayer_effect.h"
 
 #include <memory>
-#else
-#endif	/* Smart-Ptr */
 
 // PFMEM_TEST
 #define SPRITESTUDIO6SDK_PFMEM_TEST ( 1 )
@@ -119,17 +115,10 @@ public:
 		m_isCreateChild = false;
 		m_isInit = false;
 	}
-#if 1	/* Smart-Ptr */
 	virtual bool	genarate( SsEffectRenderer* render ){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(render);	return true; }
 
     virtual void	update(float delta){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(delta); }
 	virtual void	draw(SsEffectRenderer* render){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(render); }
-#else
-	virtual bool	genarate( SsEffectRenderer* render ){return true;}
-
-    virtual void	update(float delta){}
-	virtual void	draw(SsEffectRenderer* render){}
-#endif	/* Smart-Ptr */
 
 	virtual void	debugdraw(){}
 
@@ -202,11 +191,7 @@ public:
 	//パーティクルパラメータ
     SsEffectNode*		param_particle;
 
-#if 1	/* Smart-Ptr */
 	std::unique_ptr<CMersenneTwister>	MT;
-#else
-	CMersenneTwister*	     MT;
-#endif	/* Smart-Ptr */
 
 	//以前からの移植
 	int				maxParticle;    //
@@ -235,13 +220,9 @@ public:
 public:
 	void	InitParameter()
 	{
-#if 1	/* Smart-Ptr */
 		if ( !MT ) MT.reset( new CMersenneTwister() );
-#else
-		if ( MT ==0 ) MT = new CMersenneTwister();
-#endif	/* Smart-Ptr */
 
-        SsEffectRenderAtom::Initialize();
+		SsEffectRenderAtom::Initialize();
 		delay = 0;
 		interval = 0;
 		intervalleft = 0;
@@ -258,11 +239,7 @@ public:
 	}
 
 	SsEffectRenderEmitter() :
-#if 1	/* Smart-Ptr */
 		MT()
-#else
-		MT(0)
-#endif	/* Smart-Ptr */
 	{
 	}
 	SsEffectRenderEmitter( SsEffectNode* refdata , SsEffectRenderAtom* _p){
@@ -273,25 +250,14 @@ public:
 
 	virtual ~SsEffectRenderEmitter()
 	{
-#if 1	/* Smart-Ptr */
 		MT.reset();
-#else
-		if ( MT )
-		{
-			delete MT;
-		}
-#endif	/* Smart-Ptr */
 	}
 	SsRenderType::_enum		getMyType(){ return SsRenderType::EmmiterNode;}
 	void			setMySeed( unsigned int seed );
 	void			TrushRandom(int loop)
 	{
 		for ( int i = 0 ; i < loop ; i++ )
-#if 1	/* Smart-Ptr */
 			(MT.get())->genrand_uint32();
-#else
-			MT->genrand_uint32();
-#endif	/* Smart-Ptr */
 	}
 
 	virtual void	Initialize();
@@ -471,11 +437,7 @@ private:
 
 public:
 	//アップデート物のリスト
-#if 1	/* Smart-Ptr */
 	std::unique_ptr<SsEffectRenderAtom>	render_root;
-#else
-	SsEffectRenderAtom* render_root;
-#endif	/* Smart-Ptr */
 
 	bool			usePreMultiTexture;
 	u32				parentAnimeStartFrame;
@@ -495,11 +457,7 @@ public:
 		effectData(0)
 		,parentState(0)
 		,mySeed(0)
-#if 1	/* Smart-Ptr */
 		,render_root()
-#else
-		,render_root(0)
-#endif	/* Smart-Ptr */
 		,parentAnimeStartFrame(0)
 		,m_isLoop(false)
 #if SPRITESTUDIO6SDK_PFMEM_TEST

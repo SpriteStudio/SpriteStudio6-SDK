@@ -2,17 +2,13 @@
 #include "IsshTexture.h"
 #include "../Helper/DebugPrint.h"
 
-#if 1	/* Smart-Ptr */
 #include "stb_image.h"
-#else
-#endif	/* Smart-Ptr */
 
 
 namespace spritestudio6
 {
 
 
-#if 1	/* Smart-Ptr */
 static SSTextureLoader::DataHandle defaultLoadImageFromFile( const char* fileName, int* width, int* height, int* bpp )
 {
 	stbi_uc* image = stbi_load( fileName, width , height , bpp , 0 );
@@ -82,8 +78,6 @@ bool SSTextureLoader::CheckSizePow2(int width, int height)
 	}
 	return (FunctionCheckSizePow2( width, height ));
 }
-#else
-#endif	/* Smart-Ptr */
 
 ISSTexture*	SSTextureFactory::m_texture_base_class = 0;
 SSTextureFactory*	SSTextureFactory::m_myInst = 0;
@@ -106,12 +100,7 @@ ISSTexture*	SSTextureFactory::loadTexture(SsString filePath)
 			_tex = m_myInst->create();
 			_tex->filenamepath = filePath;
  
-#if 1	/* Smart-Ptr */
 			if (_tex->Load(filePath.c_str()) == false)
-#else
-			_tex->Load(filePath.c_str());
-			if (!_tex)
-#endif	/* Smart-Ptr */
 			{
 				delete _tex;
 				return 0;

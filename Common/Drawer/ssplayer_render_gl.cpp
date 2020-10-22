@@ -10,11 +10,8 @@
 #include <GL/GL.h>
 #endif
 
-#if 1	/* Smart-Ptr */
 #include <map>
 #include <memory>
-#else
-#endif	/* Smart-Ptr */
 
 #include "../Helper/OpenGL/SSTextureGL.h"
 
@@ -53,13 +50,9 @@ struct ShaderSetting
 	char*	fs;
 };
 
-#if 1	/* Smart-Ptr */
 //MEMO: 現在デストラクト時に（定義リソースが）自動解放されることを期待しています。
 //      ※明示的な解放タイミングが見当たらないため。
 static std::map<SsString, std::unique_ptr<SSOpenGLProgramObject>>	s_DefaultShaderMap;
-#else
-static std::map<SsString, SSOpenGLProgramObject*>	s_DefaultShaderMap;
-#endif	/* Smart-Ptr */
 
 static const ShaderSetting glshader_default[] =
 {
@@ -296,7 +289,6 @@ static SSOpenGLProgramObject* createProgramObject( const SsString& name, const S
 	pPo->Attach( pFs );
 
 	if ( pPo->Link() != 0 ) {
-#if 1	/* Smart-Ptr */
 		if ( pVs )
 			delete pVs;
 		if ( pVs )
@@ -307,14 +299,6 @@ static SSOpenGLProgramObject* createProgramObject( const SsString& name, const S
 		pVs = nullptr;
 		pFs = nullptr;
 		pPo = nullptr;
-#else
-		delete pVs;
-		delete pFs;
-		delete pPo;
-		pVs = NULL;
-		pFs = NULL;
-		pPo = NULL;
-#endif	/* Smart-Ptr */
 	}
 
 	return	pPo;
@@ -349,15 +333,9 @@ void	SsRenderGL::initialize()
 	SSOpenGLShaderMan::PushPgObject( pgo2 );
 
 	s_DefaultShaderMap.clear();
-#if 1	/* Smart-Ptr */
 	for ( int i = 0; glshader_default[i].name != nullptr; i++ ) {
 		s_DefaultShaderMap[glshader_default[i].name].reset( createProgramObject( glshader_default[i].name, glshader_default[i].vs, glshader_default[i].fs ) );
 	}
-#else
-	for ( int i = 0; glshader_default[i].name != NULL; i++ ) {
-		s_DefaultShaderMap[glshader_default[i].name] = createProgramObject( glshader_default[i].name, glshader_default[i].vs, glshader_default[i].fs );
-	}
-#endif	/* Smart-Ptr */
 
 //	m_isInit = true;
 
@@ -711,10 +689,7 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 	SsPartState* state = mesh->myPartState;
 
 	// パーツカラーの指定
-#if 1	/* Smart-Ptr */
 	std::vector<float>& colorsRaw = *(mesh->colors.get());
-#else
-#endif	/* Smart-Ptr */
 	if (state->is_parts_color)
 	{
 
@@ -741,17 +716,10 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 		}
 		for (size_t i = 0; i < mesh->ver_size; i++)
 		{
-#if 1	/* Smart-Ptr */
 			colorsRaw[i * 4 + 0] = setcol[0];
 			colorsRaw[i * 4 + 1] = setcol[1];
 			colorsRaw[i * 4 + 2] = setcol[2];
 			colorsRaw[i * 4 + 3] = setcol[3] *alpha; // 不透明度を適用する。
-#else
-			mesh->colors[i * 4 + 0] = setcol[0];
-			mesh->colors[i * 4 + 1] = setcol[1];
-			mesh->colors[i * 4 + 2] = setcol[2];
-			mesh->colors[i * 4 + 3] = setcol[3] *alpha; // 不透明度を適用する。
-#endif	/* Smart-Ptr */
 		}
 	}
 	else {
@@ -759,17 +727,10 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 		//ウェイトカラーの合成色を頂点カラーとして使用（パーセント円の流用
 		for (size_t i = 0; i < mesh->ver_size; i++)
 		{
-#if 1	/* Smart-Ptr */
 			colorsRaw[i * 4 + 0] = 1.0f;
 			colorsRaw[i * 4 + 1] = 1.0f;
 			colorsRaw[i * 4 + 2] = 1.0f;
 			colorsRaw[i * 4 + 3] = alpha;
-#else
-			mesh->colors[i * 4 + 0] = 1.0f;
-			mesh->colors[i * 4 + 1] = 1.0f;
-			mesh->colors[i * 4 + 2] = 1.0f;
-			mesh->colors[i * 4 + 3] = alpha;
-#endif	/* Smart-Ptr */
 		}
 
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -787,7 +748,7 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
-#if 1	/* Smart-Ptr */
+
 	// UV 配列を指定する
 	glTexCoordPointer(2, GL_FLOAT, 0, (GLvoid *)((mesh->uvs.get())->data()));
 
@@ -798,17 +759,6 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 	glVertexPointer(3, GL_FLOAT, 0, (GLvoid *)((mesh->draw_vertices.get())->data()));
 
 	glDrawElements(GL_TRIANGLES, mesh->tri_size * 3, GL_UNSIGNED_SHORT, (mesh->indices.get())->data());
-#else
-	// UV 配列を指定する
-	glTexCoordPointer(2, GL_FLOAT, 0, (GLvoid *)mesh->uvs);
-
-	glColorPointer(4, GL_FLOAT, 0, (GLvoid *)mesh->colors);
-
-	// 頂点バッファの設定
-	glVertexPointer(3, GL_FLOAT, 0, (GLvoid *)mesh->draw_vertices);
-
-	glDrawElements(GL_TRIANGLES, mesh->tri_size * 3, GL_UNSIGNED_SHORT, mesh->indices);
-#endif	/* Smart-Ptr */
 
 	glPopMatrix();
 
@@ -846,11 +796,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	int		gl_target = GL_TEXTURE_2D;
 	float	rates[5];
 
-#if 1	/* Smart-Ptr */
 	SSOpenGLProgramObject*	pPrgObject = nullptr;
-#else
-	SSOpenGLProgramObject*	pPrgObject = NULL;
-#endif	/* Smart-Ptr */
 
 	if ( state->hide ) return ; //非表示なので処理をしない
 
@@ -902,7 +848,6 @@ void	SsRenderGL::renderPart( SsPartState* state )
 
 #if SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON
 		if ( state->is_shader ) {
-#if 1	/* Smart-Ptr */
 			std::map<SsString, std::unique_ptr<SSOpenGLProgramObject>>::const_iterator it = s_DefaultShaderMap.find( state->shaderValue.id );
 			if ( it != s_DefaultShaderMap.end() ) {
 				pPrgObject = s_DefaultShaderMap[state->shaderValue.id].get();
@@ -913,18 +858,6 @@ void	SsRenderGL::renderPart( SsPartState* state )
 			if ( it != s_DefaultShaderMap.end() ) {
 				pPrgObject = s_DefaultShaderMap["system::default"].get();
 			}
-#else
-			std::map<SsString, SSOpenGLProgramObject*>::const_iterator it = s_DefaultShaderMap.find( state->shaderValue.id );
-			if ( it != s_DefaultShaderMap.end() ) {
-				pPrgObject = s_DefaultShaderMap[state->shaderValue.id];
-			}
-		}
-		if ( !pPrgObject ) {
-			std::map<SsString, SSOpenGLProgramObject*>::const_iterator it = s_DefaultShaderMap.find( "system::default" );
-			if ( it != s_DefaultShaderMap.end() ) {
-				pPrgObject = s_DefaultShaderMap["system::default"];
-			}
-#endif	/* Smart-Ptr */
 		}
 
 //		if ( glpgObject )

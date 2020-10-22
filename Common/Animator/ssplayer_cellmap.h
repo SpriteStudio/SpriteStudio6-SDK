@@ -1,12 +1,9 @@
 ﻿#ifndef __SSPLAYER_CELLMAP__
 #define __SSPLAYER_CELLMAP__
 
-#if 1	/* Smart-Ptr */
 #include "sstypes.h"
 
 #include <memory>
-#else
-#endif	/* Smart-Ptr */
 
 namespace spritestudio6
 {
@@ -66,17 +63,10 @@ class	SsCellMapList
 {
 private:
 	//同名セルマップは上書き
-#if 1	/* Smart-Ptr */
 	std::map<SsString, std::unique_ptr<SsCelMapLinker>>	CellMapDic;
 	typedef std::map<SsString,std::unique_ptr<SsCelMapLinker>>::iterator CellMapDicItr;
 
 	std::vector<std::unique_ptr<SsCelMapLinker>>	CellMapList;//添え字参照用
-#else
-	std::map<SsString,SsCelMapLinker*>		CellMapDic;
-	typedef std::map<SsString,SsCelMapLinker*>::iterator CellMapDicItr;
-
-	std::vector<SsCelMapLinker*>			CellMapList;//添え字参照用
-#endif	/* Smart-Ptr */
 
 	SsString	CellMapPath;
 
@@ -90,20 +80,12 @@ public:
 	{
 		for ( CellMapDicItr itr = CellMapDic.begin() ; itr != CellMapDic.end() ; itr ++)
 		{
-#if 1	/* Smart-Ptr */
 			itr->second.reset();
-#else
-			delete itr->second;
-#endif	/* Smart-Ptr */
 		}
 
 		for ( size_t i = 0 ; i < CellMapList.size(); i++ )
 		{
-#if 1	/* Smart-Ptr */
 			CellMapList[i].reset();
-#else
-			delete CellMapList[i];
-#endif	/* Smart-Ptr */
 		}
 		CellMapList.clear();
 		CellMapDic.clear();
@@ -124,11 +106,7 @@ public:
 	SsCelMapLinker*	getCellMapLink( int index )
 	{	
 		if (CellMapList.size() <= index) return 0;
-#if 1	/* Smart-Ptr */
 		return CellMapList[index].get();
-#else
-		return CellMapList[index];
-#endif	/* Smart-Ptr */
 	}
 	
 	bool preloadTexture(SsProject* proj);

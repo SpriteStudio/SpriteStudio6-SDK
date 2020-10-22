@@ -128,11 +128,6 @@ public:
 
 	inline void RotationXYZ(const float x, const float y, const float z)
 	{
-#if 1	/* Smart-Ptr */
-#else
-		SsOpenGLMatrix mx;
-#endif	/* Smart-Ptr */
-
 		if (x != 0.0f)
 		{
 			SsOpenGLMatrix mx;

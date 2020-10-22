@@ -5,10 +5,7 @@
 #include "sstypes.h"
 #include "ssvalue.h"
 
-#if 1	/* Smart-Ptr */
 #include <memory>
-#else
-#endif	/* Smart-Ptr */
 
 namespace spritestudio6
 {
@@ -19,12 +16,7 @@ class SsEffectRenderer;
 class SsEffectBehavior
 {
 public:
-#if 1	/* Smart-Ptr */
 	std::vector<std::unique_ptr<SsEffectElementBase>> plist;
-#else
-
-	std::vector<SsEffectElementBase*> plist;
-#endif	/* Smart-Ptr */
 
 public:
     SsCell*							refCell;
@@ -34,11 +26,7 @@ public:
 
 public:
 	SsEffectBehavior() : refCell(0),BlendType(SsRenderBlendType::invalid) {}
-#if 1	/* Smart-Ptr */
 	virtual ~SsEffectBehavior();
-#else
-	virtual ~SsEffectBehavior(){}
-#endif	/* Smart-Ptr */
 
 	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{

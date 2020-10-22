@@ -11,21 +11,14 @@
 #include	<iostream>
 #include	<sstream>
 
-#if 1	/* Smart-Ptr */
 #include	<memory>
-#else
-#endif	/* Smart-Ptr */
 
 namespace spritestudio6
 {
 
 
 SSOpenGLProgramObject*			glpgObject = 0 ;
-#if 1	/* Smart-Ptr */
 std::unique_ptr<SSOpenGLShaderMan>	SSOpenGLShaderMan::m_Myinst;
-#else
-SSOpenGLShaderMan*              SSOpenGLShaderMan::m_Myinst = 0;
-#endif	/* Smart-Ptr */
 
 
 

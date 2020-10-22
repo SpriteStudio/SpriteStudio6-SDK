@@ -2,10 +2,7 @@
 #ifndef __SSPLAYER_MESH__
 #define __SSPLAYER_MESH__
 
-#if 1	/* Smart-Ptr */
 #include <memory>
-#else
-#endif	/* Smart-Ptr */
 
 namespace spritestudio6
 {
@@ -31,7 +28,6 @@ struct StBoneWeight
 
 	int	getBoneNum() { return bindBoneNum; }
 
-#if 1	/* Smart-Ptr */
 	void Cleanup()
 	{
 		bindBoneNum = 0;
@@ -48,8 +44,6 @@ struct StBoneWeight
 			length[i] = 0.0f;
 		}
 	}
-#else
-#endif	/* Smart-Ptr */
 };
 
 class SsMeshPart
@@ -57,48 +51,25 @@ class SsMeshPart
 public:
 
 
-#if 1	/* Smart-Ptr */
 	std::unique_ptr<std::vector<float>>				vertices;		//[3 * 10];///< 座標
 	std::unique_ptr<std::vector<float>>				colors;			//[4 * 10];	///< カラー
 	std::unique_ptr<std::vector<float>>				weightColors;	//[4 * 10];	///< ウェイト色分けカラー
 	std::unique_ptr<std::vector<float>>				uvs;			//[2 * 10];		///< UV
 	std::unique_ptr<std::vector<unsigned short>>	indices;
-#else
-	float			*vertices;			//[3 * 10];///< 座標
-	float			*colors;			//[4 * 10];	///< カラー
-	float			*weightColors;		//[4 * 10];	///< ウェイト色分けカラー
-	float			*uvs;				//[2 * 10];		///< UV
-	unsigned short	*indices;
-#endif	/* Smart-Ptr */
 	int				indices_num;
 	int				tri_size;
 	int				ver_size;
-#if 1	/* Smart-Ptr */
 	std::unique_ptr<std::vector<float>>	draw_vertices;	//[3 * 10];///< 座標
 
 	std::unique_ptr<std::vector<float>>	offset_world_vertices;	// 描画に使われるデフォームアトリビュート
-#else
-	float			*draw_vertices;		//[3 * 10];///< 座標
-
-	float			*offset_world_vertices;	// 描画に使われるデフォームアトリビュート
-#endif	/* Smart-Ptr */
 											
 	//ツール用テンポラリワーク [editer]
-#if 1	/* Smart-Ptr */
 	std::unique_ptr<std::vector<SsVector2>>	vertices_outer;
 	std::unique_ptr<std::vector<SsVector2>>	update_vertices_outer;
-#else
-	SsVector2*					vertices_outer;
-	SsVector2*					update_vertices_outer;
-#endif	/* Smart-Ptr */
 	size_t						outter_vertexnum;
 
 public:
-#if 1	/* Smart-Ptr */
 	std::unique_ptr<std::vector<StBoneWeight>>	bindBoneInfo;
-#else
-	StBoneWeight*   	bindBoneInfo;
-#endif	/* Smart-Ptr */
 
 	SsCell*  			targetCell;
 	ISSTexture*			targetTexture;
@@ -111,53 +82,27 @@ public:
 public:
 	SsMeshPart() :
 		isBind(false), targetCell(0)
-#if 1	/* Smart-Ptr */
 		, bindBoneInfo()
 		, weightColors()
 		, vertices_outer()
 		, draw_vertices()
-#else
-		, bindBoneInfo(0)
-		, weightColors(0)
-		, vertices_outer(0)
-		, draw_vertices(0)
-#endif	/* Smart-Ptr */
 		, myPartState(0)
-#if 1	/* Smart-Ptr */
 		, vertices(), colors(), uvs(), indices()
 		, update_vertices_outer()
 		, offset_world_vertices()
-#else
-		, vertices(0), colors(0), uvs(0), indices(0)
-		, update_vertices_outer(0)
-		, offset_world_vertices(0)
-#endif	/* Smart-Ptr */
 	{
 	}
 
 
 	SsMeshPart(SsPartState* s) :
 		isBind(false), targetCell(0)
-#if 1	/* Smart-Ptr */
 		, weightColors()
 		, bindBoneInfo()
 		, vertices_outer()
 		, draw_vertices()
-#else
-		, weightColors(0)
-		, bindBoneInfo(0)
-		, vertices_outer(0)
-		, draw_vertices(0),
-#endif	/* Smart-Ptr */
-#if 1	/* Smart-Ptr */
 		, vertices(), colors(), uvs(), indices()
 		, update_vertices_outer()
 		, offset_world_vertices()
-#else
-		, vertices(0), colors(0), uvs(0), indices(0)
-		, update_vertices_outer(0)
-		, offset_world_vertices(0)
-#endif	/* Smart-Ptr */
 	{
 		myPartState = s;
 	}
@@ -173,12 +118,8 @@ public:
 	int		getVertexNum() { return ver_size; }
 	StBoneWeight*	getVerticesWeightInfo(int index) {
 		if (index > getVertexNum())return 0;
-#if 1	/* Smart-Ptr */
 		std::vector<StBoneWeight>& bindBoneInfoRaw = *(bindBoneInfo.get());
 		return &bindBoneInfoRaw[index];
-#else
-		return &bindBoneInfo[index];
-#endif	/* Smart-Ptr */
 	}
 
 	void    updateTransformMesh();            //再生時用　（バインドされたボーンに沿って変形を行う）
