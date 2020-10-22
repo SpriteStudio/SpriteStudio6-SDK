@@ -5,6 +5,8 @@
 #include "sstypes.h"
 #include "ssvalue.h"
 
+#include <memory>
+
 namespace spritestudio6
 {
 
@@ -14,7 +16,7 @@ class SsEffectRenderer;
 class SsEffectBehavior
 {
 public:
-	std::vector<SsEffectElementBase*> plist;
+	std::vector<std::unique_ptr<SsEffectElementBase>> plist;
 
 public:
     SsCell*							refCell;
@@ -24,13 +26,13 @@ public:
 
 public:
 	SsEffectBehavior() : refCell(0),BlendType(SsRenderBlendType::invalid) {}
-	virtual ~SsEffectBehavior(){}
+	virtual ~SsEffectBehavior();
 
-	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SPRITESTUDIO6DSK_SSAR_DECLARE(CellName);
-		SPRITESTUDIO6DSK_SSAR_DECLARE(CellMapName);
-		SPRITESTUDIO6DSK_SSAR_DECLARE_ENUM( BlendType );
+		SPRITESTUDIO6SDK_SSAR_DECLARE(CellName);
+		SPRITESTUDIO6SDK_SSAR_DECLARE(CellMapName);
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( BlendType );
 
 		if ( ar->getxml() )
 			EffectElementLoader( ar );

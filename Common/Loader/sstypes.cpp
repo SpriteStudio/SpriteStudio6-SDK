@@ -15,13 +15,13 @@ SsString	__EnumToString_( SsPartType::_enum n )
 	if ( SsPartType::effect == n) return "effect";
 
 
-	if (SsPartType::armature) return "armature";
-	if (SsPartType::mesh) return "mesh";
-	if (SsPartType::movenode) return "movenode";
-	if (SsPartType::constraint) return "constraint";
-	if (SsPartType::mask) return "mask";
-	if (SsPartType::joint) return "joint";
-	if (SsPartType::bonepoint) return "bonepoint";
+	if (SsPartType::armature == n) return "armature";
+	if (SsPartType::mesh == n) return "mesh";
+	if (SsPartType::movenode == n) return "movenode";
+	if (SsPartType::constraint == n) return "constraint";
+	if (SsPartType::mask == n) return "mask";
+	if (SsPartType::joint == n) return "joint";
+	if (SsPartType::bonepoint == n) return "bonepoint";
 
 
 	return "invalid";	
@@ -339,7 +339,7 @@ void	__StringToEnum_( SsString n , SsAttributeKind::_enum &out )
 }
 
 
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
 
 //---------------------------------------------------------------
 //相互変換 SsPartType
@@ -363,7 +363,7 @@ void 	__StringToEnum_( SsString n , SsEffectNodeType::_enum& out)
 }
 
 
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
 
 //---------------------------------------------------------------
 //相互変換 SsPartType

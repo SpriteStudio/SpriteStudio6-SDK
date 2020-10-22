@@ -11,13 +11,14 @@
 #include	<iostream>
 #include	<sstream>
 
+#include	<memory>
 
 namespace spritestudio6
 {
 
 
 SSOpenGLProgramObject*			glpgObject = 0 ;
-SSOpenGLShaderMan*              SSOpenGLShaderMan::m_Myinst = 0;
+std::unique_ptr<SSOpenGLShaderMan>	SSOpenGLShaderMan::m_Myinst;
 
 
 
@@ -140,6 +141,7 @@ int SSOpenGLShader::Compile( void )
 								   &length );
 		if ( length > 0 ) {
 			int	l;
+			// MEMO: ここはテンポラリを作って（すぐ消して）いるだけなので、スマートポインタ化していません
 			GLcharARB *info_log = new GLcharARB[ length ];
 			glGetInfoLogARB( h, length, &l, info_log );
 //			SsLogDbg( info_log );
@@ -249,6 +251,7 @@ SSOpenGLProgramObject::Link( void )
 		glGetObjectParameterivARB( h, GL_OBJECT_INFO_LOG_LENGTH_ARB,
 								   &length );
 		if ( length > 0 ) {
+			// MEMO: ここはテンポラリを作って（すぐ消して）いるだけなので、スマートポインタ化していません
 			int	l;
 			GLcharARB *info_log = new GLcharARB[ length ];
 			glGetInfoLogARB( h, length, &l, info_log );
@@ -266,7 +269,7 @@ SSOpenGLProgramObject::Use( void )
 {
 	glUseProgramObjectARB( h );
 	if ( glGetError() != GL_NO_ERROR ) {
-#if SPRITESTUDIO6DSK_PUT_UNIFORM_WARNIG
+#if SPRITESTUDIO6SDK_PUT_UNIFORM_WARNING
 //		SsLogInfo( _D("SSOpenGLProgramObject: glUseProgramObjectARB cannot use object\n") );
 #endif
 	}

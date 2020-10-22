@@ -26,8 +26,6 @@ public:
 };
 
 
-
-
 }	// namespace spritestudio6
 
 #endif

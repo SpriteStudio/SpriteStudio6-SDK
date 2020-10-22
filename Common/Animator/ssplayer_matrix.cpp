@@ -363,7 +363,7 @@ void 	SsOpenGLMatrix::inverseMatrix()
 
 
 				//オーバーフロー対策
-	for (int i = 0; i < 16; i++)
+	for (i = 0; i < 16; i++)
 	{
 		if (_matrix[i] > 0)
 		{

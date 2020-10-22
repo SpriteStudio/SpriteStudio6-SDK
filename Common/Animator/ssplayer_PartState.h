@@ -4,6 +4,9 @@
 //#include "../Loader/ssloader.h"
 //#include "../Helper/ssHelper.h"
 
+#include "ssplayer_effect2.h"
+
+#include <memory>
 
 namespace spritestudio6
 {
@@ -74,8 +77,8 @@ struct SsPartState
 
 	SsBlendType::_enum	alphaBlendType;
 		
-	SsAnimeDecoder*		refAnime;
-	SsEffectRenderV2*	refEffect;
+	std::unique_ptr<SsAnimeDecoder>		refAnime;
+	std::unique_ptr<SsEffectRenderV2>	refEffect;
 
 	//V4互換計算用
 	SsVector3		_temp_position;
@@ -87,7 +90,7 @@ struct SsPartState
 	int				masklimen;
 	bool			maskInfluence;
 
-	SsMeshPart*		meshPart;
+	std::unique_ptr<SsMeshPart>	meshPart;
 
 	SsDeformAttr	deformValue;
 

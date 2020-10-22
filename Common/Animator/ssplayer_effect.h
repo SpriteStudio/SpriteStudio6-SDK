@@ -4,7 +4,9 @@
 #include "../Loader/ssloader.h"
 #include "MersenneTwister.h"
 #include "ssplayer_cellmap.h"
+#include "ssplayer_effect.h"
 
+#include <memory>
 
 // PFMEM_TEST
 #define SPRITESTUDIO6SDK_PFMEM_TEST ( 1 )
@@ -113,11 +115,10 @@ public:
 		m_isCreateChild = false;
 		m_isInit = false;
 	}
-	virtual bool	genarate( SsEffectRenderer* render ){return true;}
+	virtual bool	genarate( SsEffectRenderer* render ){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(render);	return true; }
 
-
-    virtual void	update(float delta){}
-	virtual void	draw(SsEffectRenderer* render){}
+    virtual void	update(float delta){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(delta); }
+	virtual void	draw(SsEffectRenderer* render){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(render); }
 
 	virtual void	debugdraw(){}
 
@@ -190,7 +191,7 @@ public:
 	//パーティクルパラメータ
     SsEffectNode*		param_particle;
 
-	CMersenneTwister*	     MT;
+	std::unique_ptr<CMersenneTwister>	MT;
 
 	//以前からの移植
 	int				maxParticle;    //
@@ -219,9 +220,9 @@ public:
 public:
 	void	InitParameter()
 	{
-		if ( MT ==0 ) MT = new CMersenneTwister();
+		if ( !MT ) MT.reset( new CMersenneTwister() );
 
-        SsEffectRenderAtom::Initialize();
+		SsEffectRenderAtom::Initialize();
 		delay = 0;
 		interval = 0;
 		intervalleft = 0;
@@ -237,7 +238,10 @@ public:
 
 	}
 
-	SsEffectRenderEmitter() : MT(0){}
+	SsEffectRenderEmitter() :
+		MT()
+	{
+	}
 	SsEffectRenderEmitter( SsEffectNode* refdata , SsEffectRenderAtom* _p){
 		data = refdata;
 		parent = _p;
@@ -246,17 +250,14 @@ public:
 
 	virtual ~SsEffectRenderEmitter()
 	{
-		if ( MT )
-		{
-			delete MT;
-		}
+		MT.reset();
 	}
 	SsRenderType::_enum		getMyType(){ return SsRenderType::EmmiterNode;}
 	void			setMySeed( unsigned int seed );
 	void			TrushRandom(int loop)
 	{
 		for ( int i = 0 ; i < loop ; i++ )
-			MT->genrand_uint32();
+			(MT.get())->genrand_uint32();
 	}
 
 	virtual void	Initialize();
@@ -436,7 +437,7 @@ private:
 
 public:
 	//アップデート物のリスト
-	SsEffectRenderAtom* render_root;
+	std::unique_ptr<SsEffectRenderAtom>	render_root;
 
 	bool			usePreMultiTexture;
 	u32				parentAnimeStartFrame;
@@ -452,14 +453,20 @@ public:
 
 
 public:
-	SsEffectRenderer() : effectData(0) , parentState(0) ,mySeed(0) , render_root(0),parentAnimeStartFrame(0) , m_isLoop(false)
+	SsEffectRenderer() :
+		effectData(0)
+		,parentState(0)
+		,mySeed(0)
+		,render_root()
+		,parentAnimeStartFrame(0)
+		,m_isLoop(false)
 #if SPRITESTUDIO6SDK_PFMEM_TEST
-	,em_pool_count(0)
-	,pa_pool_count(0)
-	,dpr_pool_count(0)
-	,usePreMultiTexture(true)
-	,renderTexture(false)
-	,frameDelta(0)
+		,em_pool_count(0)
+		,pa_pool_count(0)
+		,dpr_pool_count(0)
+		,usePreMultiTexture(true)
+		,renderTexture(false)
+		,frameDelta(0)
 #endif
 	{}
 

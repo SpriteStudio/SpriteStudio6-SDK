@@ -7,6 +7,14 @@
 #include "ssarchiver.h"
 #include "ssstring_uty.h"
 
+#include "ssloader_ssae.h"
+#include "ssloader_ssce.h"
+#include "ssloader_ssee.h"
+#include "ssloader_ssqe.h"
+
+#include <memory>
+#include <utility>
+
 #define SPRITESTUDIO6_SSPJVERSION "2.00.00"
 
 namespace spritestudio6
@@ -51,43 +59,35 @@ public:
 	}
 	
 	///シリアライズのための宣言です。
-	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SPRITESTUDIO6DSK_SSAR_DECLARE(animeBaseDirectory);
-		SPRITESTUDIO6DSK_SSAR_DECLARE(cellMapBaseDirectory);
-		SPRITESTUDIO6DSK_SSAR_DECLARE(imageBaseDirectory);
-		SPRITESTUDIO6DSK_SSAR_DECLARE(effectBaseDirectory);
+		SPRITESTUDIO6SDK_SSAR_DECLARE(animeBaseDirectory);
+		SPRITESTUDIO6SDK_SSAR_DECLARE(cellMapBaseDirectory);
+		SPRITESTUDIO6SDK_SSAR_DECLARE(imageBaseDirectory);
+		SPRITESTUDIO6SDK_SSAR_DECLARE(effectBaseDirectory);
 
-		SPRITESTUDIO6DSK_SSAR_DECLARE(exportBaseDirectory);
-		SPRITESTUDIO6DSK_SSAR_DECLARE(queryExportBaseDirectory);
-		SPRITESTUDIO6DSK_SSAR_DECLARE_ENUM( wrapMode );
-		SPRITESTUDIO6DSK_SSAR_DECLARE_ENUM( filterMode );
-		SPRITESTUDIO6DSK_SSAR_DECLARE_ENUM(vertexAnimeFloat);
+		SPRITESTUDIO6SDK_SSAR_DECLARE(exportBaseDirectory);
+		SPRITESTUDIO6SDK_SSAR_DECLARE(queryExportBaseDirectory);
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( wrapMode );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( filterMode );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM(vertexAnimeFloat);
 
 	}
 };
 
 
-class SsAnimation;
-class SsAnimePack;
-class SsCellMap;
-class SsEffectFile;
-class SsSequence;
-class SsSequencePack;
+typedef std::vector<std::unique_ptr<SsAnimePack>> SsAnimePackList;
+typedef SsAnimePackList::iterator SsAnimePackListItr;
+
+typedef std::vector<std::unique_ptr<SsCellMap>> SsSsCellMapList;
+typedef SsSsCellMapList::iterator SsSsCellMapListItr;
 
 
-typedef std::vector<SsAnimePack*> SsAnimePackList;
-typedef std::vector<SsAnimePack*>::iterator SsAnimePackListItr;
+typedef std::vector<std::unique_ptr<SsEffectFile>> SsEffectFileList;
+typedef SsEffectFileList::iterator SsEffectFileListItr;
 
-typedef std::vector<SsCellMap*> SsSsCellMapList;
-typedef std::vector<SsCellMap*>::iterator SsSsCellMapListItr;
-
-
-typedef std::vector<SsEffectFile*> SsEffectFileList;
-typedef std::vector<SsEffectFile*>::iterator SsEffectFileListItr;
-
-typedef std::vector<SsSequencePack*> SsSequencePackList;
-typedef std::vector<SsSequencePack*>::iterator SsSequencePackListItr;
+typedef std::vector<std::unique_ptr<SsSequencePack>> SsSequencePackList;
+typedef SsSequencePackList::iterator SsSequencePackListItr;
 
 /// XMLドキュメントとなっているsspjファイルのデータ保持を提供するクラスです。
 ///以下はエディタ情報のため読み飛ばします。
@@ -99,16 +99,16 @@ public:
 
 	SsString				version;
 	SsProjectSetting		settings;			//!< プロジェクト設定
+
 	std::vector<SsString>	cellmapNames;		//!< セルマップファイルのリスト
 	std::vector<SsString>	animepackNames;		//!< アニメファイルのリスト
 	std::vector<SsString>	effectFileNames;	//!< エフェクトファイルのリスト
 	std::vector<SsString>	textureList;		//!< セルマップから取得したテクスチャのリスト
 	std::vector<SsString>	sequencepackNames;	//!< シーケンスファイルのリスト
 
-
 	SsAnimePackList		animeList;		//!< アニメーションのリスト	
 	SsSsCellMapList		cellmapList;	//!< セルマップリスト
-	SsEffectFileList	effectfileList;
+	SsEffectFileList	effectfileList;	//!< エフェクトのリスト
 	SsSequencePackList	sequenceList;	//!< シーケンスのリスト	
 
 	//ロード時に作成されるワーク
@@ -146,6 +146,18 @@ public:
 	///シーケンスパックデータのコンテナを取得する
 	SsSequencePackList&	getSequencePackList(){ return sequenceList;}
 
+	///アニメパックデータの各情報を取得する
+	SsAnimePack*	getAnimePack(int index){ return animeList[index].get();}
+
+	///セルマップデータの各情報を取得する
+	SsCellMap*	getCellMap(int index){ return cellmapList[index].get();}
+
+	//エフェクトファイルの各情報を取得する
+	SsEffectFile*	getEffectFile(int index){ return effectfileList[index].get();}
+
+	///シーケンスパックデータの各情報を取得する
+	SsSequencePack*	getSequencePack(int index){ return sequenceList[index].get();}
+
 
 	//アニメパック名とアニメ名からアニメーションを取得する
 	SsAnimation*		findAnimation( SsString& animePackName , SsString& AnimeName );
@@ -163,21 +175,18 @@ public:
 
 	
 
-
-
 	SsCellMap* findCellMap( SsString& str );
-	SsCellMap* getCellMap( int index );
 
 
 	///シリアライズのための宣言です。
-	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SPRITESTUDIO6DSK_SSAR_DECLARE_ATTRIBUTE(version);
-		SPRITESTUDIO6DSK_SSAR_STRUCT_DECLARE( settings );
-		SPRITESTUDIO6DSK_SSAR_DECLARE( cellmapNames );
-		SPRITESTUDIO6DSK_SSAR_DECLARE( animepackNames );
-		SPRITESTUDIO6DSK_SSAR_DECLARE( effectFileNames );
-		SPRITESTUDIO6DSK_SSAR_DECLARE( sequencepackNames );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE(version);
+		SPRITESTUDIO6SDK_SSAR_STRUCT_DECLARE( settings );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( cellmapNames );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( animepackNames );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( effectFileNames );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( sequencepackNames );
 
 	}
 

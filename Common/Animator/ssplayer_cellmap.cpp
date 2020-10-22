@@ -10,6 +10,10 @@
 
 #include "../Helper/DebugPrint.h"
 
+#include <memory>
+#include <utility>
+
+
 namespace spritestudio6
 {
 
@@ -72,10 +76,9 @@ void	SsCellMapList::clear()
 	{
 		for (CellMapDicItr itr = CellMapDic.begin(); itr != CellMapDic.end();)
 		{
-			if (itr->second != NULL)
+			if (itr->second)
 			{
-				delete itr->second;
-				itr->second = NULL;
+				itr->second.reset();
 				continue;
 			}
 			itr++;
@@ -123,38 +126,32 @@ void	SsCellMapList::set(SsProject* proj , SsAnimePack* animepack )
 }
 void	SsCellMapList::addMap(SsCellMap* cellmap)
 {
-	SsCelMapLinker* linker = new SsCelMapLinker(cellmap , this->CellMapPath );
-	CellMapDic[ cellmap->name+".ssce" ] = linker ;
-
+	CellMapDic[ cellmap->name+".ssce" ].reset( new SsCelMapLinker(cellmap , this->CellMapPath ) );
 }
 
 void	SsCellMapList::addIndex(SsCellMap* cellmap)
 {
-	SsCelMapLinker* linker = new SsCelMapLinker(cellmap , this->CellMapPath );
-	CellMapList.push_back( linker );
-
+	std::unique_ptr<SsCelMapLinker> cellmapLinker( new SsCelMapLinker(cellmap , this->CellMapPath ) );
+	CellMapList.push_back( std::move( cellmapLinker ) );
 }
 
 SsCelMapLinker*	SsCellMapList::getCellMapLink( const SsString& name )
 {
-
-	std::map<SsString,SsCelMapLinker*>::iterator itr = CellMapDic.find(name);
+	CellMapDicItr itr = CellMapDic.find(name);
 	if ( itr != CellMapDic.end() )
 	{
-		return itr->second;
+		return itr->second.get();
 	}else{
-
-		for ( std::map<SsString,SsCelMapLinker*>::iterator itr=CellMapDic.begin() ; itr != CellMapDic.end() ; itr++)
+		for ( itr=CellMapDic.begin() ; itr != CellMapDic.end() ; itr++)
 		{
-			if ( itr->second->cellMap->loadFilepath == name )
+			if ( (itr->second.get())->cellMap->loadFilepath == name )
 			{
-				return itr->second;
+				return itr->second.get();
 			}
 		}
 	}
 
 	return 0;
-
 }
 
 

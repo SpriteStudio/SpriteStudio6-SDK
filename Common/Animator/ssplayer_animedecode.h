@@ -9,6 +9,9 @@
 #include "ssplayer_cellmap.h"
 #include "ssplayer_PartState.h"
 #include "ssplayer_macro.h"
+#include "ssplayer_mesh.h"
+
+#include <memory>
 
 //きれいな頂点変形に対応する場合は1にする。
 //４ポリゴンで変形します。
@@ -17,10 +20,6 @@
 
 namespace spritestudio6
 {
-
-class SsAnimeDecoder;
-class SsCelMapLinker;
-class SsMeshAnimator;
 
 
 //パーツとアニメを関連付ける
@@ -58,9 +57,10 @@ private:
 	std::map<SsString,SsPartAnime*> partAnimeDic;
 	std::map<SsString, SsPartAnime*>setupPartAnimeDic;	///セットアップデータ
 
-	SsCellMapList*					curCellMapManager;///アニメに関連付けられているセルマップ
+	std::unique_ptr<SsCellMapList>	curCellMapManager;		///アニメに関連付けられているセルマップ
 
-	SsPartState*					partState;			///パーツの現在の状態が格納されています。
+	std::unique_ptr<std::vector<SsPartState>>	partState;	///パーツの現在の状態が格納されています。
+
 	std::list<SsPartState*>			sortList;			///ソート状態
 	std::list<SsPartState*>			partStatesMask_;	///マスクテンポラリ
 	std::vector<SsPartState*>		maskIndexList;
@@ -82,7 +82,7 @@ private:
 
 	size_t			stateNum;
 
-	SsMeshAnimator*	meshAnimator;
+	std::unique_ptr<SsMeshAnimator>	meshAnimator;
 	SsModel*		myModel;
 
 private:
@@ -104,11 +104,10 @@ public:
 	SsAnimeDecoder();
 	virtual ~SsAnimeDecoder()
 	{
-		if ( curCellMapManager )
-			delete curCellMapManager;
-
-		if ( partState )
-			delete [] partState;
+		//念のため解放（スマートポインタなので実用上問題ないはずだが明示性として）
+		curCellMapManager.reset();
+		partState.reset();
+		meshAnimator.reset();
 	}
 
 	virtual void	update( float frameDelta = 1.0f );
@@ -128,7 +127,7 @@ public:
 	SsSequenceItem*	getSequenceItem( int iIndex ) { return curSequence->list[iIndex]; }
 
 	size_t	getStateNum() { return stateNum; }
-	SsPartState*  getPartState() { return partState; }
+	std::vector<SsPartState>& getPartState() { return *(partState.get()); }
 	SsModel*	getMyModel(){return myModel;}
 
 	std::list<SsPartState*>&		getPartSortList(){return sortList;}

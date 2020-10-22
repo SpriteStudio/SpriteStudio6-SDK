@@ -37,20 +37,20 @@ SsAnimeDecoder::SsAnimeDecoder() :
 	curAnimeTotalFrame(0),
 	nowPlatTime(0) ,
 	nowPlatTimeOld(0),
-	curCellMapManager(0),
-	partState(0),
+	curCellMapManager(),
+	partState(),
 	instancePartsHide(false),
 	seedOffset(0),
 	maskFuncFlag(true),
 	maskParentSetting(true),
-	meshAnimator(0)
+	meshAnimator()
 	{
 	}
 
 
 void	SsAnimeDecoder::reset()
 {
-	SPRITESTUDIO6DSK_foreach( std::list<SsPartState*> , sortList , e )
+	SPRITESTUDIO6SDK_foreach( std::list<SsPartState*> , sortList , e )
 	{
 		SsPartState* state = (*e);
 		if ( state->refEffect )
@@ -67,7 +67,7 @@ void	SsAnimeDecoder::reset()
 void	SsAnimeDecoder::restart()
 {
 #if 0
-	SPRITESTUDIO6DSK_foreach( std::list<SsPartState*> , sortList , e )
+	SPRITESTUDIO6SDK_foreach( std::list<SsPartState*> , sortList , e )
 	{
 		SsPartState* state = (*e);
 		if ( state->refEffect )
@@ -91,7 +91,7 @@ bool	SsAnimeDecoder::getFirstCell(SsPart* part , SsCellValue& out)
 		SsAttributeList attList;
 		attList = setupAnime->attributes;
 
-		SPRITESTUDIO6DSK_foreach(SsAttributeList, attList, e)
+		SPRITESTUDIO6SDK_foreach(SsAttributeList, attList, e)
 		{
 			SsAttribute* attr = (*e);
 			switch (attr->tag)
@@ -121,7 +121,11 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	project = sspj;
 
 	//セルマップリストを取得
-	curCellMapManager = cellmap;
+	//MEMO: curCellMapManagerは所有・デストラクト時解放しているものの、（同じ実体が何度も割り当ることがあるので）
+	//      所有しているセルマップと新規セルマップが同じ時に（先にデストラクタが走って）データを破壊してしまうことから、
+	//      指定セルマップが定義されていない時にだけ更新定義していることに注意。
+	if(cellmap != curCellMapManager.get())
+		curCellMapManager.reset(cellmap);
 	curAnimation = anime;
 
 	//partStateをパーツ分作成する
@@ -151,8 +155,7 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	//パーツとパーツアニメを関連付ける
 	size_t partNum = model->partList.size();
 
-	if ( partState ) delete [] partState;
-	partState = new SsPartState[partNum]();
+	partState.reset( new std::vector<SsPartState>(partNum) );
 	sortList.clear();
 	partAnime.clear();
 	setupPartAnime.clear();
@@ -176,20 +179,20 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 		setupPartAnime.push_back(_tempSetup);
 
 		//親子関係の設定
+		std::vector<SsPartState>& partStateRaw = *(partState.get());
 		if ( p->parentIndex != -1 )
 		{
-			partState[i].parent = &partState[p->parentIndex];
+			partStateRaw[i].parent = &partStateRaw[p->parentIndex];
 		}else{
-			partState[i].parent = 0;
+			partStateRaw[i].parent = nullptr;
 		}
-		partState[i].part = p;
+		partStateRaw[i].part = p;
 
 		//継承率の設定
-		partState[i].inheritRates = p->inheritRates;
-		partState[i].index = (int)i;
-		partState[i].partType = p->type;
-		partState[i].maskInfluence = p->maskInfluence && getMaskParentSetting();
-
+		partStateRaw[i].inheritRates = p->inheritRates;
+		partStateRaw[i].index = (int)i;
+		partStateRaw[i].partType = p->type;
+		partStateRaw[i].maskInfluence = p->maskInfluence && getMaskParentSetting();
 
 		if (sspj)
 		{
@@ -201,18 +204,20 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 				SsAnimePack* refpack = sspj->findAnimationPack( p->refAnimePack );
 				SsAnimation* refanime = refpack->findAnimation( p->refAnime );
 
+				//インスタンスパーツの設定setAnimationでソースアニメになるパーツに適用するので先に設定を行う
+				SsAnimeDecoder* animedecoder = new SsAnimeDecoder();
+				animedecoder->setMaskFuncFlag( false );					//マスク機能を無効にする
+				animedecoder->setMaskParentSetting( p->maskInfluence );	//親のマスク対象を設定する 
+
+				//MEMO: __cellmapはsetAnimation関数内でスマートポインタ化されています
 				SsCellMapList* __cellmap = new SsCellMapList();
 				__cellmap->set( sspj , refpack );
-				SsAnimeDecoder* animedecoder = new SsAnimeDecoder();
-
-				//インスタンスパーツの設定setAnimationでソースアニメになるパーツに適用するので先に設定を行う
-				animedecoder->setMaskFuncFlag(false);					//マスク機能を無効にする
-				animedecoder->setMaskParentSetting(p->maskInfluence);	//親のマスク対象を設定する 
-
 				animedecoder->setAnimation( &refpack->Model , refanime, __cellmap , sspj );
-				partState[i].refAnime = animedecoder;
+				partStateRaw[i].refAnime.reset(animedecoder);
+
 				//親子関係を付ける
-				animedecoder->partState[0].parent = &partState[i];
+				std::vector<SsPartState>& partStateRawInstance = *(animedecoder->partState.get());
+				partStateRawInstance[0].parent = &partStateRaw[i];
 			}
 
 			//エフェクトデータの初期設定
@@ -221,32 +226,32 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 				SsEffectFile* f = sspj->findEffect( p->refEffectName );
 				if ( f )
 				{
-					SsEffectRenderV2* er = new SsEffectRenderV2();
-					er->setParentAnimeState( &partState[i] );
+					partStateRaw[i].refEffect.reset( new SsEffectRenderV2() );
+					SsEffectRenderV2* er = partStateRaw[i].refEffect.get();
 
-					er->setCellmapManager( this->curCellMapManager );
+					er->setParentAnimeState( &partStateRaw[i] );
+					er->setCellmapManager( this->curCellMapManager.get() );
 					er->setEffectData( &f->effectData );
 					er->setSeed(getRandomSeed());
 					er->reload();
 					er->stop();
 					er->setLoop(false);
-
-					partState[i].refEffect = er;
 				}
 			}
 
 			//マスクパーツの追加
 			if (p->type == SsPartType::mask )
 			{
-				partStatesMask_.push_back( &partState[i]);
+				partStatesMask_.push_back( &partStateRaw[i] );
 			}
 
 			//メッシュパーツの追加
 			if (p->type == SsPartType::mesh)
 			{
-				SsMeshPart* mesh = new SsMeshPart();
-				partState[i].meshPart = mesh;
-				mesh->myPartState = &partState[i];
+				partStateRaw[i].meshPart.reset( new SsMeshPart() );
+				SsMeshPart* mesh = partStateRaw[i].meshPart.get();
+
+				mesh->myPartState = &partStateRaw[i];
 				//使用するセルを調査する
 				bool ret;
 				SsCellValue cellv;
@@ -262,10 +267,8 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 			}
 		}
 
-		sortList.push_back( &partState[i] );
-
+		sortList.push_back( &partStateRaw[i] );
 	}
-
 
 	//アニメの最大フレーム数を取得
 	curAnimeStartFrame = anime->settings.startFrame;	//Ver6.0.0開始終了フレーム対応
@@ -274,11 +277,10 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 	curAnimeFPS = anime->settings.fps;
 
 	//メッシュアニメーションを初期化
-	meshAnimator = new SsMeshAnimator();
-	meshAnimator->setAnimeDecoder(this);
-	meshAnimator->makeMeshBoneList();
-
-	
+	meshAnimator.reset( new SsMeshAnimator() );
+	SsMeshAnimator* meshAnimatorRaw = meshAnimator.get();
+	meshAnimatorRaw->setAnimeDecoder(this);
+	meshAnimatorRaw->makeMeshBoneList();
 }
 
 void	SsAnimeDecoder::setSequence( SsSequence* sequence , SsProject* sspj )
@@ -580,10 +582,7 @@ void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey 
 	SsRefCell cell;
 	GetSsRefCell( leftkey , cell );
 
-	getCellValue(	this->curCellMapManager ,
-					cell.mapid , cell.name , v );
-
-
+	getCellValue( this->curCellMapManager.get(), cell.mapid, cell.name, v );
 }
 
 void	SsAnimeDecoder::SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsSignalAttr& v )
@@ -725,7 +724,7 @@ template<typename mytype> int	SsAnimeDecoder::SsGetKeyValue(SsPart* part, int ti
 			{
 				SsAttributeList attList;
 				attList = setupAnime->attributes;
-				SPRITESTUDIO6DSK_foreach(SsAttributeList, attList, e)
+				SPRITESTUDIO6SDK_foreach(SsAttributeList, attList, e)
 				{
 					SsAttribute* setupattr = (*e);
 					if (setupattr->tag == attr->tag)
@@ -890,7 +889,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 			}
 			attList = anime->attributes;
 		}
-		SPRITESTUDIO6DSK_foreach( SsAttributeList , attList , e )
+		SPRITESTUDIO6SDK_foreach( SsAttributeList , attList , e )
 		{
 			SsAttribute* attr = (*e);
 			switch( attr->tag )
@@ -1107,7 +1106,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 			}
 
 			//親がインスタンスパーツでかつ非表示フラグがある場合は非表示にする。
-			if (instancePartsHide == true )
+			if ( instancePartsHide == true )
 			{
 				state->hide = true;
 			}
@@ -1503,34 +1502,33 @@ void	SsAnimeDecoder::update(float frameDelta)
 	this->frameDelta = frameDelta;
 
 	int cnt = 0;
-	SPRITESTUDIO6DSK_foreach( std::vector<SsPartAndAnime> , partAnime , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<SsPartAndAnime> , partAnime , e )
 	{
 		SsPart* part = e->first;
 		SsPartAnime* anime = e->second;
 
-		updateState( time , part , anime , &partState[cnt] );
+		std::vector<SsPartState>& partStateRaw = *(partState.get());
+		updateState( time , part , anime , &partStateRaw[cnt] );
 
-		updateMatrix( part , anime , &partState[cnt]);
+		updateMatrix( part , anime , &partStateRaw[cnt]);
 
 		if ( part->type == SsPartType::instance )
 		{
-			updateInstance( time , part , anime , &partState[cnt] );
-			updateVertices( part , anime , &partState[cnt] );
+			updateInstance( time , part , anime , &partStateRaw[cnt] );
+			updateVertices( part , anime , &partStateRaw[cnt] );
 		}
 
 		if ( part->type == SsPartType::effect)
 		{
-			updateMatrix( part , anime , &partState[cnt]);
-			updateEffect(frameDelta, time, part, anime, &partState[cnt]);
+			updateMatrix( part , anime , &partStateRaw[cnt]);
+			updateEffect(frameDelta, time, part, anime, &partStateRaw[cnt]);
 		}
 
 		cnt++;
 	}
 
-
 	if (meshAnimator)
-		meshAnimator->update();
-
+		(meshAnimator.get())->update();
 
 	sortList.sort(_ssPartStateLess);
 	partStatesMask_.sort(_ssPartStateLess);
@@ -1609,7 +1607,7 @@ void	SsAnimeDecoder::draw()
 
 	int mask_index = 0;
 
-	SPRITESTUDIO6DSK_foreach( std::list<SsPartState*> , sortList , e )
+	SPRITESTUDIO6SDK_foreach( std::list<SsPartState*> , sortList , e )
 	{
 		SsPartState* state = (*e);
 

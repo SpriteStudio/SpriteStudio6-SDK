@@ -9,6 +9,9 @@
 
 //#include "ISSEffectRender.h"
 
+#include <memory>
+#include <utility>
+
 // MEMO: コンパイル設定
 #define SPRITESTUDIO6SDK_LOOP_TYPE1 (0)
 #define SPRITESTUDIO6SDK_LOOP_TYPE2 (0)
@@ -46,6 +49,16 @@ struct particleExistSt
     int	 born;
 	long stime;
 	long endtime;
+
+	inline void Cleanup()
+	{
+		id = 0;
+		cycle = 0;
+		exist = 0;
+		born = 0;
+		stime = 0;
+		endtime = 0;
+	}
 };
 
 
@@ -266,17 +279,14 @@ public:
 	//生成用のリングバッファ
 	std::vector<emitPattern>    	_emitpattern;
 	std::vector<int>				_offsetPattern;
-
-    particleExistSt*     particleExistList;
-
+	std::unique_ptr<std::vector<particleExistSt>>	particleExistList;
 
 	//事前計算バッファ
 	//particleLifeSt*				particleList;
 	int							particleIdMax;
 
 	size_t						particleListBufferSize;
-    unsigned long*              seedList;
-
+	std::unique_ptr<std::vector<unsigned long>>	seedList;
 
 	SsVector2   				position;
 //	SsEffectEmitter*			_child;
@@ -296,10 +306,10 @@ public:
 	SsEffectEmitter() :
 //			particleList(0),
 			_parentIndex(-1),
-			seedList(0),
+			seedList(),
 			particleListBufferSize(180*100),  //生成出来るパーティクルの最大値
 			_emitpattern(0),
-			particleExistList(0),
+			particleExistList(),
 			globaltime(0),
 			seedOffset(0)
 	{
@@ -307,9 +317,8 @@ public:
 	}
 	virtual ~SsEffectEmitter()
 	{
-		delete [] particleExistList;
-		delete [] seedList;
-
+		particleExistList.reset();
+		seedList.reset();
 	}
 
 	void	setSeedOffset( int offset ) { 
@@ -354,8 +363,9 @@ public:
 	SsEffectModel*		effectData;
 
 	//Modelに記載されているエミッタのリスト
-	std::vector<SsEffectEmitter*>   emmiterList;
+	std::vector<std::unique_ptr<SsEffectEmitter>>	emmiterList;
 
+	//MEMO: updateListは、更新用でemitterListの内容への参照なのでスマートポインタ化しない（所有権を保持しない）
 	std::vector<SsEffectEmitter*>   updateList;
 
 	//ランダムシード

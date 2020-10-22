@@ -1,6 +1,10 @@
 ﻿#ifndef __SSPLAYER_CELLMAP__
 #define __SSPLAYER_CELLMAP__
 
+#include "sstypes.h"
+
+#include <memory>
+
 namespace spritestudio6
 {
 
@@ -59,10 +63,11 @@ class	SsCellMapList
 {
 private:
 	//同名セルマップは上書き
-	std::map<SsString,SsCelMapLinker*>		CellMapDic;
-	std::vector<SsCelMapLinker*>			CellMapList;//添え字参照用
+	std::map<SsString, std::unique_ptr<SsCelMapLinker>>	CellMapDic;
+	typedef std::map<SsString,std::unique_ptr<SsCelMapLinker>>::iterator CellMapDicItr;
 
-	typedef std::map<SsString,SsCelMapLinker*>::iterator CellMapDicItr;
+	std::vector<std::unique_ptr<SsCelMapLinker>>	CellMapList;//添え字参照用
+
 	SsString	CellMapPath;
 
 private:
@@ -75,12 +80,12 @@ public:
 	{
 		for ( CellMapDicItr itr = CellMapDic.begin() ; itr != CellMapDic.end() ; itr ++)
 		{
-			delete itr->second;
+			itr->second.reset();
 		}
 
 		for ( size_t i = 0 ; i < CellMapList.size(); i++ )
 		{
-			delete CellMapList[i];
+			CellMapList[i].reset();
 		}
 		CellMapList.clear();
 		CellMapDic.clear();
@@ -101,7 +106,7 @@ public:
 	SsCelMapLinker*	getCellMapLink( int index )
 	{	
 		if (CellMapList.size() <= index) return 0;
-		return CellMapList[index];
+		return CellMapList[index].get();
 	}
 	
 	bool preloadTexture(SsProject* proj);

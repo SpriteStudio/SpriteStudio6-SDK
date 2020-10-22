@@ -16,7 +16,7 @@ struct ThrowErrorMessage{
 };
 
 // MEMO: 外部名前空間からアクセスされた時の防備で、念のため完全修飾してあります。
-#define SPRITESTUDIO6DSK_THROW_ERROR_MESSAGE(str) \
+#define SPRITESTUDIO6SDK_THROW_ERROR_MESSAGE(str) \
 {\
 spritestudio6::THROW_ERROR_MESSAGE_MAIN( str , __FILE__ , __LINE__ );\
 }\

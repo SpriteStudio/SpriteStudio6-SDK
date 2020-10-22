@@ -140,11 +140,11 @@ SsVector2	SsInterpolate(SsInterpolationType::_enum ipType, float time, SsVector2
 //----------------------------------------------------------------------------
 float	SsInterpolate(SsInterpolationType::_enum type, float time, float start, float end, const SsCurve * curve)
 {
-	float r;
+	float r = start;
 	switch (type)
 	{
 	case SsInterpolationType::none:
-		r = start;
+//		r = start;
 		break;
 	case SsInterpolationType::linear:
 		r = linear_(start, end, time);

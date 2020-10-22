@@ -36,15 +36,15 @@ void DocumentView3D::initialise()
 	GLenum err = glewInit();
 #endif
 
-	rendererGL.reset(new SsRenderGL());
-	SsCurrentRenderer::SetCurrentRender(rendererGL.get());
-	texfactory.reset(new SSTextureFactory(new SSTextureGL()));
+	rendererGL.reset(new spritestudio6::SsRenderGL());
+	spritestudio6::SsCurrentRenderer::SetCurrentRender(rendererGL.get());
+	texfactory.reset(new spritestudio6::SSTextureFactory(new spritestudio6::SSTextureGL()));
 }
 
 void DocumentView3D::shutdown()
 {
-	SSTextureFactory::releaseAllTexture();
-	SSOpenGLShaderMan::Destory();
+	spritestudio6::SSTextureFactory::releaseAllTexture();
+	spritestudio6::SSOpenGLShaderMan::Destory();
 }
 
 void DocumentView3D::render()

@@ -11,11 +11,14 @@
 #pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
 
+namespace spritestudio6
+{
 class SsProject;
 class SsAnimePack;
 class SsAnimeDecoder;
 class SsCellMapList;
 class SSTextureFactory;
+}	// namespace spritestudio6
 
 class Player : public juce::HighResolutionTimer
 {
@@ -117,13 +120,13 @@ public:
 	static void	drawAnime();
 
 	// アニメーションの状態
-	std::unique_ptr<StatePlaying>	statePlaying;
-	std::unique_ptr<StatePaused>	statePaused;
-	std::unique_ptr<StateLoading>	stateLoading;
-	std::unique_ptr<StateInitial>	stateInitial;
-	std::unique_ptr<SsProject>		currentProj;
-	std::unique_ptr<SsAnimeDecoder>	decoder;
-	SsCellMapList *					cellmap = nullptr; // decoderのデストラクタでdeleteされる
+	std::unique_ptr<StatePlaying>					statePlaying;
+	std::unique_ptr<StatePaused>					statePaused;
+	std::unique_ptr<StateLoading>					stateLoading;
+	std::unique_ptr<StateInitial>					stateInitial;
+	std::unique_ptr<spritestudio6::SsProject>		currentProj;
+	std::unique_ptr<spritestudio6::SsAnimeDecoder>	decoder;
+	spritestudio6::SsCellMapList *					cellmap = nullptr; // decoderのデストラクタでdeleteされる
 
 	friend class AsyncAnimeLoader;
 	friend class AsyncProjectLoader;

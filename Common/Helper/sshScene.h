@@ -17,7 +17,7 @@ public:
 	virtual ~tkScene(){}
 
 	virtual void	draw(){};
-	virtual void	update(double delta){};
+	virtual void	update(double delta){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(delta); };
 	virtual void	init(){};
 };
 

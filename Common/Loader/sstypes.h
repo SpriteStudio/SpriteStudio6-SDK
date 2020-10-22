@@ -10,10 +10,14 @@
 //===============================================================
 //Macros 
 //===============================================================
-#define	SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF(type) \
+#define	SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(type) \
 	SsString	__EnumToString_( type::_enum n );\
 	void	__StringToEnum_( SsString n , type::_enum& out);\
 
+// 未使用引数の警告避け
+#ifndef SPRITESTUDIO6SDK_NOUSE_ARGUMENT
+	#define	SPRITESTUDIO6SDK_NOUSE_ARGUMENT(_name_)	( void )( &_name_ );
+#endif
 
 namespace spritestudio6
 {
@@ -379,7 +383,7 @@ namespace SsPartsSortMode
 		num
 	};
 };
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsPartsSortMode );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsPartsSortMode );
 
 //---------------------------------------------------------------
 /// Animation Part Type
@@ -404,7 +408,7 @@ namespace SsPartType
 		num
 	};
 };
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsPartType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsPartType );
 
 
 //---------------------------------------------------------------
@@ -423,7 +427,7 @@ namespace SsBoundsType
 		num
 	};
 };
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsBoundsType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsBoundsType );
 
 
 //---------------------------------------------------------------
@@ -438,7 +442,7 @@ namespace SsInheritType
 		num
 	};
 };
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsInheritType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsInheritType );
 
 //---------------------------------------------------------------
 /// ブレンドタイプ
@@ -457,7 +461,7 @@ namespace SsBlendType
 		num
 	};
 };
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsBlendType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsBlendType );
 
 
 ///カラーブレンドキーが使用されている際のカラー適用範囲の定義
@@ -470,7 +474,7 @@ namespace SsColorBlendTarget
 		num
 	};
 };
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsColorBlendTarget );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsColorBlendTarget );
 
 
 
@@ -489,7 +493,7 @@ namespace SsInterpolationType
 		num,
 	};
 };
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsInterpolationType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsInterpolationType );
 
 
 /// テクスチャラップモード
@@ -505,7 +509,7 @@ namespace SsTexWrapMode
 	};
 };
 
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF(SsTexWrapMode);
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsTexWrapMode);
 
 /// テクスチャフィルターモード 画素補間方法
 namespace SsTexFilterMode
@@ -518,7 +522,7 @@ namespace SsTexFilterMode
 		num
 	};
 };
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF(SsTexFilterMode);
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsTexFilterMode);
 
 
 
@@ -575,7 +579,7 @@ namespace SsAttributeKind
 };
 
 
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF(SsAttributeKind);
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsAttributeKind);
 
 namespace SsKeyValueType
 {
@@ -687,7 +691,7 @@ namespace SsEffectNodeType
 		num
 	};
 };
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
 
 
 
@@ -702,7 +706,7 @@ namespace SsRenderBlendType
 		num
 	};
 };
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
 
 
 //2.0.1で追加　IKの方向
@@ -718,7 +722,7 @@ namespace SsIkRotationArrow
 	};
 };
 
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF(SsIkRotationArrow);
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsIkRotationArrow);
 
 /// シーケンスタイプ
 namespace SsSequenceType
@@ -732,7 +736,7 @@ namespace SsSequenceType
 		num,
 	};
 };
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsSequenceType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsSequenceType );
 
 namespace SsSignalParamType
 {
@@ -745,7 +749,7 @@ namespace SsSignalParamType
 		num
 	};
 };
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF( SsSignalParamType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsSignalParamType );
 
 
 class SsEffectAttr
@@ -924,7 +928,7 @@ namespace SsMeshDivType
 		num
 	};
 };
-SPRITESTUDIO6DSK_DECLARE_ENUM_STRING_DEF(SsMeshDivType);
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsMeshDivType);
 
 struct SsTriangle
 {
@@ -963,8 +967,8 @@ public:
 		return !(*this == r);
 	}
 
-	bool	operator ==(int n) const { return false; }
-	bool	operator !=(int n) const { return false; }
+	bool	operator ==(int n) const { SPRITESTUDIO6SDK_NOUSE_ARGUMENT(n);	return false; }
+	bool	operator !=(int n) const { SPRITESTUDIO6SDK_NOUSE_ARGUMENT(n);	return false; }
 
 	SsDeformAttr		operator +(const SsDeformAttr& rhs) const
 	{

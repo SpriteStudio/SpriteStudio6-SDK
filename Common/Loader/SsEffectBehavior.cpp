@@ -1,8 +1,19 @@
 ﻿#include "SsEffectBehavior.h"
 
+#include <memory>
+#include <utility>
 
 namespace spritestudio6
 {
+
+SsEffectBehavior::~SsEffectBehavior()
+{
+	for( std::vector<std::unique_ptr<SsEffectElementBase>>::iterator itr = plist.begin();
+			itr != plist.end(); itr++)
+	{
+		itr->reset();
+	}
+}
 
 SsEffectElementBase*	SsEffectBehavior::Factory(const char* name , libXML::XMLElement* e )
 {
@@ -48,10 +59,9 @@ void	SsEffectBehavior::EffectElementLoader(ISsXmlArchiver* ar)
 		const char* value = e->Attribute( "name" );
 
 		SsEffectElementBase* v = Factory( value , e );
-
 		if ( v )
 		{
-			plist.push_back(v);
+			plist.push_back( std::move( std::unique_ptr<SsEffectElementBase>(v) ) );
 		}
 		e = e->NextSiblingElement();
 	}

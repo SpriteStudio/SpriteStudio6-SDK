@@ -10,6 +10,8 @@
 #include <GL/GL.h>
 #endif
 
+#include <map>
+#include <memory>
 
 #include "../Helper/OpenGL/SSTextureGL.h"
 
@@ -22,7 +24,7 @@
 #include "ssplayer_cellmap.h"
 #include "ssplayer_mesh.h"
 
-#define SPRITESTUDIO6DSK_PROGRAMABLE_SHADER_ON (1)
+#define SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON (1)
 
 namespace spritestudio6
 {
@@ -48,7 +50,9 @@ struct ShaderSetting
 	char*	fs;
 };
 
-static std::map<SsString, SSOpenGLProgramObject*>	s_DefaultShaderMap;
+//MEMO: 現在デストラクト時に（定義リソースが）自動解放されることを期待しています。
+//      ※明示的な解放タイミングが見当たらないため。
+static std::map<SsString, std::unique_ptr<SSOpenGLProgramObject>>	s_DefaultShaderMap;
 
 static const ShaderSetting glshader_default[] =
 {
@@ -154,10 +158,10 @@ inline void __fastcall rgbaByteToFloat_(float* dest, const SsColorBlendValue& sr
 {
 	const SsColor* srcColor = &src.rgba;
 
-	dest[0] = floatFromByte_(srcColor->r);
-	dest[1] = floatFromByte_(srcColor->g);
-	dest[2] = floatFromByte_(srcColor->b);
-	dest[3] = floatFromByte_(srcColor->a);
+	dest[0] = floatFromByte_((u8)srcColor->r);
+	dest[1] = floatFromByte_((u8)srcColor->g);
+	dest[2] = floatFromByte_((u8)srcColor->b);
+	dest[3] = floatFromByte_((u8)srcColor->a);
 }
 
 struct ShaderVArg;
@@ -285,12 +289,16 @@ static SSOpenGLProgramObject* createProgramObject( const SsString& name, const S
 	pPo->Attach( pFs );
 
 	if ( pPo->Link() != 0 ) {
-		delete pVs;
-		delete pFs;
-		delete pPo;
-		pVs = NULL;
-		pFs = NULL;
-		pPo = NULL;
+		if ( pVs )
+			delete pVs;
+		if ( pVs )
+			delete pFs;
+		if ( pPo )
+			delete pPo;
+
+		pVs = nullptr;
+		pFs = nullptr;
+		pPo = nullptr;
 	}
 
 	return	pPo;
@@ -325,8 +333,8 @@ void	SsRenderGL::initialize()
 	SSOpenGLShaderMan::PushPgObject( pgo2 );
 
 	s_DefaultShaderMap.clear();
-	for ( int i = 0; glshader_default[i].name != NULL; i++ ) {
-		s_DefaultShaderMap[glshader_default[i].name] = createProgramObject( glshader_default[i].name, glshader_default[i].vs, glshader_default[i].fs );
+	for ( int i = 0; glshader_default[i].name != nullptr; i++ ) {
+		s_DefaultShaderMap[glshader_default[i].name].reset( createProgramObject( glshader_default[i].name, glshader_default[i].vs, glshader_default[i].fs ) );
 	}
 
 //	m_isInit = true;
@@ -681,6 +689,7 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 	SsPartState* state = mesh->myPartState;
 
 	// パーツカラーの指定
+	std::vector<float>& colorsRaw = *(mesh->colors.get());
 	if (state->is_parts_color)
 	{
 
@@ -707,10 +716,10 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 		}
 		for (size_t i = 0; i < mesh->ver_size; i++)
 		{
-			mesh->colors[i * 4 + 0] = setcol[0];
-			mesh->colors[i * 4 + 1] = setcol[1];
-			mesh->colors[i * 4 + 2] = setcol[2];
-			mesh->colors[i * 4 + 3] = setcol[3] *alpha; // 不透明度を適用する。
+			colorsRaw[i * 4 + 0] = setcol[0];
+			colorsRaw[i * 4 + 1] = setcol[1];
+			colorsRaw[i * 4 + 2] = setcol[2];
+			colorsRaw[i * 4 + 3] = setcol[3] *alpha; // 不透明度を適用する。
 		}
 	}
 	else {
@@ -718,11 +727,10 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 		//ウェイトカラーの合成色を頂点カラーとして使用（パーセント円の流用
 		for (size_t i = 0; i < mesh->ver_size; i++)
 		{
-
-			mesh->colors[i * 4 + 0] = 1.0f;
-			mesh->colors[i * 4 + 1] = 1.0f;
-			mesh->colors[i * 4 + 2] = 1.0f;
-			mesh->colors[i * 4 + 3] = alpha;
+			colorsRaw[i * 4 + 0] = 1.0f;
+			colorsRaw[i * 4 + 1] = 1.0f;
+			colorsRaw[i * 4 + 2] = 1.0f;
+			colorsRaw[i * 4 + 3] = alpha;
 		}
 
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -740,15 +748,18 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	// UV 配列を指定する
-	glTexCoordPointer(2, GL_FLOAT, 0, (GLvoid *)mesh->uvs);
 
-	glColorPointer(4, GL_FLOAT, 0, (GLvoid *)mesh->colors);
+	// UV 配列を指定する
+	glTexCoordPointer(2, GL_FLOAT, 0, (GLvoid *)((mesh->uvs.get())->data()));
+
+	// 頂点色を指定する
+	glColorPointer(4, GL_FLOAT, 0, (GLvoid *)((mesh->colors.get())->data()));
 
 	// 頂点バッファの設定
-	glVertexPointer(3, GL_FLOAT, 0, (GLvoid *)mesh->draw_vertices);
+	glVertexPointer(3, GL_FLOAT, 0, (GLvoid *)((mesh->draw_vertices.get())->data()));
 
-	glDrawElements(GL_TRIANGLES, mesh->tri_size * 3, GL_UNSIGNED_SHORT, mesh->indices);
+	glDrawElements(GL_TRIANGLES, mesh->tri_size * 3, GL_UNSIGNED_SHORT, (mesh->indices.get())->data());
+
 	glPopMatrix();
 
 	if (texture_is_pow2 == false)
@@ -785,7 +796,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	int		gl_target = GL_TEXTURE_2D;
 	float	rates[5];
 
-	SSOpenGLProgramObject*	pPrgObject = NULL;
+	SSOpenGLProgramObject*	pPrgObject = nullptr;
 
 	if ( state->hide ) return ; //非表示なので処理をしない
 
@@ -835,17 +846,17 @@ void	SsRenderGL::renderPart( SsPartState* state )
 
 		glEnable(gl_target);
 
-#if SPRITESTUDIO6DSK_PROGRAMABLE_SHADER_ON
+#if SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON
 		if ( state->is_shader ) {
-			std::map<SsString, SSOpenGLProgramObject*>::const_iterator it = s_DefaultShaderMap.find( state->shaderValue.id );
+			std::map<SsString, std::unique_ptr<SSOpenGLProgramObject>>::const_iterator it = s_DefaultShaderMap.find( state->shaderValue.id );
 			if ( it != s_DefaultShaderMap.end() ) {
-				pPrgObject = s_DefaultShaderMap[state->shaderValue.id];
+				pPrgObject = s_DefaultShaderMap[state->shaderValue.id].get();
 			}
 		}
 		if ( !pPrgObject ) {
-			std::map<SsString, SSOpenGLProgramObject*>::const_iterator it = s_DefaultShaderMap.find( "system::default" );
+			std::map<SsString, std::unique_ptr<SSOpenGLProgramObject>>::const_iterator it = s_DefaultShaderMap.find( "system::default" );
 			if ( it != s_DefaultShaderMap.end() ) {
-				pPrgObject = s_DefaultShaderMap["system::default"];
+				pPrgObject = s_DefaultShaderMap["system::default"].get();
 			}
 		}
 
@@ -1050,7 +1061,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	//メッシュの場合描画
 	if (state->partType == SsPartType::mesh)
 	{
-		this->renderMesh(state->meshPart , alpha );
+		this->renderMesh(state->meshPart.get() , alpha );
 		return;
 	}
 
@@ -1146,7 +1157,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 		//セルが無いので描画を行わない
 	}else{
 
-#if SPRITESTUDIO6DSK_PROGRAMABLE_SHADER_ON
+#if SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON
 
 	if ( state->is_shader )
 	{
@@ -1252,7 +1263,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 #endif
 	}
 
-#if SPRITESTUDIO6DSK_PROGRAMABLE_SHADER_ON
+#if SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON
 //	if ( glpgObject )
 	{
 		if ( state->is_shader )

@@ -115,33 +115,31 @@ public:
     SsValue& operator=(const SsValue& x)
 	{
 		if (this != &x) {
-		  this->release();
-		  name.~SsString();
-		  new (this) SsValue(x);
+			this->release();
+			new (this) SsValue(x);
 		}
 		return *this;
 	}
 
-
 	void	release()
 	{
-        
-		if ( type == string_type && _str) {
-            delete _str;
-            return;
-        }
-        
-		if ( type == array_type && _array){
-            delete _array;
-            return;
-        }
-		if ( type == hash_type && _hash )
-        {
-            delete _hash;
-            
-            return;
-        }
+		name.~SsString();
+		org_txt.~SsString();
 
+		if(type == string_type && _str) {
+			delete _str;
+			return;
+		}
+
+		if(type == array_type && _array) {
+			delete _array;
+			return;
+		}
+		if(type == hash_type && _hash)
+		{
+			delete _hash;
+			return;
+		}
 	}
 
 	virtual ~SsValue() {
@@ -177,7 +175,7 @@ public:
 		return false;
 	}
 
-	SPRITESTUDIO6DSK_SERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
 		SsValueSeriarizer( ar , *this ,"" );	
 	}

@@ -128,8 +128,6 @@ public:
 
 	inline void RotationXYZ(const float x, const float y, const float z)
 	{
-		SsOpenGLMatrix mx;
-
 		if (x != 0.0f)
 		{
 			SsOpenGLMatrix mx;

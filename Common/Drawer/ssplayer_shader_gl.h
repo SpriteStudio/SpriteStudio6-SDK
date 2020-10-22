@@ -4,7 +4,10 @@
 #include <string>
 #include <vector>
 
-#define SPRITESTUDIO6DSK_PUT_UNIFORM_WARNIG	(1)
+#include <memory>
+#include <utility>
+
+#define SPRITESTUDIO6SDK_PUT_UNIFORM_WARNING	(1)
 
 namespace spritestudio6
 {
@@ -69,27 +72,28 @@ public:
 	GLint GetAttribLocation( const char *name );
 };
 
-extern 	SSOpenGLProgramObject*			glpgObject;    //カレントシェーダーオブジェクチE
+extern 	SSOpenGLProgramObject*			glpgObject;    //カレントシェーダーオブジェクト
 
 class   SSOpenGLShaderMan
 {
 private:
-    std::vector<SSOpenGLProgramObject*> m_shader_list;
-    static	SSOpenGLShaderMan*			m_Myinst;
+	std::vector<std::unique_ptr<SSOpenGLProgramObject>> m_shader_list;
+	static	std::unique_ptr<SSOpenGLShaderMan>	m_Myinst;
 public:
 	SSOpenGLShaderMan(){}
 	virtual ~SSOpenGLShaderMan(){}
 
 	static SSOpenGLProgramObject*	SetCurrent(int index)
 	{
-		glpgObject = m_Myinst->m_shader_list[index];
+		SSOpenGLShaderMan* myInstRaw = m_Myinst.get();
+		glpgObject = (myInstRaw->m_shader_list[index]).get();
 		return glpgObject;
 	}
 
 	static  void	Create()
 	{
-		if ( m_Myinst == 0)
-			m_Myinst = new  SSOpenGLShaderMan();
+		if ( !m_Myinst )
+			m_Myinst.reset( new SSOpenGLShaderMan() );
 	}
 
 	static	void	Destory()
@@ -99,23 +103,22 @@ public:
 
 	void		_Destroy()
 	{
-		for ( std::vector<SSOpenGLProgramObject*>::iterator itr = m_shader_list.begin();
+		for ( std::vector<std::unique_ptr<SSOpenGLProgramObject>>::iterator itr = m_shader_list.begin();
 				itr != m_shader_list.end() ; itr++ )
 		{
-			delete (*itr);
+			itr->reset();
 		}
-       	m_Myinst->m_shader_list.clear();
+		(m_Myinst.get())->m_shader_list.clear();
 
-		if ( m_Myinst != 0)
-        {
-			delete m_Myinst;
-			m_Myinst = 0;
+		if ( m_Myinst )
+		{
+			m_Myinst.reset();
 		}
 	}
 
 	static void	PushPgObject(SSOpenGLProgramObject *obj)
 	{
-    	m_Myinst->m_shader_list.push_back(obj);
+		(m_Myinst.get())->m_shader_list.push_back( std::move( std::unique_ptr<SSOpenGLProgramObject>( obj ) ) );
 	}
 
 };
