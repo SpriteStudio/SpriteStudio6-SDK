@@ -84,7 +84,8 @@ void AsyncProjectLoader::run()
 	{
 		p->changeState(p->stateLoading.get());
 
-		std::string fileName = spritestudio6::SsCharConverter::convert_path_string(projectName.toStdString());
+//		std::string fileName = spritestudio6::SsCharConverter::convert_path_string(projectName.toStdString());
+		std::string fileName = projectName.toStdString();
 
 		spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(fileName);
 

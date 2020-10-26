@@ -7,6 +7,7 @@
 #include "ssplayer_animedecode.h"
 #include "ssplayer_matrix.h"
 #include "ssplayer_render.h"
+#include "sscharconverter.h"
 
 #include "../Helper/DebugPrint.h"
 
@@ -63,8 +64,11 @@ SsCelMapLinker::SsCelMapLinker(SsCellMap* cellmap, SsString filePath)
 	fullpath = fullpath + path2file(cellmap->imagePath);
 	fullpath = nomarizeFilename(fullpath);
 
-	DEBUG_PRINTF("TextureFile Load %s \n", fullpath.c_str());
-	tex = SSTextureFactory::loadTexture(fullpath.c_str());
+//	DEBUG_PRINTF("TextureFile Load %s \n", fullpath.c_str());
+//	tex = SSTextureFactory::loadTexture(fullpath.c_str());
+	SsString filePathFs = SsCharConverter::convert_path_string( fullpath );
+	DEBUG_PRINTF("TextureFile Load %s \n", filePathFs.c_str());
+	tex = SSTextureFactory::loadTexture(filePathFs.c_str());
 
 }
 

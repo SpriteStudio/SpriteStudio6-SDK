@@ -128,7 +128,7 @@
 
 //SDKを更新する場合はバージョン番号を変更してください
 //MEMO: 本マクロについては、SPRITESTUDIO6SDKに限らないラベルのため、SPRITESTUDIO6SDK_の接頭にしていません。
-#define SPRITESTUDIOSDK_VERSION "SpriteStudio 6 SDK Version 1.7.4"
+#define SPRITESTUDIOSDK_VERSION "SpriteStudio 6 SDK Version 1.8.0"
 
 
 #endif
