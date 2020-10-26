@@ -1935,6 +1935,7 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		else if (outputFormat == "c") options.outputFormat = OUTPUT_FORMAT_FLAG_CSOURCE;
 		else if (outputFormat == "ssfb") options.outputFormat = OUTPUT_FORMAT_FLAG_SSFB;
 	}
+#ifdef _WIN32
 	else if (opt == "-c")
 	{
 		if (!args.hasNext()) return false;
@@ -1943,6 +1944,8 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		if (argumentEncode == "utf8") options.argumentEncode = ARGUMENT_ENCODE_UTF8;
 		else if (argumentEncode == "sjis") options.argumentEncode = ARGUMENT_ENCODE_SJIS;
 	}
+#else
+#endif	/* def _WIN32 */
 	else
 	{
 		// unknown
@@ -1994,8 +1997,12 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 			switch(options.argumentEncode)
 			{
 			case ARGUMENT_ENCODE_SJIS:
+#ifdef _WIN32
 				nameUTF8 = 	spritestudio6::SsCharConverter::sjis_to_utf8(name);;
 				break;
+#else
+				/* Fall-Through */
+#endif	/* def _WIN32 */
 
 			case ARGUMENT_ENCODE_UTF8:
 			default:

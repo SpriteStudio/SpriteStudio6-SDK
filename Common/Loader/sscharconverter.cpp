@@ -1,4 +1,4 @@
-#include "sscharconverter.h"
+ï»¿#include "sscharconverter.h"
 
 #ifdef __APPLE__
     #include "TargetConditionals.h"
@@ -64,25 +64,23 @@ std::string SsCharConverter::utf8_to_sjis(const std::string &src) {
 
 std::string SsCharConverter::sjis_to_utf8(const std::string &src) {
 #if __APPLE__ && TARGET_OS_MAC
-    /* MEMO: ‚±‚±A‚Ç‚È‚½‚©Mac”Å‚ğ‹LÚ‚¨Šè‚¢‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚å‚¤‚©H Yuzu. */
-    /*       Mac‚Ìê‡‚ÍAConverter‚ÌƒRƒ}ƒ“ƒhƒ‰ƒCƒ“‚Ì‰ğÍ‚Å‚µ‚©g—p‚µ‚È‚¢‚Æv‚¢‚Ü‚·B */
-
     // TODO: impl
+    /* MEMO: Macã®å ´åˆã¯é€šã—ã¦UTF-8ãªã®ã§ã€ï¼ˆåŸå‰‡ã¨ã—ã¦å¤‰æ›ã®å¿…è¦ã¯ãªã„ã®ã§ï¼‰ä»Šã¯è¤‡è£½ã ã‘ã—ã¦è¿”ã—ã¦ã„ã¾ã™ã€‚ */
     return std::string(src);
 #elif _WIN32 || _WIN64
     enum Constant {
         SIZE_BUFFER_WTCHAR = 2048,
     };
-    wchar_t buffer[Constant::SIZE_BUFFER_WTCHAR];   //I’[•¶š‚İ‚Ì’·‚³‚Å‚ ‚é‚±‚Æ‚É’ˆÓ
+    wchar_t buffer[Constant::SIZE_BUFFER_WTCHAR];   //çµ‚ç«¯æ–‡å­—è¾¼ã¿ã®é•·ã•ã§ã‚ã‚‹ã“ã¨ã«æ³¨æ„
     size_t srcWCharSize = 0;
-    // MEMO: src‚ªˆê“xc_str‚ğ’Ê‚Á‚Ädata()‚Éƒoƒbƒtƒ@‚ªŒ`¬‚³‚ê‚Ä‚¢‚é‚©•ÛØ‚ª‚È‚¢‚Ì‚ÅAc_str‚ğ‚µ‚Ä‚¨‚­i•W€“I‚Èstd::string‚ÌÀ‘•‚È‚ç‘åä•v‚È‚Í‚¸‚È‚Ì‚ÅA”O‚Ì‚½‚ßjB
+    // MEMO: srcãŒä¸€åº¦c_strã‚’é€šã£ã¦data()ã«ãƒãƒƒãƒ•ã‚¡ãŒå½¢æˆã•ã‚Œã¦ã„ã‚‹ã‹ä¿è¨¼ãŒãªã„ã®ã§ã€c_strã‚’ã—ã¦ãŠãï¼ˆæ¨™æº–çš„ãªstd::stringã®å®Ÿè£…ãªã‚‰å¤§ä¸ˆå¤«ãªã¯ãšãªã®ã§ã€å¿µã®ãŸã‚ï¼‰ã€‚
     if (::_mbstowcs_s_l(&srcWCharSize, buffer, Constant::SIZE_BUFFER_WTCHAR, src.c_str(), _TRUNCATE, ::_create_locale(LC_ALL, "jpn")) != 0) {
         throw std::system_error{ errno, std::system_category() };
     }
-    //MEMO: æ‚Éƒoƒbƒtƒ@‚ğw’è’·‚Åİ’u‚µ‚Ä.data()‚É’¼ÚƒŒƒ“ƒ_ƒŠƒ“ƒO‚µ‚Ä‚µ‚Ü‚¤‚ÆAƒoƒbƒtƒ@‚ÉI’[•¶š‚ª“ü‚ç‚È‚¢ê‡‚ª‚ ‚é‚½‚ßcc
+    //MEMO: å…ˆã«ãƒãƒƒãƒ•ã‚¡ã‚’æŒ‡å®šé•·ã§è¨­ç½®ã—ã¦.data()ã«ç›´æ¥ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã—ã¦ã—ã¾ã†ã¨ã€ãƒãƒƒãƒ•ã‚¡ã«çµ‚ç«¯æ–‡å­—ãŒå…¥ã‚‰ãªã„å ´åˆãŒã‚ã‚‹ãŸã‚â€¦â€¦
     std::wstring srcWCharData(buffer);
     srcWCharData.shrink_to_fit();
-    srcWCharSize = srcWCharData.size(); // Äæ“¾
+    srcWCharSize = srcWCharData.size(); // å†å–å¾—
 
     auto const destByteSize = ::WideCharToMultiByte(CP_UTF8, 0U, srcWCharData.data(), srcWCharSize, nullptr, 0, nullptr, nullptr);
     std::vector<char> dest(destByteSize, L'\0');
