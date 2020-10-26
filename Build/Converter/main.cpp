@@ -214,7 +214,6 @@ static const spritestudio6::SsPartState* findState(std::list<spritestudio6::SsPa
 // kindArgumentEncodeはARGUMENT_ENCODE_～の値で、強制指定する場合だけ有効な値を与えてください。
 static std::string convert_console_string(const std::string& srcUTF8, int kindArgumentEncode=-1)
 {
-#ifdef _WIN32
 	std::string dst;
 	if(kindArgumentEncode < 0)
 	{
@@ -238,9 +237,6 @@ static std::string convert_console_string(const std::string& srcUTF8, int kindAr
 	}
 
 	return dst;
-#else
-
-#endif // def _WIN32
 }
 
 
