@@ -1,4 +1,5 @@
 ﻿#include "ssstring_uty.h"
+#include "sscharconverter.h"
 
 #ifdef _WIN32
 #include <direct.h>
@@ -87,25 +88,28 @@ bool	is_digit_string( std::string &in_str , bool* is_priod )
 std::string getFullPath( const std::string& basePath , const std::string &relPath )
 {
 #ifdef _WIN32
-	static char	curPath[_MAX_PATH];
+	char	curPath[_MAX_PATH];
+	char	buffer_[_MAX_PATH];
+	std::string basePathFs;
+	std::string relPathFs;
+	if( basePath.size() > 0 )
+		basePathFs = SsCharConverter::convert_path_string( basePath );
+	if( relPath.size() > 0 )
+		relPathFs = SsCharConverter::convert_path_string( relPath );
 
-#if 0	// MEMO: エンバグしていると困るので、一応まだ残しておく
-	_chdir( basePath.c_str() );
 	_getcwd( curPath , _MAX_PATH ); 
-#else
-	_getcwd( curPath , _MAX_PATH ); 
-	_chdir( basePath.c_str() );
-#endif
+	_chdir( basePathFs.c_str() );
 
-	static char	buffer_[_MAX_PATH];
-	_fullpath( buffer_ , relPath.c_str() , _MAX_PATH );
-
+	_fullpath( buffer_ , relPathFs.c_str() , _MAX_PATH );
+	
 	_chdir( curPath );
 
-	std::string temp = buffer_;
+	std::string temp( buffer_ );
 	temp+= "\\";
+	// MEMO: Windowsの場合、上記API群で返ってくるパスのエンコードはSJISなことに注意
+	std::string rv = SsCharConverter::sjis_to_utf8( temp );
 
-	return temp;
+	return rv;
 #else
 	char	buffer_[2048];
 	char	curPath[2048];

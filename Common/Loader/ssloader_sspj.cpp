@@ -146,13 +146,16 @@ SsSequence*		SsProject::findSequence( SsString& sequencePackName , SsString& Seq
 SsProject*	ssloader_sspj::Load(const std::string& filename )
 {
 	libXML::XMLDocument xml;
-	if ( libXML::XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
+	std::string filenameSSPJ = SsCharConverter::convert_path_string( filename );
+
+	if ( libXML::XML_SUCCESS == xml.LoadFile( filenameSSPJ.c_str() ) )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioProject" );
 
 		SsProject* proj = new SsProject();
 		proj->__Serialize( &ar );
-		std::string project_filepath = SsCharConverter::convert_path_string(path2dir( filename ));
+//		std::string project_filepath = SsCharConverter::convert_path_string( path2dir( filename ) );
+		std::string project_filepath = path2dir( filename );
 		proj->setFilepath( project_filepath );
 
 		if ( checkFileVersion(proj->version, SPRITESTUDIO6_SSPJVERSION) == false )

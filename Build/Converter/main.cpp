@@ -13,6 +13,8 @@
 #include "sshTextureBMP.h"
 #include "ssplayer_mesh.h"
 
+#include "sscharconverter.h"
+
 #include <string>
 #include <algorithm>
 #include <iostream>
@@ -115,6 +117,12 @@ enum {
 	OUTPUT_FORMAT_FLAG_SSFB	= 1 << 3,
 };
 
+// MEMO: LumpExporter::StringEncodingと内容は同じだがmain.cppの中で閉じるもの＋厳密には目的が異なるので、別個に定義しておく
+enum {
+	ARGUMENT_ENCODE_UTF8 = 0,
+	ARGUMENT_ENCODE_SJIS,
+};
+
 bool convert_error_exit = false;	//データにエラーがありコンバートを中止した
 
 union converter32 {
@@ -202,6 +210,38 @@ static const spritestudio6::SsPartState* findState(std::list<spritestudio6::SsPa
 }
 
 
+//各機種用のコンソール用に文字コードを変換する関数
+// kindArgumentEncodeはARGUMENT_ENCODE_～の値で、強制指定する場合だけ有効な値を与えてください。
+static std::string convert_console_string(const std::string& srcUTF8, int kindArgumentEncode=-1)
+{
+#ifdef _WIN32
+	std::string dst;
+	if(kindArgumentEncode < 0)
+	{
+#if _WIN32 || _WIN64
+		kindArgumentEncode = ARGUMENT_ENCODE_SJIS;
+#else
+		kindArgumentEncode = ARGUMENT_ENCODE_UTF8;
+#endif
+	}
+
+	switch(kindArgumentEncode)
+	{
+	case ARGUMENT_ENCODE_SJIS:
+		dst = spritestudio6::SsCharConverter::utf8_to_sjis(srcUTF8);
+		break;
+
+	case ARGUMENT_ENCODE_UTF8:
+	default:
+		dst = srcUTF8;
+		break;
+	}
+
+	return dst;
+#else
+
+#endif // def _WIN32
+}
 
 
 struct PartInitialData
@@ -1676,7 +1716,7 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 	const std::string& imageBaseDir, const std::string& creatorComment, const int outputFormat)
 {
 	spritestudio6::SSTextureFactory texFactory(new spritestudio6::SSTextureBMP());
-	std::cerr << sspjPath << "\n";
+	std::cerr << convert_console_string( sspjPath ) << "\n";
 	spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(sspjPath);
 	Lump* lump;
 	try
@@ -1710,14 +1750,16 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 		{
 //			out.open((outPath + ".json").c_str(), std::ios_base::out);
 			std::string outPathJson = outPath + ".json";
-			out.open(outPathJson.c_str(), std::ios_base::out);
+
+			out.open((spritestudio6::SsCharConverter::convert_path_string( outPathJson )).c_str()
+						, std::ios_base::out);
 			if(out)
 			{
 				LumpExporter::saveJson(out, encoding, lump, creatorComment);
 			}
 			else
 			{
-				std::cerr << messageErrorFileOpen << outPathJson << std::endl;
+				std::cerr << messageErrorFileOpen << convert_console_string(outPathJson) << std::endl;
 			}
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_CSOURCE)
@@ -1730,26 +1772,29 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 		{
 //			out.open((outPath + ".ssfb").c_str(), std::ios_base::binary | std::ios_base::out);
 			std::string outPathSsfb = outPath + ".ssfb";
-			out.open(outPathSsfb.c_str(), std::ios_base::binary | std::ios_base::out);
+
+			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
+						, std::ios_base::binary | std::ios_base::out);
 			if(out)
 			{
 				LumpExporter::saveSsfb(out, encoding, lump, creatorComment, s_frameIndexVec);
 			}
 			else
 			{
-				std::cerr << messageErrorFileOpen << outPathSsfb << std::endl;
+				std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
 			}
 		}
 		else
 		{
-			out.open(outPath.c_str(), std::ios_base::binary | std::ios_base::out);
+			out.open((spritestudio6::SsCharConverter::convert_path_string(outPath)).c_str()
+						, std::ios_base::binary | std::ios_base::out);
 			if(out)
 			{
 				LumpExporter::saveBinary(out, encoding, lump, creatorComment);
 			}
 			else
 			{
-				std::cerr << messageErrorFileOpen << outPath << std::endl;
+				std::cerr << messageErrorFileOpen << convert_console_string(outPath) << std::endl;
 			}
 		}
 
@@ -1804,6 +1849,7 @@ struct Options
 	std::string						outputDir;
 
 	int								outputFormat;
+	int								argumentEncode;
 
 	Options()
 	: isHelp(false)
@@ -1893,6 +1939,14 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		else if (outputFormat == "c") options.outputFormat = OUTPUT_FORMAT_FLAG_CSOURCE;
 		else if (outputFormat == "ssfb") options.outputFormat = OUTPUT_FORMAT_FLAG_SSFB;
 	}
+	else if (opt == "-c")
+	{
+		if (!args.hasNext()) return false;
+
+		std::string argumentEncode = args.next();
+		if (argumentEncode == "utf8") options.argumentEncode = ARGUMENT_ENCODE_UTF8;
+		else if (argumentEncode == "sjis") options.argumentEncode = ARGUMENT_ENCODE_SJIS;
+	}
 	else
 	{
 		// unknown
@@ -1911,7 +1965,12 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 	options.outputDir = "";
 	options.imageBaseDir = "";
 	options.outputFormat = 0;
-	
+#ifdef _WIN32
+	options.argumentEncode = ARGUMENT_ENCODE_SJIS;
+#else
+	options.argumentEncode = ARGUMENT_ENCODE_UTF8;
+#endif	/* def _WIN32 */
+
 	//引数解析
 	Options::StringList inList;
 	ArgumentPointer args(argc, argv);
@@ -1934,7 +1993,21 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 		}
 		else
 		{
-			inList.push_back(name);
+//			inList.push_back(name);
+			std::string nameUTF8;
+			switch(options.argumentEncode)
+			{
+			case ARGUMENT_ENCODE_SJIS:
+				nameUTF8 = 	spritestudio6::SsCharConverter::sjis_to_utf8(name);;
+				break;
+
+			case ARGUMENT_ENCODE_UTF8:
+			default:
+				nameUTF8 = name;
+				break;
+			}
+
+			inList.push_back(nameUTF8);
 		}
 	}
 
@@ -1982,14 +2055,18 @@ int convertMain(int argc, const char * argv[])
 		
 #ifdef _WIN32
 			// Win32プラットフォーム用コード。Win32APIを使ってワイルドカード展開する
-			std::vector<std::string> fileList = FileUtil::findPath(str);
+			// MEMO: FileUtilで使用している文字コードはSJISであることに注意
+			std::vector<std::string> fileList = FileUtil::findPath(spritestudio6::SsCharConverter::utf8_to_sjis(str));
 			if (!fileList.empty())
 			{
-				std::copy(fileList.begin(), fileList.end(), std::back_inserter(sources));
+				for(std::vector<std::string>::iterator it=fileList.begin(); it != fileList.end(); it++)
+				{
+					sources.push_back(spritestudio6::SsCharConverter::sjis_to_utf8(*it));
+				}
 			}
 			else
 			{
-				std::cerr << "Cannot find input file: " << str << std::endl;
+				std::cerr << "Cannot find input file: " << convert_console_string(str) << std::endl;
 				error = true;
 			}
 #else
