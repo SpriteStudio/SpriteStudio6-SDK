@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <time.h>   //時間
 
+
+
 #include "../Loader/ssloader.h"
 #include "ssplayer_animedecode.h"
 #include "ssplayer_matrix.h"
@@ -10,6 +12,8 @@
 #include "ssplayer_effect2.h"
 #include "ssplayer_mesh.h"
 #include "ssInterpolation.h"
+
+
 
 namespace spritestudio6
 {
