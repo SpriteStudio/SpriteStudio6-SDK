@@ -99,7 +99,7 @@ if(WIN32 OR APPLE)
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
-    add_definitions( -D_BACKBUFFER_RENDERING__=1) 
+    add_definitions( -D_BACKBUFFER_RENDERING__) 
 endif()
 
 add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS})

@@ -3,7 +3,7 @@
 
 
 
-
+bool OpenGLInit();
 
 
 #endif

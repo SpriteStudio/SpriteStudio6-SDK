@@ -31,7 +31,7 @@
 #include "SsPlayerConverter.h"
 
 
-#ifndef _BACKBUFFER_RENDERING__
+#ifdef _BACKBUFFER_RENDERING__
 	#include "BackGroudRender.h"
 #endif
 
@@ -2178,8 +2178,8 @@ int convertMain(int argc, const char * argv[])
 int main(int argc, const char * argv[])
 {
 
-#ifndef _BACKBUFFER_RENDERING__
-	OpenGLInit();
+#ifdef _BACKBUFFER_RENDERING__
+	if (!OpenGLInit()) return 1;
 #endif
 
 
