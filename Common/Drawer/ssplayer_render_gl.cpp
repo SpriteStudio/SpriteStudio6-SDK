@@ -8,6 +8,10 @@
 #else
 #include <GL/glew.h>
 #include <GL/GL.h>
+
+
+#pragma comment(lib, "OpenGL32.Lib")
+
 #endif
 
 #include <map>

@@ -78,10 +78,36 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Loader)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Animator)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper)
 
+
+# for win & mac suport thumbnail
+if(WIN32 OR APPLE)
+    
+
+    list(APPEND Ss6Converter_SRCS 
+        BackGroudRender.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_render_gl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/src/glew.c
+    )
+
+    list(APPEND Ss6Converter_HEADERS 
+        BackGroudRender.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_render_gl.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.h
+    )
+
+
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
+    add_definitions( -D_BACKBUFFER_RENDERING__=1) 
+endif()
+
 add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS})
 target_link_libraries(Ss6Converter ssLoader)
 target_link_libraries(Ss6Converter ssAnimator)
 target_link_libraries(Ss6Converter ssHelper)
+
+
 if(NOT (WIN32 OR APPLE))
     # For Linux
     target_link_libraries(Ss6Converter ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter_Common/Loader/libssLoader.a)

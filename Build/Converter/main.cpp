@@ -30,6 +30,13 @@
 #include "FileUtil.h"
 #include "SsPlayerConverter.h"
 
+
+#ifndef _BACKBUFFER_RENDERING__
+	#include "BackGroudRender.h"
+#endif
+
+
+
 static const int DATA_VERSION_1			= 1;
 static const int DATA_VERSION_2         = 2;
 static const int DATA_VERSION_3         = 3;
@@ -115,6 +122,7 @@ enum {
 	OUTPUT_FORMAT_FLAG_JSON	= 1 << 1,
 	OUTPUT_FORMAT_FLAG_CSOURCE	= 1 << 2,
 	OUTPUT_FORMAT_FLAG_SSFB	= 1 << 3,
+	OUTPUT_FORMAT_FLAG_SSPKG = 1 << 4 ,
 };
 
 // MEMO: LumpExporter::StringEncodingと内容は同じだがmain.cppの中で閉じるもの＋厳密には目的が異なるので、別個に定義しておく
@@ -1417,6 +1425,13 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			animeData->add(Lump::s16Data(0, "reserved"));									//ダミーデータ
 			animeData->add(Lump::floatData(anime->settings.pivot.x, "canvasPvotX"));			//基準枠位置
 			animeData->add(Lump::floatData(anime->settings.pivot.y, "canvasPvotY"));			//基準枠位置
+
+#if 1  //render backbuffer
+			//対象フレームを検査して良さそうなところを持ってくる
+			decoder.draw();
+
+#endif
+
 		}
 	}
 
@@ -1697,6 +1712,8 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			}
 		}
 	}
+	
+	
 
 	// シーケンス情報
 	parseParts_ssqe( topLump, proj, imageBaseDir );
@@ -1764,7 +1781,7 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 			// LumpExporter::saveCSource(out, encoding, lump, "topLabel", creatorComment);
 			std::cerr << "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***"  << std::endl;
 		}
-		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
+		else if (outputFormat && OUTPUT_FORMAT_FLAG_SSFB)
 		{
 //			out.open((outPath + ".ssfb").c_str(), std::ios_base::binary | std::ios_base::out);
 			std::string outPathSsfb = outPath + ".ssfb";
@@ -1830,7 +1847,9 @@ APP_NAME " converter version " APP_VERSION "\n"
 "  -o      set output path.\n"
 //"  -e arg  Encoding of output file (UTF8/SJIS) default:UTF8\n"
 //"  -p arg  Specify image file load base path.\n"
+"  -pkg    sspkg output mode\n"
 "  -f      set output format.\n"
+"  usage exsample : " APP_NAME " -o <outputpath> -f < json , ssfb , c , sspkg> <input file name path>\n"
 "\n";
 
 struct Options
@@ -1920,6 +1939,7 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		options.imageBaseDir = args.next();
 	}
 */
+
 	else if (opt == "-o")
 	{
 		if (!args.hasNext()) return false;
@@ -1934,6 +1954,7 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		if (outputFormat == "json") options.outputFormat = OUTPUT_FORMAT_FLAG_JSON;
 		else if (outputFormat == "c") options.outputFormat = OUTPUT_FORMAT_FLAG_CSOURCE;
 		else if (outputFormat == "ssfb") options.outputFormat = OUTPUT_FORMAT_FLAG_SSFB;
+		else if (outputFormat == "sspkg") options.outputFormat = OUTPUT_FORMAT_FLAG_SSPKG | OUTPUT_FORMAT_FLAG_SSFB;
 	}
 #ifdef _WIN32
 	else if (opt == "-c")
@@ -2156,6 +2177,12 @@ int convertMain(int argc, const char * argv[])
 
 int main(int argc, const char * argv[])
 {
+
+#ifndef _BACKBUFFER_RENDERING__
+	OpenGLInit();
+#endif
+
+
 	int resultCode = convertMain(argc, argv);
 	return resultCode;
 }
