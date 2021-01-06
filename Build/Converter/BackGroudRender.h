@@ -3,8 +3,9 @@
 
 
 
-bool OpenGLInit();
-
+bool ConverterOpenGLInit();
+void ConverterOpenGLClear();
+void  ConverterOpenGLDrawEnd();
 
 #endif
 

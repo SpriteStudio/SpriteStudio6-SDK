@@ -1426,10 +1426,13 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			animeData->add(Lump::floatData(anime->settings.pivot.x, "canvasPvotX"));			//基準枠位置
 			animeData->add(Lump::floatData(anime->settings.pivot.y, "canvasPvotY"));			//基準枠位置
 
-#if 1  //render backbuffer
-			//対象フレームを検査して良さそうなところを持ってくる
-			decoder.draw();
 
+#if _BACKBUFFER_RENDERING__
+			ConverterOpenGLClear();
+			//対象フレームを検査して良さそうなところを持ってくる
+			decoder.setPlayFrame(10);
+			decoder.draw();
+			ConverterOpenGLDrawEnd();
 #endif
 
 		}
@@ -1728,7 +1731,13 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 void convertProject(const std::string& outPath, LumpExporter::StringEncoding encoding, const std::string& sspjPath,
 	const std::string& imageBaseDir, const std::string& creatorComment, const int outputFormat)
 {
+
+#if _BACKBUFFER_RENDERING__
+	//GLinitでしている
+#else
 	spritestudio6::SSTextureFactory texFactory(new spritestudio6::SSTextureBMP());
+#endif
+
 	std::cerr << convert_console_string( sspjPath ) << "\n";
 	spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(sspjPath);
 	Lump* lump;
@@ -2179,7 +2188,7 @@ int main(int argc, const char * argv[])
 {
 
 #ifdef _BACKBUFFER_RENDERING__
-	if (!OpenGLInit()) return 1;
+	if (!ConverterOpenGLInit()) return 1;
 #endif
 
 
