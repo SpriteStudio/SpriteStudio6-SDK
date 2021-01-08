@@ -96,6 +96,7 @@ if(WIN32 OR APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_render_gl.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/stb_image_write.h
     )
 
 

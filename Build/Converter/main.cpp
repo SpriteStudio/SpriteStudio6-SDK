@@ -329,7 +329,7 @@ static void parseParts_ssqe(Lump* topLump, spritestudio6::SsProject* proj, const
 {
 }
 
-static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& imageBaseDir)
+static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& imageBaseDir , const std::string& outPath)
 {
 //	static SsPartStateLess _ssPartStateLess;
 	std::cerr << SPRITESTUDIOSDK_VERSION << "\n";	//バージョン表記は ssloader.h　にあります。
@@ -1433,6 +1433,12 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			decoder.setPlayFrame(10);
 			decoder.draw();
 			ConverterOpenGLDrawEnd();
+
+			//std::filesystem::path opath = outPath;
+
+			std::string outputfile = outPath + "\\" + anime->name + ".png";
+
+			ConverterOpenGLOutputBitMapImage(outputfile);
 #endif
 
 		}
@@ -1745,7 +1751,7 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 	{
 		if (proj)
 		{
-			lump = parseParts(proj, imageBaseDir);
+			lump = parseParts(proj, imageBaseDir, outPath);
 		}
 		else
 		{
