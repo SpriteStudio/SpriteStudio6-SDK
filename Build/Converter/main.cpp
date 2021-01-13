@@ -2124,12 +2124,14 @@ int convertMain(int argc, const char * argv[])
 	{
 		if (!ConverterOpenGLInit())
 		{
-			texFactory.reset(
-				new spritestudio6::SSTextureFactory(
-						new spritestudio6::SSTextureBMP()
-				)
-			);
 		}
+	}
+	else {
+		texFactory.reset(
+			new spritestudio6::SSTextureFactory(
+				new spritestudio6::SSTextureBMP()
+			)
+		);
 	}
 #endif
 

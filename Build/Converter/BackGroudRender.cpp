@@ -1,9 +1,18 @@
 ﻿#include "BackGroudRender.h"
-#include "GL/glew.h"
-#include <GL/GL.h>
 #include <string>
 #include <iostream>
 #include <Windows.h>
+
+
+#ifndef _WIN32
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#include <OpenGL/glext.h>
+#else
+#include <GL/glew.h>
+#include <GL/GL.h>
+//#pragma comment(lib, "OpenGL32.Lib")
+#endif
 
 
 #include "ssplayer_render.h"
