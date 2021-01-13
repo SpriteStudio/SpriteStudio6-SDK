@@ -44,6 +44,7 @@ bool ConverterOpenGLInit()
 	GLenum err = glewInit();
 	if (err != GLEW_OK) {
 		std::cout << glewGetErrorString(err) << std::endl;
+		context = nullptr;
 		return false;
 	}
 
@@ -84,6 +85,13 @@ bool ConverterOpenGLInit()
 #else
 	return false;
 #endif
+}
+
+bool isOpenGLContextInitialized()
+{
+	if (context == nullptr) return false;
+
+	return true;
 }
 
 

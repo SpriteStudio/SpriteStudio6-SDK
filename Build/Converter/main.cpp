@@ -141,6 +141,29 @@ union converter32 {
 converter32 c32;
 
 
+
+struct Options
+{
+	typedef std::vector<std::string> StringList;
+
+	bool							isHelp;
+	bool							isVerbose;
+	StringList						inList;
+	LumpExporter::StringEncoding	encoding;
+	std::string						imageBaseDir;
+	std::string						outputDir;
+
+	int								outputFormat;
+	int								argumentEncode;
+
+	Options()
+		: isHelp(false)
+		, isVerbose(false)
+		, encoding(LumpExporter::UTF8)
+	{}
+};
+
+
 typedef std::map<const spritestudio6::SsCell*, int> CellList;
 
 CellList* makeCellList(spritestudio6::SsProject* proj)
@@ -1428,17 +1451,23 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 
 #if _BACKBUFFER_RENDERING__
-			ConverterOpenGLClear();
-			//対象フレームを検査して良さそうなところを持ってくる
-			decoder.setPlayFrame(10);
-			decoder.draw();
-			ConverterOpenGLDrawEnd();
 
-			//std::filesystem::path opath = outPath;
+			//if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
+			if (isOpenGLContextInitialized())
+			{
 
-			std::string outputfile = outPath + "\\" + anime->name + ".png";
+				ConverterOpenGLClear();
+				//対象フレームを検査して良さそうなところを持ってくる
+				decoder.setPlayFrame(10);
+				decoder.draw();
+				ConverterOpenGLDrawEnd();
 
-			ConverterOpenGLOutputBitMapImage(outputfile);
+				//std::filesystem::path opath = outPath;
+
+				std::string outputfile = outPath + "\\" + anime->name + ".png";
+
+				ConverterOpenGLOutputBitMapImage(outputfile);
+			}
 #endif
 
 		}
@@ -1734,16 +1763,19 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 
 
+//void convertProject(const std::string& outPath, const std::string& outFName,
+//	LumpExporter::StringEncoding encoding, const std::string& sspjPath,
+//	const std::string& imageBaseDir, const std::string& creatorComment, const int outputFormat)
+
 void convertProject(const std::string& outPath, const std::string& outFName,
 	LumpExporter::StringEncoding encoding, const std::string& sspjPath,
-	const std::string& imageBaseDir, const std::string& creatorComment, const int outputFormat)
-{
+	Options& options, const std::string& creatorComment)
 
-#if _BACKBUFFER_RENDERING__
-	//GLinitでしている
-#else
-	spritestudio6::SSTextureFactory texFactory(new spritestudio6::SSTextureBMP());
-#endif
+{
+	const std::string imageBaseDir = options.imageBaseDir;
+	const int outputFormat = options.outputFormat;
+
+
 
 	std::cerr << convert_console_string( sspjPath ) << "\n";
 	spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(sspjPath);
@@ -1885,26 +1917,6 @@ APP_NAME " converter version " APP_VERSION "\n"
 "  usage exsample : " APP_NAME " -o <outputpath> -f < json , ssfb , c , sspkg> <input file name path>\n"
 "\n";
 
-struct Options
-{
-	typedef std::vector<std::string> StringList;
-
-	bool							isHelp;
-	bool							isVerbose;
-	StringList						inList;
-	LumpExporter::StringEncoding	encoding;
-	std::string						imageBaseDir;
-	std::string						outputDir;
-
-	int								outputFormat;
-	int								argumentEncode;
-
-	Options()
-	: isHelp(false)
-	, isVerbose(false)
-	, encoding(LumpExporter::UTF8)
-	{}
-};
 
 
 
@@ -2007,6 +2019,10 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		return false;
 	}
 
+
+
+
+
 	// success
 	return true;
 }
@@ -2076,7 +2092,7 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 
 
 
-
+#include <memory>
 
 int convertMain(int argc, const char * argv[])
 {
@@ -2098,8 +2114,25 @@ int convertMain(int argc, const char * argv[])
 		std::cout << HELP;
 		return SSPC_SUCCESS;
 	}
-	
-	
+
+
+#ifdef _BACKBUFFER_RENDERING__
+	std::unique_ptr<spritestudio6::SSTextureFactory> texFactory;
+	//spritestudio6::SSTextureFactory* texFactory = nullptr;
+
+	if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
+	{
+		if (!ConverterOpenGLInit())
+		{
+			texFactory.reset(
+				new spritestudio6::SSTextureFactory(
+						new spritestudio6::SSTextureBMP()
+				)
+			);
+		}
+	}
+#endif
+
 	// *** 入力ファイル名チェック
 	std::vector<std::string> sources;
 	{
@@ -2163,11 +2196,13 @@ int convertMain(int argc, const char * argv[])
 		std::string outPath = FileUtil::getFilePath(sspjPath);
 		std::string outFName = FileUtil::getFileName(sspjPath);//拡張子なし
 		
-		if ( options.outputDir != "" ) 
+		//パスが指定されている場合
+		if ( options.outputDir != "" )
 		{
 
-/*
-			//パスが指定されている場合
+			outPath = FileUtil::normalizeFilePath(options.outputDir);
+
+#if 0
 			int st = 0;
 #ifdef _WIN32
 			st = (int)(outPath.find_last_of("\\"));
@@ -2175,11 +2210,7 @@ int convertMain(int argc, const char * argv[])
             st = (int)(outPath.find_last_of("/"));
 #endif
 			std::string ssbpname = outPath.substr(st+1);
-*/
 
-			outPath = FileUtil::normalizeFilePath(options.outputDir);
-
-/*
 #ifdef _WIN32
 			if ( options.outputDir.substr(options.outputDir.length() - 1) != "\\" )
 #else
@@ -2195,8 +2226,9 @@ int convertMain(int argc, const char * argv[])
 			}
 
 //			outPath = options.outputDir + ssbpname;
+
 			outPath = options.outputDir;
-*/
+#endif
 		}
 
 		if (options.isVerbose)
@@ -2204,7 +2236,8 @@ int convertMain(int argc, const char * argv[])
 			std::cout << "Convert: " << sspjPath << " -> " << outPath << std::endl;
 		}
 		
-		convertProject(outPath , outFName , encoding, sspjPath, options.imageBaseDir, creatorComment, options.outputFormat);
+//		convertProject(outPath , outFName , encoding, sspjPath, options.imageBaseDir, creatorComment, options.outputFormat);
+		convertProject(outPath, outFName, encoding, sspjPath, options, creatorComment);
 	}
 
 	if ( convert_error_exit == true )
@@ -2223,11 +2256,6 @@ int convertMain(int argc, const char * argv[])
 
 int main(int argc, const char * argv[])
 {
-
-#ifdef _BACKBUFFER_RENDERING__
-	if (!ConverterOpenGLInit()) return 1;
-#endif
-
 
 	int resultCode = convertMain(argc, argv);
 	return resultCode;

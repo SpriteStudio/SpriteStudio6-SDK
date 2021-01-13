@@ -4,6 +4,8 @@
 #include <string>
 
 bool ConverterOpenGLInit();
+bool isOpenGLContextInitialized();
+
 void ConverterOpenGLClear();
 void ConverterOpenGLDrawEnd();
 void ConverterOpenGLRelease();
