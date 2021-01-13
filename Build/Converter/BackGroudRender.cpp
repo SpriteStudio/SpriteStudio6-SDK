@@ -1,7 +1,6 @@
 ﻿#include "BackGroudRender.h"
 #include <string>
 #include <iostream>
-#include <Windows.h>
 
 
 #ifndef _WIN32
@@ -9,6 +8,7 @@
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
 #else
+#include <Windows.h>
 #include <GL/glew.h>
 #include <GL/GL.h>
 //#pragma comment(lib, "OpenGL32.Lib")
@@ -23,9 +23,15 @@
 #include "stb_image.h"
 #include "stb_image_write.h"
 
+
+
 static spritestudio6::SSTextureFactory* texfactory = nullptr;
-static HGLRC context = nullptr;
+
+#if WIN32
 static HDC deviceContext;
+#endif
+
+static HGLRC context = nullptr;
 GLuint FramebufferName = 0;
 GLuint renderedTexture;
 GLuint depthrenderbuffer;
@@ -37,7 +43,6 @@ bool ConverterOpenGLInit()
 #if WIN32
 //	auto window = CreateWindow(TEXT("STATIC"), TEXT("Ss6Converter"), WS_CAPTION | WS_VISIBLE, 0, 0, 1024, 1024, 0, 0, 0, 0);
 	auto window = CreateWindow(TEXT("STATIC"), TEXT("Ss6Converter"), WS_CAPTION , 0, 0, 1024, 1024, 0, 0, 0, 0);
-
 
 	deviceContext = GetDC(window);
 
@@ -53,6 +58,7 @@ bool ConverterOpenGLInit()
 	GLenum err = glewInit();
 	if (err != GLEW_OK) {
 		std::cout << glewGetErrorString(err) << std::endl;
+		ConverterOpenGLRelease();
 		context = nullptr;
 		return false;
 	}
@@ -134,6 +140,8 @@ void  ConverterOpenGLDrawEnd()
 void  ConverterOpenGLRelease()
 {
 	wglDeleteContext(context);
+	delete texfactory;
+	texfactory = nullptr;
 }
 
 void ConverterOpenGLOutputBitMapImage(const std::string filename)

@@ -2124,6 +2124,7 @@ int convertMain(int argc, const char * argv[])
 	{
 		if (!ConverterOpenGLInit())
 		{
+			std::cout << "OpenGL not initialized \n" << std::endl;
 		}
 	}
 	else {
@@ -2242,6 +2243,9 @@ int convertMain(int argc, const char * argv[])
 		convertProject(outPath, outFName, encoding, sspjPath, options, creatorComment);
 	}
 
+
+
+
 	if ( convert_error_exit == true )
 	{
 		//データにエラーがありコンバートを中止した
@@ -2260,6 +2264,12 @@ int main(int argc, const char * argv[])
 {
 
 	int resultCode = convertMain(argc, argv);
+
+	if (isOpenGLContextInitialized())
+	{
+		ConverterOpenGLRelease();
+	}
+
 	return resultCode;
 }
 
