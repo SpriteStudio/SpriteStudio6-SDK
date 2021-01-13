@@ -78,3 +78,4 @@ Build/Viewer2/JuceLibraryCode/
 Build/Converter/build/
 Build/Viewer/build/
 *.BAK
+testout/*

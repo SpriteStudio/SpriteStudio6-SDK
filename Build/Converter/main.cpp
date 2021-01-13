@@ -1734,7 +1734,8 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 
 
-void convertProject(const std::string& outPath, LumpExporter::StringEncoding encoding, const std::string& sspjPath,
+void convertProject(const std::string& outPath, const std::string& outFName,
+	LumpExporter::StringEncoding encoding, const std::string& sspjPath,
 	const std::string& imageBaseDir, const std::string& creatorComment, const int outputFormat)
 {
 
@@ -1777,7 +1778,7 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 		if (outputFormat == OUTPUT_FORMAT_FLAG_JSON)
 		{
 //			out.open((outPath + ".json").c_str(), std::ios_base::out);
-			std::string outPathJson = outPath + ".json";
+			std::string outPathJson = outPath + outFName + ".json";
 
 			out.open((spritestudio6::SsCharConverter::convert_path_string( outPathJson )).c_str()
 						, std::ios_base::out);
@@ -1796,10 +1797,10 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 			// LumpExporter::saveCSource(out, encoding, lump, "topLabel", creatorComment);
 			std::cerr << "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***"  << std::endl;
 		}
-		else if (outputFormat && OUTPUT_FORMAT_FLAG_SSFB)
+		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{
 //			out.open((outPath + ".ssfb").c_str(), std::ios_base::binary | std::ios_base::out);
-			std::string outPathSsfb = outPath + ".ssfb";
+			std::string outPathSsfb = outPath + outFName + ".ssfb";
 
 			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
 						, std::ios_base::binary | std::ios_base::out);
@@ -1812,9 +1813,26 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 				std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
 			}
 		}
+		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
+		{
+//			std::string outPathSsfb = outPath + outFName + ".sspkg";
+			std::string outPathSsfb = outPath + outFName + ".ssfb";//出力はFB
+
+			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
+				, std::ios_base::binary | std::ios_base::out);
+			if (out)
+			{
+				LumpExporter::saveSsfb(out, encoding, lump, creatorComment, s_frameIndexVec);
+			}
+			else
+			{
+				std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
+			}
+		}
 		else
 		{
-			out.open((spritestudio6::SsCharConverter::convert_path_string(outPath)).c_str()
+			std::string outPathSsfb = outPath + outFName + ".ssbp";
+			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
 						, std::ios_base::binary | std::ios_base::out);
 			if(out)
 			{
@@ -1822,7 +1840,7 @@ void convertProject(const std::string& outPath, LumpExporter::StringEncoding enc
 			}
 			else
 			{
-				std::cerr << messageErrorFileOpen << convert_console_string(outPath) << std::endl;
+				std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
 			}
 		}
 
@@ -1969,7 +1987,7 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		if (outputFormat == "json") options.outputFormat = OUTPUT_FORMAT_FLAG_JSON;
 		else if (outputFormat == "c") options.outputFormat = OUTPUT_FORMAT_FLAG_CSOURCE;
 		else if (outputFormat == "ssfb") options.outputFormat = OUTPUT_FORMAT_FLAG_SSFB;
-		else if (outputFormat == "sspkg") options.outputFormat = OUTPUT_FORMAT_FLAG_SSPKG | OUTPUT_FORMAT_FLAG_SSFB;
+		else if (outputFormat == "sspkg") options.outputFormat = OUTPUT_FORMAT_FLAG_SSPKG;
 	}
 #ifdef _WIN32
 	else if (opt == "-c")
@@ -2139,10 +2157,16 @@ int convertMain(int argc, const char * argv[])
 	for (std::vector<std::string>::const_iterator it = sources.begin(); it != sources.end(); it++)
 	{
 		std::string sspjPath = *it;
-		std::string outPath = FileUtil::replaceExtension(sspjPath, ".sspj", ".ssbp");
+
+		//std::string outPath = FileUtil::replaceExtension(sspjPath, ".sspj", ".ssbp");
+
+		std::string outPath = FileUtil::getFilePath(sspjPath);
+		std::string outFName = FileUtil::getFileName(sspjPath);//拡張子なし
 		
 		if ( options.outputDir != "" ) 
 		{
+
+/*
 			//パスが指定されている場合
 			int st = 0;
 #ifdef _WIN32
@@ -2151,7 +2175,11 @@ int convertMain(int argc, const char * argv[])
             st = (int)(outPath.find_last_of("/"));
 #endif
 			std::string ssbpname = outPath.substr(st+1);
+*/
 
+			outPath = FileUtil::normalizeFilePath(options.outputDir);
+
+/*
 #ifdef _WIN32
 			if ( options.outputDir.substr(options.outputDir.length() - 1) != "\\" )
 #else
@@ -2165,7 +2193,10 @@ int convertMain(int argc, const char * argv[])
                 options.outputDir = options.outputDir + "/";
 #endif
 			}
-			outPath = options.outputDir + ssbpname;
+
+//			outPath = options.outputDir + ssbpname;
+			outPath = options.outputDir;
+*/
 		}
 
 		if (options.isVerbose)
@@ -2173,7 +2204,7 @@ int convertMain(int argc, const char * argv[])
 			std::cout << "Convert: " << sspjPath << " -> " << outPath << std::endl;
 		}
 		
-		convertProject(outPath, encoding, sspjPath, options.imageBaseDir, creatorComment, options.outputFormat);
+		convertProject(outPath , outFName , encoding, sspjPath, options.imageBaseDir, creatorComment, options.outputFormat);
 	}
 
 	if ( convert_error_exit == true )
