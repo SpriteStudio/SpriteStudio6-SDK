@@ -15,6 +15,7 @@ jobs:
     - name: prepare build environment
       run: |
         brew install qt
+        brew install glfw3
     - name: release build
       run: ./Scripts/release_macos.sh
     - name: Upload Tools

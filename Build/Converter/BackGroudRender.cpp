@@ -9,15 +9,22 @@
 #include <GL/GL.h>
 //#pragma comment(lib, "OpenGL32.Lib")
 #else
+
+/*
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
+*/
 
 //#include <GL/glew.h>
-#include <glad/gl.h>
+#include <glad/glad.h>
 //#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
+#if USE_NATIVE_OSMESA
+ #define GLFW_EXPOSE_NATIVE_OSMESA
+ #include <GLFW/glfw3native.h>
+#endif
 
 #if USE_NATIVE_OSMESA
  #define GLFW_EXPOSE_NATIVE_OSMESA
@@ -134,7 +141,8 @@ bool isOpenGLContextInitialized()
     GLint mvp_location, vpos_location, vcol_location;
     float ratio;
     int width, height;
-    mat4x4 mvp;
+
+//    mat4x4 mvp;
     char* buffer;
 
     glfwSetErrorCallback(error_callback);
@@ -156,8 +164,17 @@ bool isOpenGLContextInitialized()
     }
 
     glfwMakeContextCurrent(window);
-    gladLoadGL(glfwGetProcAddress);
+    
+    //gladLoadGL(glfwGetProcAddress());
 
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
+    {
+        std::cerr << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }    
+
+
+#if 0
     // NOTE: OpenGL error checks have been omitted for brevity
 
     glGenBuffers(1, &vertex_buffer);
@@ -223,6 +240,7 @@ bool isOpenGLContextInitialized()
     glfwDestroyWindow(window);
 
     glfwTerminate();
+#endif
 #endif
 
 	return true;
