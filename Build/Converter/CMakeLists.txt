@@ -116,6 +116,9 @@ target_link_libraries(Ss6Converter ssLoader)
 target_link_libraries(Ss6Converter ssAnimator)
 target_link_libraries(Ss6Converter ssHelper)
 
+include_directories(glad/include)
+add_subdirectory(glad)
+
 
 if(NOT (WIN32 OR APPLE))
     # For Linux
