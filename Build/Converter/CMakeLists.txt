@@ -126,6 +126,38 @@ if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
 endif()
 
 
+
+if(MSVC)
+#    target_link_libraries(Ss6Converter AntTweakBar${ANTTWEAKBAR_LIB_ARCH}.lib)
+#    target_link_libraries(Ss6Converter glew32.lib)
+#    target_link_libraries(Ss6Converter glfw3.lib)
+
+    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
+    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
+    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows")
+    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows")
+    ADD_DEFINITIONS(/D_WIN32)
+
+elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+#    target_link_libraries(Ss6Converter glfw.3)
+    target_link_libraries(Ss6Converter "-framework OpenGL")
+    target_link_libraries(Ss6Converter "-framework AppKit")
+    target_link_libraries(Ss6Converter "-framework IOKit")
+    ADD_DEFINITIONS(-DAPPLE)
+endif()
+
+
+# --- If we are on OS X copy all the embedded libraries to the app bundle
+#if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+#    install(CODE "
+#        include(BundleUtilities)
+#        set(BU_CHMOD_BUNDLE_ITEMS TRUE)
+#        fixup_bundle(${CMAKE_INSTALL_PREFIX}/viewer_sample_gl.app \"\" \"\")
+#    " COMPONENT Runtime)
+#endif()
+
+
+
 enable_testing()
 add_test(NAME allAttributeV6 COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter ${CMAKE_CURRENT_SOURCE_DIR}/../TestData/allAttributeV6/allAttributeV6.sspj)
 add_test(NAME allPartsV6 COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter ${CMAKE_CURRENT_SOURCE_DIR}/../TestData/allPartsV6/allPartsV6.sspj)

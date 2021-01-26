@@ -3,15 +3,16 @@
 #include <iostream>
 
 
-#ifndef _WIN32
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <OpenGL/glext.h>
-#else
+#ifdef _WIN32
 #include <Windows.h>
 #include <GL/glew.h>
 #include <GL/GL.h>
 //#pragma comment(lib, "OpenGL32.Lib")
+#else
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#include <OpenGL/glext.h>
+
 #endif
 
 
@@ -104,7 +105,13 @@ bool ConverterOpenGLInit()
 
 bool isOpenGLContextInitialized()
 {
+
+#if WIN32
+
 	if (context == nullptr) return false;
+#else
+
+#endif
 
 	return true;
 }
@@ -112,6 +119,9 @@ bool isOpenGLContextInitialized()
 
 void ConverterOpenGLClear()
 {
+
+#if WIN32
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	//glClear(GL_COLOR_BUFFER_BIT);
 	glDisable(GL_STENCIL_TEST);
@@ -129,18 +139,23 @@ void ConverterOpenGLClear()
 	glLoadIdentity();
 	glOrtho(-width / 2, width / 2, -height / 2, height / 2, -2048, 2048);
 
+#endif
 
 }
 
 void  ConverterOpenGLDrawEnd()
 {
+#if WIN32
 	SwapBuffers(deviceContext);
+#else
+#endif
 }
 
 void  ConverterOpenGLRelease()
 {
 #if WIN32
 	wglDeleteContext(context);
+#else
 #endif
 	delete texfactory;
 	texfactory = nullptr;
@@ -155,17 +170,17 @@ void ConverterOpenGLOutputBitMapImage(const std::string filename)
 
 #ifdef	_WIN32
 	GLenum		eFormat = GL_BGRA;
-#else
-	GLenum		eFormat = GL_RGBA;
-#endif
-
-
 	pcBitmap = (char*)malloc(sizeof(char) * width * height * 4);
 
 	glReadBuffer(GL_COLOR_ATTACHMENT0);
 	glReadPixels(0, 0, width, height, eFormat, GL_UNSIGNED_BYTE, pcBitmap);
 
 	stbi_write_png(filename.c_str(), width, height, 4 , (const void*)pcBitmap, 0);
+#else
+	GLenum		eFormat = GL_RGBA;
+#endif
+
+
 
 
 }
