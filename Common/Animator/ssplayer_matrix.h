@@ -1,7 +1,10 @@
 ﻿#ifndef __SSPLAYER_MATRIX__
 #define __SSPLAYER_MATRIX__
 
-#include "SsTypes.h"
+//#include "SsTypes.h"
+#include "../Loader/sstypes.h"
+
+
 #include <memory>
 
 namespace spritestudio6

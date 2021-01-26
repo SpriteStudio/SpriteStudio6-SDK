@@ -29,9 +29,9 @@ static spritestudio6::SSTextureFactory* texfactory = nullptr;
 
 #if WIN32
 static HDC deviceContext;
+static HGLRC context = nullptr;
 #endif
 
-static HGLRC context = nullptr;
 GLuint FramebufferName = 0;
 GLuint renderedTexture;
 GLuint depthrenderbuffer;
@@ -139,7 +139,9 @@ void  ConverterOpenGLDrawEnd()
 
 void  ConverterOpenGLRelease()
 {
+#if WIN32
 	wglDeleteContext(context);
+#endif
 	delete texfactory;
 	texfactory = nullptr;
 }
