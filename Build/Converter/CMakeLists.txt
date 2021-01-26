@@ -87,7 +87,7 @@ if(WIN32 OR APPLE)
         BackGroudRender.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_render_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/src/glew.c
+#        ${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/src/glew.c
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.cpp
     )
 
@@ -101,7 +101,13 @@ if(WIN32 OR APPLE)
 
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
+#    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
+
+if(APPLE)
+    #for install brew 
+#    include_directories(/usr/local/Cellar/glfw/3.3.2/)
+endif()
+
     add_definitions( -D_BACKBUFFER_RENDERING__) 
 endif()
 
@@ -123,9 +129,8 @@ if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
 endif()
 
 
-
+# add use opengl setting
 if(MSVC)
-#    target_link_libraries(Ss6Converter AntTweakBar${ANTTWEAKBAR_LIB_ARCH}.lib)
 #    target_link_libraries(Ss6Converter glew32.lib)
 #    target_link_libraries(Ss6Converter glfw3.lib)
 
@@ -136,7 +141,12 @@ if(MSVC)
     ADD_DEFINITIONS(/D_WIN32)
 
 elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
-#    target_link_libraries(Ss6Converter glfw.3)
+
+    find_package (glfw3 REQUIRED)
+    include_directories(/usr/local/include)
+    link_directories(/usr/local/lib)
+
+    target_link_libraries(Ss6Converter "glfw")
     target_link_libraries(Ss6Converter "-framework OpenGL")
     target_link_libraries(Ss6Converter "-framework AppKit")
     target_link_libraries(Ss6Converter "-framework IOKit")
