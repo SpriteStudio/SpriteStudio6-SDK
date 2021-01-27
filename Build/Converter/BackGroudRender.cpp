@@ -4,9 +4,24 @@
 
 
 #ifdef _WIN32
+
+//#include <GL/GL.h>
+
+
 #include <Windows.h>
-#include <GL/glew.h>
-#include <GL/GL.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+//#include <GL/GL.h>
+//#include <GL/glew.h>
+
+#if USE_NATIVE_OSMESA
+#define GLFW_EXPOSE_NATIVE_OSMESA
+#include <GLFW/glfw3native.h>
+#endif
+
+//#include <GL/glew.h>
+//#include <GL/GL.h>
 //#pragma comment(lib, "OpenGL32.Lib")
 #else
 
@@ -26,10 +41,6 @@
  #include <GLFW/glfw3native.h>
 #endif
 
-#if USE_NATIVE_OSMESA
- #define GLFW_EXPOSE_NATIVE_OSMESA
- #include <GLFW/glfw3native.h>
-#endif
 
 
 #endif
@@ -61,6 +72,7 @@ bool ConverterOpenGLInit()
 {
 
 #if WIN32
+/*
 //	auto window = CreateWindow(TEXT("STATIC"), TEXT("Ss6Converter"), WS_CAPTION | WS_VISIBLE, 0, 0, 1024, 1024, 0, 0, 0, 0);
 	auto window = CreateWindow(TEXT("STATIC"), TEXT("Ss6Converter"), WS_CAPTION , 0, 0, 1024, 1024, 0, 0, 0, 0);
 
@@ -114,7 +126,7 @@ bool ConverterOpenGLInit()
 	//glDrawBuffers(1, DrawBuffers); 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
-
+    */
 
 	return true;
 #else
@@ -269,6 +281,7 @@ void ConverterOpenGLClear()
 	glLoadIdentity();
 	glOrtho(-width / 2, width / 2, -height / 2, height / 2, -2048, 2048);
 
+
 #endif
 
 }
@@ -299,6 +312,7 @@ void ConverterOpenGLOutputBitMapImage(const std::string filename)
 	int height = 1024;
 
 #ifdef	_WIN32
+/*
 	GLenum		eFormat = GL_BGRA;
 	pcBitmap = (char*)malloc(sizeof(char) * width * height * 4);
 
@@ -306,6 +320,7 @@ void ConverterOpenGLOutputBitMapImage(const std::string filename)
 	glReadPixels(0, 0, width, height, eFormat, GL_UNSIGNED_BYTE, pcBitmap);
 
 	stbi_write_png(filename.c_str(), width, height, 4 , (const void*)pcBitmap, 0);
+*/
 #else
 	GLenum		eFormat = GL_RGBA;
 #endif

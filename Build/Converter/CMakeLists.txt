@@ -87,7 +87,7 @@ if(WIN32 OR APPLE)
         BackGroudRender.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_render_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.cpp
-#        ${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/src/glew.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/src/glew.c
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.cpp
     )
 
@@ -101,7 +101,7 @@ if(WIN32 OR APPLE)
 
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
-#    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
 
 if(APPLE)
     #for install brew 
@@ -116,8 +116,12 @@ target_link_libraries(Ss6Converter ssLoader)
 target_link_libraries(Ss6Converter ssAnimator)
 target_link_libraries(Ss6Converter ssHelper)
 
+
 include_directories(glad/include)
+include_directories(glfw/include)
+
 add_subdirectory(glad)
+add_subdirectory(glfw)
 
 
 if(NOT (WIN32 OR APPLE))
@@ -134,8 +138,12 @@ endif()
 
 # add use opengl setting
 if(MSVC)
+#    find_package (glfw REQUIRED)
+
 #    target_link_libraries(Ss6Converter glew32.lib)
 #    target_link_libraries(Ss6Converter glfw3.lib)
+    target_link_libraries(Ss6Converter glfw)
+    target_link_libraries(Ss6Converter glad)
 
     SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
     SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
@@ -144,13 +152,13 @@ if(MSVC)
     ADD_DEFINITIONS(/D_WIN32)
 
 elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+#    find_package (glfw3 REQUIRED)
 
-    find_package (glfw3 REQUIRED)
-    include_directories(/usr/local/include)
-    link_directories(/usr/local/lib)
+    #include_directories(/usr/local/include)
+    #link_directories(/usr/local/lib)
 
     target_link_libraries(Ss6Converter glad)
-    target_link_libraries(Ss6Converter "glfw" )
+    target_link_libraries(Ss6Converter glfw )
     target_link_libraries(Ss6Converter "-framework OpenGL")
     target_link_libraries(Ss6Converter "-framework AppKit")
     target_link_libraries(Ss6Converter "-framework IOKit")
