@@ -1,18 +1,9 @@
 ﻿#include <stdio.h>
 #include <cstdlib>
 
-#ifndef _WIN32
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <OpenGL/glext.h>
-#else
-#include <GL/glew.h>
-#include <GL/GL.h>
 
+#include "ssOpenGLSetting.h"
 
-#pragma comment(lib, "OpenGL32.Lib")
-
-#endif
 
 #include <map>
 #include <memory>
@@ -175,6 +166,7 @@ static ShaderVArg*	s_pVArg			= NULL;
 /// // RGB=100%テクスチャ、A=テクスチャｘ頂点カラーの設定にする。
 static void __fastcall setupTextureCombinerTo_NoBlendRGB_MultiplyAlpha_()
 {
+
 	// カラーは１００％テクスチャ
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 	glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
@@ -394,7 +386,12 @@ void	SsRenderGL::SetAlphaBlendMode(SsBlendType::_enum type)
 	case SsBlendType::sub:				//< 3 減算
 		// TODO SrcAlpha を透明度として使えない
 		glBlendEquation( GL_FUNC_REVERSE_SUBTRACT );
+
+#if USE_GLEW
 		glBlendFuncSeparateEXT( GL_SRC_ALPHA, GL_ONE, GL_ZERO, GL_DST_ALPHA );
+#else
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ZERO, GL_DST_ALPHA);
+#endif
 		break;
 	case SsBlendType::mulalpha: 		//< 4 α乗算
 		glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
@@ -495,7 +492,11 @@ void	SsRenderGL::SetTexture( SsCellValue* cellvalue )
 		{
 			// 2のべき乗ではない:NPOTテクスチャ
 			texture_is_pow2 = false;
+#if USE_GLEW
 			gl_target = GL_TEXTURE_RECTANGLE_ARB;
+#else
+			gl_target = GL_TEXTURE_RECTANGLE;
+#endif
 		}
 
 
@@ -679,7 +680,11 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 		{
 			// 2のべき乗ではない:NPOTテクスチャ
 			texture_is_pow2 = false;
+#if USE_GLEW
 			gl_target = GL_TEXTURE_RECTANGLE_ARB;
+#else
+			gl_target = GL_TEXTURE_RECTANGLE;
+#endif
 		}
 
 
@@ -844,7 +849,11 @@ void	SsRenderGL::renderPart( SsPartState* state )
 		{
 			// 2のべき乗ではない:NPOTテクスチャ
 			texture_is_pow2 = false;
+#if USE_GLEW
 			gl_target = GL_TEXTURE_RECTANGLE_ARB;
+#else
+			gl_target = GL_TEXTURE_RECTANGLE;
+#endif
 		}
 
 

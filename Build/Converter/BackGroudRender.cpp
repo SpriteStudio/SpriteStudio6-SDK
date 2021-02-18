@@ -2,48 +2,9 @@
 #include <string>
 #include <iostream>
 
-
-#ifdef _WIN32
-
-//#include <GL/GL.h>
+#include "ssOpenGLSetting.h"
 
 
-#include <Windows.h>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-//#include <GL/GL.h>
-//#include <GL/glew.h>
-
-#if USE_NATIVE_OSMESA
-#define GLFW_EXPOSE_NATIVE_OSMESA
-#include <GLFW/glfw3native.h>
-#endif
-
-//#include <GL/glew.h>
-//#include <GL/GL.h>
-//#pragma comment(lib, "OpenGL32.Lib")
-#else
-
-/*
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <OpenGL/glext.h>
-*/
-
-//#include <GL/glew.h>
-#include <glad/glad.h>
-//#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-
-#if USE_NATIVE_OSMESA
- #define GLFW_EXPOSE_NATIVE_OSMESA
- #include <GLFW/glfw3native.h>
-#endif
-
-
-
-#endif
 
 
 #include "ssplayer_render.h"
@@ -58,18 +19,110 @@
 
 static spritestudio6::SSTextureFactory* texfactory = nullptr;
 
+
+/*
 #if WIN32
 static HDC deviceContext;
 static HGLRC context = nullptr;
 #endif
+*/
+
 
 GLuint FramebufferName = 0;
 GLuint renderedTexture;
 GLuint depthrenderbuffer;
 
 
+
+static void error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Error: %s\n", description);
+}
+
 bool ConverterOpenGLInit()
 {
+
+#if 1
+    GLFWwindow* window;
+    GLuint vertex_buffer, vertex_shader, fragment_shader, program;
+    GLint mvp_location, vpos_location, vcol_location;
+    float ratio;
+    int width, height;
+
+    //    mat4x4 mvp;
+    char* buffer;
+
+    glfwSetErrorCallback(error_callback);
+
+    glfwInitHint(GLFW_COCOA_MENUBAR, GLFW_FALSE);
+
+    if (!glfwInit())
+        exit(EXIT_FAILURE);
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
+    window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+    if (!window)
+    {
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+
+    glfwMakeContextCurrent(window);
+
+    //gladLoadGL(glfwGetProcAddress());
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
+    {
+        std::cerr << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
+
+    /*    GLenum err = glewInit();
+    if (err != GLEW_OK) {
+        std::cout << glewGetErrorString(err) << std::endl;
+        ConverterOpenGLRelease();
+        return false;
+    }
+    */
+
+
+    spritestudio6::SsCurrentRenderer::SetCurrentRender(new spritestudio6::SsRenderGL());
+    texfactory = new spritestudio6::SSTextureFactory(new spritestudio6::SSTextureGL());
+
+
+
+    //レンダリングテクスチャのバインド
+    int renderWidth = 1024;
+    int renderHeight = 1024;
+
+    //SendMessage(window, WM_PAINT, 0, 0);
+
+    glGenFramebuffers(1, &FramebufferName);
+    glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
+
+    glGenTextures(1, &renderedTexture);
+    glBindTexture(GL_TEXTURE_2D, renderedTexture);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, renderWidth, renderHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    glGenRenderbuffers(1, &depthrenderbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, renderWidth, renderHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
+
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
+
+    //GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+    //glDrawBuffers(1, DrawBuffers); 
+
+    glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
+#endif
+
+    return true;
 
 #if WIN32
 /*
@@ -136,14 +189,13 @@ bool ConverterOpenGLInit()
 #endif
 }
 
-static void error_callback(int error, const char* description)
-{
-    fprintf(stderr, "Error: %s\n", description);
-}
+
 
 bool isOpenGLContextInitialized()
 {
 
+
+#if 0
 #if WIN32
 
 	if (context == nullptr) return false;
@@ -255,6 +307,8 @@ bool isOpenGLContextInitialized()
 #endif
 #endif
 
+#endif
+
 	return true;
 }
 
@@ -289,7 +343,7 @@ void ConverterOpenGLClear()
 void  ConverterOpenGLDrawEnd()
 {
 #if WIN32
-	SwapBuffers(deviceContext);
+//	SwapBuffers(deviceContext);
 #else
 #endif
 }
@@ -297,7 +351,7 @@ void  ConverterOpenGLDrawEnd()
 void  ConverterOpenGLRelease()
 {
 #if WIN32
-	wglDeleteContext(context);
+//	wglDeleteContext(context);
 #else
 #endif
 	delete texfactory;

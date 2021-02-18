@@ -20,6 +20,7 @@
 #include <iostream>
 #include <fstream>
 #include <iostream>
+#include <memory>
 
 #ifndef _WIN32
 #include <sys/stat.h>
@@ -2092,7 +2093,6 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 
 
 
-#include <memory>
 
 int convertMain(int argc, const char * argv[])
 {
@@ -2242,8 +2242,6 @@ int convertMain(int argc, const char * argv[])
 //		convertProject(outPath , outFName , encoding, sspjPath, options.imageBaseDir, creatorComment, options.outputFormat);
 		convertProject(outPath, outFName, encoding, sspjPath, options, creatorComment);
 	}
-
-
 
 
 	if ( convert_error_exit == true )

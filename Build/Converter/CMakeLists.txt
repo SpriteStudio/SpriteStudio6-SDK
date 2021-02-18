@@ -87,7 +87,7 @@ if(WIN32 OR APPLE)
         BackGroudRender.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_render_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/src/glew.c
+#        ${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/src/glew.c
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.cpp
     )
 
@@ -101,7 +101,7 @@ if(WIN32 OR APPLE)
 
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
+#    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
 
 if(APPLE)
     #for install brew 
@@ -145,10 +145,13 @@ if(MSVC)
     target_link_libraries(Ss6Converter glfw)
     target_link_libraries(Ss6Converter glad)
 
-    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
-    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
-    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows")
-    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows")
+
+#    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
+#    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
+#    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows")
+#    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows")
+
+
     ADD_DEFINITIONS(/D_WIN32)
 
 elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
