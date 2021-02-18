@@ -66,7 +66,7 @@ SSOpenGLShader::SSOpenGLShader( const std::string&  name , const std::string& st
 #if USE_GLEW	
 	glShaderSourceARB( h, 1, &s, &l );
 #else
-	glShaderSource(h, 1, &s, &l);
+	glShaderSource((GLuint)h, 1, &s, &l);
 #endif
 
 	if ( glGetError() != GL_NO_ERROR ) {
@@ -87,7 +87,7 @@ SSOpenGLShader::SSOpenGLShader( const std::string& filename, const GLenum shader
 #if USE_GLEW	
 	h = glCreateShaderObjectARB( shader_type );
 #else
-	h = glCreateShader(shader_type);
+	h = glCreateShader((GLuint)shader_type);
 #endif
 
 	if ( glGetError() != GL_NO_ERROR ) {
@@ -114,7 +114,7 @@ SSOpenGLShader::SSOpenGLShader( const std::string& filename, const GLenum shader
 #if USE_GLEW	
 	glShaderSourceARB( h, 1, &s, &l );
 #else
-	glShaderSource(h, 1, &s, &l);
+	glShaderSource((GLuint)h, 1, &s, &l);
 #endif
 
 	if ( glGetError() != GL_NO_ERROR ) {
@@ -137,7 +137,7 @@ SSOpenGLShader::~SSOpenGLShader()
 #if USE_GLEW	
 	glDeleteObjectARB( h );
 #else
-	glDeleteShader(h);
+	glDeleteShader((GLuint)h);
 #endif
 
 }
@@ -155,7 +155,7 @@ int SSOpenGLShader::Compile( void )
 #if USE_GLEW	
 	glCompileShaderARB( h );
 #else
-	glCompileShader(h);
+	glCompileShader((GLuint)h);
 #endif
 	// get errors
 
@@ -164,7 +164,7 @@ int SSOpenGLShader::Compile( void )
 #if USE_GLEW	
 	glGetObjectParameterivARB( h, GL_OBJECT_COMPILE_STATUS_ARB, &result );
 #else
-	glGetShaderiv(h, GL_COMPILE_STATUS, &result);
+	glGetShaderiv((GLuint)h, GL_COMPILE_STATUS, &result);
 #endif
 
 	if ( glGetError() != GL_NO_ERROR || result == GL_FALSE ) {
@@ -176,7 +176,7 @@ int SSOpenGLShader::Compile( void )
 		glGetObjectParameterivARB( h, GL_OBJECT_INFO_LOG_LENGTH_ARB,
 								   &length );
 #else
-		glGetShaderiv(h, GL_INFO_LOG_LENGTH, &length);
+		glGetShaderiv((GLuint)h, GL_INFO_LOG_LENGTH, &length);
 #endif
 		if ( length > 0 ) {
 			int	l;
@@ -185,7 +185,7 @@ int SSOpenGLShader::Compile( void )
 #if USE_GLEW	
 			glGetInfoLogARB( h, length, &l, info_log );
 #else
-			glGetShaderInfoLog( h, length, &l, info_log);
+			glGetShaderInfoLog( (GLuint)h, length, &l, info_log);
 #endif
 
 //			SsLogDbg( info_log );
@@ -244,7 +244,7 @@ SSOpenGLProgramObject::~SSOpenGLProgramObject()
 #if USE_GLEW
 	glDeleteObjectARB( h );
 #else
-	glDeleteProgram(h);
+	glDeleteProgram( (GLuint)h );
 #endif
 }
 

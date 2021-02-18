@@ -14,7 +14,12 @@ namespace spritestudio6
 
 class	SSOpenGLShader {
 public:
+
+#if USE_GLEW
 	GLhandleARB	h;
+#else
+    GLuint h;
+#endif
 
 protected:
 	std::string	myname;
@@ -25,7 +30,13 @@ public:
 	SSOpenGLShader( const std::string& name, const std::string& str, const GLenum shader_type );
 	virtual	~SSOpenGLShader();
 	virtual	int Compile( void );
+
+#if USE_GLEW
 	inline GLhandleARB GetHandle( void )	const { return h; }
+#else
+	inline GLuint GetHandle( void )	const { return h; }
+#endif
+
 };
 
 
@@ -51,7 +62,12 @@ public:
 
 class	SSOpenGLProgramObject {
 public:
+
+#if USE_GLEW
 	GLhandleARB	h;
+#else
+    GLuint h;
+#endif
 
 protected:
 
@@ -59,7 +75,12 @@ public:
 	SSOpenGLProgramObject(  );
 	virtual	~SSOpenGLProgramObject(  );
 
+#if USE_GLEW
 	GLhandleARB GetID(){ return h; }
+#else
+	GLuint GetID(){ return h; }
+#endif
+    
 
 	virtual	void	Attach( const SSOpenGLShader *s );
 	virtual	int		Link( void );
