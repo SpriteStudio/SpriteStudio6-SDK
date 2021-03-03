@@ -61,13 +61,15 @@ bool ConverterOpenGLInit()
 
     glfwMakeContextCurrent(window);
 
-    //gladLoadGL(glfwGetProcAddress());
+    gladLoadGL(glfwGetProcAddress);
+
+/*
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
         std::cerr << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-
+*/
     spritestudio6::SsCurrentRenderer::SetCurrentRender(new spritestudio6::SsRenderGL());
     texfactory = new spritestudio6::SSTextureFactory(new spritestudio6::SSTextureGL());
 

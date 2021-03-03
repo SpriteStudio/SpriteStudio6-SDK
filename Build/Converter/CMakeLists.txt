@@ -87,8 +87,8 @@ if(WIN32 OR APPLE)
         BackGroudRender.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_render_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.cpp
-#        ${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/src/glew.c
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps/glad_gl.c
     )
 
     list(APPEND Ss6Converter_HEADERS 
@@ -97,10 +97,12 @@ if(WIN32 OR APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/stb_image_write.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps/glad/gl.h
     )
 
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps)
 #    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
 
 if(APPLE)
@@ -117,10 +119,11 @@ target_link_libraries(Ss6Converter ssAnimator)
 target_link_libraries(Ss6Converter ssHelper)
 
 
-include_directories(glad/include)
+#include_directories(glad/include)
 include_directories(glfw/include)
 
-add_subdirectory(glad)
+#add_subdirectory(glad)
+
 add_subdirectory(glfw)
 
 
@@ -136,14 +139,15 @@ if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
 endif()
 
 
+target_link_libraries(Ss6Converter glfw)
+#target_link_libraries(Ss6Converter glad)
+
 # add use opengl setting
 if(MSVC)
 #    find_package (glfw REQUIRED)
 
 #    target_link_libraries(Ss6Converter glew32.lib)
 #    target_link_libraries(Ss6Converter glfw3.lib)
-    target_link_libraries(Ss6Converter glfw)
-    target_link_libraries(Ss6Converter glad)
 
 
 #    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
@@ -160,8 +164,6 @@ elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
     #include_directories(/usr/local/include)
     #link_directories(/usr/local/lib)
 
-    target_link_libraries(Ss6Converter glfw )
-    target_link_libraries(Ss6Converter glad)
     target_link_libraries(Ss6Converter "-framework OpenGL")
     target_link_libraries(Ss6Converter "-framework AppKit")
     target_link_libraries(Ss6Converter "-framework IOKit")
