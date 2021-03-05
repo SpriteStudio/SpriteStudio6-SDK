@@ -1,4 +1,4 @@
-﻿//
+//
 //  main.cpp
 //  Converter
 //
@@ -1464,9 +1464,11 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				ConverterOpenGLDrawEnd();
 
 				//std::filesystem::path opath = outPath;
-
+#ifdef    _WIN32
 				std::string outputfile = outPath + "\\" + anime->name + ".png";
-
+#else
+                std::string outputfile = outPath + "/" + anime->name + ".png";
+#endif
 				ConverterOpenGLOutputBitMapImage(outputfile);
 			}
 #endif

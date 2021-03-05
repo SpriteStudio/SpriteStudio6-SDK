@@ -1,9 +1,12 @@
-﻿#include "BackGroudRender.h"
+#include "BackGroudRender.h"
 #include <string>
 #include <iostream>
 
 #include "ssOpenGLSetting.h"
-
+#if USE_NATIVE_OSMESA
+ #define GLFW_EXPOSE_NATIVE_OSMESA
+ #include <GLFW/glfw3native.h>
+#endif
 
 #include "ssplayer_render.h"
 #include "ssplayer_render_gl.h"
@@ -48,8 +51,8 @@ bool ConverterOpenGLInit()
     if (!glfwInit())
         exit(EXIT_FAILURE);
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
     window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
@@ -60,8 +63,8 @@ bool ConverterOpenGLInit()
     }
 
     glfwMakeContextCurrent(window);
-
     gladLoadGL(glfwGetProcAddress);
+    //gladLoadGL(glXGetProcAddressARB());
 
 /*
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
@@ -108,9 +111,6 @@ bool ConverterOpenGLInit()
 
 bool isOpenGLContextInitialized()
 {
-    return true;
-
-
 	return true;
 }
 
@@ -141,7 +141,7 @@ void ConverterOpenGLClear()
 
 void  ConverterOpenGLDrawEnd()
 {
-
+    glFinish();
 	//SwapBuffers(deviceContext);
 
 }
@@ -157,21 +157,26 @@ void  ConverterOpenGLRelease()
 void ConverterOpenGLOutputBitMapImage(const std::string filename)
 {
 	char* pcBitmap;
-
+    char* buffer;
 	int width = 1024;	//プロジェクト枠のサイズで確定させるのが良さそう
 	int height = 1024;
 
-#ifdef	_WIN32
-	GLenum		eFormat = GL_BGRA;
-#else
-	GLenum		eFormat = GL_RGBA;
-#endif
+	GLenum		eFormat = GL_RGBA_INTEGER;
 
     pcBitmap = (char*)malloc(sizeof(char) * width * height * 4);
-
+/*
+#if USE_NATIVE_OSMESA
+    glfwGetOSMesaColorBuffer(window, &width, &height, NULL, (void**) &pcBitmap);
+#else
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pcBitmap);
+#endif
+*/
     glReadBuffer(GL_COLOR_ATTACHMENT0);
     glReadPixels(0, 0, width, height, eFormat, GL_UNSIGNED_BYTE, pcBitmap);
-
+    GLenum err = glGetError();
+    
+    printf("glGetError = %x¥n",err);
+    
     stbi_write_png(filename.c_str(), width, height, 4, (const void*)pcBitmap, 0);
 
 
