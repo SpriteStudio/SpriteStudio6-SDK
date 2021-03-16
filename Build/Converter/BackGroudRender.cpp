@@ -134,8 +134,12 @@ void ConverterOpenGLClear()
 	glMatrixMode(GL_PROJECTION);
 	glViewport(0, 0, width, height);
 	glLoadIdentity();
-	glOrtho(-width / 2, width / 2, -height / 2, height / 2, -width, height);
 
+//    glOrtho( -width / 2, width / 2, -height / 2, height / 2, -width, height);
+    //PNGレンダリングなので最初から転地する
+    glOrtho( -width / 2, width / 2, 
+              height / 2, -height / 2, 
+             -width, height);
 
 
 }
@@ -162,10 +166,15 @@ void ConverterOpenGLOutputBitMapImage(const std::string filename)
 
     glfwGetFramebufferSize(window, &width, &height);
     GLenum err = glGetError();
-    printf("glGetError = %x¥n", err);
 
-	GLenum		eFormat = GL_RGBA_INTEGER;
+    if (err != GL_NO_ERROR)
+    {
+        printf("glGetError = %x \n", err);
+    }
 
+//	GLenum		eFormat = GL_RGBA_INTEGER;
+    GLenum		eFormat = GL_RGBA;
+    
     pcBitmap = (char*)malloc(sizeof(char) * width * height * 4);
 
 /*
@@ -176,14 +185,20 @@ void ConverterOpenGLOutputBitMapImage(const std::string filename)
 #endif
 */
     glReadBuffer(GL_COLOR_ATTACHMENT0);
-    glReadPixels(0, 0, width, height, eFormat, GL_UNSIGNED_BYTE, pcBitmap);
-
-
     err = glGetError();
-    printf("glGetError = %x¥n",err);
-    
-    stbi_write_png(filename.c_str(), width, height, 4, (const void*)pcBitmap, 0);
+    if (err != GL_NO_ERROR)
+    {
+        printf("glGetError = %x \n", err);
+    }
 
+    glReadPixels(0, 0, width, height, eFormat, GL_UNSIGNED_BYTE, pcBitmap);
+    err = glGetError();
+    if (err != GL_NO_ERROR)
+    {
+        printf("glGetError = %x \n", err);
+    }
+
+    stbi_write_png(filename.c_str(), width, height, 4, (const void*)pcBitmap, 0);
 
 
 }
