@@ -40,8 +40,8 @@ bool ConverterOpenGLInit()
     GLint mvp_location, vpos_location, vcol_location;
     float ratio;
     int width, height;
-    width = 512;
-    height = 512;
+    width = 325;
+    height = 325;
 
     //    mat4x4 mvp;
     char* buffer;
@@ -113,8 +113,9 @@ bool isOpenGLContextInitialized()
 	return true;
 }
 
-
-void ConverterOpenGLClear()
+//
+void ConverterOpenGLClear(float canvasWidth, float canvasHeight, float pivotx, float pivoty)
+//void ConverterOpenGLClear(int canvasWidth , int canvasHeight)
 {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -126,8 +127,8 @@ void ConverterOpenGLClear()
 	glClearColor( 0, 0, 0, 0.0f);
 
 	//projection setup
-    int width;	//プロジェクト枠のサイズで確定させるのが良さそう
-    int height;
+    int width;// = canvasWidth;	//プロジェクト枠のサイズで確定させるのが良さそう
+    int height;// = canvasHeight;
 
     glfwGetFramebufferSize(window, &width, &height);
 
@@ -135,13 +136,20 @@ void ConverterOpenGLClear()
 	glViewport(0, 0, width, height);
 	glLoadIdentity();
 
+    float camX = -pivotx * ( canvasWidth / 2 );
+    float camY = -pivoty * ( canvasHeight / 2);
+
+    float _max = canvasWidth > canvasHeight ? canvasWidth : canvasHeight;
+
 //    glOrtho( -width / 2, width / 2, -height / 2, height / 2, -width, height);
     //PNGレンダリングなので最初から転地する
-    glOrtho( -width / 2, width / 2, 
-              height / 2, -height / 2, 
-             -width, height);
+    glOrtho( camX -_max / 2.0f,
+             camX + _max / 2.0f,
+             camY +_max / 2.0f,
+             camY -_max / 2.0f,
+                -1, 1);
 
-
+    glMatrixMode(GL_MODELVIEW);
 }
 
 void  ConverterOpenGLDrawEnd()

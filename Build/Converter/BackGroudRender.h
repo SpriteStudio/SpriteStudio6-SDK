@@ -6,7 +6,9 @@
 bool ConverterOpenGLInit();
 bool isOpenGLContextInitialized();
 
-void ConverterOpenGLClear();
+//void ConverterOpenGLClear();
+void ConverterOpenGLClear(float canvasWidth, float canvasHeight , float pivotx , float pivoty );
+
 void ConverterOpenGLDrawEnd();
 void ConverterOpenGLRelease();
 void ConverterOpenGLOutputBitMapImage(const std::string filename);

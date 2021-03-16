@@ -1457,7 +1457,8 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			if (isOpenGLContextInitialized())
 			{
 
-				ConverterOpenGLClear();
+				ConverterOpenGLClear(	anime->settings.canvasSize.x, anime->settings.canvasSize.y , 
+										anime->settings.pivot.x , anime->settings.pivot.y );
 				//対象フレームを検査して良さそうなところを持ってくる
 				decoder.setPlayFrame(10);
 				decoder.draw();
