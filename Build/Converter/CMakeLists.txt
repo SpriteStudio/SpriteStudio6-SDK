@@ -88,7 +88,7 @@ if(WIN32 OR APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_render_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps/glad_gl.c
+#        ${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps/glad_gl.c
     )
 
     list(APPEND Ss6Converter_HEADERS 
@@ -97,7 +97,7 @@ if(WIN32 OR APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/stb_image_write.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps/glad/gl.h
+ #       ${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps/glad/gl.h
     )
 
 
@@ -119,11 +119,10 @@ target_link_libraries(Ss6Converter ssAnimator)
 target_link_libraries(Ss6Converter ssHelper)
 
 
-#include_directories(glad/include)
+include_directories(glad/include)
 include_directories(glfw/include)
 
-#add_subdirectory(glad)
-
+add_subdirectory(glad)
 add_subdirectory(glfw)
 
 
@@ -140,7 +139,7 @@ endif()
 
 
 target_link_libraries(Ss6Converter glfw)
-#target_link_libraries(Ss6Converter glad)
+target_link_libraries(Ss6Converter glad)
 
 # add use opengl setting
 if(MSVC)

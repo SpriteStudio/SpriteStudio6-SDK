@@ -15,8 +15,8 @@
 #endif
 
 #else
-//    #include <glad/glad.h>
-#include <glad/gl.h>
+#include <glad/glad.h>
+//#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #endif
 
