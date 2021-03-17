@@ -95,13 +95,6 @@ Build/Converter/Converter/Ss6Converter_Common/Animator/ssAnimator.xcodeproj/proj
 Build/Converter/Converter/Ss6Converter_Common/Animator/CTestTestfile.cmake
 Build/Converter/Converter/Ss6Converter_Common/Animator/cmake_install.cmake
 Build/Converter/Converter/Ss6Converter.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
-Build/Converter/Converter/glfw/src/glfw_config.h
-Build/Converter/Converter/glfw/src/glfw3ConfigVersion.cmake
-Build/Converter/Converter/glfw/src/glfw3Config.cmake
-Build/Converter/Converter/glfw/src/glfw3.pc
-Build/Converter/Converter/glfw/src/CTestTestfile.cmake
-Build/Converter/Converter/glfw/src/cmake_install.cmake
-Build/Converter/Converter/glfw/GLFW.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
-Build/Converter/Converter/glfw/CTestTestfile.cmake
-Build/Converter/Converter/glfw/cmake_uninstall.cmake
-Build/Converter/Converter/glfw/cmake_install.cmake
+
+Build/Converter/Converter/glfw/
+Build/Converter/cppfs/

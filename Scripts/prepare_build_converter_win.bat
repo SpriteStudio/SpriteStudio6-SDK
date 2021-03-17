@@ -9,4 +9,8 @@ pushd %BUILDDIR%\Converter
 rmdir /S /Q glfw
 git clone https://github.com/glfw/glfw.git || exit /b 1
 
+rmdir /S /Q cppfs
+git clone https://github.com/cginternals/cppfs.git || exit /b 1
+
+
 popd
