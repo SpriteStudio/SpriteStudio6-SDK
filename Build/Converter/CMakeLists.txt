@@ -121,6 +121,8 @@ if(APPLE)
 #    include_directories(/usr/local/Cellar/glfw/3.3.2/)
 endif()
 
+
+
     add_definitions( -D_BACKBUFFER_RENDERING__) 
 endif()
 
@@ -157,7 +159,7 @@ endif()
 
 target_link_libraries(Ss6Converter glfw)
 target_link_libraries(Ss6Converter glad)
-target_link_libraries(Ss6Converter zlib)
+target_link_libraries(Ss6Converter zlibstatic)
 
 
 
@@ -173,6 +175,12 @@ if(MSVC)
 #    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
 #    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows")
 #    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows")
+
+
+#    add_custom_command(TARGET Ss6Converter POST_BUILD  
+#    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#        "${PROJECT_SOURCE_DIR}/build/zlib/$<CONFIGURATION>/zlibd.dll"    
+#        $<TARGET_FILE_DIR:Ss6Converter>)               
 
 
     ADD_DEFINITIONS(/D_WIN32)
