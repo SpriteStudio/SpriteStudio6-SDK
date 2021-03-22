@@ -62,6 +62,16 @@ set(Ss6Converter_SRCS
     FileUtil.cpp
     Lump.cpp
     LumpExporter.cpp
+    sspkg.cpp
+
+    zlib/contrib/minizip/zip.c
+    zlib/contrib/minizip/ioapi.c
+    zlib/contrib/minizip/iowin32.c
+#    zlib/contrib/minizip/miniunz.c
+#    zlib/contrib/minizip/minizip.c
+    zlib/contrib/minizip/mztools.c
+    zlib/contrib/minizip/unzip.c
+    zlib/contrib/minizip/zip.c
 )
 
 set(Ss6Converter_HEADERS
@@ -71,6 +81,8 @@ set(Ss6Converter_HEADERS
     Lump.h
     LumpExporter.h
     SsPlayerConverter.h
+    sspkg.h
+    zlib/contrib/minizip/zip.h
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -100,7 +112,6 @@ if(WIN32 OR APPLE)
  #       ${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps/glad/gl.h
     )
 
-
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps)
 #    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
@@ -121,9 +132,15 @@ target_link_libraries(Ss6Converter ssHelper)
 
 include_directories(glad/include)
 include_directories(glfw/include)
+include_directories(filesystem/include)
+include_directories(zlib)
+include_directories(json/include)
+
 
 add_subdirectory(glad)
 add_subdirectory(glfw)
+add_subdirectory(zlib)
+
 
 
 if(NOT (WIN32 OR APPLE))
@@ -140,6 +157,9 @@ endif()
 
 target_link_libraries(Ss6Converter glfw)
 target_link_libraries(Ss6Converter glad)
+target_link_libraries(Ss6Converter zlib)
+
+
 
 # add use opengl setting
 if(MSVC)

@@ -18,6 +18,7 @@
 
 
 
+
 static spritestudio6::SSTextureFactory* texfactory = nullptr;
 
 

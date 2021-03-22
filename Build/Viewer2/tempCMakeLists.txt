@@ -18,7 +18,7 @@ set(Viewer2_jucer_FILE
 )
 
 
-set(JUCE_MODULES_GLOBAL_PATH "d:/Users/uribow/My Documeacnts/GitHub/SpriteStudio6-SDK/Scripts/../Build/Viewer2/JUCE/modules")
+set(JUCE_MODULES_GLOBAL_PATH "D:/Users/uribow/My Documeacnts/GitHub/SpriteStudio6-SDK/Scripts/../Build/Viewer2/JUCE/modules")
 
 
 jucer_project_begin(

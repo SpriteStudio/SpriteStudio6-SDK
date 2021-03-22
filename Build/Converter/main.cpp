@@ -36,6 +36,9 @@
 	#include "BackGroudRender.h"
 #endif
 
+#include "sspkg.h"
+
+std::vector<std::string> filelist;
 
 
 static const int DATA_VERSION_1			= 1;
@@ -355,6 +358,8 @@ static void parseParts_ssqe(Lump* topLump, spritestudio6::SsProject* proj, const
 
 static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& imageBaseDir , const std::string& outPath)
 {
+	bool isWrite = false;
+
 //	static SsPartStateLess _ssPartStateLess;
 	std::cerr << SPRITESTUDIOSDK_VERSION << "\n";	//バージョン表記は ssloader.h　にあります。
 	std::cerr << "Ss6Converter ssbpFormatVersion=" << CURRENT_DATA_VERSION << "\n";
@@ -1460,17 +1465,38 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				ConverterOpenGLClear(	anime->settings.canvasSize.x, anime->settings.canvasSize.y , 
 										anime->settings.pivot.x , anime->settings.pivot.y );
 				//対象フレームを検査して良さそうなところを持ってくる
-				decoder.setPlayFrame(10);
+
+				int frame = anime->settings.endFrame / 2;
+
+				decoder.setPlayFrame(frame);
 				decoder.draw();
 				ConverterOpenGLDrawEnd();
 
 				//std::filesystem::path opath = outPath;
 #ifdef    _WIN32
-				std::string outputfile = outPath + anime->name + ".png";
+//				std::string outputfile = get_sspkg_metapath() + anime->name + ".png";
+				std::string outputfile = get_sspkg_metapath() + "thumbnail.png";
+				
 #else
-                std::string outputfile = outPath  + anime->name + ".png";
+                std::string outputfile = get_sspkg_metapath() + anime->name + ".png";
 #endif
-				ConverterOpenGLOutputBitMapImage(outputfile);
+
+				//filelist.push_back(outputfile);
+				if (!isWrite)
+				{
+					if (animePack->animeList.size() > 1)
+					{
+						if (anime->name != "Setup")
+						{
+							isWrite = true;
+							ConverterOpenGLOutputBitMapImage(outputfile);
+						}
+					}
+					else {
+						isWrite = true;
+						ConverterOpenGLOutputBitMapImage(outputfile);
+					}
+				}
 			}
 #endif
 
@@ -1765,6 +1791,35 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	return topLump;
 }
 
+void createPackFileList(spritestudio6::SsProject* proj , std::string sspjPath , std::vector<std::string>& filelist)
+{
+	std::string pjpath = FileUtil::getFilePath(sspjPath);
+	pjpath = FileUtil::normalizeFilePath(pjpath);
+
+	//sspjのパスを調べる
+	for (auto n : proj->cellmapNames)
+	{
+		filelist.push_back(pjpath+n);
+
+	}
+	for (auto n : proj->animepackNames)
+	{
+		filelist.push_back(pjpath+n);
+	}
+	for (auto n : proj->effectFileNames)
+	{
+		filelist.push_back(pjpath+n);
+	}
+	for (auto n : proj->textureList)
+	{
+		filelist.push_back(pjpath+n);
+	}
+	for (auto n : proj->sequencepackNames)
+	{
+		filelist.push_back(pjpath+n);
+	}
+
+}
 
 
 //void convertProject(const std::string& outPath, const std::string& outFName,
@@ -1773,16 +1828,25 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 void convertProject(const std::string& outPath, const std::string& outFName,
 	LumpExporter::StringEncoding encoding, const std::string& sspjPath,
-	Options& options, const std::string& creatorComment)
+	Options& options, const std::string& creatorComment )
 
 {
+	filelist.clear();
+
 	const std::string imageBaseDir = options.imageBaseDir;
 	const int outputFormat = options.outputFormat;
 
+	if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
+	{
+		init_sspkg(outPath);
+	}
 
 
 	std::cerr << convert_console_string( sspjPath ) << "\n";
 	spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(sspjPath);
+	
+
+
 	Lump* lump;
 	try
 	{
@@ -1851,14 +1915,19 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
 		{
-//			std::string outPathSsfb = outPath + outFName + ".sspkg";
-			std::string outPathSsfb = outPath + outFName + ".ssfb";//出力はFB
+			std::string outPathSsfb = get_sspkg_temppath() + outFName + ".ssfb";//出力はFB
 
 			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
 				, std::ios_base::binary | std::ios_base::out);
 			if (out)
 			{
 				LumpExporter::saveSsfb(out, encoding, lump, creatorComment, s_frameIndexVec);
+
+				//ファイルリストの作成
+				filelist.push_back(sspjPath);
+				createPackFileList(proj, sspjPath , filelist);
+
+				make_sspkg( proj->version , outFName, filelist, outPath);
 			}
 			else
 			{
@@ -1879,7 +1948,6 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 				std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
 			}
 		}
-
 	/////////////
 	#if 0
 		out.close();
@@ -1892,6 +1960,9 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 	//	delete lump;
 		delete proj;
 	}
+
+
+
 }
 
 
@@ -2187,7 +2258,7 @@ int convertMain(int argc, const char * argv[])
         }
 	}
 	
-	
+//	std::vector<std::string> copyfilelist;
 	
 	std::string creatorComment = "Created by " APP_NAME " " APP_VERSION;
 	LumpExporter::StringEncoding encoding = options.encoding;
@@ -2242,9 +2313,13 @@ int convertMain(int argc, const char * argv[])
 			std::cout << "Convert: " << sspjPath << " -> " << outPath << std::endl;
 		}
 		
-//		convertProject(outPath , outFName , encoding, sspjPath, options.imageBaseDir, creatorComment, options.outputFormat);
+
+//		convertProject(outPath, outFName, encoding, sspjPath, options, creatorComment , copyfilelist);
 		convertProject(outPath, outFName, encoding, sspjPath, options, creatorComment);
+
+
 	}
+
 
 
 	if ( convert_error_exit == true )

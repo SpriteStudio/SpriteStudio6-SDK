@@ -10,7 +10,6 @@ BUILDDIR=`cd ${BUILDDIR} && pwd -P`
 pushd ${BUILDDIR}/Converter
 /bin/rm -rf glfw
 git clone https://github.com/glfw/glfw.git
-git clone https://github.com/cginternals/cppfs.git
 
 popd > /dev/null # ${BUILDDIR}/Converter
 
