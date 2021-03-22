@@ -7,9 +7,6 @@
               headerPath="">
   <MAINGROUP id="PqiQba" name="SSViewer2">
     <GROUP id="{9D43D578-FD48-58A0-B214-36284BAFD7DC}" name="Source">
-      <GROUP id="{00065373-894A-966A-3963-C2D1D1578C85}" name="Lib">
-        <FILE id="fnCvZv" name="glew.c" compile="1" resource="0" file="lib/glew-2.1.0/src/glew.c"/>
-      </GROUP>
       <GROUP id="{E355B13C-7B29-798E-114E-961791C52FCA}" name="Controller">
         <FILE id="A9X1mt" name="Main.cpp" compile="1" resource="0" file="Source/Controller/Main.cpp"/>
         <FILE id="rBDXo9" name="MainComponent.cpp" compile="1" resource="0"
@@ -172,9 +169,9 @@
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" enablePluginBinaryCopyStep="1" isDebug="1" optimisation="1"
-                       linkTimeOptimisation="0" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../Source&#10;../../lib/glew-2.1.0/include"/>
+                       linkTimeOptimisation="0" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../Source&#10;"/>
         <CONFIGURATION name="Release" enablePluginBinaryCopyStep="1" isDebug="0" optimisation="3"
-                       linkTimeOptimisation="1" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../Source&#10;../../lib/glew-2.1.0/include"/>
+                       linkTimeOptimisation="1" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../Source&#10;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="D:/JUCE/modules"/>
@@ -191,12 +188,12 @@
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="Viewer2"
-                       headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;..\..\lib\glew-2.1.0\include"
+                       headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;"
                        warningsAreErrors="0"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="1" isDebug="0" optimisation="3" targetName="Viewer2"
-                       headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;..\..\lib\glew-2.1.0\include"/>
+                       headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="D:/JUCE/modules"/>
@@ -210,8 +207,8 @@
     </VS2017>
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="Viewer2" headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;..\..\lib\glew-2.1.0\include"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;..\..\lib\glew-2.1.0\include"
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Viewer2" headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;"/>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="..\..\..\..\Common\Animator&#10;..\..\..\..\Common\Drawer&#10;..\..\..\..\Common\Helper&#10;..\..\..\..\Common\Loader&#10;..\..\Source&#10;"
                        targetName="Viewer2"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
