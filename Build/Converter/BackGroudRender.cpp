@@ -27,6 +27,7 @@ GLuint renderedTexture;
 GLuint depthrenderbuffer;
 GLFWwindow* window;
 
+static bool isGPUInit = false;
 
 
 static void error_callback(int error, const char* description)
@@ -67,7 +68,7 @@ bool ConverterOpenGLInit()
     if (!window)
     {
         glfwTerminate();
-        exit(EXIT_FAILURE);
+        return -1;
     }
 
     glfwMakeContextCurrent(window);
@@ -79,6 +80,9 @@ bool ConverterOpenGLInit()
         std::cerr << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    isGPUInit = true;
+
 
     spritestudio6::SsCurrentRenderer::SetCurrentRender(new spritestudio6::SsRenderGL());
     texfactory = new spritestudio6::SSTextureFactory(new spritestudio6::SSTextureGL());
@@ -111,7 +115,7 @@ bool ConverterOpenGLInit()
 
 bool isOpenGLContextInitialized()
 {
-	return true;
+	return isGPUInit;
 }
 
 //
