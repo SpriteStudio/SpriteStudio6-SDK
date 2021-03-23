@@ -10,9 +10,6 @@ if not "%1" == "" (
     set BUILD_TYPE=%1
 )
 
-
-
-
 pushd "%BUILDDIR%\Converter"
 rmdir /S /Q build
 mkdir build

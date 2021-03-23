@@ -48,8 +48,6 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
                     fileName = "meta/" + fileName;
                 }
 
-                //std::string fileName = paths[i];//
-
 //                if (S_OK == zipOpenNewFileInZip(zf, std::string(fileName.begin(), fileName.end()).c_str(), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION))
                 if (S_OK == zipOpenNewFileInZip(zf, fileName.c_str(), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION))
                     {
@@ -106,17 +104,22 @@ std::string get_sspkg_metapath()
 }
 
 //テンポラリフォルダを作っておく
-void init_sspkg(std::string outputdir)
+void init_sspkg(std::string outputdir , std::string pkgname)
 {
     if (!fs::exists(fs::path(outputdir)))
     {
         fs::create_directory(fs::path(outputdir));
     }
 
+    fs::path temp = fs::temp_directory_path();
+    
 
-    tempdir = fs::path(outputdir);
-    tempdir += fs::path("temp/");
+//    tempdir = fs::path(outputdir);
+    tempdir = temp;
+    tempdir += fs::path("sspkg/");
+    fs::create_directory(tempdir);
 
+    tempdir += fs::path(pkgname+"/");
     fs::create_directory(tempdir);
 
     metadir = tempdir;
@@ -124,6 +127,9 @@ void init_sspkg(std::string outputdir)
     fs::create_directory(metadir);
 
 }
+
+
+std::vector<fs::path> cleaningFileList;
 
 
 void make_sspkg( std::string ssversion , std::string pkgname , std::vector<std::string> filelist , std::string outputdir )
@@ -163,15 +169,34 @@ void make_sspkg( std::string ssversion , std::string pkgname , std::vector<std::
     archive_file_lists.push_back(thumbnailename.string());
 
 
-    std::string versioninfo = "6.4";
-    createFileInfoJson( versioninfo , jsonfilename.string() , org_file_lists);
+    createFileInfoJson(ssversion, jsonfilename.string() , org_file_lists);
 
 
     CreateZipFile(archivefilename.string(), archive_file_lists , tempdir.string() );
 
-//    fs::remove_all(tempdir);
+    //テンポラリの削除
+#ifndef _DEBUG
 
-    
-    //fs::remove_all()
+#endif
+    cleaningFileList.clear();
+    for (auto i : archive_file_lists)
+    {
+        cleaningFileList.push_back(i);
+    }
+
+}
+
+void sspkg_cleanup_file()
+{
+    for (auto i : cleaningFileList)
+    {
+        try {
+            fs::remove(i);
+        }
+        catch (...)
+        {
+
+        }
+    }
 
 }

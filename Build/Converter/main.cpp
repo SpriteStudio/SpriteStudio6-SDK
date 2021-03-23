@@ -1822,6 +1822,7 @@ void createPackFileList(spritestudio6::SsProject* proj , std::string sspjPath , 
 }
 
 
+
 //void convertProject(const std::string& outPath, const std::string& outFName,
 //	LumpExporter::StringEncoding encoding, const std::string& sspjPath,
 //	const std::string& imageBaseDir, const std::string& creatorComment, const int outputFormat)
@@ -1838,7 +1839,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 
 	if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
 	{
-		init_sspkg(outPath);
+		init_sspkg(outPath , outFName);
 	}
 
 
@@ -2314,10 +2315,12 @@ int convertMain(int argc, const char * argv[])
 		}
 		
 
-//		convertProject(outPath, outFName, encoding, sspjPath, options, creatorComment , copyfilelist);
 		convertProject(outPath, outFName, encoding, sspjPath, options, creatorComment);
 
+		//ssfbはここまでファイルロックされている 最終的なクローズはここでされている？
+		//手前でパックすると失敗しそう
 
+		sspkg_cleanup_file();
 	}
 
 
