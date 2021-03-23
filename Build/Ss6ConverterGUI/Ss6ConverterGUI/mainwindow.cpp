@@ -118,7 +118,7 @@ void MainWindow::saveConfig(void)
     }
 
     QTextStream out(&file);
-    out << ui->type_comboBox->currentIndex() << endl;
+    out << ui->type_comboBox->currentIndex() << Qt::endl;
 }
 
 void MainWindow::on_pushButton_exit_clicked()
@@ -363,7 +363,7 @@ void MainWindow::on_pushButton_listsave_clicked()
         for ( i = 0; i < ui->listWidget->count(); i++ )
         {
             QString str = ui->listWidget->item(i)->text();
-            out << str << endl; //書込み
+            out << str << Qt::endl; //書込み
         }
     }
 }

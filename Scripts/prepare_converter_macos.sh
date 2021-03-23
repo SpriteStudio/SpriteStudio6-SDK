@@ -8,6 +8,7 @@ BUILDDIR=${BASEDIR}/Build
 BUILDDIR=`cd ${BUILDDIR} && pwd -P`
 
 pushd ${BASEDIR}
+pushd ${BUILDDIR}
 
 #/bin/rm -rf vcpkg
 #git clone https://github.com/Microsoft/vcpkg.git
@@ -20,6 +21,7 @@ fi
 pushd vcpkg > /dev/null
 ./vcpkg install zlib
 ./vcpkg install minizip
+./vcpkg integrate install
 popd > /dev/null
 
 popd > /dev/null # 
