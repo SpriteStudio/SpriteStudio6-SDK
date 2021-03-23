@@ -3,8 +3,9 @@
 #include <ghc/filesystem.hpp>
 namespace fs = ghc::filesystem;
 
-#include <zlib/zlib.h>
-#include <zlib/contrib/minizip/zip.h>
+#include <zlib.h>
+#include <minizip/zip.h>
+//#include <zlib/contrib/minizip/zip.h>
 #include <nlohmann/json.hpp>
 
 #include <iostream>

@@ -15,6 +15,7 @@ if exist "%QT_PREFIX%\bin\windeployqt.exe" (
 )
 @echo on
 
+call "%CURDIR%\prepare_converter_win.bat" || exit /b 1
 call "%CURDIR%\build_converter_win.bat" Release || exit /b 1
 call "%CURDIR%\build_convertergui_win.bat" Release || exit /b 1
 

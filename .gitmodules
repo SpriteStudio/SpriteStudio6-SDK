@@ -7,9 +7,9 @@
 [submodule "Build/Converter/filesystem"]
 	path = Build/Converter/filesystem
 	url = https://github.com/gulrak/filesystem.git
-[submodule "Build/Converter/zlib"]
-	path = Build/Converter/zlib
-	url = https://github.com/madler/zlib.git
 [submodule "Build/Converter/json"]
 	path = Build/Converter/json
 	url = https://github.com/nlohmann/json.git
+[submodule "Build/vcpkg"]
+	path = Build/vcpkg
+	url = https://github.com/microsoft/vcpkg.git

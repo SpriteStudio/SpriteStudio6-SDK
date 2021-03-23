@@ -10,6 +10,10 @@ add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()
 
+
+find_package(ZLIB REQUIRED)
+find_package(minizip CONFIG REQUIRED)
+
 # command options
 option(ENABLE_CCACHE "Enable ccache?" ON)
 # enable ccache
@@ -64,8 +68,8 @@ set(Ss6Converter_SRCS
     LumpExporter.cpp
     sspkg.cpp
 
-    zlib/contrib/minizip/zip.c
-    zlib/contrib/minizip/ioapi.c
+#    zlib/contrib/minizip/zip.c
+#    zlib/contrib/minizip/ioapi.c
 )
 
 set(Ss6Converter_HEADERS
@@ -76,7 +80,7 @@ set(Ss6Converter_HEADERS
     LumpExporter.h
     SsPlayerConverter.h
     sspkg.h
-    zlib/contrib/minizip/zip.h
+#    zlib/contrib/minizip/zip.h
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -121,21 +125,23 @@ endif()
 endif()
 
 add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS})
-target_link_libraries(Ss6Converter ssLoader)
-target_link_libraries(Ss6Converter ssAnimator)
-target_link_libraries(Ss6Converter ssHelper)
+
 
 
 include_directories(glad/include)
 include_directories(glfw/include)
 include_directories(filesystem/include)
-include_directories(zlib)
 include_directories(json/include)
+
+#include_directories(zlib)
+include_directories(${ZLIB_INCLUDE_DIR})
+include_directories(${MINIZIP_INCLUDE_DIR})
 
 
 add_subdirectory(glad)
 add_subdirectory(glfw)
-add_subdirectory(zlib)
+
+#add_subdirectory(zlib)
 
 
 
@@ -151,31 +157,19 @@ if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
 endif()
 
 
-target_link_libraries(Ss6Converter glfw)
-target_link_libraries(Ss6Converter glad)
-target_link_libraries(Ss6Converter zlibstatic)
+target_link_libraries(Ss6Converter ssLoader ssAnimator ssHelper ZLIB::ZLIB minizip::minizip glfw glad)
+
+#target_link_libraries(Ss6Converter ssAnimator)
+#target_link_libraries(Ss6Converter ssHelper)
+#target_link_libraries(Ss6Converter ZLIB::ZLIB)
+#target_link_libraries(Ss6Converter PRIVATE minizip::minizip)
+#target_link_libraries(Ss6Converter glfw)
+#target_link_libraries(Ss6Converter glad)
 
 
 
 # add use opengl setting
 if(MSVC)
-#    find_package (glfw REQUIRED)
-
-#    target_link_libraries(Ss6Converter glew32.lib)
-#    target_link_libraries(Ss6Converter glfw3.lib)
-
-
-#    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:windows")
-#    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:windows")
-#    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows")
-#    SET_TARGET_PROPERTIES (Ss6Converter PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows")
-
-
-#    add_custom_command(TARGET Ss6Converter POST_BUILD  
-#    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#        "${PROJECT_SOURCE_DIR}/build/zlib/$<CONFIGURATION>/zlibd.dll"    
-#        $<TARGET_FILE_DIR:Ss6Converter>)               
-
 
     ADD_DEFINITIONS(/D_WIN32)
 
