@@ -1,7 +1,6 @@
 #include "sspkg.h"
 
-#include <ghc/filesystem.hpp>
-namespace fs = ghc::filesystem;
+
 
 #include <zlib.h>
 #include <minizip/zip.h>
@@ -77,33 +76,40 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
 static void    createFileInfoJson(std::string versioninfo , std::string outputfilenamepath , std::vector<std::string> org_filelist)
 {
 
+    std::vector<std::string> paths;
+    for (auto i : org_filelist)
+    {
+        std::string f = fs::path(i).filename().string() + fs::path(i).extension().string();
+        paths.push_back(f);
+    }
+
+
     json j = {
       {"version", 1.0},
       {"ssversion", versioninfo},
     };
 
-    j["filelist"] = org_filelist;
+    j["filelist"] = paths;
 
 
     std::ofstream o(outputfilenamepath);
-    o << std::setw(4) << j << std::endl;   // std::setw �ŃC���f���g�����w��ł���B
+    o << std::setw(4) << j << std::endl; 
 
 }
 
-static fs::path tempdir;
-static fs::path metadir;
 
+sspkg_info* sspkg_info::myinst = 0;
 
-std::string get_sspkg_temppath()
+std::string sspkg_info::get_sspkg_temppath()
 {
     return tempdir.string();
 }
-std::string get_sspkg_metapath()
+std::string sspkg_info::get_sspkg_metapath()
 {
     return metadir.string();
 }
 
-void init_sspkg(std::string outputdir , std::string pkgname)
+void sspkg_info::init_sspkg(std::string outputdir , std::string pkgname)
 {
     if (!fs::exists(fs::path(outputdir)))
     {
@@ -117,34 +123,64 @@ void init_sspkg(std::string outputdir , std::string pkgname)
     tempdir = temp;
     tempdir += fs::path("sspkg/");
     fs::create_directory(tempdir);
+    //cleaningDir.push_back(tempdir);
 
     tempdir += fs::path(pkgname+"/");
     fs::create_directory(tempdir);
+    cleaningDir.push_back(tempdir);
 
     metadir = tempdir;
     metadir += fs::path("meta/");
     fs::create_directory(metadir);
+    cleaningDir.push_back(metadir);
 
 }
 
 
-std::vector<fs::path> cleaningFileList;
 
-
-void make_sspkg( std::string ssversion , std::string pkgname , std::vector<std::string> filelist , std::string outputdir )
+void sspkg_info::set_sspkg_filelist(std::string ssversion, std::string pkgname, std::vector<std::string> filelist, std::string outputdir)
 {
-
-    std::vector<std::string> archive_file_lists;
-    std::vector<std::string> org_file_lists;
+    archive_file_lists.clear();
+    org_file_lists.clear();
 
     fs::path tempdir = get_sspkg_temppath();
     fs::path metadir = get_sspkg_metapath();
 
- //   fs::path ssfb_org = fs::path(outputdir).replace_filename(pkgname).replace_extension(".ssfb");
-    
+
     fs::path ssfb_dst = fs::path(tempdir).replace_filename(pkgname).replace_extension(".ssfb");
-        
-//    fs::copy_file(ssfb_org , ssfb_dst, fs::copy_options::update_existing);
+    archive_file_lists.push_back(ssfb_dst.string());
+
+
+    for (auto i : filelist)
+    {
+
+        org_file_lists.push_back(i);
+    }
+
+    archivefilename = fs::path(outputdir).replace_filename(pkgname).replace_extension(".sspkg");
+    jsonfilename = fs::path(metadir).replace_filename("sspkg").replace_extension(".json");
+
+    //archive_file_lists.push_back(jsonfilename.string());
+
+    thumbnailename = fs::path(metadir).replace_filename("thumbnail").replace_extension(".png");
+
+    //archive_file_lists.push_back(thumbnailename.string());
+    data_version = ssversion;
+
+    createFileInfoJson(ssversion, jsonfilename.string(), org_file_lists);
+
+}
+
+
+void sspkg_info::make_sspkg()
+{
+
+/*
+    fs::path tempdir = get_sspkg_temppath();
+    fs::path metadir = get_sspkg_metapath();
+
+
+    fs::path ssfb_dst = fs::path(tempdir).replace_filename(pkgname).replace_extension(".ssfb");
     archive_file_lists.push_back(ssfb_dst.string());
 
 
@@ -157,23 +193,33 @@ void make_sspkg( std::string ssversion , std::string pkgname , std::vector<std::
         org_file_lists.push_back(copyfilename.filename().string()+ copyfilename.filename().extension().string());
 	}
 
-//    fs::path archivefilename = fs::path(outputdir).replace_filename(pkgname).replace_extension(".zip");
     fs::path archivefilename = fs::path(outputdir).replace_filename(pkgname).replace_extension(".sspkg");
-
     fs::path jsonfilename = fs::path(metadir).replace_filename("sspkg").replace_extension(".json");
-    archive_file_lists.push_back(jsonfilename.string());
 
+    archive_file_lists.push_back(jsonfilename.string());
 
     fs::path thumbnailename = fs::path(metadir).replace_filename("thumbnail").replace_extension(".png");
     archive_file_lists.push_back(thumbnailename.string());
+*/
+
+    fs::path tempdir = get_sspkg_temppath();
+
+    for (auto i : org_file_lists)
+    {
+        fs::path copyfilename = fs::path(tempdir).replace_filename(fs::path(i).filename());
+
+        fs::copy_file(i, copyfilename, fs::copy_options::update_existing);
+
+        archive_file_lists.push_back(copyfilename.string());
+    }
 
 
-    createFileInfoJson(ssversion, jsonfilename.string() , org_file_lists);
+    archive_file_lists.push_back(jsonfilename.string());
+    archive_file_lists.push_back(thumbnailename.string());
 
 
     CreateZipFile(archivefilename.string(), archive_file_lists , tempdir.string() );
 
-    //�e���|�����̍폜
 #ifndef _DEBUG
 
 #endif
@@ -185,7 +231,7 @@ void make_sspkg( std::string ssversion , std::string pkgname , std::vector<std::
 
 }
 
-void sspkg_cleanup_file()
+void sspkg_info::sspkg_cleanup_file()
 {
     for (auto i : cleaningFileList)
     {
@@ -197,5 +243,18 @@ void sspkg_cleanup_file()
 
         }
     }
+
+    fs::path temp = fs::temp_directory_path();
+
+
+    try {
+        fs::remove(cleaningDir[1]);
+    }
+    catch (...) {}
+
+    try {
+        fs::remove(cleaningDir[0]);
+    }
+    catch (...) {}
 
 }

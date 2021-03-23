@@ -1475,7 +1475,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				//std::filesystem::path opath = outPath;
 #ifdef    _WIN32
 //				std::string outputfile = get_sspkg_metapath() + anime->name + ".png";
-				std::string outputfile = get_sspkg_metapath() + "thumbnail.png";
+				std::string outputfile = sspkg_info::getInst()->get_sspkg_metapath() + "thumbnail.png";
 				
 #else
                 std::string outputfile = get_sspkg_metapath() + anime->name + ".png";
@@ -1839,7 +1839,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 
 	if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
 	{
-		init_sspkg(outPath , outFName);
+		sspkg_info::getInst()->init_sspkg(outPath , outFName);
 	}
 
 
@@ -1916,7 +1916,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
 		{
-			std::string outPathSsfb = get_sspkg_temppath() + outFName + ".ssfb";//出力はFB
+			std::string outPathSsfb = sspkg_info::getInst()->get_sspkg_temppath() + outFName + ".ssfb";//出力はFB
 
 			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
 				, std::ios_base::binary | std::ios_base::out);
@@ -1928,7 +1928,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 				filelist.push_back(sspjPath);
 				createPackFileList(proj, sspjPath , filelist);
 
-				make_sspkg( proj->version , outFName, filelist, outPath);
+				sspkg_info::getInst()->set_sspkg_filelist( proj->version , outFName, filelist, outPath);
 			}
 			else
 			{
@@ -2197,6 +2197,8 @@ int convertMain(int argc, const char * argv[])
 
 	if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
 	{
+		sspkg_info::create();
+
 		if (!ConverterOpenGLInit())
 		{
 			std::cout << "OpenGL not initialized \n" << std::endl;
@@ -2319,11 +2321,14 @@ int convertMain(int argc, const char * argv[])
 
 		//ssfbはここまでファイルロックされている 最終的なクローズはここでされている？
 		//手前でパックすると失敗しそう
-
-		sspkg_cleanup_file();
+		sspkg_info::getInst()->make_sspkg();
+		sspkg_info::getInst()->sspkg_cleanup_file();
 	}
 
-
+	if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
+	{
+		sspkg_info::destroy();
+	}
 
 	if ( convert_error_exit == true )
 	{
