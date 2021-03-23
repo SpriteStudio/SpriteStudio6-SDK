@@ -1458,8 +1458,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 #if _BACKBUFFER_RENDERING__
 
-			//if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
-			if (isOpenGLContextInitialized())
+			if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG && isOpenGLContextInitialized())
 			{
 
 				ConverterOpenGLClear(	anime->settings.canvasSize.x, anime->settings.canvasSize.y , 
@@ -1478,7 +1477,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				std::string outputfile = sspkg_info::getInst()->get_sspkg_metapath() + "thumbnail.png";
 				
 #else
-                std::string outputfile = get_sspkg_metapath() + anime->name + ".png";
+                std::string outputfile = sspkg_info::getInst()->get_sspkg_metapath() + anime->name + ".png";
 #endif
 
 				//filelist.push_back(outputfile);
@@ -2321,8 +2320,11 @@ int convertMain(int argc, const char * argv[])
 
 		//ssfbはここまでファイルロックされている 最終的なクローズはここでされている？
 		//手前でパックすると失敗しそう
-		sspkg_info::getInst()->make_sspkg();
-		sspkg_info::getInst()->sspkg_cleanup_file();
+		if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
+		{
+			sspkg_info::getInst()->make_sspkg();
+			sspkg_info::getInst()->sspkg_cleanup_file();
+		}
 	}
 
 	if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
