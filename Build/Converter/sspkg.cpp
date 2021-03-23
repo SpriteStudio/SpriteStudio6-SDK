@@ -51,7 +51,7 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
                 //std::string fileName = paths[i];//
 
 //                if (S_OK == zipOpenNewFileInZip(zf, std::string(fileName.begin(), fileName.end()).c_str(), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION))
-                if (S_OK == zipOpenNewFileInZip(zf, fileName.c_str(), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION))
+                if (0 == zipOpenNewFileInZip(zf, fileName.c_str(), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION))
                     {
                     if (zipWriteInFileInZip(zf, size == 0 ? "" : &buffer[0], size))
                         _return = false;
@@ -73,7 +73,7 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
 
     if (!_return)
         return 4;
-    return S_OK;
+    return 0;
 }
 
 static void    createFileInfoJson(std::string versioninfo , std::string outputfilenamepath , std::vector<std::string> org_filelist)
@@ -88,7 +88,7 @@ static void    createFileInfoJson(std::string versioninfo , std::string outputfi
 
 
     std::ofstream o(outputfilenamepath);
-    o << std::setw(4) << j << std::endl;   // std::setw ‚ÅƒCƒ“ƒfƒ“ƒg•‚ðŽw’è‚Å‚«‚éB
+    o << std::setw(4) << j << std::endl;   // std::setw ï¿½ÅƒCï¿½ï¿½ï¿½fï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½wï¿½ï¿½Å‚ï¿½ï¿½ï¿½B
 
 }
 
@@ -105,7 +105,7 @@ std::string get_sspkg_metapath()
     return metadir.string();
 }
 
-//ƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_‚ðì‚Á‚Ä‚¨‚­
+//ï¿½eï¿½ï¿½ï¿½|ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½Hï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 void init_sspkg(std::string outputdir)
 {
     if (!fs::exists(fs::path(outputdir)))
