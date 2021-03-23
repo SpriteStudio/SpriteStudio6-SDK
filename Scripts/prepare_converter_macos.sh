@@ -21,6 +21,7 @@ fi
 pushd vcpkg > /dev/null
 ./vcpkg install zlib
 ./vcpkg install minizip
+./vcpkg integrate install
 popd > /dev/null
 
 popd > /dev/null # 
