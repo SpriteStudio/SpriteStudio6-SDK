@@ -66,12 +66,6 @@ set(Ss6Converter_SRCS
 
     zlib/contrib/minizip/zip.c
     zlib/contrib/minizip/ioapi.c
-    zlib/contrib/minizip/iowin32.c
-#    zlib/contrib/minizip/miniunz.c
-#    zlib/contrib/minizip/minizip.c
-    zlib/contrib/minizip/mztools.c
-    zlib/contrib/minizip/unzip.c
-    zlib/contrib/minizip/zip.c
 )
 
 set(Ss6Converter_HEADERS
