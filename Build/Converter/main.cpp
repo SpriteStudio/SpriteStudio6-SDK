@@ -1458,7 +1458,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 #if _BACKBUFFER_RENDERING__
 
-			if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG && isOpenGLContextInitialized())
+			if ( isOpenGLContextInitialized())
 			{
 
 				ConverterOpenGLClear(	anime->settings.canvasSize.x, anime->settings.canvasSize.y , 
