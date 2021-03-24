@@ -1,10 +1,6 @@
-﻿#ifdef _WIN32
-#include <GL/glew.h>
-#else
-//#include <OpenGL/OpenGL.h>
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#endif
+﻿
+
+#include "ssOpenGLSetting.h"
 #include "ssplayer_shader_gl.h"
 
 #include	<fstream>
@@ -28,8 +24,11 @@ using namespace std;
 int SsGL_CheckShaderReady( void )
 {
 #ifdef _WIN32
-  if ( !GLEW_ARB_texture_rectangle ) return -1;
-    if (!( GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader )) return -1;
+//	if ( !GLEW_ARB_texture_rectangle ) return -1;
+//    if (!( GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader )) return -1;
+	//後でチェック 2/1
+
+
 #endif
 	const char* ptr = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
 //    char* result;
@@ -52,12 +51,24 @@ int SsGL_CheckShaderReady( void )
 SSOpenGLShader::SSOpenGLShader( const std::string&  name , const std::string& str, const GLenum shader_type )
 	: myname( name ) , source( str )
 {
+
+
+#if USE_GLEW	
 	h = glCreateShaderObjectARB( shader_type );
+#else
+	h = glCreateShader(shader_type);
+#endif
+
 
 	const char	*s = str.c_str();
 	int l = str.length();
 
+#if USE_GLEW	
 	glShaderSourceARB( h, 1, &s, &l );
+#else
+	glShaderSource((GLuint)h, 1, &s, &l);
+#endif
+
 	if ( glGetError() != GL_NO_ERROR ) {
 //		SsLogInfo( _D("ShaderObject::ShaderObject(): cannot set shader source: " ) , myname );
 	}
@@ -72,9 +83,13 @@ SSOpenGLShader::SSOpenGLShader( const std::string&  name , const std::string& st
 SSOpenGLShader::SSOpenGLShader( const std::string& filename, const GLenum shader_type )
 	: myname( filename )
 {
-	// create
 
+#if USE_GLEW	
 	h = glCreateShaderObjectARB( shader_type );
+#else
+	h = glCreateShader((GLuint)shader_type);
+#endif
+
 	if ( glGetError() != GL_NO_ERROR ) {
 //		SsLogInfo( _D( "SSOpenGLShader : cannot create shader object: ") , myname );
 	}
@@ -96,7 +111,12 @@ SSOpenGLShader::SSOpenGLShader( const std::string& filename, const GLenum shader
 	const char	*s = source.c_str();
 	int l = source.length();
 
+#if USE_GLEW	
 	glShaderSourceARB( h, 1, &s, &l );
+#else
+	glShaderSource((GLuint)h, 1, &s, &l);
+#endif
+
 	if ( glGetError() != GL_NO_ERROR ) {
 //		SsLogInfo( _D("ShaderObject::ShaderObject(): cannot set shader source: " ) , myname );
 	}
@@ -113,7 +133,13 @@ SSOpenGLShader::SSOpenGLShader( const std::string& filename, const GLenum shader
 
 SSOpenGLShader::~SSOpenGLShader()
 {
+
+#if USE_GLEW	
 	glDeleteObjectARB( h );
+#else
+	glDeleteShader((GLuint)h);
+#endif
+
 }
 
 int SSOpenGLShader::Compile( void )
@@ -126,24 +152,42 @@ int SSOpenGLShader::Compile( void )
 	}
 
 	// compile
+#if USE_GLEW	
 	glCompileShaderARB( h );
-
+#else
+	glCompileShader((GLuint)h);
+#endif
 	// get errors
 
 	GLint	result;
+
+#if USE_GLEW	
 	glGetObjectParameterivARB( h, GL_OBJECT_COMPILE_STATUS_ARB, &result );
+#else
+	glGetShaderiv((GLuint)h, GL_COMPILE_STATUS, &result);
+#endif
 
 	if ( glGetError() != GL_NO_ERROR || result == GL_FALSE ) {
 //		SsLogInfo( _D("GLSL Compile: cannot compile shader: %s" ), myname );
 
 		int	length;
+
+#if USE_GLEW	
 		glGetObjectParameterivARB( h, GL_OBJECT_INFO_LOG_LENGTH_ARB,
 								   &length );
+#else
+		glGetShaderiv((GLuint)h, GL_INFO_LOG_LENGTH, &length);
+#endif
 		if ( length > 0 ) {
 			int	l;
 			// MEMO: ここはテンポラリを作って（すぐ消して）いるだけなので、スマートポインタ化していません
 			GLcharARB *info_log = new GLcharARB[ length ];
+#if USE_GLEW	
 			glGetInfoLogARB( h, length, &l, info_log );
+#else
+			glGetShaderInfoLog( (GLuint)h, length, &l, info_log);
+#endif
+
 //			SsLogDbg( info_log );
 			delete [] info_log;
 		}
@@ -153,31 +197,30 @@ int SSOpenGLShader::Compile( void )
 	return 0;
 }
 
-
+#if USE_GLEW
+#define GL_VERTEX_SHADER	GL_VERTEX_SHADER_ARB 
+#define GL_FRAGMENT_SHADER	GL_FRAGMENT_SHADER_ARB 
+#endif
 
 //------------------------------------------------------------------
 SSOpenGLVertexShader::SSOpenGLVertexShader( const std::string& filename )
-	: SSOpenGLShader( filename, GL_VERTEX_SHADER_ARB )
-{
-}
+	: SSOpenGLShader( filename, GL_VERTEX_SHADER){}
+
 
 SSOpenGLVertexShader::SSOpenGLVertexShader( const std::string& name , const std::string& str )
-	: SSOpenGLShader( name , str, GL_VERTEX_SHADER_ARB )
-{
-
-}
+	: SSOpenGLShader( name , str, GL_VERTEX_SHADER){}
 
 
 
 SSOpenGLFragmentShader::SSOpenGLFragmentShader( const std::string& filename )
-	: SSOpenGLShader( filename, GL_FRAGMENT_SHADER_ARB )
-{
-}
-SSOpenGLFragmentShader::SSOpenGLFragmentShader( const std::string& name , const std::string& str )
-	: SSOpenGLShader( name , str, GL_FRAGMENT_SHADER_ARB )
-{
+	: SSOpenGLShader( filename, GL_FRAGMENT_SHADER){}
 
+
+SSOpenGLFragmentShader::SSOpenGLFragmentShader( const std::string& name , const std::string& str )
+	: SSOpenGLShader( name , str, GL_FRAGMENT_SHADER){
 }
+
+
 
 
 //------------------------------------------------------------------
@@ -185,7 +228,12 @@ SSOpenGLFragmentShader::SSOpenGLFragmentShader( const std::string& name , const 
 SSOpenGLProgramObject::SSOpenGLProgramObject()
 {
 	//glpgObject = this;
+#if USE_GLEW
 	h = glCreateProgramObjectARB();
+#else
+	h = glCreateProgram();
+#endif
+
 	if ( glGetError() != GL_NO_ERROR ) {
 		//SsLogInfo( _D("SSOpenGLProgramObject: cannot create .. glCreateProgramObjectARB ") );
 	}
@@ -193,36 +241,65 @@ SSOpenGLProgramObject::SSOpenGLProgramObject()
 
 SSOpenGLProgramObject::~SSOpenGLProgramObject()
 {
+#if USE_GLEW
 	glDeleteObjectARB( h );
+#else
+	glDeleteProgram( (GLuint)h );
+#endif
 }
 
 void SSOpenGLProgramObject::Attach( const SSOpenGLShader *s )
 {
+
+#if USE_GLEW
 	glAttachObjectARB( h, s->GetHandle());
+#else
+	glAttachShader(h, s->GetHandle());
+#endif
+
 	if ( glGetError() != GL_NO_ERROR ) {
 		//SsLogInfo( _D("SSOpenGLProgramObject: Attach error cannnot attach shader") );
 	}
 }
 
+void 	SSOpenGLProgramObject::Disable( void ) 
+{ 
+
+#if USE_GLEW
+	glUseProgramObjectARB( 0 );
+#else
+	glUseProgram(0);
+#endif
+
+}
 
 
-void 	SSOpenGLProgramObject::Disable( void ) { glUseProgramObjectARB( 0 ); }
 GLint   SSOpenGLProgramObject::GetUniformLocation( const char *name )
 {
+#if USE_GLEW
     GLint ul = glGetUniformLocationARB( h, name );
+#else
+	GLint ul = glGetUniformLocation(h, name);
+
+#endif
+
+
     if ( ul == -1 ) {
     }
     return ul;
 }
 GLint SSOpenGLProgramObject::GetAttribLocation( const char *name )
 {
-    GLint al = glGetAttribLocationARB( h, name );
+#if USE_GLEW
+	GLint al = glGetAttribLocationARB( h, name );
+#else
+	GLint al = glGetAttribLocation(h, name);
+#endif
+
     if ( al == -1 ) {
     }
     return al;
 }
-
-
 
 
 int
@@ -237,25 +314,46 @@ SSOpenGLProgramObject::Link( void )
 
 	// link
 
+#if USE_GLEW
 	glLinkProgramARB( h );
+#else
+	glLinkProgram(h);
+#endif
 
 	// get errors
 
 	GLint	result;
+
+
+#if USE_GLEW
 	glGetObjectParameterivARB( h, GL_OBJECT_LINK_STATUS_ARB, &result );
+#else
+	glGetProgramiv(h, GL_LINK_STATUS, &result);	
+#endif
 
 	if ( glGetError() != GL_NO_ERROR || result == GL_FALSE ) {
 		//SsLogInfo( _D("SSOpenGLProgramObject: cannot link shader object\n") );
 
 		int	length;
+
+#if USE_GLEW
 		glGetObjectParameterivARB( h, GL_OBJECT_INFO_LOG_LENGTH_ARB,
 								   &length );
+#else
+		glGetProgramiv(h, GL_INFO_LOG_LENGTH, &result);
+#endif
+
 		if ( length > 0 ) {
 			// MEMO: ここはテンポラリを作って（すぐ消して）いるだけなので、スマートポインタ化していません
 			int	l;
 			GLcharARB *info_log = new GLcharARB[ length ];
+
+#if USE_GLEW
 			glGetInfoLogARB( h, length, &l, info_log );
-			//SsLogDbg( info_log );
+#else
+			glGetProgramInfoLog(h, length, &l, info_log);
+#endif
+
 			delete [] info_log;
 		}
 		return -1;
@@ -267,7 +365,12 @@ SSOpenGLProgramObject::Link( void )
 void
 SSOpenGLProgramObject::Use( void )
 {
+#if USE_GLEW
 	glUseProgramObjectARB( h );
+#else
+	glUseProgram(h);
+#endif
+
 	if ( glGetError() != GL_NO_ERROR ) {
 #if SPRITESTUDIO6SDK_PUT_UNIFORM_WARNING
 //		SsLogInfo( _D("SSOpenGLProgramObject: glUseProgramObjectARB cannot use object\n") );

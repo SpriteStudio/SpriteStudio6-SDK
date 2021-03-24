@@ -1,3 +1,15 @@
 [submodule "Build/Converter/flatbuffers"]
 	path = Build/Converter/flatbuffers
 	url = https://github.com/google/flatbuffers.git
+[submodule "Build/Converter/glfw"]
+	path = Build/Converter/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "Build/Converter/filesystem"]
+	path = Build/Converter/filesystem
+	url = https://github.com/gulrak/filesystem.git
+[submodule "Build/Converter/json"]
+	path = Build/Converter/json
+	url = https://github.com/nlohmann/json.git
+[submodule "Build/vcpkg"]
+	path = Build/vcpkg
+	url = https://github.com/microsoft/vcpkg.git

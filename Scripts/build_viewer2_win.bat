@@ -12,7 +12,10 @@ if not "%1" == "" (
 )
 
 pushd %BUILDDIR%\Viewer2
-%Jucer2CMake%  reprojucer Viewer2.jucer FRUT\prefix\FRUT\cmake\Reprojucer.cmake  --juce-modules %BUILDDIR%\Viewer2\JUCE\modules
+"%Jucer2CMake%"  reprojucer Viewer2.jucer FRUT\prefix\FRUT\cmake\Reprojucer.cmake  --juce-modules "%BUILDDIR%\Viewer2\JUCE\modules"
+
+copy /b addCMakelist.txt + CMakeLists.txt tempCMakeLists.txt
+copy tempCMakeLists.txt CMakeLists.txt
 
 rmdir /S /Q cmakeBuild
 mkdir cmakeBuild

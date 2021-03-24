@@ -42,6 +42,7 @@ ELSEIF(CMAKE_COMPILER_IS_GNUCXX)
     ADD_DEFINITIONS(-std=gnu++14)
 ENDIF()
 
+
 enable_testing()
 
 # Ss6Converter

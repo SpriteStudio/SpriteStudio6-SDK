@@ -14,7 +14,8 @@ jobs:
       run: git submodule update --init --recursive
     - name: prepare build environment
       run: |
-        brew install qt
+        brew install qt@5
+        brew install glfw3
     - name: release build
       run: ./Scripts/release_macos.sh
     - name: Upload Tools

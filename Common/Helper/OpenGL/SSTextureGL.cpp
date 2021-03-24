@@ -1,6 +1,10 @@
 ﻿#include <stdio.h>
 #include <cstdlib>
 
+
+#include "ssOpenGLSetting.h"
+
+/*
 #ifndef _WIN32
     #include <OpenGL/gl.h>
     #include <OpenGL/glu.h>
@@ -9,6 +13,7 @@
     #include <GL/glew.h>
     #include <GL/GL.h>
 #endif
+*/
 
 #include "SSTextureGL.h"
 
@@ -33,7 +38,11 @@ bool SSTextureGL::Load( const char* fname )
 	SSTextureLoader::DataHandle image = SSTextureLoader::LoadImageFromFile( fname, &tex_width , &tex_height , &bpp );
 	if ( image == SSTextureLoader::InvalidDataHandle ) return false;
 
+#if USE_GLEW
 	int target = GL_TEXTURE_RECTANGLE_ARB;
+#else
+	int target = GL_TEXTURE_RECTANGLE;
+#endif
 
 	if ( SSTextureLoader::CheckSizePow2( tex_width, tex_height ) )
 	{

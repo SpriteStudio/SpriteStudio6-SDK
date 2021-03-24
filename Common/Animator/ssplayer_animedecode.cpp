@@ -1590,6 +1590,8 @@ void	SsAnimeDecoder::updateEffect( float frameDelta , int nowTime , SsPart* part
 void	SsAnimeDecoder::draw()
 {
 
+	if (SsCurrentRenderer::getRender() == 0) return;
+
 	SsCurrentRenderer::getRender()->renderSetup();
 
 
