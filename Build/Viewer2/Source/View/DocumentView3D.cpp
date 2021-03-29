@@ -1,4 +1,5 @@
-﻿#include <GL/glew.h>
+﻿//#include <GL/glew.h>
+#include "ssOpenGLSetting.h"
 #include "OpenGL/SSTextureGL.h"
 #include "ssplayer_render_gl.h"
 #include "ssplayer_shader_gl.h"
@@ -33,7 +34,7 @@ DocumentView3D::~DocumentView3D()
 void DocumentView3D::initialise()
 {
 #if JUCE_WINDOWS
-	GLenum err = glewInit();
+//	GLenum err = glewInit();
 #endif
 
 	rendererGL.reset(new spritestudio6::SsRenderGL());
