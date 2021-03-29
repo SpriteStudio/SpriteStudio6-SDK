@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->type_comboBox->addItem("ssbp");
     ui->type_comboBox->addItem("json");
     ui->type_comboBox->addItem("ssfb");
+    ui->type_comboBox->addItem("sspkg");
 
 }
 
@@ -234,6 +235,10 @@ void MainWindow::on_pushButton_convert_clicked()
                 if ( ui->type_comboBox->currentText() == "ssfb" )
                 {
                     str = str + " -f ssfb";
+                }
+                if ( ui->type_comboBox->currentText() == "sspkg" )
+                {
+                    str = str + " -f sspkg";
                 }
 
                 cnvProcess->start(str); //パスと引数
