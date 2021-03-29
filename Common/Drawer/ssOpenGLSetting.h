@@ -3,16 +3,15 @@
 
 
 
-#define USE_GLEW (0)
 
-#if USE_GLEW
-#include <GL/GL.h>
-#include <GL/glew.h>
+#ifdef USE_GLEW
+//#include <GL/GL.h>
 
 #ifndef _WIN32
     #include <OpenGL/gl.h>
     #include <OpenGL/glext.h>
 #endif
+#include <GL/glew.h>
 
 #else
 #include <glad/glad.h>
