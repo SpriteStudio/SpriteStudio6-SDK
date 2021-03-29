@@ -2165,6 +2165,22 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 }
 
 
+std::string replaceString(std::string& inStr, std::string key, std::string replaceStr) {
+
+	std::string ret = inStr;
+	if (key.empty()) {
+		return inStr;
+	}
+
+	size_t pos;
+
+	while (std::string::npos != (pos = ret.find(key)))
+	{
+		ret = ret.replace(pos, key.length(), replaceStr);
+	}
+
+	return ret;
+}
 
 
 
@@ -2265,19 +2281,39 @@ int convertMain(int argc, const char * argv[])
 	std::string creatorComment = "Created by " APP_NAME " " APP_VERSION;
 	LumpExporter::StringEncoding encoding = options.encoding;
 	
+
+
 	// コンバート実行
 	for (std::vector<std::string>::const_iterator it = sources.begin(); it != sources.end(); it++)
 	{
 		std::string sspjPath = *it;
 
+		//fs::path makepath = fs::path(sspjPath);
+
 		//std::string outPath = FileUtil::replaceExtension(sspjPath, ".sspj", ".ssbp");
 
-		std::string outPath = FileUtil::getFilePath(sspjPath);
-		std::string outFName = FileUtil::getFileName(sspjPath);//拡張子なし
-		
+		//std::string outPath = FileUtil::getFilePath(sspjPath);
+		//std::string outFName = FileUtil::getFileName(sspjPath);//拡張子なし
+
+
+#if _WIN32
+		sspjPath = replaceString(sspjPath, "/", "\\");
+#else
+		sspjPath = replaceString(sspjPath, "\\", "/");
+#endif
+
+		std::string outPath = fs::path(sspjPath).replace_filename("").string();// .replace_extension("").string();
+		std::string outFName = fs::path(sspjPath).filename().replace_extension("").string();// +fs::path(sspjPath).extension().string();
+
 		//パスが指定されている場合
 		if ( options.outputDir != "" )
 		{
+
+#if _WIN32
+			options.outputDir = replaceString(options.outputDir, "/", "\\");
+#else
+			options.outputDir = replaceString(options.outputDir, "\\", "/");
+#endif
 
 			outPath = FileUtil::normalizeFilePath(options.outputDir);
 
