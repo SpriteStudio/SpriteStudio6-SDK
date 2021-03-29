@@ -10,4 +10,4 @@ TOOLSDIR=${BASEDIR}/Tools
 TOOLSDIR=`cd ${TOOLSDIR} && pwd -P`
 
 ${SCRIPTDIR}/release_converter_macos.sh
-# ${SCRIPTDIR}/release_viewer2_macos.sh
+${SCRIPTDIR}/release_viewer2_macos.sh
