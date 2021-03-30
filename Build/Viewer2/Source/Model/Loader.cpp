@@ -1,9 +1,14 @@
-﻿#include "ssplayer_animedecode.h"
+﻿
+#include "ssplayer_animedecode.h"
+
 #include "Loader.h"
 #include "Player.h"
 #include "View/MainWindow.h"
 #include "Controller/MainComponent.h"
 #include "sscharconverter.h"
+
+//#include "ssloader.h"
+//#include "ssplayer_animedecode.h"
 
 AsyncAnimeLoader::AsyncAnimeLoader()
 	: ThreadWithProgressWindow("Loading...", true, false)
