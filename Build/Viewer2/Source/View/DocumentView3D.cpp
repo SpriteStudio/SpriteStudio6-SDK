@@ -1,4 +1,6 @@
-﻿#include <GL/glew.h>
+﻿
+
+#include "ssOpenGLSetting.h"
 #include "OpenGL/SSTextureGL.h"
 #include "ssplayer_render_gl.h"
 #include "ssplayer_shader_gl.h"
@@ -35,16 +37,26 @@ void DocumentView3D::initialise()
 #if JUCE_WINDOWS
 	GLenum err = glewInit();
 #endif
+	
+/*
+	if (!glfwInit())
+		exit(EXIT_FAILURE);
 
-	rendererGL.reset(new SsRenderGL());
-	SsCurrentRenderer::SetCurrentRender(rendererGL.get());
-	texfactory.reset(new SSTextureFactory(new SSTextureGL()));
+	if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
+	{
+		std::cerr << "Failed to initialize GLAD" << std::endl;
+		return ;
+	}
+*/
+	rendererGL.reset(new spritestudio6::SsRenderGL());
+	spritestudio6::SsCurrentRenderer::SetCurrentRender(rendererGL.get());
+	texfactory.reset(new spritestudio6::SSTextureFactory(new spritestudio6::SSTextureGL()));
 }
 
 void DocumentView3D::shutdown()
 {
-	SSTextureFactory::releaseAllTexture();
-	SSOpenGLShaderMan::Destory();
+	spritestudio6::SSTextureFactory::releaseAllTexture();
+	spritestudio6::SSOpenGLShaderMan::Destory();
 }
 
 void DocumentView3D::render()

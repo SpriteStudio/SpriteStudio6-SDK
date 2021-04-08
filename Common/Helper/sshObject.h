@@ -3,6 +3,9 @@
 
 #include "sshTask.h"
 
+namespace spritestudio6
+{
+
 
 class	tkObject : public task_base{
 public:
@@ -11,5 +14,6 @@ public:
 };
 
 
+}	// namespace spritestudio6
 
 #endif

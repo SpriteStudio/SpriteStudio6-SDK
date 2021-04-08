@@ -77,3 +77,24 @@ Build/Viewer2/JuceLibraryCode/
 
 Build/Converter/build/
 Build/Viewer/build/
+*.BAK
+testout/*
+Build/Converter/cmake_install.cmake
+Build/Converter/Converter/cmake_install.cmake
+Build/Converter/Converter/CTestTestfile.cmake
+Build/Converter/CTestTestfile.cmake
+Build/Converter/Converter/Ss6Converter_Common/Loader/ssLoader.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+Build/Converter/Converter/Ss6Converter_Common/Loader/CTestTestfile.cmake
+Build/Converter/Converter/Ss6Converter_Common/Loader/cmake_install.cmake
+Build/Converter/Converter/Ss6Converter_Common/Helper/ssHelper.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+Build/Converter/Converter/Ss6Converter_Common/Helper/CTestTestfile.cmake
+Build/Converter/Converter/Ss6Converter_Common/Helper/cmake_install.cmake
+Build/Converter/Converter/Ss6Converter_Common/CTestTestfile.cmake
+Build/Converter/Converter/Ss6Converter_Common/cmake_install.cmake
+Build/Converter/Converter/Ss6Converter_Common/Animator/ssAnimator.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+Build/Converter/Converter/Ss6Converter_Common/Animator/CTestTestfile.cmake
+Build/Converter/Converter/Ss6Converter_Common/Animator/cmake_install.cmake
+Build/Converter/Converter/Ss6Converter.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+
+Build/Converter/Converter/glfw/
+Build/Converter/cppfs/

@@ -1,9 +1,14 @@
-﻿#include "ssplayer_animedecode.h"
+﻿
+#include "ssplayer_animedecode.h"
+
 #include "Loader.h"
 #include "Player.h"
 #include "View/MainWindow.h"
 #include "Controller/MainComponent.h"
 #include "sscharconverter.h"
+
+//#include "ssloader.h"
+//#include "ssplayer_animedecode.h"
 
 AsyncAnimeLoader::AsyncAnimeLoader()
 	: ThreadWithProgressWindow("Loading...", true, false)
@@ -22,13 +27,13 @@ void AsyncAnimeLoader::run()
 	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
 	{
 		p->changeState(p->stateLoading.get());
-		SsAnimePackList & alist = p->currentProj->getAnimePackList();
-		SsAnimePack * animePack = alist[packIndex];
-		SsAnimation * anime = animePack->animeList[animeIndex];
-		SsModel* model = &animePack->Model;
+		spritestudio6::SsAnimePackList & alist = p->currentProj->getAnimePackList();
+		spritestudio6::SsAnimePack * animePack = alist[packIndex].get();
+		spritestudio6::SsAnimation * anime = animePack->animeList[animeIndex];
+		spritestudio6::SsModel* model = &animePack->Model;
 
-		p->decoder.reset(new SsAnimeDecoder());
-		p->cellmap = new SsCellMapList();
+		p->decoder.reset(new spritestudio6::SsAnimeDecoder());
+		p->cellmap = new spritestudio6::SsCellMapList();
 		p->cellmap->set(p->currentProj.get(), animePack);
 		p->decoder->setAnimation(model, anime, p->cellmap, p->currentProj.get());
 
@@ -84,9 +89,10 @@ void AsyncProjectLoader::run()
 	{
 		p->changeState(p->stateLoading.get());
 
-		std::string fileName = SsCharConverter::convert_path_string(projectName.toStdString());
+//		std::string fileName = spritestudio6::SsCharConverter::convert_path_string(projectName.toStdString());
+		std::string fileName = projectName.toStdString();
 
-		SsProject* proj = ssloader_sspj::Load(fileName);
+		spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(fileName);
 
 		if (!proj)
 		{

@@ -1,15 +1,12 @@
 ﻿#include <stdio.h>
 #include <cstdlib>
 
-#ifndef _WIN32
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <OpenGL/glext.h>
-#else
-#include <GL/glew.h>
-#include <GL/GL.h>
-#endif
 
+#include "ssOpenGLSetting.h"
+
+
+#include <map>
+#include <memory>
 
 #include "../Helper/OpenGL/SSTextureGL.h"
 
@@ -22,10 +19,13 @@
 #include "ssplayer_cellmap.h"
 #include "ssplayer_mesh.h"
 
+#define SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON (1)
+
+namespace spritestudio6
+{
+
 
 //ISsRenderer*	SsCurrentRenderer::m_currentrender = 0;
-
-#define PROGRAMABLE_SHADER_ON (0)
 
 static const char* glshader_sprite_vs = 
 #include "GLSL/sprite.vs";
@@ -35,6 +35,98 @@ static const char* glshader_sprite_fs =
 
 static const char* glshader_sprite_fs_pot = 
 #include "GLSL/sprite_pot.fs";
+
+class SSOpenGLProgramObject;
+
+struct ShaderSetting
+{
+	char*	name;
+	char*	vs;
+	char*	fs;
+};
+
+//MEMO: 現在デストラクト時に（定義リソースが）自動解放されることを期待しています。
+//      ※明示的な解放タイミングが見当たらないため。
+static std::map<SsString, std::unique_ptr<SSOpenGLProgramObject>>	s_DefaultShaderMap;
+
+static const ShaderSetting glshader_default[] =
+{
+	{
+		"system::default",
+#include "GLSL/default.vs"
+#include "GLSL/default.fs"
+	},
+	{
+		"ss-blur",
+#include "GLSL/ss-common.vs"
+#include "GLSL/ss-blur.fs"
+	},
+	{
+		"ss-bmask",
+#include "GLSL/ss-common.vs"
+#include "GLSL/ss-bmask.fs"
+	},
+	{
+		"ss-circle",
+#include "GLSL/ss-common.vs"
+#include "GLSL/ss-circle.fs"
+	},
+	{
+		"ss-hsb",
+#include "GLSL/ss-common.vs"
+#include "GLSL/ss-hsb.fs"
+	},
+	{
+		"ss-move",
+#include "GLSL/ss-common.vs"
+#include "GLSL/ss-move.fs"
+	},
+	{
+		"ss-noise",
+#include "GLSL/ss-common.vs"
+#include "GLSL/ss-noise.fs"
+	},
+	{
+		"ss-outline",
+#include "GLSL/ss-common.vs"
+#include "GLSL/ss-outline.fs"
+	},
+	{
+		"ss-pix",
+#include "GLSL/ss-common.vs"
+#include "GLSL/ss-pix.fs"
+	},
+	{
+		"ss-scatter",
+#include "GLSL/ss-common.vs"
+#include "GLSL/ss-scatter.fs"
+	},
+	{
+		"ss-sepia",
+#include "GLSL/ss-common.vs"
+#include "GLSL/ss-sepia.fs"
+	},
+	{
+		"ss-spot",
+#include "GLSL/ss-common.vs"
+#include "GLSL/ss-spot.fs"
+	},
+	{
+		"ss-step",
+#include "GLSL/ss-common.vs"
+#include "GLSL/ss-step.fs"
+	},
+	{
+		"ss-wave",
+#include "GLSL/ss-common.vs"
+#include "GLSL/ss-wave.fs"
+	},
+	{
+		NULL,
+		NULL,
+		NULL,
+	},
+};
 
 
 //bool SsRender::m_isInit = false;
@@ -61,15 +153,20 @@ inline void __fastcall rgbaByteToFloat_(float* dest, const SsColorBlendValue& sr
 {
 	const SsColor* srcColor = &src.rgba;
 
-	dest[0] = floatFromByte_(srcColor->r);
-	dest[1] = floatFromByte_(srcColor->g);
-	dest[2] = floatFromByte_(srcColor->b);
-	dest[3] = floatFromByte_(srcColor->a);
+	dest[0] = floatFromByte_((u8)srcColor->r);
+	dest[1] = floatFromByte_((u8)srcColor->g);
+	dest[2] = floatFromByte_((u8)srcColor->b);
+	dest[3] = floatFromByte_((u8)srcColor->a);
 }
+
+struct ShaderVArg;
+static int			s_iVArgCount	= 0;
+static ShaderVArg*	s_pVArg			= NULL;
 
 /// // RGB=100%テクスチャ、A=テクスチャｘ頂点カラーの設定にする。
 static void __fastcall setupTextureCombinerTo_NoBlendRGB_MultiplyAlpha_()
 {
+
 	// カラーは１００％テクスチャ
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 	glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
@@ -178,6 +275,38 @@ static void __fastcall setupSimpleTextureCombiner_for_PartsColor_(SsBlendType::_
 	}
 }
 
+static SSOpenGLProgramObject* createProgramObject( const SsString& name, const SsString& vs, const SsString& fs )
+{
+	SSOpenGLVertexShader*	pVs = new SSOpenGLVertexShader( name, vs );
+	SSOpenGLFragmentShader*	pFs = new SSOpenGLFragmentShader( name, fs );
+	SSOpenGLProgramObject*	pPo = new SSOpenGLProgramObject();
+
+	pPo->Attach( pVs );
+	pPo->Attach( pFs );
+
+	if ( pPo->Link() != 0 ) {
+		if ( pVs )
+			delete pVs;
+		if ( pVs )
+			delete pFs;
+		if ( pPo )
+			delete pPo;
+
+		pVs = nullptr;
+		pFs = nullptr;
+		pPo = nullptr;
+	}
+
+	return	pPo;
+}
+
+void SsRenderGL::clearShaderCache()
+{
+	if ( s_pVArg ) free( s_pVArg );
+	s_iVArgCount = 0;
+	s_pVArg = NULL;
+}
+
 void	SsRenderGL::initialize()
 {
 //	if ( m_isInit ) return ;
@@ -198,6 +327,11 @@ void	SsRenderGL::initialize()
 	pgo2->Attach( fs2 );
 	pgo2->Link();
 	SSOpenGLShaderMan::PushPgObject( pgo2 );
+
+	s_DefaultShaderMap.clear();
+	for ( int i = 0; glshader_default[i].name != nullptr; i++ ) {
+		s_DefaultShaderMap[glshader_default[i].name].reset( createProgramObject( glshader_default[i].name, glshader_default[i].vs, glshader_default[i].fs ) );
+	}
 
 //	m_isInit = true;
 
@@ -252,7 +386,12 @@ void	SsRenderGL::SetAlphaBlendMode(SsBlendType::_enum type)
 	case SsBlendType::sub:				//< 3 減算
 		// TODO SrcAlpha を透明度として使えない
 		glBlendEquation( GL_FUNC_REVERSE_SUBTRACT );
+
+#if USE_GLEW
 		glBlendFuncSeparateEXT( GL_SRC_ALPHA, GL_ONE, GL_ZERO, GL_DST_ALPHA );
+#else
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ZERO, GL_DST_ALPHA);
+#endif
 		break;
 	case SsBlendType::mulalpha: 		//< 4 α乗算
 		glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
@@ -353,7 +492,11 @@ void	SsRenderGL::SetTexture( SsCellValue* cellvalue )
 		{
 			// 2のべき乗ではない:NPOTテクスチャ
 			texture_is_pow2 = false;
+#if USE_GLEW
 			gl_target = GL_TEXTURE_RECTANGLE_ARB;
+#else
+			gl_target = GL_TEXTURE_RECTANGLE;
+#endif
 		}
 
 
@@ -470,6 +613,34 @@ inline void __fastcall calcCenterVertexColor(float* colors, float* rates, float*
 	rates[4] = rate / 4.0f;
 }
 
+struct ShaderVArg
+{
+	float	fSrcRatio;
+	float	fDstRatio;
+	float	fDstSrcRatio;
+	float	fReserved;
+};
+
+struct ShaderFArg
+{
+	float	fTexW;
+	float	fTexH;
+	float	fPixTX;
+	float	fPixTY;
+	float	fCoordLU;
+	float	fCoordTV;
+	float	fCoordCU;
+	float	fCoordCV;
+	float	fCoordRU;
+	float	fCoordBV;
+	float	fPMA;
+	float	fReserved1;
+	float	fReserved2;
+	float	fReserved3;
+	float	fReserved4;
+	float	fReserved5;
+};
+
 void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 {
 	if (mesh == 0)return;
@@ -509,7 +680,11 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 		{
 			// 2のべき乗ではない:NPOTテクスチャ
 			texture_is_pow2 = false;
+#if USE_GLEW
 			gl_target = GL_TEXTURE_RECTANGLE_ARB;
+#else
+			gl_target = GL_TEXTURE_RECTANGLE;
+#endif
 		}
 
 
@@ -523,6 +698,7 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 	SsPartState* state = mesh->myPartState;
 
 	// パーツカラーの指定
+	std::vector<float>& colorsRaw = *(mesh->colors.get());
 	if (state->is_parts_color)
 	{
 
@@ -549,10 +725,10 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 		}
 		for (size_t i = 0; i < mesh->ver_size; i++)
 		{
-			mesh->colors[i * 4 + 0] = setcol[0];
-			mesh->colors[i * 4 + 1] = setcol[1];
-			mesh->colors[i * 4 + 2] = setcol[2];
-			mesh->colors[i * 4 + 3] = setcol[3] *alpha; // 不透明度を適用する。
+			colorsRaw[i * 4 + 0] = setcol[0];
+			colorsRaw[i * 4 + 1] = setcol[1];
+			colorsRaw[i * 4 + 2] = setcol[2];
+			colorsRaw[i * 4 + 3] = setcol[3] *alpha; // 不透明度を適用する。
 		}
 	}
 	else {
@@ -560,11 +736,10 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 		//ウェイトカラーの合成色を頂点カラーとして使用（パーセント円の流用
 		for (size_t i = 0; i < mesh->ver_size; i++)
 		{
-
-			mesh->colors[i * 4 + 0] = 1.0f;
-			mesh->colors[i * 4 + 1] = 1.0f;
-			mesh->colors[i * 4 + 2] = 1.0f;
-			mesh->colors[i * 4 + 3] = alpha;
+			colorsRaw[i * 4 + 0] = 1.0f;
+			colorsRaw[i * 4 + 1] = 1.0f;
+			colorsRaw[i * 4 + 2] = 1.0f;
+			colorsRaw[i * 4 + 3] = alpha;
 		}
 
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -582,15 +757,18 @@ void	SsRenderGL::renderMesh(SsMeshPart* mesh , float alpha )
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	// UV 配列を指定する
-	glTexCoordPointer(2, GL_FLOAT, 0, (GLvoid *)mesh->uvs);
 
-	glColorPointer(4, GL_FLOAT, 0, (GLvoid *)mesh->colors);
+	// UV 配列を指定する
+	glTexCoordPointer(2, GL_FLOAT, 0, (GLvoid *)((mesh->uvs.get())->data()));
+
+	// 頂点色を指定する
+	glColorPointer(4, GL_FLOAT, 0, (GLvoid *)((mesh->colors.get())->data()));
 
 	// 頂点バッファの設定
-	glVertexPointer(3, GL_FLOAT, 0, (GLvoid *)mesh->draw_vertices);
+	glVertexPointer(3, GL_FLOAT, 0, (GLvoid *)((mesh->draw_vertices.get())->data()));
 
-	glDrawElements(GL_TRIANGLES, mesh->tri_size * 3, GL_UNSIGNED_SHORT, mesh->indices);
+	glDrawElements(GL_TRIANGLES, mesh->tri_size * 3, GL_UNSIGNED_SHORT, (mesh->indices.get())->data());
+
 	glPopMatrix();
 
 	if (texture_is_pow2 == false)
@@ -609,6 +787,16 @@ void	SsRenderGL::renderPart( SsPartState* state )
 {
 	bool texture_is_pow2 = true;
 	bool color_blend_v4 = false;
+	float fTexW = 16.0f;
+	float fTexH = 16.0f;
+	float fPixTX = 1.0f;
+	float fPixTY = 1.0f;
+	float fCoordLU = 0.0f;
+	float fCoordTV = 0.0f;
+	float fCoordCU = 0.0f;
+	float fCoordCV = 0.0f;
+	float fCoordRU = 0.0f;
+	float fCoordBV = 0.0f;
 	float vertexID[10];
 //	bool colorBlendEnabled = false;
 	bool partsColorEnabled = false;
@@ -616,6 +804,8 @@ void	SsRenderGL::renderPart( SsPartState* state )
 
 	int		gl_target = GL_TEXTURE_2D;
 	float	rates[5];
+
+	SSOpenGLProgramObject*	pPrgObject = nullptr;
 
 	if ( state->hide ) return ; //非表示なので処理をしない
 
@@ -659,14 +849,32 @@ void	SsRenderGL::renderPart( SsPartState* state )
 		{
 			// 2のべき乗ではない:NPOTテクスチャ
 			texture_is_pow2 = false;
+#if USE_GLEW
 			gl_target = GL_TEXTURE_RECTANGLE_ARB;
+#else
+			gl_target = GL_TEXTURE_RECTANGLE;
+#endif
 		}
 
 
 		glEnable(gl_target);
 
-#if PROGRAMABLE_SHADER_ON
-		if ( glpgObject )
+#if SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON
+		if ( state->is_shader ) {
+			std::map<SsString, std::unique_ptr<SSOpenGLProgramObject>>::const_iterator it = s_DefaultShaderMap.find( state->shaderValue.id );
+			if ( it != s_DefaultShaderMap.end() ) {
+				pPrgObject = s_DefaultShaderMap[state->shaderValue.id].get();
+			}
+		}
+		if ( !pPrgObject ) {
+			std::map<SsString, std::unique_ptr<SSOpenGLProgramObject>>::const_iterator it = s_DefaultShaderMap.find( "system::default" );
+			if ( it != s_DefaultShaderMap.end() ) {
+				pPrgObject = s_DefaultShaderMap["system::default"].get();
+			}
+		}
+
+//		if ( glpgObject )
+		if ( pPrgObject )
 		{
 			glActiveTexture(GL_TEXTURE0);
 		}
@@ -733,6 +941,9 @@ void	SsRenderGL::renderPart( SsPartState* state )
 		{
 			uv_trans.x = state->uvTranslate.x;
 			uv_trans.y = state->uvTranslate.y;
+
+			fTexW = texturePixelSize.x;
+			fTexH = texturePixelSize.y;
 		}
 		else
 		{
@@ -743,6 +954,9 @@ void	SsRenderGL::renderPart( SsPartState* state )
 			//中心座標を計算
 			uvw*= texturePixelSize.x;
 			uvh*= texturePixelSize.y;
+
+			fTexW = texturePixelSize.x;
+			fTexH = texturePixelSize.y;
 		}
 
 		uvw/=2.0f;
@@ -779,6 +993,13 @@ void	SsRenderGL::renderPart( SsPartState* state )
 		float	uvs[10];
 		memset(uvs, 0, sizeof(float) * 10);
 		const int * uvorder = &sUvOrders[order][0];
+		if (texture_is_pow2)
+		{
+			fPixTX = 1.0f / texturePixelSize.x;
+			fPixTY = 1.0f / texturePixelSize.y;
+		}
+		fCoordCU = 0.0f;
+		fCoordCV = 0.0f;
 		for (int i = 0; i < 4; ++i)
 		{
 			int idx = *uvorder;
@@ -788,7 +1009,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 				uvs[idx * 2] = state->cellValue.uvs[i].x * texturePixelSize.x;
 				uvs[idx * 2 + 1] = state->cellValue.uvs[i].y * texturePixelSize.y;
 
-#if USE_TRIANGLE_FIN
+#if SPRITESTUDIO6SDK_USE_TRIANGLE_FIN
 				//きれいな頂点変形への対応
 				uvs[4 * 2] += uvs[idx * 2];
 				uvs[4 * 2 + 1] += uvs[idx * 2 + 1];
@@ -799,21 +1020,40 @@ void	SsRenderGL::renderPart( SsPartState* state )
 				uvs[idx * 2] = state->cellValue.uvs[i].x;
 				uvs[idx * 2 + 1] = state->cellValue.uvs[i].y;
 
-#if USE_TRIANGLE_FIN
+#if SPRITESTUDIO6SDK_USE_TRIANGLE_FIN
 				//きれいな頂点変形への対応
 				uvs[4 * 2] += uvs[idx * 2];
 				uvs[4 * 2 + 1] += uvs[idx * 2 + 1];
 #endif
 			}
+
+			if ( i == 0 ) {
+				fCoordLU = uvs[idx * 2];
+				fCoordTV = uvs[idx * 2 + 1];
+				fCoordRU = uvs[idx * 2];
+				fCoordBV = uvs[idx * 2 + 1];
+			}else{
+				fCoordLU = fCoordLU > uvs[idx * 2] ? uvs[idx * 2] : fCoordLU;
+				fCoordTV = fCoordTV > uvs[idx * 2 + 1] ? uvs[idx * 2 + 1] : fCoordTV;
+				fCoordRU = fCoordRU < uvs[idx * 2] ? uvs[idx * 2] : fCoordRU;
+				fCoordBV = fCoordBV < uvs[idx * 2 + 1] ? uvs[idx * 2 + 1] : fCoordBV;
+			}
+
+			fCoordCU += uvs[idx * 2];
+			fCoordCV += uvs[idx * 2 + 1];
+
 			++uvorder;
 		}
 
-#if USE_TRIANGLE_FIN
+#if SPRITESTUDIO6SDK_USE_TRIANGLE_FIN
 		//きれいな頂点変形への対応
 		uvs[4*2]/=4.0f;
 		uvs[4*2+1]/=4.0f;
 
 #endif
+
+		fCoordCU *= 0.25f;
+		fCoordCV *= 0.25f;
 
 		// UV 配列を指定する
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -834,7 +1074,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	//メッシュの場合描画
 	if (state->partType == SsPartType::mesh)
 	{
-		this->renderMesh(state->meshPart , alpha );
+		this->renderMesh(state->meshPart.get() , alpha );
 		return;
 	}
 
@@ -884,7 +1124,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 				vertexID[i * 2 + 1] = i;
 			}
 
-#if USE_TRIANGLE_FIN
+#if SPRITESTUDIO6SDK_USE_TRIANGLE_FIN
 			// 中央頂点(index=4)のRGBA%値の計算
 			calcCenterVertexColor(state->colors, rates, vertexID);
 #else
@@ -924,12 +1164,103 @@ void	SsRenderGL::renderPart( SsPartState* state )
 //	glLoadMatrixf(state->matrix);
 	glLoadMatrixf(state->matrixLocal);	//Ver6 ローカルスケール対応
 
-	GLint VertexLocation;
+	GLint VertexLocation = -1;
 	if (state->noCells)
 	{
 		//セルが無いので描画を行わない
 	}else{
-#if USE_TRIANGLE_FIN
+
+#if SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON
+
+	if ( state->is_shader )
+	{
+//      if ( glpgObject )
+		if ( pPrgObject )
+		{
+			GLint uid;
+			int		type = (int)state->partsColorValue.blendType;
+
+			if ( state->meshPart && cell && cell->ismesh )
+			{
+				int		iCount = state->meshPart->targetCell->meshPointList.size();
+
+				if ( s_iVArgCount < iCount ) {
+					clearShaderCache();
+					s_pVArg = (ShaderVArg*)malloc( sizeof( ShaderVArg ) * iCount );
+					s_iVArgCount = iCount;
+				}
+
+				for ( int i = 0; i < iCount; i++ ) {
+					s_pVArg[i].fSrcRatio = type <= 1 ? 1.0f - rates[0] : 1.0f;
+					s_pVArg[i].fDstRatio = type == 3 ? -rates[0] : rates[0];
+					s_pVArg[i].fDstSrcRatio = type == 1 ? 1.0f : 0.0f;
+					s_pVArg[i].fReserved = 0.0f;
+				}
+			}else{
+				int		iCount = 5;
+
+				if ( s_iVArgCount < iCount ) {
+					clearShaderCache();
+					s_pVArg = (ShaderVArg*)malloc( sizeof( ShaderVArg ) * iCount );
+					s_iVArgCount = iCount;
+				}
+
+				for ( int i = 0; i < iCount; i++ ) {
+					s_pVArg[i].fSrcRatio = type <= 1 ? 1.0f - rates[i] : 1.0f;
+					s_pVArg[i].fDstRatio = type == 3 ? -rates[i] : rates[i];
+					s_pVArg[i].fDstSrcRatio = type == 1 ? 1.0f : 0.0f;
+					s_pVArg[i].fReserved = 0.0f;
+				}
+			}
+
+			VertexLocation = pPrgObject->GetAttribLocation( "varg" );
+			if ( VertexLocation >= 0 ) {
+				glVertexAttribPointer( VertexLocation , 4 , GL_FLOAT , GL_FALSE, 0, s_pVArg);//GL_FALSE→データを正規化しない
+				glEnableVertexAttribArray(VertexLocation);//有効化
+			}
+
+			//シェーダのセットアップ
+			pPrgObject->Enable();
+
+			uid = pPrgObject->GetUniformLocation( "args" );
+			if ( uid >= 0 ) {
+				ShaderFArg	args;
+
+				args.fTexW = fTexW;
+				args.fTexH = fTexH;
+				args.fPixTX = fPixTX;
+				args.fPixTY = fPixTY;
+				args.fCoordLU = fCoordLU;
+				args.fCoordTV = fCoordTV;
+				args.fCoordCU = fCoordCU;
+				args.fCoordCV = fCoordCV;
+				args.fCoordRU = fCoordRU;
+				args.fCoordBV = fCoordBV;
+				args.fPMA = 0.0f;
+				args.fReserved1 = 0.0f;
+				args.fReserved2 = 0.0f;
+				args.fReserved3 = 0.0f;
+				args.fReserved4 = 0.0f;
+				args.fReserved5 = 0.0f;
+
+				if (
+					( !state->cellValue.texture )
+				) {
+					memset( &args, 0, sizeof( args ) );
+				}
+
+				glUniform1fv( uid, sizeof( args ) / sizeof( float ), (float*)&args );
+			}
+
+			uid = pPrgObject->GetUniformLocation( "params" );
+			if ( uid >= 0 ) {
+				glUniform1fv( uid, sizeof( state->shaderValue.param ) / sizeof( float ), state->shaderValue.param );
+			}
+		}
+	}
+
+#endif
+#if SPRITESTUDIO6SDK_USE_TRIANGLE_FIN
 		if ( state->is_vertex_transform || state->is_parts_color)
 		{
 			static const GLubyte indices[] = { 4 , 3, 1, 0, 2 , 3};
@@ -945,19 +1276,20 @@ void	SsRenderGL::renderPart( SsPartState* state )
 #endif
 	}
 
-#if PROGRAMABLE_SHADER_ON
-	if ( glpgObject )
+#if SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON
+//	if ( glpgObject )
 	{
-/*
-		if ( colorBlendEnabled )
+		if ( state->is_shader )
 		{
-			if ( glpgObject )
+//			if ( glpgObject )
+			if ( pPrgObject )
 			{
-				glDisableVertexAttribArray(VertexLocation);//無効化
-				glpgObject->Disable();
+				if ( VertexLocation >= 0 ) {
+					glDisableVertexAttribArray(VertexLocation);//無効化
+				}
+				pPrgObject->Disable();
 			}
 		}
-*/
 	}
 #endif
 
@@ -973,3 +1305,5 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	glBlendEquation( GL_FUNC_ADD );
 
 }
+
+}	// namespace spritestudio6

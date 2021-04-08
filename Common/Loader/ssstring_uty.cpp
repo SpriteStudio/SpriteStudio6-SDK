@@ -1,4 +1,5 @@
 ﻿#include "ssstring_uty.h"
+#include "sscharconverter.h"
 
 #ifdef _WIN32
 #include <direct.h>
@@ -9,6 +10,9 @@
 #include <unistd.h>
 
 #endif
+
+namespace spritestudio6
+{
 
 
 //=========================================================================================
@@ -41,13 +45,17 @@ void	split_string( const std::string &in_str ,
 
 
 std::string path2dir(const std::string &path) {
-	const std::string::size_type pos = std::max<signed>(path.find_last_of('/'), path.find_last_of('\\'));
+	// MEMO: find_last_ofが未発見時に-1を返すので、maxをsize_tで実体化したらダメ
+	const std::string::size_type pos = std::max<signed>((signed)path.find_last_of('/'), (signed)path.find_last_of('\\'));
 	return (pos == std::string::npos) ? std::string()
 		: path.substr(0, pos + 1);
 }
 
 std::string path2file(const std::string &path) {
-	return path.substr(std::max<signed>(path.find_last_of('/'), path.find_last_of('\\')) + 1);
+	// MEMO: find_last_ofが未発見時に-1を返すので、maxをsize_tで実体化したらダメ
+	//       ※一度posに入れているのは、C26451の警告回避のため
+	signed pos = std::max<signed>((signed)path.find_last_of('/'), (signed)path.find_last_of('\\')) + 1;
+	return path.substr((size_t)pos);
 }
 
 
@@ -80,20 +88,28 @@ bool	is_digit_string( std::string &in_str , bool* is_priod )
 std::string getFullPath( const std::string& basePath , const std::string &relPath )
 {
 #ifdef _WIN32
-	static char	curPath[_MAX_PATH];
+	char	curPath[_MAX_PATH];
+	char	buffer_[_MAX_PATH];
+	std::string basePathFs;
+	std::string relPathFs;
+	if( basePath.size() > 0 )
+		basePathFs = SsCharConverter::convert_path_string( basePath );
+	if( relPath.size() > 0 )
+		relPathFs = SsCharConverter::convert_path_string( relPath );
 
-	_chdir( basePath.c_str() );
 	_getcwd( curPath , _MAX_PATH ); 
+	_chdir( basePathFs.c_str() );
 
-	static char	buffer_[_MAX_PATH];
-	_fullpath( buffer_ , relPath.c_str() , _MAX_PATH );
-
+	_fullpath( buffer_ , relPathFs.c_str() , _MAX_PATH );
+	
 	_chdir( curPath );
 
-	std::string temp = buffer_;
+	std::string temp( buffer_ );
 	temp+= "\\";
+	// MEMO: Windowsの場合、上記API群で返ってくるパスのエンコードはSJISなことに注意
+	std::string rv = SsCharConverter::sjis_to_utf8( temp );
 
-	return temp;
+	return rv;
 #else
 	char	buffer_[2048];
 	char	curPath[2048];
@@ -110,6 +126,11 @@ std::string getFullPath( const std::string& basePath , const std::string &relPat
         std::string temp = relPath;
         realpath(temp.c_str(),buffer_ );
         //std::string ret_str = relPath + "/";
+
+#if 0	// MEMO: エンバグしていると困るので、一応まだ残しておく
+#else
+        chdir(curPath);
+#endif
         return relPath;
     }else{
         chdir( basePath.c_str());
@@ -163,3 +184,6 @@ bool checkFileVersion(std::string fileVersion, std::string nowVersion)
 
 	return ret;
 }
+
+
+}	// namespace spritestudio6

@@ -8,7 +8,8 @@
 #include	<map>
 
 
-
+namespace spritestudio6
+{
 
 
 //アニメーション中のキーフレームの内容を表現するクラス
@@ -26,14 +27,14 @@ public:
 	  {}
 	virtual ~SsKeyframe(){}
 
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE_ATTRIBUTE( time );
-		SSAR_DECLARE_ATTRIBUTE_ENUM( ipType );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE( time );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE_ENUM( ipType );
 
 		if ( SsNeedsCurveParams(ipType) )
 		{
-			SSAR_DECLARE( curve );
+			SPRITESTUDIO6SDK_SSAR_DECLARE( curve );
 		}
 		
 		SsValueSeriarizer( ar , value );
@@ -64,10 +65,10 @@ public:
 	}
 
 
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE_ATTRIBUTE_ENUM( tag );
-		SSAR_DECLARE_LISTEX( key ,  "" );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE_ENUM( tag );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_LISTEX( key ,  "" );
 
 		key_dic.clear();
 		for ( AttributeKeyList::iterator itr = key.begin() ; itr != key.end() ; itr++)
@@ -97,12 +98,16 @@ public:
 
 void	GetSsPartsColorValue( const SsKeyframe* key , SsPartsColorAnime& v );
 void	GetSsColorValue(const SsKeyframe* key, SsColorAnime& v);
+void	GetSsShaderValue(const SsKeyframe* key, SsShaderAnime& v);
 void	GetSsVertexAnime( const SsKeyframe* key , SsVertexAnime& v );
 void	GetSsRefCell( const SsKeyframe* key , SsRefCell& v );
 void	GetSsUserDataAnime( const SsKeyframe* key , SsUserDataAnime& v );
+void	GetSsSignalAnime( const SsKeyframe* key , SsSignalAttr& v );
 void	GetSsInstparamAnime( const SsKeyframe* key , SsInstanceAttr& v );
 void	GetSsEffectParamAnime( const SsKeyframe* key , SsEffectAttr& v );
 void	GetSsDeformAnime(const SsKeyframe* key, SsDeformAttr& v);
 
+
+}	// namespace spritestudio6
 
 #endif
