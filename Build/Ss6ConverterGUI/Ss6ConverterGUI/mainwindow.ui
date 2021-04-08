@@ -176,18 +176,11 @@
    <widget class="QComboBox" name="type_comboBox">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>100</x>
       <y>200</y>
-      <width>151</width>
-      <height>31</height>
+      <width>141</width>
+      <height>21</height>
      </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
@@ -195,14 +188,9 @@
      <rect>
       <x>10</x>
       <y>200</y>
-      <width>151</width>
-      <height>21</height>
+      <width>91</width>
+      <height>16</height>
      </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-     </font>
     </property>
     <property name="text">
      <string>出力フォーマット:</string>

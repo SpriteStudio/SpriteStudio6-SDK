@@ -6,9 +6,6 @@
 #include "ssHelper.h"
 #include "SSTextureDX9.h"
 
-namespace spritestudio6
-{
-
 #if 0
 /* =====================================================================================
 	テクスチャファイルの読み込み
@@ -66,5 +63,3 @@ bool SSTextureDX9::Load( const char* filename )
 
 	return true;
 }
-
-}	// namespace spritestudio6

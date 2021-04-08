@@ -49,7 +49,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->type_comboBox->addItem("ssbp");
     ui->type_comboBox->addItem("json");
     ui->type_comboBox->addItem("ssfb");
-    ui->type_comboBox->addItem("sspkg");
 
 }
 
@@ -119,7 +118,7 @@ void MainWindow::saveConfig(void)
     }
 
     QTextStream out(&file);
-    out << ui->type_comboBox->currentIndex() << Qt::endl;
+    out << ui->type_comboBox->currentIndex() << endl;
 }
 
 void MainWindow::on_pushButton_exit_clicked()
@@ -235,10 +234,6 @@ void MainWindow::on_pushButton_convert_clicked()
                 if ( ui->type_comboBox->currentText() == "ssfb" )
                 {
                     str = str + " -f ssfb";
-                }
-                if ( ui->type_comboBox->currentText() == "sspkg" )
-                {
-                    str = str + " -f sspkg";
                 }
 
                 cnvProcess->start(str); //パスと引数
@@ -368,7 +363,7 @@ void MainWindow::on_pushButton_listsave_clicked()
         for ( i = 0; i < ui->listWidget->count(); i++ )
         {
             QString str = ui->listWidget->item(i)->text();
-            out << str << Qt::endl; //書込み
+            out << str << endl; //書込み
         }
     }
 }

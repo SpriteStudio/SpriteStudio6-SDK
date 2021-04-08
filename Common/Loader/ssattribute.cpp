@@ -3,8 +3,7 @@
 #include "ssattribute.h"
 #include "../Helper/DebugPrint.h"
 
-namespace spritestudio6
-{
+
 
 
 const SsKeyframe*	SsAttribute::firstKey()
@@ -141,17 +140,6 @@ void	GetSsColorValue( const SsKeyframe* key , SsColorAnime& v )
 
 }
 
-//シェーダーアニメデータの取得
-void	GetSsShaderValue( const SsKeyframe* key , SsShaderAnime& v )
-{
-	v.id = key->value["id"].get<SsString>();
-	v.param[0] = key->value["param0"].get<float>();
-	v.param[1] = key->value["param1"].get<float>();
-	v.param[2] = key->value["param2"].get<float>();
-	v.param[3] = key->value["param3"].get<float>();
-
-}
-
 void	GetSsVertexAnime( const SsKeyframe* key , SsVertexAnime& v )
 {
 	const SsString& sLT = key->value["LT"].get<SsString>();
@@ -208,61 +196,6 @@ void	GetSsUserDataAnime( const SsKeyframe* key , SsUserDataAnime& v )
 	{
 		const SsString& str = key->value["string"].get<SsString>();
 		v.string = str;
-	}
-
-}
-
-void	GetSsSignalAnime( const SsKeyframe* key , SsSignalAttr& v )
-{
-	const SsHash& commands = key->value["commands"].get<SsHash>();
-
-	v.commands.clear();
-
-	for ( SsHash::const_iterator itr = commands.begin(); itr != commands.end(); itr++ ) {
-		SsSignalCommand command;
-		const SsValue& val = itr->second;
-		const SsHash& params = val["params"].get<SsHash>();
-
-		command.active = val["active"].get<bool>();
-		command.commandId = val["commandId"].get<SsString>();
-		command.note = val["note"].get<SsString>();
-
-		command.params.clear();
-
-		for ( SsHash::const_iterator itr2 = params.begin(); itr2 != params.end(); itr2++ ) {
-			SsSignalParam param;
-			const SsValue& val2 = itr2->second;
-			SsSignalParamType::_enum type;
-//			SsSignalParamValue value;
-
-			param.paramId = val2["paramId"].get<SsString>();
-
-			__StringToEnum_( val2["type"].get<SsString>() , type );
-
-			param.type = type;
-
-			switch ( type ) {
-			case SsSignalParamType::none :
-				param.value.i = 0;
-				break;
-			case SsSignalParamType::index :
-				param.value.i = val2["value"].get<int>();
-				break;
-			case SsSignalParamType::integer :
-				param.value.i = val2["value"].get<int>();
-				break;
-			case SsSignalParamType::floating :
-				param.value.f = val2["value"].get<float>();
-				break;
-			default:
-				param.value.i = 0;
-				break;
-			}
-
-			command.params.push_back( param );
-		}
-
-		v.commands.push_back( command );
 	}
 
 }
@@ -380,5 +313,3 @@ void	GetSsDeformAnime(const SsKeyframe* key, SsDeformAttr& v)
 	}
 }
 
-
-}	// namespace spritestudio6

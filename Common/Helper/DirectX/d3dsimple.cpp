@@ -100,14 +100,14 @@ void	CDirectDrawSimple::DeviceReset()
 				//m_DeviceLost = true;
 				return ;
 			}else if( hr == D3DERR_DEVICENOTRESET ){
-				//SPRITESTUDIO6DSK_THROW_ERROR_MESSAGE( "Error : D3DERR_DEVICENOTRESET" );
+				//THROW_ERROR_MESSAGE( "Error : D3DERR_DEVICENOTRESET" );
 				return ;					
 			}else if ( hr == D3DERR_INVALIDCALL )
 			{
-				//SPRITESTUDIO6DSK_THROW_ERROR_MESSAGE( "Error : D3DERR_INVALIDCALL" );
+				//THROW_ERROR_MESSAGE( "Error : D3DERR_INVALIDCALL" );
 				return ;
 			}else{
-				//SPRITESTUDIO6DSK_THROW_ERROR_MESSAGE( "Error : DirectX Reset" );
+				//THROW_ERROR_MESSAGE( "Error : DirectX Reset" );
 				return ;
 			}
 		}

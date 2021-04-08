@@ -4,9 +4,6 @@
 #include "ssplayer_effect.h"
 #include "ssplayer_effect2.h"
 
-namespace spritestudio6
-{
-
 class	SsEffectFunctionExecuter
 {
 public:
@@ -26,6 +23,8 @@ public:
 };
 
 
-}	// namespace spritestudio6
+
+
+
 
 #endif

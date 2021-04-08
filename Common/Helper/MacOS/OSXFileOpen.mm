@@ -14,6 +14,7 @@
 #import <AppKit/NSOpenPanel.h>
 #import <Foundation/Foundation.h>
 
+
 extern void GlContexMakeCurrent();
 
 bool MacOSXFileOpenDlg::show()
@@ -44,5 +45,8 @@ bool MacOSXFileOpenDlg::show()
     GlContexMakeCurrent();
     return false;
 }
+
+
+
 
 #endif

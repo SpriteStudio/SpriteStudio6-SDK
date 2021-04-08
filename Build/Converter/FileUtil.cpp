@@ -44,57 +44,7 @@ namespace FileUtil
 		return npath;
 	}
 
-    ////最後の１文字が"\\"でない場合付加する
-    std::string normalizeFilePath(const std::string& fullpath)
-    {
 
-        std::string out = fullpath;
-
-#ifdef _WIN32
-        if (fullpath.substr(fullpath.length() - 1) != "\\")
-#else
-        if (fullpath.substr(fullpath.length() - 1) != "/")
-#endif
-        {
-            //最後の１文字が"\\"でない場合付加する
-#ifdef _WIN32
-            out = out + "\\";
-#else
-            out = out + "/";
-#endif
-        }
-
-        return out;
-    }
-
-    std::string getFilePath(const std::string& fullpath)
-    {
-
-#ifdef _WIN32
-        size_t path_index = fullpath.find_last_of("\\") + 1;
-#else
-        size_t path_index = fullpath.find_last_of("/") + 1;
-#endif
-
-        std::string pathname = fullpath.substr(0, path_index);
-        return pathname;
-    }
-
-
-    std::string getFileName(const std::string& fullpath)
-    {
-#ifdef _WIN32
-        size_t path_index = fullpath.find_last_of("\\") + 1;
-#else
-        size_t path_index = fullpath.find_last_of("/") + 1;
-#endif
-
-        size_t ext_index = fullpath.find_last_of(".");
-
-        std::string filename = fullpath.substr(path_index, ext_index - path_index);
-
-        return filename;
-    }
 
 #ifdef _WIN32
 

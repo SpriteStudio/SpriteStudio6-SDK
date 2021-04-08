@@ -3,7 +3,7 @@
 if [ -z ${QT_PREFIX+x} ]; then
     QT_PREFIX=${HOME}/Qt/5.11.1/clang_64
     if [ ! -d $QT_PREFIX ]; then
-        QT_PREFIX=/usr/local/opt/qt@5
+        QT_PREFIX=/usr/local/opt/qt
     fi
 fi
 

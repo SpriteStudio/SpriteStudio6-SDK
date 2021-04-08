@@ -2,8 +2,6 @@
 #include "ssstring_uty.h"
 
 
-namespace spritestudio6
-{
 
 SsCellMap*	ssloader_ssce::Load(const std::string& filename )
 {
@@ -12,8 +10,8 @@ SsCellMap*	ssloader_ssce::Load(const std::string& filename )
 	
 	SsCellMap* cellmap = new SsCellMap();
 
-	libXML::XMLDocument xml;
-	if ( libXML::XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
+	XMLDocument xml;
+	if ( XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioCellMap" );
 		cellmap->__Serialize( &ar );
@@ -28,5 +26,3 @@ SsCellMap*	ssloader_ssce::Load(const std::string& filename )
 
 
 
-
-}	// namespace spritestudio6

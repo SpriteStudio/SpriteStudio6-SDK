@@ -1,16 +1,13 @@
 ﻿#include "ssloader_ssae.h"
 
-namespace spritestudio6
-{
-
 
 SsAnimePack*	ssloader_ssae::Load(const std::string& filename )
 {
 
 	SsAnimePack* anime = new SsAnimePack();
 
-	libXML::XMLDocument xml;
-	if ( libXML::XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
+	XMLDocument xml;
+	if ( XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioAnimePack" );
 		anime->__Serialize( &ar );
@@ -72,8 +69,8 @@ void	SsMeshBind::loader(ISsXmlArchiver* ar)
 void	SsMeshBindInfo::fromString(SsString str)
 {
 
-	memset(weight, 0, SSMESHBIND_BONEMAX *  sizeof(float));
-	memset(boneIndex, 0 , SSMESHBIND_BONEMAX * sizeof(int));
+	memset(weight, 0, SSMESHPART_BONEMAX *  sizeof(float));
+	memset(boneIndex, 0 , SSMESHPART_BONEMAX * sizeof(int));
 	bindBoneNum = 0;
 
 
@@ -95,4 +92,3 @@ void	SsMeshBindInfo::fromString(SsString str)
 }
 
 
-}	// namespace spritestudio6

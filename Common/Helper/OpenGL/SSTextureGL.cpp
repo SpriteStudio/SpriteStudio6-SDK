@@ -1,10 +1,6 @@
 ﻿#include <stdio.h>
 #include <cstdlib>
 
-
-#include "ssOpenGLSetting.h"
-
-/*
 #ifndef _WIN32
     #include <OpenGL/gl.h>
     #include <OpenGL/glu.h>
@@ -13,51 +9,40 @@
     #include <GL/glew.h>
     #include <GL/GL.h>
 #endif
-*/
 
+#include "../stb_image.h"
+#include "../ssHelper.h"
 #include "SSTextureGL.h"
 
-
-namespace spritestudio6
-{
 
 /* =====================================================================================
 	テクスチャファイルの読み込み
 ===================================================================================== */
-SSTextureGL::~SSTextureGL()
+GLuint	LoadTextureGL( const char* Filename ,int& width , int& height)
 {
-	if ( tex != 0 )
-	{
-		glDeleteTextures( 1 , &tex );
-	}
-}
 
-bool SSTextureGL::Load( const char* fname )
-{
 	int bpp;
-	SSTextureLoader::DataHandle image = SSTextureLoader::LoadImageFromFile( fname, &tex_width , &tex_height , &bpp );
-	if ( image == SSTextureLoader::InvalidDataHandle ) return false;
+	stbi_uc* image = stbi_load( Filename, &width , &height , &bpp , 0 );
+	if ( image == 0 ) return 0;
 
-#if USE_GLEW
 	int target = GL_TEXTURE_RECTANGLE_ARB;
-#else
-	int target = GL_TEXTURE_RECTANGLE;
-#endif
-
-	if ( SSTextureLoader::CheckSizePow2( tex_width, tex_height ) )
+	 
+	if (SsUtTextureisPow2(width) &&
+		SsUtTextureisPow2(height))
 	{
 		target = GL_TEXTURE_2D;
 	}
 
-	glGenTextures(1, &tex);
-	if ( tex == 0 ) return false;
-	glBindTexture( target, tex );
+
+	GLuint glyphTexture = 0;
+	glGenTextures(1, &glyphTexture);
+	glBindTexture(target, glyphTexture);
 
 	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
-	glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_REPEAT );
-	glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_REPEAT );
-	glTexParameterf( target, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-	glTexParameterf( target, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+	glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameterf(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	if ( bpp == 4 )
 	{
 /*
@@ -82,14 +67,28 @@ bool SSTextureGL::Load( const char* fname )
 			}
 		}
 */
-		glTexImage2D( target, 0, GL_RGBA, tex_width, tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (const void*)image );
+		glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);	
 	}else if ( bpp == 3 )
 	{
-		glTexImage2D( target, 0, GL_RGBA, tex_width, tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, (const void*)image );
+		glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);	
 	}
-	SSTextureLoader::DecodeEndImageFile( image );
+	stbi_image_free (image);
 
-	return true;
+	return glyphTexture;
 }
 
-}	// namespace spritestudio6
+
+
+SSTextureGL::~SSTextureGL()
+{
+	glDeleteTextures( 1 , &tex );
+}
+
+bool SSTextureGL::Load( const char* fname )
+{
+	//int tex_width;
+	//int tex_height;
+
+	tex = LoadTextureGL( fname , tex_width , tex_height );
+	return tex != 0;
+}

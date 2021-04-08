@@ -2,12 +2,9 @@
 #include "ssstring_uty.h"
 #include "sscharconverter.h"
 
-namespace spritestudio6
-{
-
 bool	SsXmlIArchiver::dc_attr( const char* name , SsString& member )
 {
-	SPRITESTUDIO6SDK_AR_SELF_CHECK();
+	AR_SELF_CHECK();
 	const char* v = 0;
 
 	v = getxml()->Attribute( name  );
@@ -18,7 +15,7 @@ bool	SsXmlIArchiver::dc_attr( const char* name , SsString& member )
 }
 bool	SsXmlIArchiver::dc_attr( const char* name , int& member )
 {
-	SPRITESTUDIO6SDK_AR_SELF_CHECK();
+	AR_SELF_CHECK();
 
 	const char* v = getxml()->Attribute( name  );
 
@@ -30,7 +27,7 @@ bool	SsXmlIArchiver::dc_attr( const char* name , int& member )
 bool	SsXmlIArchiver::dc( const char* name , int& member )
 {
 
-	SPRITESTUDIO6SDK_AR_SELF_CHECK();
+	AR_SELF_CHECK();
 	SsString str;
 	dc( name , str );
 	member = atoi( str.c_str() );
@@ -44,7 +41,7 @@ bool	SsXmlIArchiver::dc( const char* name , int& member )
 
 bool	SsXmlIArchiver::dc( const char* name , float& member )
 {
-	SPRITESTUDIO6SDK_AR_SELF_CHECK();
+	AR_SELF_CHECK();
 	SsString str;
 	dc( name , str );
 	member = (float)atof( str.c_str() );
@@ -58,8 +55,8 @@ bool	SsXmlIArchiver::dc( const char* name , float& member )
 
 bool	SsXmlIArchiver::dc( const char* name , SsString& member )
 {
-	SPRITESTUDIO6SDK_AR_SELF_CHECK();
-	libXML::XMLElement* e = getxml()->FirstChildElement( name );
+	AR_SELF_CHECK();
+	XMLElement* e = getxml()->FirstChildElement( name );
 	if ( e )
 	{
 		if ( e->GetText() )
@@ -75,9 +72,9 @@ bool	SsXmlIArchiver::dc( const char* name , SsString& member )
 
 bool	SsXmlIArchiver::dc( const char* name , bool& member )
 {
-	SPRITESTUDIO6SDK_AR_SELF_CHECK();
+	AR_SELF_CHECK();
 	member = false;
-	libXML::XMLElement* e = getxml()->FirstChildElement( name );
+	XMLElement* e = getxml()->FirstChildElement( name );
 	if ( e )
 	{
 		int ret = GetTextToInt( e , 0 );
@@ -91,9 +88,9 @@ bool	SsXmlIArchiver::dc( const char* name , bool& member )
 
 bool	SsXmlIArchiver::dc(const char* name, std::vector<SsPoint2>& list)
 {
-	SPRITESTUDIO6SDK_AR_SELF_CHECK();
+	AR_SELF_CHECK();
 	list.clear();
-	libXML::XMLElement* e = getxml()->FirstChildElement(name);
+	XMLElement* e = getxml()->FirstChildElement(name);
 	if (e == 0)return false;
 	e = e->FirstChildElement("value");
 	while (e)
@@ -111,9 +108,9 @@ bool	SsXmlIArchiver::dc(const char* name, std::vector<SsPoint2>& list)
 
 bool	SsXmlIArchiver::dc(const char* name, std::vector<SsTriangle>& list)
 {
-	SPRITESTUDIO6SDK_AR_SELF_CHECK();
+	AR_SELF_CHECK();
 	list.clear();
-	libXML::XMLElement* e = getxml()->FirstChildElement(name);
+	XMLElement* e = getxml()->FirstChildElement(name);
 	if (e == 0)return false;
 	e = e->FirstChildElement("value");
 	while (e)
@@ -131,9 +128,9 @@ bool	SsXmlIArchiver::dc(const char* name, std::vector<SsTriangle>& list)
 
 bool	SsXmlIArchiver::dc( const char* name , std::vector<SsString>& list )
 {
-	SPRITESTUDIO6SDK_AR_SELF_CHECK();
+	AR_SELF_CHECK();
 	list.clear();
-	libXML::XMLElement* e = getxml()->FirstChildElement( name );
+	XMLElement* e = getxml()->FirstChildElement( name );
 	if (e==0)return false;
 	e = e->FirstChildElement( "value" );
 	while( e )
@@ -150,9 +147,9 @@ bool	SsXmlIArchiver::dc( const char* name , std::vector<SsString>& list )
 
 bool	SsXmlIArchiver::dc( const char* name , SsPoint2& member )
 {
-	SPRITESTUDIO6SDK_AR_SELF_CHECK();
+	AR_SELF_CHECK();
 
-	libXML::XMLElement* e = getxml()->FirstChildElement( name );
+	XMLElement* e = getxml()->FirstChildElement( name );
 
 	if ( e )
 	{
@@ -166,9 +163,9 @@ bool	SsXmlIArchiver::dc( const char* name , SsPoint2& member )
 
 bool	SsXmlIArchiver::dc( const char* name , SsCurve& member )
 {
-	SPRITESTUDIO6SDK_AR_SELF_CHECK();
+	AR_SELF_CHECK();
 
-	libXML::XMLElement* e = getxml()->FirstChildElement( name );
+	XMLElement* e = getxml()->FirstChildElement( name );
 
 	if ( e )
 	{
@@ -191,9 +188,9 @@ bool	SsXmlIArchiver::dc( const char* name , SsCurve& member )
 
 bool	SsXmlIArchiver::dc(const char* name, SsTriangle& member)
 {
-	SPRITESTUDIO6SDK_AR_SELF_CHECK();
+	AR_SELF_CHECK();
 
-	libXML::XMLElement* e = getxml()->FirstChildElement(name);
+	XMLElement* e = getxml()->FirstChildElement(name);
 
 	if (e)
 	{
@@ -220,9 +217,9 @@ bool	SsXmlIArchiver::dc(const char* name, SsTriangle& member)
 /*
 bool	SsXmlIArchiver::dc(const char* name, SsBoneBind& member)
 {
-	SPRITESTUDIO6SDK_AR_SELF_CHECK();
+	AR_SELF_CHECK();
 
-	libXML::XMLElement* e = getxml()->FirstChildElement(name);
+	XMLElement* e = getxml()->FirstChildElement(name);
 
 	if (e)
 	{
@@ -249,7 +246,7 @@ bool	SsXmlIArchiver::dc(const char* name, std::map<SsString, int>& _map)
 {
 	_map.clear();
 
-	libXML::XMLElement* e = getxml()->FirstChildElement(name);
+	XMLElement* e = getxml()->FirstChildElement(name);
 	if (e == 0)return false;
 	e = e->FirstChildElement("item");
 
@@ -328,5 +325,3 @@ bool	StringToIRect( const std::string& str , SsIRect& rect )
 void	SsArchiverInit()
 {
 }
-
-}	// namespace spritestudio6

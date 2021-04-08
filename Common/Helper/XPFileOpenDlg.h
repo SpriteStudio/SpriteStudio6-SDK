@@ -11,9 +11,6 @@
 #ifndef __XP_FILEOPENDLG__
 #define __XP_FILEOPENDLG__
 
-namespace spritestudio6
-{
-
 class XPFileOpenDlg {
 private:
 	char*	pszChar;
@@ -29,8 +26,5 @@ public:
 	const char* getFilePath(){ return pszChar;}
 
 };
-
-
-}	// namespace spritestudio6
 
 #endif
