@@ -4,18 +4,23 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include <algorithm>
 
 //===============================================================
 //Macros 
 //===============================================================
-#define	SS_DECLARE_ENUM_STRING_DEF(type) \
+#define	SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(type) \
 	SsString	__EnumToString_( type::_enum n );\
 	void	__StringToEnum_( SsString n , type::_enum& out);\
 
+// 未使用引数の警告避け
+#ifndef SPRITESTUDIO6SDK_NOUSE_ARGUMENT
+	#define	SPRITESTUDIO6SDK_NOUSE_ARGUMENT(_name_)	( void )( &_name_ );
+#endif
 
-
+namespace spritestudio6
+{
 
 //===============================================================
 // Declare Type
@@ -378,7 +383,7 @@ namespace SsPartsSortMode
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsPartsSortMode );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsPartsSortMode );
 
 //---------------------------------------------------------------
 /// Animation Part Type
@@ -403,7 +408,7 @@ namespace SsPartType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsPartType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsPartType );
 
 
 //---------------------------------------------------------------
@@ -422,7 +427,7 @@ namespace SsBoundsType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsBoundsType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsBoundsType );
 
 
 //---------------------------------------------------------------
@@ -437,7 +442,7 @@ namespace SsInheritType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsInheritType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsInheritType );
 
 //---------------------------------------------------------------
 /// ブレンドタイプ
@@ -456,7 +461,7 @@ namespace SsBlendType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsBlendType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsBlendType );
 
 
 ///カラーブレンドキーが使用されている際のカラー適用範囲の定義
@@ -469,7 +474,7 @@ namespace SsColorBlendTarget
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsColorBlendTarget );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsColorBlendTarget );
 
 
 
@@ -488,7 +493,7 @@ namespace SsInterpolationType
 		num,
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsInterpolationType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsInterpolationType );
 
 
 /// テクスチャラップモード
@@ -504,7 +509,7 @@ namespace SsTexWrapMode
 	};
 };
 
-SS_DECLARE_ENUM_STRING_DEF(SsTexWrapMode);
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsTexWrapMode);
 
 /// テクスチャフィルターモード 画素補間方法
 namespace SsTexFilterMode
@@ -517,7 +522,7 @@ namespace SsTexFilterMode
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF(SsTexFilterMode);
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsTexFilterMode);
 
 
 
@@ -547,6 +552,7 @@ namespace SsAttributeKind
 		hide,		///< [HIDE]非表示
 		partsColor,	///< [PCOL]パーツカラー
 		color,		///< [VCOL]カラーブレンド
+		shader,		///< [SHDR]シェーダー
 		vertex,		///< [VERT]頂点変形
 		pivotx,		///< [PVTX]原点オフセット.X
 		pivoty,		///< [PVTY]原点オフセット.Y
@@ -564,6 +570,7 @@ namespace SsAttributeKind
 		boundr,		///< [BNDR]当たり判定用の半径
 		mask,		///< [MASK]マスク閾値
 		user,		///< [USER]ユーザーデータ
+		signal,		///< [SIGN]シグナル
 		instance,	///< [IPRM]インスタンスパーツパラメータ
 		effect,		///< [EFCT]エフェクトパラメータ
 		deform,		///< [DEFM]デフォーム用パラメータ
@@ -572,7 +579,7 @@ namespace SsAttributeKind
 };
 
 
-SS_DECLARE_ENUM_STRING_DEF(SsAttributeKind);
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsAttributeKind);
 
 namespace SsKeyValueType
 {
@@ -655,6 +662,22 @@ struct SsColorAnime
 
 };
 
+///シェーダー使用時のシェーダータイプとシェーダー値
+struct SsShaderAnime
+{
+	SsString				id;				// シェーダータイプ
+	float					param[4];		// シェーダー値
+
+	SsShaderAnime()
+	{
+		id = "";
+		for ( int i = 0; i < 4; i++ ) {
+			param[i] = 0.0f;
+		}
+	}
+
+};
+
 
 //エフェクト関連の定義
 //エフェクトのノードタイプ
@@ -668,7 +691,7 @@ namespace SsEffectNodeType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
 
 
 
@@ -683,7 +706,7 @@ namespace SsRenderBlendType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
 
 
 //2.0.1で追加　IKの方向
@@ -699,7 +722,34 @@ namespace SsIkRotationArrow
 	};
 };
 
-SS_DECLARE_ENUM_STRING_DEF(SsIkRotationArrow);
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsIkRotationArrow);
+
+/// シーケンスタイプ
+namespace SsSequenceType
+{
+	enum _enum
+	{
+		invalid=-1,
+		last,		///< 0 最後のアイテムを繰り返し再生
+		keep,		///< 1 最終フレームを維持
+		top,		///< 2 全体を繰り返し再生
+		num,
+	};
+};
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsSequenceType );
+
+namespace SsSignalParamType
+{
+	enum _enum
+	{
+		none,
+		index,
+		integer,
+		floating,
+		num
+	};
+};
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsSignalParamType );
 
 
 class SsEffectAttr
@@ -761,6 +811,55 @@ public:
 		useRect(false),
 		useString(false)
 	{}
+};
+
+union SsSignalParamValue
+{
+	int			i;
+	float		f;
+};
+
+class SsSignalParam
+{
+public:
+	SsString					paramId;	///<
+	SsSignalParamType::_enum	type;		///<
+	SsSignalParamValue			value;		///<
+
+	SsSignalParam()
+	:	paramId	("")
+	,	type	(SsSignalParamType::none)
+	{
+		value.i = 0;
+	}
+};
+
+class SsSignalCommand
+{
+public:
+	bool						active;		///<
+	SsString					commandId;	///<
+	std::vector<SsSignalParam>	params;		///<
+	SsString					note;		///<
+
+	SsSignalCommand()
+	:	active		(true)
+	,	commandId	("")
+	,	note		("")
+	{
+		params.clear();
+	}
+};
+
+class SsSignalAttr
+{
+public:
+	std::vector<SsSignalCommand>	commands;	///<
+
+	SsSignalAttr()
+	{
+		commands.clear();
+	}
 };
 
 class SsInstanceAttr
@@ -829,7 +928,7 @@ namespace SsMeshDivType
 		num
 	};
 };
-SS_DECLARE_ENUM_STRING_DEF(SsMeshDivType);
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsMeshDivType);
 
 struct SsTriangle
 {
@@ -868,8 +967,8 @@ public:
 		return !(*this == r);
 	}
 
-	bool	operator ==(int n) const { return false; }
-	bool	operator !=(int n) const { return false; }
+	bool	operator ==(int n) const { SPRITESTUDIO6SDK_NOUSE_ARGUMENT(n);	return false; }
+	bool	operator !=(int n) const { SPRITESTUDIO6SDK_NOUSE_ARGUMENT(n);	return false; }
 
 	SsDeformAttr		operator +(const SsDeformAttr& rhs) const
 	{
@@ -892,5 +991,6 @@ public:
 
 };
 
+}	// namespace spritestudio6
 
 #endif

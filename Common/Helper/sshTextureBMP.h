@@ -3,6 +3,8 @@
 
 #include "IsshTexture.h"
 
+namespace spritestudio6
+{
 
 
 //画像ファイルの縦横サイズを調べる目的等で使用する
@@ -33,5 +35,6 @@ public:
 
 
 
+}	// namespace spritestudio6
 
 #endif

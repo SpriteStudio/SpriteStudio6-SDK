@@ -11,6 +11,9 @@
 #include "ssplayer_effectfunction.h"
 
 
+namespace spritestudio6
+{
+
 
 class SsEffectRenderParticle;
 
@@ -53,9 +56,8 @@ static  int seed_table[] =
 //--------
 
 
-
-#define ONEFRAME ( 1.0f / 60.0f )
-
+// #define ONEFRAME ( 1.0f / 60.0f )
+constexpr auto ONEFRAME = ( 1.0f / 60.0f );
 
 
 //------------------------------------------------------------------------------
@@ -64,7 +66,7 @@ static  int seed_table[] =
 SsEffectDrawBatch*	SsEffectRenderer::findBatchListSub(SsEffectNode* n)
 {
 	SsEffectDrawBatch* bl = 0;
-	foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
+	SPRITESTUDIO6SDK_foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
 	{
 		if ( (*e)->targetNode == n )
 		{
@@ -108,7 +110,7 @@ SsEffectRenderAtom* SsEffectRenderer::CreateAtom( unsigned int seed , SsEffectRe
 
 	if ( type == SsEffectNodeType::particle )
 	{
-#if PFMEM_TEST
+#if SPRITESTUDIO6SDK_PFMEM_TEST
 		if ( SSEFFECTRENDER_PARTICLE_MAX <= pa_pool_count )
 		{
 			 return 0;
@@ -127,7 +129,7 @@ SsEffectRenderAtom* SsEffectRenderer::CreateAtom( unsigned int seed , SsEffectRe
 		updatelist.push_back( p );
 		createlist.push_back( p );
 		SsEffectRenderEmitter*	em = (SsEffectRenderEmitter*)parent;
-        em->myBatchList->drawlist.push_back( p );
+		em->myBatchList->drawlist.push_back( p );
 	
 		ret = p;
 	}
@@ -136,7 +138,7 @@ SsEffectRenderAtom* SsEffectRenderer::CreateAtom( unsigned int seed , SsEffectRe
 	if ( type == SsEffectNodeType::emmiter )
 	{
 
-#if PFMEM_TEST
+#if SPRITESTUDIO6SDK_PFMEM_TEST
 		if ( SSEFFECTRENDER_EMMITER_MAX <= em_pool_count )
 		{
 			return 0;
@@ -234,12 +236,10 @@ bool particleDeleteAll(SsEffectRenderAtom* d)
 //------------------------------------------------------------------------------
 void	SsEffectRenderEmitter::setMySeed( unsigned int seed )
 {
-
 	if ( seed > 31 ){
-		this->MT->init_genrand( seed );
-
+		(this->MT.get())->init_genrand( seed );
 	}else{
-		this->MT->init_genrand( seed_table[seed] );
+		(this->MT.get())->init_genrand( seed_table[seed] );
 	}
 	myseed = seed ;
 }
@@ -290,7 +290,7 @@ bool	SsEffectRenderEmitter::genarate( SsEffectRenderer* render )
 	if ( create_count <= 0 ) create_count = 1;
 
 
-	int pc = particleCount;
+	int pc = (int)particleCount;
 
 	while(1)
 	{
@@ -548,12 +548,12 @@ void	SsEffectRenderParticle::draw(SsEffectRenderer* render)
 	if (render->parentState)
 	{
 		memcpy( matrix , render->parentState->matrix , sizeof( float ) * 16 );
-		this->alpha = render->render_root->alpha;
+		this->alpha = (render->render_root.get())->alpha;
 	}
 
 	TranslationMatrixM( matrix , _position.x, _position.y, 0.0f );
 
-	RotationXYZMatrixM( matrix , 0 , 0 , DegreeToRadian(_rotation)+direction );
+	RotationXYZMatrixM( matrix , 0.0f , 0.0f , (float)(DegreeToRadian(_rotation)+direction) );
 
     ScaleMatrixM(  matrix , _size.x, _size.y, 1.0f );
 
@@ -574,7 +574,7 @@ void	SsEffectRenderParticle::draw(SsEffectRenderer* render)
 
 		SsCurrentRenderer::getRender()->renderSpriteSimple(
 			matrix,
-			dispscale.x , dispscale.y ,  pivot,
+			(int)dispscale.x , (int)dispscale.y ,  pivot,
 					dispCell->uvs[0],
 					dispCell->uvs[3], fcolor );
 	}
@@ -599,7 +599,7 @@ void	SsEffectRenderer::update(float delta)
 
 	if (m_isPause) return;
 	if (!m_isPlay) return;
-    if ( this->render_root == 0 ) return ;
+    if ( !(this->render_root) ) return ;
 
 	frameDelta = delta;
 
@@ -612,11 +612,12 @@ void	SsEffectRenderer::update(float delta)
 
 		layoutPosition = pos;
 
-		this->render_root->setPosistion( 0 , 0 , 0 );
+		SsEffectRenderAtom* effectRendererAtomRaw = this->render_root.get();
+		effectRendererAtomRaw->setPosistion( 0 , 0 , 0 );
 
-		this->render_root->rotation = 0;
-		this->render_root->scale = SsVector2(1.0f,1.0f);
-		this->render_root->alpha = parentState->alpha;
+		effectRendererAtomRaw->rotation = 0;
+		effectRendererAtomRaw->scale = SsVector2(1.0f, 1.0f);
+		effectRendererAtomRaw->alpha = parentState->alpha;
 	}
 
 	size_t loopnum = updatelist.size();
@@ -661,10 +662,6 @@ void	SsEffectRenderer::update(float delta)
 		  reload();
 		}
 	}
-
-
-
-
 }
 
 //extern int g_particle_draw_num;
@@ -677,7 +674,7 @@ void	SsEffectRenderer::draw()
 
 	int cnt = 0;
 
-	foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
+	SPRITESTUDIO6SDK_foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
 	{
 		//セットアップ
 		if ( (*e)->dispCell )
@@ -694,7 +691,7 @@ void	SsEffectRenderer::draw()
 			SsCurrentRenderer::getRender()->SetTexture( (*e)->dispCell );
 		}
 
-		foreach( std::list<SsEffectRenderAtom*> , (*e)->drawlist , e2 )
+		SPRITESTUDIO6SDK_foreach( std::list<SsEffectRenderAtom*> , (*e)->drawlist , e2 )
 		{
 			if ( (*e2) )
 			{
@@ -721,9 +718,7 @@ SsEffectRenderer::~SsEffectRenderer()
 {
 	clearUpdateList();
 
-	delete render_root;
-	render_root = 0;
-
+	render_root.reset();
 }
 
 
@@ -738,7 +733,7 @@ void	SsEffectRenderer::clearUpdateList()
 	size_t s2 = updatelist.size();
 
 
-#if PFMEM_TEST
+#if SPRITESTUDIO6SDK_PFMEM_TEST
 	em_pool_count = 0;
 	pa_pool_count = 0;
 	dpr_pool_count = 0;
@@ -753,7 +748,7 @@ void	SsEffectRenderer::clearUpdateList()
 	updatelist.clear();
 	createlist.clear();
 
-	foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
+	SPRITESTUDIO6SDK_foreach( std::list<SsEffectDrawBatch*> , drawBatchList , e )
 	{
 		(*e)->drawlist.clear();
 	}
@@ -771,9 +766,9 @@ void    SsEffectRenderer::reload()
 	clearUpdateList();
 
 	//座標操作のためのルートノードを作成する
-	if ( render_root == 0 )
+	if ( !render_root )
 	{
-		render_root = new SsEffectRenderAtom();
+		render_root.reset( new SsEffectRenderAtom() );
 	}
 
 	//ルートの子要素を調査して作成する
@@ -784,9 +779,9 @@ void    SsEffectRenderer::reload()
 
 	if ( this->effectData->isLockRandSeed )
 	{
-    	seed = this->effectData->lockRandSeed;
+		seed = this->effectData->lockRandSeed;
 	}else{
-        seed = mySeed;
+		seed = mySeed;
 	}
 
 	SimpleTree* n = root->ctop;
@@ -794,7 +789,7 @@ void    SsEffectRenderer::reload()
 	while( n )
 	{
 		SsEffectNode* enode = static_cast<SsEffectNode*>(n);
-		SsEffectRenderAtom* effectr = CreateAtom( seed , render_root , enode );
+		SsEffectRenderAtom* effectr = CreateAtom( seed , render_root.get() , enode );
 
 		n = n->next;
 	}
@@ -837,5 +832,6 @@ bool	SsEffectRenderer::getPlayStatus(void)
 
 
 
+}	// namespace spritestudio6
 
 

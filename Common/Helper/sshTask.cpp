@@ -2,15 +2,20 @@
 #include "sshTask.h"
 //#include "Debug.h"
 
+namespace spritestudio6
+{
+
+
 task_manager_singleton* task_manager_singleton::g_myinst = 0;
 unsigned long	treeitem_uid::m_tree_item_uid	 = 0;
 
 
 task_manager::task_manager()
-	:m_root(0) , m_priority_max(0)
+	: m_root()
+	, m_priority_max(0)
 {
-	m_root = new task_base();
-	m_root->setIdentify( "task_root" );
+	m_root.reset( new task_base() );
+	(m_root.get())->setIdentify( "task_root" );
 }
 
 task_manager::~task_manager()
@@ -21,8 +26,7 @@ task_manager::~task_manager()
 void task_manager::destroy_tasks()
 {
 //	get_root()->destroy();
-	delete(m_root);
-	m_root = 0;
+	m_root.reset();
 }
 
 
@@ -128,3 +132,4 @@ void	task_manager::debug_print_tasks()
 */
 
 
+}	// namespace spritestudio6

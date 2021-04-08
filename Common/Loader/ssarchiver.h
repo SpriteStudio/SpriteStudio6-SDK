@@ -7,12 +7,19 @@
 #include <vector>
 #include <map>
 
-using namespace tinyxml2;
+// MEMO: 定義順の関係でここでusingしてしまうと問題が発生する
+// using namespace tinyxml2;
 
+namespace spritestudio6
+{
 
+// MEMO: 後に入れ替え可能なようにエリアスで定義しておく。
+namespace libXML = tinyxml2;
 
 /// シリアライズクラスのInput/Outputの状態
-struct EnumSsArchiver
+// MEMO: 元はstructでの定義だったのだが、記述意図から類推すると恐らくtypesafeのためだと思われるため、念のためnamespaceに変更。
+// struct EnumSsArchiver
+namespace EnumSsArchiver
 {
 	enum Type
 	{
@@ -39,7 +46,7 @@ public:
 class ISsXmlArchiver
 {
 private:
-	XMLElement*		m_xml;
+	libXML::XMLElement*	m_xml;
 
 public:
 
@@ -49,19 +56,19 @@ public:
 	ISsXmlArchiver(){}
 	virtual ~ISsXmlArchiver(){}
 
-	XMLElement*	getxml(){ return m_xml;} 
+	libXML::XMLElement*	getxml(){ return m_xml;} 
 
 	void	firstChild(ISsXmlArchiver* ar , const char* element_name)
 	{
 		m_xml = ar->getxml()->FirstChildElement( element_name );
 	}
 
-	void	setDocumet( tinyxml2::XMLDocument* doc , const char* element_name)
+	void	setDocumet( libXML::XMLDocument* doc , const char* element_name)
 	{
 		m_xml = doc->FirstChildElement(element_name);
 	}
 
-	void	setElement(XMLElement* e )
+	void	setElement(libXML::XMLElement* e )
 	{
 		m_xml = e;
 	}
@@ -89,7 +96,7 @@ public:
 };
 
 
-inline	static int	GetTextToInt(XMLElement* e , int default_value )
+inline	static int	GetTextToInt(libXML::XMLElement* e , int default_value )
 {
 	int ret =default_value; 
 	const char* v = e->GetText();
@@ -112,12 +119,12 @@ public:
 	{
 		firstChild( ar , element_name );
 	}
-	SsXmlIArchiver( tinyxml2::XMLDocument* doc , const char* element_name)
+	SsXmlIArchiver( libXML::XMLDocument* doc , const char* element_name)
 	{
 		setDocumet( doc , element_name );
 	}
 
-	SsXmlIArchiver(XMLElement* e )
+	SsXmlIArchiver(libXML::XMLElement* e )
 	{
 		setElement( e );
 	}
@@ -138,7 +145,7 @@ public:
 	
 	virtual bool	dc( const char* name , SsXmlRangeValueConverter& member )
 	{
-		XMLElement* e = getxml()->FirstChildElement( name );
+		libXML::XMLElement* e = getxml()->FirstChildElement( name );
 		SsXmlIArchiver _ar(e);
 
 		SsString str;
@@ -165,7 +172,7 @@ public:
 	template<class myclass> bool	dc( const char* name , std::vector<myclass*>& list , const std::string key = "value" )
 	{
 		list.clear();
-		XMLElement* e = getxml()->FirstChildElement( name );
+		libXML::XMLElement* e = getxml()->FirstChildElement( name );
 		if (e == 0)return false;
 		if ( key != "" )
 			e = e->FirstChildElement( key.c_str() );
@@ -203,12 +210,12 @@ public:
 };
 
 
-#define SSSERIALIZE_BLOCK	void __Serialize(ISsXmlArchiver* ar)
+#define SPRITESTUDIO6SDK_SERIALIZE_BLOCK	void __Serialize(ISsXmlArchiver* ar)
 
-#define	SSAR_DECLARE(t)  ar->dc(#t,t)
-#define	SSAR_DECLARE_ATTRIBUTE(t)  ar->dc_attr(#t,t)
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE(t)  ar->dc(#t,t)
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE(t)  ar->dc_attr(#t,t)
 
-#define	SSAR_STRUCT_DECLARE(t)  {SsXmlIArchiver _ar( ar , #t );\
+#define	SPRITESTUDIO6SDK_SSAR_STRUCT_DECLARE(t)  {SsXmlIArchiver _ar( ar , #t );\
 t.__Serialize( &_ar );}\
 
 template<class myclass>
@@ -227,9 +234,9 @@ inline bool	__SSAR_DECLARE_LIST__( ISsXmlArchiver* ar , std::vector<myclass*>& l
 }
 
 
-#define	SSAR_DECLARE_LIST(t)  __SSAR_DECLARE_LIST__( ar , t , #t)
-#define	SSAR_DECLARE_LIST2(t,s)  __SSAR_DECLARE_LIST__( ar , t , s)
-#define	SSAR_DECLARE_LISTEX(t,key)  __SSAR_DECLARE_LIST__( ar , t , #t , key )
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE_LIST(t)  spritestudio6::__SSAR_DECLARE_LIST__( ar , t , #t)
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE_LIST2(t,s)  spritestudio6::__SSAR_DECLARE_LIST__( ar , t , s)
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE_LISTEX(t,key)  spritestudio6::__SSAR_DECLARE_LIST__( ar , t , #t , key )
 
 template<class myclass>
 inline bool	__SSAR_DECLARE_ENUM__( ISsXmlArchiver* ar ,myclass& type, const char* name  )
@@ -261,8 +268,8 @@ inline bool	__SSAR_DECLARE_ATTRIBUTE_ENUM__( ISsXmlArchiver* ar ,myclass& type, 
 
 
 
-#define SSAR_DECLARE_ENUM(t) __SSAR_DECLARE_ENUM__( ar , t , #t)
-#define SSAR_DECLARE_ATTRIBUTE_ENUM(t) __SSAR_DECLARE_ATTRIBUTE_ENUM__( ar , t , #t)
+#define SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM(t) spritestudio6::__SSAR_DECLARE_ENUM__( ar , t , #t)
+#define SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE_ENUM(t) spritestudio6::__SSAR_DECLARE_ATTRIBUTE_ENUM__( ar , t , #t)
 
 
 bool	StringToPoint2( const std::string& str , SsPoint2& point );
@@ -274,7 +281,10 @@ bool	StringToTriangle(const std::string& str, SsTriangle& tri);
 void	SsArchiverInit();
 
 
-#define AR_SELF_CHECK() if ( this->getxml() == 0 ) return false;
+#define SPRITESTUDIO6SDK_AR_SELF_CHECK() if ( this->getxml() == 0 ) return false;
 
+
+
+}	// namespace spritestudio6
 
 #endif

@@ -7,7 +7,7 @@ BASEDIR=`cd ${BASEDIR} && pwd -P`
 BUILDDIR=${BASEDIR}/Build
 BUILDDIR=`cd ${BUILDDIR} && pwd -P`
 
-Jucer2Reprojucer=${BUILDDIR}/Viewer2/FRUT/prefix/FRUT/bin/Jucer2Reprojucer
+Jucer2CMake=${BUILDDIR}/Viewer2/FRUT/prefix/FRUT/bin/Jucer2CMake
 
 BUILDTYPE=Debug
 if [ $# -ge 1 ]; then
@@ -16,7 +16,7 @@ fi
 
 # generate CMakeLists.txt
 pushd ${BUILDDIR}/Viewer2
-${Jucer2Reprojucer} ./Viewer2.jucer ./FRUT/prefix/FRUT/cmake/Reprojucer.cmake  --juce-modules ./JUCE/modules
+${Jucer2CMake} reprojucer ./Viewer2.jucer ./FRUT/prefix/FRUT/cmake/Reprojucer.cmake  --juce-modules $(pwd)/JUCE/modules
 
 /bin/rm -rf cmakeBuild
 mkdir cmakeBuild

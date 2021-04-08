@@ -23,7 +23,7 @@ pushd Converter
 /bin/rm -rf build
 /bin/mkdir build
 pushd build
-cmake -DENABLE_CCACHE=${ENABLE_CCACHE} -DCMAKE_BUILD_TYPE=${BUILDTYPE} -DCMAKE_OSX_ARCHITECTURES=x86_64 ..
+cmake -DCMAKE_TOOLCHAIN_FILE="../../vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=${BUILDTYPE} ..
 make -j4
 ctest .
 popd > /dev/null # build

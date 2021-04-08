@@ -3,6 +3,8 @@
 
 #include "../IsshTexture.h"
 
+namespace spritestudio6
+{
 
 class	SSTextureGL : public ISSTexture
 {
@@ -24,9 +26,6 @@ public:
 };
 
 
-
-
-
-
+}	// namespace spritestudio6
 
 #endif

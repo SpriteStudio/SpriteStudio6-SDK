@@ -3,8 +3,7 @@ setlocal
 set CURDIR=%~dp0
 set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
-set DEPENDSDIR=%BUILDDIR%\Depends
-set Jucer2Reprojucer=%BUILDDIR%\Viewer2\FRUT\prefix\FRUT\bin\Jucer2Reprojucer.exe
+set Jucer2CMake=%BUILDDIR%\Viewer2\FRUT\prefix\FRUT\bin\Jucer2CMake.exe
 @echo on
 
 set BUILD_TYPE=Debug
@@ -13,12 +12,15 @@ if not "%1" == "" (
 )
 
 pushd %BUILDDIR%\Viewer2
-%Jucer2Reprojucer% Viewer2.jucer FRUT\prefix\FRUT\cmake\Reprojucer.cmake  --juce-modules JUCE\modules
+"%Jucer2CMake%"  reprojucer Viewer2.jucer FRUT\prefix\FRUT\cmake\Reprojucer.cmake  --juce-modules "%BUILDDIR%\Viewer2\JUCE\modules"
+
+copy /b addCMakelist.txt + CMakeLists.txt tempCMakeLists.txt
+copy tempCMakeLists.txt CMakeLists.txt
 
 rmdir /S /Q cmakeBuild
 mkdir cmakeBuild
 pushd cmakeBuild
-cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
+cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
 cmake --build . --target ALL_BUILD -- /p:Configuration=%BUILD_TYPE% || exit /b 1
 popd
 popd

@@ -2,12 +2,17 @@
 #ifndef __SSPLAYER_MESH__
 #define __SSPLAYER_MESH__
 
+#include <memory>
 
+namespace spritestudio6
+{
 class ISSTexture;
 
-#define SSMESHPART_BONEMAX	(128)
-#define SSMESHPART_CHECKRANGE (4)
-
+enum
+{
+	SSMESHPART_BONEMAX = 128,
+	SSMESHPART_CHECKRANGE = 4,
+};
 struct StBoneWeight
 {
 	int		   		weight[SSMESHPART_BONEMAX];
@@ -23,6 +28,22 @@ struct StBoneWeight
 
 	int	getBoneNum() { return bindBoneNum; }
 
+	void Cleanup()
+	{
+		bindBoneNum = 0;
+		lengthtotal = 0.0f;
+
+		for(int i=0; i<SSMESHPART_BONEMAX; i++)
+		{
+			weight[i] = 0;
+			weight_f[i] = 0.0f;
+
+			bone[i] = nullptr;
+			offset[i] = SsVector3(0, 0, 0);
+
+			length[i] = 0.0f;
+		}
+	}
 };
 
 class SsMeshPart
@@ -30,28 +51,28 @@ class SsMeshPart
 public:
 
 
-	float			*vertices;			//[3 * 10];///< 座標
-	float			*colors;			//[4 * 10];	///< カラー
-	float			*weightColors;		//[4 * 10];	///< ウェイト色分けカラー
-	float			*uvs;				//[2 * 10];		///< UV
-	unsigned short	*indices;
+	std::unique_ptr<std::vector<float>>				vertices;		//[3 * 10];///< 座標
+	std::unique_ptr<std::vector<float>>				colors;			//[4 * 10];	///< カラー
+	std::unique_ptr<std::vector<float>>				weightColors;	//[4 * 10];	///< ウェイト色分けカラー
+	std::unique_ptr<std::vector<float>>				uvs;			//[2 * 10];		///< UV
+	std::unique_ptr<std::vector<unsigned short>>	indices;
 	int				indices_num;
 	int				tri_size;
 	int				ver_size;
-	float			*draw_vertices;		//[3 * 10];///< 座標
+	std::unique_ptr<std::vector<float>>	draw_vertices;	//[3 * 10];///< 座標
 
-	float			*offset_world_vertices;	// 描画に使われるデフォームアトリビュート
+	std::unique_ptr<std::vector<float>>	offset_world_vertices;	// 描画に使われるデフォームアトリビュート
 											
 	//ツール用テンポラリワーク [editer]
-	SsVector2*					vertices_outer;
-	SsVector2*					update_vertices_outer;
+	std::unique_ptr<std::vector<SsVector2>>	vertices_outer;
+	std::unique_ptr<std::vector<SsVector2>>	update_vertices_outer;
 	size_t						outter_vertexnum;
 
 public:
-	StBoneWeight*   	bindBoneInfo;
+	std::unique_ptr<std::vector<StBoneWeight>>	bindBoneInfo;
+
 	SsCell*  			targetCell;
 	ISSTexture*			targetTexture;
-
 	SsPartState*	   	myPartState;
 
 	//テンポラリ [editor]
@@ -60,17 +81,28 @@ public:
 
 public:
 	SsMeshPart() :
-		isBind(false), weightColors(0), bindBoneInfo(0), targetCell(0),
-		vertices_outer(0), draw_vertices(0),
-		vertices(0), colors(0), uvs(0), indices(0), update_vertices_outer(0), myPartState(0), offset_world_vertices(0)
+		isBind(false), targetCell(0)
+		, bindBoneInfo()
+		, weightColors()
+		, vertices_outer()
+		, draw_vertices()
+		, myPartState(0)
+		, vertices(), colors(), uvs(), indices()
+		, update_vertices_outer()
+		, offset_world_vertices()
 	{
 	}
 
 
 	SsMeshPart(SsPartState* s) :
-		isBind(false), weightColors(0), bindBoneInfo(0), targetCell(0),
-		vertices_outer(0), draw_vertices(0),
-		vertices(0), colors(0), uvs(0), indices(0), update_vertices_outer(0), offset_world_vertices(0)
+		isBind(false), targetCell(0)
+		, weightColors()
+		, bindBoneInfo()
+		, vertices_outer()
+		, draw_vertices()
+		, vertices(), colors(), uvs(), indices()
+		, update_vertices_outer()
+		, offset_world_vertices()
 	{
 		myPartState = s;
 	}
@@ -86,7 +118,8 @@ public:
 	int		getVertexNum() { return ver_size; }
 	StBoneWeight*	getVerticesWeightInfo(int index) {
 		if (index > getVertexNum())return 0;
-		return &bindBoneInfo[index];
+		std::vector<StBoneWeight>& bindBoneInfoRaw = *(bindBoneInfo.get());
+		return &bindBoneInfoRaw[index];
 	}
 
 	void    updateTransformMesh();            //再生時用　（バインドされたボーンに沿って変形を行う）
@@ -148,5 +181,6 @@ public:
 
 
 
+}	// namespace spritestudio6
 
 #endif
