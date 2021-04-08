@@ -4,22 +4,12 @@
 #include <string>
 #include <vector>
 
-#include <memory>
-#include <utility>
+#define PUT_UNIFORM_WARNIG	(1)
 
-#define SPRITESTUDIO6SDK_PUT_UNIFORM_WARNING	(1)
-
-namespace spritestudio6
-{
 
 class	SSOpenGLShader {
 public:
-
-#if USE_GLEW
 	GLhandleARB	h;
-#else
-    GLuint h;
-#endif
 
 protected:
 	std::string	myname;
@@ -30,13 +20,7 @@ public:
 	SSOpenGLShader( const std::string& name, const std::string& str, const GLenum shader_type );
 	virtual	~SSOpenGLShader();
 	virtual	int Compile( void );
-
-#if USE_GLEW
 	inline GLhandleARB GetHandle( void )	const { return h; }
-#else
-	inline GLuint GetHandle( void )	const { return h; }
-#endif
-
 };
 
 
@@ -62,12 +46,7 @@ public:
 
 class	SSOpenGLProgramObject {
 public:
-
-#if USE_GLEW
 	GLhandleARB	h;
-#else
-    GLuint h;
-#endif
 
 protected:
 
@@ -75,12 +54,7 @@ public:
 	SSOpenGLProgramObject(  );
 	virtual	~SSOpenGLProgramObject(  );
 
-#if USE_GLEW
 	GLhandleARB GetID(){ return h; }
-#else
-	GLuint GetID(){ return h; }
-#endif
-    
 
 	virtual	void	Attach( const SSOpenGLShader *s );
 	virtual	int		Link( void );
@@ -93,28 +67,27 @@ public:
 	GLint GetAttribLocation( const char *name );
 };
 
-extern 	SSOpenGLProgramObject*			glpgObject;    //カレントシェーダーオブジェクト
+extern 	SSOpenGLProgramObject*			glpgObject;    //カレントシェーダーオブジェクチE
 
 class   SSOpenGLShaderMan
 {
 private:
-	std::vector<std::unique_ptr<SSOpenGLProgramObject>> m_shader_list;
-	static	std::unique_ptr<SSOpenGLShaderMan>	m_Myinst;
+    std::vector<SSOpenGLProgramObject*> m_shader_list;
+    static	SSOpenGLShaderMan*			m_Myinst;
 public:
 	SSOpenGLShaderMan(){}
 	virtual ~SSOpenGLShaderMan(){}
 
 	static SSOpenGLProgramObject*	SetCurrent(int index)
 	{
-		SSOpenGLShaderMan* myInstRaw = m_Myinst.get();
-		glpgObject = (myInstRaw->m_shader_list[index]).get();
+		glpgObject = m_Myinst->m_shader_list[index];
 		return glpgObject;
 	}
 
 	static  void	Create()
 	{
-		if ( !m_Myinst )
-			m_Myinst.reset( new SSOpenGLShaderMan() );
+		if ( m_Myinst == 0)
+			m_Myinst = new  SSOpenGLShaderMan();
 	}
 
 	static	void	Destory()
@@ -124,22 +97,23 @@ public:
 
 	void		_Destroy()
 	{
-		for ( std::vector<std::unique_ptr<SSOpenGLProgramObject>>::iterator itr = m_shader_list.begin();
+		for ( std::vector<SSOpenGLProgramObject*>::iterator itr = m_shader_list.begin();
 				itr != m_shader_list.end() ; itr++ )
 		{
-			itr->reset();
+			delete (*itr);
 		}
-		(m_Myinst.get())->m_shader_list.clear();
+       	m_Myinst->m_shader_list.clear();
 
-		if ( m_Myinst )
-		{
-			m_Myinst.reset();
+		if ( m_Myinst != 0)
+        {
+			delete m_Myinst;
+			m_Myinst = 0;
 		}
 	}
 
 	static void	PushPgObject(SSOpenGLProgramObject *obj)
 	{
-		(m_Myinst.get())->m_shader_list.push_back( std::move( std::unique_ptr<SSOpenGLProgramObject>( obj ) ) );
+    	m_Myinst->m_shader_list.push_back(obj);
 	}
 
 };
@@ -149,7 +123,6 @@ public:
 int SsGL_CheckShaderReady( void );
 extern	SSOpenGLShaderMan*              glshaderMan;
 
-}	// namespace spritestudio6
 
 #endif
 

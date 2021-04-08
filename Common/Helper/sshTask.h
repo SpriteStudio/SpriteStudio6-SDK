@@ -8,16 +8,6 @@
 #include <vector>
 #include <list>
 
-#include <memory>
-
-// 未使用引数の警告避け
-#ifndef SPRITESTUDIO6SDK_NOUSE_ARGUMENT
-	#define	SPRITESTUDIO6SDK_NOUSE_ARGUMENT(_name_)	( void )( &_name_ );
-#endif
-
-namespace spritestudio6
-{
-
 class	treeitem_uid
 {
 private:
@@ -237,7 +227,7 @@ public:
 
 	virtual void	draw(){};
 //	virtual void	update(){};
-	virtual void	update(double delta){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(delta); };
+	virtual void	update(double delta){};
 	virtual void	init(){};
 
 };
@@ -252,7 +242,7 @@ class task_manager{
 private:
 	
 	int			m_priority_max;
-	std::unique_ptr<task_base> m_root;
+	task_base*  m_root;
 
 	void exec_resist_tasks_sub(task_base* task ,double delta_time);	
 	void draw_resist_tasks_sub(task_base* task );
@@ -267,10 +257,7 @@ public:
 
 	void exec_resist_tasks(double delta_time);
 	void draw_resist_tasks();
-	task_base* get_root()
-	{
-		return m_root.get();
-	}
+	task_base* get_root(){ return m_root;} 	
 	void destroy_tasks();
 
 
@@ -334,7 +321,5 @@ inline	void task_manager_destroy()
 	}
 }
 
-
-}	// namespace spritestudio6
 
 #endif

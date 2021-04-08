@@ -25,10 +25,6 @@
 	#include "string"
 #endif
 
-namespace spritestudio6
-{
-
-
 bool XPFileOpenDlg::Show()
 {	
 #ifdef _WIN32
@@ -77,6 +73,3 @@ bool XPFileOpenDlg::Show()
 
     return false;
 }
-
-
-}	// namespace spritestudio6

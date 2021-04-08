@@ -14,10 +14,6 @@ namespace FileUtil
     std::vector<std::string> findPath(const std::string& pattern);
 #endif	// ifdef WIN32
 
-	std::string getFilePath(const std::string& fullpath);
-	std::string getFileName(const std::string& fullpath);
-	std::string normalizeFilePath(const std::string& fullpath);
-
 }
 
 #endif	// _FILE_UTIL_H_

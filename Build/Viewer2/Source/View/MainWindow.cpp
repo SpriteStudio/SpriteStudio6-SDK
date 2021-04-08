@@ -477,19 +477,19 @@ ValueTree ViewerMainWindow::createTree()
 		return createTreeItem("", 0, -1);
 	}
 
-	spritestudio6::SsProject * proj = Player::get()->currentProj.get();
+	SsProject * proj = Player::get()->currentProj.get();
 	auto root = createTreeItem("proj", -1, -1);
-	spritestudio6::SsAnimePackList & alist = proj->getAnimePackList();
+	SsAnimePackList & alist = proj->getAnimePackList();
 	for (int i = 0; i < alist.size(); i++)
 	{
 		// アニメパック名
-		spritestudio6::SsAnimePack* animepack = alist[i].get();
+		SsAnimePack* animepack = alist[i];
 
 		String animepackName(animepack->name);
 		ValueTree ssae = createTreeItem(animepackName, i, -1);
 		for (int j = 0; j < animepack->animeList.size(); j++)
 		{
-			spritestudio6::SsAnimation* anime = animepack->animeList[j];
+			SsAnimation* anime = animepack->animeList[j];
 			// アニメ名
 			String animeName(anime->name);
 			if (animeName == "Setup")

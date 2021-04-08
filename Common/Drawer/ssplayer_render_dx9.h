@@ -3,9 +3,6 @@
 
 #include "ssplayer_render.h"
 
-namespace spritestudio6
-{
-
 struct SsPartState;
 
 class SsRenderDX9 : public ISsRenderer
@@ -39,7 +36,5 @@ public:
 
 
 };
-
-}	// namespace spritestudio6
 
 #endif

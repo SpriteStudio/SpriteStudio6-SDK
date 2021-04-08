@@ -4,9 +4,6 @@
 
 #include "IsshTexture.h"
 
-namespace spritestudio6
-{
-
 //テクスチャクラス ( DirectX9 )
 class	SSTextureDX9 : public ISSTexture
 {
@@ -26,7 +23,9 @@ public:
 };
 
 
-}	// namespace spritestudio6
+
+
+
 
 
 #endif

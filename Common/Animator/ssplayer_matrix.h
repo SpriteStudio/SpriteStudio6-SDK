@@ -4,9 +4,6 @@
 #include "sstypes.h"
 #include <memory>
 
-namespace spritestudio6
-{
-
 void	IdentityMatrix( float* matrix );
 void    ScaleMatrix( float* _matrix , const float x , const float y , const float z);
 void    TranslationMatrix( float* _matrix , const float x , const float y , const float z );
@@ -128,6 +125,8 @@ public:
 
 	inline void RotationXYZ(const float x, const float y, const float z)
 	{
+		SsOpenGLMatrix mx;
+
 		if (x != 0.0f)
 		{
 			SsOpenGLMatrix mx;
@@ -161,8 +160,6 @@ private:
 
 };
 
-
-}	// namespace spritestudio6
 
 #endif
 

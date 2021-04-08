@@ -3,15 +3,16 @@ setlocal
 set CURDIR=%~dp0
 set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
+set DEPENDSDIR=%BUILDDIR%\Depends
 @echo on
 
 pushd %BUILDDIR%\Viewer2
 rmdir /S /Q JUCE
 rmdir /S /Q FRUT
-git clone --branch=6.0.1 --depth=1 --single-branch https://github.com/WeAreROLI/JUCE.git || exit /b 1
+git clone --branch=5.4.3 --depth=1 --single-branch https://github.com/WeAreROLI/JUCE.git || exit /b 1
 git clone https://github.com/McMartin/FRUT.git || exit /b 1
 
-rem create Jucer2CMake command
+rem create Jucer2Reprojucer command
 pushd FRUT
 mkdir build 
 pushd build

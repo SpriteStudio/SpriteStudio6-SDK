@@ -7,16 +7,9 @@
 #include "ssplayer_animedecode.h"
 #include "ssplayer_matrix.h"
 #include "ssplayer_render.h"
-#include "sscharconverter.h"
 
 #include "../Helper/DebugPrint.h"
 
-#include <memory>
-#include <utility>
-
-
-namespace spritestudio6
-{
 
 bool SsCellMapList::preloadTexture(SsProject* proj)
 {
@@ -64,11 +57,8 @@ SsCelMapLinker::SsCelMapLinker(SsCellMap* cellmap, SsString filePath)
 	fullpath = fullpath + path2file(cellmap->imagePath);
 	fullpath = nomarizeFilename(fullpath);
 
-//	DEBUG_PRINTF("TextureFile Load %s \n", fullpath.c_str());
-//	tex = SSTextureFactory::loadTexture(fullpath.c_str());
-	SsString filePathFs = SsCharConverter::convert_path_string( fullpath );
-	DEBUG_PRINTF("TextureFile Load %s \n", filePathFs.c_str());
-	tex = SSTextureFactory::loadTexture(filePathFs.c_str());
+	DEBUG_PRINTF("TextureFile Load %s \n", fullpath.c_str());
+	tex = SSTextureFactory::loadTexture(fullpath.c_str());
 
 }
 
@@ -80,9 +70,10 @@ void	SsCellMapList::clear()
 	{
 		for (CellMapDicItr itr = CellMapDic.begin(); itr != CellMapDic.end();)
 		{
-			if (itr->second)
+			if (itr->second != NULL)
 			{
-				itr->second.reset();
+				delete itr->second;
+				itr->second = NULL;
 				continue;
 			}
 			itr++;
@@ -130,32 +121,38 @@ void	SsCellMapList::set(SsProject* proj , SsAnimePack* animepack )
 }
 void	SsCellMapList::addMap(SsCellMap* cellmap)
 {
-	CellMapDic[ cellmap->name+".ssce" ].reset( new SsCelMapLinker(cellmap , this->CellMapPath ) );
+	SsCelMapLinker* linker = new SsCelMapLinker(cellmap , this->CellMapPath );
+	CellMapDic[ cellmap->name+".ssce" ] = linker ;
+
 }
 
 void	SsCellMapList::addIndex(SsCellMap* cellmap)
 {
-	std::unique_ptr<SsCelMapLinker> cellmapLinker( new SsCelMapLinker(cellmap , this->CellMapPath ) );
-	CellMapList.push_back( std::move( cellmapLinker ) );
+	SsCelMapLinker* linker = new SsCelMapLinker(cellmap , this->CellMapPath );
+	CellMapList.push_back( linker );
+
 }
 
 SsCelMapLinker*	SsCellMapList::getCellMapLink( const SsString& name )
 {
-	CellMapDicItr itr = CellMapDic.find(name);
+
+	std::map<SsString,SsCelMapLinker*>::iterator itr = CellMapDic.find(name);
 	if ( itr != CellMapDic.end() )
 	{
-		return itr->second.get();
+		return itr->second;
 	}else{
-		for ( itr=CellMapDic.begin() ; itr != CellMapDic.end() ; itr++)
+
+		for ( std::map<SsString,SsCelMapLinker*>::iterator itr=CellMapDic.begin() ; itr != CellMapDic.end() ; itr++)
 		{
-			if ( (itr->second.get())->cellMap->loadFilepath == name )
+			if ( itr->second->cellMap->loadFilepath == name )
 			{
-				return itr->second.get();
+				return itr->second;
 			}
 		}
 	}
 
 	return 0;
+
 }
 
 
@@ -250,6 +247,3 @@ void calcUvs( SsCellValue* cellv )
 		cellv->uvs[2].y = cellv->uvs[3].y = bottom;
 	}
 }
-
-}	// namespace spritestudio6
-

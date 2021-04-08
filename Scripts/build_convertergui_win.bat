@@ -3,19 +3,11 @@ setlocal
 set CURDIR=%~dp0
 set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
-set DEFAULT_QT_PREFIX=C:\Qt\5.12.6\msvc2017_64
+set VCDIR=C:\Program Files (x86)\Microsoft Visual Studio\2017
+set DEFAULT_QT_PREFIX=C:\Qt\5.11.2\msvc2017_64
 if "%QT_PREFIX%" == "" (
     set QT_PREFIX=%DEFAULT_QT_PREFIX%
 )
-
-if "%VCDIR%" == "" (
-    if exist "C:\Program Files (x86)\Microsoft Visual Studio\2017" (
-        set VCDIR=C:\Program Files ^(x86^)\Microsoft Visual Studio\2017
-    ) else if exist "C:\Program Files (x86)\Microsoft Visual Studio\2019" (
-        set VCDIR=C:\Program Files ^(x86^)\Microsoft Visual Studio\2019
-    )
-)
-
 if exist "%QT_PREFIX%\bin\qmake.exe" (
     set QMAKE="%QT_PREFIX%\bin\qmake.exe"
 ) else (

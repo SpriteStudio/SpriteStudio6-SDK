@@ -8,8 +8,6 @@
 
 #define SPRITESTUDIO6_SSEEVERSION "2.00.00"
 
-namespace spritestudio6
-{
 
 class SimpleTree
 {
@@ -95,13 +93,13 @@ public:
 	{}
 	~SsEffectNode(){}
 
-	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
+	SSSERIALIZE_BLOCK
 	{
-		SPRITESTUDIO6SDK_SSAR_DECLARE(arrayIndex);
-		SPRITESTUDIO6SDK_SSAR_DECLARE(parentIndex);		
-		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM(type);	
-		SPRITESTUDIO6SDK_SSAR_DECLARE(visible);	
-		SPRITESTUDIO6SDK_SSAR_STRUCT_DECLARE(behavior);	
+		SSAR_DECLARE(arrayIndex);
+		SSAR_DECLARE(parentIndex);		
+		SSAR_DECLARE_ENUM(type);	
+		SSAR_DECLARE(visible);	
+		SSAR_STRUCT_DECLARE(behavior);	
 	}
 
 
@@ -145,19 +143,19 @@ public:
 
 
 	//シリアライザ
-	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
+	SSSERIALIZE_BLOCK
 	{
-		SPRITESTUDIO6SDK_SSAR_DECLARE(lockRandSeed);
-		SPRITESTUDIO6SDK_SSAR_DECLARE(isLockRandSeed);
-		SPRITESTUDIO6SDK_SSAR_DECLARE(fps);
-		SPRITESTUDIO6SDK_SSAR_DECLARE(bgcolor);
-		SPRITESTUDIO6SDK_SSAR_DECLARE(layoutScaleX);
+		SSAR_DECLARE(lockRandSeed);
+		SSAR_DECLARE(isLockRandSeed);
+		SSAR_DECLARE(fps);
+		SSAR_DECLARE(bgcolor);
+		SSAR_DECLARE(layoutScaleX);
 		if ( layoutScaleX == 0 ) layoutScaleX = 100;
 
-		SPRITESTUDIO6SDK_SSAR_DECLARE(layoutScaleY);
+		SSAR_DECLARE(layoutScaleY);
 		if ( layoutScaleY == 0 ) layoutScaleY = 100;
 
-		SPRITESTUDIO6SDK_SSAR_DECLARE_LISTEX(nodeList,"node");
+		SSAR_DECLARE_LISTEX(nodeList,"node");
 
 		//ツリーの構築
 		if ( nodeList.size() > 0 )
@@ -196,11 +194,11 @@ public:
 	SsEffectFile(){}
 	virtual ~SsEffectFile(){}
 
-	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
+	SSSERIALIZE_BLOCK
 	{
-		SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE(version);
-		SPRITESTUDIO6SDK_SSAR_DECLARE(name);
-		SPRITESTUDIO6SDK_SSAR_STRUCT_DECLARE( effectData );
+		SSAR_DECLARE_ATTRIBUTE(version);
+		SSAR_DECLARE(name);
+		SSAR_STRUCT_DECLARE( effectData );
 		effectData.effectName = name;
 	}
 
@@ -222,6 +220,5 @@ public:
 
 
 
-}	// namespace spritestudio6
 
 #endif

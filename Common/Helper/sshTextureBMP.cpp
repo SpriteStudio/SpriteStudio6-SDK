@@ -1,13 +1,13 @@
 ﻿#include <stdio.h>
 #include <cstdlib>
-#include <iostream>
 
 #include "stb_image.h"
 #include "ssHelper.h"
 #include "sshTextureBMP.h"
 
-namespace spritestudio6
-{
+
+
+
 
 bool SSTextureBMP::Load( const char* fname )
 {
@@ -15,23 +15,16 @@ bool SSTextureBMP::Load( const char* fname )
 
 	m_filename = "";
 
-	SSTextureLoader::DataHandle image = SSTextureLoader::LoadImageFromFile( fname, &tex_width , &tex_height , &bpp );
-	if( image == SSTextureLoader::InvalidDataHandle )
+	stbi_uc* image = stbi_load( fname, &tex_width , &tex_height , &bpp , 0 );
+	if ( image == 0 )
 	{
-		const char* msg = SSTextureLoader::MessageGetFailureLoadFromFile();
-		if( msg )
-		{
-			std::cerr << fname << " err:" << msg << "\n";
-		}
+		const char* msg = stbi_failure_reason();
+		std::cerr << fname << " err:" << msg << "\n";
 		return false;
 	}
 
 	m_filename = fname;
 	
-	SSTextureLoader::DecodeEndImageFile(image);
+	stbi_image_free (image);
 	return true;
 }
-
-
-
-}	// namespace spritestudio6

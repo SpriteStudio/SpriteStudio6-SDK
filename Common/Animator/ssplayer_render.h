@@ -5,8 +5,6 @@
 #include "sstypes.h"
 
 
-namespace spritestudio6
-{
 
 struct SsPartState;
 struct SsCellValue;
@@ -58,6 +56,5 @@ public:
 };
 
 
-}	//	namespace spritestudio6
 
 #endif
