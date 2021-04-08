@@ -5,7 +5,10 @@
 #include "../Helper/ssHelper.h"
 
 
+namespace spritestudio6
+{
 
 
+}	// namespace spritestudio6
 
 #endif

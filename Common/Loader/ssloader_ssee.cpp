@@ -6,6 +6,10 @@
 
 #include "../Helper/DebugPrint.h"
 
+namespace spritestudio6
+{
+
+
 SsEffectFile*	ssloader_ssee::Load(const std::string& filename )
 {
 
@@ -14,8 +18,8 @@ SsEffectFile*	ssloader_ssee::Load(const std::string& filename )
 	
 	SsEffectFile* effectFile = new SsEffectFile();
 
-	XMLDocument xml;
-	if ( XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
+	libXML::XMLDocument xml;
+	if ( libXML::XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioEffect" );
 		effectFile->__Serialize( &ar );
@@ -59,3 +63,5 @@ void	ssloader_ssee::loadPostProcessing( SsEffectFile* file , SsProject* pj )
 
 
 }
+
+}	// namespace spritestudio6

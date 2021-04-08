@@ -2,19 +2,41 @@
 QWidget {
    background-color: rgb(50,50,50);
    border-color: rgb(27,27,27);
-   color: rgb(205,205,205);
+   /*color: rgb(123, 123, 123);*/
+   color: rgb(230, 230, 230);
    font-size: 12px;
 }
 
+QLabel {
+   color: rgb(230, 230, 230);
+   background-color: rgb(0,0,0,0);
+}
+
+
 /* ボタンの共通設定 */
 QPushButton {
-    min-width: 3em;
+    min-width: 6em;
     min-height: 20px;
     border-width: 2px;
     border-color: rgb(205,205,205);
     border-style: solid;
     border-radius: 12px;
 }
+
+QListWidget , QTextBrowser,QLineEdit,QSpinBox, QComboBox, QTextEdit, QListView {
+   background-color: rgb(37, 37, 37);
+   color: rgb(230, 230, 230);
+   border-width: 0px;
+   border-color: rgb(205,205,205);
+   border-style: solid;
+}
+
+/*
+QListWidget , QTextBrowser,QLineEdit,QSpinBox:!enabled{
+    background-color: rgb(54, 54, 54);
+    color: rgb(128, 128, 128);
+}
+*/
 
 /* デフォルトで表示されるボタンの設定 */
 QPushButton[width="171"]{
@@ -40,11 +62,13 @@ QPushButton:!enabled{
 }
 
 /* その他クラスの設定 */
-QComboBox, QLineEdit, QSpinBox, QTextEdit, QListView {
+/*
+QComboBox, QLineEdit, QSpinBox, QTextEdit, QListView , {
     background-color: rbg(27,27,27);
     selection-color: rgb(205,205,205);
     selection-background-color: rgb(19,114,229);
 }
+*/
 
 QLineEdit {
     border: none;
@@ -105,4 +129,3 @@ QScrollBar::sub-page {
 QScrollBar::add-page {
     background: rgb(50,50,50);
 }
-

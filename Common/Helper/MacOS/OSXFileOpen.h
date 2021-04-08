@@ -30,4 +30,5 @@ public:
 #endif
 
 //void    testOpenDlg();
+
 #endif

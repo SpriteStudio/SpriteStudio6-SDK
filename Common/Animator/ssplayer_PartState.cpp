@@ -2,12 +2,21 @@
 #include "ssplayer_animedecode.h"
 #include "ssplayer_PartState.h"
 
-SsPartState::SsPartState() : refAnime(0), index(-1), parent(nullptr), noCells(false), alphaBlendType(SsBlendType::invalid),	refEffect(0) , 	meshPart(0)
+namespace spritestudio6
+{
+
+
+SsPartState::SsPartState() :
+	refAnime(),
+	index(-1),
+	parent(nullptr),
+	noCells(false),
+	alphaBlendType(SsBlendType::invalid),
+	refEffect(),
+	meshPart()
 {
 	init();
 	effectValue.attrInitialized = false;
-	meshPart = 0;
-
 }
 
 SsPartState::~SsPartState(){
@@ -17,22 +26,9 @@ SsPartState::~SsPartState(){
 
 void	SsPartState::destroy()
 {
-	if ( refAnime )	
-	{
-		delete refAnime;
-		refAnime = 0;
-	}
-	if ( refEffect )
-	{
-		delete refEffect;
-		refEffect = 0;
-	}
-	//メッシュデータの開放を追加
-	if (meshPart)
-	{
-		delete meshPart;
-		meshPart = 0;
-	}
+	if ( refAnime ) refAnime.reset();
+	if ( refEffect ) refEffect.reset();
+	if ( meshPart ) meshPart.reset();
 }
 
 void	SsPartState::init()
@@ -68,6 +64,7 @@ void	SsPartState::init()
 
 	is_parts_color = false;
 	is_color_blend = false;
+	is_shader = false;
 	is_vertex_transform = false;
 	inheritRates = 0; 
 
@@ -114,3 +111,5 @@ void	SsPartState::reset()
 	effectValue.startTime = 0;
 
 }
+
+}	// namespace spritestudio6

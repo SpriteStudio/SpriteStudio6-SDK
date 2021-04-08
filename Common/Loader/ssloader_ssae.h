@@ -7,6 +7,9 @@
 
 #define SPRITESTUDIO6_SSAEVERSION "2.00.01"
 
+namespace spritestudio6
+{
+
 class SsAnimation;
 
 
@@ -30,19 +33,19 @@ public:
 public:
 
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( fps );
-		SSAR_DECLARE( frameCount );
-		SSAR_DECLARE( canvasSize );
-		SSAR_DECLARE( pivot );
-		SSAR_DECLARE_ENUM(sortMode);
+		SPRITESTUDIO6SDK_SSAR_DECLARE( fps );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( frameCount );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( canvasSize );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( pivot );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM(sortMode);
 		//タグが存在しない（Ver5.8以前のデータ）場合は初期値を入れる
-		if (SSAR_DECLARE(startFrame) == false)
+		if (SPRITESTUDIO6SDK_SSAR_DECLARE(startFrame) == false)
 		{
 			startFrame = 0;
 		}
-		if (SSAR_DECLARE(endFrame) == false)
+		if (SPRITESTUDIO6SDK_SSAR_DECLARE(endFrame) == false)
 		{
 			endFrame = frameCount - 1;
 		}
@@ -141,43 +144,43 @@ public:
 
 
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( name );
-		SSAR_DECLARE( arrayIndex );
-		SSAR_DECLARE( parentIndex );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( name );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( arrayIndex );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( parentIndex );
 
-		SSAR_DECLARE_ENUM( type );
-		SSAR_DECLARE_ENUM( boundsType );
-		SSAR_DECLARE_ENUM( inheritType );
-		SSAR_DECLARE_ENUM( alphaBlendType );
-		SSAR_DECLARE( show );
-		SSAR_DECLARE( locked );
-		SSAR_DECLARE( colorLabel );
-		SSAR_DECLARE( maskInfluence );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( type );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( boundsType );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( inheritType );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( alphaBlendType );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( show );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( locked );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( colorLabel );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( maskInfluence );
 
-		SSAR_DECLARE( refAnimePack );
-		SSAR_DECLARE( refAnime );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( refAnimePack );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( refAnime );
 
-		SSAR_DECLARE( refEffectName );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( refEffectName );
 
-		SSAR_DECLARE( boneLength );
-		SSAR_DECLARE( bonePosition );
-		SSAR_DECLARE( boneRotation );
-		SSAR_DECLARE( weightPosition );
-		SSAR_DECLARE( weightImpact );
-		SSAR_DECLARE( meshWeightType );
-		SSAR_DECLARE( meshWeightStrong );
-		SSAR_DECLARE( IKDepth );
-		SSAR_DECLARE_ENUM( IKRotationArrow );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( boneLength );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( bonePosition );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( boneRotation );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( weightPosition );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( weightImpact );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( meshWeightType );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( meshWeightStrong );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( IKDepth );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( IKRotationArrow );
 
 		//継承率後に改良を実施
 		if ( ar->getType() == EnumSsArchiver::in )
 		{
-			XMLElement* e = ar->getxml()->FirstChildElement( "ineheritRates" );
+			libXML::XMLElement* e = ar->getxml()->FirstChildElement( "ineheritRates" );
 			if ( e )
 			{
-				XMLElement* ec = e->FirstChildElement();
+				libXML::XMLElement* ec = e->FirstChildElement();
 				while(ec)
 				{
 					//継承設定の取得
@@ -193,20 +196,23 @@ public:
 	}
 };
 
-#define SSMESHPART_BONEMAX	(128)
-
+enum 
+{
+	// MEMO: ssplayer_mesh.hにSSMESHPART_BONEMAXがあるので統合を考えること。
+	SSMESHBIND_BONEMAX = 128,
+};
 class SsMeshBindInfo
 {
 public:
-	int			weight[SSMESHPART_BONEMAX];
-	SsString	boneName[SSMESHPART_BONEMAX];
-	int			boneIndex[SSMESHPART_BONEMAX];
-	SsVector3   offset[SSMESHPART_BONEMAX];
+	int			weight[SSMESHBIND_BONEMAX];
+	SsString	boneName[SSMESHBIND_BONEMAX];
+	int			boneIndex[SSMESHBIND_BONEMAX];
+	SsVector3   offset[SSMESHBIND_BONEMAX];
 	int			bindBoneNum;
 
 	SsMeshBindInfo()
 	{
-		for (int i = 0; i < SSMESHPART_BONEMAX; i++)
+		for (int i = 0; i < SSMESHBIND_BONEMAX; i++)
 		{
 			weight[i] = 0;
 			boneName[i] = "";
@@ -238,7 +244,7 @@ public:
 
 	void	loader(ISsXmlArchiver* ar);
 
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
 		loader(ar);
 	}
@@ -251,6 +257,7 @@ public:
 class SsModel
 {
 public:
+	//MEMO: SsPartとSsMeshBindのポインタはXMLからの生成などの都合、スマートポインタ化していません
 	std::vector<SsPart*>	partList;	//!<格納されているパーツのリスト
 	SsAnimation*			setupAnimation;	///< 参照するセットアップアニメ
 
@@ -264,16 +271,19 @@ public:
 	{
 		for ( std::vector<SsPart*>::iterator itr = partList.begin() ; 
 			itr != partList.end() ; itr ++ ) delete (*itr);
+
+		for ( std::vector<SsMeshBind*>::iterator itr = meshList.begin() ; 
+			itr != meshList.end() ; itr ++ ) delete (*itr);
 	}
 
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
 		std::vector<SsString> tempMeshList;
 
-		SSAR_DECLARE_LIST( partList );
-		SSAR_DECLARE( boneList );
-		SSAR_DECLARE_LIST( meshList );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_LIST( partList );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( boneList );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_LIST( meshList );
 		setupAnimation = NULL;
 	}
 };
@@ -295,10 +305,10 @@ public:
 	}
 
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( partName );
-		SSAR_DECLARE_LISTEX( attributes , "attribute" );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( partName );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_LISTEX( attributes , "attribute" );
 	}
 };
 
@@ -310,10 +320,10 @@ public:
 	SsString	name;	///< 名前 [変数名変更禁止]
 	int			time;	///< 設置された時間(フレーム) [変数名変更禁止]
 
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( name );
-		SSAR_DECLARE( time );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( name );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( time );
 	}
 
 private:
@@ -342,13 +352,13 @@ public:
 	}
 
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( name );
-		SSAR_STRUCT_DECLARE( settings );
-		SSAR_DECLARE_LISTEX( labels , "value" );
-		SSAR_DECLARE_LISTEX( partAnimes , "partAnime" );
-		SSAR_DECLARE(isSetup);
+		SPRITESTUDIO6SDK_SSAR_DECLARE( name );
+		SPRITESTUDIO6SDK_SSAR_STRUCT_DECLARE( settings );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_LISTEX( labels , "value" );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_LISTEX( partAnimes , "partAnime" );
+		SPRITESTUDIO6SDK_SSAR_DECLARE(isSetup);
 	}
 };
 
@@ -375,14 +385,14 @@ public:
 	}
 
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE_ATTRIBUTE(version);
-		SSAR_STRUCT_DECLARE( settings );
-		SSAR_DECLARE( name );
-		SSAR_STRUCT_DECLARE( Model );
-		SSAR_DECLARE( cellmapNames );
-		SSAR_DECLARE_LISTEX( animeList , "anime" );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE(version);
+		SPRITESTUDIO6SDK_SSAR_STRUCT_DECLARE( settings );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( name );
+		SPRITESTUDIO6SDK_SSAR_STRUCT_DECLARE( Model );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( cellmapNames );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_LISTEX( animeList , "anime" );
 
 		//モデルにセットアップアニメーションを設定する
 		int i;
@@ -423,6 +433,7 @@ public:
 
 
 
+}	// namespace spritestudio6
 
 
 #endif

@@ -10,6 +10,9 @@
 #include <fstream>
 #include <iterator>
 
+namespace spritestudio6
+{
+
 /*
  * @brief     文字列を指定のkeyで分割して返します。
  *
@@ -118,5 +121,6 @@ public:
 
 };
 
+}	// namespace spritestudio6
 
 #endif

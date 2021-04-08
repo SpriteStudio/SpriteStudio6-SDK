@@ -3,6 +3,9 @@
 
 #include "../Animator/ssplayer_render.h"
 
+namespace spritestudio6
+{
+
 struct SsPartState;
 class SsMeshPart;
 
@@ -16,6 +19,7 @@ public:
 	SsRenderGL(){}
 	virtual ~SsRenderGL(){}
 
+	static void clearShaderCache();
 	virtual void	initialize();
 	virtual void	renderSetup();
 	virtual void	renderPart( SsPartState* state );
@@ -38,5 +42,7 @@ public:
 
 
 };
+
+}	// namespace spritestudio6
 
 #endif

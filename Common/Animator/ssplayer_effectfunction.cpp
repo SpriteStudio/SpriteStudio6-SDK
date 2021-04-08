@@ -10,6 +10,8 @@
 #include "ssplayer_effectfunction.h"
 
 
+namespace spritestudio6
+{
 
 
 //二つの値の範囲から値をランダムで得る
@@ -22,8 +24,7 @@ static u8 GetRandamNumberRange( SsEffectRenderEmitter* e , u8 a , u8 b )
 
 
     if ( diff == 0 ) return min;
-	return min + (e->MT->genrand_uint32() % diff);
-
+	return min + ((e->MT.get())->genrand_uint32() % diff);
 }
 
 static void VarianceCalcColor( SsEffectRenderEmitter* e ,  SsU8Color& out , SsU8Color  color1 , SsU8Color color2 )
@@ -45,8 +46,7 @@ float frand(unsigned v) {
 
 static float VarianceCalc( SsEffectRenderEmitter* e ,  float base , float variance )
 {
-
-	unsigned long r = e->MT->genrand_uint32();
+	unsigned long r = (e->MT.get())->genrand_uint32();
 
 	float len = variance - base;
 
@@ -57,7 +57,7 @@ static float VarianceCalc( SsEffectRenderEmitter* e ,  float base , float varian
 
 static float VarianceCalcFin( SsEffectRenderEmitter* e ,  float base , float variance )
 {
-	unsigned long r = e->MT->genrand_uint32();
+	unsigned long r = (e->MT.get())->genrand_uint32();
 
 	return base + (-variance + variance* ( frand(r) * 2.0f ));
 
@@ -66,7 +66,7 @@ static float VarianceCalcFin( SsEffectRenderEmitter* e ,  float base , float var
 
 static u8 blendNumber( u8 a , u8 b , float rate )
 {
-	return ( a + ( b - a ) * rate );
+	return ( ( a + (u8)((float)( b - a ) * rate )) );
 }
 
 
@@ -82,10 +82,10 @@ public:
 	EffectFuncBase(){}
 	virtual ~EffectFuncBase(){}
 
-	virtual void	initalizeEmmiter ( SsEffectElementBase* ele , SsEffectRenderEmitter* emmiter){}
-	virtual void	updateEmmiter( SsEffectElementBase* ele , SsEffectRenderEmitter* emmiter){}
-	virtual void	initializeParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle ){}
-	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle ){}
+	virtual void	initalizeEmmiter ( SsEffectElementBase* ele , SsEffectRenderEmitter* emmiter){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(ele); SPRITESTUDIO6SDK_NOUSE_ARGUMENT(emmiter); }
+	virtual void	updateEmmiter( SsEffectElementBase* ele , SsEffectRenderEmitter* emmiter){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(ele); SPRITESTUDIO6SDK_NOUSE_ARGUMENT(emmiter); }
+	virtual void	initializeParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle ){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(ele); SPRITESTUDIO6SDK_NOUSE_ARGUMENT(e); SPRITESTUDIO6SDK_NOUSE_ARGUMENT(particle); }
+	virtual void	updateParticle( SsEffectElementBase* ele , SsEffectRenderEmitter* e , SsEffectRenderParticle* particle ){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(ele); SPRITESTUDIO6SDK_NOUSE_ARGUMENT(e); SPRITESTUDIO6SDK_NOUSE_ARGUMENT(particle); }
 
 
 	virtual void	initalizeEffect ( SsEffectElementBase* ele , SsEffectEmitter* emmiter){}
@@ -108,9 +108,9 @@ public:
 		ParticleElementBasic* source = static_cast<ParticleElementBasic*>(ele);
 
 		e->maxParticle = source->maximumParticle;
-		e->interval = source->interval;
-		e->_lifetime = source->lifetime;
-		e->_life = source->lifetime;
+		e->interval = (float)source->interval;
+		e->_lifetime = (float)source->lifetime;
+		e->_life = (float)source->lifetime;
 		e->burst = source->attimeCreate;
 
 		e->undead = false;
@@ -141,11 +141,11 @@ public:
 
 		p->_backposition = p->_position;
 
-		p->_lifetime   = VarianceCalc( e , source->lifespan.getMinValue() , source->lifespan.getMaxValue() );
-		p->_life = source->lifetime;
+		p->_lifetime = VarianceCalc( e , (float)(source->lifespan.getMinValue()) , (float)(source->lifespan.getMaxValue()) );
+		p->_life = (float)source->lifetime;
 		float temp_angle = VarianceCalcFin( e ,  source->angle+eAngle , source->angleVariance/2.0f);
 
-		float angle_rad = DegreeToRadian( (temp_angle+90.0f) );
+		float angle_rad = (float)(DegreeToRadian( (temp_angle+90.0f) ));
 		float lspeed = VarianceCalc(  e , source->speed.getMinValue() , source->speed.getMaxValue() );
 
 		p->speed = lspeed;
@@ -191,8 +191,8 @@ public:
 		e->particle.speed = source->speed.getMinValue();
 		e->particle.speed2 = source->speed.getMaxValue() - source->speed.getMinValue();
 
-		e->particle.angle = DegreeToRadian( (source->angle+90.0f) );
-		e->particle.angleVariance = DegreeToRadian( source->angleVariance );
+		e->particle.angle = (float)(DegreeToRadian( (source->angle+90.0f) ));
+		e->particle.angleVariance = (float)(DegreeToRadian( source->angleVariance ));
 
 		e->particle.useTanAccel = false;
 
@@ -293,7 +293,7 @@ public:
 	virtual void	initalizeEffect ( SsEffectElementBase* ele , SsEffectEmitter* e)
 	{
 		ParticleElementDelay* source = static_cast<ParticleElementDelay*>(ele);
-		e->particle.delay = source->DelayTime;
+		e->particle.delay = (float)source->DelayTime;
 
 	}
 	
@@ -628,7 +628,8 @@ public:
 		if ( per < start )
 		{
 			float alpha = (start - per) / start;
-			particle->_color.a*= 1.0f - alpha;
+//			particle->_color.a*= 1.0f - alpha;
+			particle->_color.a = (u8)((float)particle->_color.a * (1.0f - alpha));
 			return;
 		}
 
@@ -641,7 +642,8 @@ public:
 				return;
 			}
 			float alpha = (per-end) / (100.0f-end);
-			particle->_color.a*= 1.0f - alpha;
+//			particle->_color.a*= 1.0f - alpha;
+			particle->_color.a = (u8)((float)particle->_color.a * (1.0f - alpha));
 			return;
 		}
 
@@ -879,47 +881,52 @@ static EffectFuncBase* callTable[] =
 ///----------------------------------------------------------------------------------------------------
 void	SsEffectFunctionExecuter::initalize( SsEffectBehavior* beh ,  SsEffectRenderEmitter* emmiter)
 {
-	foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
 	{
-		EffectFuncBase* cf = callTable[(*e)->myType];
-		cf->initalizeEmmiter( (*e) , emmiter );
+		SsEffectElementBase* elementBase = e->get();
+		EffectFuncBase* cf = callTable[elementBase->myType];
+		cf->initalizeEmmiter( elementBase , emmiter );
 	}
 }
 
 void	SsEffectFunctionExecuter::updateEmmiter( SsEffectBehavior* beh , SsEffectRenderEmitter* emmiter)
 {
-	foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
 	{
-		EffectFuncBase* cf = callTable[(*e)->myType];
-		cf->updateEmmiter( (*e) , emmiter );
+		SsEffectElementBase* elementBase = e->get();
+		EffectFuncBase* cf = callTable[elementBase->myType];
+		cf->updateEmmiter( elementBase , emmiter );
 	}
 }
 
 void	SsEffectFunctionExecuter::initializeParticle( SsEffectBehavior* beh ,  SsEffectRenderEmitter* emmiter , SsEffectRenderParticle* particle )
 {
-	foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
 	{
-		EffectFuncBase* cf = callTable[(*e)->myType];
-		cf->initializeParticle( (*e) , emmiter , particle );
+		SsEffectElementBase* elementBase = e->get();
+		EffectFuncBase* cf = callTable[elementBase->myType];
+		cf->initializeParticle( elementBase , emmiter , particle );
 	}
 }
 
 void	SsEffectFunctionExecuter::updateParticle(  SsEffectBehavior* beh , SsEffectRenderEmitter* emmiter , SsEffectRenderParticle* particle )
 {
-	foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
 	{
-		EffectFuncBase* cf = callTable[(*e)->myType];
-		cf->updateParticle( (*e) , emmiter , particle );
+		SsEffectElementBase* elementBase = e->get();
+		EffectFuncBase* cf = callTable[elementBase->myType];
+		cf->updateParticle( elementBase , emmiter , particle );
 	}
 }
 
 
 void	SsEffectFunctionExecuter::initializeEffect( SsEffectBehavior* beh ,  SsEffectEmitter* emmiter)
 {
-	foreach( std::vector<SsEffectElementBase* > , beh->plist , e )
+	SPRITESTUDIO6SDK_foreach( std::vector<std::unique_ptr<SsEffectElementBase>> , beh->plist , e )
 	{
-		EffectFuncBase* cf = callTable[(*e)->myType];
-		cf->initalizeEffect( (*e) , emmiter );
+		SsEffectElementBase* elementBase = e->get();
+		EffectFuncBase* cf = callTable[elementBase->myType];
+		cf->initalizeEffect( elementBase , emmiter );
 	}
 }
 
@@ -928,14 +935,4 @@ void	SsEffectFunctionExecuter::initializeEffect( SsEffectBehavior* beh ,  SsEffe
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+}	// namespace spritestudio6
