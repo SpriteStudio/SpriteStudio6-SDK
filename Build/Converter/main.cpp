@@ -160,9 +160,12 @@ struct Options
 	int								outputFormat;
 	int								argumentEncode;
 
+	bool							endAfterStop;
+
 	Options()
 		: isHelp(false)
 		, isVerbose(false)
+		, endAfterStop(false)
 		, encoding(LumpExporter::UTF8)
 	{}
 };
@@ -1989,6 +1992,7 @@ APP_NAME " converter version " APP_VERSION "\n"
 //"  -p arg  Specify image file load base path.\n"
 "  -pkg    sspkg output mode\n"
 "  -f      set output format.\n"
+"  -p      Stop after the end\n"
 "  usage exsample : " APP_NAME " -o <outputpath> -f < json , ssfb , c , sspkg> <input file name path>\n"
 "\n";
 
@@ -2065,6 +2069,10 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		if (!args.hasNext()) return false;
 
 		options.outputDir = args.next();
+	}
+	else if (opt == "-p")
+	{
+		options.endAfterStop = true;
 	}
 	else if (opt == "-f")
 	{
@@ -2272,6 +2280,10 @@ int convertMain(int argc, const char * argv[])
 		}
 		if (error)
         {
+			if (options.endAfterStop)
+			{
+				getc(stdin);
+			}
             return SSPC_NOT_EXIST_INPUT_FILE;
         }
 	}
@@ -2366,6 +2378,11 @@ int convertMain(int argc, const char * argv[])
 	if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
 	{
 		sspkg_info::destroy();
+	}
+
+	if (options.endAfterStop)
+	{
+		getc(stdin);
 	}
 
 	if ( convert_error_exit == true )
