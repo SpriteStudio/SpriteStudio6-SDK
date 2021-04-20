@@ -13,3 +13,6 @@
 [submodule "Build/vcpkg"]
 	path = Build/vcpkg
 	url = https://github.com/microsoft/vcpkg.git
+[submodule "Build/Converter/plog"]
+	path = Build/Converter/plog
+	url = https://github.com/SergiusTheBest/plog.git

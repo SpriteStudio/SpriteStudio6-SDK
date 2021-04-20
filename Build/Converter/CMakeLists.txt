@@ -112,6 +112,7 @@ if(WIN32 OR APPLE)
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps)
+
 #    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
 
 if(APPLE)
@@ -132,6 +133,8 @@ include_directories(glad/include)
 include_directories(glfw/include)
 include_directories(filesystem/include)
 include_directories(json/include)
+include_directories(plog/include)
+
 
 #include_directories(zlib)
 include_directories(${ZLIB_INCLUDE_DIR})

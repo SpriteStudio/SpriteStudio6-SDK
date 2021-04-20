@@ -18,6 +18,7 @@ namespace spritestudio6
 
 void DEBUG_PRINTF( const char* strFormat, ...   )
 {
+#if 0
 	char strBuffer[1024];
 
 	va_list arglist;
@@ -33,6 +34,7 @@ void DEBUG_PRINTF( const char* strFormat, ...   )
 
 	std::cerr << strBuffer << "\n";
 
+#endif
 
 }
 
