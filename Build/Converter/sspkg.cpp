@@ -12,6 +12,8 @@
 #include <iomanip>
 #include <string>
 
+//#include "sscharconverter.h"
+
 
 using json = nlohmann::json;
 
@@ -111,6 +113,7 @@ std::string sspkg_info::get_sspkg_metapath()
 
 void sspkg_info::init_sspkg(std::string outputdir , std::string pkgname)
 {
+
     if (!fs::exists(fs::path(outputdir)))
     {
         fs::create_directory(fs::path(outputdir));
