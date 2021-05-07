@@ -1970,7 +1970,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 
 		if (outputFormat == OUTPUT_FORMAT_FLAG_JSON)
 		{
-			COI( "OUTPUT_FORMAT_FLAG_JSON " );
+			COI( "convert type : OUTPUT_FORMAT_FLAG_JSON " );
 
 //			out.open((outPath + ".json").c_str(), std::ios_base::out);
 			std::string outPathJson = outPath + outFName + ".json";
@@ -1989,7 +1989,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_CSOURCE)
 		{
-			COI("OUTPUT_FORMAT_FLAG_CSOURCE ");
+			COI("convert type : OUTPUT_FORMAT_FLAG_CSOURCE ");
 
 			// out.open((outPath + ".c").c_str(), std::ios_base::out);
 			// LumpExporter::saveCSource(out, encoding, lump, "topLabel", creatorComment);
@@ -1998,7 +1998,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{
-			COI( "OUTPUT_FORMAT_FLAG_SSFB " );
+			COI( "convert type : OUTPUT_FORMAT_FLAG_SSFB " );
 
 //			out.open((outPath + ".ssfb").c_str(), std::ios_base::binary | std::ios_base::out);
 			std::string outPathSsfb = outPath + outFName + ".ssfb";
@@ -2020,7 +2020,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
 		{
-			COI( "OUTPUT_FORMAT_FLAG_SSPKG ");
+			COI( "convert type : OUTPUT_FORMAT_FLAG_SSPKG ");
 
 			std::string outPathSsfb = sspkg_info::getInst()->get_sspkg_temppath() + outFName + ".ssfb";//出力はFB
 
@@ -2044,7 +2044,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		}
 		else
 		{
-			COI( "OUTPUT_FORMAT_FLAG_SSBP " );
+			COI( "convert type : OUTPUT_FORMAT_FLAG_SSBP " );
 
 			std::string outPathSsfb = outPath + outFName + ".ssbp";
 			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
@@ -2491,19 +2491,31 @@ int convertMain(int argc, const char * argv[])
 		sspkg_info::destroy();
 	}
 
-	if (options.endAfterStop)
-	{
-		getc(stdin);
-	}
 
 	if ( convert_error_exit == true )
 	{
+		COI("Convert : FAILED");
 		//データにエラーがありコンバートを中止した
-	    return SSPC_SSPJ_PARSE_FAILED;
+		logger.LogFileFlush();
+
+		if (options.endAfterStop)
+		{
+			getc(stdin);
+		}
+
+		return SSPC_SSPJ_PARSE_FAILED;
 	}
 	else
 	{
-	    return SSPC_SUCCESS;
+		COI("Convert : SUCCESS");
+		logger.LogFileFlush();
+
+		if (options.endAfterStop)
+		{
+			getc(stdin);
+		}
+
+		return SSPC_SUCCESS;
 	}
 }
 

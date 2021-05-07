@@ -80,6 +80,8 @@ public:
 			std::string out = item;
 			*ofs << out << std::endl;
 		}
+		textline.clear();
+		
 	}
 
 	void setOutputLogFile(std::wstring filepath)
