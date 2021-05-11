@@ -5,6 +5,9 @@
 #include<iostream>
 #include<fstream>
 
+#include "sscharconverter.h"
+
+
 class Logger
 {
 private:
@@ -24,6 +27,15 @@ public:
 	};
 
 	int mLogLevel;
+
+private:
+	std::string OSLocaleString(std::string str)
+	{
+#if _WIN32
+		str = spritestudio6::SsCharConverter::sjis_to_utf8(str);
+#endif
+		return str;
+	}
 
 public:
 	Logger() : outputLogFileFlag(false) , mLogLevel( LogLevel::ERR | LogLevel::WAR | LogLevel::INF ) , ofs(0){}
@@ -46,7 +58,9 @@ public:
 			{
 				//console
 				std::cerr << str << std::endl;
-				textline.push_back(str);
+
+				textline.push_back(OSLocaleString(str));
+
 //				*ofs << str << std::endl;
 			}
 			break;
@@ -55,8 +69,8 @@ public:
 			{
 				//console
 				std::cerr << str << std::endl;
-				textline.push_back(str);
-//				*ofs << str << std::endl;
+				textline.push_back(OSLocaleString(str));
+				//				*ofs << str << std::endl;
 			}
 			break;
 		case LogLevel::INF:
@@ -64,7 +78,7 @@ public:
 			if (mLogLevel & LogLevel::INF)
 			{
 				std::cout << str << std::endl;
-				textline.push_back(str);
+				textline.push_back(OSLocaleString(str));
 //				*ofs << str << std::endl;
 			}
 			break;
