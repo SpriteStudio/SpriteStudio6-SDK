@@ -1899,7 +1899,11 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 	const int outputFormat = options.outputFormat;
 
 	std::string outputdirUTF8;
-	outputdirUTF8 = spritestudio6::SsCharConverter::sjis_to_utf8(outPath);;
+	// 事前の parseArguments 処理時にUTF8変換するようにしたためここでの変換をカットしました。
+	//outputdirUTF8 = spritestudio6::SsCharConverter::sjis_to_utf8(outPath);
+	outputdirUTF8 = outPath;
+
+	COI("output directory: " + outputdirUTF8);
 
 
 	if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
@@ -2299,6 +2303,12 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 	}
 
 	options.inList = inList;
+
+	if (options.argumentEncode == ARGUMENT_ENCODE_SJIS)
+	{
+		options.outputDir = spritestudio6::SsCharConverter::sjis_to_utf8(options.outputDir);
+	}
+
 	// success
 	return true;
 }
@@ -2481,7 +2491,10 @@ int convertMain(int argc, const char * argv[])
 		//手前でパックすると失敗しそう
 		if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
 		{
-			sspkg_info::getInst()->make_sspkg();
+			if (!sspkg_info::getInst()->make_sspkg())
+			{
+				COE("Failed to create zip file. " + outPath);
+			}
 			sspkg_info::getInst()->sspkg_cleanup_file();
 		}
 	}

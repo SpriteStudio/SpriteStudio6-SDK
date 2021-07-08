@@ -1,4 +1,5 @@
 #include "sspkg.h"
+#include "sscharconverter.h"
 
 
 
@@ -67,7 +68,7 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
         _return = false;
     }
 
-    if (zipClose(zf, NULL))
+    if (zipClose(zf, NULL) != ZIP_OK)
         return 3;
 
     if (!_return)
@@ -116,19 +117,21 @@ void sspkg_info::init_sspkg(std::string outputdir , std::string pkgname)
 
     if (!fs::exists(fs::path(outputdir)))
     {
-        fs::create_directory(fs::path(outputdir));
+        if (!fs::create_directory(fs::path(outputdir)))
+        {
+            throw "create_directory failed.";
+        }
     }
 
     fs::path temp = fs::temp_directory_path();
     
-
-//    tempdir = fs::path(outputdir);
+    //    tempdir = fs::path(outputdir);
     tempdir = temp;
     tempdir += fs::path("sspkg/");
     fs::create_directory(tempdir);
     //cleaningDir.push_back(tempdir);
 
-    tempdir += fs::path(pkgname+"/");
+    tempdir += fs::path(pkgname + "/");
     fs::create_directory(tempdir);
     cleaningDir.push_back(tempdir);
 
@@ -136,7 +139,6 @@ void sspkg_info::init_sspkg(std::string outputdir , std::string pkgname)
     metadir += fs::path("meta/");
     fs::create_directory(metadir);
     cleaningDir.push_back(metadir);
-
 }
 
 
@@ -175,35 +177,35 @@ void sspkg_info::set_sspkg_filelist(std::string ssversion, std::string pkgname, 
 }
 
 
-void sspkg_info::make_sspkg()
+bool sspkg_info::make_sspkg()
 {
 
-/*
-    fs::path tempdir = get_sspkg_temppath();
-    fs::path metadir = get_sspkg_metapath();
+    /*
+        fs::path tempdir = get_sspkg_temppath();
+        fs::path metadir = get_sspkg_metapath();
 
 
-    fs::path ssfb_dst = fs::path(tempdir).replace_filename(pkgname).replace_extension(".ssfb");
-    archive_file_lists.push_back(ssfb_dst.string());
+        fs::path ssfb_dst = fs::path(tempdir).replace_filename(pkgname).replace_extension(".ssfb");
+        archive_file_lists.push_back(ssfb_dst.string());
 
 
-	for (auto i : filelist)
-	{
-		fs::path copyfilename = fs::path(tempdir).replace_filename(fs::path(i).filename());
-		fs::copy_file(i, copyfilename, fs::copy_options::update_existing);
+        for (auto i : filelist)
+        {
+            fs::path copyfilename = fs::path(tempdir).replace_filename(fs::path(i).filename());
+            fs::copy_file(i, copyfilename, fs::copy_options::update_existing);
 
-        archive_file_lists.push_back(copyfilename.string());
-        org_file_lists.push_back(copyfilename.filename().string()+ copyfilename.filename().extension().string());
-	}
+            archive_file_lists.push_back(copyfilename.string());
+            org_file_lists.push_back(copyfilename.filename().string()+ copyfilename.filename().extension().string());
+        }
 
-    fs::path archivefilename = fs::path(outputdir).replace_filename(pkgname).replace_extension(".sspkg");
-    fs::path jsonfilename = fs::path(metadir).replace_filename("sspkg").replace_extension(".json");
+        fs::path archivefilename = fs::path(outputdir).replace_filename(pkgname).replace_extension(".sspkg");
+        fs::path jsonfilename = fs::path(metadir).replace_filename("sspkg").replace_extension(".json");
 
-    archive_file_lists.push_back(jsonfilename.string());
+        archive_file_lists.push_back(jsonfilename.string());
 
-    fs::path thumbnailename = fs::path(metadir).replace_filename("thumbnail").replace_extension(".png");
-    archive_file_lists.push_back(thumbnailename.string());
-*/
+        fs::path thumbnailename = fs::path(metadir).replace_filename("thumbnail").replace_extension(".png");
+        archive_file_lists.push_back(thumbnailename.string());
+    */
 
     fs::path tempdir = get_sspkg_temppath();
 
@@ -220,8 +222,19 @@ void sspkg_info::make_sspkg()
     archive_file_lists.push_back(jsonfilename.string());
     archive_file_lists.push_back(thumbnailename.string());
 
+    std::string arch_path;
 
-    CreateZipFile(archivefilename.string(), archive_file_lists , tempdir.string() );
+#ifdef _WIN32
+    // 最終的に zipOpen 内の fopen64 で SJIS が必要になるため。
+    arch_path = spritestudio6::SsCharConverter::utf8_to_sjis(archivefilename.string());
+#else
+    arch_path = archivefilename.string();
+#endif
+
+    if (CreateZipFile(arch_path, archive_file_lists, tempdir.string()) != 0)
+    {
+        return false;
+    }
 
 #ifndef _DEBUG
 
@@ -232,6 +245,7 @@ void sspkg_info::make_sspkg()
         cleaningFileList.push_back(i);
     }
 
+    return true;
 }
 
 void sspkg_info::sspkg_cleanup_file()
