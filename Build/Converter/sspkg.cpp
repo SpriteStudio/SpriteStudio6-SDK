@@ -18,6 +18,8 @@
 
 using json = nlohmann::json;
 
+using sscc = spritestudio6::SsCharConverter;
+
 int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::string remove_path )
 {
     zipFile zf = zipOpen( zippath.c_str() , APPEND_STATUS_CREATE);
@@ -27,11 +29,12 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
     bool _return = true;
     for (size_t i = 0; i < paths.size(); i++)
     {
-        std::fstream file(paths[i].c_str(), std::ios::binary | std::ios::in);
+        auto path = paths[i];
+        std::fstream file(path.c_str(), std::ios::binary | std::ios::in);
         if (file.is_open())
         {
             file.seekg(0, std::ios::end);
-            long size = file.tellg();
+            std::fstream::pos_type size = file.tellg();
             file.seekg(0, std::ios::beg);
 
             std::vector<char> buffer(size);
@@ -39,11 +42,22 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
             {
                 zip_fileinfo zfi = { 0 };
 
-                //std::string fileName = paths[i].substr(paths[i].rfind('\\') + 1);
-                fs::path f = fs::path(paths[i]);
-
+#ifdef _WIN32
+                // fs::path 内で SJIS に対して utf8 to wchar 変換が行われ文字化けるため一時的に utf8 に戻す。(不本意)
+                auto utf8_path = sscc::sjis_to_utf8(path);
+#else
+                auto utf8_path = path;
+#endif
+                // ファイルネーム単体の取得はエンコードを配慮したセパレータ検出のため fs::path 経由でないと不都合があった？と思われるためここは変えない。
+                //std::string fileName = path.substr(path.rfind('\\') + 1);
+                fs::path f = fs::path(utf8_path);
                 std::string fileName = f.filename().string();
-                fs::path p = f.parent_path();
+                //fs::path p = f.parent_path(); // unused
+
+#ifdef _WIN32
+                // 再び sjis に戻す。
+                fileName = sscc::utf8_to_sjis(fileName);
+#endif
 
                 if (fileName == "sspkg.json" || fileName == "thumbnail.png")
                 {
@@ -52,7 +66,7 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
 
 //                if (S_OK == zipOpenNewFileInZip(zf, std::string(fileName.begin(), fileName.end()).c_str(), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION))
                 if (0 == zipOpenNewFileInZip(zf, fileName.c_str(), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION))
-                    {
+                {
                     if (zipWriteInFileInZip(zf, size == 0 ? "" : &buffer[0], size))
                         _return = false;
 
@@ -62,8 +76,20 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
                     file.close();
                     continue;
                 }
+                else
+                {
+                    std::cerr << "  new zip failure: " << fileName << "\n";
+                }
+            }
+            else
+            {
+                std::cerr << "  read failure: " << path << "\n";
             }
             file.close();
+        }
+        else
+        {
+            std::cerr << "  open failure: " << path << "\n";
         }
         _return = false;
     }
@@ -95,7 +121,7 @@ static void    createFileInfoJson(std::string versioninfo , std::string outputfi
     j["filelist"] = paths;
 
 
-    std::ofstream o(outputfilenamepath);
+    std::ofstream o(sscc::convert_path_string(outputfilenamepath));
     o << std::setw(4) << j << std::endl; 
 
 }
@@ -222,18 +248,24 @@ bool sspkg_info::make_sspkg()
     archive_file_lists.push_back(jsonfilename.string());
     archive_file_lists.push_back(thumbnailename.string());
 
-    std::string arch_path;
+    // Windosでは最終的に zipOpen 内の fopen64 で SJIS が必要になるため。
+    auto tmp_arch_path = sscc::convert_path_string(archivefilename.string());
+    decltype(archive_file_lists) tmp_archive_file_lists;
 
 #ifdef _WIN32
-    // �ŏI�I�� zipOpen ���� fopen64 �� SJIS ���K�v�ɂȂ邽�߁B
-    arch_path = spritestudio6::SsCharConverter::utf8_to_sjis(archivefilename.string());
+    // std::fstream で要SJIS
+    for (auto& path : archive_file_lists)
+    {
+        tmp_archive_file_lists.push_back(sscc::utf8_to_sjis(path));
+    }
 #else
-    arch_path = archivefilename.string();
+    tmp_archive_file_lists = archive_file_lists;
 #endif
 
-    if (CreateZipFile(arch_path, archive_file_lists, tempdir.string()) != 0)
+    bool result = true;
+    if (CreateZipFile(tmp_arch_path, tmp_archive_file_lists, tempdir.string()) != 0)
     {
-        return false;
+        result = false;
     }
 
 #ifndef _DEBUG
@@ -245,7 +277,7 @@ bool sspkg_info::make_sspkg()
         cleaningFileList.push_back(i);
     }
 
-    return true;
+    return result;
 }
 
 void sspkg_info::sspkg_cleanup_file()

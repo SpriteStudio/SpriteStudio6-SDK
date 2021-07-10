@@ -1535,10 +1535,13 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 #ifdef    _WIN32
 //				std::string outputfile = get_sspkg_metapath() + anime->name + ".png";
 				std::string outputfile = sspkg_info::getInst()->get_sspkg_metapath() + "thumbnail.png";
-				
 #else
                 std::string outputfile = sspkg_info::getInst()->get_sspkg_metapath() + anime->name + ".png";
 #endif
+
+				// ConverterOpenGLOutputBitMapImage 内の stbi_write_png は fopen を使っており narrow 文字のみなのでWin向けにSJIS化が必要。
+				// ToDo: sspkg 以外で Win の全角対応をする場合、 ConverterOpenGLOutputBitMapImage 側に以下相当の変換を追加。
+				outputfile = spritestudio6::SsCharConverter::convert_path_string(outputfile);
 
 				//filelist.push_back(outputfile);
 				if (!isWrite)
@@ -2493,7 +2496,9 @@ int convertMain(int argc, const char * argv[])
 		{
 			if (!sspkg_info::getInst()->make_sspkg())
 			{
-				COE("Failed to create zip file. " + outPath);
+				COE("An error occured during making zip file. " + outPath);
+
+				convert_error_exit = true;	//エラーが発生コンバート失敗
 			}
 			sspkg_info::getInst()->sspkg_cleanup_file();
 		}
