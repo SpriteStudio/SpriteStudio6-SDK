@@ -60,7 +60,7 @@ public:
 
     void set_sspkg_filelist(std::string ssversion, std::string pkgname, std::vector<std::string> filelist, std::string outputdir);
 
-    void make_sspkg();
+    bool make_sspkg();
     void sspkg_cleanup_file();
 
 
