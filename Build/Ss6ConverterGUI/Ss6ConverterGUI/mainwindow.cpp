@@ -5,6 +5,8 @@ QString execPathStr;    //実行しているコンバータGUIのパス
 QString cnvOutputStr;   //コンバート結果
 bool convert_exec = false;  //コンバート中か
 bool convert_error = false;  //コンバートエラーが発生したか
+bool convert_succes = false;
+
 int convet_index = 0;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -269,7 +271,12 @@ void MainWindow::on_pushButton_convert_clicked()
         }
         if ( convert_error == false )
         {
-            ui->textBrowser_status->setText(tr("Convert Success!"));
+            if ( convert_succes )
+            {
+                ui->textBrowser_status->setText(tr("Convert Success!"));
+            }else{
+                ui->textBrowser_status->setText(tr("未確認のエラー"));   //ステータス
+            }
         }
         else
         {
@@ -327,8 +334,9 @@ void MainWindow::processFinished( int exitCode, QProcess::ExitStatus exitStatus)
         QScrollBar *sb = ui->textBrowser_err->verticalScrollBar();
         sb->setValue(sb->maximum());
     }
-    else
+    else if ( exitCode == 0 )
     {
+        convert_succes = true;
         // 正常終了時の処理
 //        ui->textBrowser_status->setText(tr("Convert Success!"));
 //    QMessageBox::information(this, tr("Ss6Converter"), tr("Convert success"));

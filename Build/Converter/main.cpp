@@ -152,6 +152,8 @@ converter32 c32;
 
 
 
+
+
 struct Options
 {
 	typedef std::vector<std::string> StringList;
@@ -175,6 +177,19 @@ struct Options
 		, encoding(LumpExporter::UTF8)
 	{}
 };
+
+
+
+
+static void OutLogE(std::string str)
+{
+    if ( isLogout )
+    {
+        LOGE << str;
+    }else{
+        std::cerr << str << std::endl;
+    }
+}
 
 
 typedef std::map<const spritestudio6::SsCell*, int> CellList;
@@ -368,15 +383,9 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 {
 	bool isWrite = false;
 
-#ifdef _WIN32
-	LOGE << SPRITESTUDIOSDK_VERSION;	//バージョン表記は ssloader.h　にあります。
-	LOGE << "Ss6Converter ssbpFormatVersion=" << CURRENT_DATA_VERSION;
-	LOGE << "convert start!";
-#else
-	std::cerr << SPRITESTUDIOSDK_VERSION << std::endl;	//バージョン表記は ssloader.h　にあります。
-	std::cerr << "Ss6Converter ssbpFormatVersion=" << CURRENT_DATA_VERSION  << std::endl;
-	std::cerr << "convert start!"  << std::endl;
-#endif
+	OutLogE(SPRITESTUDIOSDK_VERSION);	//バージョン表記は ssloader.h　にあります。
+	OutLogE("Ss6Converter ssbpFormatVersion=" + std::to_string(CURRENT_DATA_VERSION));
+	OutLogE("convert start!");
 
 	CellList* cellList = makeCellList(proj);
 
@@ -388,8 +397,8 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		std::cerr << "エラー：SpriteStudio Ver.5.xのプロジェクトは使用できません。\n";
 		std::cerr << "SpriteStudio Ver.6.xで保存する必要があります。\n";
 */
-		LOGE << "エラー：SpriteStudio Ver.5.xのプロジェクトは使用できません。";
-		LOGE << "SpriteStudio Ver.6.xで保存する必要があります。";
+		OutLogE("エラー：SpriteStudio Ver.5.xのプロジェクトは使用できません。");
+		OutLogE("SpriteStudio Ver.6.xで保存する必要があります。");
 
 		convert_error_exit = true;	//エラーが発生コンバート失敗
 
@@ -431,7 +440,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	if (proj->cellmapList.size() == 0)
 	{
 		//std::cerr << "警告：セルマップが存在しません。" << "\n";
-		LOGE << "警告：セルマップが存在しません。";
+		OutLogE( "警告：セルマップが存在しません。" );
 
 		convert_error_exit = true;	//エラーが発生コンバート失敗
 		return 0;
@@ -470,7 +479,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		if ( isZenkaku( &cellMap->name ) == true )
 		{
 //			std::cerr << "エラー：セルマップに全角が使用されています。半角英数でリネームしてください。: " << cellMap->name << "\n";
-			LOGE << "エラー：セルマップに全角が使用されています。半角英数でリネームしてください。: " << cellMap->name;
+			OutLogE( "エラー：セルマップに全角が使用されています。半角英数でリネームしてください。: " + cellMap->name );
 			
 			convert_error_exit = true;	//エラーが発生コンバート失敗
 		}
@@ -479,7 +488,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		{
 			//セルマップにセルが１つも登録されていない場合はエラーにする
 //			std::cerr << "エラー：セルマップにセルが存在しません。セルを１つ以上作成してください。: " << cellMap->name << "\n";
-			LOGE << "エラー：セルマップにセルが存在しません。セルを１つ以上作成してください。: " << cellMap->name ;
+			OutLogE( "エラー：セルマップにセルが存在しません。セルを１つ以上作成してください。: " + cellMap->name );
 			convert_error_exit = true;	//エラーが発生コンバート失敗
 			return 0;
 		}
@@ -514,7 +523,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			if (isZenkaku(&cell->name) == true)
 			{
 //				std::cerr << "エラー：セルに全角が使用されています。半角英数でリネームしてください。: " << cell->name << "\n";
-				LOGE << "エラー：セルに全角が使用されています。半角英数でリネームしてください。: " << cell->name;
+				OutLogE( "エラー：セルに全角が使用されています。半角英数でリネームしてください。: " + cell->name );
 				convert_error_exit = true;	//エラーが発生コンバート失敗
 				return 0;
 			}
@@ -525,7 +534,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	if (proj->animeList.size() == 0)
 	{
 //		std::cerr << "警告：アニメーションが存在しません" << "\n";
-		LOGE << "警告：アニメーションが存在しません";
+		OutLogE( "警告：アニメーションが存在しません" );
 		convert_error_exit = true;	//エラーが発生コンバート失敗
 		return 0;
 	}
@@ -548,7 +557,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		if ( isZenkaku( &animePack->name ) == true )
 		{
 //			std::cerr << "エラー：ファイル名に全角が使用されています。半角英数でリネームしてください。: " << animePack->name << "\n";
-			LOGE << "エラー：ファイル名に全角が使用されています。半角英数でリネームしてください。: " << animePack->name;
+			OutLogE( "エラー：ファイル名に全角が使用されています。半角英数でリネームしてください。: " + animePack->name );
 			convert_error_exit = true;	//エラーが発生コンバート失敗
 			return 0;
 		}
@@ -572,7 +581,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			if ( isZenkaku( &part->name ) == true )
 			{
 //				std::cerr << "エラー：パーツ名に全角が使用されています。半角英数でリネームしてください。: " << part->name << "\n";
-				LOGE << "エラー：パーツ名に全角が使用されています。半角英数でリネームしてください。: " << part->name;
+				OutLogE( "エラー：パーツ名に全角が使用されています。半角英数でリネームしてください。: " + part->name );
 				convert_error_exit = true;	//エラーが発生コンバート失敗
 				return 0;
 			}
@@ -603,7 +612,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					{
 						partData->add(Lump::s16Data(spritestudio6::SsPartType::null, "type"));
 //						std::cerr << "警告：参照のないインスタンスパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
-						LOGE << "警告：参照のないインスタンスパーツが存在します: " << animePack->name << ".ssae " << part->name;
+						OutLogE( "警告：参照のないインスタンスパーツが存在します: " + animePack->name + ".ssae " + part->name );
 					}
 					else
 					{
@@ -618,7 +627,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					partData->add(Lump::s16Data(spritestudio6::SsPartType::null, "type"));
 					//未実装　ワーニングを表示しNULLパーツにする
 //					std::cerr << "警告：参照のないエフェクトパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
-					LOGE << "警告：参照のないエフェクトパーツが存在します: " << animePack->name << ".ssae " << part->name;
+					OutLogE( "警告：参照のないエフェクトパーツが存在します: " + animePack->name + ".ssae " + part->name );
 				}
 				else
 				{
@@ -628,7 +637,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			default:
 				//未対応パーツ　ワーニングを表示しNULLパーツにする
 //				std::cerr << "警告：未対応のパーツ種別が使われています: " << animePack->name << ".ssae " << part->name << "\n";
-				LOGE << "警告：未対応のパーツ種別が使われています: " << animePack->name << ".ssae " << part->name;
+				OutLogE( "警告：未対応のパーツ種別が使われています: " + animePack->name + ".ssae " + part->name );
 				partData->add(Lump::s16Data(spritestudio6::SsPartType::null, "type"));
 				break;
 			}
@@ -1451,7 +1460,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				if ( isZenkaku( &str ) == true )
 				{
 //					std::cerr << "エラー：ラベルに全角が使用されています。半角英数でリネームしてください。: " << str << "\n";
-					LOGE << "エラー：ラベルに全角が使用されています。半角英数でリネームしてください。: " << str;
+					OutLogE( "エラー：ラベルに全角が使用されています。半角英数でリネームしてください。: " + str );
 					convert_error_exit = true;	//エラーが発生コンバート失敗
 					return 0;
 				}
@@ -1806,7 +1815,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				default:
 					//未使用のコマンドが含まれている
 					//std::cerr << "警告：未使用のエフェクトコマンドが含まれています。 \n";
-					LOGE << "警告：未使用のエフェクトコマンドが含まれています。";
+					OutLogE( "警告：未使用のエフェクトコマンドが含まれています。" );
 					break;
 				}
 			}
@@ -1819,11 +1828,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	parseParts_ssqe( topLump, proj, imageBaseDir );
 
 //	std::cerr << "convert end" << "\n";
-#ifdef _WIN32
-	LOGE << "convert end" << "\n";
-#else
-	std::cerr << "convert end" << "\n" << std::endl;
-#endif
+	OutLogE( "convert end"  );
 
 	return topLump;
 }
@@ -1881,7 +1886,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 
 
 	//std::cerr << convert_console_string( sspjPath ) << "\n";
-	LOGE << convert_console_string(sspjPath);
+	OutLogE( convert_console_string(sspjPath) );
 	spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(sspjPath);
 	
 
@@ -1935,11 +1940,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		//ファイルの出力を行なわない
 //		std::cerr << "データにエラーがありコンバートを中止しました \n";
 
-#ifdef _WIN32
-		LOGE << "データにエラーがありコンバートを中止しました ";
-#else
-		std::cerr << "データにエラーがありコンバートを中止しました \n";
-#endif
+		OutLogE( "データにエラーがありコンバートを中止しました " );
 	}
 	else
 	{
@@ -1960,7 +1961,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 			else
 			{
 //				std::cerr << messageErrorFileOpen << convert_console_string(outPathJson) << std::endl;
-				LOGE << messageErrorFileOpen << convert_console_string(outPathJson) << std::endl;
+				OutLogE( messageErrorFileOpen + convert_console_string(outPathJson) );
 			}
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_CSOURCE)
@@ -1968,7 +1969,8 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 			// out.open((outPath + ".c").c_str(), std::ios_base::out);
 			// LumpExporter::saveCSource(out, encoding, lump, "topLabel", creatorComment);
 //			std::cerr << "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***"  << std::endl;
-			LOGE << "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***";
+//			LOGE << "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***";
+            OutLogE( "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***" );
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{
@@ -1984,7 +1986,8 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 			else
 			{
 				//std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
-				LOGE << messageErrorFileOpen << convert_console_string(outPathSsfb);
+				//LOGE << messageErrorFileOpen << convert_console_string(outPathSsfb);
+                OutLogE( messageErrorFileOpen + convert_console_string(outPathSsfb) );
 			}
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
@@ -2006,7 +2009,8 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 			else
 			{
 //				std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
-				LOGE << messageErrorFileOpen << convert_console_string(outPathSsfb);
+//				LOGE << messageErrorFileOpen << convert_console_string(outPathSsfb);
+                OutLogE( messageErrorFileOpen + convert_console_string(outPathSsfb) );
 			}
 		}
 		else
@@ -2021,7 +2025,8 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 			else
 			{
 //				std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
-				LOGE << messageErrorFileOpen << convert_console_string(outPathSsfb);
+//				LOGE << messageErrorFileOpen << convert_console_string(outPathSsfb);
+                OutLogE( messageErrorFileOpen + convert_console_string(outPathSsfb) );
 			}
 		}
 	/////////////
@@ -2281,7 +2286,8 @@ int convertMain(int argc, const char * argv[])
 	{
 		// 引数が不正
 //		std::cerr << "Invalid arguments: " << illegalArgument << std::endl;
-		LOGE << "Invalid arguments: " << illegalArgument << std::endl;
+//		LOGE << "Invalid arguments: " << illegalArgument << std::endl;
+        OutLogE( "Invalid arguments: " + illegalArgument );
 
 //		std::cout << HELP;
 		LOGI << HELP;
@@ -2343,7 +2349,8 @@ int convertMain(int argc, const char * argv[])
 			else
 			{
 //				std::cerr << "Cannot find input file: " << convert_console_string(str) << std::endl;
-				LOGE << "Cannot find input file: " << convert_console_string(str);
+				//LOGE << "Cannot find input file: " << convert_console_string(str);
+                OutLogE( "Cannot find input file: " + convert_console_string(str) );
 				error = true;
 			}
 #else
@@ -2357,7 +2364,8 @@ int convertMain(int argc, const char * argv[])
 			}
 			else
 			{
-				std::cerr << "Cannot find input file: " << str << std::endl;
+//				std::cerr << "Cannot find input file: " << str << std::endl;
+                OutLogE( "Cannot find input file: " + str );
 				error = true;
 			}
 #endif
