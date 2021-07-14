@@ -98,3 +98,7 @@ Build/Converter/Converter/Ss6Converter.xcodeproj/project.xcworkspace/xcshareddat
 
 Build/Converter/Converter/glfw/
 Build/Converter/cppfs/
+*.stash
+Build/Ss6ConverterGUI/build-Ss6ConverterGUI-Desktop_Qt_5_15_2_clang_64bit-Debug/
+Build/Ss6ConverterGUI/build-Ss6ConverterGUI-Desktop_Qt_5_15_2_clang_64bit-Debug/
+Build/Ss6ConverterGUI/build-Ss6ConverterGUI-Desktop_Qt_5_15_2_clang_64bit-Release/

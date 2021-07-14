@@ -368,9 +368,15 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 {
 	bool isWrite = false;
 
+#ifdef _WIN32
 	LOGE << SPRITESTUDIOSDK_VERSION;	//バージョン表記は ssloader.h　にあります。
 	LOGE << "Ss6Converter ssbpFormatVersion=" << CURRENT_DATA_VERSION;
 	LOGE << "convert start!";
+#else
+	std::cerr << SPRITESTUDIOSDK_VERSION << std::endl;	//バージョン表記は ssloader.h　にあります。
+	std::cerr << "Ss6Converter ssbpFormatVersion=" << CURRENT_DATA_VERSION  << std::endl;
+	std::cerr << "convert start!"  << std::endl;
+#endif
 
 	CellList* cellList = makeCellList(proj);
 
@@ -1813,7 +1819,11 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	parseParts_ssqe( topLump, proj, imageBaseDir );
 
 //	std::cerr << "convert end" << "\n";
+#ifdef _WIN32
 	LOGE << "convert end" << "\n";
+#else
+	std::cerr << "convert end" << "\n" << std::endl;
+#endif
 
 	return topLump;
 }
@@ -1924,8 +1934,12 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		//データにエラーがありコンバートを中止した
 		//ファイルの出力を行なわない
 //		std::cerr << "データにエラーがありコンバートを中止しました \n";
-		LOGE << "データにエラーがありコンバートを中止しました ";
 
+#ifdef _WIN32
+		LOGE << "データにエラーがありコンバートを中止しました ";
+#else
+		std::cerr << "データにエラーがありコンバートを中止しました \n";
+#endif
 	}
 	else
 	{
@@ -2135,6 +2149,7 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 	}
 	else if (opt == "-l")
 	{
+		std::cout << "output log mode" << std::endl;
 		isLogout = true;
 //		options.isOutputLog = true;
 	}
