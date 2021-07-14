@@ -1,5 +1,7 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QDebug>
+
 
 QString execPathStr;    //実行しているコンバータGUIのパス
 QString cnvOutputStr;   //コンバート結果
@@ -24,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(cnvProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(processFinished(int, QProcess::ExitStatus )));
     // プロセスからエラー出力があって読み込み可能になったら readyReadStandardError シグナル発信
     connect(cnvProcess, SIGNAL(readyReadStandardError()), this, SLOT(processErrOutput()));
-    connect(cnvProcess, SIGNAL(readAllStandardOutput()), this, SLOT(processStdOutput()));
+//    connect(cnvProcess, &QProcess::readAllStandardOutput, this, SLOT(processStdOutput()));
     //ウィンドウのタイトルをつける
     setWindowTitle("Ss6Converter GUI Ver1.1.2");
 
@@ -219,8 +221,10 @@ void MainWindow::on_pushButton_convert_clicked()
                 // Windows
                 execstr = "Ss6Converter.exe";
         #else
+                qDebug() << "applicationFilePath : " << QApplication::applicationFilePath();
                 // Mac
                 QDir dir = QDir(execPathStr);
+                qDebug() << dir.path();
                 dir.cd("..");
                 dir.cd("..");
                 dir.cd("..");
@@ -229,12 +233,26 @@ void MainWindow::on_pushButton_convert_clicked()
                 execstr = str_current_path + "/Ss6Converter";
         #endif
 
+                QFileInfo fi(execstr);
+                ui->textBrowser_err->setText("実行中："+ execstr);
+
+                if( !fi.exists() )
+                {
+                    ui->textBrowser_err->setText("Ss6Converter実行ファイルが存在しません。¥n"+execstr);
+                    return;
+                }
+                if ( !fi.isExecutable() )
+                {
+                    ui->textBrowser_err->setText("Ss6Converterは実行可能なファイルではありません。");
+                    return;
+                }
+
 #ifdef Q_OS_WIN32
                 str = execstr + " \"" + fileName + "\"";
 #else
                 str = execstr + fileName;
 #endif
-                str = execstr + " \"" + fileName + "\" -v";
+                str = execstr + " \"" + fileName + "\"";
 
                 //オプション引数
                 if ( ui->type_comboBox->currentText() == "json" )
@@ -254,6 +272,13 @@ void MainWindow::on_pushButton_convert_clicked()
 
                 button_enable(false);
                 convert_exec = true;  //コンバート中か
+
+                ui->textBrowser_status->setText(tr("Convert start wait"));
+                if(!cnvProcess->waitForStarted())
+                {
+                    ui->textBrowser_err->setText("変換プロセスのタイムアウト");
+                    return;
+                }
 
                 while ( 1 )
                 {

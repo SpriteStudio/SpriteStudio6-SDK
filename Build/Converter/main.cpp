@@ -187,7 +187,7 @@ static void OutLogE(std::string str)
     {
         LOGE << str;
     }else{
-        std::cerr << str << std::endl;
+        std::cerr << "SO : " << str << std::endl;
     }
 }
 
