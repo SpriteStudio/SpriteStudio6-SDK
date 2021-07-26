@@ -1969,6 +1969,11 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 //		std::cerr << "データにエラーがありコンバートを中止しました \n";
 		COE("データにエラーがありコンバートを中止しました ");
 
+#ifdef _WIN32
+		LOGE << "データにエラーがありコンバートを中止しました ";
+#else
+		std::cerr << "データにエラーがありコンバートを中止しました \n";
+#endif
 	}
 	else
 	{
@@ -2195,6 +2200,7 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 	}
 	else if (opt == "-l")
 	{
+		std::cout << "output log mode" << std::endl;
 		isLogout = true;
 //		options.isOutputLog = true;
 		COI( "output Log : On" );

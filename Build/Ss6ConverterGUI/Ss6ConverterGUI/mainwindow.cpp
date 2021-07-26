@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(cnvProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(processFinished(int, QProcess::ExitStatus )));
     // プロセスからエラー出力があって読み込み可能になったら readyReadStandardError シグナル発信
     connect(cnvProcess, SIGNAL(readyReadStandardError()), this, SLOT(processErrOutput()));
-
+    connect(cnvProcess, SIGNAL(readAllStandardOutput()), this, SLOT(processStdOutput()));
     //ウィンドウのタイトルをつける
     setWindowTitle("Ss6Converter GUI Ver1.1.2");
 
@@ -226,7 +226,14 @@ void MainWindow::on_pushButton_convert_clicked()
                 QString str_current_path = dir.path();
                 execstr = str_current_path + "/Ss6Converter";
         #endif
+
+#ifdef Q_OS_WIN32
                 str = execstr + " \"" + fileName + "\"";
+#else
+                str = execstr + fileName;
+#endif
+                str = execstr + " \"" + fileName + "\" -v";
+
                 //オプション引数
                 if ( ui->type_comboBox->currentText() == "json" )
                 {
@@ -273,10 +280,24 @@ void MainWindow::on_pushButton_convert_clicked()
     }
 }
 
+void MainWindow::processStdOutput()
+{
+    QByteArray output = cnvProcess->readAllStandardOutput();
+
+    cnvOutputStr = cnvOutputStr + QString::fromLocal8Bit( output );
+    ui->textBrowser_err->setText(cnvOutputStr);
+
+    //カーソルを最終行へ移動
+    QScrollBar *sb = ui->textBrowser_err->verticalScrollBar();
+    sb->setValue(sb->maximum());
+
+}
+
 void MainWindow::processErrOutput()
 {
     // 出力を全て取得
     QByteArray output = cnvProcess->readAllStandardError();
+
     cnvOutputStr = cnvOutputStr + QString::fromLocal8Bit( output );
     ui->textBrowser_err->setText(cnvOutputStr);
 
