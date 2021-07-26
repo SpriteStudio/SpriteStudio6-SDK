@@ -1,4 +1,4 @@
-//
+﻿//
 //  main.cpp
 //  Converter
 //
@@ -31,12 +31,15 @@
 #include "FileUtil.h"
 #include "SsPlayerConverter.h"
 
+#include "simpleFileLogger.h"
+
+/*
 #include "plog/Log.h"
 #include <plog/Initializers/RollingFileInitializer.h>
 #include <plog/Appenders/ConsoleAppender.h>
 #include <plog/Formatters/FuncMessageFormatter.h>
 #include <plog/Formatters/MessageOnlyFormatter.h>
-
+*/
 
 #ifdef _BACKBUFFER_RENDERING__
 	#include "BackGroudRender.h"
@@ -178,6 +181,9 @@ struct Options
 
 
 typedef std::map<const spritestudio6::SsCell*, int> CellList;
+
+//static plog::ConsoleAppender<plog::MessageOnlyFormatter> consoleAppender;
+
 
 CellList* makeCellList(spritestudio6::SsProject* proj)
 {
@@ -331,6 +337,28 @@ struct PartInitialData
 };
 
 
+static Logger logger;
+
+//encodeしない
+void CO(std::string out)
+{
+	logger.outputLog(Logger::INF, out);
+}
+
+void COE(std::string str)
+{
+	std::string out;
+	out = convert_console_string(str);
+	logger.outputLog(Logger::ERR, out);
+}
+
+void COI(std::string str)
+{
+	std::string out;
+	out = convert_console_string(str);
+	logger.outputLog(Logger::INF, out);
+}
+
 //全全角が使われてるかのチェック
 bool isZenkaku( const spritestudio6::SsString* str )
 {
@@ -368,15 +396,9 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 {
 	bool isWrite = false;
 
-#ifdef _WIN32
-	LOGE << SPRITESTUDIOSDK_VERSION;	//バージョン表記は ssloader.h　にあります。
-	LOGE << "Ss6Converter ssbpFormatVersion=" << CURRENT_DATA_VERSION;
-	LOGE << "convert start!";
-#else
-	std::cerr << SPRITESTUDIOSDK_VERSION << std::endl;	//バージョン表記は ssloader.h　にあります。
-	std::cerr << "Ss6Converter ssbpFormatVersion=" << CURRENT_DATA_VERSION  << std::endl;
-	std::cerr << "convert start!"  << std::endl;
-#endif
+	CO( std::string(SPRITESTUDIOSDK_VERSION) );	//バージョン表記は ssloader.h　にあります。
+	CO("Ss6Converter ssbpFormatVersion=" + std::to_string( CURRENT_DATA_VERSION ) );
+	CO( "convert start!");
 
 	CellList* cellList = makeCellList(proj);
 
@@ -388,8 +410,8 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		std::cerr << "エラー：SpriteStudio Ver.5.xのプロジェクトは使用できません。\n";
 		std::cerr << "SpriteStudio Ver.6.xで保存する必要があります。\n";
 */
-		LOGE << "エラー：SpriteStudio Ver.5.xのプロジェクトは使用できません。";
-		LOGE << "SpriteStudio Ver.6.xで保存する必要があります。";
+		COE("エラー：SpriteStudio Ver.5.xのプロジェクトは使用できません。");
+		COE("SpriteStudio Ver.6.xで保存する必要があります。");
 
 		convert_error_exit = true;	//エラーが発生コンバート失敗
 
@@ -427,11 +449,14 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 	topLump->add(Lump::s16Data((int)proj->sequenceList.size(), "numSequencePacks"));
 
+
+	COI("convert cellmap");
+
 	//セルマップ警告
 	if (proj->cellmapList.size() == 0)
 	{
 		//std::cerr << "警告：セルマップが存在しません。" << "\n";
-		LOGE << "警告：セルマップが存在しません。";
+		COE("警告：セルマップが存在しません。");
 
 		convert_error_exit = true;	//エラーが発生コンバート失敗
 		return 0;
@@ -470,7 +495,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		if ( isZenkaku( &cellMap->name ) == true )
 		{
 //			std::cerr << "エラー：セルマップに全角が使用されています。半角英数でリネームしてください。: " << cellMap->name << "\n";
-			LOGE << "エラー：セルマップに全角が使用されています。半角英数でリネームしてください。: " << cellMap->name;
+			COE( "エラー：セルマップに全角が使用されています。半角英数でリネームしてください。: " + cellMap->name );
 			
 			convert_error_exit = true;	//エラーが発生コンバート失敗
 		}
@@ -479,7 +504,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		{
 			//セルマップにセルが１つも登録されていない場合はエラーにする
 //			std::cerr << "エラー：セルマップにセルが存在しません。セルを１つ以上作成してください。: " << cellMap->name << "\n";
-			LOGE << "エラー：セルマップにセルが存在しません。セルを１つ以上作成してください。: " << cellMap->name ;
+			COE( "エラー：セルマップにセルが存在しません。セルを１つ以上作成してください。: " + cellMap->name );
 			convert_error_exit = true;	//エラーが発生コンバート失敗
 			return 0;
 		}
@@ -513,19 +538,22 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			//全角チェック
 			if (isZenkaku(&cell->name) == true)
 			{
-//				std::cerr << "エラー：セルに全角が使用されています。半角英数でリネームしてください。: " << cell->name << "\n";
-				LOGE << "エラー：セルに全角が使用されています。半角英数でリネームしてください。: " << cell->name;
+				COE( "エラー：セルに全角が使用されています。半角英数でリネームしてください。: " + cell->name );
+
+				//LOGE << spritestudio6::SsCharConverter::utf8_to_sjis("エラー：セルに全角が使用されています。半角英数でリネームしてください。: ") << cell->name;
+
 				convert_error_exit = true;	//エラーが発生コンバート失敗
 				return 0;
 			}
 		}
 	}
 
+	COI( "convert animetion" );
 	//アニメーション警告
 	if (proj->animeList.size() == 0)
 	{
 //		std::cerr << "警告：アニメーションが存在しません" << "\n";
-		LOGE << "警告：アニメーションが存在しません";
+		COE( "警告：アニメーションが存在しません" );
 		convert_error_exit = true;	//エラーが発生コンバート失敗
 		return 0;
 	}
@@ -548,7 +576,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		if ( isZenkaku( &animePack->name ) == true )
 		{
 //			std::cerr << "エラー：ファイル名に全角が使用されています。半角英数でリネームしてください。: " << animePack->name << "\n";
-			LOGE << "エラー：ファイル名に全角が使用されています。半角英数でリネームしてください。: " << animePack->name;
+			COE( "エラー：ファイル名に全角が使用されています。半角英数でリネームしてください。: " + animePack->name );
 			convert_error_exit = true;	//エラーが発生コンバート失敗
 			return 0;
 		}
@@ -572,7 +600,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			if ( isZenkaku( &part->name ) == true )
 			{
 //				std::cerr << "エラー：パーツ名に全角が使用されています。半角英数でリネームしてください。: " << part->name << "\n";
-				LOGE << "エラー：パーツ名に全角が使用されています。半角英数でリネームしてください。: " << part->name;
+				COE( "エラー：パーツ名に全角が使用されています。半角英数でリネームしてください。: " + part->name );
 				convert_error_exit = true;	//エラーが発生コンバート失敗
 				return 0;
 			}
@@ -603,7 +631,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					{
 						partData->add(Lump::s16Data(spritestudio6::SsPartType::null, "type"));
 //						std::cerr << "警告：参照のないインスタンスパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
-						LOGE << "警告：参照のないインスタンスパーツが存在します: " << animePack->name << ".ssae " << part->name;
+						COE( "警告：参照のないインスタンスパーツが存在します: " + animePack->name + ".ssae " + part->name );
 					}
 					else
 					{
@@ -618,7 +646,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					partData->add(Lump::s16Data(spritestudio6::SsPartType::null, "type"));
 					//未実装　ワーニングを表示しNULLパーツにする
 //					std::cerr << "警告：参照のないエフェクトパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
-					LOGE << "警告：参照のないエフェクトパーツが存在します: " << animePack->name << ".ssae " << part->name;
+					COE( "警告：参照のないエフェクトパーツが存在します: " + animePack->name + ".ssae " + part->name );
 				}
 				else
 				{
@@ -628,7 +656,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			default:
 				//未対応パーツ　ワーニングを表示しNULLパーツにする
 //				std::cerr << "警告：未対応のパーツ種別が使われています: " << animePack->name << ".ssae " << part->name << "\n";
-				LOGE << "警告：未対応のパーツ種別が使われています: " << animePack->name << ".ssae " << part->name;
+				COE( "警告：未対応のパーツ種別が使われています: " + animePack->name + ".ssae " + part->name );
 				partData->add(Lump::s16Data(spritestudio6::SsPartType::null, "type"));
 				break;
 			}
@@ -1451,7 +1479,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				if ( isZenkaku( &str ) == true )
 				{
 //					std::cerr << "エラー：ラベルに全角が使用されています。半角英数でリネームしてください。: " << str << "\n";
-					LOGE << "エラー：ラベルに全角が使用されています。半角英数でリネームしてください。: " << str;
+					COE( "エラー：ラベルに全角が使用されています。半角英数でリネームしてください。: " + str );
 					convert_error_exit = true;	//エラーが発生コンバート失敗
 					return 0;
 				}
@@ -1507,10 +1535,13 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 #ifdef    _WIN32
 //				std::string outputfile = get_sspkg_metapath() + anime->name + ".png";
 				std::string outputfile = sspkg_info::getInst()->get_sspkg_metapath() + "thumbnail.png";
-				
 #else
                 std::string outputfile = sspkg_info::getInst()->get_sspkg_metapath() + anime->name + ".png";
 #endif
+
+				// ConverterOpenGLOutputBitMapImage 内の stbi_write_png は fopen を使っており narrow 文字のみなのでWin向けにSJIS化が必要。
+				// ToDo: sspkg 以外で Win の全角対応をする場合、 ConverterOpenGLOutputBitMapImage 側に以下相当の変換を追加。
+				outputfile = spritestudio6::SsCharConverter::convert_path_string(outputfile);
 
 				//filelist.push_back(outputfile);
 				if (!isWrite)
@@ -1806,7 +1837,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				default:
 					//未使用のコマンドが含まれている
 					//std::cerr << "警告：未使用のエフェクトコマンドが含まれています。 \n";
-					LOGE << "警告：未使用のエフェクトコマンドが含まれています。";
+					COE( "警告：未使用のエフェクトコマンドが含まれています。" );
 					break;
 				}
 			}
@@ -1819,12 +1850,8 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	parseParts_ssqe( topLump, proj, imageBaseDir );
 
 //	std::cerr << "convert end" << "\n";
-#ifdef _WIN32
-	LOGE << "convert end" << "\n";
-#else
-	std::cerr << "convert end" << "\n" << std::endl;
-#endif
-
+	COE("convert end");
+	
 	return topLump;
 }
 
@@ -1874,25 +1901,31 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 	const std::string imageBaseDir = options.imageBaseDir;
 	const int outputFormat = options.outputFormat;
 
+	std::string outputdirUTF8;
+	// 事前の parseArguments 処理時にUTF8変換するようにしたためここでの変換をカットしました。
+	//outputdirUTF8 = spritestudio6::SsCharConverter::sjis_to_utf8(outPath);
+	outputdirUTF8 = outPath;
+
+	COI("output directory: " + outputdirUTF8);
+
+
 	if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
 	{
-		sspkg_info::getInst()->init_sspkg(outPath , outFName);
+		try {
+			sspkg_info::getInst()->init_sspkg(outputdirUTF8, outFName);
+		}
+		catch (...)
+		{
+			COE( "init_sspkg Error" );
+
+			return;
+		}
 	}
 
-
-	//std::cerr << convert_console_string( sspjPath ) << "\n";
-	LOGE << convert_console_string(sspjPath);
 	spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(sspjPath);
-	
 
-	fs::path logfilepath = fs::path(outPath).replace_filename("convert.log");
-
-
-//	static plog::ConsoleAppender<plog::TxtFormatter> consoleAppender;
-//	static plog::RollingFileAppender<plog::TxtFormatter> fileAppender(logfilepath.c_str());
-
-	static plog::ConsoleAppender<plog::MessageOnlyFormatter> consoleAppender;
-	static plog::RollingFileAppender<plog::MessageOnlyFormatter> fileAppender(logfilepath.c_str());
+	fs::path logfilepath = fs::path(outputdirUTF8).replace_filename("convert.log");
+//	static plog::RollingFileAppender<plog::MessageOnlyFormatter> fileAppender(logfilepath.c_str());
 
 
 	if (isLogout)
@@ -1901,16 +1934,15 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		{
 			fs::remove(logfilepath.c_str());
 		}
-		plog::init(plog::info, &consoleAppender).addAppender(&fileAppender);
-	}
-	else
-	{
-		plog::init(plog::info, &consoleAppender);
+//		plog::init(plog::info, &fileAppender);
+		logger.setOutputLogFile(logfilepath.c_str());
+		logger.setOutputLogFileMode(true);
 	}
 
+	//COE( convert_console_string(sspjPath) ); 
 
-//	plog::init(plog::info, logfilepath.c_str() , 1024 * 10, 1);
 
+	COI( "parseParts " );
 
 	Lump* lump;
 	try
@@ -1922,6 +1954,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		else
 		{
 			convert_error_exit = true;	//エラーが発生
+			COE ( "Convert Error " );
 		}
 	}
 	catch (...)
@@ -1934,6 +1967,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		//データにエラーがありコンバートを中止した
 		//ファイルの出力を行なわない
 //		std::cerr << "データにエラーがありコンバートを中止しました \n";
+		COE("データにエラーがありコンバートを中止しました ");
 
 #ifdef _WIN32
 		LOGE << "データにエラーがありコンバートを中止しました ";
@@ -1948,6 +1982,8 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 
 		if (outputFormat == OUTPUT_FORMAT_FLAG_JSON)
 		{
+			COI( "convert type : OUTPUT_FORMAT_FLAG_JSON " );
+
 //			out.open((outPath + ".json").c_str(), std::ios_base::out);
 			std::string outPathJson = outPath + outFName + ".json";
 
@@ -1960,20 +1996,27 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 			else
 			{
 //				std::cerr << messageErrorFileOpen << convert_console_string(outPathJson) << std::endl;
-				LOGE << messageErrorFileOpen << convert_console_string(outPathJson) << std::endl;
+				COE(messageErrorFileOpen + convert_console_string(outPathJson));
 			}
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_CSOURCE)
 		{
+			COI("convert type : OUTPUT_FORMAT_FLAG_CSOURCE ");
+
 			// out.open((outPath + ".c").c_str(), std::ios_base::out);
 			// LumpExporter::saveCSource(out, encoding, lump, "topLabel", creatorComment);
 //			std::cerr << "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***"  << std::endl;
-			LOGE << "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***";
+			COE( "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***" );
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{
+			COI( "convert type : OUTPUT_FORMAT_FLAG_SSFB " );
+
 //			out.open((outPath + ".ssfb").c_str(), std::ios_base::binary | std::ios_base::out);
 			std::string outPathSsfb = outPath + outFName + ".ssfb";
+
+			COI( "outPathSsfb " + outPathSsfb );
+
 
 			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
 						, std::ios_base::binary | std::ios_base::out);
@@ -1984,11 +2027,13 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 			else
 			{
 				//std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
-				LOGE << messageErrorFileOpen << convert_console_string(outPathSsfb);
+				COE( messageErrorFileOpen + convert_console_string(outPathSsfb) );
 			}
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
 		{
+			COI( "convert type : OUTPUT_FORMAT_FLAG_SSPKG ");
+
 			std::string outPathSsfb = sspkg_info::getInst()->get_sspkg_temppath() + outFName + ".ssfb";//出力はFB
 
 			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
@@ -2006,11 +2051,13 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 			else
 			{
 //				std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
-				LOGE << messageErrorFileOpen << convert_console_string(outPathSsfb);
+				COE( messageErrorFileOpen +  convert_console_string(outPathSsfb) );
 			}
 		}
 		else
 		{
+			COI( "convert type : OUTPUT_FORMAT_FLAG_SSBP " );
+
 			std::string outPathSsfb = outPath + outFName + ".ssbp";
 			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
 						, std::ios_base::binary | std::ios_base::out);
@@ -2021,7 +2068,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 			else
 			{
 //				std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
-				LOGE << messageErrorFileOpen << convert_console_string(outPathSsfb);
+				COE( messageErrorFileOpen + convert_console_string(outPathSsfb) );
 			}
 		}
 	/////////////
@@ -2099,6 +2146,7 @@ public:
 
 bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args, std::string& illegalArgument)
 {
+
 	if (opt == "-h")
 	{
 		options.isHelp = true;
@@ -2139,19 +2187,23 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 
 	else if (opt == "-o")
 	{
+
 		if (!args.hasNext()) return false;
 
 		options.outputDir = args.next();
+		//COI( "outputDir : " + options.outputDir );
 	}
 	else if (opt == "-p")
 	{
 		options.endAfterStop = true;
+		COI( "pauseMode : On" );
 	}
 	else if (opt == "-l")
 	{
 		std::cout << "output log mode" << std::endl;
 		isLogout = true;
 //		options.isOutputLog = true;
+		COI( "output Log : On" );
 	}
 	else if (opt == "-f")
 	{
@@ -2166,11 +2218,19 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 #ifdef _WIN32
 	else if (opt == "-c")
 	{
+		COI( "argumentEncodeMode" );
 		if (!args.hasNext()) return false;
 
 		std::string argumentEncode = args.next();
-		if (argumentEncode == "utf8") options.argumentEncode = ARGUMENT_ENCODE_UTF8;
-		else if (argumentEncode == "sjis") options.argumentEncode = ARGUMENT_ENCODE_SJIS;
+		if (argumentEncode == "utf8") {
+			options.argumentEncode = ARGUMENT_ENCODE_UTF8;
+			COI(  "Encode : utf-8" );
+		}
+		else if (argumentEncode == "sjis") {
+			options.argumentEncode = ARGUMENT_ENCODE_SJIS;
+			COI( "Encode : sjis" );
+		}
+
 	}
 #else
 #endif	/* def _WIN32 */
@@ -2180,10 +2240,6 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		illegalArgument = opt;
 		return false;
 	}
-
-
-
-
 
 	// success
 	return true;
@@ -2202,6 +2258,8 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 	options.argumentEncode = ARGUMENT_ENCODE_UTF8;
 #endif	/* def _WIN32 */
 
+	COI( "#### parseOption ####" );
+
 	//引数解析
 	Options::StringList inList;
 	ArgumentPointer args(argc, argv);
@@ -2214,11 +2272,15 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 	while (args.hasNext())
 	{
 		std::string name = args.next();
+
+		//COI( name );
+
 		if (name[0] == '-')
 		{
 			bool success = parseOption(options, name, args, illegalArgument);
 			if (!success)
 			{
+				COE( "### Error illegalArgument!!! ###" );
 				return false;
 			}
 		}
@@ -2230,7 +2292,9 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 			{
 			case ARGUMENT_ENCODE_SJIS:
 #ifdef _WIN32
+
 				nameUTF8 = 	spritestudio6::SsCharConverter::sjis_to_utf8(name);;
+//				LOGI << "name : (sjis)" << nameUTF8;
 				break;
 #else
 				/* Fall-Through */
@@ -2242,11 +2306,18 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 				break;
 			}
 
+
 			inList.push_back(nameUTF8);
 		}
 	}
 
 	options.inList = inList;
+
+	if (options.argumentEncode == ARGUMENT_ENCODE_SJIS)
+	{
+		options.outputDir = spritestudio6::SsCharConverter::sjis_to_utf8(options.outputDir);
+	}
+
 	// success
 	return true;
 }
@@ -2281,10 +2352,10 @@ int convertMain(int argc, const char * argv[])
 	{
 		// 引数が不正
 //		std::cerr << "Invalid arguments: " << illegalArgument << std::endl;
-		LOGE << "Invalid arguments: " << illegalArgument << std::endl;
+		COE( "Invalid arguments: " + illegalArgument );
 
 //		std::cout << HELP;
-		LOGI << HELP;
+		COI( HELP );
 
 		return SSPC_ILLEGAL_ARGUMENT;
 	}
@@ -2307,7 +2378,7 @@ int convertMain(int argc, const char * argv[])
 
 		if (!ConverterOpenGLInit())
 		{
-			std::cout << "OpenGL not initialized \n" << std::endl;
+			COE( "OpenGL not initialized ");
 		}
 	}
 	else {
@@ -2319,6 +2390,8 @@ int convertMain(int argc, const char * argv[])
 	}
 #endif
 
+	COI( "### Input File Check ###" );
+
 	// *** 入力ファイル名チェック
 	std::vector<std::string> sources;
 	{
@@ -2328,7 +2401,9 @@ int convertMain(int argc, const char * argv[])
 		for (Options::StringList::iterator it = in.begin(); it != in.end(); it++)
 		{
 			const std::string& str = *it;
-		
+
+			COI( "Find : " + str );
+
 #ifdef _WIN32
 			// Win32プラットフォーム用コード。Win32APIを使ってワイルドカード展開する
 			// MEMO: FileUtilで使用している文字コードはSJISであることに注意
@@ -2343,7 +2418,7 @@ int convertMain(int argc, const char * argv[])
 			else
 			{
 //				std::cerr << "Cannot find input file: " << convert_console_string(str) << std::endl;
-				LOGE << "Cannot find input file: " << convert_console_string(str);
+				COE(  "Cannot find input file: " + convert_console_string(str) );
 				error = true;
 			}
 #else
@@ -2364,6 +2439,8 @@ int convertMain(int argc, const char * argv[])
 		}
 		if (error)
         {
+			COE( "### Error illegalArgument!!! ###" );
+
 			if (options.endAfterStop)
 			{
 				getc(stdin);
@@ -2378,18 +2455,12 @@ int convertMain(int argc, const char * argv[])
 	LumpExporter::StringEncoding encoding = options.encoding;
 	
 
+	COI( "### Run Convert ###" );
 
 	// コンバート実行
 	for (std::vector<std::string>::const_iterator it = sources.begin(); it != sources.end(); it++)
 	{
 		std::string sspjPath = *it;
-
-		//fs::path makepath = fs::path(sspjPath);
-
-		//std::string outPath = FileUtil::replaceExtension(sspjPath, ".sspj", ".ssbp");
-
-		//std::string outPath = FileUtil::getFilePath(sspjPath);
-		//std::string outFName = FileUtil::getFileName(sspjPath);//拡張子なし
 
 
 #if _WIN32
@@ -2398,8 +2469,8 @@ int convertMain(int argc, const char * argv[])
 		sspjPath = replaceString(sspjPath, "\\", "/");
 #endif
 
-		std::string outPath = fs::path(sspjPath).replace_filename("").string();// .replace_extension("").string();
-		std::string outFName = fs::path(sspjPath).filename().replace_extension("").string();// +fs::path(sspjPath).extension().string();
+		std::string outPath = fs::path(sspjPath).replace_filename("").string();
+		std::string outFName = fs::path(sspjPath).filename().replace_extension("").string();
 
 		//パスが指定されている場合
 		if ( options.outputDir != "" )
@@ -2410,43 +2481,18 @@ int convertMain(int argc, const char * argv[])
 #else
 			options.outputDir = replaceString(options.outputDir, "\\", "/");
 #endif
-
 			outPath = FileUtil::normalizeFilePath(options.outputDir);
 
-#if 0
-			int st = 0;
-#ifdef _WIN32
-			st = (int)(outPath.find_last_of("\\"));
-#else
-            st = (int)(outPath.find_last_of("/"));
-#endif
-			std::string ssbpname = outPath.substr(st+1);
-
-#ifdef _WIN32
-			if ( options.outputDir.substr(options.outputDir.length() - 1) != "\\" )
-#else
-			if ( options.outputDir.substr(options.outputDir.length() - 1) != "/" )
-#endif
-			{
-				//最後の１文字が"\\"でない場合付加する
-#ifdef _WIN32
-				options.outputDir = options.outputDir + "\\";
-#else
-                options.outputDir = options.outputDir + "/";
-#endif
-			}
-
-//			outPath = options.outputDir + ssbpname;
-
-			outPath = options.outputDir;
-#endif
 		}
 
 		if (options.isVerbose)
 		{
 			std::cout << "Convert: " << sspjPath << " -> " << outPath << std::endl;
 		}
-		
+
+		COI( "Convert : " + sspjPath );
+		//COI( "Convert outPath : " + outPath );
+
 
 		convertProject(outPath, outFName, encoding, sspjPath, options, creatorComment);
 
@@ -2454,7 +2500,12 @@ int convertMain(int argc, const char * argv[])
 		//手前でパックすると失敗しそう
 		if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
 		{
-			sspkg_info::getInst()->make_sspkg();
+			if (!sspkg_info::getInst()->make_sspkg())
+			{
+				COE("An error occured during making zip file. " + outPath);
+
+				convert_error_exit = true;	//エラーが発生コンバート失敗
+			}
 			sspkg_info::getInst()->sspkg_cleanup_file();
 		}
 	}
@@ -2464,25 +2515,39 @@ int convertMain(int argc, const char * argv[])
 		sspkg_info::destroy();
 	}
 
-	if (options.endAfterStop)
-	{
-		getc(stdin);
-	}
 
 	if ( convert_error_exit == true )
 	{
+		COI("Convert : FAILED");
 		//データにエラーがありコンバートを中止した
-	    return SSPC_SSPJ_PARSE_FAILED;
+		logger.LogFileFlush();
+
+		if (options.endAfterStop)
+		{
+			getc(stdin);
+		}
+
+		return SSPC_SSPJ_PARSE_FAILED;
 	}
 	else
 	{
-	    return SSPC_SUCCESS;
+		COI("Convert : SUCCESS");
+		logger.LogFileFlush();
+
+		if (options.endAfterStop)
+		{
+			getc(stdin);
+		}
+
+		return SSPC_SUCCESS;
 	}
 }
 
 
 int main(int argc, const char * argv[])
 {
+//	plog::init(plog::info, &consoleAppender);
+
 
 	int resultCode = convertMain(argc, argv);
 
