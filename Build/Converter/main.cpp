@@ -1970,7 +1970,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		COE("データにエラーがありコンバートを中止しました ");
 
 #ifdef _WIN32
-		LOGE << "データにエラーがありコンバートを中止しました ";
+		//LOGE << "データにエラーがありコンバートを中止しました ";
 #else
 		std::cerr << "データにエラーがありコンバートを中止しました \n";
 #endif
@@ -2496,17 +2496,25 @@ int convertMain(int argc, const char * argv[])
 
 		convertProject(outPath, outFName, encoding, sspjPath, options, creatorComment);
 
-		//ssfbはここまでファイルロックされている 最終的なクローズはここでされている？
-		//手前でパックすると失敗しそう
-		if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
+		if (convert_error_exit)
 		{
-			if (!sspkg_info::getInst()->make_sspkg())
+			// convertProject 内で失敗した場合は続く処理は行わない。
+			COE("An error occured during converting Project.");
+		}
+		else
+		{
+			//ssfbはここまでファイルロックされている 最終的なクローズはここでされている？
+			//手前でパックすると失敗しそう
+			if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
 			{
-				COE("An error occured during making zip file. " + outPath);
+				if (!sspkg_info::getInst()->make_sspkg())
+				{
+					COE("An error occured during making zip file. " + outPath);
 
-				convert_error_exit = true;	//エラーが発生コンバート失敗
+					convert_error_exit = true;	//エラーが発生コンバート失敗
+				}
+				sspkg_info::getInst()->sspkg_cleanup_file();
 			}
-			sspkg_info::getInst()->sspkg_cleanup_file();
 		}
 	}
 
