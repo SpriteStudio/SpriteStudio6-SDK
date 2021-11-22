@@ -1,4 +1,4 @@
-﻿CMAKE_MINIMUM_REQUIRED(VERSION 3.14)
+﻿CMAKE_MINIMUM_REQUIRED(VERSION 3.15)
 project(sssdk)
 
 # command options
@@ -47,3 +47,6 @@ enable_testing()
 
 # Ss6Converter
 add_subdirectory(Converter)
+
+# SSViewer2
+add_subdirectory(Viewer2)
