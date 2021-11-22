@@ -24,7 +24,7 @@ pushd Converter
 /bin/mkdir build
 pushd build
 cmake -DCMAKE_TOOLCHAIN_FILE="../../vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=${BUILDTYPE} ..
-make -j4
+cmake --build . --parallel
 ctest .
 popd > /dev/null # build
 popd > /dev/null # Converter

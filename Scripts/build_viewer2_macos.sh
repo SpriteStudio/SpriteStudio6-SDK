@@ -22,7 +22,7 @@ ${Jucer2CMake} reprojucer ./Viewer2.jucer ./FRUT/prefix/FRUT/cmake/Reprojucer.cm
 mkdir cmakeBuild
 pushd cmakeBuild
 cmake .. -DCMAKE_OSX_ARCHITECTURES=x86_64  -DCMAKE_BUILD_TYPE=${BUILDTYPE}
-cmake --build .
+cmake --build . --parallel
 /bin/cp ../misc/Info.plist ./Viewer2.app/Contents/Info.plist
 popd > /dev/null # cmakeBuild
 popd > /dev/null # ${BUILDDIR}/Viewer2

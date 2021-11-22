@@ -17,7 +17,7 @@ pushd "flatbuffers"
 
 git clean -fdx .
 cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% . || exit /b 1
-cmake --build . --target ALL_BUILD -- /p:Configuration=%BUILD_TYPE% || exit /b 1
+cmake --build . --target ALL_BUILD --parallel -- /p:Configuration=%BUILD_TYPE% || exit /b 1
 set FLATC="%BUILDDIR%\Converter\flatbuffers\%BUILD_TYPE%\flatc.exe"
 
 popd

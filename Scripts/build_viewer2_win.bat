@@ -21,6 +21,6 @@ rmdir /S /Q cmakeBuild
 mkdir cmakeBuild
 pushd cmakeBuild
 cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
-cmake --build . --target ALL_BUILD -- /p:Configuration=%BUILD_TYPE% || exit /b 1
+cmake --build . --target ALL_BUILD --parallel -- /p:Configuration=%BUILD_TYPE% || exit /b 1
 popd
 popd

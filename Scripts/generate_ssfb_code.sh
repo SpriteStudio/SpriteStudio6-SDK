@@ -16,7 +16,7 @@ pushd flatbuffers
 
 git clean -fdx .
 cmake .
-cmake --build .
+cmake --build .  --parallel
 FLATC=$(pwd)/flatc
 
 popd > /dev/null # flatbuffers

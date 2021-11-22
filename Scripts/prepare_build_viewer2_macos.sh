@@ -18,7 +18,7 @@ pushd FRUT
 mkdir build 
 pushd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../prefix -DJUCE_ROOT=../../JUCE
-cmake --build . --target install
+cmake --build . --target install --parallel
 popd > /dev/null # build
 popd > /dev/null # FRUT
 
