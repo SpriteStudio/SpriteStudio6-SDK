@@ -10,7 +10,6 @@ TOOLSDIR=${BASEDIR}/Tools
 TOOLSDIR=`cd ${TOOLSDIR} && pwd -P`
 
 
-${SCRIPTDIR}/prepare_converter_macos.sh 
 ${SCRIPTDIR}/build_converter_macos.sh Release
 ${SCRIPTDIR}/build_convertergui_macos.sh Release
 
