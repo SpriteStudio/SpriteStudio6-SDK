@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.14)
 
 project(Ss6Converter)
 
@@ -9,10 +9,6 @@ if(MSVC)
 add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()
-
-
-find_package(ZLIB REQUIRED)
-find_package(minizip CONFIG REQUIRED)
 
 # command options
 option(ENABLE_CCACHE "Enable ccache?" ON)
@@ -37,6 +33,29 @@ endif()
 if(NOT TARGET ssHelper)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common Ss6Converter_Common)
 endif()
+
+# dependency libraries
+include(FetchContent)
+
+## zlib-ng
+FetchContent_Declare(
+        zlib
+        GIT_REPOSITORY https://github.com/zlib-ng/zlib-ng.git
+        GIT_TAG        c69f78bc5e18a0f6de2dcbd8af863f59a14194f0 # 2.0.5
+)
+FetchContent_MakeAvailable(zlib)
+include_directories(${zlib_SOURCE_DIR}) # for zlib-ng.h
+include_directories(${zlib_BINARY_DIR}) # for zconf-ng.h
+
+## minizip-ng
+SET(ZLIB_ROOT, "${PROJECT_SOURCE_DIR}/../libzlib")
+FetchContent_Declare(
+        minizip
+        GIT_REPOSITORY https://github.com/zlib-ng/minizip-ng.git
+        GIT_TAG        99d39015e29703af2612277180ea586805f655ea # 3.0.3
+)
+FetchContent_MakeAvailable(minizip)
+include_directories(${minizip_SOURCE_DIR})
 
 set(FlatBuffers_Library_SRCS
     flatbuffers/include/flatbuffers/code_generators.h
@@ -137,8 +156,8 @@ include_directories(plog/include)
 
 
 #include_directories(zlib)
-include_directories(${ZLIB_INCLUDE_DIR})
-include_directories(${MINIZIP_INCLUDE_DIR})
+#include_directories(${ZLIB_INCLUDE_DIR})
+#include_directories(${MINIZIP_INCLUDE_DIR})
 
 
 add_subdirectory(glad)
@@ -160,14 +179,16 @@ if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
 endif()
 
 
-target_link_libraries(Ss6Converter ssLoader ssAnimator ssHelper ZLIB::ZLIB minizip::minizip glfw glad)
-
-#target_link_libraries(Ss6Converter ssAnimator)
-#target_link_libraries(Ss6Converter ssHelper)
-#target_link_libraries(Ss6Converter ZLIB::ZLIB)
-#target_link_libraries(Ss6Converter PRIVATE minizip::minizip)
-#target_link_libraries(Ss6Converter glfw)
-#target_link_libraries(Ss6Converter glad)
+target_link_libraries(Ss6Converter ssLoader)
+target_link_libraries(Ss6Converter ssAnimator)
+target_link_libraries(Ss6Converter ssHelper)
+if (NOT APPLE)
+    # minizip-ng uses libcompression instead of zlib-ng at APPLE environment
+    target_link_libraries(Ss6Converter zlib)
+endif()
+target_link_libraries(Ss6Converter minizip)
+target_link_libraries(Ss6Converter glfw)
+target_link_libraries(Ss6Converter glad)
 
 
 
