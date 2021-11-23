@@ -34,6 +34,10 @@ if(NOT TARGET ssHelper)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common Ss6Converter_Common)
 endif()
 
+if(NOT TARGET glad)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad Ss6Converter_glad)
+endif()
+
 # dependency libraries
 include(FetchContent)
 
@@ -117,7 +121,6 @@ if(WIN32 OR APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_render_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.cpp
-#        ${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps/glad_gl.c
     )
 
     list(APPEND Ss6Converter_HEADERS 
@@ -126,10 +129,10 @@ if(WIN32 OR APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/stb_image_write.h
- #       ${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps/glad/gl.h
-    )
+     )
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad/include)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps)
 
 #    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
@@ -148,7 +151,6 @@ add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS})
 
 
 
-include_directories(glad/include)
 include_directories(glfw/include)
 include_directories(filesystem/include)
 include_directories(json/include)
@@ -160,7 +162,6 @@ include_directories(plog/include)
 #include_directories(${MINIZIP_INCLUDE_DIR})
 
 
-add_subdirectory(glad)
 add_subdirectory(glfw)
 
 #add_subdirectory(zlib)

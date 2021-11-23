@@ -7,7 +7,6 @@ set DEPENDDIR=%BUILDDIR%\Depends
 set TOOLSDIR=%BASEDIR%\Tools
 @echo on
 
-call "%CURDIR%\prepare_build_viewer2_win.bat" || exit /b 1
 call "%CURDIR%\build_viewer2_win.bat" Release || exit /b 1
 
 pushd %BASEDIR%

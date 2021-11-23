@@ -2,7 +2,7 @@
 #include <cstdlib>
 
 
-#include "ssOpenGLSetting.h"
+#include "../../Drawer/ssOpenGLSetting.h"
 
 /*
 #ifndef _WIN32

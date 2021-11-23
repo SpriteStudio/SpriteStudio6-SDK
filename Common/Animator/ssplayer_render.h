@@ -2,7 +2,7 @@
 #define __SSPLAYER_RENDER__
 
 
-#include "sstypes.h"
+#include "../Loader/sstypes.h"
 
 
 namespace spritestudio6
