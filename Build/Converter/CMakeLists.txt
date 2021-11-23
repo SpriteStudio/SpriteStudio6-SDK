@@ -41,25 +41,13 @@ endif()
 # dependency libraries
 include(FetchContent)
 
-## zlib-ng
 FetchContent_Declare(
         zlib
-        GIT_REPOSITORY https://github.com/zlib-ng/zlib-ng.git
-        GIT_TAG        c69f78bc5e18a0f6de2dcbd8af863f59a14194f0 # 2.0.5
+        GIT_REPOSITORY https://github.com/madler/zlib
+        GIT_TAG        v1.2.11
 )
 FetchContent_MakeAvailable(zlib)
-include_directories(${zlib_SOURCE_DIR}) # for zlib-ng.h
-include_directories(${zlib_BINARY_DIR}) # for zconf-ng.h
-
-## minizip-ng
-SET(ZLIB_ROOT, "${PROJECT_SOURCE_DIR}/../libzlib")
-FetchContent_Declare(
-        minizip
-        GIT_REPOSITORY https://github.com/zlib-ng/minizip-ng.git
-        GIT_TAG        99d39015e29703af2612277180ea586805f655ea # 3.0.3
-)
-FetchContent_MakeAvailable(minizip)
-include_directories(${minizip_SOURCE_DIR})
+include_directories(${zlib_SOURCE_DIR})
 
 set(FlatBuffers_Library_SRCS
     flatbuffers/include/flatbuffers/code_generators.h
@@ -91,8 +79,8 @@ set(Ss6Converter_SRCS
     LumpExporter.cpp
     sspkg.cpp
 
-#    zlib/contrib/minizip/zip.c
-#    zlib/contrib/minizip/ioapi.c
+    ${zlib_SOURCE_DIR}/contrib/minizip/zip.c
+    ${zlib_SOURCE_DIR}/contrib/minizip/ioapi.c
 )
 
 set(Ss6Converter_HEADERS
@@ -103,7 +91,7 @@ set(Ss6Converter_HEADERS
     LumpExporter.h
     SsPlayerConverter.h
     sspkg.h
-#    zlib/contrib/minizip/zip.h
+    ${zlib_SOURCE_DIR}/contrib/minizip/zip.h
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -157,15 +145,7 @@ include_directories(json/include)
 include_directories(plog/include)
 
 
-#include_directories(zlib)
-#include_directories(${ZLIB_INCLUDE_DIR})
-#include_directories(${MINIZIP_INCLUDE_DIR})
-
-
 add_subdirectory(glfw)
-
-#add_subdirectory(zlib)
-
 
 
 if(NOT (WIN32 OR APPLE))
@@ -183,11 +163,7 @@ endif()
 target_link_libraries(Ss6Converter ssLoader)
 target_link_libraries(Ss6Converter ssAnimator)
 target_link_libraries(Ss6Converter ssHelper)
-if (NOT APPLE)
-    # minizip-ng uses libcompression instead of zlib-ng at APPLE environment
-    target_link_libraries(Ss6Converter zlib)
-endif()
-target_link_libraries(Ss6Converter minizip)
+target_link_libraries(Ss6Converter zlib)
 target_link_libraries(Ss6Converter glfw)
 target_link_libraries(Ss6Converter glad)
 

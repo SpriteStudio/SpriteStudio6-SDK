@@ -3,9 +3,8 @@
 
 
 
-#include <zlib-ng.h>
-#include <mz_compat.h>
-//#include <zlib/contrib/minizip/zip.h>
+#include <zlib.h>
+#include <contrib/minizip/zip.h>
 #include <nlohmann/json.hpp>
 
 #include <iostream>
