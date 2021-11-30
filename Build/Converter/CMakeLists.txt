@@ -163,7 +163,7 @@ endif()
 target_link_libraries(Ss6Converter ssLoader)
 target_link_libraries(Ss6Converter ssAnimator)
 target_link_libraries(Ss6Converter ssHelper)
-target_link_libraries(Ss6Converter zlib)
+target_link_libraries(Ss6Converter zlibstatic)
 target_link_libraries(Ss6Converter glfw)
 target_link_libraries(Ss6Converter glad)
 
