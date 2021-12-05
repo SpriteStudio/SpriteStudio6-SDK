@@ -39,8 +39,10 @@ if(NOT TARGET glad)
 endif()
 
 # dependency libraries
+message("start fetching dependency libraries")
 include(FetchContent)
 
+message("fetch zlib")
 FetchContent_Declare(
         zlib
         GIT_REPOSITORY https://github.com/madler/zlib
@@ -49,29 +51,29 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(zlib)
 include_directories(${zlib_SOURCE_DIR})
 
-set(FlatBuffers_Library_SRCS
-    flatbuffers/include/flatbuffers/code_generators.h
-    flatbuffers/include/flatbuffers/base.h
-    flatbuffers/include/flatbuffers/flatbuffers.h
-    flatbuffers/include/flatbuffers/hash.h
-    flatbuffers/include/flatbuffers/idl.h
-    flatbuffers/include/flatbuffers/util.h
-    flatbuffers/include/flatbuffers/reflection.h
-    flatbuffers/include/flatbuffers/reflection_generated.h
-    flatbuffers/include/flatbuffers/stl_emulation.h
-    flatbuffers/include/flatbuffers/flexbuffers.h
-    flatbuffers/include/flatbuffers/registry.h
-    flatbuffers/include/flatbuffers/minireflect.h
-    flatbuffers/src/code_generators.cpp
-    flatbuffers/src/idl_parser.cpp
-    flatbuffers/src/idl_gen_text.cpp
-    flatbuffers/src/reflection.cpp
-    flatbuffers/src/util.cpp
-)
-include_directories(flatbuffers/include)
+message("fetch json")
+FetchContent_Declare(
+    json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG        v3.7.3)
+FetchContent_GetProperties(json)
+if(NOT json_POPULATED)
+  set(JSON_BuildTests OFF CACHE INTERNAL "") # skip json unit test
+  FetchContent_Populate(json)
+  add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
+message("fetch flatbuffers")
+FetchContent_Declare(
+    flatbuffers
+    GIT_REPOSITORY https://github.com/google/flatbuffers.git
+    GIT_TAG        v1.12.1)
+FetchContent_MakeAvailable(flatbuffers)
+include_directories(${flatbuffers_SOURCE_DIR}/include)
+
+message("finish fetching dependency libraries")
 
 set(Ss6Converter_SRCS
-    ${FlatBuffers_Library_SRCS}
     main.cpp
     BinaryDataWriter.cpp
     FileUtil.cpp
@@ -123,15 +125,6 @@ if(WIN32 OR APPLE)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad/include)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps)
 
-#    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
-
-if(APPLE)
-    #for install brew 
-#    include_directories(/usr/local/Cellar/glfw/3.3.2/)
-endif()
-
-
-
     add_definitions( -D_BACKBUFFER_RENDERING__) 
 endif()
 
@@ -141,7 +134,6 @@ add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS})
 
 include_directories(glfw/include)
 include_directories(filesystem/include)
-include_directories(json/include)
 include_directories(plog/include)
 
 
@@ -155,19 +147,10 @@ if(NOT (WIN32 OR APPLE))
     target_link_libraries(Ss6Converter ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter_Common/Helper/libssHelper.a)
 endif()
 
+set(PLATFORM_DEPS "")
 if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
-    target_link_libraries(Ss6Converter "-framework CoreFoundation")
+    set(PLATFORM_DEPS "-framework CoreFoundation")
 endif()
-
-
-target_link_libraries(Ss6Converter ssLoader)
-target_link_libraries(Ss6Converter ssAnimator)
-target_link_libraries(Ss6Converter ssHelper)
-target_link_libraries(Ss6Converter zlibstatic)
-target_link_libraries(Ss6Converter glfw)
-target_link_libraries(Ss6Converter glad)
-
-
 
 # add use opengl setting
 if(MSVC)
@@ -180,11 +163,17 @@ elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
     #include_directories(/usr/local/include)
     #link_directories(/usr/local/lib)
 
-    target_link_libraries(Ss6Converter "-framework OpenGL")
-    target_link_libraries(Ss6Converter "-framework AppKit")
-    target_link_libraries(Ss6Converter "-framework IOKit")
+    set(PLATFORM_DEPS "${PLATFORM_DEPS} -framework OpenGL")
+    set(PLATFORM_DEPS "${PLATFORM_DEPS} -framework AppKit")
+    set(PLATFORM_DEPS "${PLATFORM_DEPS} -framework IOKit")
+
+#    target_link_libraries(Ss6Converter "-framework OpenGL")
+#    target_link_libraries(Ss6Converter "-framework AppKit")
+#    target_link_libraries(Ss6Converter "-framework IOKit")
     ADD_DEFINITIONS(-DAPPLE)
 endif()
+
+target_link_libraries(Ss6Converter PRIVATE ssLoader ssAnimator ssHelper zlibstatic flatbuffers glfw glad nlohmann_json::nlohmann_json ${PLATFORM_DEPS})
 
 
 # --- If we are on OS X copy all the embedded libraries to the app bundle
