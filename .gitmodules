@@ -4,9 +4,6 @@
 [submodule "Build/Converter/filesystem"]
 	path = Build/Converter/filesystem
 	url = https://github.com/gulrak/filesystem.git
-[submodule "Build/Converter/plog"]
-	path = Build/Converter/plog
-	url = https://github.com/SergiusTheBest/plog.git
 [submodule "Build/Viewer2/JUCE"]
 	path = Build/Viewer2/JUCE
 	url = https://github.com/juce-framework/JUCE.git

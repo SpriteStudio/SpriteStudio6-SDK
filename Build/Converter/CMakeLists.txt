@@ -72,6 +72,13 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(flatbuffers)
 include_directories(${flatbuffers_SOURCE_DIR}/include)
 
+message("fetch plog")
+FetchContent_Declare(
+    plog
+    GIT_REPOSITORY https://github.com/SergiusTheBest/plog.git
+    GIT_TAG        1.1.5)
+FetchContent_MakeAvailable(plog)
+include_directories(${plog_SOURCE_DIR}/include)
 
 message("finish fetching dependency libraries")
 
@@ -132,15 +139,10 @@ endif()
 
 add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS})
 
-
-
 include_directories(glfw/include)
 include_directories(filesystem/include)
-include_directories(plog/include)
-
 
 add_subdirectory(glfw)
-
 
 if(NOT (WIN32 OR APPLE))
     # For Linux
