@@ -185,7 +185,7 @@ elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
     ADD_DEFINITIONS(-DAPPLE)
 endif()
 
-target_link_libraries(Ss6Converter PRIVATE ssLoader ssAnimator ssHelper flatbuffers glfw glad nlohmann_json::nlohmann_json ${PLATFORM_DEPS})
+target_link_libraries(Ss6Converter PRIVATE ssLoader ssAnimator ssHelper zlibstatic flatbuffers glfw glad nlohmann_json::nlohmann_json ${PLATFORM_DEPS})
 
 
 # --- If we are on OS X copy all the embedded libraries to the app bundle
