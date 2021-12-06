@@ -124,7 +124,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper)
 
 # for win & mac suport thumbnail
 if(WIN32 OR APPLE)
-    
+    message("fetch glfw")
+    FetchContent_Declare(
+            glfw
+            GIT_REPOSITORY https://github.com/glfw/glfw.git
+            GIT_TAG        3.3.5)
+    FetchContent_MakeAvailable(glfw)
+    include_directories(${glfw_SOURCE_DIR}/include)
+    include_directories(${glfw_SOURCE_DIR}/deps)
 
     list(APPEND Ss6Converter_SRCS 
         BackGroudRender.cpp
@@ -143,16 +150,11 @@ if(WIN32 OR APPLE)
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad/include)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps)
 
     add_definitions( -D_BACKBUFFER_RENDERING__) 
 endif()
 
 add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS})
-
-include_directories(glfw/include)
-
-add_subdirectory(glfw)
 
 if(NOT (WIN32 OR APPLE))
     # For Linux
@@ -172,10 +174,6 @@ if(MSVC)
     ADD_DEFINITIONS(/D_WIN32)
 
 elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
-#    find_package (glfw3 REQUIRED)
-
-    #include_directories(/usr/local/include)
-    #link_directories(/usr/local/lib)
 
     set(PLATFORM_DEPS "${PLATFORM_DEPS} -framework OpenGL")
     set(PLATFORM_DEPS "${PLATFORM_DEPS} -framework AppKit")
@@ -187,7 +185,7 @@ elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
     ADD_DEFINITIONS(-DAPPLE)
 endif()
 
-target_link_libraries(Ss6Converter PRIVATE ssLoader ssAnimator ssHelper zlibstatic flatbuffers glfw glad nlohmann_json::nlohmann_json ${PLATFORM_DEPS})
+target_link_libraries(Ss6Converter PRIVATE ssLoader ssAnimator ssHelper flatbuffers glfw glad nlohmann_json::nlohmann_json ${PLATFORM_DEPS})
 
 
 # --- If we are on OS X copy all the embedded libraries to the app bundle

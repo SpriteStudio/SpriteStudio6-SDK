@@ -1,3 +1,0 @@
-[submodule "Build/Converter/glfw"]
-	path = Build/Converter/glfw
-	url = https://github.com/glfw/glfw.git
