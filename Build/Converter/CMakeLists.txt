@@ -80,6 +80,17 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(plog)
 include_directories(${plog_SOURCE_DIR}/include)
 
+message("fetch filesystem")
+FetchContent_Declare(
+    filesystem
+    GIT_REPOSITORY https://github.com/gulrak/filesystem.git
+    GIT_TAG        v1.5.10)
+FetchContent_GetProperties(filesystem)
+if(NOT filesystem_POPULATED)
+  FetchContent_Populate(filesystem)
+  include_directories(${filesystem_SOURCE_DIR}/include)
+endif()
+
 message("finish fetching dependency libraries")
 
 set(Ss6Converter_SRCS
@@ -140,7 +151,6 @@ endif()
 add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS})
 
 include_directories(glfw/include)
-include_directories(filesystem/include)
 
 add_subdirectory(glfw)
 
