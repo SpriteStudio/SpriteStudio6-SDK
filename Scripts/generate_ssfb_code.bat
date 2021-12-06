@@ -13,13 +13,12 @@ if not "%1" == "" (
 pushd "%BUILDDIR%\Converter"
 
 rem Build flatc
-pushd "flatbuffers"
-
-git clean -fdx .
+rmdir /S /Q build
+mkdir build
+pushd build
 cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% . || exit /b 1
 cmake --build . --target ALL_BUILD --parallel -- /p:Configuration=%BUILD_TYPE% || exit /b 1
-set FLATC="%BUILDDIR%\Converter\flatbuffers\%BUILD_TYPE%\flatc.exe"
-
+set FLATC="%BUILDDIR%\Converter\build\_deps\flatbuffers-build\flatc.exe"
 popd
 
 rem generate ssfb code
