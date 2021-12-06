@@ -83,6 +83,11 @@ std::string SsCharConverter::sjis_to_utf8(const std::string &src) {
     srcWCharSize = srcWCharData.size(); // 再取得
 
     auto const destByteSize = ::WideCharToMultiByte(CP_UTF8, 0U, srcWCharData.data(), srcWCharSize, nullptr, 0, nullptr, nullptr);
+    // MEMO: destByteSizeが0の場合は処理を避けないと、throwされてしまうので……
+    if(destByteSize <= 0) {
+        return std::string();
+    }
+
     std::vector<char> dest(destByteSize, L'\0');
     if (::WideCharToMultiByte(CP_UTF8, 0U, srcWCharData.data(), srcWCharSize, dest.data(), destByteSize, nullptr, nullptr) == 0) {
         throw std::system_error{ static_cast<int>(::GetLastError()), std::system_category() };
