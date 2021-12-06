@@ -1,6 +1,3 @@
 [submodule "Build/Converter/glfw"]
 	path = Build/Converter/glfw
 	url = https://github.com/glfw/glfw.git
-[submodule "Build/Viewer2/JUCE"]
-	path = Build/Viewer2/JUCE
-	url = https://github.com/juce-framework/JUCE.git

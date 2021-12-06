@@ -21,7 +21,17 @@ if(CCACHE_EXE)
     endif()
 endif()
 
-add_subdirectory(JUCE)
+message("start fetching dependency libraries")
+include(FetchContent)
+
+message("fetch JUCE")
+FetchContent_Declare(
+    JUCE
+    GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
+    GIT_TAG        6.0.1)
+FetchContent_MakeAvailable(JUCE)
+
+message("finish fetching dependency libraries")
 
 if(MSVC)
 add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
