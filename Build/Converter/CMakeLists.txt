@@ -61,6 +61,7 @@ if(NOT json_POPULATED)
   set(JSON_BuildTests OFF CACHE INTERNAL "") # skip json unit test
   FetchContent_Populate(json)
   add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
+  include_directories(${json_SOURCE_DIR}/include)
 endif()
 
 message("fetch flatbuffers")
@@ -70,6 +71,7 @@ FetchContent_Declare(
     GIT_TAG        v1.12.1)
 FetchContent_MakeAvailable(flatbuffers)
 include_directories(${flatbuffers_SOURCE_DIR}/include)
+
 
 message("finish fetching dependency libraries")
 
