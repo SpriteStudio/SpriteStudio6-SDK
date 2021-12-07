@@ -12,15 +12,10 @@ if not "%1" == "" (
 )
 
 pushd %BUILDDIR%\Viewer2
-"%Jucer2CMake%"  reprojucer Viewer2.jucer FRUT\prefix\FRUT\cmake\Reprojucer.cmake  --juce-modules "%BUILDDIR%\Viewer2\JUCE\modules"
-
-copy /b addCMakelist.txt + CMakeLists.txt tempCMakeLists.txt
-copy tempCMakeLists.txt CMakeLists.txt
-
 rmdir /S /Q cmakeBuild
 mkdir cmakeBuild
 pushd cmakeBuild
 cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
-cmake --build . --target ALL_BUILD -- /p:Configuration=%BUILD_TYPE% || exit /b 1
+cmake --build . --target ALL_BUILD --parallel -- /p:Configuration=%BUILD_TYPE% || exit /b 1
 popd
 popd

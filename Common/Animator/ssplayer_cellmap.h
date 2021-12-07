@@ -1,7 +1,7 @@
 ﻿#ifndef __SSPLAYER_CELLMAP__
 #define __SSPLAYER_CELLMAP__
 
-#include "sstypes.h"
+#include "../Loader/sstypes.h"
 
 #include <memory>
 

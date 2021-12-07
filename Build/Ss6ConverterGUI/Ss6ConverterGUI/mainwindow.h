@@ -12,6 +12,7 @@
 #include <QScrollBar>
 #include <QThread>
 #include <QDesktopServices>
+#include <QStandardPaths>
 
 namespace Ui {
 class MainWindow;

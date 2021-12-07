@@ -1935,7 +1935,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 			fs::remove(logfilepath.c_str());
 		}
 //		plog::init(plog::info, &fileAppender);
-		logger.setOutputLogFile(logfilepath.c_str());
+		logger.setOutputLogFile(logfilepath.wstring());
 		logger.setOutputLogFileMode(true);
 	}
 

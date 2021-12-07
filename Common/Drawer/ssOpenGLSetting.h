@@ -5,15 +5,18 @@
 
 
 #ifdef USE_GLEW
-//#include <GL/GL.h>
-    #define GLEW_STATIC
-    #include <GL/glew.h>
-
-    #ifndef _WIN32
+    #if _WIN32 || _WIN64
+        #define GLEW_STATIC
+        #include <GL/glew.h>
+        #include <GL/gl.h>
+    #elif __APPLE__
+        #include <OpenGL/gl3.h>
         #include <OpenGL/gl.h>
         #include <OpenGL/glext.h>
+        #include <OpenGL/OpenGL.h>
+    #else
+        #include <GL/gl.h>
     #endif
-//    #include <GL/gl.h>
 #else
     #include <glad/glad.h>
     //#include <glad/gl.h>

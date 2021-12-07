@@ -9,8 +9,6 @@ Scripts
 | build_converter_win.bat        | [Windows] Ss6Converter のコマンドをビルドする                                        |
 | build_convertergui_macos.sh    | [macOS] Ss6Converter GUI プログラムをビルドする                                      |
 | build_convertergui_win.bat     | [Windwos] Ss6Converter GUI プログラムをビルドする                                    |
-| prepare_build_viewer2_macos.sh | [macOS] sspj viewer の依存ライブラリをビルドする                                      |
-| prepare_build_viewer2_win.bat  | [Windows] sspj viewer の依存ライブラリをビルドする                                    |
 | build_viewer2_macos.sh         | [macOS] sspj viewer をビルドする                                                |
 | build_viewer2_win.bat          | [Windows] sspj viewer をビルドする                                              |
 | generate_ssfb_code.bat         | [macOS] ssfb コードを生成する(開発用)                                           |

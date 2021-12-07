@@ -19,7 +19,7 @@ enum SsPartType : byte {
     Bonepoint,
 }
 
-enum PART_FLAG : int (bit_flags) {
+enum PART_FLAG : uint (bit_flags) {
     INVISIBLE,
 	FLIP_H,
 	FLIP_V,
@@ -54,11 +54,11 @@ enum PART_FLAG : int (bit_flags) {
 	EFFECT_KEYFRAME,
 }
 
-enum PART_FLAG2 : int (bit_flags) {
+enum PART_FLAG2 : uint (bit_flags) {
     MESHDATA,
 }
 
-enum VERTEX_FLAG : int (bit_flags) {
+enum VERTEX_FLAG : uint (bit_flags) {
     LT,
     RT,
     LB,	

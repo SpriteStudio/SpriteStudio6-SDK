@@ -35,8 +35,8 @@ jobs:
       run: git submodule update --init --recursive
     - name: install cmake
       run: |
-        curl -O https://cmake.org/files/v3.17/cmake-3.17.3-win64-x64.zip
-        7z x cmake-3.17.3-win64-x64.zip -oC:\projects\deps
+        curl -O https://cmake.org/files/v3.22/cmake-3.22.0-windows-x86_64.zip
+        7z x cmake-3.22.0-windows-x86_64.zip -oC:\projects\deps
         move C:\projects\deps\cmake-* C:\projects\deps\cmake
         $env:Path = "C:\projects\deps\cmake\bin" + ";" + $env:Path
         cmake --version

@@ -65,9 +65,7 @@ Build/Ss6Converter.dir/
 Build/Viewer2/Builds/VisualStudio2017/.vs/
 
 # Viewer2
-Build/Viewer2/JUCE
-Build/Viewer2/FRUT
-Build/Viewer2/CMakeLists.txt
+Build/Viewer2/build
 Build/Viewer2/cmakeBuild
 
 Tools/*

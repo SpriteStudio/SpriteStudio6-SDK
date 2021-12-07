@@ -23,8 +23,8 @@ pushd Converter
 /bin/rm -rf build
 /bin/mkdir build
 pushd build
-cmake -DCMAKE_TOOLCHAIN_FILE="../../vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=${BUILDTYPE} ..
-make -j4
+cmake -DCMAKE_BUILD_TYPE=${BUILDTYPE} ..
+cmake --build . --parallel
 ctest .
 popd > /dev/null # build
 popd > /dev/null # Converter

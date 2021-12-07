@@ -12,14 +12,15 @@ pushd ${BUILDDIR}
 pushd Converter
 
 # Build flatc
-pushd flatbuffers
+/bin/rm -rf build
+mkdir build
+pushd build
 
-git clean -fdx .
-cmake .
-cmake --build .
-FLATC=$(pwd)/flatc
+cmake ..
+cmake --build . --parallel
+FLATC=$(pwd)/_deps/flatbuffers-build/flatc
 
-popd > /dev/null # flatbuffers
+popd > /dev/null # build
 
 # generate ssfb code
 ${FLATC} -c fbs/ssfb.fbs --gen-compare --gen-object-api 

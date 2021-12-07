@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.15)
 
 project(Ss6Converter)
 
@@ -9,10 +9,6 @@ if(MSVC)
 add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()
-
-
-find_package(ZLIB REQUIRED)
-find_package(minizip CONFIG REQUIRED)
 
 # command options
 option(ENABLE_CCACHE "Enable ccache?" ON)
@@ -38,29 +34,66 @@ if(NOT TARGET ssHelper)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common Ss6Converter_Common)
 endif()
 
-set(FlatBuffers_Library_SRCS
-    flatbuffers/include/flatbuffers/code_generators.h
-    flatbuffers/include/flatbuffers/base.h
-    flatbuffers/include/flatbuffers/flatbuffers.h
-    flatbuffers/include/flatbuffers/hash.h
-    flatbuffers/include/flatbuffers/idl.h
-    flatbuffers/include/flatbuffers/util.h
-    flatbuffers/include/flatbuffers/reflection.h
-    flatbuffers/include/flatbuffers/reflection_generated.h
-    flatbuffers/include/flatbuffers/stl_emulation.h
-    flatbuffers/include/flatbuffers/flexbuffers.h
-    flatbuffers/include/flatbuffers/registry.h
-    flatbuffers/include/flatbuffers/minireflect.h
-    flatbuffers/src/code_generators.cpp
-    flatbuffers/src/idl_parser.cpp
-    flatbuffers/src/idl_gen_text.cpp
-    flatbuffers/src/reflection.cpp
-    flatbuffers/src/util.cpp
+if(NOT TARGET glad)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad Ss6Converter_glad)
+endif()
+
+# dependency libraries
+message("start fetching dependency libraries")
+include(FetchContent)
+
+message("fetch zlib")
+FetchContent_Declare(
+        zlib
+        GIT_REPOSITORY https://github.com/madler/zlib
+        GIT_TAG        v1.2.11
 )
-include_directories(flatbuffers/include)
+FetchContent_MakeAvailable(zlib)
+include_directories(${zlib_SOURCE_DIR})
+
+message("fetch json")
+FetchContent_Declare(
+    json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG        v3.7.3)
+FetchContent_GetProperties(json)
+if(NOT json_POPULATED)
+  set(JSON_BuildTests OFF CACHE INTERNAL "") # skip json unit test
+  FetchContent_Populate(json)
+  add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
+  include_directories(${json_SOURCE_DIR}/include)
+endif()
+
+message("fetch flatbuffers")
+FetchContent_Declare(
+    flatbuffers
+    GIT_REPOSITORY https://github.com/google/flatbuffers.git
+    GIT_TAG        v1.12.1)
+FetchContent_MakeAvailable(flatbuffers)
+include_directories(${flatbuffers_SOURCE_DIR}/include)
+
+message("fetch plog")
+FetchContent_Declare(
+    plog
+    GIT_REPOSITORY https://github.com/SergiusTheBest/plog.git
+    GIT_TAG        1.1.5)
+FetchContent_MakeAvailable(plog)
+include_directories(${plog_SOURCE_DIR}/include)
+
+message("fetch filesystem")
+FetchContent_Declare(
+    filesystem
+    GIT_REPOSITORY https://github.com/gulrak/filesystem.git
+    GIT_TAG        v1.5.10)
+FetchContent_GetProperties(filesystem)
+if(NOT filesystem_POPULATED)
+  FetchContent_Populate(filesystem)
+  include_directories(${filesystem_SOURCE_DIR}/include)
+endif()
+
+message("finish fetching dependency libraries")
 
 set(Ss6Converter_SRCS
-    ${FlatBuffers_Library_SRCS}
     main.cpp
     BinaryDataWriter.cpp
     FileUtil.cpp
@@ -68,8 +101,8 @@ set(Ss6Converter_SRCS
     LumpExporter.cpp
     sspkg.cpp
 
-#    zlib/contrib/minizip/zip.c
-#    zlib/contrib/minizip/ioapi.c
+    ${zlib_SOURCE_DIR}/contrib/minizip/zip.c
+    ${zlib_SOURCE_DIR}/contrib/minizip/ioapi.c
 )
 
 set(Ss6Converter_HEADERS
@@ -80,7 +113,7 @@ set(Ss6Converter_HEADERS
     LumpExporter.h
     SsPlayerConverter.h
     sspkg.h
-#    zlib/contrib/minizip/zip.h
+    ${zlib_SOURCE_DIR}/contrib/minizip/zip.h
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -91,14 +124,20 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper)
 
 # for win & mac suport thumbnail
 if(WIN32 OR APPLE)
-    
+    message("fetch glfw")
+    FetchContent_Declare(
+            glfw
+            GIT_REPOSITORY https://github.com/glfw/glfw.git
+            GIT_TAG        3.3.5)
+    FetchContent_MakeAvailable(glfw)
+    include_directories(${glfw_SOURCE_DIR}/include)
+    include_directories(${glfw_SOURCE_DIR}/deps)
 
     list(APPEND Ss6Converter_SRCS 
         BackGroudRender.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_render_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.cpp
-#        ${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps/glad_gl.c
     )
 
     list(APPEND Ss6Converter_HEADERS 
@@ -107,46 +146,15 @@ if(WIN32 OR APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/stb_image_write.h
- #       ${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps/glad/gl.h
-    )
+     )
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/glfw/deps)
-
-#    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Build/Viewer2/lib/glew-2.1.0/include)
-
-if(APPLE)
-    #for install brew 
-#    include_directories(/usr/local/Cellar/glfw/3.3.2/)
-endif()
-
-
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad/include)
 
     add_definitions( -D_BACKBUFFER_RENDERING__) 
 endif()
 
 add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS})
-
-
-
-include_directories(glad/include)
-include_directories(glfw/include)
-include_directories(filesystem/include)
-include_directories(json/include)
-include_directories(plog/include)
-
-
-#include_directories(zlib)
-include_directories(${ZLIB_INCLUDE_DIR})
-include_directories(${MINIZIP_INCLUDE_DIR})
-
-
-add_subdirectory(glad)
-add_subdirectory(glfw)
-
-#add_subdirectory(zlib)
-
-
 
 if(NOT (WIN32 OR APPLE))
     # For Linux
@@ -155,21 +163,10 @@ if(NOT (WIN32 OR APPLE))
     target_link_libraries(Ss6Converter ${CMAKE_CURRENT_BINARY_DIR}/Ss6Converter_Common/Helper/libssHelper.a)
 endif()
 
+set(PLATFORM_DEPS "")
 if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
-    target_link_libraries(Ss6Converter "-framework CoreFoundation")
+    set(PLATFORM_DEPS "-framework CoreFoundation")
 endif()
-
-
-target_link_libraries(Ss6Converter ssLoader ssAnimator ssHelper ZLIB::ZLIB minizip::minizip glfw glad)
-
-#target_link_libraries(Ss6Converter ssAnimator)
-#target_link_libraries(Ss6Converter ssHelper)
-#target_link_libraries(Ss6Converter ZLIB::ZLIB)
-#target_link_libraries(Ss6Converter PRIVATE minizip::minizip)
-#target_link_libraries(Ss6Converter glfw)
-#target_link_libraries(Ss6Converter glad)
-
-
 
 # add use opengl setting
 if(MSVC)
@@ -177,16 +174,18 @@ if(MSVC)
     ADD_DEFINITIONS(/D_WIN32)
 
 elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
-#    find_package (glfw3 REQUIRED)
 
-    #include_directories(/usr/local/include)
-    #link_directories(/usr/local/lib)
+    set(PLATFORM_DEPS "${PLATFORM_DEPS} -framework OpenGL")
+    set(PLATFORM_DEPS "${PLATFORM_DEPS} -framework AppKit")
+    set(PLATFORM_DEPS "${PLATFORM_DEPS} -framework IOKit")
 
-    target_link_libraries(Ss6Converter "-framework OpenGL")
-    target_link_libraries(Ss6Converter "-framework AppKit")
-    target_link_libraries(Ss6Converter "-framework IOKit")
+#    target_link_libraries(Ss6Converter "-framework OpenGL")
+#    target_link_libraries(Ss6Converter "-framework AppKit")
+#    target_link_libraries(Ss6Converter "-framework IOKit")
     ADD_DEFINITIONS(-DAPPLE)
 endif()
+
+target_link_libraries(Ss6Converter PRIVATE ssLoader ssAnimator ssHelper zlibstatic flatbuffers glfw glad nlohmann_json::nlohmann_json ${PLATFORM_DEPS})
 
 
 # --- If we are on OS X copy all the embedded libraries to the app bundle
