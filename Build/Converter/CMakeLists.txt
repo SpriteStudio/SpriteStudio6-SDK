@@ -65,10 +65,11 @@ if(NOT json_POPULATED)
 endif()
 
 message("fetch flatbuffers")
+set(FLATBUFFERS_BUILD_TESTS OFF CACHE INTERNAL "Disable flatbuffers unit test")
 FetchContent_Declare(
     flatbuffers
     GIT_REPOSITORY https://github.com/google/flatbuffers.git
-    GIT_TAG        v1.12.1)
+    GIT_TAG        v2.0.5)
 FetchContent_MakeAvailable(flatbuffers)
 include_directories(${flatbuffers_SOURCE_DIR}/include)
 

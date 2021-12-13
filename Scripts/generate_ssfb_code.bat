@@ -23,7 +23,7 @@ popd
 
 rem generate ssfb code
 %FLATC% -c fbs\ssfb.fbs --gen-compare --gen-object-api
-%FLATC% -s fbs\ssfb.fbs
-%FLATC% -T fbs\ssfb.fbs --no-fb-import
+%FLATC% -n fbs\ssfb.fbs
+%FLATC% -T fbs\ssfb.fbs
 
 popd
