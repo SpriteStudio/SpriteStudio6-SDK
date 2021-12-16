@@ -35,6 +35,7 @@ glfw-3.2.1.bin.WIN64/
 *.ssbp
 *.ssfb
 *.json
+*.sspkg
 
 .idea
 cmake-build-debug/

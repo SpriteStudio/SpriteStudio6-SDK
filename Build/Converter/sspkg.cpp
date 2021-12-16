@@ -245,7 +245,12 @@ bool sspkg_info::make_sspkg()
 
 
     archive_file_lists.push_back(jsonfilename.string());
-    archive_file_lists.push_back(thumbnailename.string());
+
+    if (fs::exists(thumbnailename)) {
+        archive_file_lists.push_back(thumbnailename.string());
+    } else {
+        std::cerr << "  not found thumbnail file: " << thumbnailename << "\n";
+    }
 
     // Windosでは最終的に zipOpen 内の fopen64 で SJIS が必要になるため。
     auto tmp_arch_path = sscc::convert_path_string(archivefilename.string());

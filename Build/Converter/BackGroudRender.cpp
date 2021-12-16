@@ -59,8 +59,11 @@ bool ConverterOpenGLInit()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 #else
+    // macOS
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);	/* 前方互換プロファイル */
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);	/* プロファイル */
 #endif
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
@@ -68,7 +71,7 @@ bool ConverterOpenGLInit()
     if (!window)
     {
         glfwTerminate();
-        return -1;
+        return false;
     }
 
     glfwMakeContextCurrent(window);
@@ -78,7 +81,7 @@ bool ConverterOpenGLInit()
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
         std::cerr << "Failed to initialize GLAD" << std::endl;
-        return -1;
+        return false;
     }
 
     isGPUInit = true;
