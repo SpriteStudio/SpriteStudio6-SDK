@@ -1,4 +1,4 @@
-﻿CMAKE_MINIMUM_REQUIRED(VERSION 3.15)
+﻿CMAKE_MINIMUM_REQUIRED(VERSION 3.19.2)
 project(sssdk)
 
 # command options
@@ -30,6 +30,12 @@ endif()
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "" FORCE)
+endif()
+
+if(APPLE)
+    if(("${CMAKE_BUILD_TYPE}" STREQUAL "Release") OR (NOT CMAKE_OSX_ARCHITECTURES))
+        set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "" FORCE)
+    endif()
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)

@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.15)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.19.2)
 project(SSView2)
 
 # command options
@@ -28,7 +28,7 @@ message("fetch JUCE")
 FetchContent_Declare(
     JUCE
     GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
-    GIT_TAG        6.0.1)
+    GIT_TAG        6.1.6)
 FetchContent_MakeAvailable(JUCE)
 
 message("finish fetching dependency libraries")
@@ -36,6 +36,12 @@ message("finish fetching dependency libraries")
 if(MSVC)
 add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+endif()
+
+if(APPLE)
+    if(NOT CMAKE_OSX_ARCHITECTURES)
+        set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
+    endif()
 endif()
 
 add_definitions( -DUSE_GLEW)
