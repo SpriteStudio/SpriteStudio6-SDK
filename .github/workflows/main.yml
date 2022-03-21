@@ -14,8 +14,13 @@ jobs:
       run: git submodule update --init --recursive
     - name: prepare build environment
       run: |
-        brew install qt@5
         brew install glfw3
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: '6.2.4'
+    - name: "set QT_PREFIX"
+      run: $env:QT_PREFIX = $env:Qt6_Dir
     - name: release build
       run: ./Scripts/release_macos.sh
     - name: Upload Tools
