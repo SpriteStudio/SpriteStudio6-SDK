@@ -20,7 +20,7 @@ jobs:
       with:
         version: '6.2.4'
     - name: "set QT_PREFIX"
-      run: $env:QT_PREFIX = $env:Qt6_Dir
+      run: export QT_PREFIX="${Qt6_Dir}"
     - name: release build
       run: ./Scripts/release_macos.sh
     - name: Upload Tools
@@ -48,8 +48,10 @@ jobs:
         cmake -h
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
+      with:
+        version: '6.2.4'
     - name: "set QT_PREFIX"
-      run: $env:QT_PREFIX = $env:Qt5_Dir
+      run: $env:QT_PREFIX = $env:Qt6_Dir
     - name: release build
       shell: cmd
       run: Scripts\release_win.bat
