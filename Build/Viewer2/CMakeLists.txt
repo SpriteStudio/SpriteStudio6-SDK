@@ -39,7 +39,7 @@ message("fetch JUCE")
 FetchContent_Declare(
     JUCE
     GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
-    GIT_TAG        6.0.8)
+    GIT_TAG        6.1.6)
 FetchContent_MakeAvailable(JUCE)
 
 message("finish fetching dependency libraries")

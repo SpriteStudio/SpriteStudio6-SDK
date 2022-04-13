@@ -1,4 +1,5 @@
 #include "View/DocumentView3D.h"
+using namespace juce::gl;
 
 #include "ssOpenGLSetting.h"
 #include "OpenGL/SSTextureGL.h"
@@ -34,7 +35,8 @@ DocumentView3D::~DocumentView3D()
 void DocumentView3D::initialise()
 {
 #if JUCE_WINDOWS
-	GLenum err = glewInit();
+        // TODO: comment out for JUCE 6.1 and more
+	// GLenum err = glewInit();
 #endif
 	
 /*
