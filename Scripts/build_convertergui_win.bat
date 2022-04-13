@@ -3,7 +3,7 @@ setlocal
 set CURDIR=%~dp0
 set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
-set DEFAULT_QT_PREFIX=C:\Qt\6.2.4\msvc2019_64
+set DEFAULT_QT_PREFIX=C:\Qt\6.3.0\msvc2019_64
 if "%QT_PREFIX%" == "" (
     set QT_PREFIX=%DEFAULT_QT_PREFIX%
 )
