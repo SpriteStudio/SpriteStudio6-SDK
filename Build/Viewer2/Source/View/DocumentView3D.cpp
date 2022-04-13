@@ -71,23 +71,23 @@ void DocumentView3D::render()
 	//表示のクリア
 	OpenGLHelpers::clear(backGroundColour);
 
-	juce::gl::glMatrixMode(juce::gl::GL_PROJECTION);
-    juce::gl::glViewport(0, 0, width, height);
-    juce::gl::glLoadIdentity();
-    juce::gl::glOrtho(-width / 2, width / 2, -height / 2, height / 2, -2048, 2048);
+	glMatrixMode(GL_PROJECTION);
+    glViewport(0, 0, width, height);
+    glLoadIdentity();
+    glOrtho(-width / 2, width / 2, -height / 2, height / 2, -2048, 2048);
 
 	float x = view_camera_x.getValue();
 	float y = view_camera_y.getValue();
 	float scale = view_camera_scale.getValue();
 
-    juce::gl::glTranslatef( x , y, 0);
-    juce::gl::glScalef(scale, scale, 0);
+    glTranslatef( x , y, 0);
+    glScalef(scale, scale, 0);
 //	glTranslatef(view_camera_xf, view_camera_yf, 0);
 
 	//レンダーステート設定(ループ初期化）
-    juce::gl::glDisable(juce::gl::GL_STENCIL_TEST);
-    juce::gl::glEnable(juce::gl::GL_DEPTH_TEST);
-    juce::gl::glColorMask(juce::gl::GL_TRUE, juce::gl::GL_TRUE, juce::gl::GL_TRUE, juce::gl::GL_TRUE);
+    glDisable(GL_STENCIL_TEST);
+    glEnable(GL_DEPTH_TEST);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
 	//描画
 	Player::drawAnime();
