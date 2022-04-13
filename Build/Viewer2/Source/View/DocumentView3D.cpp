@@ -1,7 +1,7 @@
 #include "View/DocumentView3D.h"
 using namespace juce::gl;
 
-#include "ssOpenGLSetting.h"
+// #include "ssOpenGLSetting.h"
 #include "OpenGL/SSTextureGL.h"
 #include "ssplayer_render_gl.h"
 #include "ssplayer_shader_gl.h"
