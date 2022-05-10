@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.15)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.19.2)
 project(SSView2)
 
 # command options
@@ -24,21 +24,29 @@ endif()
 message("start fetching dependency libraries")
 include(FetchContent)
 
-message("fetch JUCE")
-FetchContent_Declare(
-    JUCE
-    GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
-    GIT_TAG        6.0.1)
-FetchContent_MakeAvailable(JUCE)
-
-message("finish fetching dependency libraries")
-
 if(MSVC)
 add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()
 
-add_definitions( -DUSE_GLEW)
+if(APPLE)
+    if(("${CMAKE_BUILD_TYPE}" STREQUAL "Release") OR (NOT CMAKE_OSX_ARCHITECTURES))
+        set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
+    endif()
+endif()
+
+message("fetch JUCE")
+FetchContent_Declare(
+    JUCE
+    GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
+    GIT_TAG        6.1.6)
+FetchContent_MakeAvailable(JUCE)
+
+message("finish fetching dependency libraries")
+
+add_definitions(-DUSE_GLEW)
+add_definitions(-DJUCE_MODAL_LOOPS_PERMITTED=1)
+
 
 if(NOT TARGET ssHelper)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common SSView2_Common)
@@ -54,6 +62,7 @@ endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad/include)
 
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15")
 
 juce_add_gui_app(SSView2
     VERSION 1.0.0                       # Set this if the app version is different to the project version

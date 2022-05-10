@@ -19,7 +19,7 @@ pushd ${BASEDIR}
 /bin/mkdir Ss6Converter
 
 /bin/cp ${BUILDDIR}/Converter/build/Ss6Converter ./Ss6Converter/
-/bin/cp -rp ${BUILDDIR}/Ss6ConverterGUI/Ss6ConverterGUI/Ss6ConverterGUI.app ./Ss6Converter/
+/bin/cp -rp ${BUILDDIR}/Ss6ConverterGUI/Ss6ConverterGUI/build/Ss6ConverterGUI.app ./Ss6Converter/
 zip -r Ss6Converter_Mac.zip Ss6Converter/
 
 mv Ss6Converter_Mac.zip ${TOOLSDIR}/

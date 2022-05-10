@@ -1,6 +1,6 @@
 #include <windows.h>
 
-IDI_ICON1	ICON	DISCARDABLE	"D:\\Users\\uribow\\My Documeacnts\\GitHub\\SpriteStudio6-SDK\\Build\\Ss6ConverterGUI\\Ss6ConverterGUI\\Application-000.ico"
+IDI_ICON1	ICON	DISCARDABLE	"Application-000.ico"
 
 VS_VERSION_INFO VERSIONINFO
 	FILEVERSION 0,0,0,0

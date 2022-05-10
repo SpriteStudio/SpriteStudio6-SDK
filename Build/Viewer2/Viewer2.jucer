@@ -3,7 +3,7 @@
 <JUCERPROJECT id="pETMlY" name="SSViewer2" displaySplashScreen="1" reportAppUsage="1"
               splashScreenColour="Dark" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.NewProject" includeBinaryInAppConfig="1"
-              cppLanguageStandard="11" companyCopyright="" headerPath="" jucerFormatVersion="1">
+              companyCopyright="" headerPath="" jucerFormatVersion="1">
   <MAINGROUP id="PqiQba" name="SSViewer2">
     <GROUP id="{9D43D578-FD48-58A0-B214-36284BAFD7DC}" name="Source">
       <GROUP id="{00065373-894A-966A-3963-C2D1D1578C85}" name="Lib">
@@ -172,10 +172,10 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" enablePluginBinaryCopyStep="1" isDebug="1" optimisation="1"
                        linkTimeOptimisation="0" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../Source&#10;../../lib/glew-2.1.0/include"
-                       defines="USE_GLEW"/>
+                       defines="USE_GLEW&#10;JUCE_MODAL_LOOPS_PERMITTED=1"/>
         <CONFIGURATION name="Release" enablePluginBinaryCopyStep="1" isDebug="0" optimisation="3"
                        linkTimeOptimisation="1" targetName="Viewer2" headerPath="../../../../Common/Animator&#10;../../../../Common/Drawer&#10;../../../../Common/Helper&#10;../../../../Common/Loader&#10;../../Source&#10;../../lib/glew-2.1.0/include"
-                       defines="USE_GLEW"/>
+                       defines="USE_GLEW&#10;JUCE_MODAL_LOOPS_PERMITTED=1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="D:/JUCE/modules"/>
