@@ -22,7 +22,7 @@ set FLATC="%BUILDDIR%\Converter\build\_deps\flatbuffers-build\flatc.exe"
 popd
 
 rem generate ssfb code
-%FLATC% -c fbs\ssfb.fbs --gen-compare --gen-object-api
+%FLATC% -c fbs\ssfb.fbs --gen-compare --gen-object-api --gen-all --cpp-ptr-type std::shared_ptr
 %FLATC% -n fbs\ssfb.fbs
 %FLATC% -T fbs\ssfb.fbs
 

@@ -701,24 +701,24 @@ private:
 	const Lump *m_root{};
 	std::vector<int16_t> m_frameIndexVec;
 	int m_frameIndex;
+	std::string m_curEffectFile;
 
 	flatbuffers::FlatBufferBuilder m_ssfbBuilder;
 	flatbuffers::Offset<ss::ssfb::ProjectData> m_ssfbProjectData;
 	int32_t m_dataId{};
 	int32_t m_version{};
-	int32_t m_flags{};
 	flatbuffers::Offset<flatbuffers::String> m_ssfbImageBaseDir;
 	std::vector<flatbuffers::Offset<ss::ssfb::Cell>> m_ssfbCells;
 	std::vector<flatbuffers::Offset<ss::ssfb::AnimePackData>> m_ssfbAnimePacks;
 	std::vector<flatbuffers::Offset<ss::ssfb::EffectFile>> m_ssfbEffectFileList;
 
-	std::vector<struct ss::ssfb::CellMapT> m_cellMaps;
+	std::vector<std::shared_ptr<struct ss::ssfb::CellMapT>> m_cellMaps;
 	std::vector<flatbuffers::Offset<ss::ssfb::CellMap>> m_ssfbCellMaps;
 
-	std::vector<struct ss::ssfb::AnimationInitialDataT> m_animationInitialDataVec;
+	std::vector<std::shared_ptr<struct ss::ssfb::AnimationInitialDataT>> m_animationInitialDataVec;
 	std::vector<flatbuffers::Offset<ss::ssfb::AnimationInitialData>> m_ssfbAnimationInitialDataVec;
 
-	std::vector<struct ss::ssfb::PartDataT> m_partDataVec;
+	std::vector<std::shared_ptr<struct ss::ssfb::PartDataT>> m_partDataVec;
 	std::vector<flatbuffers::Offset<ss::ssfb::PartData>> m_ssfbPartDataVec;
 
 	std::vector<std::vector<uint32_t>> m_uint32VecVec;
@@ -727,31 +727,37 @@ private:
 	std::vector<std::vector<float>> m_floatVecVec;
 	std::vector<flatbuffers::Offset<flatbuffers::Vector<float>>> m_ssfbFloatVecVec;
 
-	std::vector<struct ss::ssfb::meshDataUVT> m_meshDataUVVec;
-	std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> m_ssfbMeshDataUVVec;
+	std::vector<std::shared_ptr<struct ss::ssfb::MeshDataUVT>> m_meshDataUVVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::MeshDataUV>> m_ssfbMeshDataUVVec;
 
-	std::vector<struct ss::ssfb::meshDataIndicesT> m_meshDataIndicesVec;
-	std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> m_ssfbMeshDataIndicesVec;
+	std::vector<std::shared_ptr<struct ss::ssfb::MeshDataIndicesT>> m_meshDataIndicesVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::MeshDataIndices>> m_ssfbMeshDataIndicesVec;
 
-	std::vector<struct ss::ssfb::partStateT> m_partStateVec;
-	std::vector<flatbuffers::Offset<ss::ssfb::partState>> m_ssfbPartStateVec;
+	std::vector<std::shared_ptr<struct ss::ssfb::PartStateT>> m_partStateVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::PartState>> m_ssfbPartStateVec;
 
-	std::vector<struct ss::ssfb::frameDataIndexT> m_frameDataIndexVec;
-	std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> m_ssfbFrameDataIndexVec;
+	std::vector<std::shared_ptr<struct ss::ssfb::FrameDataIndexT>> m_frameDataIndexVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::FrameDataIndex>> m_ssfbFrameDataIndexVec;
 
-	enum {
-		USER_DATA_FLAG_INTEGER	= 1 << 0,
-		USER_DATA_FLAG_RECT	= 1 << 1,
-		USER_DATA_FLAG_POINT	= 1 << 2,
-		USER_DATA_FLAG_STRING	= 1 << 3
-	};
+	std::vector<std::shared_ptr<struct ss::ssfb::EffectParticleElementBasicT>> m_effectParticleElementBasicVec;
+    std::vector<flatbuffers::Offset<ss::ssfb::EffectParticleElementBasic>> m_ssfbEffectParticleElementBasicVec;
+
+	std::vector<std::shared_ptr<struct ss::ssfb::EffectNodeT>> m_effectNodeVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::EffectNode>> m_ssfbEffectNodeVec;
+
+    std::map<std::string, std::map<int, std::shared_ptr<struct ss::ssfb::EffectNodeT>>> m_effectNodeCatalog;
+	std::map<std::string, std::map<int, flatbuffers::Offset<ss::ssfb::EffectNode>>> m_ssfbEffectNodeCatalog;
+
+	std::map<std::string, flatbuffers::Offset<ss::ssfb::EffectFile>> m_ssfbEffectFileCatalog;
+	std::vector<std::shared_ptr<struct ss::ssfb::EffectFileT>> m_effectFileVec;
+	std::vector<flatbuffers::Offset<ss::ssfb::EffectFile>> m_ssfbEffectFileVec;
 
 	void createHeader()
 	{
 		auto rootChildVec = m_root->getChildren();
 		m_dataId = GETS32(rootChildVec[0]);
 		m_version = GETS32(rootChildVec[1]);
-		m_flags = GETS32(rootChildVec[2]);
+		// GETS32(rootChildVec[2]); // unuse
 		m_ssfbImageBaseDir = GETSSFBSTRING(m_ssfbBuilder, rootChildVec[3], m_encoding);
 	}
 
@@ -793,24 +799,26 @@ private:
 
 		auto cellMapVec = lump->getChildren();
 
-		struct ss::ssfb::CellMapT cellMapT;
-		cellMapT.name = GETSTRING(cellMapVec[0], m_encoding);
-		cellMapT.imagePath = GETSTRING(cellMapVec[1], m_encoding);
-		cellMapT.index = GETS16(cellMapVec[2]);
-		cellMapT.wrapmode = GETS16(cellMapVec[3]);
-		cellMapT.filtermode = GETS16(cellMapVec[4]);
+		std::shared_ptr<struct ss::ssfb::CellMapT> cellMapT(new ss::ssfb::CellMapT());
+		cellMapT->name = GETSTRING(cellMapVec[0], m_encoding);
+		cellMapT->image_path = GETSTRING(cellMapVec[1], m_encoding);
+		cellMapT->index = GETS16(cellMapVec[2]);
+		cellMapT->wrap_mode = (ss::ssfb::TexWrapMode)GETS16(cellMapVec[3]);
+		cellMapT->filter_mode = (ss::ssfb::TexFilterMode)GETS16(cellMapVec[4]);
 		// 5:reserved(s16)
 
 		// search same cellMap from cellMap caches.
-		auto result = std::find(m_cellMaps.begin(), m_cellMaps.end(), cellMapT);
+		auto result = std::find_if(m_cellMaps.begin(), m_cellMaps.end(), [cellMapT](const std::shared_ptr<ss::ssfb::CellMapT> &c) {
+		    return *(c.get()) == *(cellMapT.get());
+		});
 		if (result == m_cellMaps.end()) {
 			// not found
 
 			// create ssfb cellMap
-			auto ssfbCellMapName = m_ssfbBuilder.CreateSharedString(cellMapT.name);
-			auto ssfbCellMapImagePath = m_ssfbBuilder.CreateSharedString(cellMapT.imagePath);
+			auto ssfbCellMapName = m_ssfbBuilder.CreateSharedString(cellMapT->name);
+			auto ssfbCellMapImagePath = m_ssfbBuilder.CreateSharedString(cellMapT->image_path);
 			cellMap = ss::ssfb::CreateCellMap(m_ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath,
-											  cellMapT.index, cellMapT.wrapmode, cellMapT.filtermode);
+											  cellMapT->index, cellMapT->wrap_mode, cellMapT->filter_mode);
 			// cache ssfb cellMap
 			m_cellMaps.push_back(cellMapT);
 			m_ssfbCellMaps.push_back(cellMap);
@@ -828,97 +836,61 @@ private:
 		flatbuffers::Offset<ss::ssfb::AnimationInitialData> animationInitialData;
 		auto AnimationInitialDataItemVec = lump->getChildren();
 
-		struct ss::ssfb::AnimationInitialDataT animationInitialDataT;
+		std::shared_ptr<struct ss::ssfb::AnimationInitialDataT> animationInitialDataT(new ss::ssfb::AnimationInitialDataT());
 
-		animationInitialDataT.index = GETS16(AnimationInitialDataItemVec[0]);
+		animationInitialDataT->index = GETS16(AnimationInitialDataItemVec[0]);
 		// 1:reserve
-		animationInitialDataT.lowflag = GETS32(AnimationInitialDataItemVec[2]);
-		animationInitialDataT.highflag = GETS32(AnimationInitialDataItemVec[3]);
-		animationInitialDataT.priority = GETS16(AnimationInitialDataItemVec[4]);
-		animationInitialDataT.cellIndex = GETS16(AnimationInitialDataItemVec[5]);
-		animationInitialDataT.opacity = GETS16(AnimationInitialDataItemVec[6]);
-		animationInitialDataT.localopacity = GETS16(AnimationInitialDataItemVec[7]);
-		animationInitialDataT.masklimen = GETS16(AnimationInitialDataItemVec[8]);
+		animationInitialDataT->lowflag = GETS32(AnimationInitialDataItemVec[2]);
+		animationInitialDataT->highflag = GETS32(AnimationInitialDataItemVec[3]);
+		animationInitialDataT->priority = GETS16(AnimationInitialDataItemVec[4]);
+		animationInitialDataT->cell_index = GETS16(AnimationInitialDataItemVec[5]);
+		animationInitialDataT->opacity = GETS16(AnimationInitialDataItemVec[6]);
+		animationInitialDataT->local_opacity = GETS16(AnimationInitialDataItemVec[7]);
+		animationInitialDataT->masklimen = GETS16(AnimationInitialDataItemVec[8]);
 		// 9:reserved
-		animationInitialDataT.positionX = GETFLOAT(AnimationInitialDataItemVec[10]);
-		animationInitialDataT.positionY = GETFLOAT(AnimationInitialDataItemVec[11]);
-		animationInitialDataT.positionZ = GETFLOAT(AnimationInitialDataItemVec[12]);
-		animationInitialDataT.pivotX = GETFLOAT(AnimationInitialDataItemVec[13]);
-		animationInitialDataT.pivotY = GETFLOAT(AnimationInitialDataItemVec[14]);
-		animationInitialDataT.rotationX = GETFLOAT(AnimationInitialDataItemVec[15]);
-		animationInitialDataT.rotationY = GETFLOAT(AnimationInitialDataItemVec[16]);
-		animationInitialDataT.rotationZ = GETFLOAT(AnimationInitialDataItemVec[17]);
-		animationInitialDataT.scaleX = GETFLOAT(AnimationInitialDataItemVec[18]);
-		animationInitialDataT.scaleY = GETFLOAT(AnimationInitialDataItemVec[19]);
-		animationInitialDataT.localscaleX = GETFLOAT(AnimationInitialDataItemVec[20]);
-		animationInitialDataT.localscaleY = GETFLOAT(AnimationInitialDataItemVec[21]);
-		animationInitialDataT.size_X = GETFLOAT(AnimationInitialDataItemVec[22]);
-		animationInitialDataT.size_Y = GETFLOAT(AnimationInitialDataItemVec[23]);
-		animationInitialDataT.uv_move_X = GETFLOAT(AnimationInitialDataItemVec[24]);
-		animationInitialDataT.uv_move_Y = GETFLOAT(AnimationInitialDataItemVec[25]);
-		animationInitialDataT.uv_rotation = GETFLOAT(AnimationInitialDataItemVec[26]);
-		animationInitialDataT.uv_scale_X = GETFLOAT(AnimationInitialDataItemVec[27]);
-		animationInitialDataT.uv_scale_Y = GETFLOAT(AnimationInitialDataItemVec[28]);
-		animationInitialDataT.boundingRadius = GETFLOAT(AnimationInitialDataItemVec[29]);
+		animationInitialDataT->position_x = GETFLOAT(AnimationInitialDataItemVec[10]);
+		animationInitialDataT->position_y = GETFLOAT(AnimationInitialDataItemVec[11]);
+		animationInitialDataT->position_z = GETFLOAT(AnimationInitialDataItemVec[12]);
+		animationInitialDataT->pivot_x = GETFLOAT(AnimationInitialDataItemVec[13]);
+		animationInitialDataT->pivot_y = GETFLOAT(AnimationInitialDataItemVec[14]);
+		animationInitialDataT->rotation_x = GETFLOAT(AnimationInitialDataItemVec[15]);
+		animationInitialDataT->rotation_y = GETFLOAT(AnimationInitialDataItemVec[16]);
+		animationInitialDataT->rotation_z = GETFLOAT(AnimationInitialDataItemVec[17]);
+		animationInitialDataT->scale_x = GETFLOAT(AnimationInitialDataItemVec[18]);
+		animationInitialDataT->scale_y = GETFLOAT(AnimationInitialDataItemVec[19]);
+		animationInitialDataT->local_scale_x = GETFLOAT(AnimationInitialDataItemVec[20]);
+		animationInitialDataT->local_scale_y = GETFLOAT(AnimationInitialDataItemVec[21]);
+		animationInitialDataT->size_x = GETFLOAT(AnimationInitialDataItemVec[22]);
+		animationInitialDataT->size_y = GETFLOAT(AnimationInitialDataItemVec[23]);
+		animationInitialDataT->uv_move_x = GETFLOAT(AnimationInitialDataItemVec[24]);
+		animationInitialDataT->uv_move_y = GETFLOAT(AnimationInitialDataItemVec[25]);
+		animationInitialDataT->uv_rotation = GETFLOAT(AnimationInitialDataItemVec[26]);
+		animationInitialDataT->uv_scale_x = GETFLOAT(AnimationInitialDataItemVec[27]);
+		animationInitialDataT->uv_scale_y = GETFLOAT(AnimationInitialDataItemVec[28]);
+		animationInitialDataT->bounding_radius = GETFLOAT(AnimationInitialDataItemVec[29]);
 		//インスタンス関連
-		animationInitialDataT.instanceValue_curKeyframe = GETS32(AnimationInitialDataItemVec[30]);
-		animationInitialDataT.instanceValue_startFrame = GETS32(AnimationInitialDataItemVec[31]);
-		animationInitialDataT.instanceValue_endFrame = GETS32(AnimationInitialDataItemVec[32]);
-		animationInitialDataT.instanceValue_loopNum = GETS32(AnimationInitialDataItemVec[33]);
-		animationInitialDataT.instanceValue_speed = GETFLOAT(AnimationInitialDataItemVec[34]);
-		animationInitialDataT.instanceValue_loopflag = GETS32(AnimationInitialDataItemVec[35]);
+		animationInitialDataT->instance_value_cur_keyframe = GETS32(AnimationInitialDataItemVec[30]);
+		animationInitialDataT->instance_value_start_frame = GETS32(AnimationInitialDataItemVec[31]);
+		animationInitialDataT->instance_value_end_frame = GETS32(AnimationInitialDataItemVec[32]);
+		animationInitialDataT->instance_value_loop_num = GETS32(AnimationInitialDataItemVec[33]);
+		animationInitialDataT->instance_value_speed = GETFLOAT(AnimationInitialDataItemVec[34]);
+		animationInitialDataT->instance_value_loop_flag = GETS32(AnimationInitialDataItemVec[35]);
 		//エフェクト関連
-		animationInitialDataT.effectValue_curKeyframe = GETS32(AnimationInitialDataItemVec[36]);
-		animationInitialDataT.effectValue_startTime = GETS32(AnimationInitialDataItemVec[37]);
-		animationInitialDataT.effectValue_speed = GETFLOAT(AnimationInitialDataItemVec[38]);
-		animationInitialDataT.effectValue_loopflag = GETS32(AnimationInitialDataItemVec[39]);
+		animationInitialDataT->effect_value_cur_keyframe = GETS32(AnimationInitialDataItemVec[36]);
+		animationInitialDataT->effect_value_start_time = GETS32(AnimationInitialDataItemVec[37]);
+		animationInitialDataT->effect_value_speed = GETFLOAT(AnimationInitialDataItemVec[38]);
+		animationInitialDataT->effect_value_loop_flag = GETS32(AnimationInitialDataItemVec[39]);
 
 		// search same cellMap from cellMap caches.
-		auto result = std::find(m_animationInitialDataVec.begin(), m_animationInitialDataVec.end(), animationInitialDataT);
+		auto result = std::find_if(m_animationInitialDataVec.begin(), m_animationInitialDataVec.end(), [animationInitialDataT](const std::shared_ptr<ss::ssfb::AnimationInitialDataT> &c) {
+		    return *(c.get()) == *(animationInitialDataT.get());
+		});
 		if (result == m_animationInitialDataVec.end()) {
 			// not found
 
 			// create ssfb partData
 			//animationInitialData = m_ssfbBuilder.Create
-			animationInitialData = ss::ssfb::CreateAnimationInitialData(m_ssfbBuilder,
-																		animationInitialDataT.index,
-																		animationInitialDataT.lowflag,
-																		animationInitialDataT.highflag,
-																		animationInitialDataT.priority,
-																		animationInitialDataT.cellIndex,
-																		animationInitialDataT.opacity,
-																		animationInitialDataT.localopacity,
-																		animationInitialDataT.masklimen,
-																		animationInitialDataT.positionX,
-																		animationInitialDataT.positionY,
-																		animationInitialDataT.positionZ,
-																		animationInitialDataT.pivotX,
-																		animationInitialDataT.pivotY,
-																		animationInitialDataT.rotationX,
-																		animationInitialDataT.rotationY,
-																		animationInitialDataT.rotationZ,
-																		animationInitialDataT.scaleX,
-																		animationInitialDataT.scaleY,
-																		animationInitialDataT.localscaleX,
-																		animationInitialDataT.localscaleY,
-																		animationInitialDataT.size_X,
-																		animationInitialDataT.size_Y,
-																		animationInitialDataT.uv_move_X,
-																		animationInitialDataT.uv_move_Y,
-																		animationInitialDataT.uv_rotation,
-																		animationInitialDataT.uv_scale_X,
-																		animationInitialDataT.uv_scale_Y,
-																		animationInitialDataT.boundingRadius,
-																		animationInitialDataT.instanceValue_curKeyframe,
-																		animationInitialDataT.instanceValue_startFrame,
-																		animationInitialDataT.instanceValue_endFrame,
-																		animationInitialDataT.instanceValue_loopNum,
-																		animationInitialDataT.instanceValue_speed,
-																		animationInitialDataT.instanceValue_loopflag,
-																		animationInitialDataT.effectValue_curKeyframe,
-																		animationInitialDataT.effectValue_startTime,
-																		animationInitialDataT.effectValue_speed,
-																		animationInitialDataT.effectValue_loopflag);
+			animationInitialData = ss::ssfb::CreateAnimationInitialData(m_ssfbBuilder, animationInitialDataT.get());
 			// cache ssfb cellMap
 			m_animationInitialDataVec.push_back(animationInitialDataT);
 			m_ssfbAnimationInitialDataVec.push_back(animationInitialData);
@@ -936,33 +908,46 @@ private:
 		flatbuffers::Offset<ss::ssfb::PartData> partData;
 		auto partDataItemVec = lump->getChildren();
 
-		struct ss::ssfb::PartDataT partDataT;
+		std::shared_ptr<struct ss::ssfb::PartDataT> partDataT(new ss::ssfb::PartDataT());
 
-		partDataT.name = GETSTRING(partDataItemVec[0], m_encoding);
-		partDataT.index = GETS16(partDataItemVec[1]);
-		partDataT.parentIndex = GETS16(partDataItemVec[2]);
-		partDataT.type = (ss::ssfb::SsPartType)GETS16(partDataItemVec[3]);
-		partDataT.boundsType = GETS16(partDataItemVec[4]);
-		partDataT.alphaBlendType = GETS16(partDataItemVec[5]);
-		partDataT.refname = GETSTRING(partDataItemVec[7], m_encoding);
-		partDataT.effectfilename = GETSTRING(partDataItemVec[8], m_encoding);
-		partDataT.colorLabel = GETSTRING(partDataItemVec[9], m_encoding);
-		partDataT.maskInfluence = GETS16(partDataItemVec[10]);
+		partDataT->name = GETSTRING(partDataItemVec[0], m_encoding);
+		partDataT->index = GETS16(partDataItemVec[1]);
+		partDataT->parent_index = GETS16(partDataItemVec[2]);
+		partDataT->type = (ss::ssfb::SsPartType)GETS16(partDataItemVec[3]);
+		partDataT->bounds_type = (ss::ssfb::BoundsType)GETS16(partDataItemVec[4]);
+		partDataT->alpha_blend_type = (ss::ssfb::BlendType )GETS16(partDataItemVec[5]);
+		partDataT->refname = GETSTRING(partDataItemVec[7], m_encoding);
+		auto effectfilename = GETSTRING(partDataItemVec[8], m_encoding);
+		auto effect_result = std::find_if(m_effectFileVec.begin(), m_effectFileVec.end(), [effectfilename](const std::shared_ptr<ss::ssfb::EffectFileT> &c) {
+            return effectfilename == c->name;
+		});
+		int ssfbEffectFileIdx = -1;
+		if(effect_result == m_effectFileVec.end()) {
+		    partDataT->effect = nullptr;
+		} else {
+		    partDataT->effect = *effect_result;
+		    ssfbEffectFileIdx = std::distance(m_effectFileVec.begin(), effect_result);
+		}
+
+		partDataT->colorLabel = GETSTRING(partDataItemVec[9], m_encoding);
+		partDataT->mask_influence = (bool)GETS16(partDataItemVec[10]);
 
 		// search same cellMap from cellMap caches.
-		auto result = std::find(m_partDataVec.begin(), m_partDataVec.end(), partDataT);
+		auto result = std::find_if(m_partDataVec.begin(), m_partDataVec.end(), [partDataT](const std::shared_ptr<ss::ssfb::PartDataT> &c) {
+		    return *(c.get()) == *(partDataT.get());
+		});
 		if (result == m_partDataVec.end()) {
 			// not found
 
 			// create ssfb partData
-			auto ssfbPartDataName =  m_ssfbBuilder.CreateSharedString(partDataT.name);
-			auto ssfbRefname = m_ssfbBuilder.CreateSharedString(partDataT.refname);
-			auto ssfbEffectfilename = m_ssfbBuilder.CreateSharedString(partDataT.effectfilename);
-			auto ssfbColorLabel = m_ssfbBuilder.CreateSharedString(partDataT.colorLabel);
+			auto ssfbPartDataName =  m_ssfbBuilder.CreateSharedString(partDataT->name);
+			auto ssfbRefname = m_ssfbBuilder.CreateSharedString(partDataT->refname);
+			auto ssfbEffectFile = (ssfbEffectFileIdx >=0)? m_ssfbEffectFileVec[ssfbEffectFileIdx] : 0;
+			auto ssfbColorLabel = m_ssfbBuilder.CreateSharedString(partDataT->colorLabel);
 
-			partData = ss::ssfb::CreatePartData(m_ssfbBuilder, ssfbPartDataName,partDataT.index, partDataT.parentIndex, (ss::ssfb::SsPartType)partDataT.type,
-												partDataT.boundsType, partDataT.alphaBlendType, ssfbRefname, ssfbEffectfilename, ssfbColorLabel,
-												partDataT.maskInfluence);
+			partData = ss::ssfb::CreatePartData(m_ssfbBuilder, ssfbPartDataName,partDataT->index, partDataT->parent_index, (ss::ssfb::SsPartType)partDataT->type,
+												partDataT->bounds_type, partDataT->alpha_blend_type, ssfbRefname, ssfbEffectFile, ssfbColorLabel,
+												partDataT->mask_influence);
 			// cache ssfb cellMap
 			m_partDataVec.push_back(partDataT);
 			m_ssfbPartDataVec.push_back(partData);
@@ -1017,18 +1002,20 @@ private:
 		return ssfbVec;
 	}
 
-	flatbuffers::Offset<ss::ssfb::meshDataUV> createSharedMeshDataUV(const std::vector<float> &uvPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &uv) {
-		flatbuffers::Offset<ss::ssfb::meshDataUV> meshDataUV;
+	flatbuffers::Offset<ss::ssfb::MeshDataUV> createSharedMeshDataUV(const std::vector<float> &uvPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &uv) {
+		flatbuffers::Offset<ss::ssfb::MeshDataUV> meshDataUV;
 
-		struct ss::ssfb::meshDataUVT meshDataUVT;
-		meshDataUVT.uv = uvPrimitive;
+		std::shared_ptr<struct ss::ssfb::MeshDataUVT> meshDataUVT(new ss::ssfb::MeshDataUVT());
+		meshDataUVT->uv = uvPrimitive;
 
-		auto result = std::find(m_meshDataUVVec.begin(), m_meshDataUVVec.end(), meshDataUVT);
+		auto result = std::find_if(m_meshDataUVVec.begin(), m_meshDataUVVec.end(), [meshDataUVT](const std::shared_ptr<ss::ssfb::MeshDataUVT> &c) {
+		    return *(c.get()) == *(meshDataUVT.get());
+		});
 		if (result == m_meshDataUVVec.end()) {
 			// not found
 
 			// create ssfb vec
-			meshDataUV = ss::ssfb::CreatemeshDataUV(m_ssfbBuilder, uv);
+			meshDataUV = ss::ssfb::CreateMeshDataUV(m_ssfbBuilder, uv);
 
 			// cache ssfb vec
 			m_meshDataUVVec.push_back(meshDataUVT);
@@ -1041,17 +1028,19 @@ private:
 		return meshDataUV;
 	}
 
-	flatbuffers::Offset<ss::ssfb::meshDataIndices> createSharedMeshDataIndices(const std::vector<float> &indicesPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &indices) {
-		flatbuffers::Offset<ss::ssfb::meshDataIndices> meshDataIndices;
+	flatbuffers::Offset<ss::ssfb::MeshDataIndices> createSharedMeshDataIndices(const std::vector<float> &indicesPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &indices) {
+		flatbuffers::Offset<ss::ssfb::MeshDataIndices> meshDataIndices;
 
-		struct ss::ssfb::meshDataIndicesT meshDataIndicesT;
-		meshDataIndicesT.indices = indicesPrimitive;
-		auto result = std::find(m_meshDataIndicesVec.begin(), m_meshDataIndicesVec.end(), meshDataIndicesT);
+		std::shared_ptr<struct ss::ssfb::MeshDataIndicesT> meshDataIndicesT(new ss::ssfb::MeshDataIndicesT());
+		meshDataIndicesT->indices = indicesPrimitive;
+		auto result = std::find_if(m_meshDataIndicesVec.begin(), m_meshDataIndicesVec.end(), [meshDataIndicesT](const std::shared_ptr<ss::ssfb::MeshDataIndicesT> &c) {
+		    return *(c.get()) == *(meshDataIndicesT.get());
+		});
 		if (result == m_meshDataIndicesVec.end()) {
 			// not found
 
 			// create ssfb vec
-			meshDataIndices = ss::ssfb::CreatemeshDataIndices(m_ssfbBuilder, indices);
+			meshDataIndices = ss::ssfb::CreateMeshDataIndices(m_ssfbBuilder, indices);
 
 			// cache ssfb vec
 			m_meshDataIndicesVec.push_back(meshDataIndicesT);
@@ -1064,20 +1053,22 @@ private:
 		return meshDataIndices;
 	}
 	
-	flatbuffers::Offset<ss::ssfb::partState>
-	createSharedPartState(int16_t index, uint32_t flag1, uint32_t flag2, const std::vector<uint32_t> &dataPrimitive) {
-		flatbuffers::Offset<ss::ssfb::partState> partState;
+	flatbuffers::Offset<ss::ssfb::PartState>
+	createSharedPartState(int16_t index, ss::ssfb::PartFlag flag1, ss::ssfb::PartFlag2 flag2, const std::vector<uint32_t> &dataPrimitive) {
+		flatbuffers::Offset<ss::ssfb::PartState> partState;
 		
-		struct ss::ssfb::partStateT partStateT;
-		partStateT.index = index;
-		partStateT.flag1 = flag1;
-		partStateT.flag2 = flag2;
-		partStateT.data = dataPrimitive;
-		auto result = std::find(m_partStateVec.begin(), m_partStateVec.end(), partStateT);
+		std::shared_ptr<struct ss::ssfb::PartStateT> partStateT(new ss::ssfb::PartStateT());
+		partStateT->index = index;
+		partStateT->flag1 = flag1;
+		partStateT->flag2 = flag2;
+		partStateT->data = dataPrimitive;
+		auto result = std::find_if(m_partStateVec.begin(), m_partStateVec.end(), [partStateT](const std::shared_ptr<ss::ssfb::PartStateT> &c) {
+		    return *(c.get()) == *(partStateT.get());
+		});
 		if (result == m_partStateVec.end()) {
 			// not found
 			auto serializePartStateData = createSharedUint32Vec(dataPrimitive);
-			partState = ss::ssfb::CreatepartState(m_ssfbBuilder, partStateT.index, partStateT.flag1, partStateT.flag2, serializePartStateData);
+			partState = ss::ssfb::CreatePartState(m_ssfbBuilder, partStateT->index, partStateT->flag1, partStateT->flag2, serializePartStateData);
 
 			m_partStateVec.push_back(partStateT);
 			m_ssfbPartStateVec.push_back(partState);
@@ -1089,25 +1080,25 @@ private:
 		return partState;
 	}
 
-	flatbuffers::Offset<ss::ssfb::frameDataIndex> createSharedFrameDataIndex(const std::vector<ss::ssfb::partStateT> &statesPrimitive) {
-		flatbuffers::Offset<ss::ssfb::frameDataIndex> frameDataIndex;
+	flatbuffers::Offset<ss::ssfb::FrameDataIndex> createSharedFrameDataIndex(const std::vector<ss::ssfb::PartStateT> &statesPrimitive) {
+		flatbuffers::Offset<ss::ssfb::FrameDataIndex> frameDataIndex;
 
-		struct ss::ssfb::frameDataIndexT frameDataIndexT1;
+		std::shared_ptr<struct ss::ssfb::FrameDataIndexT> frameDataIndexT1(new ss::ssfb::FrameDataIndexT());
 		for(auto state : statesPrimitive) {
-			std::unique_ptr<ss::ssfb::partStateT> p(new ss::ssfb::partStateT());
+			std::unique_ptr<ss::ssfb::PartStateT> p(new ss::ssfb::PartStateT());
 			p->index = state.index;
 			p->flag1 = state.flag1;
 			p->flag2 = state.flag2;
 			p->data = state.data;
-			frameDataIndexT1.states.push_back(std::move(p));
+			frameDataIndexT1->states.push_back(std::move(p));
 		}
-		auto result = std::find_if(m_frameDataIndexVec.begin(), m_frameDataIndexVec.end(), [&frameDataIndexT1](const struct ss::ssfb::frameDataIndexT &item) {
-			if(frameDataIndexT1.states.size() != item.states.size())
+		auto result = std::find_if(m_frameDataIndexVec.begin(), m_frameDataIndexVec.end(), [&frameDataIndexT1](const struct std::shared_ptr<ss::ssfb::FrameDataIndexT> &item) {
+			if(frameDataIndexT1->states.size() != item->states.size())
 				return false;
 
 			int idx = 0;
-			for(auto &p : frameDataIndexT1.states) {
-				auto &i = item.states[idx];
+			for(auto &p : frameDataIndexT1->states) {
+				auto &i = item->states[idx];
 				if(p->index != i->index) return false;
 				if(p->flag1 != i->flag1) return false;
 				if(p->flag2 != i->flag2) return false;
@@ -1120,7 +1111,7 @@ private:
 		if (result == m_frameDataIndexVec.end()) {
 			// not found
 
-			std::vector<flatbuffers::Offset<ss::ssfb::partState>> vec;
+			std::vector<flatbuffers::Offset<ss::ssfb::PartState>> vec;
 			for (auto i : statesPrimitive) {
 				auto item = createSharedPartState(i.index, i.flag1, i.flag2, i.data);
 				vec.push_back(item);
@@ -1128,7 +1119,7 @@ private:
 
 			auto serializeVec = m_ssfbBuilder.CreateVector(vec);
 			// create ssfb vec
-			frameDataIndex = ss::ssfb::CreateframeDataIndex(m_ssfbBuilder, serializeVec);
+			frameDataIndex = ss::ssfb::CreateFrameDataIndex(m_ssfbBuilder, serializeVec);
 
 			// cache ssfb vec
 			m_frameDataIndexVec.push_back(std::move(frameDataIndexT1));
@@ -1203,7 +1194,7 @@ private:
 			}
 
 			// 5:meshDataUV
-			std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> ssfbMeshsDataUV;
+			std::vector<flatbuffers::Offset<ss::ssfb::MeshDataUV>> ssfbMeshsDataUV;
 			{
 				auto meshDataUVVec = ssAnimationDataVec[5]->getChildren();
 				for(auto meshDataUVItem : meshDataUVVec) {
@@ -1228,7 +1219,7 @@ private:
 				}
 			}
 			// 6:meshsDataIndices
-			std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> ssfbMeshsDataIndices;
+			std::vector<flatbuffers::Offset<ss::ssfb::MeshDataIndices>> ssfbMeshsDataIndices;
 			{
 				auto meshsDataIndicesVec = ssAnimationDataVec[6]->getChildren();
 				for(auto meshsDataIndicesItem : meshsDataIndicesVec) {
@@ -1245,18 +1236,18 @@ private:
 			}
 			// 2:frameDataIndexArray
 
-			std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> ssfbFrameData;
+			std::vector<flatbuffers::Offset<ss::ssfb::FrameDataIndex>> ssfbFrameData;
 			{
 				auto frameDataIndexArrayVec = ssAnimationDataVec[2]->getChildren();
 
 				for(auto frameDataIndexArrayItem : frameDataIndexArrayVec) {
 					auto frameDataVec = frameDataIndexArrayItem->getChildren();
 
-					struct ss::ssfb::partStateT partStateTItem;
-					std::vector<struct ss::ssfb::partStateT> partStateTVec;
+					struct ss::ssfb::PartStateT partStateTItem;
+					std::vector<struct ss::ssfb::PartStateT> partStateTVec;
 
-					uint32_t flag1;
-					uint32_t flag2;
+					ss::ssfb::PartFlag flag1;
+					ss::ssfb::PartFlag2 flag2;
 					int outPartsCount = -1;
 					int16_t index;
 					std::string tagname;
@@ -1278,19 +1269,19 @@ private:
 
 							index = GETS16(frameDataItem);
 							tagname = "part_" + std::to_string(outPartsCount) + "_";
-							flag1 = 0;
-							flag2 = 0;
+							flag1 = ss::ssfb::PartFlag::PartFlag_NONE;
+							flag2 = ss::ssfb::PartFlag2::PartFlag2_NONE;
 							partStateData = {};
 							continue;
 						}
 
 						if(frameDataItem->name == tagname + "flag1") {
-							flag1 = GETU32(frameDataItem);
+							flag1 = (ss::ssfb::PartFlag)GETU32(frameDataItem);
 							continue;
 						}
 
 						if(frameDataItem->name == tagname + "flag2") {
-							flag2 = GETU32(frameDataItem);
+							flag2 = (ss::ssfb::PartFlag2)GETU32(frameDataItem);
 							continue;
 						}
 
@@ -1327,7 +1318,7 @@ private:
 				}
 			}
 			// 3:userDataIndexArray
-			std::vector<flatbuffers::Offset<ss::ssfb::userDataPerFrame>> ssfbUserData;
+			std::vector<flatbuffers::Offset<ss::ssfb::UserDataPerFrame>> ssfbUserData;
 			{
 				if(ssAnimationDataVec[3]->type == Lump::DataType::SET) {
 
@@ -1336,7 +1327,7 @@ private:
 						if(userDataIndexArrayItem->type != Lump::DataType::SET) {
 							continue;
 						}
-						std::vector<flatbuffers::Offset<ss::ssfb::userDataItem>> ssfbUserDataItemData;
+						std::vector<flatbuffers::Offset<ss::ssfb::UserDataItem>> ssfbUserDataItemData;
 
 						std::vector<flatbuffers::Offset<void>> ssfbDataArray;
 						std::vector<uint8_t> ssfbDataArrayType;
@@ -1344,61 +1335,51 @@ private:
 						auto userDataIndexArrayItemVec = userDataIndexArrayItem->getChildren();
 						auto num = GETS16(userDataIndexArrayItemVec[0]);
 						int idx = 1;
+
 						for(int i=0; i<num; i++) {
-							auto flags = GETS16(userDataIndexArrayItemVec[idx++]);
+                            int integer = 0;
+                            int rect_x = 0;
+                            int rect_y = 0;
+                            int rect_w = 0;
+                            int rect_h = 0;
+                            int point_x = 0;
+                            int point_y = 0;
+                            int user_string_length = 0;
+                            flatbuffers::Offset<flatbuffers::String> user_string = 0;
+
+							auto flags = (ss::ssfb::UserDataFlag)GETS16(userDataIndexArrayItemVec[idx++]);
 							auto arrayIndex = GETS16(userDataIndexArrayItemVec[idx++]);
-							if(flags & (int16_t)(USER_DATA_FLAG_INTEGER)) {
-								auto integer = GETS32(userDataIndexArrayItemVec[idx++]);
-								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::userDataInteger(integer));
-								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataInteger);
-							}
-							if(flags & (int16_t)USER_DATA_FLAG_RECT) {
-								auto rect_x = GETS32(userDataIndexArrayItemVec[idx++]);
-								auto rect_y = GETS32(userDataIndexArrayItemVec[idx++]);
-								auto rect_w = GETS32(userDataIndexArrayItemVec[idx++]);
-								auto rect_h = GETS32(userDataIndexArrayItemVec[idx++]);
 
-								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::userDataRect(rect_x, rect_y, rect_w, rect_h));
-								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataRect);
+							if(flags & ss::ssfb::UserDataFlag::UserDataFlag_Integer) {
+                                integer = GETS32(userDataIndexArrayItemVec[idx++]);
 							}
-							if(flags & (int16_t)(USER_DATA_FLAG_POINT)) {
-								auto point_x = GETS32(userDataIndexArrayItemVec[idx++]);
-								auto point_y = GETS32(userDataIndexArrayItemVec[idx++]);
-
-								auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::userDataPoint(point_x, point_y));
-								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataPoint);
+							if(flags & ss::ssfb::UserDataFlag::UserDataFlag_Rect) {
+								rect_x = GETS32(userDataIndexArrayItemVec[idx++]);
+								rect_y = GETS32(userDataIndexArrayItemVec[idx++]);
+								rect_w = GETS32(userDataIndexArrayItemVec[idx++]);
+								rect_h = GETS32(userDataIndexArrayItemVec[idx++]);
 							}
-							if(flags & (int16_t)(USER_DATA_FLAG_STRING)) {
-								auto str_length = GETS16(userDataIndexArrayItemVec[idx++]);
-								auto ssfbStr = GETSSFBSTRING(m_ssfbBuilder, userDataIndexArrayItemVec[idx++], m_encoding);
-
-								auto item = ss::ssfb::CreateuserDataString(m_ssfbBuilder, str_length, ssfbStr);
-								ssfbDataArray.push_back(item.Union());
-								ssfbDataArrayType.push_back(ss::ssfb::userDataValue_userDataString);
+							if(flags & ss::ssfb::UserDataFlag::UserDataFlag_Point) {
+								point_x = GETS32(userDataIndexArrayItemVec[idx++]);
+								point_y = GETS32(userDataIndexArrayItemVec[idx++]);
 							}
-
-							auto serializeSsfbDataArrayType = m_ssfbBuilder.CreateVector(ssfbDataArrayType);
-							auto serializeSsfbDataArray = m_ssfbBuilder.CreateVector(ssfbDataArray);
-							auto item = ss::ssfb::CreateuserDataItem(m_ssfbBuilder, static_cast<int16_t>(flags),
-																	 arrayIndex,
-																	 serializeSsfbDataArrayType,
-																	 serializeSsfbDataArray);
+							if(flags & ss::ssfb::UserDataFlag::UserDataFlag_String) {
+								user_string_length = GETS16(userDataIndexArrayItemVec[idx++]);
+								user_string = GETSSFBSTRING(m_ssfbBuilder, userDataIndexArrayItemVec[idx++], m_encoding);
+							}
+							auto item = ss::ssfb::CreateUserDataItem(m_ssfbBuilder, flags, arrayIndex, integer, rect_x, rect_y, rect_w, rect_h, point_x, point_y, user_string_length, user_string);
 							ssfbUserDataItemData.push_back(item);
 						}
-
 						auto serializeSsfbUserDataItemData = m_ssfbBuilder.CreateVector(ssfbUserDataItemData);
 
 						auto frame = this->m_frameIndexVec[this->m_frameIndex++];
-						auto item = ss::ssfb::CreateuserDataPerFrame(m_ssfbBuilder, frame, serializeSsfbUserDataItemData);
+						auto item = ss::ssfb::CreateUserDataPerFrame(m_ssfbBuilder, frame, serializeSsfbUserDataItemData);
 						ssfbUserData.push_back(item);
 					}
 				}
 			}
 			// 4:LabelDataIndexArray
-			std::vector<flatbuffers::Offset<ss::ssfb::labelDataItem>> ssfbLabelData;
+			std::vector<flatbuffers::Offset<ss::ssfb::LabelDataItem>> ssfbLabelData;
 			{
 				if(ssAnimationDataVec[4]->type == Lump::DataType::SET) {
 					auto LabelDataIndexArrayVec = ssAnimationDataVec[4]->getChildren();
@@ -1407,7 +1388,7 @@ private:
 						auto ssfbLabelDataItemName = GETSSFBSTRING(m_ssfbBuilder, labelDataVec[0], m_encoding);
 						auto time = GETS16(labelDataVec[1]);
 
-						auto item = ss::ssfb::CreatelabelDataItem(m_ssfbBuilder, ssfbLabelDataItemName, time);
+						auto item = ss::ssfb::CreateLabelDataItem(m_ssfbBuilder, ssfbLabelDataItemName, time);
 						ssfbLabelData.push_back(item);
 					}
 				}
@@ -1444,6 +1425,239 @@ private:
 		return ssfbAnimationDataList;
 	}
 
+	flatbuffers::Offset<ss::ssfb::EffectNode> createSharedEffectNode(const Lump *EffectNodeArrayItem, std::shared_ptr<ss::ssfb::EffectNodeT> &effectNodeItem) {
+        auto EffectNodeVec = EffectNodeArrayItem->getChildren();
+
+        //std::shared_ptr<ss::ssfb::EffectNodeT> effectNodeItem(new ss::ssfb::EffectNodeT());
+        flatbuffers::Offset<ss::ssfb::EffectNode> ssfbEffectNodeItem;
+
+        effectNodeItem->array_index = GETS16(EffectNodeVec[0]);
+        effectNodeItem->parent_index = GETS16(EffectNodeVec[1]);
+        effectNodeItem->type = (ss::ssfb::EffectNodeType) GETS16(EffectNodeVec[2]);
+        effectNodeItem->cell_index = GETS16(EffectNodeVec[3]);
+        effectNodeItem->blend_type = (ss::ssfb::EffectRenderBlendType) GETS16(EffectNodeVec[4]);
+        // GETS16(EffectNodeVec[5]); unused
+
+        auto effectBehaviorArrayVec = EffectNodeVec[6]->getChildren();
+
+        uint32_t behaviorFlags = ss::ssfb::EffectBehaviorFlags_NONE;
+        std::shared_ptr<ss::ssfb::EffectParticleElementBasicT> basicBehavior(new ss::ssfb::EffectParticleElementBasicT());
+        flatbuffers::Offset<ss::ssfb::EffectParticleElementBasic> ssfbBasicBehavior;
+
+        for (auto effectBehaviorArrayItem : effectBehaviorArrayVec) {
+            auto effectBehaviorArrayItemVec = effectBehaviorArrayItem->getChildren();
+            auto SsEffectFunctionType = (ss::ssfb::SsEffectFunctionType) GETS32(effectBehaviorArrayItemVec[0]);
+            switch (SsEffectFunctionType) {
+                case ss::ssfb::SsEffectFunctionType_Basic: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Basic;
+                    basicBehavior->priority = GETS32(effectBehaviorArrayItemVec[1]);
+                    basicBehavior->maximum_particle = GETS32(effectBehaviorArrayItemVec[2]);
+                    basicBehavior->attime_create = GETS32(effectBehaviorArrayItemVec[3]);
+                    basicBehavior->interval = GETS32(effectBehaviorArrayItemVec[4]);
+                    basicBehavior->lifetime = GETS32(effectBehaviorArrayItemVec[5]);
+                    basicBehavior->speed_min_value = GETFLOAT(effectBehaviorArrayItemVec[6]);
+                    basicBehavior->speed_max_value = GETFLOAT(effectBehaviorArrayItemVec[7]);
+                    basicBehavior->lifespan_min_value = GETS32(effectBehaviorArrayItemVec[8]);
+                    basicBehavior->lifespan_max_value = GETS32(effectBehaviorArrayItemVec[9]);
+                    basicBehavior->angle = GETFLOAT(effectBehaviorArrayItemVec[10]);
+                    basicBehavior->angle_variance = GETFLOAT(effectBehaviorArrayItemVec[11]);
+
+                    auto result = std::find_if(m_effectParticleElementBasicVec.begin(), m_effectParticleElementBasicVec.end(),
+                        [basicBehavior](const std::shared_ptr<ss::ssfb::EffectParticleElementBasicT> &c) {
+                            return *(c.get()) == *(basicBehavior.get());
+                        });
+                    if (result == m_effectParticleElementBasicVec.end()) {
+                        // not found
+                        ssfbBasicBehavior = ss::ssfb::CreateEffectParticleElementBasic(m_ssfbBuilder, basicBehavior.get());
+                        m_effectParticleElementBasicVec.push_back(basicBehavior);
+                        m_ssfbEffectParticleElementBasicVec.push_back(ssfbBasicBehavior);
+                    } else {
+                        // found cache
+                        auto idx = std::distance(m_effectParticleElementBasicVec.begin(), result);
+                        ssfbBasicBehavior = m_ssfbEffectParticleElementBasicVec[idx];
+                    }
+                    effectNodeItem->basic_behavior = basicBehavior;
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_RndSeedChange: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_RndSeedChange;
+                    effectNodeItem->seed = GETS32(effectBehaviorArrayItemVec[1]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_Delay: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Delay;
+                    effectNodeItem->delay_time = GETS32(effectBehaviorArrayItemVec[1]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_Gravity: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Gravity;
+                    effectNodeItem->gravity_x = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->gravity_y = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_Position: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Position;
+                    effectNodeItem->offset_x_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->offset_x_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    effectNodeItem->offset_y_min_value = GETFLOAT(effectBehaviorArrayItemVec[3]);
+                    effectNodeItem->offset_y_max_value = GETFLOAT(effectBehaviorArrayItemVec[4]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_Rotation: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Rotation;
+                    effectNodeItem->rotation_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->rotation_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    effectNodeItem->rotation_add_min_value = GETFLOAT(effectBehaviorArrayItemVec[3]);
+                    effectNodeItem->rotation_add_max_value = GETFLOAT(effectBehaviorArrayItemVec[4]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_TransRotation: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TransRotation;
+                    effectNodeItem->rotation_factor = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->end_life_time_per = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_TransSpeed: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TransSpeed;
+                    effectNodeItem->speed_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->speed_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_TangentialAcceleration: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TangentialAcceleration;
+                    effectNodeItem->acceleration_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->acceleration_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_InitColor: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_InitColor;
+                    effectNodeItem->init_color_min_value = GETU32(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->init_color_max_value = GETU32(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_TransColor: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TransColor;
+                    effectNodeItem->trans_color_min_value = GETU32(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->trans_color_max_value = GETU32(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_AlphaFade: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_AlphaFade;
+                    effectNodeItem->disprange_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->disprange_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_Size: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_Size;
+                    effectNodeItem->size_x_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->size_x_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    effectNodeItem->size_y_min_value = GETFLOAT(effectBehaviorArrayItemVec[3]);
+                    effectNodeItem->size_y_max_value = GETFLOAT(effectBehaviorArrayItemVec[4]);
+                    effectNodeItem->scale_factor_min_value = GETFLOAT(effectBehaviorArrayItemVec[5]);
+                    effectNodeItem->scale_factor_max_value = GETFLOAT(effectBehaviorArrayItemVec[6]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_TransSize: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TransSize;
+                    effectNodeItem->trans_size_x_min_value = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->trans_size_x_max_value = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    effectNodeItem->trans_size_y_min_value = GETFLOAT(effectBehaviorArrayItemVec[3]);
+                    effectNodeItem->trans_size_y_max_value = GETFLOAT(effectBehaviorArrayItemVec[4]);
+                    effectNodeItem->trans_scale_factor_min_value = GETFLOAT(effectBehaviorArrayItemVec[5]);
+                    effectNodeItem->trans_scale_factor_max_value = GETFLOAT(effectBehaviorArrayItemVec[6]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_PointGravity: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_PointGravity;
+                    effectNodeItem->point_gravity_position_x = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    effectNodeItem->point_gravity_position_y = GETFLOAT(effectBehaviorArrayItemVec[2]);
+                    effectNodeItem->point_gravity_power = GETFLOAT(effectBehaviorArrayItemVec[3]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_TurnToDirectionEnabled: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_TurnToDirectionEnabled;
+                    effectNodeItem->rotation = GETFLOAT(effectBehaviorArrayItemVec[1]);
+                    break;
+                }
+                case ss::ssfb::SsEffectFunctionType_InfiniteEmitEnabled: {
+                    behaviorFlags |= ss::ssfb::EffectBehaviorFlags_InfiniteEmitEnabled;
+                    effectNodeItem->infinitie_emit_flag = GETS32(effectBehaviorArrayItemVec[1]);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        auto result = std::find_if(m_effectNodeVec.begin(), m_effectNodeVec.end(), [effectNodeItem](const std::shared_ptr<ss::ssfb::EffectNodeT> &c) {
+            return *(c.get()) == *(effectNodeItem.get());
+        });
+        if (result ==  m_effectNodeVec.end()) {
+            // not found
+            ssfbEffectNodeItem = ss::ssfb::CreateEffectNode(m_ssfbBuilder,
+                                                            effectNodeItem->array_index,
+                                                            effectNodeItem->parent_index,
+                                                            effectNodeItem->type,
+                                                            effectNodeItem->cell_index,
+                                                            effectNodeItem->blend_type,
+                                                            ssfbBasicBehavior,
+                                                            effectNodeItem->behavior_flags,
+                                                            effectNodeItem->seed,
+                                                            effectNodeItem->delay_time,
+                                                            effectNodeItem->gravity_x,
+                                                            effectNodeItem->gravity_y,
+                                                            effectNodeItem->offset_x_min_value,
+                                                            effectNodeItem->offset_x_max_value,
+                                                            effectNodeItem->offset_y_min_value,
+                                                            effectNodeItem->offset_y_max_value,
+                                                            effectNodeItem->rotation_min_value,
+                                                            effectNodeItem->rotation_max_value,
+                                                            effectNodeItem->rotation_add_min_value,
+                                                            effectNodeItem->rotation_add_max_value,
+                                                            effectNodeItem->rotation_factor,
+                                                            effectNodeItem->end_life_time_per,
+                                                            effectNodeItem->speed_min_value,
+                                                            effectNodeItem->speed_max_value,
+                                                            effectNodeItem->acceleration_min_value,
+                                                            effectNodeItem->acceleration_max_value,
+                                                            effectNodeItem->init_color_min_value,
+                                                            effectNodeItem->init_color_max_value,
+                                                            effectNodeItem->trans_color_min_value,
+                                                            effectNodeItem->trans_color_max_value,
+                                                            effectNodeItem->disprange_min_value,
+                                                            effectNodeItem->disprange_max_value,
+                                                            effectNodeItem->size_x_min_value,
+                                                            effectNodeItem->size_x_max_value,
+                                                            effectNodeItem->size_y_min_value,
+                                                            effectNodeItem->size_y_max_value,
+                                                            effectNodeItem->scale_factor_min_value,
+                                                            effectNodeItem->scale_factor_max_value,
+                                                            effectNodeItem->trans_size_x_min_value,
+                                                            effectNodeItem->trans_size_x_max_value,
+                                                            effectNodeItem->trans_size_y_min_value,
+                                                            effectNodeItem->trans_size_y_max_value,
+                                                            effectNodeItem->trans_scale_factor_min_value,
+                                                            effectNodeItem->trans_scale_factor_max_value,
+                                                            effectNodeItem->point_gravity_position_x,
+                                                            effectNodeItem->point_gravity_position_y,
+                                                            effectNodeItem->point_gravity_power,
+                                                            effectNodeItem->rotation,
+                                                            effectNodeItem->infinitie_emit_flag);
+            m_effectNodeVec.push_back(effectNodeItem);
+            m_ssfbEffectNodeVec.push_back(ssfbEffectNodeItem);
+            m_effectNodeCatalog[m_curEffectFile][effectNodeItem->array_index] = effectNodeItem;
+            m_ssfbEffectNodeCatalog[m_curEffectFile][effectNodeItem->array_index] = ssfbEffectNodeItem;
+        } else {
+            // found
+            auto idx = std::distance(m_effectNodeVec.begin(), result);
+            ssfbEffectNodeItem = m_ssfbEffectNodeVec[idx];
+
+            m_effectNodeCatalog[m_curEffectFile][effectNodeItem->array_index] = effectNodeItem;
+            m_ssfbEffectNodeCatalog[m_curEffectFile][effectNodeItem->array_index] = ssfbEffectNodeItem;
+        }
+        return ssfbEffectNodeItem;
+    }
+
 	void createEffectFile() {
 		auto rootChildVec = m_root->getChildren();
 		auto effectFileLump = rootChildVec[6];
@@ -1452,255 +1666,40 @@ private:
 		auto effectFileLumpVec = effectFileLump->getChildren();
 		for(auto effectFileLumpItem : effectFileLumpVec) {
 			auto effectFileLumpItemVec = effectFileLumpItem->getChildren();
+
+            std::shared_ptr<ss::ssfb::EffectFileT> effectFile(new ss::ssfb::EffectFileT());
+		    flatbuffers::Offset<ss::ssfb::EffectFile> ssfbEffectFile;
+
+			m_curEffectFile = GETSTRING(effectFileLumpItemVec[0], m_encoding);
+			effectFile->name = m_curEffectFile;
 			auto ssfbEffectFileName = GETSSFBSTRING(m_ssfbBuilder, effectFileLumpItemVec[0], m_encoding);
-			auto fps = GETS16(effectFileLumpItemVec[1]);
-			auto isLockRandSeed = GETS16(effectFileLumpItemVec[2]);
-			auto LockRandSeed = GETS16(effectFileLumpItemVec[3]);
-			auto layoutScaleX = GETS16(effectFileLumpItemVec[4]);
-			auto layoutScaleY = GETS16(effectFileLumpItemVec[5]);
-			auto numNodeList = GETS16(effectFileLumpItemVec[6]);
+			effectFile->fps = GETS16(effectFileLumpItemVec[1]);
+			effectFile->is_lock_rand_seed = GETS16(effectFileLumpItemVec[2]);
+			effectFile->lock_rand_seed = GETS16(effectFileLumpItemVec[3]);
+			effectFile->layout_scale_x = GETS16(effectFileLumpItemVec[4]);
+			effectFile->layout_scale_y = GETS16(effectFileLumpItemVec[5]);
+            // auto numNodeList = GETS16(effectFileLumpItemVec[6]); unused
+
 			auto EffectNodeArray = effectFileLumpItemVec[7];
 			auto EffectNodeArrayVec = EffectNodeArray->getChildren();
-
 			std::vector<flatbuffers::Offset<ss::ssfb::EffectNode>> ssfbEffectNode;
 			for(auto EffectNodeArrayItem : EffectNodeArrayVec) {
-				auto EffectNodeVec = EffectNodeArrayItem->getChildren();
+			    std::shared_ptr<ss::ssfb::EffectNodeT> effectNodeItem(new ss::ssfb::EffectNodeT());
+                auto ssfbEffectNodeItem = createSharedEffectNode(EffectNodeArrayItem, effectNodeItem);
 
-				auto arrayIndex = GETS16(EffectNodeVec[0]);
-				auto parentIndex = GETS16(EffectNodeVec[1]);
-				auto type = GETS16(EffectNodeVec[2]);
-				auto cellIndex = GETS16(EffectNodeVec[3]);
-				auto blendType = GETS16(EffectNodeVec[4]);
-				auto numBehavior = GETS16(EffectNodeVec[5]);
-				auto effectBehaviorArrayVec = EffectNodeVec[6]->getChildren();
-
-				std::vector<flatbuffers::Offset<void>> ssfbEffectNodeBehavior;
-				std::vector<uint8_t> ssfbEffectNodeBehaviorType;
-				for(auto effectBehaviorArrayItem : effectBehaviorArrayVec) {
-					auto effectBehaviorArrayItemVec = effectBehaviorArrayItem->getChildren();
-
-					auto SsEffectFunctionType = (ss::ssfb::EffectNodeBehavior)GETS32(effectBehaviorArrayItemVec[0]);
-					switch(SsEffectFunctionType) {
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementBasic: {
-							auto priority = GETS32(effectBehaviorArrayItemVec[1]);
-							auto maximumParticle = GETS32(effectBehaviorArrayItemVec[2]);
-							auto attimeCreate = GETS32(effectBehaviorArrayItemVec[3]);
-							auto interval = GETS32(effectBehaviorArrayItemVec[4]);
-							auto lifetime = GETS32(effectBehaviorArrayItemVec[5]);
-							auto speedMinValue = GETFLOAT(effectBehaviorArrayItemVec[6]);
-							auto speedMaxValue = GETFLOAT(effectBehaviorArrayItemVec[7]);
-							auto lifespanMinValue = GETS32(effectBehaviorArrayItemVec[8]);
-							auto lifespanMaxValue = GETS32(effectBehaviorArrayItemVec[9]);
-							auto angle = GETFLOAT(effectBehaviorArrayItemVec[10]);
-							auto angleVariance = GETFLOAT(effectBehaviorArrayItemVec[11]);
-							auto item = m_ssfbBuilder.CreateStruct(
-									ss::ssfb::EffectParticleElementBasic(SsEffectFunctionType, priority,
-									                                     maximumParticle, attimeCreate, interval, lifetime,
-									                                     speedMinValue, speedMaxValue, lifespanMinValue, lifespanMaxValue, angle, angleVariance));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-							auto Seed = GETS32(effectBehaviorArrayItemVec[1]);
-
-							auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::EffectParticleElementRndSeedChange(Seed));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementDelay: {
-							auto DelayTime = GETS32(effectBehaviorArrayItemVec[1]);
-
-							auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::EffectParticleElementDelay(DelayTime));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementGravity: {
-							auto Gravity_x = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							auto Gravity_y = GETFLOAT(effectBehaviorArrayItemVec[2]);
-
-							auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::EffectParticleElementGravity(Gravity_x, Gravity_y));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementPosition: {
-							auto OffsetXMinValue = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							auto OffsetXMaxValue = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							auto OffsetYMinValue = GETFLOAT(effectBehaviorArrayItemVec[3]);
-							auto OffsetYMaxValue = GETFLOAT(effectBehaviorArrayItemVec[4]);
-
-							auto item = m_ssfbBuilder.CreateStruct(
-									ss::ssfb::EffectParticleElementPosition(OffsetXMinValue,
-									                                        OffsetXMaxValue,
-									                                        OffsetYMinValue,
-									                                        OffsetYMaxValue));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementRotation: {
-							auto RotationMinValue = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							auto RotationMaxValue = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							auto RotationAddMinValue = GETFLOAT(effectBehaviorArrayItemVec[3]);
-							auto RotationAddMaxValue = GETFLOAT(effectBehaviorArrayItemVec[4]);
-
-							auto item = m_ssfbBuilder.CreateStruct(
-									ss::ssfb::EffectParticleElementRotation(RotationMinValue,
-									                                        RotationMaxValue,
-									                                        RotationAddMinValue,
-									                                        RotationAddMaxValue));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementRotationTrans: {
-							auto RotationFactor = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							auto EndLifeTimePer = GETFLOAT(effectBehaviorArrayItemVec[2]);
-
-							auto item = m_ssfbBuilder.CreateStruct(
-									ss::ssfb::EffectParticleElementRotationTrans(RotationFactor, EndLifeTimePer));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementTransSpeed: {
-							auto SpeedMinValue = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							auto SpeedMaxValue = GETFLOAT(effectBehaviorArrayItemVec[2]);
-
-							auto item = m_ssfbBuilder.CreateStruct(
-									ss::ssfb::EffectParticleElementTransSpeed(SpeedMinValue, SpeedMaxValue));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-							auto AccelerationMinValue = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							auto AccelerationMaxValue = GETFLOAT(effectBehaviorArrayItemVec[2]);
-
-							auto item = m_ssfbBuilder.CreateStruct(
-									ss::ssfb::EffectParticleElementTangentialAcceleration(AccelerationMinValue, AccelerationMaxValue));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementInitColor: {
-							auto ColorMinValue = GETS32(effectBehaviorArrayItemVec[1]);
-							auto ColorMaxValue = GETS32(effectBehaviorArrayItemVec[2]);
-
-							// TODO: uint32
-							auto item = m_ssfbBuilder.CreateStruct(
-									ss::ssfb::EffectParticleElementInitColor(ColorMinValue, ColorMaxValue));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementTransColor: {
-							auto ColorMinValue = GETS32(effectBehaviorArrayItemVec[1]);
-							auto ColorMaxValue = GETS32(effectBehaviorArrayItemVec[2]);
-
-							// TODO: uint32
-							auto item = m_ssfbBuilder.CreateStruct(
-									ss::ssfb::EffectParticleElementTransColor(ColorMinValue, ColorMaxValue));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementAlphaFade: {
-							auto disprangeMinValue = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							auto disprangeMaxValue = GETFLOAT(effectBehaviorArrayItemVec[2]);
-
-							auto item = m_ssfbBuilder.CreateStruct(
-									ss::ssfb::EffectParticleElementAlphaFade(disprangeMinValue, disprangeMaxValue));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementSize: {
-							auto SizeXMinValue = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							auto SizeXMaxValue = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							auto SizeYMinValue = GETFLOAT(effectBehaviorArrayItemVec[3]);
-							auto SizeYMaxValue = GETFLOAT(effectBehaviorArrayItemVec[4]);
-							auto ScaleFactorMinValue = GETFLOAT(effectBehaviorArrayItemVec[5]);
-							auto ScaleFactorMaxValue = GETFLOAT(effectBehaviorArrayItemVec[6]);
-
-							auto item = m_ssfbBuilder.CreateStruct(
-									ss::ssfb::EffectParticleElementSize(SizeXMinValue, SizeXMaxValue,
-									                                    SizeYMinValue, SizeYMaxValue,
-									                                    ScaleFactorMinValue, ScaleFactorMaxValue));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleElementTransSize: {
-							auto SizeXMinValue = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							auto SizeXMaxValue = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							auto SizeYMinValue = GETFLOAT(effectBehaviorArrayItemVec[3]);
-							auto SizeYMaxValue = GETFLOAT(effectBehaviorArrayItemVec[4]);
-							auto ScaleFactorMinValue = GETFLOAT(effectBehaviorArrayItemVec[5]);
-							auto ScaleFactorMaxValue = GETFLOAT(effectBehaviorArrayItemVec[6]);
-
-							auto item = m_ssfbBuilder.CreateStruct(
-									ss::ssfb::EffectParticleElementTransSize(SizeXMinValue, SizeXMaxValue,
-									                                         SizeYMinValue, SizeYMaxValue,
-									                                         ScaleFactorMinValue, ScaleFactorMaxValue));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticlePointGravity: {
-							auto Position_x = GETFLOAT(effectBehaviorArrayItemVec[1]);
-							auto Position_y = GETFLOAT(effectBehaviorArrayItemVec[2]);
-							auto Power = GETFLOAT(effectBehaviorArrayItemVec[3]);
-
-							auto item = m_ssfbBuilder.CreateStruct(
-									ss::ssfb::EffectParticlePointGravity(Position_x, Position_y, Power));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-							auto Rotation = GETFLOAT(effectBehaviorArrayItemVec[1]);
-
-							auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::EffectParticleTurnToDirectionEnabled(Rotation));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-							auto flag = GETS32(effectBehaviorArrayItemVec[1]);
-
-							auto item = m_ssfbBuilder.CreateStruct(ss::ssfb::EffectParticleInfiniteEmitEnabled(flag));
-							ssfbEffectNodeBehavior.push_back(item.Union());
-							ssfbEffectNodeBehaviorType.push_back(SsEffectFunctionType);
-							break;
-						}
-						case ss::ssfb::EffectNodeBehavior::EffectNodeBehavior_NONE:
-						default:
-							break;
-					}
-				}
-				auto serializeSsfbEffectNodeBehaviorType = m_ssfbBuilder.CreateVector(ssfbEffectNodeBehaviorType);
-				auto serializeSsfbEffectNodeBehavior = m_ssfbBuilder.CreateVector(ssfbEffectNodeBehavior);
-				auto ssfbEffectNodeItem = ss::ssfb::CreateEffectNode(m_ssfbBuilder,
-																	static_cast<int16_t>(arrayIndex),
-																	static_cast<int16_t>(parentIndex),
-																	type,
-																	static_cast<int16_t>(cellIndex),
-																	blendType,
-																	static_cast<int16_t>(ssfbEffectNodeBehavior.size()),
-																	serializeSsfbEffectNodeBehaviorType,
-																	serializeSsfbEffectNodeBehavior);
-				ssfbEffectNode.push_back(ssfbEffectNodeItem);
-			}
+                ssfbEffectNode.push_back(ssfbEffectNodeItem);
+                effectFile->effect_node.push_back(effectNodeItem);
+            }
 			auto serializeSsfbEffectNode = m_ssfbBuilder.CreateVector(ssfbEffectNode);
-			auto ssfbEffectFile = ss::ssfb::CreateEffectFile(m_ssfbBuilder, ssfbEffectFileName,
-                                                             fps, isLockRandSeed, LockRandSeed,
-                                                             layoutScaleX, layoutScaleY,
-                                                             (int16_t)(ssfbEffectNode.size()), serializeSsfbEffectNode);
+            ssfbEffectFile = ss::ssfb::CreateEffectFile(m_ssfbBuilder, ssfbEffectFileName,
+                                                        effectFile->fps, effectFile->is_lock_rand_seed, effectFile->lock_rand_seed,
+                                                        effectFile->layout_scale_x, effectFile->layout_scale_y,
+                                                        serializeSsfbEffectNode);
 			m_ssfbEffectFileList.push_back(ssfbEffectFile);
+			m_ssfbEffectFileCatalog[effectFile->name] = ssfbEffectFile;
+
+			m_effectFileVec.push_back(effectFile);
+			m_ssfbEffectFileVec.push_back(ssfbEffectFile);
 		}
 	}
 
@@ -1709,7 +1708,7 @@ private:
 		auto serializeSsfbCells = m_ssfbBuilder.CreateVector(m_ssfbCells);
 		auto serializeSsfbAnimePackData = m_ssfbBuilder.CreateVector(m_ssfbAnimePacks);
 		auto serializeSsfbEffectFileList = m_ssfbBuilder.CreateVector(m_ssfbEffectFileList);
-		m_ssfbProjectData = ss::ssfb::CreateProjectData(m_ssfbBuilder, m_dataId, m_version, 0,
+		m_ssfbProjectData = ss::ssfb::CreateProjectData(m_ssfbBuilder, m_dataId, m_version,
 													  m_ssfbImageBaseDir,
 													  serializeSsfbCells,
 													  serializeSsfbAnimePackData,

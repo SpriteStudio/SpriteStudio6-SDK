@@ -23,7 +23,7 @@ FLATC=$(pwd)/_deps/flatbuffers-build/flatc
 popd > /dev/null # build
 
 # generate ssfb code
-${FLATC} -c fbs/ssfb.fbs --gen-compare --gen-object-api 
+${FLATC} -c fbs/ssfb.fbs --gen-compare --gen-object-api --cpp-ptr-type std::shared_ptr
 ${FLATC} -n fbs/ssfb.fbs
 ${FLATC} -T fbs/ssfb.fbs
 
