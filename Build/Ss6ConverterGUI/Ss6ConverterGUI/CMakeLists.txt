@@ -14,7 +14,7 @@ add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()
 
 # find Qt6
-set(QT_DEFAULT_VERSION "6.3.0")
+set(QT_DEFAULT_VERSION "6.3.1")
 if(MSVC)
     if(NOT $ENV{QT_PREFIX})
         set(QT_PREFIX "$ENV{QT_PREFIX}")
