@@ -61,6 +61,7 @@ if(NOT TARGET glad)
 endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/glfw-master/include)
 
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15")
 
@@ -95,7 +96,10 @@ set(View
         Source/View/GPL_v3.cpp
         Source/View/GPL_v3.h
         Source/View/MainWindow.cpp
-        Source/View/MainWindow.h)
+        Source/View/MainWindow.h
+        Source/View/initgrew.cpp
+        Source/View/initgrew.h
+        )
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper)
 
 # Model

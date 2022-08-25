@@ -3,7 +3,6 @@
 
 
 
-
 #ifdef USE_GLEW
     #if _WIN32 || _WIN64
         #define GLEW_STATIC
