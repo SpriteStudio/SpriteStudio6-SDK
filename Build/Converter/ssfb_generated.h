@@ -6,6 +6,13 @@
 
 #include "flatbuffers/flatbuffers.h"
 
+// Ensure the included flatbuffers.h is the same version as when this file was
+// generated, otherwise it may not be compatible.
+static_assert(FLATBUFFERS_VERSION_MAJOR == 2 &&
+              FLATBUFFERS_VERSION_MINOR == 0 &&
+              FLATBUFFERS_VERSION_REVISION == 8,
+             "Non-compatible flatbuffers version included");
+
 namespace ss {
 namespace ssfb {
 
@@ -1972,12 +1979,12 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int16_t>(verifier, VT_ARRAYINDEX) &&
-           VerifyField<int16_t>(verifier, VT_PARENTINDEX) &&
-           VerifyField<int16_t>(verifier, VT_TYPE) &&
-           VerifyField<int16_t>(verifier, VT_CELLINDEX) &&
-           VerifyField<int16_t>(verifier, VT_BLENDTYPE) &&
-           VerifyField<int16_t>(verifier, VT_NUMBEHAVIOR) &&
+           VerifyField<int16_t>(verifier, VT_ARRAYINDEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_PARENTINDEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_TYPE, 2) &&
+           VerifyField<int16_t>(verifier, VT_CELLINDEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_BLENDTYPE, 2) &&
+           VerifyField<int16_t>(verifier, VT_NUMBEHAVIOR, 2) &&
            VerifyOffset(verifier, VT_BEHAVIOR_TYPE) &&
            verifier.VerifyVector(Behavior_type()) &&
            VerifyOffset(verifier, VT_BEHAVIOR) &&
@@ -2087,6 +2094,10 @@ struct EffectFileT : public flatbuffers::NativeTable {
   int16_t layoutScaleY = 0;
   int16_t numNodeList = 0;
   std::vector<std::unique_ptr<ss::ssfb::EffectNodeT>> effectNode{};
+  EffectFileT() = default;
+  EffectFileT(const EffectFileT &o);
+  EffectFileT(EffectFileT&&) FLATBUFFERS_NOEXCEPT = default;
+  EffectFileT &operator=(EffectFileT o) FLATBUFFERS_NOEXCEPT;
 };
 
 struct EffectFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -2130,12 +2141,12 @@ struct EffectFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<int16_t>(verifier, VT_FPS) &&
-           VerifyField<int16_t>(verifier, VT_ISLOCKRANDSEED) &&
-           VerifyField<int16_t>(verifier, VT_LOCKRANDSEED) &&
-           VerifyField<int16_t>(verifier, VT_LAYOUTSCALEX) &&
-           VerifyField<int16_t>(verifier, VT_LAYOUTSCALEY) &&
-           VerifyField<int16_t>(verifier, VT_NUMNODELIST) &&
+           VerifyField<int16_t>(verifier, VT_FPS, 2) &&
+           VerifyField<int16_t>(verifier, VT_ISLOCKRANDSEED, 2) &&
+           VerifyField<int16_t>(verifier, VT_LOCKRANDSEED, 2) &&
+           VerifyField<int16_t>(verifier, VT_LAYOUTSCALEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_LAYOUTSCALEY, 2) &&
+           VerifyField<int16_t>(verifier, VT_NUMNODELIST, 2) &&
            VerifyOffset(verifier, VT_EFFECTNODE) &&
            verifier.VerifyVector(effectNode()) &&
            verifier.VerifyVectorOfTables(effectNode()) &&
@@ -2273,9 +2284,9 @@ struct CellMap FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_IMAGEPATH) &&
            verifier.VerifyString(imagePath()) &&
-           VerifyField<int16_t>(verifier, VT_INDEX) &&
-           VerifyField<int16_t>(verifier, VT_WRAPMODE) &&
-           VerifyField<int16_t>(verifier, VT_FILTERMODE) &&
+           VerifyField<int16_t>(verifier, VT_INDEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_WRAPMODE, 2) &&
+           VerifyField<int16_t>(verifier, VT_FILTERMODE, 2) &&
            verifier.EndTable();
   }
   CellMapT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -2364,6 +2375,10 @@ struct CellT : public flatbuffers::NativeTable {
   float v1 = 0.0f;
   float u2 = 0.0f;
   float v2 = 0.0f;
+  CellT() = default;
+  CellT(const CellT &o);
+  CellT(CellT&&) FLATBUFFERS_NOEXCEPT = default;
+  CellT &operator=(CellT o) FLATBUFFERS_NOEXCEPT;
 };
 
 struct Cell FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -2429,17 +2444,17 @@ struct Cell FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_CELLMAP) &&
            verifier.VerifyTable(cellMap()) &&
-           VerifyField<int16_t>(verifier, VT_INDEXINCELLMAP) &&
-           VerifyField<int16_t>(verifier, VT_X) &&
-           VerifyField<int16_t>(verifier, VT_Y) &&
-           VerifyField<int16_t>(verifier, VT_WIDTH) &&
-           VerifyField<int16_t>(verifier, VT_HEIGHT) &&
-           VerifyField<float>(verifier, VT_PIVOT_X) &&
-           VerifyField<float>(verifier, VT_PIVOT_Y) &&
-           VerifyField<float>(verifier, VT_U1) &&
-           VerifyField<float>(verifier, VT_V1) &&
-           VerifyField<float>(verifier, VT_U2) &&
-           VerifyField<float>(verifier, VT_V2) &&
+           VerifyField<int16_t>(verifier, VT_INDEXINCELLMAP, 2) &&
+           VerifyField<int16_t>(verifier, VT_X, 2) &&
+           VerifyField<int16_t>(verifier, VT_Y, 2) &&
+           VerifyField<int16_t>(verifier, VT_WIDTH, 2) &&
+           VerifyField<int16_t>(verifier, VT_HEIGHT, 2) &&
+           VerifyField<float>(verifier, VT_PIVOT_X, 4) &&
+           VerifyField<float>(verifier, VT_PIVOT_Y, 4) &&
+           VerifyField<float>(verifier, VT_U1, 4) &&
+           VerifyField<float>(verifier, VT_V1, 4) &&
+           VerifyField<float>(verifier, VT_U2, 4) &&
+           VerifyField<float>(verifier, VT_V2, 4) &&
            verifier.EndTable();
   }
   CellT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -2723,9 +2738,9 @@ struct partState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int16_t>(verifier, VT_INDEX) &&
-           VerifyField<uint32_t>(verifier, VT_FLAG1) &&
-           VerifyField<uint32_t>(verifier, VT_FLAG2) &&
+           VerifyField<int16_t>(verifier, VT_INDEX, 2) &&
+           VerifyField<uint32_t>(verifier, VT_FLAG1, 4) &&
+           VerifyField<uint32_t>(verifier, VT_FLAG2, 4) &&
            VerifyOffset(verifier, VT_DATA) &&
            verifier.VerifyVector(data()) &&
            verifier.EndTable();
@@ -2796,6 +2811,10 @@ flatbuffers::Offset<partState> CreatepartState(flatbuffers::FlatBufferBuilder &_
 struct frameDataIndexT : public flatbuffers::NativeTable {
   typedef frameDataIndex TableType;
   std::vector<std::unique_ptr<ss::ssfb::partStateT>> states{};
+  frameDataIndexT() = default;
+  frameDataIndexT(const frameDataIndexT &o);
+  frameDataIndexT(frameDataIndexT&&) FLATBUFFERS_NOEXCEPT = default;
+  frameDataIndexT &operator=(frameDataIndexT o) FLATBUFFERS_NOEXCEPT;
 };
 
 struct frameDataIndex FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -2877,7 +2896,7 @@ struct userDataString FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_LENGTH) &&
+           VerifyField<int32_t>(verifier, VT_LENGTH, 4) &&
            VerifyOffset(verifier, VT_DATA) &&
            verifier.VerifyString(data()) &&
            verifier.EndTable();
@@ -2961,8 +2980,8 @@ struct userDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int16_t>(verifier, VT_FLAGS) &&
-           VerifyField<int16_t>(verifier, VT_ARRAYINDEX) &&
+           VerifyField<int16_t>(verifier, VT_FLAGS, 2) &&
+           VerifyField<int16_t>(verifier, VT_ARRAYINDEX, 2) &&
            VerifyOffset(verifier, VT_DATA_TYPE) &&
            verifier.VerifyVector(data_type()) &&
            VerifyOffset(verifier, VT_DATA) &&
@@ -3038,6 +3057,10 @@ struct userDataPerFrameT : public flatbuffers::NativeTable {
   typedef userDataPerFrame TableType;
   int16_t frameIndex = 0;
   std::vector<std::unique_ptr<ss::ssfb::userDataItemT>> data{};
+  userDataPerFrameT() = default;
+  userDataPerFrameT(const userDataPerFrameT &o);
+  userDataPerFrameT(userDataPerFrameT&&) FLATBUFFERS_NOEXCEPT = default;
+  userDataPerFrameT &operator=(userDataPerFrameT o) FLATBUFFERS_NOEXCEPT;
 };
 
 struct userDataPerFrame FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -3055,7 +3078,7 @@ struct userDataPerFrame FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int16_t>(verifier, VT_FRAMEINDEX) &&
+           VerifyField<int16_t>(verifier, VT_FRAMEINDEX, 2) &&
            VerifyOffset(verifier, VT_DATA) &&
            verifier.VerifyVector(data()) &&
            verifier.VerifyVectorOfTables(data()) &&
@@ -3133,7 +3156,7 @@ struct labelDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_LABEL) &&
            verifier.VerifyString(label()) &&
-           VerifyField<int16_t>(verifier, VT_FRAMEINDEX) &&
+           VerifyField<int16_t>(verifier, VT_FRAMEINDEX, 2) &&
            verifier.EndTable();
   }
   labelDataItemT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -3203,6 +3226,10 @@ struct AnimationDataT : public flatbuffers::NativeTable {
   int16_t canvasSizeH = 0;
   float canvasPvotX = 0.0f;
   float canvasPvotY = 0.0f;
+  AnimationDataT() = default;
+  AnimationDataT(const AnimationDataT &o);
+  AnimationDataT(AnimationDataT&&) FLATBUFFERS_NOEXCEPT = default;
+  AnimationDataT &operator=(AnimationDataT o) FLATBUFFERS_NOEXCEPT;
 };
 
 struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -3296,15 +3323,15 @@ struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffset(verifier, VT_MESHSDATAINDICES) &&
            verifier.VerifyVector(meshsDataIndices()) &&
            verifier.VerifyVectorOfTables(meshsDataIndices()) &&
-           VerifyField<int16_t>(verifier, VT_STARTFRAMES) &&
-           VerifyField<int16_t>(verifier, VT_ENDFRAMES) &&
-           VerifyField<int16_t>(verifier, VT_TOTALFRAMES) &&
-           VerifyField<int16_t>(verifier, VT_FPS) &&
-           VerifyField<int16_t>(verifier, VT_LABELNUM) &&
-           VerifyField<int16_t>(verifier, VT_CANVASSIZEW) &&
-           VerifyField<int16_t>(verifier, VT_CANVASSIZEH) &&
-           VerifyField<float>(verifier, VT_CANVASPVOTX) &&
-           VerifyField<float>(verifier, VT_CANVASPVOTY) &&
+           VerifyField<int16_t>(verifier, VT_STARTFRAMES, 2) &&
+           VerifyField<int16_t>(verifier, VT_ENDFRAMES, 2) &&
+           VerifyField<int16_t>(verifier, VT_TOTALFRAMES, 2) &&
+           VerifyField<int16_t>(verifier, VT_FPS, 2) &&
+           VerifyField<int16_t>(verifier, VT_LABELNUM, 2) &&
+           VerifyField<int16_t>(verifier, VT_CANVASSIZEW, 2) &&
+           VerifyField<int16_t>(verifier, VT_CANVASSIZEH, 2) &&
+           VerifyField<float>(verifier, VT_CANVASPVOTX, 4) &&
+           VerifyField<float>(verifier, VT_CANVASPVOTY, 4) &&
            verifier.EndTable();
   }
   AnimationDataT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -3661,44 +3688,44 @@ struct AnimationInitialData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int16_t>(verifier, VT_INDEX) &&
-           VerifyField<int32_t>(verifier, VT_LOWFLAG) &&
-           VerifyField<int32_t>(verifier, VT_HIGHFLAG) &&
-           VerifyField<int16_t>(verifier, VT_PRIORITY) &&
-           VerifyField<int16_t>(verifier, VT_CELLINDEX) &&
-           VerifyField<int16_t>(verifier, VT_OPACITY) &&
-           VerifyField<int16_t>(verifier, VT_LOCALOPACITY) &&
-           VerifyField<int16_t>(verifier, VT_MASKLIMEN) &&
-           VerifyField<float>(verifier, VT_POSITIONX) &&
-           VerifyField<float>(verifier, VT_POSITIONY) &&
-           VerifyField<float>(verifier, VT_POSITIONZ) &&
-           VerifyField<float>(verifier, VT_PIVOTX) &&
-           VerifyField<float>(verifier, VT_PIVOTY) &&
-           VerifyField<float>(verifier, VT_ROTATIONX) &&
-           VerifyField<float>(verifier, VT_ROTATIONY) &&
-           VerifyField<float>(verifier, VT_ROTATIONZ) &&
-           VerifyField<float>(verifier, VT_SCALEX) &&
-           VerifyField<float>(verifier, VT_SCALEY) &&
-           VerifyField<float>(verifier, VT_LOCALSCALEX) &&
-           VerifyField<float>(verifier, VT_LOCALSCALEY) &&
-           VerifyField<float>(verifier, VT_SIZE_X) &&
-           VerifyField<float>(verifier, VT_SIZE_Y) &&
-           VerifyField<float>(verifier, VT_UV_MOVE_X) &&
-           VerifyField<float>(verifier, VT_UV_MOVE_Y) &&
-           VerifyField<float>(verifier, VT_UV_ROTATION) &&
-           VerifyField<float>(verifier, VT_UV_SCALE_X) &&
-           VerifyField<float>(verifier, VT_UV_SCALE_Y) &&
-           VerifyField<float>(verifier, VT_BOUNDINGRADIUS) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_CURKEYFRAME) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_STARTFRAME) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_ENDFRAME) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_LOOPNUM) &&
-           VerifyField<float>(verifier, VT_INSTANCEVALUE_SPEED) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_LOOPFLAG) &&
-           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_CURKEYFRAME) &&
-           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_STARTTIME) &&
-           VerifyField<float>(verifier, VT_EFFECTVALUE_SPEED) &&
-           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_LOOPFLAG) &&
+           VerifyField<int16_t>(verifier, VT_INDEX, 2) &&
+           VerifyField<int32_t>(verifier, VT_LOWFLAG, 4) &&
+           VerifyField<int32_t>(verifier, VT_HIGHFLAG, 4) &&
+           VerifyField<int16_t>(verifier, VT_PRIORITY, 2) &&
+           VerifyField<int16_t>(verifier, VT_CELLINDEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_OPACITY, 2) &&
+           VerifyField<int16_t>(verifier, VT_LOCALOPACITY, 2) &&
+           VerifyField<int16_t>(verifier, VT_MASKLIMEN, 2) &&
+           VerifyField<float>(verifier, VT_POSITIONX, 4) &&
+           VerifyField<float>(verifier, VT_POSITIONY, 4) &&
+           VerifyField<float>(verifier, VT_POSITIONZ, 4) &&
+           VerifyField<float>(verifier, VT_PIVOTX, 4) &&
+           VerifyField<float>(verifier, VT_PIVOTY, 4) &&
+           VerifyField<float>(verifier, VT_ROTATIONX, 4) &&
+           VerifyField<float>(verifier, VT_ROTATIONY, 4) &&
+           VerifyField<float>(verifier, VT_ROTATIONZ, 4) &&
+           VerifyField<float>(verifier, VT_SCALEX, 4) &&
+           VerifyField<float>(verifier, VT_SCALEY, 4) &&
+           VerifyField<float>(verifier, VT_LOCALSCALEX, 4) &&
+           VerifyField<float>(verifier, VT_LOCALSCALEY, 4) &&
+           VerifyField<float>(verifier, VT_SIZE_X, 4) &&
+           VerifyField<float>(verifier, VT_SIZE_Y, 4) &&
+           VerifyField<float>(verifier, VT_UV_MOVE_X, 4) &&
+           VerifyField<float>(verifier, VT_UV_MOVE_Y, 4) &&
+           VerifyField<float>(verifier, VT_UV_ROTATION, 4) &&
+           VerifyField<float>(verifier, VT_UV_SCALE_X, 4) &&
+           VerifyField<float>(verifier, VT_UV_SCALE_Y, 4) &&
+           VerifyField<float>(verifier, VT_BOUNDINGRADIUS, 4) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_CURKEYFRAME, 4) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_STARTFRAME, 4) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_ENDFRAME, 4) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_LOOPNUM, 4) &&
+           VerifyField<float>(verifier, VT_INSTANCEVALUE_SPEED, 4) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_LOOPFLAG, 4) &&
+           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_CURKEYFRAME, 4) &&
+           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_STARTTIME, 4) &&
+           VerifyField<float>(verifier, VT_EFFECTVALUE_SPEED, 4) &&
+           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_LOOPFLAG, 4) &&
            verifier.EndTable();
   }
   AnimationInitialDataT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -3982,18 +4009,18 @@ struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<int16_t>(verifier, VT_INDEX) &&
-           VerifyField<int16_t>(verifier, VT_PARENTINDEX) &&
-           VerifyField<int8_t>(verifier, VT_TYPE) &&
-           VerifyField<int16_t>(verifier, VT_BOUNDSTYPE) &&
-           VerifyField<int16_t>(verifier, VT_ALPHABLENDTYPE) &&
+           VerifyField<int16_t>(verifier, VT_INDEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_PARENTINDEX, 2) &&
+           VerifyField<int8_t>(verifier, VT_TYPE, 1) &&
+           VerifyField<int16_t>(verifier, VT_BOUNDSTYPE, 2) &&
+           VerifyField<int16_t>(verifier, VT_ALPHABLENDTYPE, 2) &&
            VerifyOffset(verifier, VT_REFNAME) &&
            verifier.VerifyString(refname()) &&
            VerifyOffset(verifier, VT_EFFECTFILENAME) &&
            verifier.VerifyString(effectfilename()) &&
            VerifyOffset(verifier, VT_COLORLABEL) &&
            verifier.VerifyString(colorLabel()) &&
-           VerifyField<int16_t>(verifier, VT_MASKINFLUENCE) &&
+           VerifyField<int16_t>(verifier, VT_MASKINFLUENCE, 2) &&
            verifier.EndTable();
   }
   PartDataT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -4109,6 +4136,10 @@ struct AnimePackDataT : public flatbuffers::NativeTable {
   std::string name{};
   std::vector<std::unique_ptr<ss::ssfb::PartDataT>> parts{};
   std::vector<std::unique_ptr<ss::ssfb::AnimationDataT>> animations{};
+  AnimePackDataT() = default;
+  AnimePackDataT(const AnimePackDataT &o);
+  AnimePackDataT(AnimePackDataT&&) FLATBUFFERS_NOEXCEPT = default;
+  AnimePackDataT &operator=(AnimePackDataT o) FLATBUFFERS_NOEXCEPT;
 };
 
 struct AnimePackData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -4210,6 +4241,10 @@ struct ProjectDataT : public flatbuffers::NativeTable {
   int16_t numCells = 0;
   int16_t numAnimePacks = 0;
   int16_t numEffectFileList = 0;
+  ProjectDataT() = default;
+  ProjectDataT(const ProjectDataT &o);
+  ProjectDataT(ProjectDataT&&) FLATBUFFERS_NOEXCEPT = default;
+  ProjectDataT &operator=(ProjectDataT o) FLATBUFFERS_NOEXCEPT;
 };
 
 struct ProjectData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -4259,9 +4294,9 @@ struct ProjectData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<uint32_t>(verifier, VT_DATAID) &&
-           VerifyField<uint32_t>(verifier, VT_VERSION) &&
-           VerifyField<uint32_t>(verifier, VT_FLAGS) &&
+           VerifyField<uint32_t>(verifier, VT_DATAID, 4) &&
+           VerifyField<uint32_t>(verifier, VT_VERSION, 4) &&
+           VerifyField<uint32_t>(verifier, VT_FLAGS, 4) &&
            VerifyOffset(verifier, VT_IMAGEBASEDIR) &&
            verifier.VerifyString(imageBaseDir()) &&
            VerifyOffset(verifier, VT_CELLS) &&
@@ -4273,9 +4308,9 @@ struct ProjectData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffset(verifier, VT_EFFECTFILELIST) &&
            verifier.VerifyVector(effectFileList()) &&
            verifier.VerifyVectorOfTables(effectFileList()) &&
-           VerifyField<int16_t>(verifier, VT_NUMCELLS) &&
-           VerifyField<int16_t>(verifier, VT_NUMANIMEPACKS) &&
-           VerifyField<int16_t>(verifier, VT_NUMEFFECTFILELIST) &&
+           VerifyField<int16_t>(verifier, VT_NUMCELLS, 2) &&
+           VerifyField<int16_t>(verifier, VT_NUMANIMEPACKS, 2) &&
+           VerifyField<int16_t>(verifier, VT_NUMEFFECTFILELIST, 2) &&
            verifier.EndTable();
   }
   ProjectDataT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -4460,13 +4495,37 @@ inline bool operator==(const EffectFileT &lhs, const EffectFileT &rhs) {
       (lhs.layoutScaleX == rhs.layoutScaleX) &&
       (lhs.layoutScaleY == rhs.layoutScaleY) &&
       (lhs.numNodeList == rhs.numNodeList) &&
-      (lhs.effectNode == rhs.effectNode);
+      (lhs.effectNode.size() == rhs.effectNode.size() && std::equal(lhs.effectNode.cbegin(), lhs.effectNode.cend(), rhs.effectNode.cbegin(), [](std::unique_ptr<ss::ssfb::EffectNodeT> const &a, std::unique_ptr<ss::ssfb::EffectNodeT> const &b) { return (a == b) || (a && b && *a == *b); }));
 }
 
 inline bool operator!=(const EffectFileT &lhs, const EffectFileT &rhs) {
     return !(lhs == rhs);
 }
 
+
+inline EffectFileT::EffectFileT(const EffectFileT &o)
+      : name(o.name),
+        fps(o.fps),
+        isLockRandSeed(o.isLockRandSeed),
+        lockRandSeed(o.lockRandSeed),
+        layoutScaleX(o.layoutScaleX),
+        layoutScaleY(o.layoutScaleY),
+        numNodeList(o.numNodeList) {
+  effectNode.reserve(o.effectNode.size());
+  for (const auto &effectNode_ : o.effectNode) { effectNode.emplace_back((effectNode_) ? new ss::ssfb::EffectNodeT(*effectNode_) : nullptr); }
+}
+
+inline EffectFileT &EffectFileT::operator=(EffectFileT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(name, o.name);
+  std::swap(fps, o.fps);
+  std::swap(isLockRandSeed, o.isLockRandSeed);
+  std::swap(lockRandSeed, o.lockRandSeed);
+  std::swap(layoutScaleX, o.layoutScaleX);
+  std::swap(layoutScaleY, o.layoutScaleY);
+  std::swap(numNodeList, o.numNodeList);
+  std::swap(effectNode, o.effectNode);
+  return *this;
+}
 
 inline EffectFileT *EffectFile::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<EffectFileT>(new EffectFileT());
@@ -4484,7 +4543,7 @@ inline void EffectFile::UnPackTo(EffectFileT *_o, const flatbuffers::resolver_fu
   { auto _e = layoutScaleX(); _o->layoutScaleX = _e; }
   { auto _e = layoutScaleY(); _o->layoutScaleY = _e; }
   { auto _e = numNodeList(); _o->numNodeList = _e; }
-  { auto _e = effectNode(); if (_e) { _o->effectNode.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->effectNode[_i]) { _e->Get(_i)->UnPackTo(_o->effectNode[_i].get(), _resolver); } else { _o->effectNode[_i] = std::unique_ptr<ss::ssfb::EffectNodeT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
+  { auto _e = effectNode(); if (_e) { _o->effectNode.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->effectNode[_i] = std::unique_ptr<ss::ssfb::EffectNodeT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<EffectFile> EffectFile::Pack(flatbuffers::FlatBufferBuilder &_fbb, const EffectFileT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -4591,6 +4650,39 @@ inline bool operator!=(const CellT &lhs, const CellT &rhs) {
 }
 
 
+inline CellT::CellT(const CellT &o)
+      : name(o.name),
+        cellMap((o.cellMap) ? new ss::ssfb::CellMapT(*o.cellMap) : nullptr),
+        indexInCellMap(o.indexInCellMap),
+        x(o.x),
+        y(o.y),
+        width(o.width),
+        height(o.height),
+        pivot_x(o.pivot_x),
+        pivot_y(o.pivot_y),
+        u1(o.u1),
+        v1(o.v1),
+        u2(o.u2),
+        v2(o.v2) {
+}
+
+inline CellT &CellT::operator=(CellT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(name, o.name);
+  std::swap(cellMap, o.cellMap);
+  std::swap(indexInCellMap, o.indexInCellMap);
+  std::swap(x, o.x);
+  std::swap(y, o.y);
+  std::swap(width, o.width);
+  std::swap(height, o.height);
+  std::swap(pivot_x, o.pivot_x);
+  std::swap(pivot_y, o.pivot_y);
+  std::swap(u1, o.u1);
+  std::swap(v1, o.v1);
+  std::swap(u2, o.u2);
+  std::swap(v2, o.v2);
+  return *this;
+}
+
 inline CellT *Cell::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<CellT>(new CellT());
   UnPackTo(_o.get(), _resolver);
@@ -4601,7 +4693,7 @@ inline void Cell::UnPackTo(CellT *_o, const flatbuffers::resolver_function_t *_r
   (void)_o;
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); }
-  { auto _e = cellMap(); if (_e) { if(_o->cellMap) { _e->UnPackTo(_o->cellMap.get(), _resolver); } else { _o->cellMap = std::unique_ptr<ss::ssfb::CellMapT>(_e->UnPack(_resolver)); } } }
+  { auto _e = cellMap(); if (_e) _o->cellMap = std::unique_ptr<ss::ssfb::CellMapT>(_e->UnPack(_resolver)); }
   { auto _e = indexInCellMap(); _o->indexInCellMap = _e; }
   { auto _e = x(); _o->x = _e; }
   { auto _e = y(); _o->y = _e; }
@@ -4779,13 +4871,23 @@ inline flatbuffers::Offset<partState> CreatepartState(flatbuffers::FlatBufferBui
 
 inline bool operator==(const frameDataIndexT &lhs, const frameDataIndexT &rhs) {
   return
-      (lhs.states == rhs.states);
+      (lhs.states.size() == rhs.states.size() && std::equal(lhs.states.cbegin(), lhs.states.cend(), rhs.states.cbegin(), [](std::unique_ptr<ss::ssfb::partStateT> const &a, std::unique_ptr<ss::ssfb::partStateT> const &b) { return (a == b) || (a && b && *a == *b); }));
 }
 
 inline bool operator!=(const frameDataIndexT &lhs, const frameDataIndexT &rhs) {
     return !(lhs == rhs);
 }
 
+
+inline frameDataIndexT::frameDataIndexT(const frameDataIndexT &o) {
+  states.reserve(o.states.size());
+  for (const auto &states_ : o.states) { states.emplace_back((states_) ? new ss::ssfb::partStateT(*states_) : nullptr); }
+}
+
+inline frameDataIndexT &frameDataIndexT::operator=(frameDataIndexT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(states, o.states);
+  return *this;
+}
 
 inline frameDataIndexT *frameDataIndex::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<frameDataIndexT>(new frameDataIndexT());
@@ -4796,7 +4898,7 @@ inline frameDataIndexT *frameDataIndex::UnPack(const flatbuffers::resolver_funct
 inline void frameDataIndex::UnPackTo(frameDataIndexT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = states(); if (_e) { _o->states.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->states[_i]) { _e->Get(_i)->UnPackTo(_o->states[_i].get(), _resolver); } else { _o->states[_i] = std::unique_ptr<ss::ssfb::partStateT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
+  { auto _e = states(); if (_e) { _o->states.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->states[_i] = std::unique_ptr<ss::ssfb::partStateT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<frameDataIndex> frameDataIndex::Pack(flatbuffers::FlatBufferBuilder &_fbb, const frameDataIndexT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -4906,13 +5008,25 @@ inline flatbuffers::Offset<userDataItem> CreateuserDataItem(flatbuffers::FlatBuf
 inline bool operator==(const userDataPerFrameT &lhs, const userDataPerFrameT &rhs) {
   return
       (lhs.frameIndex == rhs.frameIndex) &&
-      (lhs.data == rhs.data);
+      (lhs.data.size() == rhs.data.size() && std::equal(lhs.data.cbegin(), lhs.data.cend(), rhs.data.cbegin(), [](std::unique_ptr<ss::ssfb::userDataItemT> const &a, std::unique_ptr<ss::ssfb::userDataItemT> const &b) { return (a == b) || (a && b && *a == *b); }));
 }
 
 inline bool operator!=(const userDataPerFrameT &lhs, const userDataPerFrameT &rhs) {
     return !(lhs == rhs);
 }
 
+
+inline userDataPerFrameT::userDataPerFrameT(const userDataPerFrameT &o)
+      : frameIndex(o.frameIndex) {
+  data.reserve(o.data.size());
+  for (const auto &data_ : o.data) { data.emplace_back((data_) ? new ss::ssfb::userDataItemT(*data_) : nullptr); }
+}
+
+inline userDataPerFrameT &userDataPerFrameT::operator=(userDataPerFrameT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(frameIndex, o.frameIndex);
+  std::swap(data, o.data);
+  return *this;
+}
 
 inline userDataPerFrameT *userDataPerFrame::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<userDataPerFrameT>(new userDataPerFrameT());
@@ -4924,7 +5038,7 @@ inline void userDataPerFrame::UnPackTo(userDataPerFrameT *_o, const flatbuffers:
   (void)_o;
   (void)_resolver;
   { auto _e = frameIndex(); _o->frameIndex = _e; }
-  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->data[_i]) { _e->Get(_i)->UnPackTo(_o->data[_i].get(), _resolver); } else { _o->data[_i] = std::unique_ptr<ss::ssfb::userDataItemT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
+  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i] = std::unique_ptr<ss::ssfb::userDataItemT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<userDataPerFrame> userDataPerFrame::Pack(flatbuffers::FlatBufferBuilder &_fbb, const userDataPerFrameT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -4988,12 +5102,12 @@ inline flatbuffers::Offset<labelDataItem> CreatelabelDataItem(flatbuffers::FlatB
 inline bool operator==(const AnimationDataT &lhs, const AnimationDataT &rhs) {
   return
       (lhs.name == rhs.name) &&
-      (lhs.defaultData == rhs.defaultData) &&
-      (lhs.frameData == rhs.frameData) &&
-      (lhs.userData == rhs.userData) &&
-      (lhs.labelData == rhs.labelData) &&
-      (lhs.meshsDataUV == rhs.meshsDataUV) &&
-      (lhs.meshsDataIndices == rhs.meshsDataIndices) &&
+      (lhs.defaultData.size() == rhs.defaultData.size() && std::equal(lhs.defaultData.cbegin(), lhs.defaultData.cend(), rhs.defaultData.cbegin(), [](std::unique_ptr<ss::ssfb::AnimationInitialDataT> const &a, std::unique_ptr<ss::ssfb::AnimationInitialDataT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.frameData.size() == rhs.frameData.size() && std::equal(lhs.frameData.cbegin(), lhs.frameData.cend(), rhs.frameData.cbegin(), [](std::unique_ptr<ss::ssfb::frameDataIndexT> const &a, std::unique_ptr<ss::ssfb::frameDataIndexT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.userData.size() == rhs.userData.size() && std::equal(lhs.userData.cbegin(), lhs.userData.cend(), rhs.userData.cbegin(), [](std::unique_ptr<ss::ssfb::userDataPerFrameT> const &a, std::unique_ptr<ss::ssfb::userDataPerFrameT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.labelData.size() == rhs.labelData.size() && std::equal(lhs.labelData.cbegin(), lhs.labelData.cend(), rhs.labelData.cbegin(), [](std::unique_ptr<ss::ssfb::labelDataItemT> const &a, std::unique_ptr<ss::ssfb::labelDataItemT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.meshsDataUV.size() == rhs.meshsDataUV.size() && std::equal(lhs.meshsDataUV.cbegin(), lhs.meshsDataUV.cend(), rhs.meshsDataUV.cbegin(), [](std::unique_ptr<ss::ssfb::meshDataUVT> const &a, std::unique_ptr<ss::ssfb::meshDataUVT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.meshsDataIndices.size() == rhs.meshsDataIndices.size() && std::equal(lhs.meshsDataIndices.cbegin(), lhs.meshsDataIndices.cend(), rhs.meshsDataIndices.cbegin(), [](std::unique_ptr<ss::ssfb::meshDataIndicesT> const &a, std::unique_ptr<ss::ssfb::meshDataIndicesT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
       (lhs.startFrames == rhs.startFrames) &&
       (lhs.endFrames == rhs.endFrames) &&
       (lhs.totalFrames == rhs.totalFrames) &&
@@ -5010,6 +5124,51 @@ inline bool operator!=(const AnimationDataT &lhs, const AnimationDataT &rhs) {
 }
 
 
+inline AnimationDataT::AnimationDataT(const AnimationDataT &o)
+      : name(o.name),
+        startFrames(o.startFrames),
+        endFrames(o.endFrames),
+        totalFrames(o.totalFrames),
+        fps(o.fps),
+        labelNum(o.labelNum),
+        canvasSizeW(o.canvasSizeW),
+        canvasSizeH(o.canvasSizeH),
+        canvasPvotX(o.canvasPvotX),
+        canvasPvotY(o.canvasPvotY) {
+  defaultData.reserve(o.defaultData.size());
+  for (const auto &defaultData_ : o.defaultData) { defaultData.emplace_back((defaultData_) ? new ss::ssfb::AnimationInitialDataT(*defaultData_) : nullptr); }
+  frameData.reserve(o.frameData.size());
+  for (const auto &frameData_ : o.frameData) { frameData.emplace_back((frameData_) ? new ss::ssfb::frameDataIndexT(*frameData_) : nullptr); }
+  userData.reserve(o.userData.size());
+  for (const auto &userData_ : o.userData) { userData.emplace_back((userData_) ? new ss::ssfb::userDataPerFrameT(*userData_) : nullptr); }
+  labelData.reserve(o.labelData.size());
+  for (const auto &labelData_ : o.labelData) { labelData.emplace_back((labelData_) ? new ss::ssfb::labelDataItemT(*labelData_) : nullptr); }
+  meshsDataUV.reserve(o.meshsDataUV.size());
+  for (const auto &meshsDataUV_ : o.meshsDataUV) { meshsDataUV.emplace_back((meshsDataUV_) ? new ss::ssfb::meshDataUVT(*meshsDataUV_) : nullptr); }
+  meshsDataIndices.reserve(o.meshsDataIndices.size());
+  for (const auto &meshsDataIndices_ : o.meshsDataIndices) { meshsDataIndices.emplace_back((meshsDataIndices_) ? new ss::ssfb::meshDataIndicesT(*meshsDataIndices_) : nullptr); }
+}
+
+inline AnimationDataT &AnimationDataT::operator=(AnimationDataT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(name, o.name);
+  std::swap(defaultData, o.defaultData);
+  std::swap(frameData, o.frameData);
+  std::swap(userData, o.userData);
+  std::swap(labelData, o.labelData);
+  std::swap(meshsDataUV, o.meshsDataUV);
+  std::swap(meshsDataIndices, o.meshsDataIndices);
+  std::swap(startFrames, o.startFrames);
+  std::swap(endFrames, o.endFrames);
+  std::swap(totalFrames, o.totalFrames);
+  std::swap(fps, o.fps);
+  std::swap(labelNum, o.labelNum);
+  std::swap(canvasSizeW, o.canvasSizeW);
+  std::swap(canvasSizeH, o.canvasSizeH);
+  std::swap(canvasPvotX, o.canvasPvotX);
+  std::swap(canvasPvotY, o.canvasPvotY);
+  return *this;
+}
+
 inline AnimationDataT *AnimationData::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<AnimationDataT>(new AnimationDataT());
   UnPackTo(_o.get(), _resolver);
@@ -5020,12 +5179,12 @@ inline void AnimationData::UnPackTo(AnimationDataT *_o, const flatbuffers::resol
   (void)_o;
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); }
-  { auto _e = defaultData(); if (_e) { _o->defaultData.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->defaultData[_i]) { _e->Get(_i)->UnPackTo(_o->defaultData[_i].get(), _resolver); } else { _o->defaultData[_i] = std::unique_ptr<ss::ssfb::AnimationInitialDataT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
-  { auto _e = frameData(); if (_e) { _o->frameData.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->frameData[_i]) { _e->Get(_i)->UnPackTo(_o->frameData[_i].get(), _resolver); } else { _o->frameData[_i] = std::unique_ptr<ss::ssfb::frameDataIndexT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
-  { auto _e = userData(); if (_e) { _o->userData.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->userData[_i]) { _e->Get(_i)->UnPackTo(_o->userData[_i].get(), _resolver); } else { _o->userData[_i] = std::unique_ptr<ss::ssfb::userDataPerFrameT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
-  { auto _e = labelData(); if (_e) { _o->labelData.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->labelData[_i]) { _e->Get(_i)->UnPackTo(_o->labelData[_i].get(), _resolver); } else { _o->labelData[_i] = std::unique_ptr<ss::ssfb::labelDataItemT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
-  { auto _e = meshsDataUV(); if (_e) { _o->meshsDataUV.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->meshsDataUV[_i]) { _e->Get(_i)->UnPackTo(_o->meshsDataUV[_i].get(), _resolver); } else { _o->meshsDataUV[_i] = std::unique_ptr<ss::ssfb::meshDataUVT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
-  { auto _e = meshsDataIndices(); if (_e) { _o->meshsDataIndices.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->meshsDataIndices[_i]) { _e->Get(_i)->UnPackTo(_o->meshsDataIndices[_i].get(), _resolver); } else { _o->meshsDataIndices[_i] = std::unique_ptr<ss::ssfb::meshDataIndicesT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
+  { auto _e = defaultData(); if (_e) { _o->defaultData.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->defaultData[_i] = std::unique_ptr<ss::ssfb::AnimationInitialDataT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = frameData(); if (_e) { _o->frameData.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->frameData[_i] = std::unique_ptr<ss::ssfb::frameDataIndexT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = userData(); if (_e) { _o->userData.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->userData[_i] = std::unique_ptr<ss::ssfb::userDataPerFrameT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = labelData(); if (_e) { _o->labelData.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->labelData[_i] = std::unique_ptr<ss::ssfb::labelDataItemT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = meshsDataUV(); if (_e) { _o->meshsDataUV.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->meshsDataUV[_i] = std::unique_ptr<ss::ssfb::meshDataUVT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = meshsDataIndices(); if (_e) { _o->meshsDataIndices.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->meshsDataIndices[_i] = std::unique_ptr<ss::ssfb::meshDataIndicesT>(_e->Get(_i)->UnPack(_resolver)); } } }
   { auto _e = startFrames(); _o->startFrames = _e; }
   { auto _e = endFrames(); _o->endFrames = _e; }
   { auto _e = totalFrames(); _o->totalFrames = _e; }
@@ -5343,14 +5502,29 @@ inline flatbuffers::Offset<PartData> CreatePartData(flatbuffers::FlatBufferBuild
 inline bool operator==(const AnimePackDataT &lhs, const AnimePackDataT &rhs) {
   return
       (lhs.name == rhs.name) &&
-      (lhs.parts == rhs.parts) &&
-      (lhs.animations == rhs.animations);
+      (lhs.parts.size() == rhs.parts.size() && std::equal(lhs.parts.cbegin(), lhs.parts.cend(), rhs.parts.cbegin(), [](std::unique_ptr<ss::ssfb::PartDataT> const &a, std::unique_ptr<ss::ssfb::PartDataT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.animations.size() == rhs.animations.size() && std::equal(lhs.animations.cbegin(), lhs.animations.cend(), rhs.animations.cbegin(), [](std::unique_ptr<ss::ssfb::AnimationDataT> const &a, std::unique_ptr<ss::ssfb::AnimationDataT> const &b) { return (a == b) || (a && b && *a == *b); }));
 }
 
 inline bool operator!=(const AnimePackDataT &lhs, const AnimePackDataT &rhs) {
     return !(lhs == rhs);
 }
 
+
+inline AnimePackDataT::AnimePackDataT(const AnimePackDataT &o)
+      : name(o.name) {
+  parts.reserve(o.parts.size());
+  for (const auto &parts_ : o.parts) { parts.emplace_back((parts_) ? new ss::ssfb::PartDataT(*parts_) : nullptr); }
+  animations.reserve(o.animations.size());
+  for (const auto &animations_ : o.animations) { animations.emplace_back((animations_) ? new ss::ssfb::AnimationDataT(*animations_) : nullptr); }
+}
+
+inline AnimePackDataT &AnimePackDataT::operator=(AnimePackDataT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(name, o.name);
+  std::swap(parts, o.parts);
+  std::swap(animations, o.animations);
+  return *this;
+}
 
 inline AnimePackDataT *AnimePackData::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<AnimePackDataT>(new AnimePackDataT());
@@ -5362,8 +5536,8 @@ inline void AnimePackData::UnPackTo(AnimePackDataT *_o, const flatbuffers::resol
   (void)_o;
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); }
-  { auto _e = parts(); if (_e) { _o->parts.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->parts[_i]) { _e->Get(_i)->UnPackTo(_o->parts[_i].get(), _resolver); } else { _o->parts[_i] = std::unique_ptr<ss::ssfb::PartDataT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
-  { auto _e = animations(); if (_e) { _o->animations.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->animations[_i]) { _e->Get(_i)->UnPackTo(_o->animations[_i].get(), _resolver); } else { _o->animations[_i] = std::unique_ptr<ss::ssfb::AnimationDataT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
+  { auto _e = parts(); if (_e) { _o->parts.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->parts[_i] = std::unique_ptr<ss::ssfb::PartDataT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = animations(); if (_e) { _o->animations.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->animations[_i] = std::unique_ptr<ss::ssfb::AnimationDataT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<AnimePackData> AnimePackData::Pack(flatbuffers::FlatBufferBuilder &_fbb, const AnimePackDataT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -5391,9 +5565,9 @@ inline bool operator==(const ProjectDataT &lhs, const ProjectDataT &rhs) {
       (lhs.version == rhs.version) &&
       (lhs.flags == rhs.flags) &&
       (lhs.imageBaseDir == rhs.imageBaseDir) &&
-      (lhs.cells == rhs.cells) &&
-      (lhs.animePacks == rhs.animePacks) &&
-      (lhs.effectFileList == rhs.effectFileList) &&
+      (lhs.cells.size() == rhs.cells.size() && std::equal(lhs.cells.cbegin(), lhs.cells.cend(), rhs.cells.cbegin(), [](std::unique_ptr<ss::ssfb::CellT> const &a, std::unique_ptr<ss::ssfb::CellT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.animePacks.size() == rhs.animePacks.size() && std::equal(lhs.animePacks.cbegin(), lhs.animePacks.cend(), rhs.animePacks.cbegin(), [](std::unique_ptr<ss::ssfb::AnimePackDataT> const &a, std::unique_ptr<ss::ssfb::AnimePackDataT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.effectFileList.size() == rhs.effectFileList.size() && std::equal(lhs.effectFileList.cbegin(), lhs.effectFileList.cend(), rhs.effectFileList.cbegin(), [](std::unique_ptr<ss::ssfb::EffectFileT> const &a, std::unique_ptr<ss::ssfb::EffectFileT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
       (lhs.numCells == rhs.numCells) &&
       (lhs.numAnimePacks == rhs.numAnimePacks) &&
       (lhs.numEffectFileList == rhs.numEffectFileList);
@@ -5403,6 +5577,36 @@ inline bool operator!=(const ProjectDataT &lhs, const ProjectDataT &rhs) {
     return !(lhs == rhs);
 }
 
+
+inline ProjectDataT::ProjectDataT(const ProjectDataT &o)
+      : dataId(o.dataId),
+        version(o.version),
+        flags(o.flags),
+        imageBaseDir(o.imageBaseDir),
+        numCells(o.numCells),
+        numAnimePacks(o.numAnimePacks),
+        numEffectFileList(o.numEffectFileList) {
+  cells.reserve(o.cells.size());
+  for (const auto &cells_ : o.cells) { cells.emplace_back((cells_) ? new ss::ssfb::CellT(*cells_) : nullptr); }
+  animePacks.reserve(o.animePacks.size());
+  for (const auto &animePacks_ : o.animePacks) { animePacks.emplace_back((animePacks_) ? new ss::ssfb::AnimePackDataT(*animePacks_) : nullptr); }
+  effectFileList.reserve(o.effectFileList.size());
+  for (const auto &effectFileList_ : o.effectFileList) { effectFileList.emplace_back((effectFileList_) ? new ss::ssfb::EffectFileT(*effectFileList_) : nullptr); }
+}
+
+inline ProjectDataT &ProjectDataT::operator=(ProjectDataT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(dataId, o.dataId);
+  std::swap(version, o.version);
+  std::swap(flags, o.flags);
+  std::swap(imageBaseDir, o.imageBaseDir);
+  std::swap(cells, o.cells);
+  std::swap(animePacks, o.animePacks);
+  std::swap(effectFileList, o.effectFileList);
+  std::swap(numCells, o.numCells);
+  std::swap(numAnimePacks, o.numAnimePacks);
+  std::swap(numEffectFileList, o.numEffectFileList);
+  return *this;
+}
 
 inline ProjectDataT *ProjectData::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<ProjectDataT>(new ProjectDataT());
@@ -5417,9 +5621,9 @@ inline void ProjectData::UnPackTo(ProjectDataT *_o, const flatbuffers::resolver_
   { auto _e = version(); _o->version = _e; }
   { auto _e = flags(); _o->flags = _e; }
   { auto _e = imageBaseDir(); if (_e) _o->imageBaseDir = _e->str(); }
-  { auto _e = cells(); if (_e) { _o->cells.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->cells[_i]) { _e->Get(_i)->UnPackTo(_o->cells[_i].get(), _resolver); } else { _o->cells[_i] = std::unique_ptr<ss::ssfb::CellT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
-  { auto _e = animePacks(); if (_e) { _o->animePacks.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->animePacks[_i]) { _e->Get(_i)->UnPackTo(_o->animePacks[_i].get(), _resolver); } else { _o->animePacks[_i] = std::unique_ptr<ss::ssfb::AnimePackDataT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
-  { auto _e = effectFileList(); if (_e) { _o->effectFileList.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->effectFileList[_i]) { _e->Get(_i)->UnPackTo(_o->effectFileList[_i].get(), _resolver); } else { _o->effectFileList[_i] = std::unique_ptr<ss::ssfb::EffectFileT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
+  { auto _e = cells(); if (_e) { _o->cells.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->cells[_i] = std::unique_ptr<ss::ssfb::CellT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = animePacks(); if (_e) { _o->animePacks.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->animePacks[_i] = std::unique_ptr<ss::ssfb::AnimePackDataT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = effectFileList(); if (_e) { _o->effectFileList.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->effectFileList[_i] = std::unique_ptr<ss::ssfb::EffectFileT>(_e->Get(_i)->UnPack(_resolver)); } } }
   { auto _e = numCells(); _o->numCells = _e; }
   { auto _e = numAnimePacks(); _o->numAnimePacks = _e; }
   { auto _e = numEffectFileList(); _o->numEffectFileList = _e; }
@@ -5463,55 +5667,55 @@ inline bool VerifyEffectNodeBehavior(flatbuffers::Verifier &verifier, const void
       return true;
     }
     case EffectNodeBehavior_EffectParticleElementBasic: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementBasic>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementBasic>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementRndSeedChange>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementRndSeedChange>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementDelay: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementDelay>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementDelay>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementGravity: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementGravity>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementGravity>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementPosition: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementPosition>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementPosition>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementRotation: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementRotation>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementRotation>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementRotationTrans>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementRotationTrans>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementTransSpeed>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementTransSpeed>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementTangentialAcceleration>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementTangentialAcceleration>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementInitColor: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementInitColor>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementInitColor>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementTransColor: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementTransColor>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementTransColor>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementAlphaFade>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementAlphaFade>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementSize: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementSize>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementSize>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementTransSize: {
-      return verifier.Verify<ss::ssfb::EffectParticleElementTransSize>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementTransSize>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticlePointGravity: {
-      return verifier.Verify<ss::ssfb::EffectParticlePointGravity>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticlePointGravity>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      return verifier.Verify<ss::ssfb::EffectParticleTurnToDirectionEnabled>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleTurnToDirectionEnabled>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      return verifier.Verify<ss::ssfb::EffectParticleInfiniteEmitEnabled>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleInfiniteEmitEnabled>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     default: return true;
   }
@@ -5853,13 +6057,13 @@ inline bool VerifyuserDataValue(flatbuffers::Verifier &verifier, const void *obj
       return true;
     }
     case userDataValue_userDataInteger: {
-      return verifier.Verify<ss::ssfb::userDataInteger>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::userDataInteger>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case userDataValue_userDataRect: {
-      return verifier.Verify<ss::ssfb::userDataRect>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::userDataRect>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case userDataValue_userDataPoint: {
-      return verifier.Verify<ss::ssfb::userDataPoint>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::userDataPoint>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case userDataValue_userDataString: {
       auto ptr = reinterpret_cast<const ss::ssfb::userDataString *>(obj);
@@ -5993,6 +6197,11 @@ inline const char *ProjectDataIdentifier() {
 inline bool ProjectDataBufferHasIdentifier(const void *buf) {
   return flatbuffers::BufferHasIdentifier(
       buf, ProjectDataIdentifier());
+}
+
+inline bool SizePrefixedProjectDataBufferHasIdentifier(const void *buf) {
+  return flatbuffers::BufferHasIdentifier(
+      buf, ProjectDataIdentifier(), true);
 }
 
 inline bool VerifyProjectDataBuffer(
