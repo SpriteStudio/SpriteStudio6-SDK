@@ -75,7 +75,7 @@ set(FLATBUFFERS_BUILD_TESTS OFF CACHE INTERNAL "Disable flatbuffers unit test")
 FetchContent_Declare(
     flatbuffers
     GIT_REPOSITORY https://github.com/google/flatbuffers.git
-    GIT_TAG        v23.1.4)
+    GIT_TAG        v23.1.21)
 FetchContent_MakeAvailable(flatbuffers)
 include_directories(${flatbuffers_SOURCE_DIR}/include)
 
