@@ -202,6 +202,7 @@
 		<value>color_bar.ssce</value>
 	</cellmapNames>
 	<charmapNames>
+		<value>font/RoundedMPlus.fnt</value>
 		<value>font/Sample_PixelMplus12.fnt</value>
 	</charmapNames>
 	<animepackNames>
@@ -231,7 +232,7 @@
 	<lastPart></lastPart>
 	<lastCellMapFile>color_bar.ssce</lastCellMapFile>
 	<lastCell>NewCell_1</lastCell>
-	<lastCharMapFile>font/Sample_PixelMplus12.fnt</lastCharMapFile>
+	<lastCharMapFile>font/RoundedMPlus.fnt</lastCharMapFile>
 	<lastEffectFile>NewEffect.ssee</lastEffectFile>
 	<setupmode>0</setupmode>
 	<expandAnimation />

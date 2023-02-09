@@ -136,7 +136,7 @@
 				<text>bitmapフォント</text>
 				<textBitmap>1</textBitmap>
 				<textFamily>Agency FB</textFamily>
-				<textCharMap>font/Sample_PixelMplus12.fnt</textCharMap>
+				<textCharMap>font/RoundedMPlus.fnt</textCharMap>
 				<textSize>50</textSize>
 				<textSpace>2</textSpace>
 				<textSmooth>0</textSmooth>
@@ -304,7 +304,7 @@
 						</attribute>
 						<attribute tag="POSY">
 							<key time="0" ipType="linear">
-								<value>-26</value>
+								<value>-41</value>
 							</key>
 						</attribute>
 						<attribute tag="ROTZ">
