@@ -1,7 +1,7 @@
 ﻿#ifndef __XORSHIFT32__
 #define __XORSHIFT32__
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 #ifdef WIN32
@@ -46,7 +46,7 @@ public:
 } ;
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 
 #endif

@@ -2,7 +2,7 @@
 #include "ssstring_uty.h"
 #include "sscharconverter.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 bool	SsXmlIArchiver::dc_attr( const char* name , SsString& member )
@@ -23,6 +23,17 @@ bool	SsXmlIArchiver::dc_attr( const char* name , int& member )
 	const char* v = getxml()->Attribute( name  );
 
 	member = atoi(v);
+
+	return true;
+}
+
+bool	SsXmlIArchiver::dc_attr(const char* name, float& member)
+{
+	SPRITESTUDIO6SDK_AR_SELF_CHECK();
+
+	const char* v = getxml()->Attribute(name);
+
+	member = atof(v);
 
 	return true;
 }
@@ -310,16 +321,13 @@ bool	StringToIRect( const std::string& str , SsIRect& rect )
 	split_string( str , ' ' , str_list );
 	if ( str_list.size() < 4 )
 	{
-		rect.x = 0;
-		rect.y = 0;
-		rect.w = 0;
-		rect.h = 0;
+		rect = SsIRect();
 		return false;
 	}else{
-		rect.x = (int)atof( str_list[0].c_str() );
-		rect.y = (int)atof( str_list[1].c_str() );
-		rect.w = (int)atof( str_list[2].c_str() );
-		rect.h = (int)atof( str_list[3].c_str() );
+		rect.setX( (int)atof(str_list[0].c_str()) );
+		rect.setY( (int)atof(str_list[1].c_str()) );
+		rect.setWidth( (int)atof( str_list[2].c_str() ) );
+		rect.setHeight( (int)atof( str_list[3].c_str() ) );
 	}
 
 	return true;
@@ -329,4 +337,4 @@ void	SsArchiverInit()
 {
 }
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

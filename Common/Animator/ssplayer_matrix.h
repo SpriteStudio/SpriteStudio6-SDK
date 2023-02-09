@@ -4,7 +4,7 @@
 #include "../Loader/sstypes.h"
 #include <memory>
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 void	IdentityMatrix( float* matrix );
@@ -162,7 +162,7 @@ private:
 };
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif
 

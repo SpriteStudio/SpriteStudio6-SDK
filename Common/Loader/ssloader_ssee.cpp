@@ -6,7 +6,7 @@
 
 #include "../Helper/DebugPrint.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -64,4 +64,4 @@ void	ssloader_ssee::loadPostProcessing( SsEffectFile* file , SsProject* pj )
 
 }
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

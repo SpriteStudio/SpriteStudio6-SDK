@@ -3,7 +3,7 @@
 #include <memory>
 #include <utility>
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 SsEffectBehavior::~SsEffectBehavior()
@@ -68,5 +68,5 @@ void	SsEffectBehavior::EffectElementLoader(ISsXmlArchiver* ar)
 
 }
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 

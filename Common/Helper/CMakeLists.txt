@@ -13,23 +13,29 @@ CCACHE()
 PREPARE()
 
 set(ssHelper_SRCS
-    IsshTexture.cpp
+#    IsshTexture.cpp
+    SsTextureFactory.cpp
     sshTextureBMP.cpp
     stb_image.c
     sshScene.cpp
     sshTask.cpp
     XPFileOpenDlg.cpp
     DebugPrint.cpp
+    SsRawImage.cpp
+    UnicodeConv.cpp
 )
 
 set(ssHelper_HEADERS
-    IsshTexture.h
+ #   IsshTexture.h
+    SsTextureFactory.h
     sshTextureBMP.h
     stb_image.h
     sshObject.h
     sshTask.h
     XPFileOpenDlg.h
     DebugPrint.h
+    SsRawImage.h
+    UnicodeConv.h
 )
 
 if(MSVC)

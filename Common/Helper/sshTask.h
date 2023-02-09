@@ -15,7 +15,7 @@
 	#define	SPRITESTUDIO6SDK_NOUSE_ARGUMENT(_name_)	( void )( &_name_ );
 #endif
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class	treeitem_uid
@@ -335,6 +335,6 @@ inline	void task_manager_destroy()
 }
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

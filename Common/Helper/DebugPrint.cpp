@@ -12,13 +12,13 @@
 #endif
 
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
 void DEBUG_PRINTF( const char* strFormat, ...   )
 {
-#if 0
+#if 1
 	char strBuffer[1024];
 
 	va_list arglist;
@@ -49,4 +49,4 @@ void	THROW_ERROR_MESSAGE_MAIN( std::string str , char* fname , size_t line )
 }
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

@@ -19,6 +19,7 @@ set(ssLoader_SRCS
     ssloader_ssce.cpp
     ssloader_ssee.cpp
     ssloader_ssqe.cpp
+    ssloader_ssse.cpp
     SsEffectBehavior.cpp
     SsEffectElement.cpp
     ssstring_uty.cpp
@@ -28,6 +29,26 @@ set(ssLoader_SRCS
     ssInterpolation.cpp
     ssattribute.cpp
     sscharconverter.cpp
+    sscharmap.cpp
+
+
+partvalues/sspartvalue.cpp
+partvalues/sspartvalueshape.cpp
+partvalues/sspartvaluetext.cpp
+partvalues/sspartvaluenines.cpp
+
+shape/sspolygon.cpp
+shape/ssvertex.cpp
+
+shape/ssshape.cpp
+shape/ssshapearrow.cpp
+shape/ssshaperectangle.cpp
+shape/ssshapestar.cpp
+shape/ssshapetriangle.cpp
+
+nineslice/ssnines.cpp
+
+text/ssfontdesc.cpp
 )
 #if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
 #    set(ssLoader_SRCS ${ssLoader_SRCS} sscharconverter_mac.mm)
@@ -43,6 +64,7 @@ set(ssLoader_HEADERS
     ssloader_ssce.h
     ssloader_ssee.h
     ssloader_ssqe.h
+    ssloader_ssse.h
     sstypes.h
     ssvalue.h
     ssInterpolation.h
@@ -50,6 +72,25 @@ set(ssLoader_HEADERS
     ssstring_uty.h
 #    ${CMAKE_CURRENT_SOURCE_DIR}/../Animator/ssplayer_animedecode.h
     sscharconverter.h
+    sscharmap.h
+
+partvalues/sspartvalue.h
+partvalues/sspartvalueshape.h
+partvalues/sspartvaluetext.h
+partvalues/sspartvaluenines.h
+
+
+shape/sspolygon.h
+shape/ssvertex.h
+shape/ssshape.h
+shape/ssshapearrow.h
+shape/ssshaperectangle.h
+shape/ssshapestar.h
+shape/ssshapetriangle.h
+nineslice/ssnines.h
+
+text/ssfontdesc.h
+
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

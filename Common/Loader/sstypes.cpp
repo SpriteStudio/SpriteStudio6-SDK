@@ -1,6 +1,6 @@
 ﻿#include "sstypes.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 //---------------------------------------------------------------
@@ -10,7 +10,10 @@ SsString	__EnumToString_( SsPartType::_enum n )
 	if ( SsPartType::invalid == n ) return "invalid";
 	if ( SsPartType::null == n) return "null";
 	if ( SsPartType::normal == n) return "normal";
-	if ( SsPartType::text == n) return "text";
+	if ( SsPartType::shape == n) return "shape"; //add ss7.1
+	if ( SsPartType::text == n) return "text";	
+	if ( SsPartType::nines == n) return "nines";	//add ss7.1
+
 	if ( SsPartType::instance == n) return "instance";
 	if ( SsPartType::effect == n) return "effect";
 
@@ -23,6 +26,7 @@ SsString	__EnumToString_( SsPartType::_enum n )
 	if (SsPartType::joint == n) return "joint";
 	if (SsPartType::bonepoint == n) return "bonepoint";
 
+	if (SsPartType::audio == n) return "ssaudio";	//add ss7.1
 
 	return "invalid";	
 }
@@ -33,7 +37,10 @@ void 	__StringToEnum_( SsString n , SsPartType::_enum& out)
 	if ( n == "invalid") out = SsPartType::invalid;
 	if ( n == "null") out = SsPartType::null;
 	if ( n == "normal") out = SsPartType::normal;
+	if ( n == "shape") out = SsPartType::shape;	//add ss7.1
 	if ( n == "text") out = SsPartType::text;
+	if ( n == "nines") out = SsPartType::nines;	//add ss7.1
+
 	if ( n == "instance") out = SsPartType::instance;
 	if ( n == "effect") out = SsPartType::effect;
 
@@ -46,6 +53,7 @@ void 	__StringToEnum_( SsString n , SsPartType::_enum& out)
 	}
 	if (n == "joint") out = SsPartType::joint;
 	if (n == "bonepoint") out = SsPartType::bonepoint;
+	if (n == "ssaudio") out = SsPartType::audio;
 
 }
 
@@ -95,7 +103,7 @@ void	__StringToEnum_( SsString n , SsBoundsType::_enum &out )
 
 
 //---------------------------------------------------------------
-//相互変換 SsBoundsType
+//相互変換 SsInheritType
 SsString	__EnumToString_( SsInheritType::_enum n )
 {
 	if ( SsInheritType::invalid == n) return "invalid";
@@ -159,6 +167,30 @@ SsString	__EnumToString_( SsInterpolationType::_enum n )
 	if ( SsInterpolationType::acceleration == n) return "acceleration";
 	if ( SsInterpolationType::deceleration == n) return "deceleration";
 
+	if (SsInterpolationType::easeIn == n) return "easeIn";
+	if (SsInterpolationType::easeOut == n) return "easeOut";
+	if (SsInterpolationType::easeInOut == n) return "easeInOut";
+
+	if (SsInterpolationType::easeExponentialIn == n) return "easeExponentialIn";
+	if (SsInterpolationType::easeExponentialOut == n) return "easeExponentialOut";
+	if (SsInterpolationType::easeExponentialInOut == n) return "easeExponentialInOut";
+
+	if (SsInterpolationType::easeSineIn == n) return "easeSineIn";
+	if (SsInterpolationType::easeSineOut == n) return "easeSineOut";
+	if (SsInterpolationType::easeSineInOut == n) return "easeSineInOut";
+
+	if (SsInterpolationType::easeElasticIn == n) return "easeElasticIn";
+	if (SsInterpolationType::easeElasticOut == n) return "easeElasticOut";
+	if (SsInterpolationType::easeElasticInOut == n) return "easeElasticInOut";
+
+	if (SsInterpolationType::easeBounceIn == n) return "easeBounceIn";
+	if (SsInterpolationType::easeBounceOut == n) return "easeBounceOut";
+	if (SsInterpolationType::easeBounceInOut == n) return "easeBounceInOut";
+
+	if (SsInterpolationType::easeBackIn == n) return "easeBackIn";
+	if (SsInterpolationType::easeBackOut == n) return "easeBackOut";
+	if (SsInterpolationType::easeBackInOut == n) return "easeBackInOut";
+
 	return "none";	
 }
 
@@ -172,6 +204,30 @@ void	__StringToEnum_( SsString n , SsInterpolationType::_enum &out )
 	if ( n == "bezier") out = SsInterpolationType::bezier;
 	if ( n == "acceleration") out = SsInterpolationType::acceleration;
 	if ( n == "deceleration") out = SsInterpolationType::deceleration;
+
+	if (n == "easeIn") out = SsInterpolationType::easeIn;
+	if (n == "easeOut") out = SsInterpolationType::easeOut;
+	if (n == "easeInOut") out = SsInterpolationType::easeInOut;
+
+	if (n == "easeExponentialIn") out = SsInterpolationType::easeExponentialIn;
+	if (n == "easeExponentialOut") out = SsInterpolationType::easeExponentialOut;
+	if (n == "easeExponentialInOut") out = SsInterpolationType::easeExponentialInOut;
+
+	if (n == "easeSineIn") out = SsInterpolationType::easeSineIn;
+	if (n == "easeSineOut") out = SsInterpolationType::easeSineOut;
+	if (n == "easeSineInOut") out = SsInterpolationType::easeSineInOut;
+
+	if (n == "easeElasticIn") out = SsInterpolationType::easeElasticIn;
+	if (n == "easeElasticOut") out = SsInterpolationType::easeElasticOut;
+	if (n == "easeElasticInOut") out = SsInterpolationType::easeElasticInOut;
+
+	if (n == "easeBounceIn") out = SsInterpolationType::easeBounceIn;
+	if (n == "easeBounceOut") out = SsInterpolationType::easeBounceOut;
+	if (n == "easeBounceInOut") out = SsInterpolationType::easeBounceInOut;
+
+	if (n == "easeBackIn") out = SsInterpolationType::easeBackIn;
+	if (n == "easeBackOut") out = SsInterpolationType::easeBackOut;
+	if (n == "easeBackInOut") out = SsInterpolationType::easeBackInOut;
 }
 
 //---------------------------------------------------------------
@@ -283,6 +339,8 @@ SsString	__EnumToString_( SsAttributeKind::_enum n )
 	if ( SsAttributeKind::mask == n)	    return "MASK";
 	if ( SsAttributeKind::deform == n)	    return "DEFM";
 
+	if (SsAttributeKind::audio == n)	    return "ADIO";		//add SS7.1
+	if (SsAttributeKind::texchange == n)	return "TCHG";	//add SS7.1
 
 
 	return "invalid";	
@@ -335,6 +393,8 @@ void	__StringToEnum_( SsString n , SsAttributeKind::_enum &out )
 	if ( n == "MASK") out = SsAttributeKind::mask;
 	if ( n == "DEFM") out = SsAttributeKind::deform;
 
+	if (n == "ADIO") out = SsAttributeKind::audio;
+	if (n == "TCHG") out = SsAttributeKind::texchange;
 
 }
 
@@ -342,7 +402,7 @@ void	__StringToEnum_( SsString n , SsAttributeKind::_enum &out )
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
 
 //---------------------------------------------------------------
-//相互変換 SsPartType
+//相互変換 SsEffectNodeType
 SsString	__EnumToString_( SsEffectNodeType::_enum n )
 {
 	if ( n == SsEffectNodeType::invalid ) return "invalid";
@@ -366,7 +426,7 @@ void 	__StringToEnum_( SsString n , SsEffectNodeType::_enum& out)
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
 
 //---------------------------------------------------------------
-//相互変換 SsPartType
+//相互変換 SsRenderBlendType
 SsString	__EnumToString_( SsRenderBlendType::_enum n )
 {
 	if ( n == SsRenderBlendType::invalid ) return "invalid";
@@ -460,4 +520,4 @@ void 	__StringToEnum_(SsString n, SsSignalParamType::_enum& out)
 }
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

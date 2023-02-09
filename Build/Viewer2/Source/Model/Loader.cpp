@@ -27,14 +27,18 @@ void AsyncAnimeLoader::run()
 	ViewerMainWindow::get()->getOpenGLContext().executeOnGLThread([&](OpenGLContext& openGLContext)
 	{
 		p->changeState(p->stateLoading.get());
-		spritestudio6::SsAnimePackList & alist = p->currentProj->getAnimePackList();
-		spritestudio6::SsAnimePack * animePack = alist[packIndex].get();
-		spritestudio6::SsAnimation * anime = animePack->animeList[animeIndex];
-		spritestudio6::SsModel* model = &animePack->Model;
+		SpriteStudio::SsAnimePackList & alist = p->currentProj->getAnimePackList();
+		SpriteStudio::SsAnimePack * animePack = alist[packIndex].get();
+		SpriteStudio::SsAnimation * anime = animePack->animeList[animeIndex];
+		SpriteStudio::SsModel* model = &animePack->Model;
 
-		p->decoder.reset(new spritestudio6::SsAnimeDecoder());
-		p->cellmap = new spritestudio6::SsCellMapList();
+		p->decoder.reset(new SpriteStudio::SsAnimeDecoder());
+		p->cellmap = new SpriteStudio::SsCellMapList();
 		p->cellmap->set(p->currentProj.get(), animePack);
+
+		p->fonttextureMng = new SpriteStudio::FontTextureManager(p->currentProj.get());
+
+		p->decoder->setFontManager(p->fonttextureMng);
 		p->decoder->setAnimation(model, anime, p->cellmap, p->currentProj.get());
 
 		int startFrame = static_cast<int>(p->decoder->getAnimeStartFrame());
@@ -89,10 +93,10 @@ void AsyncProjectLoader::run()
 	{
 		p->changeState(p->stateLoading.get());
 
-//		std::string fileName = spritestudio6::SsCharConverter::convert_path_string(projectName.toStdString());
+//		std::string fileName = SpriteStudio::SsCharConverter::convert_path_string(projectName.toStdString());
 		std::string fileName = projectName.toStdString();
 
-		spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(fileName);
+		SpriteStudio::SsProject* proj = SpriteStudio::ssloader_sspj::Load(fileName);
 
 		if (!proj)
 		{

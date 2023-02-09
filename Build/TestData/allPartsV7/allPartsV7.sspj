@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<SpriteStudioProject version="2.01.00" editorVersion="7.1.0">
+	<name>allPartsV7</name>
+	<exportPath></exportPath>
+	<settings>
+		<animeBaseDirectory></animeBaseDirectory>
+		<cellMapBaseDirectory></cellMapBaseDirectory>
+		<imageBaseDirectory></imageBaseDirectory>
+		<effectBaseDirectory></effectBaseDirectory>
+		<exportBaseDirectory>Export</exportBaseDirectory>
+		<queryExportBaseDirectory>1</queryExportBaseDirectory>
+		<copyWhenImportImageIsOutside>1</copyWhenImportImageIsOutside>
+		<exportAnimeFileFormat>SSAX</exportAnimeFileFormat>
+		<exportCellMapFileFormat>invalid</exportCellMapFileFormat>
+		<exportCellMap>0</exportCellMap>
+		<copyImageWhenExportCellmap>1</copyImageWhenExportCellmap>
+		<ssConverterOptions></ssConverterOptions>
+		<player>custom</player>
+		<signal></signal>
+		<strictVer4>0</strictVer4>
+		<dontUseMatrixForTransform>0</dontUseMatrixForTransform>
+		<rootPartFunctionAsVer4>0</rootPartFunctionAsVer4>
+		<interpolateColorBlendAsVer4>1</interpolateColorBlendAsVer4>
+		<interpolateVertexOffsetAsVer4>1</interpolateVertexOffsetAsVer4>
+		<restrictXYAsInteger>0</restrictXYAsInteger>
+		<inheritRatesNoKeySave>1</inheritRatesNoKeySave>
+		<availableInterpolationTypes>
+			<item>none</item>
+			<item>linear</item>
+			<item>hermite</item>
+			<item>bezier</item>
+			<item>acceleration</item>
+			<item>deceleration</item>
+		</availableInterpolationTypes>
+		<availableAttributes>
+			<item>CELL</item>
+			<item>POSX</item>
+			<item>POSY</item>
+			<item>POSZ</item>
+			<item>ROTX</item>
+			<item>ROTY</item>
+			<item>ROTZ</item>
+			<item>SCLX</item>
+			<item>SCLY</item>
+			<item>LSCX</item>
+			<item>LSCY</item>
+			<item>ALPH</item>
+			<item>LALP</item>
+			<item>PRIO</item>
+			<item>IFLH</item>
+			<item>IFLV</item>
+			<item>FLPH</item>
+			<item>FLPV</item>
+			<item>HIDE</item>
+			<item>PCOL</item>
+			<item>VCOL</item>
+			<item>VERT</item>
+			<item>PVTX</item>
+			<item>PVTY</item>
+			<item>ANCX</item>
+			<item>ANCY</item>
+			<item>SIZX</item>
+			<item>SIZY</item>
+			<item>UVTX</item>
+			<item>UVTY</item>
+			<item>UVRZ</item>
+			<item>UVSX</item>
+			<item>UVSY</item>
+			<item>BNDR</item>
+			<item>MASK</item>
+			<item>USER</item>
+			<item>IPRM</item>
+			<item>EFCT</item>
+			<item>DEFM</item>
+			<item>ADIO</item>
+			<item>TCHG</item>
+		</availableAttributes>
+		<availableFeatures>
+			<value>bone</value>
+			<value>effect</value>
+			<value>mask</value>
+			<value>mesh</value>
+			<value>nines</value>
+			<value>shape</value>
+			<value>sound</value>
+			<value>text</value>
+		</availableFeatures>
+		<defaultSetAttributes>
+			<item>POSX</item>
+			<item>POSY</item>
+			<item>ROTZ</item>
+			<item>PRIO</item>
+			<item>HIDE</item>
+		</defaultSetAttributes>
+		<wrapMode>clamp</wrapMode>
+		<filterMode>linear</filterMode>
+		<interpolationType>linear</interpolationType>
+		<coordUnit>rate</coordUnit>
+		<renderingSettings>
+			<outputFolder></outputFolder>
+			<outputType>AVI</outputType>
+			<bgColor>FF606060</bgColor>
+			<addAnimeName>0</addAnimeName>
+			<addTimeStamp>0</addTimeStamp>
+			<addAlphaChanel>1</addAlphaChanel>
+			<imageSizeRatioW>100</imageSizeRatioW>
+			<imageSizeRatioH>100</imageSizeRatioH>
+			<imageSizeRatioFix>1</imageSizeRatioFix>
+			<imageSizeIsPixcel>1</imageSizeIsPixcel>
+			<imageSizeExpansion0>0</imageSizeExpansion0>
+			<imageSizeExpansion1>0</imageSizeExpansion1>
+			<imageSizeExpansion2>0</imageSizeExpansion2>
+			<imageSizeExpansion3>0</imageSizeExpansion3>
+			<webpSettings>
+				<lossyType>lossless</lossyType>
+				<qualityFactor>75</qualityFactor>
+				<compMethod>4</compMethod>
+				<useLoselessPreset>1</useLoselessPreset>
+				<losslessPreset>0</losslessPreset>
+			</webpSettings>
+			<mp4Settings>
+				<bitrate>1536000</bitrate>
+			</mp4Settings>
+		</renderingSettings>
+		<effectSettings>
+			<gridSize>50</gridSize>
+		</effectSettings>
+		<cellTags />
+		<useDecimalDigit>2</useDecimalDigit>
+		<opacifyOutsideCanvasFrame>1</opacifyOutsideCanvasFrame>
+		<convertImageToPMA>0</convertImageToPMA>
+		<blendImageAsPMA>0</blendImageAsPMA>
+		<unpremultiplyAlpha>0</unpremultiplyAlpha>
+		<vertexAnimeFloat>1</vertexAnimeFloat>
+		<allowNPOT>0</allowNPOT>
+		<maxLoadableImageWidth>8192</maxLoadableImageWidth>
+		<maxLoadableImageHeight>8192</maxLoadableImageHeight>
+		<maxLoadableImageFileSize>73400320</maxLoadableImageFileSize>
+		<instanceStackMax>100</instanceStackMax>
+		<selectedAttrSelPreset>0</selectedAttrSelPreset>
+		<attrSelPresetNameA></attrSelPresetNameA>
+		<attrSelPresetA />
+		<attrSelPresetNameB></attrSelPresetNameB>
+		<attrSelPresetB />
+		<attrSelPresetNameC></attrSelPresetNameC>
+		<attrSelPresetC />
+		<attrSelPresetNameD></attrSelPresetNameD>
+		<attrSelPresetD />
+		<attrSelPresetNameE></attrSelPresetNameE>
+		<attrSelPresetE />
+		<attrSelPresetNameF></attrSelPresetNameF>
+		<attrSelPresetF />
+		<attrSelPresetNameG></attrSelPresetNameG>
+		<attrSelPresetG />
+		<attrSelPresetNameH></attrSelPresetNameH>
+		<attrSelPresetH />
+		<attrSelPresetNameI></attrSelPresetNameI>
+		<attrSelPresetI />
+		<attrSelPresetNameJ></attrSelPresetNameJ>
+		<attrSelPresetJ />
+	</settings>
+	<animeSettings>
+		<fps>60</fps>
+		<frameCount>60</frameCount>
+		<sortMode>prio</sortMode>
+		<canvasSize>1280 720</canvasSize>
+		<pivot>0 0</pivot>
+		<bgColor>FF323232</bgColor>
+		<gridSize>32</gridSize>
+		<gridColor>FF808080</gridColor>
+		<ik_depth>3</ik_depth>
+		<startFrame>0</startFrame>
+		<endFrame>59</endFrame>
+		<bgSettings>
+			<value>
+				<imagePath></imagePath>
+				<imageDisp>1</imageDisp>
+				<imageOffset>0 0</imageOffset>
+				<imageCanvas>0 0</imageCanvas>
+				<imagePivot>0 0</imagePivot>
+			</value>
+			<value>
+				<imagePath></imagePath>
+				<imageDisp>1</imageDisp>
+				<imageOffset>0 0</imageOffset>
+				<imageCanvas>0 0</imageCanvas>
+				<imagePivot>0 0</imagePivot>
+			</value>
+		</bgSettings>
+		<outStartNum>0</outStartNum>
+	</animeSettings>
+	<texPackSettings>
+		<maxSize>4096 4096</maxSize>
+		<forcePo2>1</forcePo2>
+		<forceSquare>0</forceSquare>
+		<margin>0</margin>
+		<padding>1</padding>
+	</texPackSettings>
+	<cellmapNames>
+		<value>9slice_64.ssce</value>
+		<value>9slice_64tile.ssce</value>
+		<value>color_bar.ssce</value>
+	</cellmapNames>
+	<charmapNames>
+		<value>font/Sample_PixelMplus12.fnt</value>
+	</charmapNames>
+	<animepackNames>
+		<value>effect.ssae</value>
+		<value>instanse.ssae</value>
+		<value>mask.ssae</value>
+		<value>mesh.ssae</value>
+		<value>nineslice.ssae</value>
+		<value>normal.ssae</value>
+		<value>null.ssae</value>
+		<value>root.ssae</value>
+		<value>shape.ssae</value>
+		<value>sound.ssae</value>
+		<value>text.ssae</value>
+	</animepackNames>
+	<effectFileNames>
+		<value>NewEffect.ssee</value>
+	</effectFileNames>
+	<audiopackNames>
+		<value>soundlist.ssse</value>
+	</audiopackNames>
+	<ExternalTextures>
+		<files />
+	</ExternalTextures>
+	<lastAnimeFile>text.ssae</lastAnimeFile>
+	<lastAnimeName>anime_1</lastAnimeName>
+	<lastPart></lastPart>
+	<lastCellMapFile>color_bar.ssce</lastCellMapFile>
+	<lastCell>NewCell_1</lastCell>
+	<lastCharMapFile>font/Sample_PixelMplus12.fnt</lastCharMapFile>
+	<lastEffectFile>NewEffect.ssee</lastEffectFile>
+	<setupmode>0</setupmode>
+	<expandAnimation />
+	<expandSequence />
+</SpriteStudioProject>

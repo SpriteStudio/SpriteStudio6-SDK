@@ -25,7 +25,7 @@
 	#include "string"
 #endif
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -79,4 +79,4 @@ bool XPFileOpenDlg::Show()
 }
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

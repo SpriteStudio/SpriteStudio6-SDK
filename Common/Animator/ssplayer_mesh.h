@@ -4,7 +4,7 @@
 
 #include <memory>
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 class ISSTexture;
 
@@ -181,6 +181,6 @@ public:
 
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

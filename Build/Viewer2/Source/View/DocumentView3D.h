@@ -1,11 +1,11 @@
 #pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 class SSTextureFactory;
 class SsRenderGL;
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 class DocumentView3D : public OpenGLAppComponent
 {
@@ -38,8 +38,8 @@ public:
 	Value	view_camera_scale;
 
 private:
-	std::unique_ptr<spritestudio6::SSTextureFactory>	texfactory;
-	std::unique_ptr<spritestudio6::SsRenderGL>			rendererGL;
+	std::unique_ptr<SpriteStudio::SSTextureFactory>	texfactory;
+	std::unique_ptr<SpriteStudio::SsRenderGL>			rendererGL;
 	Colour	backGroundColour;
 	//==============================================================================
 	// private member variables

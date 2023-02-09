@@ -1,7 +1,7 @@
 ﻿#ifndef __SSINTERPOLATION__
 #define __SSINTERPOLATION__
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class SsCurve;
@@ -18,11 +18,22 @@ inline bool SsNeedsCurveParams(SsInterpolationType::_enum type)
 	return false;
 }
 
+inline bool SsNeedsEasingParams(SsInterpolationType::_enum type)
+{
+	if (type >= SsInterpolationType::easeIn &&
+		type <= SsInterpolationType::easeBackInOut)
+		return true;
+	return false;
+}
+
 ///カーブパラメータ、補完方法により保管された値を生成する
-SsVector2	SsInterpolate(SsInterpolationType::_enum ipType, float time, SsVector2 start, SsVector2 end, const SsCurve * curve);
-float	SsInterpolate(SsInterpolationType::_enum type, float time, float start, float end, const SsCurve * curve);
+//SsVector2	SsInterpolate(SsInterpolationType::_enum ipType, float time, SsVector2 start, SsVector2 end, const SsCurve * curve);
+SsVector2	SsInterpolate(SsInterpolationType::_enum ipType, float easingRate , float time, SsVector2 start, SsVector2 end, const SsCurve* curve);
+
+//float	SsInterpolate(SsInterpolationType::_enum type, float time, float start, float end, const SsCurve * curve);
+float   SsInterpolate(SsInterpolationType::_enum type, float easingRate, float time, float start, float end, const SsCurve* curve);
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

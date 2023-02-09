@@ -101,3 +101,6 @@ Build/Converter/cppfs/
 Build/Ss6ConverterGUI/build-Ss6ConverterGUI-Desktop_Qt_5_15_2_clang_64bit-Debug/
 Build/Ss6ConverterGUI/build-Ss6ConverterGUI-Desktop_Qt_5_15_2_clang_64bit-Debug/
 Build/Ss6ConverterGUI/build-Ss6ConverterGUI-Desktop_Qt_5_15_2_clang_64bit-Release/
+Build/Converter/flatbuffers/_build/
+Build/Converter/flatbuffers/tests/FlatBuffers.Test/
+Build/vcpkg/

@@ -17,7 +17,7 @@
 #define SPRITESTUDIO6SDK_LOOP_TYPE2 (0)
 #define SPRITESTUDIO6SDK_LOOP_TYPE3 (1)
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class SsEffectModel;
@@ -479,6 +479,6 @@ public:
 
 };
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

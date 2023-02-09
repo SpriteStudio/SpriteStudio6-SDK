@@ -1,9 +1,10 @@
 ﻿#ifndef __TKTEXTURE__
 #define __TKTEXTURE__
 
-#include "../IsshTexture.h"
+//#include "../IsshTexture.h"
+#include "../SsTextureFactory.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class	SSTextureGL : public ISSTexture
@@ -22,10 +23,11 @@ public:
 	virtual int	getHeight() { return tex_height; }
 
 	virtual ISSTexture* create(){ return new SSTextureGL(); }
+	virtual bool loadFromMemory(uint8_t* ptr, int width, int height ,int bpp);
 
 };
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

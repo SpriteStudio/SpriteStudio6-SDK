@@ -8,7 +8,7 @@
 #include "../Helper/DebugPrint.h"
 #include "sscharconverter.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -143,6 +143,17 @@ SsSequence*		SsProject::findSequence( SsString& sequencePackName , SsString& Seq
 }
 
 
+SsCharMap* SsProject::findCharMap( SsString name)
+{
+
+	if (charmapDic.count(name) > 0)
+	{
+		return charmapDic[name].get();
+	}
+
+	return 0;
+}
+
 SsProject*	ssloader_sspj::Load(const std::string& filename )
 {
 	libXML::XMLDocument xml;
@@ -262,6 +273,54 @@ SsProject*	ssloader_sspj::Load(const std::string& filename )
 			}
 		}
 
+		//add SS7.1 サウンドリストを追加
+		for (size_t i = 0; i < proj->getAudioPackNum(); i++)
+		{
+			SsString path = SsCharConverter::convert_path_string(proj->getAudioPackFilePath(i));
+			SsAudioPack* audio = ssloader_ssse::Load(path);
+			if ((audio) && (checkFileVersion(audio->version, SPRITESTUDIO6_SSSEVERSION) == true))
+			{
+				proj->soundList.push_back(std::move(std::unique_ptr<SsAudioPack>(audio)));
+			}
+			else {
+				//エラー
+				DEBUG_PRINTF("audio load error : %s", path.c_str());
+				DEBUG_PRINTF("ssse old version");
+
+				if (audio) delete audio;
+				delete proj;
+				return 0;
+			}
+		}
+		//add SS7.1 bitmap font
+		for (auto item : proj->charmapNames)
+		{
+			//SsString path = nomarizeFilename(proj->m_proj_filepath + item);
+			//SsString path = item;
+
+			SsCharMap* chamap = new SsCharMap();
+
+			if (chamap->read(proj , item))
+			{
+				proj->charmapDic[item] = std::move(std::unique_ptr<SsCharMap>(chamap));
+				//proj->charmapList.push_back(std::move(std::unique_ptr<SsCharMap>(chamap)) );
+
+			}
+			else {
+				//エラー
+				DEBUG_PRINTF("charmap load error : %s", item.c_str());
+				DEBUG_PRINTF("ssse old version");
+
+				if (chamap) delete chamap;
+				delete proj;
+				return 0;
+
+			}
+
+			
+		}
+
+
 		return proj;
 	}	
 
@@ -288,4 +347,4 @@ SsCellMap* SsProject::findCellMap( SsString& str )
 }
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

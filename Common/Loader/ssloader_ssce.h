@@ -6,7 +6,7 @@
 
 #define SPRITESTUDIO6_SSCEVERSION "2.00.00"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 ///パーツに使用される画素の矩形範囲を示した構造です。
@@ -37,18 +37,20 @@ public:
 	int	divw;
 	int	divh;
 
-	SsCell(){}
-	virtual ~SsCell() {
-/*
-		for (std::vector<SsVector2*>::iterator itr = innerPoint.begin();
-			itr != innerPoint.end(); itr++) delete (*itr);
-		for (std::vector<SsVector2*>::iterator itr = outerPoint.begin();
-			itr != outerPoint.end(); itr++) delete (*itr);
-		for (std::vector<SsVector2*>::iterator itr = meshPointList.begin();
-			itr != meshPointList.end(); itr++) delete (*itr);
-		for (std::vector<SsTriangle*>::iterator itr = meshTriList.begin();
-			itr != meshTriList.end(); itr++) delete (*itr);
-*/
+	SsCell()
+		:
+		name(""),
+		pos(SsPoint2(0, 0)),
+		size(SsPoint2(0, 0)),
+		pivot(SsPoint2(0, 0)),
+		rotated(false),
+		ismesh(false),
+		divtype(SsMeshDivType::unknown),
+		divw(0),
+		divh(0)
+	{}
+	virtual ~SsCell()
+	{
 	}
 
 
@@ -136,6 +138,6 @@ public:
 
 };
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

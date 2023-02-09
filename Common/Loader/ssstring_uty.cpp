@@ -11,7 +11,7 @@
 
 #endif
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -43,7 +43,7 @@ void	split_string( const std::string &in_str ,
 		
 }
 
-
+//パスからフォルダのみにする
 std::string path2dir(const std::string &path) {
 	// MEMO: find_last_ofが未発見時に-1を返すので、maxをsize_tで実体化したらダメ
 	const std::string::size_type pos = std::max<signed>((signed)path.find_last_of('/'), (signed)path.find_last_of('\\'));
@@ -186,4 +186,4 @@ bool checkFileVersion(std::string fileVersion, std::string nowVersion)
 }
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

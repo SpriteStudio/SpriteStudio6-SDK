@@ -30,6 +30,7 @@ Player::~Player()
 {
 	stopTimer();
 	myInst = nullptr;
+	delete fonttextureMng;
 }
 
 Player * Player::get()
@@ -73,6 +74,7 @@ Player::Player()
 	stateInitial.reset(new StateInitial());
 
 	currentState = stateInitial.get();
+	fonttextureMng = 0;
 
 	stopTimer();
 }

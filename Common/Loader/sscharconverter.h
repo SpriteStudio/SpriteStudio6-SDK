@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class SsCharConverter {
@@ -13,6 +13,6 @@ public:
 	static std::string convert_path_string(const std::string &str);
 };
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif //SSSDK_SSCHARCONVERTER_H

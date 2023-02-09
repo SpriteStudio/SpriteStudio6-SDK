@@ -11,7 +11,7 @@
 // PFMEM_TEST
 #define SPRITESTUDIO6SDK_PFMEM_TEST ( 1 )
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class SsEffectModel;
@@ -526,6 +526,6 @@ public:
 };
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

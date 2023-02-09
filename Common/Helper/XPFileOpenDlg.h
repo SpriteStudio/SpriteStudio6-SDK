@@ -11,7 +11,7 @@
 #ifndef __XP_FILEOPENDLG__
 #define __XP_FILEOPENDLG__
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class XPFileOpenDlg {
@@ -31,6 +31,6 @@ public:
 };
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

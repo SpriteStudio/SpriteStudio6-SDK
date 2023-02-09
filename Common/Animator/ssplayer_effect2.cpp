@@ -6,7 +6,7 @@
 
 #include "ssplayer_animedecode.h"
 #include "ssplayer_effect2.h"
-#include "ssplayer_macro.h"
+#include "ssplayer_math.h"
 #include "ssplayer_matrix.h"
 #include "ssplayer_render.h"
 #include "ssplayer_effectfunction.h"
@@ -16,7 +16,7 @@
 #define SPRITESTUDIO6SDK_DEBUG_DISP (0)
 #define SPRITESTUDIO6SDK_BUILD_ERROR_0418 (0)
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -972,5 +972,5 @@ int	SsEffectRenderV2::getCurrentFPS(){
 	return 30;
 }
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 

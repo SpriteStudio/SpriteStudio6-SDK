@@ -2,7 +2,7 @@
 #include "ssplayer_animedecode.h"
 #include "ssplayer_PartState.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -53,6 +53,7 @@ void	SsPartState::init()
 	pivotOffset = SsVector2(0, 0);
 	anchor = SsVector2( 0 , 0 );
 	size = SsVector2( 1 , 1 );
+
 
 	imageFlipH = false;
 	imageFlipV = false;
@@ -112,4 +113,4 @@ void	SsPartState::reset()
 
 }
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

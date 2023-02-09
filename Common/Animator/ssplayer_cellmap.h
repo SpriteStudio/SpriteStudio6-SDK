@@ -5,7 +5,7 @@
 
 #include <memory>
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class SsAnimeDecoder;
@@ -24,8 +24,73 @@ struct SsCellValue
 		cell(0) ,  
 		texture(0)
 		{}
+
+	int convPow2(int n)
+	{
+		for (int i = 0; i < 30; i++)
+		{
+			if (n <= (1 << i))
+			{
+				return 1 << i;
+			}
+		}
+		return 0x40000000;
+	}
+
+	SsCellValue& operator =(SsCellValue& r) {
+		this->cell = r.cell;
+		this->texture = r.texture;
+		for (int i = 0; i < 5; i++)
+		{
+			uvs[i] = r.uvs[i];
+		}
+		this->wrapMode = r.wrapMode;
+		this->filterMode = r.filterMode;
+
+		return *this;
+	}
+
+	void calcUvs()
+	{
+		if (texture == nullptr) return;
+		SsVector2 wh = SsVector2(texture->getWidth(), texture->getHeight());
+
+		wh.x = convPow2(wh.x);
+		wh.y = convPow2(wh.y);
+
+		// 右上に向かって＋になる
+		float left = cell->pos.x / wh.x;
+		float right = (cell->pos.x + cell->size.x) / wh.x;
+		// LB->RB->LT->RT 順
+		// 頂点をZ順にしている都合上UV値は上下逆転させている
+		float top = cell->pos.y / wh.y;
+		float bottom = (cell->pos.y + cell->size.y) / wh.y;
+
+		if (cell->rotated)
+		{
+			// 反時計回りに９０度回転されているため起こして描画されるようにしてやる。
+			// 13
+			// 02
+			uvs[0].x = uvs[1].x = left;
+			uvs[2].x = uvs[3].x = right;
+			uvs[1].y = uvs[3].y = top;
+			uvs[0].y = uvs[2].y = bottom;
+		}
+		else
+		{
+			// そのまま。頂点の順番は下記の通り
+			// 01
+			// 23
+			uvs[0].x = uvs[2].x = left;
+			uvs[1].x = uvs[3].x = right;
+			uvs[0].y = uvs[1].y = top;
+			uvs[2].y = uvs[3].y = bottom;
+		}
+	}
 };
 
+
+//cellMapは数値、文字列のみの情報としているので画像ファイルの実体と紐づける
 class SsCelMapLinker
 {
 public:
@@ -123,6 +188,6 @@ void getCellValue( SsCellMapList* cellList, SsString& cellMapName , SsString& ce
 void calcUvs( SsCellValue* cellv );
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

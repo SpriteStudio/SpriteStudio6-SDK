@@ -5,14 +5,100 @@
 #include "ssarchiver.h"
 #include "ssattribute.h"
 
+
+#include "partvalues/sspartvalue.h"
+#include "partvalues/sspartvaluenines.h"
+#include "partvalues/sspartvalueshape.h"
+#include "partvalues/sspartvaluetext.h"
+
 #define SPRITESTUDIO6_SSAEVERSION "2.00.01"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class SsAnimation;
 
 
+
+#if 0
+// SsPartValueXXX のデータ型
+class ISsPartValueInfo
+{
+public:
+	ISsPartValueInfo() : m_strTag("unknown") {}
+	virtual ~ISsPartValueInfo() {}
+
+	virtual SsString getTag() {
+		return m_strTag;
+	}
+
+protected:
+	SsString	m_strTag;	//!< タグ
+
+};
+
+
+// SsPartValueTextInfo のデータ型 XML名と一致させている
+class SsPartValueTextInfo : public ISsPartValueInfo
+{
+public:
+	static const SsString TAG;
+
+	SsPartValueTextInfo()  {
+		m_strTag = SsPartValueTextInfo::TAG;
+	}
+	virtual ~SsPartValueTextInfo() {}
+
+	SsString text;
+
+	bool		textBitmap;
+	SsString	textFamily;
+	SsString	textCharMap;
+	int			textSize;
+	float		textSpace;
+	bool		textSmooth;
+	bool		textMask;
+	int			textWidth;
+	int			textHeight;
+	int			eAnchor;
+};
+
+
+// SsPartValueShapeInfo のデータ型 XML名と一致させている
+class SsPartValueShapeInfo : public ISsPartValueInfo
+{
+public:
+	static const SsString TAG;
+
+	SsPartValueShapeInfo() {
+		m_strTag = SsPartValueShapeInfo::TAG;
+	}
+	virtual ~SsPartValueShapeInfo() {}
+
+	SsString	shapeType;
+	bool		shapeMask;
+};
+
+
+// SsPartValueNineSliceInfo のデータ型 XML名と一致させている
+class SsPartValueNineSliceInfo : public ISsPartValueInfo
+{
+public:
+	static const SsString TAG;
+
+	SsPartValueNineSliceInfo() {
+		m_strTag = SsPartValueNineSliceInfo::TAG;
+	}
+	virtual ~SsPartValueNineSliceInfo() {}
+
+	int			ninesMarginL;
+	int			ninesMarginR;
+	int			ninesMarginT;
+	int			ninesMarginB;
+	int			ninesFillMode;
+	bool		ninesMask;
+};
+#endif
 
 
 
@@ -51,6 +137,7 @@ public:
 		}
 	}
 };
+
 
 
 
@@ -107,6 +194,16 @@ public:
 	int							IKDepth;		//!< IK深度
 	SsIkRotationArrow::_enum	IKRotationArrow;//!< 回転方向
 
+	// テキストパーツ用パラメータ
+	//SsString		text;			///< 表示テキスト [変数名変更禁止]
+	
+	//add SS7.1 拡張情報
+	//std::unique_ptr<ISsPartValueInfo> m_pPartValueInfo;
+	//SsString text;
+	std::unique_ptr<SsPartValue> m_pPartValueInfo;
+
+	
+
 public:
 	SsPart() : 
 	  name("") , arrayIndex(0), parentIndex(0) , show(0) , locked(0) , maskInfluence(true)
@@ -142,58 +239,9 @@ public:
 	  }
 	virtual ~SsPart(){}
 
+	void __Serialize(ISsXmlArchiver* ar);
 
-	///シリアライズのための宣言です。
-	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
-	{
-		SPRITESTUDIO6SDK_SSAR_DECLARE( name );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( arrayIndex );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( parentIndex );
 
-		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( type );
-		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( boundsType );
-		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( inheritType );
-		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( alphaBlendType );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( show );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( locked );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( colorLabel );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( maskInfluence );
-
-		SPRITESTUDIO6SDK_SSAR_DECLARE( refAnimePack );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( refAnime );
-
-		SPRITESTUDIO6SDK_SSAR_DECLARE( refEffectName );
-
-		SPRITESTUDIO6SDK_SSAR_DECLARE( boneLength );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( bonePosition );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( boneRotation );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( weightPosition );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( weightImpact );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( meshWeightType );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( meshWeightStrong );
-		SPRITESTUDIO6SDK_SSAR_DECLARE( IKDepth );
-		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( IKRotationArrow );
-
-		//継承率後に改良を実施
-		if ( ar->getType() == EnumSsArchiver::in )
-		{
-			libXML::XMLElement* e = ar->getxml()->FirstChildElement( "ineheritRates" );
-			if ( e )
-			{
-				libXML::XMLElement* ec = e->FirstChildElement();
-				while(ec)
-				{
-					//継承設定の取得
-					const char* tag = ec->Value();
-					SsAttributeKind::_enum enumattr;
-
-					__StringToEnum_( tag , enumattr );
-					inheritRates[(int)enumattr] = (float)atof( ec->GetText() );
-					ec = ec->NextSiblingElement();
-				}
-			}
-		}
-	}
 };
 
 enum 
@@ -433,7 +481,7 @@ public:
 
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 
 #endif

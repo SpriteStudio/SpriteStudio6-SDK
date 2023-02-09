@@ -10,7 +10,7 @@
 //#include "ssplayer_shader_gl.h"
 
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 enum{
@@ -75,4 +75,4 @@ void	SsRenderDX9::renderPart( SsPartState* state )
 
 }
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

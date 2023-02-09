@@ -7,7 +7,7 @@
 #include "sshObject.h"
 #include "sshTask.h"
 #include "sshScene.h"
-#include "IsshTexture.h"
+#include "SsTextureFactory.h"
 
 #include "XPFileOpenDlg.h"
 #include "DebugPrint.h"

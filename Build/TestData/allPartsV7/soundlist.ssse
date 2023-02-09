@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<SpriteStudioSoundList version="1.00.00" editorVersion="7.1.0">
+	<name>soundlist</name>
+	<exportPath></exportPath>
+	<table>
+		<id>0</id>
+		<Alias></Alias>
+		<sounds>
+			<value>
+				<Alias>se_sys_49</Alias>
+				<filename>sound/se_sys_49.mp3</filename>
+				<msec>809</msec>
+			</value>
+		</sounds>
+	</table>
+</SpriteStudioSoundList>

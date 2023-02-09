@@ -9,7 +9,7 @@
 
 #define SPRITESTUDIO6SDK_PUT_UNIFORM_WARNING	(1)
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class	SSOpenGLShader {
@@ -149,7 +149,7 @@ public:
 int SsGL_CheckShaderReady( void );
 extern	SSOpenGLShaderMan*              glshaderMan;
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif
 

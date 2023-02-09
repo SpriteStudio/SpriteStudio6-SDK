@@ -7,12 +7,12 @@
 #include <vector>
 #include <cassert>
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class SsValue;
 
-typedef	wchar_t		SsChar;
+//typedef	wchar_t		SsChar;
 typedef std::vector<SsValue>		SsArray;
 typedef std::map<SsString,SsValue>	SsHash;
 
@@ -51,15 +51,40 @@ public:
 	bool	_bool_temp;
 
 
-	SsValue() : type(unkown) , _str(0){}
+	SsValue() : 
+		type(unkown) ,
+		_str(0),
+		_int_temp(0),
+		_float_temp(0),
+		_bool_temp(0)
+	{}
 
-	explicit SsValue(bool b ) : type(boolean_type) {  _bool = b; }
-	explicit SsValue(int n, char* org = 0) : type(int_type) {
+	explicit SsValue(bool b ) : 
+		type(boolean_type) ,
+		_str(0),
+		_int_temp(0),
+		_float_temp(0),
+		_bool_temp(0)
+	{  _bool = b; }
+
+
+	explicit SsValue(int n, char* org = 0) : 
+		type(int_type),
+		_str(0),
+		_int_temp(0),
+		_float_temp(0),
+		_bool_temp(0)
+	{
 		_int = n; 
 		if (org)
 			org_txt = SsString(org);
 	}
-	explicit SsValue(float n, char* org = 0) : type(float_type)
+	explicit SsValue(float n, char* org = 0) : 
+		type(float_type),
+		_str(0),
+		_int_temp(0),
+		_float_temp(0),
+		_bool_temp(0)
 	{ 
 		_float = n; 
 		if (org)
@@ -334,6 +359,6 @@ inline static  SsValue	SsValueSeriarizer__MakeValue( const char* v )
 
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

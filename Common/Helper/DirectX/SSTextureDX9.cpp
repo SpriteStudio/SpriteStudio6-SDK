@@ -6,7 +6,7 @@
 #include "ssHelper.h"
 #include "SSTextureDX9.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 #if 0
@@ -67,4 +67,4 @@ bool SSTextureDX9::Load( const char* filename )
 	return true;
 }
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

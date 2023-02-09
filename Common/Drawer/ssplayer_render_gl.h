@@ -3,7 +3,7 @@
 
 #include "../Animator/ssplayer_render.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 struct SsPartState;
@@ -43,6 +43,6 @@ public:
 
 };
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

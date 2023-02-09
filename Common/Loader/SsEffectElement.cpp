@@ -14,9 +14,9 @@
 #include "ssplayer_render.h"
 #include "ssplayer_effectfunction.h"
 */
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 

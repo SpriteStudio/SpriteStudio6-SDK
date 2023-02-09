@@ -9,7 +9,7 @@
 
 #include	<memory>
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -380,4 +380,4 @@ SSOpenGLProgramObject::Use( void )
 
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

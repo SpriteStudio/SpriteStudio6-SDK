@@ -5,7 +5,7 @@
 #include <memory.h>
 #include <math.h>
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -460,4 +460,4 @@ void  SsOpenGLMatrix::TransformVector3(SsVector3& src, SsVector3& dst)
 }
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

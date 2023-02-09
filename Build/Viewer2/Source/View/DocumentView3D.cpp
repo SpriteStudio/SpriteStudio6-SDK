@@ -55,15 +55,15 @@ void DocumentView3D::initialise()
 #endif
 	initOpenGL();
 
-	rendererGL.reset(new spritestudio6::SsRenderGL());
-	spritestudio6::SsCurrentRenderer::SetCurrentRender(rendererGL.get());
-	texfactory.reset(new spritestudio6::SSTextureFactory(new spritestudio6::SSTextureGL()));
+	rendererGL.reset(new SpriteStudio::SsRenderGL());
+	SpriteStudio::SsCurrentRenderer::SetCurrentRender(rendererGL.get());
+	texfactory.reset(new SpriteStudio::SSTextureFactory(new SpriteStudio::SSTextureGL()));
 }
 
 void DocumentView3D::shutdown()
 {
-	spritestudio6::SSTextureFactory::releaseAllTexture();
-	spritestudio6::SSOpenGLShaderMan::Destory();
+	SpriteStudio::SSTextureFactory::releaseAllTexture();
+	SpriteStudio::SSOpenGLShaderMan::Destory();
 }
 
 void DocumentView3D::render()

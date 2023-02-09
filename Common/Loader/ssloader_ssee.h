@@ -8,7 +8,7 @@
 
 #define SPRITESTUDIO6_SSEEVERSION "2.00.00"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class SimpleTree
@@ -222,6 +222,6 @@ public:
 
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

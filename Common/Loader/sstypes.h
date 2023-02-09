@@ -19,7 +19,7 @@
 	#define	SPRITESTUDIO6SDK_NOUSE_ARGUMENT(_name_)	( void )( &_name_ );
 #endif
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 //===============================================================
@@ -28,7 +28,7 @@ namespace spritestudio6
 
 //文字列の設定
 typedef std::string SsString;
-
+typedef std::vector<SsString> SsStringList;
 
 
 ///２次元座標を表現するためのクラスです。
@@ -44,6 +44,10 @@ public:
 		x = _x ; y = _y;
 	}
 	SsPoint2() : x(0) , y(0){}
+
+
+	void setX(float v) { x = v; }
+	void setY(float v) { y = v; }
 
 	static	float	distance_sq(const SsPoint2 & l, const SsPoint2 & r)
 	{
@@ -203,24 +207,367 @@ typedef unsigned char u8;
 
 
 
+class SsVector4
+{
+public:
+	float x;
+	float y;
+	float z;
+	float w;
+public:
+	SsVector4() : x(.0), y(.0), z(.0), w(.0f)
+	{
+
+	}
+
+	SsVector4(float _x, float _y, float _z, float _w)
+	{
+		x = _x;
+		y = _y;
+		z = _z;
+		w = _w;
+	}
+
+	SsVector4& operator*=(float factor)
+	{
+		return SsVector4(0, 0, 0, 0);
+	}
+
+	SsVector4& operator+=(const SsVector4& vector)
+	{
+		x += vector.x;
+		y += vector.y;
+		z += vector.z;
+		w += vector.w;
+		return *this;
+	}
+};
+inline const SsVector4 operator*(const SsVector4& vector, float factor)
+{
+	return SsVector4(vector.x * factor, vector.y * factor, vector.z * factor, vector.w * factor);
+}
+
+inline const SsVector4 operator+(const SsVector4& v1, const SsVector4& v2)
+{
+	return SsVector4(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z, v1.w + v2.w);
+}
+
+//typedef SsPoint2 SsSizeF;
+
+template<typename T>
+class SsSizeT
+{
+public:
+	SsSizeT() : 
+		wd(0),
+		ht(0) {}
+
+	SsSizeT(T w , T h) : 
+		wd(w),
+		ht(h) {}
+
+
+	virtual ~SsSizeT() {}
+
+	T width() const { return wd; }
+	T height() const { return ht; }
+
+	void setWidth(T v) { wd = v; }
+	void setHeight(T v) { ht = v; }
+
+
+	bool operator ==(const SsSizeT& v) const
+	{
+		if (v.wd == this->wd && v.ht == this->ht)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	bool operator !=(const SsSizeT& v) const
+	{
+		return !(*this == v);
+	}
+
+private:
+	T wd;
+	T ht;
+};
+
+
+typedef SsSizeT<double>	SsSizeF;
+typedef SsSizeT<int>	SsSize;
+
+
 /// 矩形
 template <typename T>
 class SsTRect
 {
 public:
-	T	x, y, w, h;
+//	T	x, y, w, h;
+	T	x1, y1, x2, y2;
 
-	SsTRect(): x(0), y(0), w(0), h(0)  {}
-	SsTRect(T ax, T ay, T aw, T ah): x(ax), y(ay), w(aw), h(ah) {}
-	SsTRect(const SsTRect& r): x(r.x), y(r.y), w(r.w), h(r.h) {}
+	SsTRect(): x1(0), y1(0), x2(0), y2(0)  {}
 
-	bool	operator ==(const SsTRect& r) const {return x == r.x && y == r.y && w == r.w && h == r.h;}
+	SsTRect(int aleft, int atop, int awidth, int aheight)
+		: x1(aleft), y1(atop), x2(aleft + awidth - 1), y2(atop + aheight - 1) {}
+
+
+	SsTRect(const SsTRect& r): 
+		x1(r.x1), y1(r.y1), x2(r.x2), y2(r.y2) {}
+
+	SsTRect(SsPoint2 p, SsSize size)
+	{
+		x1 = p.x;
+		y1 = p.y;
+		x2 = p.x + size.width();
+		y2 = p.y + size.height();
+	}
+
+	bool	operator ==(const SsTRect& r) const {return x1 == r.x1 && y1 == r.y1 && x2 == r.x2 && y2 == r.y2;}
 	bool	operator !=(const SsTRect& r) const {return !(*this == r);}
+
+	SsPoint2 size()
+	{
+		return SsPoint2((width()), height());
+	}
+
+	void setRect(T _x, T _y, T _w, T _h)
+	{
+		setX(_x);
+		setY(_y);
+		setWidth(_w);
+		setHeight(_h);
+	}
+	inline void setCoords(int xp1, int yp1, int xp2, int yp2) noexcept
+	{
+		x1 = xp1;
+		y1 = yp1;
+		x2 = xp2;
+		y2 = yp2;
+	}
+
+	T x() { return x1; }
+	T y() { return y1; }
+	T left() { return x1; }
+	T top() { return y1; }
+
+	T right() { return x2; }
+	T bottom() { return y2; }
+
+	T width() const  { return  x2 - x1 + 1; }
+	T height() const { return  y2 - y1 + 1; }
+
+
+	inline void moveLeft(T pos)
+	{
+		x2 += (pos - x1); x1 = pos;
+	}
+
+	inline void moveTop(T pos)
+	{
+		y2 += (pos - y1); y1 = pos;
+	}
+
+	inline void moveRight(int pos)
+	{
+		x1 += (pos - x2);
+		x2 = pos;
+	}
+	inline void moveBottom(int pos)
+	{
+		y1 += (pos - y2);
+		y2 = pos;
+	}
+
+	void setX(T x)
+	{
+		x1 = x;
+	}
+
+	void setY(T y)
+	{
+		y1 = y;
+	}
+
+	void setWidth(T w)
+	{ x2 = (x1 + w - 1); }
+
+	void setHeight(T h)
+	{ y2 = (y1 + h - 1); }
+
+
+
+
 private:
 };
 
 
 typedef SsTRect<int>	SsIRect;
+typedef SsTRect<int>	SsRectI;
+typedef SsTRect<float>	SsRectF;
+
+
+
+
+class SsMargins
+{
+public:
+	SsMargins() noexcept
+		:m_left(0), m_top(0) , m_right(0) , m_bottom(0) {}
+
+
+	SsMargins(int left, int top, int right, int bottom) noexcept
+	{
+		m_left = left;
+		m_top = top;
+		m_right = right;
+		m_bottom = bottom;
+	}
+
+	bool isNull() const noexcept
+	{
+		return (m_left == 0 && m_top == 0 && m_right == 0 && m_bottom == 0);
+	}
+
+	int left() const noexcept {
+		return m_left;
+	}
+	int top() const noexcept
+	{
+		return m_top;
+	}
+
+	int right() const noexcept
+	{
+		return m_right;
+	}
+	int bottom() const noexcept
+	{
+		return m_bottom;
+	}
+
+	void setLeft(int left) noexcept
+	{
+		m_left = left;
+	}
+	void setTop(int top) noexcept
+	{
+		m_top = top;
+	}
+
+	void setRight(int right) noexcept
+	{
+		m_right = right;
+	}
+	void setBottom(int bottom) noexcept
+	{
+		m_bottom = bottom;
+	}
+
+	SsMargins& operator+=(const SsMargins& margins) noexcept
+	{
+		m_left += margins.m_left;
+		m_top += margins.m_top;
+		m_right += margins.m_right;
+		m_bottom += margins.m_bottom;
+
+		return *this;
+	}
+
+	SsMargins& operator-=(const SsMargins& margins) noexcept
+	{
+		m_left -= margins.m_left;
+		m_top -= margins.m_top;
+		m_right -= margins.m_right;
+		m_bottom -= margins.m_bottom;
+
+		return *this;
+	}
+
+
+	SsMargins& operator+=(int v) noexcept
+	{
+		m_left   += v;
+		m_top    += v;
+		m_right  += v;
+		m_bottom += v;
+
+		return *this;
+	}
+
+	SsMargins& operator-=(int v) noexcept
+	{
+		m_left   -= v;
+		m_top    -= v;
+		m_right  -= v;
+		m_bottom -= v;
+
+		return *this;
+	}
+
+	SsMargins& operator*=(int v) noexcept
+	{
+		m_left *= v;
+		m_top *= v;
+		m_right *= v;
+		m_bottom *= v;
+
+		return *this;
+	}
+
+	SsMargins& operator/=(int v)
+	{
+		m_left /= v;
+		m_top /= v;
+		m_right /= v;
+		m_bottom /= v;
+
+		return *this;
+	}
+
+	SsMargins& operator*=(float v) noexcept
+	{
+		m_left *= v;
+		m_top *= v;
+		m_right *= v;
+		m_bottom *= v;
+
+		return *this;
+	}
+
+
+	SsMargins& operator/=(float v)
+	{
+		m_left /= v;
+		m_top /= v;
+		m_right /= v;
+		m_bottom /= v;
+
+		return *this;
+	}
+
+	bool	operator ==(const SsMargins& r) const 
+	{ 
+		return (
+			m_left == r.m_left && 
+			m_top == r.m_top && 
+			m_right == r.m_right && 
+			m_bottom == r.m_bottom);
+	
+	}
+	bool	operator !=(const SsMargins& r) const { return !(*this == r); }
+
+
+private:
+	int m_left;
+	int m_top;
+	int m_right;
+	int m_bottom;
+
+};
+
 
 
 ///カラー値を定義するテンプレートクラスです。
@@ -233,7 +580,7 @@ public:
 	SsTColor(): r(0), g(0), b(0), a(0) {}
 	SsTColor(T ar, T ag, T ab, T aa): r(ar), g(ag), b(ab), a(aa) {}
 	SsTColor(const SsTColor& s): r(s.r), g(s.g), b(s.b), a(s.a) {}
-
+	SsTColor(u32 color) { fromARGB(color); }
 	void	fromARGB(u32 c);
 	void	fromBGRA(u32 c);
 
@@ -364,7 +711,10 @@ public:
 
 	bool	syncStartEnd;	///< [編集用パラメータ]カーブエディタでの編集時に始点・終点ハンドルを同期して動かすか？
 
-	SsCurve() : startTime(0.f), startValue(0.f), endTime(0.f), endValue(0.f), startKeyTime(0.f), endKeyTime(0.f){}
+	SsCurve() : startTime(0.f), startValue(0.f), endTime(0.f), endValue(0.f), startKeyTime(0.f), endKeyTime(0.f)
+	, syncStartEnd(0)
+	
+	{}
 	~SsCurve(){}
 
 };
@@ -392,18 +742,23 @@ namespace SsPartType
 	enum _enum
 	{
 		invalid = -1,
-		null,			///< null。領域を持たずSRT情報のみ。ただし円形の当たり判定は設定可能。
-		normal,			///< 通常パーツ。領域を持つ。画像は無くてもいい。
-		text,			///< テキスト(予約　未実装）
-		instance,		///< インスタンス。他アニメ、パーツへの参照。シーン編集モードの代替になるもの
-		armature,		///< ボーンパーツ
-		effect,			///<エフェクト
-		mesh,			///< メッシュパーツ
-		movenode,		///< 動作起点
-		constraint,		///<コンストレイント
-		mask,			///< マスク
-		joint,			///< メッシュとボーンの関連付けパーツ
-		bonepoint,		///< ボーンポイント
+		null,		///< null。領域を持たずSRT情報のみ。ただし円形の当たり判定は設定可能。
+		normal,		///< 通常パーツ。領域を持つ。画像は無くてもいい。
+		shape,		///< シェイプ
+		text,		///< テキスト
+		nines,		///< ９スライス
+		instance,	///< インスタンス。他アニメ、パーツへの参照。シーン編集モードの代替になるもの
+		armature,	///< ボーン （パーツとパーツの親子関係ではなく
+		effect,  	///< パーティクルモード
+		mesh,       ///< メッシュパーツ
+		movenode,	///< 動作起点
+		constraint,
+		mask,
+		joint,		///< メッシュとボーンの関連付けパーツ
+		bonepoint,	///< ボーンポイント
+		transform_constraint,   ///トランスフォームコンストレイント
+		camera,
+		audio,
 
 		num
 	};
@@ -490,6 +845,30 @@ namespace SsInterpolationType
 		bezier,			///< ベジェ
 		acceleration,	///< 加速度
 		deceleration,	///< 減速度
+
+		easeIn,
+		easeOut,
+		easeInOut,
+
+		easeExponentialIn,
+		easeExponentialOut,
+		easeExponentialInOut,
+
+		easeSineIn,
+		easeSineOut,
+		easeSineInOut,
+
+		easeElasticIn,
+		easeElasticOut,
+		easeElasticInOut,
+
+		easeBounceIn,
+		easeBounceOut,
+		easeBounceInOut,
+
+		easeBackIn,
+		easeBackOut,
+		easeBackInOut,
 		num,
 	};
 };
@@ -574,6 +953,8 @@ namespace SsAttributeKind
 		instance,	///< [IPRM]インスタンスパーツパラメータ
 		effect,		///< [EFCT]エフェクトパラメータ
 		deform,		///< [DEFM]デフォーム用パラメータ
+		audio,		///< sound用パラメータ
+		texchange,  /// < テクスチャー変更
 		num,
 	};
 };
@@ -583,6 +964,7 @@ SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsAttributeKind);
 
 namespace SsKeyValueType
 {
+/*
 	enum _enum
 	{
 		_unkown = -1,
@@ -596,11 +978,27 @@ namespace SsKeyValueType
 		_userData,
 		_instance,
 	};
+*/
+	enum _enum{
+		_unkown = -1,
+		boolean,	///< u8
+		integer,	///< s32
+		decimal,	///< f32
+		cell,		///< セル
+		partsColor,	///< パーツカラー
+		color,		///< カラーブレンド
+		shader,		///< シェーダー
+		vertex,		///< 頂点変形
+		user,		///< ユーザー
+		signal,		///< シグナル
+		instance,	///< インスタンス
+		effect,		///< エフェクト
+		deform,		///< デフォーム
+		audio,		///< audio
+		texchange,  ///< テクスチャ変更
+		num
+	};
 };
-
-
-
-
 
 
 ///カラーブレンドキーのカラー値
@@ -806,6 +1204,7 @@ public:
 	SsString		string;		///< 文字列
 
 	SsUserDataAnime() : 
+		integer(0),
 		useInteger(false),
 		usePoint(false),
 		useRect(false),
@@ -904,6 +1303,7 @@ public:
 
 };
 
+
 //インスタンスアトリビュートのループフラグ
 enum {
 	INSTANCE_LOOP_FLAG_INFINITY = 1 << 0,
@@ -991,6 +1391,123 @@ public:
 
 };
 
-}	// namespace spritestudio6
+
+//add SS7.1 追加アトリビュート
+
+class SsAudioAttr
+{
+private:
+
+public:
+	int SoundListID;
+	SsString SoundName;
+	int      LoopNum;
+
+	SsAudioAttr()
+		: SoundListID(0),
+		SoundName(""),
+		LoopNum(1)
+	{
+	}
+
+	SsAudioAttr(const SsAudioAttr& r)
+		: SoundListID(r.SoundListID)
+		, SoundName(r.SoundName)
+		, LoopNum(r.LoopNum)
+	{
+	}
+};
+
+class SsTexChangeAttr
+{
+private:
+
+public:
+	SsString TextureName;
+	//SsImage* image;
+
+	SsTexChangeAttr() : TextureName("")
+	{
+	}
+};
+
+
+
+class SsAnchorButton
+{
+public:
+	enum Anchor
+	{
+		NO = 0xFF,
+
+		LT = 0x00,
+		LC = 0x01,
+		LB = 0x02,
+		CT = 0x10,
+		CC = 0x11,
+		CB = 0x12,
+		RT = 0x20,
+		RC = 0x21,
+		RB = 0x22,
+	};
+
+	enum Alignment
+	{
+		AlignLeft	= 0x0001,
+		AlignRight	= 0x0002,
+		AlignTop	= 0x0020,
+		AlignBottom = 0x0040,
+		AlignVCenter = 0x0080,
+		AlignHCenter = 0x0004,
+	};
+
+	static inline int toAlignment(Anchor eAnchor)
+	{
+		int flag = AlignLeft | AlignTop;
+
+		switch (eAnchor) {
+		case LT:
+			flag = AlignLeft | AlignTop;
+			break;
+		case LC:
+			flag = AlignLeft | AlignVCenter;
+			break;
+		case LB:
+			flag = AlignLeft | AlignBottom;
+			break;
+		case CT:
+			flag = AlignHCenter | AlignTop;
+			break;
+		case CC:
+			flag = AlignHCenter | AlignVCenter;
+			break;
+		case CB:
+			flag = AlignHCenter | AlignBottom;
+			break;
+		case RT:
+			flag = AlignRight | AlignTop;
+			break;
+		case RC:
+			flag = AlignRight | AlignVCenter;
+			break;
+		case RB:
+			flag = AlignRight | AlignBottom;
+			break;
+		default:
+			break;
+		}
+
+		return	flag;
+	}
+};
+
+
+// add SS7.1ここまで
+
+}	// namespace SpriteStudio
+
+
+
+
 
 #endif

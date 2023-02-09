@@ -6,7 +6,7 @@
 #include "ssarchiver.h"
 #include "SsEffectElement.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 enum EffectPartType
@@ -720,6 +720,6 @@ public:
 
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

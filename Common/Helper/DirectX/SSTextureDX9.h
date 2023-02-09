@@ -4,7 +4,7 @@
 
 #include "IsshTexture.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 //テクスチャクラス ( DirectX9 )
@@ -26,7 +26,7 @@ public:
 };
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 
 #endif

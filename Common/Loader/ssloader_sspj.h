@@ -11,14 +11,56 @@
 #include "ssloader_ssce.h"
 #include "ssloader_ssee.h"
 #include "ssloader_ssqe.h"
+#include "ssloader_ssse.h" // add SS7.1
+#include "sscharmap.h"
 
 #include <memory>
 #include <utility>
 
 #define SPRITESTUDIO6_SSPJVERSION "2.00.00"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
+
+
+	// プロジェクトツリーで isMissing など透過的にアクセスできるよう SsFileObject 継承に変更
+	class TextureInfo 
+	{
+	public:
+
+		SsString PathName;//metadataからの相対パス
+		int index;  //再配置ずれ用
+		int flags;  //グループ化、パッキングするなどのフラグ用
+
+		TextureInfo() { }
+		virtual ~TextureInfo() { }
+
+		SPRITESTUDIO6SDK_SERIALIZE_BLOCK
+		{
+			SPRITESTUDIO6SDK_SSAR_DECLARE(PathName);
+			SPRITESTUDIO6SDK_SSAR_DECLARE(index);
+			SPRITESTUDIO6SDK_SSAR_DECLARE(flags);
+		}
+	};
+
+
+	class SsTextureList
+	{
+	public:
+		SsTextureList() {}
+		virtual ~SsTextureList() {}
+
+		std::vector<TextureInfo*>    files;
+
+		SPRITESTUDIO6SDK_SERIALIZE_BLOCK
+		{
+			SPRITESTUDIO6SDK_SSAR_DECLARE_LIST(files);
+
+		}
+
+	};
+
+
 
 /// プロジェクトファイルの設定が記載されているデータです。
 /// 以下のタグはエディタ編集用のデータなので読み飛ばします。
@@ -89,6 +131,14 @@ typedef SsEffectFileList::iterator SsEffectFileListItr;
 typedef std::vector<std::unique_ptr<SsSequencePack>> SsSequencePackList;
 typedef SsSequencePackList::iterator SsSequencePackListItr;
 
+typedef std::vector<std::unique_ptr<SsAudioPack>> SsAudioPackList;
+typedef SsAudioPackList::iterator SsAudioPackListItr;
+
+typedef	std::map<SsString, std::unique_ptr<SsCharMap>>		CharMapDic;
+typedef	std::vector<std::unique_ptr<SsCharMap>>		CharMapList;
+//typedef CharMapDic::iterator CharMapDicItr;
+
+
 /// XMLドキュメントとなっているsspjファイルのデータ保持を提供するクラスです。
 ///以下はエディタ情報のため読み飛ばします。
 /// animeSettings   デフォルトのアニメーション設定 
@@ -106,10 +156,18 @@ public:
 	std::vector<SsString>	textureList;		//!< セルマップから取得したテクスチャのリスト
 	std::vector<SsString>	sequencepackNames;	//!< シーケンスファイルのリスト
 
+	std::vector<SsString>	audiopackNames;	//!< サウンドリストの文字列リスト
+	std::vector<SsString>	charmapNames;		///< キャラマップファイルパスのリスト
+	SsTextureList			ExternalTextures;	//!< 追加テクスチャの文字列リスト
+
+
 	SsAnimePackList		animeList;		//!< アニメーションのリスト	
 	SsSsCellMapList		cellmapList;	//!< セルマップリスト
 	SsEffectFileList	effectfileList;	//!< エフェクトのリスト
 	SsSequencePackList	sequenceList;	//!< シーケンスのリスト	
+	SsAudioPackList		soundList;		//!< サウンドリスト
+//	CharMapList			charmapList;		//!< キャラクターマップ(bitmap font)
+	CharMapDic			charmapDic;		//!< キャラクターマップ(bitmap font)
 
 	//ロード時に作成されるワーク
 	SsString	m_proj_filepath;	///プロジェクトファイルのパス
@@ -132,6 +190,10 @@ public:
 
 	///シーケンスパックの数量を取得する
 	const size_t getSequencePackNum(){ return sequencepackNames.size(); }
+
+	///シーケンスパックの数量を取得する
+	const size_t getAudioPackNum() { return audiopackNames.size(); }
+
 
 
 	///アニメパックデータのコンテナを取得する
@@ -173,7 +235,8 @@ public:
 
 	SsSequencePack*		findSequencePack( SsString& sequencePackName );
 
-	
+	SsCharMap* findCharMap(SsString name);
+
 
 	SsCellMap* findCellMap( SsString& str );
 
@@ -188,6 +251,12 @@ public:
 		SPRITESTUDIO6SDK_SSAR_DECLARE( effectFileNames );
 		SPRITESTUDIO6SDK_SSAR_DECLARE( sequencepackNames );
 
+		//add SS7.1
+		SPRITESTUDIO6SDK_SSAR_DECLARE( charmapNames );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( audiopackNames);
+		SPRITESTUDIO6SDK_SSAR_STRUCT_DECLARE(ExternalTextures);
+		//ExternalTextures
+		
 	}
 
 public:
@@ -252,6 +321,11 @@ public:
 		return getSsqeBasepath() + sequencepackNames[index];
 	}
 
+	//add SS7.1
+	SsString	getAudioPackFilePath(size_t index) {
+		if (audiopackNames.size() <= index) return "";
+		return m_proj_filepath + audiopackNames[index];
+	}
 };
 
 ///sspjのローダークラスです。
@@ -267,6 +341,6 @@ public:
 };
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

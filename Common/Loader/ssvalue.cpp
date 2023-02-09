@@ -4,7 +4,7 @@
 #include "sscharconverter.h"
 
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 //SsValue用のシリアライザ
@@ -78,4 +78,4 @@ void	SsValueSeriarizer( ISsXmlArchiver* ar , SsValue& v , const std::string key)
 
 }
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

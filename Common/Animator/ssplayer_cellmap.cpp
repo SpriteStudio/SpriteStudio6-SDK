@@ -15,7 +15,7 @@
 #include <utility>
 
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 bool SsCellMapList::preloadTexture(SsProject* proj)
@@ -251,5 +251,5 @@ void calcUvs( SsCellValue* cellv )
 	}
 }
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 

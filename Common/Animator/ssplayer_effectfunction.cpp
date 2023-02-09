@@ -4,13 +4,13 @@
 #include "../Loader/ssloader.h"
 #include "ssplayer_animedecode.h"
 #include "ssplayer_effect.h"
-#include "ssplayer_macro.h"
+#include "ssplayer_math.h"
 #include "ssplayer_matrix.h"
 #include "ssplayer_render.h"
 #include "ssplayer_effectfunction.h"
 
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -935,4 +935,4 @@ void	SsEffectFunctionExecuter::initializeEffect( SsEffectBehavior* beh ,  SsEffe
 
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

@@ -1,6 +1,6 @@
 ﻿#include "ssloader_ssqe.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -37,4 +37,4 @@ SsSequence*	SsSequencePack::findSequence(SsString& name)
 	return 0;
 }
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

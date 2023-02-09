@@ -3,7 +3,7 @@
 #include "ssattribute.h"
 #include "../Helper/DebugPrint.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -180,7 +180,9 @@ void	GetSsUserDataAnime( const SsKeyframe* key , SsUserDataAnime& v )
 {
 	v.integer = 0;
 	v.point.x = v.point.y = 0;
-	v.rect.x = v.rect.y = v.rect.w = v.rect.h = 0; 
+	//v.rect.x = v.rect.y = v.rect.w = v.rect.h = 0; 
+	v.rect = SsIRect();
+
 	v.string = "";
 	v.useInteger = key->value.IsExistHashkey("integer");
 	v.usePoint = key->value.IsExistHashkey("point");
@@ -381,4 +383,21 @@ void	GetSsDeformAnime(const SsKeyframe* key, SsDeformAttr& v)
 }
 
 
-}	// namespace spritestudio6
+
+//add SS7.1 追加アトリビュート
+
+void	GetSsAudioAttr(const SsKeyframe* key, SsAudioAttr& v)
+{
+	v.SoundListID = key->value["SoundListID"].get<int>();
+	v.SoundName = key->value["SoundName"].get<SsString>();
+	v.LoopNum = key->value["LoopNum"].get<int>();
+}
+
+void	GetSsTexChangeAttr(const SsKeyframe* key, SsTexChangeAttr& v)
+{
+	v.TextureName = key->value["TextureName"].get<SsString>();
+
+}
+
+
+}	// namespace SpriteStudio

@@ -2,7 +2,7 @@
 #include "ssstring_uty.h"
 
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 SsCellMap*	ssloader_ssce::Load(const std::string& filename )
@@ -29,4 +29,4 @@ SsCellMap*	ssloader_ssce::Load(const std::string& filename )
 
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

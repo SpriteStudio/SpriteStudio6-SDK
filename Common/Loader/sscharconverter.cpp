@@ -14,7 +14,7 @@
 
 #endif
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 std::string SsCharConverter::utf8_to_sjis(const std::string &src) {
@@ -113,4 +113,4 @@ std::string SsCharConverter::convert_path_string(const std::string &str) {
     return dst;
 }
 
-}   // namespace spritestudio6
+}   // namespace SpriteStudio

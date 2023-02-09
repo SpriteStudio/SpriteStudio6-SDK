@@ -10,7 +10,7 @@
 // MEMO: 定義順の関係でここでusingしてしまうと問題が発生する
 // using namespace tinyxml2;
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 // MEMO: 後に入れ替え可能なようにエリアスで定義しておく。
@@ -90,6 +90,7 @@ public:
 
 	virtual bool	dc_attr( const char* name , SsString& member ) = 0;
 	virtual bool	dc_attr( const char* name , int& member ) = 0;
+	virtual bool	dc_attr( const char* name, float& member) = 0;
 
 
 
@@ -165,6 +166,7 @@ public:
 
 	virtual bool	dc_attr( const char* name , SsString& member );
 	virtual bool	dc_attr( const char* name , int& member );
+	virtual bool	dc_attr( const char* name, float& member);
 
 
 
@@ -172,6 +174,9 @@ public:
 	template<class myclass> bool	dc( const char* name , std::vector<myclass*>& list , const std::string key = "value" )
 	{
 		list.clear();
+
+		if (getxml() == nullptr) return false;
+
 		libXML::XMLElement* e = getxml()->FirstChildElement( name );
 		if (e == 0)return false;
 		if ( key != "" )
@@ -213,6 +218,8 @@ public:
 #define SPRITESTUDIO6SDK_SERIALIZE_BLOCK	void __Serialize(ISsXmlArchiver* ar)
 
 #define	SPRITESTUDIO6SDK_SSAR_DECLARE(t)  ar->dc(#t,t)
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE_EX(name,t)  ar->dc(name,t)
+
 #define	SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE(t)  ar->dc_attr(#t,t)
 
 #define	SPRITESTUDIO6SDK_SSAR_STRUCT_DECLARE(t)  {SsXmlIArchiver _ar( ar , #t );\
@@ -223,6 +230,8 @@ inline bool	__SSAR_DECLARE_LIST__( ISsXmlArchiver* ar , std::vector<myclass*>& l
 {
 	if ( ar->getType() == EnumSsArchiver::in )
 	{
+		//SsXmlIArchiver* arc = static_cast<SsXmlIArchiver*>(ar));
+		//return arc->dc(name, list, key);
 		return (static_cast<SsXmlIArchiver*>(ar))->dc( name , list , key );
 	}
 
@@ -234,9 +243,9 @@ inline bool	__SSAR_DECLARE_LIST__( ISsXmlArchiver* ar , std::vector<myclass*>& l
 }
 
 
-#define	SPRITESTUDIO6SDK_SSAR_DECLARE_LIST(t)  spritestudio6::__SSAR_DECLARE_LIST__( ar , t , #t)
-#define	SPRITESTUDIO6SDK_SSAR_DECLARE_LIST2(t,s)  spritestudio6::__SSAR_DECLARE_LIST__( ar , t , s)
-#define	SPRITESTUDIO6SDK_SSAR_DECLARE_LISTEX(t,key)  spritestudio6::__SSAR_DECLARE_LIST__( ar , t , #t , key )
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE_LIST(t)  SpriteStudio::__SSAR_DECLARE_LIST__( ar , t , #t)
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE_LIST2(t,s)  SpriteStudio::__SSAR_DECLARE_LIST__( ar , t , s)
+#define	SPRITESTUDIO6SDK_SSAR_DECLARE_LISTEX(t,key)  SpriteStudio::__SSAR_DECLARE_LIST__( ar , t , #t , key )
 
 template<class myclass>
 inline bool	__SSAR_DECLARE_ENUM__( ISsXmlArchiver* ar ,myclass& type, const char* name  )
@@ -268,8 +277,8 @@ inline bool	__SSAR_DECLARE_ATTRIBUTE_ENUM__( ISsXmlArchiver* ar ,myclass& type, 
 
 
 
-#define SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM(t) spritestudio6::__SSAR_DECLARE_ENUM__( ar , t , #t)
-#define SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE_ENUM(t) spritestudio6::__SSAR_DECLARE_ATTRIBUTE_ENUM__( ar , t , #t)
+#define SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM(t) SpriteStudio::__SSAR_DECLARE_ENUM__( ar , t , #t)
+#define SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE_ENUM(t) SpriteStudio::__SSAR_DECLARE_ATTRIBUTE_ENUM__( ar , t , #t)
 
 
 bool	StringToPoint2( const std::string& str , SsPoint2& point );
@@ -285,6 +294,6 @@ void	SsArchiverInit();
 
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

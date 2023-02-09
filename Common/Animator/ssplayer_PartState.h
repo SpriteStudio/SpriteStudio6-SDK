@@ -8,13 +8,17 @@
 
 #include <memory>
 
-namespace spritestudio6
+#include "shape/ssshape.h"
+//#include "text/ssfontdesc.h"
+
+namespace SpriteStudio
 {
 
 class SsAnimeDecoder;
 //class SsEffectRenderer;
 class SsEffectRenderV2;
 class SsMeshPart;
+
 
 
 
@@ -80,6 +84,10 @@ struct SsPartState
 	std::unique_ptr<SsAnimeDecoder>		refAnime;
 	std::unique_ptr<SsEffectRenderV2>	refEffect;
 
+	//add SS7.1
+	//std::unique_ptr<SsPart> partTypeAnimeVaule;
+	//--
+
 	//V4互換計算用
 	SsVector3		_temp_position;
 	SsVector3		_temp_rotation;
@@ -93,8 +101,12 @@ struct SsPartState
 	std::unique_ptr<SsMeshPart>	meshPart;
 
 	SsDeformAttr	deformValue;
+	SsAudioAttr		audioValue;
+	SsTexChangeAttr	changeTextureValue;
 
 	SsPart*			part;
+
+
 
 	SsPartState();
 
@@ -106,6 +118,6 @@ struct SsPartState
 };
 
 
-}	//	namespace spritestudio6
+}	//	namespace SpriteStudio
 
 #endif

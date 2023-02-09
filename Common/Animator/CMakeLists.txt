@@ -22,6 +22,25 @@ set(ssAnimator_SRCS
     ssplayer_animedecode.cpp
     ssplayer_effect2.cpp
     ssplayer_mesh.cpp
+    ssplayer_math.cpp
+    ssplayer_fonttexmng.cpp
+#    partvalues/sspartvalue.cpp
+#    partvalues/sspartvalueshape.cpp
+#    partvalues/sspartvaluetext.cpp
+#    partvalues/sspartvaluenines.cpp
+
+#shape/sspolygon.cpp
+#shape/ssvertex.cpp
+
+#shape/ssshape.cpp
+#shape/ssshapearrow.cpp
+#shape/ssshaperectangle.cpp
+#shape/ssshapestar.cpp
+#shape/ssshapetriangle.cpp
+
+#nineslice/ssnines.cpp
+font/ssfonttexture.cpp
+
 )
 
 set(ssAnimator_HEADERS
@@ -36,7 +55,28 @@ set(ssAnimator_HEADERS
     ssplayer_animedecode.h
     ssplayer_effect2.h
     ssplayer_mesh.h
+    ssplayer_math.h
     ${CMAKE_CURRENT_SOURCE_DIR}/../Loader/sstypes.h
+
+    ssplayer_fonttexmng.h
+
+#    partvalues/sspartvalue.h
+#    partvalues/sspartvalueshape.h
+#    partvalues/sspartvaluetext.h
+#   partvalues/sspartvaluenines.h
+
+#shape/sspolygon.h
+#shape/ssvertex.h
+
+#shape/ssshape.h
+#shape/ssshapearrow.h
+#shape/ssshaperectangle.h
+#shape/ssshapestar.h
+#shape/ssshapetriangle.h
+#nineslice/ssnines.h
+font/ssfonttexture.h
+
+
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

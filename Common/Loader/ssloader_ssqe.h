@@ -6,7 +6,7 @@
 
 #define SPRITESTUDIO6_SSQEVERSION "1.00.00"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class SsSequence;
@@ -116,6 +116,6 @@ public:
 
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

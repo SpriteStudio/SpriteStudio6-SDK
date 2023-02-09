@@ -8,7 +8,7 @@
 #include	<map>
 
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -19,11 +19,14 @@ public:
 	int							time;	///< 時間
 	SsInterpolationType::_enum	ipType;	///< 補間タイプ
 	SsCurve						curve;	///< 曲線補間計算用パラメータ
+	float						easingRate;    //easing～～で使用する変化率　保存必須 add SS7.1
+
 	SsValue						value;	///< 値
 public:
 	SsKeyframe() : 
 	  ipType(SsInterpolationType::invalid) ,
-	  time(0)
+	  time(0),
+		easingRate(0)
 	  {}
 	virtual ~SsKeyframe(){}
 
@@ -36,6 +39,13 @@ public:
 		{
 			SPRITESTUDIO6SDK_SSAR_DECLARE( curve );
 		}
+
+		//add SS7.1
+		if (SsNeedsEasingParams(ipType))
+		{
+			SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE( easingRate );
+		}
+		// -- ここまで add SS7.1
 		
 		SsValueSeriarizer( ar , value );
 
@@ -106,8 +116,10 @@ void	GetSsSignalAnime( const SsKeyframe* key , SsSignalAttr& v );
 void	GetSsInstparamAnime( const SsKeyframe* key , SsInstanceAttr& v );
 void	GetSsEffectParamAnime( const SsKeyframe* key , SsEffectAttr& v );
 void	GetSsDeformAnime(const SsKeyframe* key, SsDeformAttr& v);
+void	GetSsAudioAttr(const SsKeyframe* key, SsAudioAttr& v);
+void	GetSsTexChangeAttr(const SsKeyframe* key, SsTexChangeAttr& v);
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

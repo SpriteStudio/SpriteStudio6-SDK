@@ -2,7 +2,7 @@
 #include "sshTask.h"
 //#include "Debug.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -132,4 +132,4 @@ void	task_manager::debug_print_tasks()
 */
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

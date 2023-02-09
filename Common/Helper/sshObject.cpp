@@ -1,9 +1,9 @@
 ﻿#include "sshObject.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

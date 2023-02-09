@@ -19,9 +19,12 @@
 #include "ssplayer_cellmap.h"
 #include "ssplayer_mesh.h"
 
+#include "../Drawer/ssopenglninesdrawer.h"
+#include "../Drawer/ssopenglshapedrawer.h"
+
 #define SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON (1)
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -811,14 +814,17 @@ void	SsRenderGL::renderPart( SsPartState* state )
 
 
 	SsCell * cell = state->cellValue.cell;
-	if ( cell == 0 ) return ;
+	//if ( cell == 0 ) return ;
 
 	ISSTexture*	texture = state->cellValue.texture;
-	if ( texture == 0 ) return ;
+	//if ( texture == 0 ) return ;
 
 	SsPoint2 texturePixelSize;
-	texturePixelSize.x = state->cellValue.texture->getWidth();
-	texturePixelSize.y = state->cellValue.texture->getHeight();
+	if (texture)
+	{
+		texturePixelSize.x = state->cellValue.texture->getWidth();
+		texturePixelSize.y = state->cellValue.texture->getHeight();
+	}
 
 	execMask(state);
 
@@ -839,7 +845,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	if (cell)
 	{
 		// テクスチャのサイズが2のべき乗かチェック
-		if ( texture->isPow2() )
+		if (texture && texture->isPow2() )
 		{
 			// 2のべき乗
 			texture_is_pow2 = true;
@@ -881,7 +887,12 @@ void	SsRenderGL::renderPart( SsPartState* state )
 #endif
 
 		SSTextureGL* tex_gl = (SSTextureGL*)texture;
-		glBindTexture(gl_target, tex_gl->tex);
+		if (tex_gl) {
+			glBindTexture(gl_target, tex_gl->tex);
+		}
+		else {
+			glBindTexture(gl_target, 0);
+		}
 
 		// フィルタ
 		GLint filterMode;
@@ -1165,10 +1176,11 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	glLoadMatrixf(state->matrixLocal);	//Ver6 ローカルスケール対応
 
 	GLint VertexLocation = -1;
-	if (state->noCells)
-	{
-		//セルが無いので描画を行わない
-	}else{
+
+//	if (state->noCells)
+//	{
+//		//セルが無いので描画を行わない
+//	}
 
 #if SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON
 
@@ -1260,39 +1272,75 @@ void	SsRenderGL::renderPart( SsPartState* state )
 	}
 
 #endif
-#if SPRITESTUDIO6SDK_USE_TRIANGLE_FIN
-		if ( state->is_vertex_transform || state->is_parts_color)
+
+
+	if (state && state->part && state->part->type == SsPartType::shape)
+	{
+		SsOpenGLShapeDrawer		drawer;
+		SsPartValueShape* pValue = static_cast<SsPartValueShape*>(state->part->m_pPartValueInfo.get());
+		const SsShape* pShape = pValue->getShape();
+
+		float					fTX = -state->pivotOffset.x * state->size.x;
+		float					fTY = -state->pivotOffset.y * state->size.y;
+
+		if (pShape) {
+			glPushMatrix();
+			glTranslatef(fTX, fTY, 0);
+			drawer.execute(*pShape, state->vertices, state->colors);
+			glPopMatrix();
+		}
+	}
+	else if (state && state->part && state->part->type == SsPartType::nines) {
+		SsOpenGLNinesDrawer		drawer;
+		SsPartValueNines* pValue = static_cast<SsPartValueNines*>(state->part->m_pPartValueInfo.get());
+		const SsNines* pNines = pValue->getNines();
+		float					fTX = -state->pivotOffset.x * state->size.x;
+		float					fTY = -state->pivotOffset.y * state->size.y;
+
+		if (pNines) {
+			glPushMatrix();
+			glTranslatef(fTX, fTY, 0);
+			drawer.execute(*pNines, state->vertices, state->colors);
+			glPopMatrix();
+		}
+	}
+	else {
+		if (!state->noCells)
 		{
-			static const GLubyte indices[] = { 4 , 3, 1, 0, 2 , 3};
-			glDrawElements(GL_TRIANGLE_FAN, 6, GL_UNSIGNED_BYTE, indices);
-		}else{
+#if SPRITESTUDIO6SDK_USE_TRIANGLE_FIN
+			if (state->is_vertex_transform || state->is_parts_color)
+			{
+				static const GLubyte indices[] = { 4 , 3, 1, 0, 2 , 3 };
+				glDrawElements(GL_TRIANGLE_FAN, 6, GL_UNSIGNED_BYTE, indices);
+			}
+			else {
+				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+			}
+#else
+			// 頂点配列を描画
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-		}
-#else
-		// 頂点配列を描画
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
 #endif
+		}
 	}
+//	}
 
 #if SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON
-//	if ( glpgObject )
+	if ( state->is_shader )
 	{
-		if ( state->is_shader )
+		if ( pPrgObject )
 		{
-//			if ( glpgObject )
-			if ( pPrgObject )
-			{
-				if ( VertexLocation >= 0 ) {
-					glDisableVertexAttribArray(VertexLocation);//無効化
-				}
-				pPrgObject->Disable();
+			if ( VertexLocation >= 0 ) {
+				glDisableVertexAttribArray(VertexLocation);//無効化
 			}
+			pPrgObject->Disable();
 		}
 	}
 #endif
 
+
+RENDER_END:
 	glPopMatrix();
 
 	if (texture_is_pow2 == false)
@@ -1306,4 +1354,4 @@ void	SsRenderGL::renderPart( SsPartState* state )
 
 }
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio

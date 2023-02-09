@@ -4,7 +4,7 @@
 
 #include "sshObject.h"
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -23,6 +23,6 @@ public:
 
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

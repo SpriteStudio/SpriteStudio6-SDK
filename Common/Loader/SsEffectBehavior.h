@@ -7,7 +7,7 @@
 
 #include <memory>
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 class SsEffectElementBase;
@@ -56,6 +56,6 @@ public:
 
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif

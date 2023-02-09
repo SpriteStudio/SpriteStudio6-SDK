@@ -8,8 +8,9 @@
 #include "ssplayer_types.h"
 #include "ssplayer_cellmap.h"
 #include "ssplayer_PartState.h"
-#include "ssplayer_macro.h"
+#include "ssplayer_math.h"
 #include "ssplayer_mesh.h"
+#include "ssplayer_fonttexmng.h"
 
 #include <memory>
 
@@ -18,7 +19,7 @@
 //0の場合はZ型の２ポリゴンで変形します。
 #define SPRITESTUDIO6SDK_USE_TRIANGLE_FIN (1)
 
-namespace spritestudio6
+namespace SpriteStudio
 {
 
 
@@ -48,6 +49,7 @@ namespace spritestudio6
 
 		///プロジェクト情報
 		SsProject* project;
+		FontTextureManager* fontTexManager;
 		
 		///パーツ情報とパーツアニメーションを結びつけアレイにしたもの
 		std::vector<SsPartAndAnime>		partAnime;
@@ -144,6 +146,8 @@ namespace spritestudio6
 		void	SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsInstanceAttr& v );
 		void	SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsEffectAttr& v );
 		void	SsInterpolationValue( int time , const SsKeyframe* leftkey , const SsKeyframe* rightkey , SsDeformAttr& v );
+		void	SsInterpolationValue(int time, const SsKeyframe* leftkey, const SsKeyframe* rightkey, SsAudioAttr& v);
+		void	SsInterpolationValue(int time, const SsKeyframe* leftkey, const SsKeyframe* rightkey, SsTexChangeAttr& v);
 
 
 		void	setInstancePartsHide(bool hide){
@@ -159,9 +163,32 @@ namespace spritestudio6
 		void setMaskParentSetting(bool flg);							//親のマスク対象を設定する
 		bool getMaskParentSetting(void) { return maskParentSetting; };	//設定された親のマスク対象を取得する
 
+		//特殊パーツ系の初期化
+		void initPartTypeInstance(SsPart* p , SsPartState& state);
+		void initPartTypeEffect(SsPart* p , SsPartState& state);
+		void initPartTypeMask(SsPart* p, SsPartState& state);
+		void initPartTypeMesh(SsPart* p, SsPartState& state);
+
+		//add SS7.1 
+		void initPartTypeShape(SsPart* p, SsPartState& state);
+		void initPartTypeText(SsPart* p, SsPartState& state);
+		void initPartTypeNineslice(SsPart* p, SsPartState& state);
+		void initPartTypeAudio(SsPart* p, SsPartState& state);
+
+		void updateShape(SsPart* part , SsPartState* state );
+		void updateText(SsPart* part , SsPartState* state );
+		void updateNineSlice(SsPart* part , SsPartState* state );
+
+		void setFontManager(FontTextureManager* manager)
+		{
+			fontTexManager = manager;
+		}
+
+		FontTextureManager* getFontmanager() { return fontTexManager; }
+
 	};
 
 
-}	// namespace spritestudio6
+}	// namespace SpriteStudio
 
 #endif
