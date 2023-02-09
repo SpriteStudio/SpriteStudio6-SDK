@@ -532,9 +532,9 @@ namespace SpriteStudio
 
 		pPage = m_mapPage[iId];
 
-		// file="myFont.png"
 		if (strName == "file") {
-			pPage->setFile(getString(strValue));
+			SsString str = getString(strValue);
+			pPage->setFile(str);
 		}
 		else
 		{

@@ -6,7 +6,7 @@
 #define SSPARTVALUESHAPE_H
 
 #include <map>
-#include "sstypes.h"
+#include "../sstypes.h"
 
 #include "sspartvalue.h"
 #include "../shape/ssshape.h"

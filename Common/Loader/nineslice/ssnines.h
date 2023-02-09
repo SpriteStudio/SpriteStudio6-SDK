@@ -1,7 +1,7 @@
 ﻿#ifndef SSNINES_H
 #define SSNINES_H
 
-#include "sstypes.h"
+#include "../sstypes.h"
 #include "../shape/sspolygon.h"
 
 namespace SpriteStudio

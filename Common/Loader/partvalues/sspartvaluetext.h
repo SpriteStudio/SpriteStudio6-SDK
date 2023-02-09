@@ -8,10 +8,10 @@
 //#define SSPARTVALUETEXT_SET_CMP
 //#define SSPARTVALUETEXT_GET_CMP
 
-#include "sstypes.h"
+#include "../sstypes.h"
 #include "sspartvalue.h"
-#include "ssloader_ssce.h"
-#include "text/ssfontdesc.h"
+#include "../ssloader_ssce.h"
+#include "../text/ssfontdesc.h"
 
 #define IS_EDITOR (0)
 

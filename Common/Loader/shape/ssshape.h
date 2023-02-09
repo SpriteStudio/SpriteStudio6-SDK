@@ -1,7 +1,7 @@
 ﻿#ifndef SSSHAPE_H
 #define SSSHAPE_H
 
-#include "sstypes.h"
+#include "../sstypes.h"
 //#include "../partvalues/ssplayer_partValue.h"
 #include "sspolygon.h"
 namespace SpriteStudio

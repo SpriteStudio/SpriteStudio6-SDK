@@ -1,7 +1,8 @@
 ﻿#ifndef SSVERTEX_H
 #define SSVERTEX_H
 
-#include "sstypes.h"
+#include "../sstypes.h"
+
 namespace SpriteStudio
 {
 	/*!

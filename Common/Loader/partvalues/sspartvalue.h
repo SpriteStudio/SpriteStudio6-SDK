@@ -6,7 +6,8 @@
 #define SSPARTVALUE_H
 
 //#include "wtlibstring.h"
-#include "sstypes.h"
+//#include "sstypes.h"
+#include "../sstypes.h"
 
 namespace SpriteStudio
 {

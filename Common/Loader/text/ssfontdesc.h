@@ -5,7 +5,7 @@
 #ifndef SSFONTDESC_H
 #define SSFONTDESC_H
 
-#include "sstypes.h"
+#include "../sstypes.h"
 
 namespace SpriteStudio
 {

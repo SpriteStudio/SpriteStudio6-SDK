@@ -230,7 +230,15 @@ public:
 
 	SsVector4& operator*=(float factor)
 	{
-		return SsVector4(0, 0, 0, 0);
+
+		this->x *= factor;
+		this->y *= factor;
+		this->z *= factor;
+		this->w *= factor;
+
+
+		return *this;
+//		return SsVector4(0, 0, 0, 0);
 	}
 
 	SsVector4& operator+=(const SsVector4& vector)

@@ -1,7 +1,7 @@
 ﻿#ifndef SSPOLYGON_H
 #define SSPOLYGON_H
 
-#include "sstypes.h"
+#include "../sstypes.h"
 #include "ssvertex.h"
 #include <list>
 
