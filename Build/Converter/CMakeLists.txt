@@ -171,6 +171,8 @@ if(WIN32 OR APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_render_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssopenglninesdrawer.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssopenglshapedrawer.cpp
     )
 
     list(APPEND Ss6Converter_HEADERS 
@@ -179,6 +181,8 @@ if(WIN32 OR APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/stb_image_write.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssopenglninesdrawer.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssopenglshapedrawer.h
      )
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)

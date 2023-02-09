@@ -17,7 +17,7 @@
 
 using json = nlohmann::json;
 
-using sscc = spritestudio6::SsCharConverter;
+using sscc = SpriteStudio::SsCharConverter;
 
 int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::string remove_path )
 {

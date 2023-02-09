@@ -36,7 +36,7 @@ static std::string encode(const std::string& str, StringEncoding encoding)
 {
 	switch (encoding) {
 		case UTF8: return str;
-		case SJIS: return spritestudio6::SsCharConverter::utf8_to_sjis(str); // TODO:
+		case SJIS: return SpriteStudio::SsCharConverter::utf8_to_sjis(str); // TODO:
 		default:
 			break;
 	}

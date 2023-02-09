@@ -19,7 +19,7 @@
 
 
 
-static spritestudio6::SSTextureFactory* texfactory = nullptr;
+static SpriteStudio::SSTextureFactory* texfactory = nullptr;
 
 
 GLuint FramebufferName = 0;
@@ -87,8 +87,8 @@ bool ConverterOpenGLInit()
     isGPUInit = true;
 
 
-    spritestudio6::SsCurrentRenderer::SetCurrentRender(new spritestudio6::SsRenderGL());
-    texfactory = new spritestudio6::SSTextureFactory(new spritestudio6::SSTextureGL());
+    SpriteStudio::SsCurrentRenderer::SetCurrentRender(new SpriteStudio::SsRenderGL());
+    texfactory = new SpriteStudio::SSTextureFactory(new SpriteStudio::SSTextureGL());
 
     glGenFramebuffers(1, &FramebufferName);
     glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);

@@ -98,7 +98,17 @@ set(SDKs_Drawer
         ../../Common/Drawer/ssplayer_render_gl.cpp
         ../../Common/Drawer/ssplayer_render_gl.h
         ../../Common/Drawer/ssplayer_shader_gl.cpp
-        ../../Common/Drawer/ssplayer_shader_gl.h)
+        ../../Common/Drawer/ssplayer_shader_gl.h
+
+        ../../Common/Drawer/ssopenglninesdrawer.h
+        ../../Common/Drawer/ssopenglshapedrawer.h
+        ../../Common/Drawer/ssopenglninesdrawer.cpp
+        ../../Common/Drawer/ssopenglshapedrawer.cpp
+
+        #../../Common/Drawer/font/ssfonttexture.h
+        #../../Common/Drawer/font/ssfonttexture.cpp
+
+        )
 include_directories(../../Common/Drawer)
 
 # generate JuceHeader.h

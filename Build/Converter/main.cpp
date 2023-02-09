@@ -180,23 +180,23 @@ struct Options
 };
 
 
-typedef std::map<const spritestudio6::SsCell*, int> CellList;
+typedef std::map<const SpriteStudio::SsCell*, int> CellList;
 
 //static plog::ConsoleAppender<plog::MessageOnlyFormatter> consoleAppender;
 
 
-CellList* makeCellList(spritestudio6::SsProject* proj)
+CellList* makeCellList(SpriteStudio::SsProject* proj)
 {
 	// セルデータの出力と、全てセルデータを集約したリストを作る
-	CellList* cellList = new std::map<const spritestudio6::SsCell*, int>();
+	CellList* cellList = new std::map<const SpriteStudio::SsCell*, int>();
 	int cellListIndex = 0;
 
 	for (size_t mapIndex = 0; mapIndex < proj->cellmapList.size(); mapIndex++)
 	{
-		const spritestudio6::SsCellMap* cellMap = proj->getCellMap((int)mapIndex);
+		const SpriteStudio::SsCellMap* cellMap = proj->getCellMap((int)mapIndex);
 		for (size_t cellIndex = 0; cellIndex < cellMap->cells.size(); cellIndex++)
 		{
-			const spritestudio6::SsCell* cell = cellMap->cells[cellIndex];
+			const SpriteStudio::SsCell* cell = cellMap->cells[cellIndex];
 			cellList->insert(CellList::value_type(cell, cellListIndex++));
 		}
 	}
@@ -205,20 +205,20 @@ CellList* makeCellList(spritestudio6::SsProject* proj)
 }
 
 
-static const spritestudio6::SsKeyframe* findDefaultKeyframe(spritestudio6::SsAnimeDecoder& decoder, int partIndex, spritestudio6::SsAttributeKind::_enum tag)
+static const SpriteStudio::SsKeyframe* findDefaultKeyframe(SpriteStudio::SsAnimeDecoder& decoder, int partIndex, SpriteStudio::SsAttributeKind::_enum tag)
 {
-	SPRITESTUDIO6SDK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
+	SPRITESTUDIO6SDK_foreach(std::vector<SpriteStudio::SsPartAndAnime>, decoder.getPartAnime(), it)
 	{
-		spritestudio6::SsPartAnime* partAnime = it->second;
-		spritestudio6::SsPart* part = it->first;
+		SpriteStudio::SsPartAnime* partAnime = it->second;
+		SpriteStudio::SsPart* part = it->first;
 		if (part->arrayIndex != partIndex) continue;
 
-		SPRITESTUDIO6SDK_foreach(spritestudio6::SsAttributeList, partAnime->attributes, attrIt)
+		SPRITESTUDIO6SDK_foreach(SpriteStudio::SsAttributeList, partAnime->attributes, attrIt)
 		{
-			spritestudio6::SsAttribute* attr = *attrIt;
+			SpriteStudio::SsAttribute* attr = *attrIt;
 			if (attr->tag != tag) continue;
 			
-			const spritestudio6::SsKeyframe* key = attr->firstKey();
+			const SpriteStudio::SsKeyframe* key = attr->firstKey();
 			return key;
 		}
 		
@@ -227,20 +227,20 @@ static const spritestudio6::SsKeyframe* findDefaultKeyframe(spritestudio6::SsAni
 }
 
 
-static spritestudio6::SsAttribute* findAttribute(spritestudio6::SsPartAnime* partAnime, spritestudio6::SsAttributeKind::_enum tag)
+static SpriteStudio::SsAttribute* findAttribute(SpriteStudio::SsPartAnime* partAnime, SpriteStudio::SsAttributeKind::_enum tag)
 {
-	SPRITESTUDIO6SDK_foreach(spritestudio6::SsAttributeList, partAnime->attributes, attrIt)
+	SPRITESTUDIO6SDK_foreach(SpriteStudio::SsAttributeList, partAnime->attributes, attrIt)
 	{
-		spritestudio6::SsAttribute* attr = *attrIt;
+		SpriteStudio::SsAttribute* attr = *attrIt;
 		if (attr->tag == tag) return attr;
 	}
 	return NULL;
 }
 
 
-static const spritestudio6::SsKeyframe* findFirstKey(spritestudio6::SsPartAnime* partAnime, spritestudio6::SsAttributeKind::_enum tag)
+static const SpriteStudio::SsKeyframe* findFirstKey(SpriteStudio::SsPartAnime* partAnime, SpriteStudio::SsAttributeKind::_enum tag)
 {
-	spritestudio6::SsAttribute* attr = findAttribute(partAnime, tag);
+	SpriteStudio::SsAttribute* attr = findAttribute(partAnime, tag);
 	if (attr)
 	{
 		return attr->firstKey();
@@ -249,11 +249,11 @@ static const spritestudio6::SsKeyframe* findFirstKey(spritestudio6::SsPartAnime*
 }
 
 
-static const spritestudio6::SsPartState* findState(std::list<spritestudio6::SsPartState*>& partList, int partIndex)
+static const SpriteStudio::SsPartState* findState(std::list<SpriteStudio::SsPartState*>& partList, int partIndex)
 {
-	SPRITESTUDIO6SDK_foreach(std::list<spritestudio6::SsPartState*>, partList, it)
+	SPRITESTUDIO6SDK_foreach(std::list<SpriteStudio::SsPartState*>, partList, it)
 	{
-		const spritestudio6::SsPartState* state = *it;
+		const SpriteStudio::SsPartState* state = *it;
 		if (state->index == partIndex) return state;
 	}
 	return NULL;
@@ -277,7 +277,7 @@ static std::string convert_console_string(const std::string& srcUTF8, int kindAr
 	switch(kindArgumentEncode)
 	{
 	case ARGUMENT_ENCODE_SJIS:
-		dst = spritestudio6::SsCharConverter::utf8_to_sjis(srcUTF8);
+		dst = SpriteStudio::SsCharConverter::utf8_to_sjis(srcUTF8);
 		break;
 
 	case ARGUMENT_ENCODE_UTF8:
@@ -360,7 +360,7 @@ void COI(std::string str)
 }
 
 //全全角が使われてるかのチェック
-bool isZenkaku( const spritestudio6::SsString* str )
+bool isZenkaku( const SpriteStudio::SsString* str )
 {
 	bool rc = false;
 	int i = 0;
@@ -388,11 +388,11 @@ bool isZenkaku( const spritestudio6::SsString* str )
 
 static std::vector<int16_t> s_frameIndexVec;
 
-static void parseParts_ssqe(Lump* topLump, spritestudio6::SsProject* proj, const std::string& imageBaseDir)
+static void parseParts_ssqe(Lump* topLump, SpriteStudio::SsProject* proj, const std::string& imageBaseDir)
 {
 }
 
-static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& imageBaseDir , const std::string& outPath)
+static Lump* parseParts(SpriteStudio::SsProject* proj, const std::string& imageBaseDir , const std::string& outPath)
 {
 	bool isWrite = false;
 
@@ -404,7 +404,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 	Lump* topLump = Lump::set("ss::ProjectData", true, "ProjectData");
 
-	if (spritestudio6::checkFileVersion(proj->version, SPRITESTUDIO6_SSPJVERSION) == false)
+	if (SpriteStudio::checkFileVersion(proj->version, SPRITESTUDIO6_SSPJVERSION) == false)
 	{
 /*
 		std::cerr << "エラー：SpriteStudio Ver.5.xのプロジェクトは使用できません。\n";
@@ -464,7 +464,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	// セルの情報
 	for (size_t mapIndex = 0; mapIndex < proj->cellmapList.size(); mapIndex++)
 	{
-		const spritestudio6::SsCellMap* cellMap = proj->cellmapList[mapIndex].get();
+		const SpriteStudio::SsCellMap* cellMap = proj->cellmapList[mapIndex].get();
 
 		Lump* cellMapData = Lump::set("ss::CellMap", true, "CellMap");
 		cellMapData->add(Lump::stringData(cellMap->name, "name"));
@@ -510,7 +510,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		}
 		for (size_t cellIndex = 0; cellIndex < cellMap->cells.size(); cellIndex++)
 		{
-			const spritestudio6::SsCell* cell = cellMap->cells[cellIndex];
+			const SpriteStudio::SsCell* cell = cellMap->cells[cellIndex];
 
 			Lump* cellData = Lump::set("ss::Cell", false, "Cell");
 			cellsData->add(cellData);
@@ -540,7 +540,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			{
 				COE( "エラー：セルに全角が使用されています。半角英数でリネームしてください。: " + cell->name );
 
-				//LOGE << spritestudio6::SsCharConverter::utf8_to_sjis("エラー：セルに全角が使用されています。半角英数でリネームしてください。: ") << cell->name;
+				//LOGE << SpriteStudio::SsCharConverter::utf8_to_sjis("エラー：セルに全角が使用されています。半角英数でリネームしてください。: ") << cell->name;
 
 				convert_error_exit = true;	//エラーが発生コンバート失敗
 				return 0;
@@ -560,8 +560,8 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	// パーツ、アニメ情報
 	for (int packIndex = 0; packIndex < (int)proj->animeList.size(); packIndex++)
 	{
-		const spritestudio6::SsAnimePack* animePack = proj->animeList[packIndex].get();
-		const spritestudio6::SsModel& model = animePack->Model;
+		const SpriteStudio::SsAnimePack* animePack = proj->animeList[packIndex].get();
+		const SpriteStudio::SsModel& model = animePack->Model;
 		
 		// AnimePackData
 		Lump* animePackData = Lump::set("ss::AnimePackData", false, "AnimePackData");
@@ -588,7 +588,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		// パーツ情報（モデル）の出力
 		for (int partIndex = 0; partIndex < (int)model.partList.size(); partIndex++)
 		{
-			const spritestudio6::SsPart* part = model.partList[partIndex];
+			const SpriteStudio::SsPart* part = model.partList[partIndex];
 
 			// PartData
 			Lump* partData = Lump::set("ss::PartData", false, "PartData" );
@@ -610,26 +610,26 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			//5.5対応5.3.5に無いパーツ種別がある場合ワーニングを表示する
 			switch (part->type)
 			{
-			case spritestudio6::SsPartType::null:			// null。領域を持たずSRT情報のみ。ただし円形の当たり判定は設定可能。
-			case spritestudio6::SsPartType::normal:		// 通常パーツ。領域を持つ。画像は無くてもいい。
-			case spritestudio6::SsPartType::mask:			// 6.0マスクパーツ
-			case spritestudio6::SsPartType::constraint:	// 6.0コンストレイントパーツ
-			case spritestudio6::SsPartType::bonepoint:		// 6.0ボーンエフェクトパーツ
-			case spritestudio6::SsPartType::joint:			// 6.0ジョイントパーツ
-			case spritestudio6::SsPartType::armature:		// 6.0ボーンパーツ
-			case spritestudio6::SsPartType::mesh:			// 6.0メッシュパーツ
+			case SpriteStudio::SsPartType::null:			// null。領域を持たずSRT情報のみ。ただし円形の当たり判定は設定可能。
+			case SpriteStudio::SsPartType::normal:		// 通常パーツ。領域を持つ。画像は無くてもいい。
+			case SpriteStudio::SsPartType::mask:			// 6.0マスクパーツ
+			case SpriteStudio::SsPartType::constraint:	// 6.0コンストレイントパーツ
+			case SpriteStudio::SsPartType::bonepoint:		// 6.0ボーンエフェクトパーツ
+			case SpriteStudio::SsPartType::joint:			// 6.0ジョイントパーツ
+			case SpriteStudio::SsPartType::armature:		// 6.0ボーンパーツ
+			case SpriteStudio::SsPartType::mesh:			// 6.0メッシュパーツ
 				partData->add(Lump::s16Data(part->type, "type"));
 				break;
-			case spritestudio6::SsPartType::instance:		// インスタンス。他アニメ、パーツへの参照。シーン編集モードの代替になるもの
+			case SpriteStudio::SsPartType::instance:		// インスタンス。他アニメ、パーツへの参照。シーン編集モードの代替になるもの
 				//参照アニメのポインタが無い場合はNULLパーツになる。
 				{
-					spritestudio6::SsString packname = part->refAnimePack;
-					spritestudio6::SsString animename = part->refAnime;
-					spritestudio6::SsAnimePack* refpack = proj->findAnimationPack(packname);
-					spritestudio6::SsAnimation* refanime = refpack->findAnimation(animename);
+					SpriteStudio::SsString packname = part->refAnimePack;
+					SpriteStudio::SsString animename = part->refAnime;
+					SpriteStudio::SsAnimePack* refpack = proj->findAnimationPack(packname);
+					SpriteStudio::SsAnimation* refanime = refpack->findAnimation(animename);
 					if (refanime == NULL)
 					{
-						partData->add(Lump::s16Data(spritestudio6::SsPartType::null, "type"));
+						partData->add(Lump::s16Data(SpriteStudio::SsPartType::null, "type"));
 //						std::cerr << "警告：参照のないインスタンスパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
 						COE( "警告：参照のないインスタンスパーツが存在します: " + animePack->name + ".ssae " + part->name );
 					}
@@ -639,11 +639,11 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					}
 				}
 				break;
-			case spritestudio6::SsPartType::effect:		// 5.5エフェクトパーツ
+			case SpriteStudio::SsPartType::effect:		// 5.5エフェクトパーツ
 				//参照エフェクト名が空の場合はNULLパーツになる。
 				if (part->refEffectName == "")
 				{
-					partData->add(Lump::s16Data(spritestudio6::SsPartType::null, "type"));
+					partData->add(Lump::s16Data(SpriteStudio::SsPartType::null, "type"));
 					//未実装　ワーニングを表示しNULLパーツにする
 //					std::cerr << "警告：参照のないエフェクトパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
 					COE( "警告：参照のないエフェクトパーツが存在します: " + animePack->name + ".ssae " + part->name );
@@ -657,7 +657,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				//未対応パーツ　ワーニングを表示しNULLパーツにする
 //				std::cerr << "警告：未対応のパーツ種別が使われています: " << animePack->name << ".ssae " << part->name << "\n";
 				COE( "警告：未対応のパーツ種別が使われています: " + animePack->name + ".ssae " + part->name );
-				partData->add(Lump::s16Data(spritestudio6::SsPartType::null, "type"));
+				partData->add(Lump::s16Data(SpriteStudio::SsPartType::null, "type"));
 				break;
 			}
 			partData->add(Lump::s16Data(part->boundsType, "boundsType"));
@@ -667,29 +667,29 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			//インスタンスアニメ名
 			if ( part->refAnime == "" )
 			{
-				const spritestudio6::SsString str = "";
+				const SpriteStudio::SsString str = "";
 //				partData->add(Lump::s16Data((int)str.length()));				//文字列のサイズ
 				partData->add(Lump::stringData(str, "refname"));							//文字列
 			}
 			else
 			{
-				const spritestudio6::SsString str = part->refAnimePack + "/" + part->refAnime;
+				const SpriteStudio::SsString str = part->refAnimePack + "/" + part->refAnime;
 //				partData->add(Lump::s16Data((int)str.length()));				//文字列のサイズ
 				partData->add(Lump::stringData(str, "refname"));							//文字列
 			}
 			//エフェクト名
 			if (part->refEffectName == "")
 			{
-				const spritestudio6::SsString str = "";
+				const SpriteStudio::SsString str = "";
 				partData->add(Lump::stringData(str, "effectfilename"));							//文字列
 			}
 			else
 			{
-				const spritestudio6::SsString str = part->refEffectName;
+				const SpriteStudio::SsString str = part->refEffectName;
 				partData->add(Lump::stringData(str, "effectfilename"));							//文字列
 			}
 			//カラーラベル
-			const spritestudio6::SsString str = part->colorLabel;
+			const SpriteStudio::SsString str = part->colorLabel;
 			partData->add(Lump::stringData(str, "colorLabel"));								//文字列
 
 			//マスク対象
@@ -698,19 +698,19 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		}
 
 		// アニメ情報の出力
-		spritestudio6::SsCellMapList* cellMapList = new spritestudio6::SsCellMapList();	// SsAnimeDecoderのデストラクタで破棄される
-		spritestudio6::SsAnimeDecoder decoder;
+		SpriteStudio::SsCellMapList* cellMapList = new SpriteStudio::SsCellMapList();	// SsAnimeDecoderのデストラクタで破棄される
+		SpriteStudio::SsAnimeDecoder decoder;
 //		const SsKeyframe* key;
 
 		for (int animeIndex = 0; animeIndex < (int)animePack->animeList.size(); animeIndex++)
 		{
-			spritestudio6::SsAnimePack* animePack = proj->getAnimePack(packIndex);
-			spritestudio6::SsModel* model = &animePack->Model;
-			spritestudio6::SsAnimation* anime = animePack->animeList[animeIndex];
+			SpriteStudio::SsAnimePack* animePack = proj->getAnimePack(packIndex);
+			SpriteStudio::SsModel* model = &animePack->Model;
+			SpriteStudio::SsAnimation* anime = animePack->animeList[animeIndex];
 			
 			cellMapList->set(proj, animePack);
 			decoder.setAnimation(model, anime, cellMapList, proj);
-			std::list<spritestudio6::SsPartState*>& partList = decoder.getPartSortList();
+			std::list<SpriteStudio::SsPartState*>& partList = decoder.getPartSortList();
 			
 			// AnimationData
 			Lump* animeData = Lump::set("ss::AnimationData", false, "AnimationData");
@@ -726,12 +726,12 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 			Lump* initialDataArray = Lump::set("ss::AnimationInitialData[]", true, "AnimationInitialData");
 			int sortedOrder = 0;
-			SPRITESTUDIO6SDK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
+			SPRITESTUDIO6SDK_foreach(std::vector<SpriteStudio::SsPartAndAnime>, decoder.getPartAnime(), it)
 			{
-				spritestudio6::SsPart* part = it->first;
-//				spritestudio6::SsPartAnime* partAnime = it->second;
+				SpriteStudio::SsPart* part = it->first;
+//				SpriteStudio::SsPartAnime* partAnime = it->second;
 				
-				const spritestudio6::SsPartState* state = findState(partList, part->arrayIndex);
+				const SpriteStudio::SsPartState* state = findState(partList, part->arrayIndex);
 				
 				PartInitialData init;
 				init.sortedOrder = sortedOrder++;
@@ -775,7 +775,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				//本来であればキーがないときはセルのサイズが初期値になる
 				init.size_X = state->size.x;
 				init.size_Y = state->size.y;
-				spritestudio6::SsCell * cell = state->cellValue.cell;
+				SpriteStudio::SsCell * cell = state->cellValue.cell;
 				if ( cell )
 				{
 					//セルデータがある場合はセルのサイズを初期値にする
@@ -867,17 +867,17 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				decoder.setPlayFrame(0);
 				decoder.update();
 
-				SPRITESTUDIO6SDK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
+				SPRITESTUDIO6SDK_foreach(std::vector<SpriteStudio::SsPartAndAnime>, decoder.getPartAnime(), it)
 				{
-					spritestudio6::SsPart* part = it->first;
-					const spritestudio6::SsPartState* state = findState(partList, part->arrayIndex);
+					SpriteStudio::SsPart* part = it->first;
+					const SpriteStudio::SsPartState* state = findState(partList, part->arrayIndex);
 
 					//サイズ分のUV出力
 					Lump* meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
 					meshsDataUV->add(meshData);
 
 					//メッシュのサイズを書き出す
-					if (part->type == spritestudio6::SsPartType::mesh)
+					if (part->type == SpriteStudio::SsPartType::mesh)
 					{
 						int meshsize = state->meshPart->ver_size;
 						meshData->add(Lump::s32Data((int)state->meshPart->isBind, "isBind"));	//バインドの有無
@@ -906,17 +906,17 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				decoder.setPlayFrame(0);
 				decoder.update();
 
-				SPRITESTUDIO6SDK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
+				SPRITESTUDIO6SDK_foreach(std::vector<SpriteStudio::SsPartAndAnime>, decoder.getPartAnime(), it)
 				{
-					spritestudio6::SsPart* part = it->first;
-					const spritestudio6::SsPartState* state = findState(partList, part->arrayIndex);
+					SpriteStudio::SsPart* part = it->first;
+					const SpriteStudio::SsPartState* state = findState(partList, part->arrayIndex);
 
 					//サイズ分のUV出力
 					Lump* meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
 					meshsDataIndices->add(meshData);
 
 					//メッシュのサイズを書き出す
-					if (part->type == spritestudio6::SsPartType::mesh)
+					if (part->type == SpriteStudio::SsPartType::mesh)
 					{
 						int tri_size = state->meshPart->tri_size;
 						meshData->add(Lump::s32Data(tri_size, "tri_size"));	//サイズ
@@ -971,11 +971,11 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 //				frameData->add(frameFlag);
 
 				int outPartsCount = 0;
-				SPRITESTUDIO6SDK_foreach(std::list<spritestudio6::SsPartState*>, partList, it)
+				SPRITESTUDIO6SDK_foreach(std::list<SpriteStudio::SsPartState*>, partList, it)
 				{
-					const spritestudio6::SsPartState* state = *it;
+					const SpriteStudio::SsPartState* state = *it;
 					//セルに設定された原点補正を取得
-					spritestudio6::SsVector2 pivot;
+					SpriteStudio::SsVector2 pivot;
 					pivot.x = 0;
 					pivot.y = 0;
 					//セルの原点情報はセル情報へ含める
@@ -1080,7 +1080,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					{
 						switch (state->partsColorValue.target)
 						{
-							case spritestudio6::SsColorBlendTarget::whole:
+							case SpriteStudio::SsColorBlendTarget::whole:
 								if ( 
 									  ( state->partsColorValue.color.rgba.a == 0 )
 								   && ( state->partsColorValue.color.rgba.r == 0 )
@@ -1098,7 +1098,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 								}
 
 								break;
-							case spritestudio6::SsColorBlendTarget::vertex:
+							case SpriteStudio::SsColorBlendTarget::vertex:
 								cb_flags = VERTEX_FLAG_LT|VERTEX_FLAG_RT|VERTEX_FLAG_LB|VERTEX_FLAG_RB;
 								break;
 							default:
@@ -1145,7 +1145,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 					int p_flags2 = 0;
 					//メッシュ情報を出力する必要があるかチェックする
-					if (state->partType == spritestudio6::SsPartType::mesh)
+					if (state->partType == SpriteStudio::SsPartType::mesh)
 					{
 						p_flags2 |= PART_FLAG_MESHDATA;
 					}
@@ -1395,16 +1395,16 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				Lump* userData = Lump::set("ss::ss_u16[]", true, "userData");
 				int partsCount = 0;
 
-				SPRITESTUDIO6SDK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
+				SPRITESTUDIO6SDK_foreach(std::vector<SpriteStudio::SsPartAndAnime>, decoder.getPartAnime(), it)
 				{
-					spritestudio6::SsPart* part = it->first;
-					spritestudio6::SsPartAnime* partAnime = it->second;
+					SpriteStudio::SsPart* part = it->first;
+					SpriteStudio::SsPartAnime* partAnime = it->second;
 					if (!partAnime) continue;
 
-					SPRITESTUDIO6SDK_foreach(spritestudio6::SsAttributeList, partAnime->attributes, attrIt)
+					SPRITESTUDIO6SDK_foreach(SpriteStudio::SsAttributeList, partAnime->attributes, attrIt)
 					{
-						spritestudio6::SsAttribute* attr = *attrIt;
-						if (attr->tag != spritestudio6::SsAttributeKind::user) continue;
+						SpriteStudio::SsAttribute* attr = *attrIt;
+						if (attr->tag != SpriteStudio::SsAttributeKind::user) continue;
 
 						// このフレームのデータを含む?
 						if (attr->key_dic.find(frame) != attr->key_dic.end())
@@ -1412,8 +1412,8 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 							hasUserData = true;
 							partsCount++;
 							
-							const spritestudio6::SsKeyframe* keyframe = attr->key_dic.at(frame);
-							spritestudio6::SsUserDataAnime udat;
+							const SpriteStudio::SsKeyframe* keyframe = attr->key_dic.at(frame);
+							SpriteStudio::SsUserDataAnime udat;
 							GetSsUserDataAnime(keyframe, udat);
 
 							int flags = 0;
@@ -1431,10 +1431,10 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 							}
 							if (udat.useRect)
 							{
-								userData->add(Lump::s32Data(udat.rect.x, "rect_x"));
-								userData->add(Lump::s32Data(udat.rect.y, "rect_y"));
-								userData->add(Lump::s32Data(udat.rect.w, "rect_w"));
-								userData->add(Lump::s32Data(udat.rect.h, "rect_h"));
+								userData->add(Lump::s32Data(udat.rect.x(), "rect_x"));
+								userData->add(Lump::s32Data(udat.rect.y(), "rect_y"));
+								userData->add(Lump::s32Data(udat.rect.width(), "rect_w"));
+								userData->add(Lump::s32Data(udat.rect.height(), "rect_h"));
 							}
 							if (udat.usePoint)
 							{
@@ -1443,7 +1443,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 							}
 							if (udat.useString)
 							{
-								const spritestudio6::SsString& str = udat.string;
+								const SpriteStudio::SsString& str = udat.string;
 								userData->add(Lump::s16Data((int)str.length(), "str_length"));
 								userData->add(Lump::stringData(str, "str"));
 							}
@@ -1473,7 +1473,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			{
 				Lump* labelData = Lump::set("ss::ss_u16[]", true, "labelData");
 
-				spritestudio6::SsString str;
+				SpriteStudio::SsString str;
 				str = anime->labels[label_idx]->name;
 				//全角チェック
 				if ( isZenkaku( &str ) == true )
@@ -1541,7 +1541,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 				// ConverterOpenGLOutputBitMapImage 内の stbi_write_png は fopen を使っており narrow 文字のみなのでWin向けにSJIS化が必要。
 				// ToDo: sspkg 以外で Win の全角対応をする場合、 ConverterOpenGLOutputBitMapImage 側に以下相当の変換を追加。
-				outputfile = spritestudio6::SsCharConverter::convert_path_string(outputfile);
+				outputfile = SpriteStudio::SsCharConverter::convert_path_string(outputfile);
 
 				//filelist.push_back(outputfile);
 				if (!isWrite)
@@ -1571,10 +1571,10 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		Lump* effectFile = Lump::set("ss::EffectFile", false, "EffectFile");
 		effectfileArray->add(effectFile);
 
-		const spritestudio6::SsEffectFile* effectfile = proj->getEffectFile(effectIndex);
+		const SpriteStudio::SsEffectFile* effectfile = proj->getEffectFile(effectIndex);
 		effectFile->add(Lump::stringData(effectfile->name, "name"));				//エフェクト名
 
-		const spritestudio6::SsEffectModel *effectmodel = &effectfile->effectData;
+		const SpriteStudio::SsEffectModel *effectmodel = &effectfile->effectData;
 		effectFile->add(Lump::s16Data(effectmodel->fps, "fps"));					//FPS
 
 		effectFile->add(Lump::s16Data(effectmodel->isLockRandSeed, "isLockRandSeed"));		//乱数を固定するかどうか
@@ -1598,24 +1598,24 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			Lump* effectNode = Lump::set("ss::EffectNode", false, "EffectNode");
 			effectNodeArray->add(effectNode);
 
-			spritestudio6::SsEffectNode *node = effectmodel->nodeList[nodeindex];
+			SpriteStudio::SsEffectNode *node = effectmodel->nodeList[nodeindex];
 			int	arrayIndex = node->arrayIndex;				//通し番号
 			int	parentIndex = node->parentIndex;			//親の番号
-			spritestudio6::SsEffectNodeType::_enum	type = node->type;		//ノードの種類
+			SpriteStudio::SsEffectNodeType::_enum	type = node->type;		//ノードの種類
 			//			bool visible = = node->visible;					//エディター用
 			//MEMO: 旧ソースではbehaviorが実体にしてnode->behaviorの内容をコピーしていたが……スマートポインタ化後は
 			//      所有権の問題でエラーがでるので注意（スマートポインタの所有権の関係）
-			spritestudio6::SsEffectBehavior& behavior = node->behavior;		//動作パラメータ
-			spritestudio6::SsRenderBlendType::_enum blendType = behavior.BlendType;	//描画方法
+			SpriteStudio::SsEffectBehavior& behavior = node->behavior;		//動作パラメータ
+			SpriteStudio::SsRenderBlendType::_enum blendType = behavior.BlendType;	//描画方法
 			//セル番号
-			spritestudio6::SsCell*	refCell = behavior.refCell;
+			SpriteStudio::SsCell*	refCell = behavior.refCell;
 			int cellIndex = -1;
 			if (refCell)
 			{
 				cellIndex = (*cellList)[refCell];
 			}
-			spritestudio6::SsString CellName = behavior.CellName;
-			spritestudio6::SsString CellMapName = behavior.CellMapName;
+			SpriteStudio::SsString CellName = behavior.CellName;
+			SpriteStudio::SsString CellMapName = behavior.CellMapName;
 			//ファイルへ書き出し
 			effectNode->add(Lump::s16Data(arrayIndex, "arrayIndex"));		//通し番号
 			effectNode->add(Lump::s16Data(parentIndex, "parentIndex"));	//親の番号
@@ -1633,20 +1633,20 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				Lump* effectBehavior = Lump::set("ss::ss_u16[]", true, "effectBehavior");
 				effectBehaviorArray->add(effectBehavior);
 
-				spritestudio6::SsEffectElementBase *elementbase = behavior.plist[plistindex].get();
-				spritestudio6::SsEffectFunctionType::enum_ myType = elementbase->myType;
+				SpriteStudio::SsEffectElementBase *elementbase = behavior.plist[plistindex].get();
+				SpriteStudio::SsEffectFunctionType::enum_ myType = elementbase->myType;
 				effectBehavior->add(Lump::s32Data(myType, "SsEffectFunctionType"));	//コマンドタイプ
 
 				switch (myType)
 				{
-				case spritestudio6::SsEffectFunctionType::Basic:
+				case SpriteStudio::SsEffectFunctionType::Basic:
 				{
 					//基本情報
-					spritestudio6::ParticleElementBasic *element = (spritestudio6::ParticleElementBasic*)elementbase;
+					SpriteStudio::ParticleElementBasic *element = (SpriteStudio::ParticleElementBasic*)elementbase;
 
 					int							maximumParticle = element->maximumParticle;
-					spritestudio6::f32VValue	speed = element->speed;
-					spritestudio6::i32VValue 	lifespan = element->lifespan;
+					SpriteStudio::f32VValue	speed = element->speed;
+					SpriteStudio::i32VValue 	lifespan = element->lifespan;
 					float						angle = element->angle;
 					float						angleVariance = element->angleVariance;
 					int							interval = element->interval;
@@ -1671,118 +1671,118 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					effectBehavior->add(Lump::floatData(angleVariance, "angleVariance"));		//射出方向範囲
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::RndSeedChange:
+				case SpriteStudio::SsEffectFunctionType::RndSeedChange:
 				{
 					//シード上書き
-					spritestudio6::ParticleElementRndSeedChange *element = (spritestudio6::ParticleElementRndSeedChange*)elementbase;
+					SpriteStudio::ParticleElementRndSeedChange *element = (SpriteStudio::ParticleElementRndSeedChange*)elementbase;
 					int		Seed = element->Seed;
 					effectBehavior->add(Lump::s32Data(Seed, "Seed"));					//上書きする値
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::Delay:
+				case SpriteStudio::SsEffectFunctionType::Delay:
 				{
 					//発生：タイミング
-					spritestudio6::ParticleElementDelay *element = (spritestudio6::ParticleElementDelay*)elementbase;
+					SpriteStudio::ParticleElementDelay *element = (SpriteStudio::ParticleElementDelay*)elementbase;
 					int		DelayTime = element->DelayTime;
 					effectBehavior->add(Lump::s32Data(DelayTime, "DelayTime"));				//遅延時間
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::Gravity:
+				case SpriteStudio::SsEffectFunctionType::Gravity:
 				{
 					//重力を加える
-					spritestudio6::ParticleElementGravity *element = (spritestudio6::ParticleElementGravity*)elementbase;
-					spritestudio6::SsVector2   Gravity = element->Gravity;
+					SpriteStudio::ParticleElementGravity *element = (SpriteStudio::ParticleElementGravity*)elementbase;
+					SpriteStudio::SsVector2   Gravity = element->Gravity;
 					effectBehavior->add(Lump::floatData(Gravity.x, "Gravity_x"));				//X方向の重力
 					effectBehavior->add(Lump::floatData(Gravity.y, "Gravity_y"));				//Y方向の重力
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::Position:
+				case SpriteStudio::SsEffectFunctionType::Position:
 				{
 					//座標：生成時
-					spritestudio6::ParticleElementPosition *element = (spritestudio6::ParticleElementPosition*)elementbase;
-					spritestudio6::f32VValue OffsetX = element->OffsetX;
-					spritestudio6::f32VValue OffsetY = element->OffsetY;
+					SpriteStudio::ParticleElementPosition *element = (SpriteStudio::ParticleElementPosition*)elementbase;
+					SpriteStudio::f32VValue OffsetX = element->OffsetX;
+					SpriteStudio::f32VValue OffsetY = element->OffsetY;
 					effectBehavior->add(Lump::floatData(OffsetX.getMinValue(), "OffsetXMinValue"));				//X座標に加算最小
 					effectBehavior->add(Lump::floatData(OffsetX.getMaxValue(), "OffsetXMaxValue"));				//X座標に加算最大
 					effectBehavior->add(Lump::floatData(OffsetY.getMinValue(), "OffsetYMinValue"));				//X座標に加算最小
 					effectBehavior->add(Lump::floatData(OffsetY.getMaxValue(), "OffsetYMaxValue"));				//X座標に加算最大
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::Rotation:
+				case SpriteStudio::SsEffectFunctionType::Rotation:
 				{
 					//Z回転を追加
-					spritestudio6::ParticleElementRotation *element = (spritestudio6::ParticleElementRotation*)elementbase;
-					spritestudio6::f32VValue Rotation = element->Rotation;
-					spritestudio6::f32VValue RotationAdd = element->RotationAdd;
+					SpriteStudio::ParticleElementRotation *element = (SpriteStudio::ParticleElementRotation*)elementbase;
+					SpriteStudio::f32VValue Rotation = element->Rotation;
+					SpriteStudio::f32VValue RotationAdd = element->RotationAdd;
 					effectBehavior->add(Lump::floatData(Rotation.getMinValue(), "RotationMinValue"));			//角度初期値最小
 					effectBehavior->add(Lump::floatData(Rotation.getMaxValue(), "RotationMaxValue"));			//角度初期値最大
 					effectBehavior->add(Lump::floatData(RotationAdd.getMinValue(), "RotationAddMinValue"));			//角度初期加算値最小
 					effectBehavior->add(Lump::floatData(RotationAdd.getMaxValue(), "RotationAddMaxValue"));			//角度初期加算値最大
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::TransRotation:
+				case SpriteStudio::SsEffectFunctionType::TransRotation:
 				{
 					//Z回転速度変更
-					spritestudio6::ParticleElementRotationTrans *element = (spritestudio6::ParticleElementRotationTrans*)elementbase;
+					SpriteStudio::ParticleElementRotationTrans *element = (SpriteStudio::ParticleElementRotationTrans*)elementbase;
 					float   RotationFactor = element->RotationFactor;
 					float	EndLifeTimePer = element->EndLifeTimePer;
 					effectBehavior->add(Lump::floatData(RotationFactor, "RotationFactor"));					//角度目標加算値
 					effectBehavior->add(Lump::floatData(EndLifeTimePer, "EndLifeTimePer"));					//到達時間
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::TransSpeed:
+				case SpriteStudio::SsEffectFunctionType::TransSpeed:
 				{
 					//速度：変化
-					spritestudio6::ParticleElementTransSpeed *element = (spritestudio6::ParticleElementTransSpeed*)elementbase;
-					spritestudio6::f32VValue Speed = element->Speed;
+					SpriteStudio::ParticleElementTransSpeed *element = (SpriteStudio::ParticleElementTransSpeed*)elementbase;
+					SpriteStudio::f32VValue Speed = element->Speed;
 					effectBehavior->add(Lump::floatData(Speed.getMinValue(), "SpeedMinValue"));				//速度目標値最小
 					effectBehavior->add(Lump::floatData(Speed.getMaxValue(), "SpeedMaxValue"));				//速度目標値最大
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::TangentialAcceleration:
+				case SpriteStudio::SsEffectFunctionType::TangentialAcceleration:
 				{
 					//接線加速度
-					spritestudio6::ParticleElementTangentialAcceleration *element = (spritestudio6::ParticleElementTangentialAcceleration*)elementbase;
-					spritestudio6::f32VValue Acceleration = element->Acceleration;
+					SpriteStudio::ParticleElementTangentialAcceleration *element = (SpriteStudio::ParticleElementTangentialAcceleration*)elementbase;
+					SpriteStudio::f32VValue Acceleration = element->Acceleration;
 
 					effectBehavior->add(Lump::floatData(Acceleration.getMinValue(), "AccelerationMinValue"));		//設定加速度最小
 					effectBehavior->add(Lump::floatData(Acceleration.getMaxValue(), "AccelerationMaxValue"));		//設定加速度最大
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::InitColor:
+				case SpriteStudio::SsEffectFunctionType::InitColor:
 				{
 					//カラーRGBA：生成時
-					spritestudio6::ParticleElementInitColor *element = (spritestudio6::ParticleElementInitColor*)elementbase;
-					spritestudio6::SsU8cVValue Color = element->Color;
+					SpriteStudio::ParticleElementInitColor *element = (SpriteStudio::ParticleElementInitColor*)elementbase;
+					SpriteStudio::SsU8cVValue Color = element->Color;
 					effectBehavior->add(Lump::s32Data(Color.getMinValue().toARGB(), "ColorMinValue"));		//設定カラー最小
 					effectBehavior->add(Lump::s32Data(Color.getMaxValue().toARGB(), "ColorMaxValue"));		//設定カラー最大
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::TransColor:
+				case SpriteStudio::SsEffectFunctionType::TransColor:
 				{
 					//カラーRGB：変化
-					spritestudio6::ParticleElementTransColor *element = (spritestudio6::ParticleElementTransColor*)elementbase;
-					spritestudio6::SsU8cVValue Color = element->Color;
+					SpriteStudio::ParticleElementTransColor *element = (SpriteStudio::ParticleElementTransColor*)elementbase;
+					SpriteStudio::SsU8cVValue Color = element->Color;
 					effectBehavior->add(Lump::s32Data(Color.getMinValue().toARGB(), "ColorMinValue"));		//設定カラー最小
 					effectBehavior->add(Lump::s32Data(Color.getMaxValue().toARGB(), "ColorMaxValue"));		//設定カラー最大
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::AlphaFade:
+				case SpriteStudio::SsEffectFunctionType::AlphaFade:
 				{
 					//フェード
-					spritestudio6::ParticleElementAlphaFade *element = (spritestudio6::ParticleElementAlphaFade*)elementbase;
-					spritestudio6::f32VValue  disprange = element->disprange; // mnagaku 頭小文字
+					SpriteStudio::ParticleElementAlphaFade *element = (SpriteStudio::ParticleElementAlphaFade*)elementbase;
+					SpriteStudio::f32VValue  disprange = element->disprange; // mnagaku 頭小文字
 					effectBehavior->add(Lump::floatData(disprange.getMinValue(), "disprangeMinValue"));			//表示区間開始
 					effectBehavior->add(Lump::floatData(disprange.getMaxValue(), "disprangeMaxValue"));			//表示区間終了
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::Size:
+				case SpriteStudio::SsEffectFunctionType::Size:
 				{
 					//スケール：生成時
-					spritestudio6::ParticleElementSize *element = (spritestudio6::ParticleElementSize*)elementbase;
-					spritestudio6::f32VValue SizeX = element->SizeX;
-					spritestudio6::f32VValue SizeY = element->SizeY;
-					spritestudio6::f32VValue ScaleFactor = element->ScaleFactor;
+					SpriteStudio::ParticleElementSize *element = (SpriteStudio::ParticleElementSize*)elementbase;
+					SpriteStudio::f32VValue SizeX = element->SizeX;
+					SpriteStudio::f32VValue SizeY = element->SizeY;
+					SpriteStudio::f32VValue ScaleFactor = element->ScaleFactor;
 					effectBehavior->add(Lump::floatData(SizeX.getMinValue(), "SizeXMinValue"));				//幅倍率最小
 					effectBehavior->add(Lump::floatData(SizeX.getMaxValue(), "SizeXMaxValue"));				//幅倍率最大
 					effectBehavior->add(Lump::floatData(SizeY.getMinValue(), "SizeYMinValue"));				//高さ倍率最小
@@ -1791,13 +1791,13 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					effectBehavior->add(Lump::floatData(ScaleFactor.getMaxValue(), "ScaleFactorMaxValue"));			//倍率最大
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::TransSize:
+				case SpriteStudio::SsEffectFunctionType::TransSize:
 				{
 					//スケール：変化
-					spritestudio6::ParticleElementTransSize *element = (spritestudio6::ParticleElementTransSize*)elementbase;
-					spritestudio6::f32VValue SizeX = element->SizeX;
-					spritestudio6::f32VValue SizeY = element->SizeY;
-					spritestudio6::f32VValue ScaleFactor = element->ScaleFactor;
+					SpriteStudio::ParticleElementTransSize *element = (SpriteStudio::ParticleElementTransSize*)elementbase;
+					SpriteStudio::f32VValue SizeX = element->SizeX;
+					SpriteStudio::f32VValue SizeY = element->SizeY;
+					SpriteStudio::f32VValue ScaleFactor = element->ScaleFactor;
 					effectBehavior->add(Lump::floatData(SizeX.getMinValue(), "SizeXMinValue"));				//幅倍率最小
 					effectBehavior->add(Lump::floatData(SizeX.getMaxValue(), "SizeXMaxValue"));				//幅倍率最大
 					effectBehavior->add(Lump::floatData(SizeY.getMinValue(), "SizeYMinValue"));				//高さ倍率最小
@@ -1806,34 +1806,34 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					effectBehavior->add(Lump::floatData(ScaleFactor.getMaxValue(), "ScaleFactorMaxValue"));			//倍率最大
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::PointGravity:
+				case SpriteStudio::SsEffectFunctionType::PointGravity:
 				{
 					//重力点の追加
-					spritestudio6::ParticlePointGravity *element = (spritestudio6::ParticlePointGravity*)elementbase;
-					spritestudio6::SsVector2   Position = element->Position;
+					SpriteStudio::ParticlePointGravity *element = (SpriteStudio::ParticlePointGravity*)elementbase;
+					SpriteStudio::SsVector2   Position = element->Position;
 					float		Power = element->Power;
 					effectBehavior->add(Lump::floatData(Position.x, "Position_x"));						//重力点X
 					effectBehavior->add(Lump::floatData(Position.y, "Position_y"));						//重力点Y
 					effectBehavior->add(Lump::floatData(Power, "Power"));							//パワー
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::TurnToDirectionEnabled:
+				case SpriteStudio::SsEffectFunctionType::TurnToDirectionEnabled:
 				{
 					//進行方向に向ける
-					spritestudio6::ParticleTurnToDirectionEnabled *element = (spritestudio6::ParticleTurnToDirectionEnabled*)elementbase;
+					SpriteStudio::ParticleTurnToDirectionEnabled *element = (SpriteStudio::ParticleTurnToDirectionEnabled*)elementbase;
 					//コマンドがあれば有効
 					effectBehavior->add(Lump::floatData(element->Rotation, "Rotation"));				//方向オフセット
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::InfiniteEmitEnabled:
+				case SpriteStudio::SsEffectFunctionType::InfiniteEmitEnabled:
 				{
 					//無限にする
-					spritestudio6::ParticleInfiniteEmitEnabled *element = (spritestudio6::ParticleInfiniteEmitEnabled*)elementbase;
+					SpriteStudio::ParticleInfiniteEmitEnabled *element = (SpriteStudio::ParticleInfiniteEmitEnabled*)elementbase;
 					//コマンドがあれば有効
 					effectBehavior->add(Lump::s32Data(1, "flag"));									//ダミーデータ
 					break;
 				}
-				case spritestudio6::SsEffectFunctionType::Base:
+				case SpriteStudio::SsEffectFunctionType::Base:
 				default:
 					//未使用のコマンドが含まれている
 					//std::cerr << "警告：未使用のエフェクトコマンドが含まれています。 \n";
@@ -1855,7 +1855,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	return topLump;
 }
 
-void createPackFileList(spritestudio6::SsProject* proj , std::string sspjPath , std::vector<std::string>& filelist)
+void createPackFileList(SpriteStudio::SsProject* proj , std::string sspjPath , std::vector<std::string>& filelist)
 {
 	std::string pjpath = FileUtil::getFilePath(sspjPath);
 	pjpath = FileUtil::normalizeFilePath(pjpath);
@@ -1903,7 +1903,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 
 	std::string outputdirUTF8;
 	// 事前の parseArguments 処理時にUTF8変換するようにしたためここでの変換をカットしました。
-	//outputdirUTF8 = spritestudio6::SsCharConverter::sjis_to_utf8(outPath);
+	//outputdirUTF8 = SpriteStudio::SsCharConverter::sjis_to_utf8(outPath);
 	outputdirUTF8 = outPath;
 
 	COI("output directory: " + outputdirUTF8);
@@ -1922,7 +1922,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		}
 	}
 
-	spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(sspjPath);
+	SpriteStudio::SsProject* proj = SpriteStudio::ssloader_sspj::Load(sspjPath);
 
 	fs::path logfilepath = fs::path(outputdirUTF8).replace_filename("convert.log");
 //	static plog::RollingFileAppender<plog::MessageOnlyFormatter> fileAppender(logfilepath.c_str());
@@ -1987,7 +1987,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 //			out.open((outPath + ".json").c_str(), std::ios_base::out);
 			std::string outPathJson = outPath + outFName + ".json";
 
-			out.open((spritestudio6::SsCharConverter::convert_path_string( outPathJson )).c_str()
+			out.open((SpriteStudio::SsCharConverter::convert_path_string( outPathJson )).c_str()
 						, std::ios_base::out);
 			if(out)
 			{
@@ -2018,7 +2018,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 			COI( "outPathSsfb " + outPathSsfb );
 
 
-			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
+			out.open((SpriteStudio::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
 						, std::ios_base::binary | std::ios_base::out);
 			if(out)
 			{
@@ -2036,7 +2036,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 
 			std::string outPathSsfb = sspkg_info::getInst()->get_sspkg_temppath() + outFName + ".ssfb";//出力はFB
 
-			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
+			out.open((SpriteStudio::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
 				, std::ios_base::binary | std::ios_base::out);
 			if (out)
 			{
@@ -2059,7 +2059,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 			COI( "convert type : OUTPUT_FORMAT_FLAG_SSBP " );
 
 			std::string outPathSsfb = outPath + outFName + ".ssbp";
-			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
+			out.open((SpriteStudio::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
 						, std::ios_base::binary | std::ios_base::out);
 			if(out)
 			{
@@ -2293,7 +2293,7 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 			case ARGUMENT_ENCODE_SJIS:
 #ifdef _WIN32
 
-				nameUTF8 = 	spritestudio6::SsCharConverter::sjis_to_utf8(name);;
+				nameUTF8 = 	SpriteStudio::SsCharConverter::sjis_to_utf8(name);;
 //				LOGI << "name : (sjis)" << nameUTF8;
 				break;
 #else
@@ -2315,7 +2315,7 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
 
 	if (options.argumentEncode == ARGUMENT_ENCODE_SJIS)
 	{
-		options.outputDir = spritestudio6::SsCharConverter::sjis_to_utf8(options.outputDir);
+		options.outputDir = SpriteStudio::SsCharConverter::sjis_to_utf8(options.outputDir);
 	}
 
 	// success
@@ -2369,8 +2369,8 @@ int convertMain(int argc, const char * argv[])
 
 
 #ifdef _BACKBUFFER_RENDERING__
-	std::unique_ptr<spritestudio6::SSTextureFactory> texFactory;
-	//spritestudio6::SSTextureFactory* texFactory = nullptr;
+	std::unique_ptr<SpriteStudio::SSTextureFactory> texFactory;
+	//SpriteStudio::SSTextureFactory* texFactory = nullptr;
 
 	if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
 	{
@@ -2383,8 +2383,8 @@ int convertMain(int argc, const char * argv[])
 	}
 	else {
 		texFactory.reset(
-			new spritestudio6::SSTextureFactory(
-				new spritestudio6::SSTextureBMP()
+			new SpriteStudio::SSTextureFactory(
+				new SpriteStudio::SSTextureBMP()
 			)
 		);
 	}
@@ -2407,12 +2407,12 @@ int convertMain(int argc, const char * argv[])
 #ifdef _WIN32
 			// Win32プラットフォーム用コード。Win32APIを使ってワイルドカード展開する
 			// MEMO: FileUtilで使用している文字コードはSJISであることに注意
-			std::vector<std::string> fileList = FileUtil::findPath(spritestudio6::SsCharConverter::utf8_to_sjis(str));
+			std::vector<std::string> fileList = FileUtil::findPath(SpriteStudio::SsCharConverter::utf8_to_sjis(str));
 			if (!fileList.empty())
 			{
 				for(std::vector<std::string>::iterator it=fileList.begin(); it != fileList.end(); it++)
 				{
-					sources.push_back(spritestudio6::SsCharConverter::sjis_to_utf8(*it));
+					sources.push_back(SpriteStudio::SsCharConverter::sjis_to_utf8(*it));
 				}
 			}
 			else
