@@ -22,6 +22,7 @@ namespace SpriteStudio
 	FontTextureManager::~FontTextureManager()
 	{
 		releaseRawImageAll();
+		releasePartsTextureAll();
 	}
 
 	std::pair<SsRawImage*, SsFontTexture*> FontTextureManager::findShareTexture(const SsString& text, const SsFontDesc& desc, const SsSize& sizeGrid, const SsSize& sizeFixed)
@@ -76,13 +77,6 @@ namespace SpriteStudio
 				}
 				else {
 
-					/*
-					SSTextureLoader::DataHandle ptr = SSTextureLoader::LoadImageFromFile(loadfile.c_str(),
-						&width,
-						&height,
-						&bpp
-					);
-					*/
 					SsRawImage* image = new SsRawImage();
 					bool ret = image->Load(loadfile.c_str());
 
@@ -117,15 +111,12 @@ namespace SpriteStudio
 		m_charamap_images.clear();
 	}
 
-	void FontTextureManager::releasePartsTexture()
+	void FontTextureManager::releasePartsTextureAll()
 	{
-
-	}
-
-
-	FontTextureManager::CharaMapImage* FontTextureManager::getCharaMapImage(SsString name)
-	{
-		return 0;
+		for (auto i : m_part_textures)
+		{
+			i.release();
+		}
 	}
 
 

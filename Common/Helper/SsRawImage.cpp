@@ -19,6 +19,7 @@ SsRawImage::~SsRawImage()
 	if (is_autorelease)
 	{
 		delete rawimage;
+		rawimage = 0;
 	}
 }
 

@@ -138,6 +138,8 @@ namespace SpriteStudio
 	//! デストラクタ
 	SsFontTexture::~SsFontTexture()
 	{
+
+		delete m_pTexture;
 #if 0
 		// SsOpenGLImage メンバの SsBitmap のデストラクタでは破棄されないようなので。
 		if (m_pBitmap)

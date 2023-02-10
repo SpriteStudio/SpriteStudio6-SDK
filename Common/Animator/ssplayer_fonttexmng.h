@@ -36,6 +36,14 @@ namespace SpriteStudio
 					sizeFixed == this->sizeFixed
 					);
 			}
+
+			void release()
+			{
+				delete fontTexture;
+				fontTexture = 0;
+				delete image;
+				image = 0;
+			}
 		};
 
 	public:
@@ -47,10 +55,8 @@ namespace SpriteStudio
 		};
 
 	private:
-		std::map<SsString, ISSTexture*> m_parts_tex;
 		std::map<SsString, CharaMapImage> m_charamap_images;
-
-		std::vector< ShareTextureDesc> m_part_textures;
+		std::vector<ShareTextureDesc> m_part_textures;
 
 	public:
 
@@ -65,9 +71,7 @@ namespace SpriteStudio
 		bool loadTextureFromProject(SsProject* pj);
 
 		void releaseRawImageAll();
-		void releasePartsTexture();
-
-		CharaMapImage* getCharaMapImage(SsString name);
+		void releasePartsTextureAll();
 
 
 	};

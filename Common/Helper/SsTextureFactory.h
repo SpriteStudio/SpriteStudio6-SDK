@@ -86,6 +86,8 @@ public:
 };
 
 class SsRawImage;
+
+
 class	SSTextureFactory
 {
 private:
