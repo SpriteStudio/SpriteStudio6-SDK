@@ -1,3 +1,4 @@
+include(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/initialize.cmake)
 cmake_minimum_required(VERSION 3.19.2)
 
 project(ssAnimator)
@@ -5,16 +6,11 @@ project(ssAnimator)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if(MSVC)
-add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
-add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
-endif()
+OPTIONS()
 
-if(APPLE)
-    if(("${CMAKE_BUILD_TYPE}" STREQUAL "Release") OR (NOT CMAKE_OSX_ARCHITECTURES))
-        set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
-    endif()
-endif()
+CCACHE()
+
+PREPARE()
 
 set(ssAnimator_SRCS
     ssplayer_cellmap.cpp

@@ -1,12 +1,13 @@
+include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/initialize.cmake)
 cmake_minimum_required(VERSION 3.19.2)
 
 project(glad)
 
-if(APPLE)
-    if(("${CMAKE_BUILD_TYPE}" STREQUAL "Release") OR (NOT CMAKE_OSX_ARCHITECTURES))
-        set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
-    endif()
-endif()
+OPTIONS()
+
+CCACHE()
+
+PREPARE()
 
 include_directories(include)
 
