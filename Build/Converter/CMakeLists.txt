@@ -1,3 +1,4 @@
+include(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/initialize.cmake)
 cmake_minimum_required(VERSION 3.19.2)
 
 project(Ss6Converter)
@@ -5,36 +6,11 @@ project(Ss6Converter)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if(MSVC)
-add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
-add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
-endif()
+OPTIONS()
 
-if(APPLE)
-    if(("${CMAKE_BUILD_TYPE}" STREQUAL "Release") OR (NOT CMAKE_OSX_ARCHITECTURES))
-        set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
-    endif()
-endif()
+CCACHE()
 
-# command options
-option(ENABLE_CCACHE "Enable ccache?" ON)
-# enable ccache
-find_program(CCACHE_EXE ccache)
-if(CCACHE_EXE)
-    if(ENABLE_CCACHE)
-        message(STATUS "Enable ccache")
-        if(CMAKE_C_COMPILER_LAUNCHER)
-            set(CMAKE_C_COMPILER_LAUNCHER "${CMAKE_C_COMPILER_LAUNCHER}" "${CCACHE_EXE}")
-        else()
-            set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_EXE}")
-        endif()
-        if(CMAKE_CXX_COMPILER_LAUNCHER)
-            set(CMAKE_CXX_COMPILER_LAUNCHER "${CMAKE_CXX_COMPILER_LAUNCHER}" "${CCACHE_EXE}")
-        else()
-            set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_EXE}")
-        endif()
-    endif()
-endif()
+PREPARE()
 
 if(NOT TARGET ssHelper)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common Ss6Converter_Common)
@@ -71,13 +47,63 @@ if(NOT json_POPULATED)
 endif()
 
 message("fetch flatbuffers")
-set(FLATBUFFERS_BUILD_TESTS OFF CACHE INTERNAL "Disable flatbuffers unit test")
 FetchContent_Declare(
     flatbuffers
     GIT_REPOSITORY https://github.com/google/flatbuffers.git
-    GIT_TAG        v23.1.21)
-FetchContent_MakeAvailable(flatbuffers)
-include_directories(${flatbuffers_SOURCE_DIR}/include)
+    GIT_TAG        v23.3.3)
+if (ENABLE_FLATC)
+    set(FLATBUFFERS_BUILD_TESTS OFF CACHE INTERNAL "Disable flatbuffers unit test")
+    set(FLATBUFFERS_INSTALL OFF CACHE INTERNAL "Disable flatbuffers install")
+    set(FLATBUFFERS_BUILD_FLATC ON CACHE INTERNAL "Disable the build of the flatbuffers compiler")
+    set(FLATBUFFERS_BUILD_FLATHASH OFF CACHE INTERNAL "Disable the build of flathash")
+    FetchContent_MakeAvailable(flatbuffers)
+    include_directories(${flatbuffers_SOURCE_DIR}/include)
+else()
+    FetchContent_GetProperties(flatbuffers)
+    if(NOT flatbuffers_POPULATED)
+        # Fetch the content using previously declared details
+        FetchContent_Populate(flatbuffers)
+        set(FlatBuffers_Library_SRCS
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/allocator.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/array.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/base.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/buffer.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/buffer_ref.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/code_generator.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/code_generators.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/default_allocator.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/detached_buffer.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/flatbuffer_builder.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/flatbuffers.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/flatc.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/flex_flat_util.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/flexbuffers.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/grpc.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/hash.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/idl.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/minireflect.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/pch/flatc_pch.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/pch/pch.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/reflection.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/reflection_generated.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/registry.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/stl_emulation.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/string.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/struct.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/table.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/util.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/vector.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/vector_downward.h
+          ${flatbuffers_SOURCE_DIR}/include/flatbuffers/verifier.h
+          ${flatbuffers_SOURCE_DIR}/src/idl_parser.cpp
+          ${flatbuffers_SOURCE_DIR}/src/idl_gen_text.cpp
+          ${flatbuffers_SOURCE_DIR}/src/reflection.cpp
+          ${flatbuffers_SOURCE_DIR}/src/util.cpp
+          )
+        include_directories(${flatbuffers_SOURCE_DIR}/include)
+    endif()
+endif()
+
 
 message("fetch plog")
 FetchContent_Declare(
@@ -161,7 +187,7 @@ if(WIN32 OR APPLE)
     add_definitions( -D_BACKBUFFER_RENDERING__) 
 endif()
 
-add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS})
+add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS} ${FlatBuffers_Library_SRCS})
 
 if(NOT (WIN32 OR APPLE))
     # For Linux
@@ -192,7 +218,7 @@ elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
     ADD_DEFINITIONS(-DAPPLE)
 endif()
 
-target_link_libraries(Ss6Converter PRIVATE ssLoader ssAnimator ssHelper zlibstatic flatbuffers glfw glad nlohmann_json::nlohmann_json ${PLATFORM_DEPS})
+target_link_libraries(Ss6Converter PRIVATE ssLoader ssAnimator ssHelper zlibstatic glfw glad nlohmann_json::nlohmann_json ${PLATFORM_DEPS})
 
 
 # --- If we are on OS X copy all the embedded libraries to the app bundle

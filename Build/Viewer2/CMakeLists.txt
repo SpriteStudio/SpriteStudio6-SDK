@@ -1,39 +1,16 @@
+include(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/initialize.cmake)
 CMAKE_MINIMUM_REQUIRED(VERSION 3.19.2)
 project(SSView2)
 
 # command options
-option(ENABLE_CCACHE "Enable ccache?" ON)
-# enable ccache
-find_program(CCACHE_EXE ccache)
-if(CCACHE_EXE)
-    if(ENABLE_CCACHE)
-        message(STATUS "Enable ccache")
-        if(CMAKE_C_COMPILER_LAUNCHER)
-            set(CMAKE_C_COMPILER_LAUNCHER "${CMAKE_C_COMPILER_LAUNCHER}" "${CCACHE_EXE}")
-        else()
-            set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_EXE}")
-        endif()
-        if(CMAKE_CXX_COMPILER_LAUNCHER)
-            set(CMAKE_CXX_COMPILER_LAUNCHER "${CMAKE_CXX_COMPILER_LAUNCHER}" "${CCACHE_EXE}")
-        else()
-            set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_EXE}")
-        endif()
-    endif()
-endif()
+OPTIONS()
+
+CCACHE()
+
+PREPARE()
 
 message("start fetching dependency libraries")
 include(FetchContent)
-
-if(MSVC)
-add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
-add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
-endif()
-
-if(APPLE)
-    if(("${CMAKE_BUILD_TYPE}" STREQUAL "Release") OR (NOT CMAKE_OSX_ARCHITECTURES))
-        set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
-    endif()
-endif()
 
 message("fetch JUCE")
 FetchContent_Declare(

@@ -1,16 +1,18 @@
+include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/initialize.cmake)
 cmake_minimum_required(VERSION 3.19.2)
 
 project(Ss6ConverterGUI)
+
+OPTIONS()
+
+CCACHE()
+
+PREPARE()
 
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15")
 
 if((NOT CMAKE_PROJECT_NAME))
     set(CMAKE_PROJECT_NAME Ss6ConverterGUI)
-endif()
-
-if(MSVC)
-add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
-add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()
 
 # find Qt6
@@ -37,10 +39,6 @@ elseif(APPLE)
         endif()
     endif()
     set(CMAKE_PREFIX_PATH "${QT_PREFIX}")
-
-    if(("${CMAKE_BUILD_TYPE}" STREQUAL "Release") OR (NOT CMAKE_OSX_ARCHITECTURES))
-        set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
-    endif()
 else()
 # TODO: another operation systems
 endif()
