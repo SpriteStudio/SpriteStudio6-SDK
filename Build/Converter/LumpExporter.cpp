@@ -19,7 +19,7 @@ namespace LumpExporter {
 static std::string format(const char* fmt, std::va_list arg)
 {
 	char buffer[0x1000];
-	vsprintf(buffer, fmt, arg);
+	vsnprintf(buffer, 0x1000, fmt, arg);
 	return std::string(buffer);
 }
 
