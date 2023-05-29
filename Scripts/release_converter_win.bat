@@ -13,7 +13,7 @@ pushd %BASEDIR%
 rmdir /S /Q Ss6Converter
 mkdir Ss6Converter
 copy "%BUILDDIR%\Converter\build\Release\Ss6Converter.exe" Ss6Converter\
-copy "%BUILDDIR%\Ss6ConverterGUI\Ss6ConverterGUI\build\Release\Ss6ConverterGUI.exe" Ss6Converter\
+robocopy "%BUILDDIR%\Ss6ConverterGUI\Ss6ConverterGUI\build\Release" Ss6Converter /E
 powershell compress-archive Ss6Converter Ss6Converter.zip
 move /y Ss6Converter.zip "%TOOLSDIR%\"
 rmdir /S /Q Ss6Converter

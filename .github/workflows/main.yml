@@ -9,7 +9,7 @@ jobs:
         platform: [macos-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: "git submodule"
       run: git submodule update --init --recursive
     - name: prepare build environment
@@ -18,7 +18,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
-        version: '6.3.1'
+        version: '6.5.1'
     - name: "set QT_PREFIX"
       run: export QT_PREFIX="${Qt6_Dir}"
     - name: release build
@@ -40,8 +40,8 @@ jobs:
       run: git submodule update --init --recursive
     - name: install cmake
       run: |
-        curl -O https://cmake.org/files/v3.22/cmake-3.22.0-windows-x86_64.zip
-        7z x cmake-3.22.0-windows-x86_64.zip -oC:\projects\deps
+        curl -O https://cmake.org/files/v3.26/cmake-3.26.4-windows-x86_64.zip
+        7z x cmake-3.26.4-windows-x86_64.zip -oC:\projects\deps
         move C:\projects\deps\cmake-* C:\projects\deps\cmake
         $env:Path = "C:\projects\deps\cmake\bin" + ";" + $env:Path
         cmake --version
@@ -49,7 +49,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
-        version: '6.3.1'
+        version: '6.5.1'
     - name: "set QT_PREFIX"
       run: $env:QT_PREFIX = $env:Qt6_Dir
     - name: release build
