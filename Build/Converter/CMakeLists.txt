@@ -28,7 +28,7 @@ message("fetch zlib")
 FetchContent_Declare(
         zlib
         GIT_REPOSITORY https://github.com/madler/zlib
-        GIT_TAG        v1.2.11
+        GIT_TAG        v1.2.13
 )
 FetchContent_MakeAvailable(zlib)
 include_directories(${zlib_SOURCE_DIR})
@@ -37,7 +37,7 @@ message("fetch json")
 FetchContent_Declare(
     json
     GIT_REPOSITORY https://github.com/nlohmann/json.git
-    GIT_TAG        v3.7.3)
+    GIT_TAG        v3.11.2)
 FetchContent_GetProperties(json)
 if(NOT json_POPULATED)
   set(JSON_BuildTests OFF CACHE INTERNAL "") # skip json unit test
@@ -50,7 +50,7 @@ message("fetch flatbuffers")
 FetchContent_Declare(
     flatbuffers
     GIT_REPOSITORY https://github.com/google/flatbuffers.git
-    GIT_TAG        v23.3.3)
+    GIT_TAG        v23.5.26)
 if (ENABLE_FLATC)
     set(FLATBUFFERS_BUILD_TESTS OFF CACHE INTERNAL "Disable flatbuffers unit test")
     set(FLATBUFFERS_INSTALL OFF CACHE INTERNAL "Disable flatbuffers install")
@@ -109,7 +109,7 @@ message("fetch plog")
 FetchContent_Declare(
     plog
     GIT_REPOSITORY https://github.com/SergiusTheBest/plog.git
-    GIT_TAG        1.1.5)
+    GIT_TAG        1.1.9)
 FetchContent_MakeAvailable(plog)
 include_directories(${plog_SOURCE_DIR}/include)
 
@@ -117,7 +117,7 @@ message("fetch filesystem")
 FetchContent_Declare(
     filesystem
     GIT_REPOSITORY https://github.com/gulrak/filesystem.git
-    GIT_TAG        v1.5.10)
+    GIT_TAG        v1.5.14)
 FetchContent_GetProperties(filesystem)
 if(NOT filesystem_POPULATED)
   FetchContent_Populate(filesystem)
@@ -161,7 +161,7 @@ if(WIN32 OR APPLE)
     FetchContent_Declare(
             glfw
             GIT_REPOSITORY https://github.com/glfw/glfw.git
-            GIT_TAG        3.3.5)
+            GIT_TAG        3.3.8)
     FetchContent_MakeAvailable(glfw)
     include_directories(${glfw_SOURCE_DIR}/include)
     include_directories(${glfw_SOURCE_DIR}/deps)
