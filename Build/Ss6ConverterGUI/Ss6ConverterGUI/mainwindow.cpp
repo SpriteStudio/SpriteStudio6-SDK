@@ -18,13 +18,21 @@ MainWindow::MainWindow(QWidget *parent) :
     setAcceptDrops(true);
 
     cnvProcess = new QProcess(this);
+
+#if 0 // for Qt4
     // プロセスが終了した時に finished シグナル発信
     connect(cnvProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(processFinished(int, QProcess::ExitStatus )));
     // プロセスからエラー出力があって読み込み可能になったら readyReadStandardError シグナル発信
     connect(cnvProcess, SIGNAL(readyReadStandardError()), this, SLOT(processErrOutput()));
     connect(cnvProcess, SIGNAL(readAllStandardOutput()), this, SLOT(processStdOutput()));
+#else
+    QObject::connect(cnvProcess, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, &MainWindow::processFinished);
+    QObject::connect(cnvProcess, &QProcess::readyReadStandardOutput, this, &MainWindow::processStdOutput);
+    QObject::connect(cnvProcess, &QProcess::readyReadStandardError, this, &MainWindow::processErrOutput);
+#endif
+
     //ウィンドウのタイトルをつける
-    setWindowTitle("Ss6Converter GUI Ver1.1.2");
+    setWindowTitle("Ss6Converter GUI Ver1.1.3");
 
     //ウィンドウサイズ固定
     setFixedSize( QSize(734,465) );
@@ -210,7 +218,6 @@ void MainWindow::on_pushButton_convert_clicked()
             }
             else
             {
-                QString str;
                 QString execstr;
 
         #ifdef Q_OS_WIN32
@@ -227,28 +234,43 @@ void MainWindow::on_pushButton_convert_clicked()
                 execstr = str_current_path + "/Ss6Converter";
         #endif
 
+                QStringList args;
 #ifdef Q_OS_WIN32
-                str = execstr + " \"" + fileName + "\"";
+                //args.push_back("\"" + fileName + "\"");
+                args.push_back(fileName);
 #else
-                str = execstr + fileName;
+                args.push_back(fileName);
 #endif
-                str = execstr + " \"" + fileName + "\" -v";
+                args.push_back("-v");
 
                 //オプション引数
+                QString outType;
                 if ( ui->type_comboBox->currentText() == "json" )
                 {
-                    str = str + " -f json";
+                    outType = "json";
                 }
-                if ( ui->type_comboBox->currentText() == "ssfb" )
+                else if ( ui->type_comboBox->currentText() == "ssfb" )
                 {
-                    str = str + " -f ssfb";
+                    outType = "ssfb";
                 }
-                if ( ui->type_comboBox->currentText() == "sspkg" )
+                else if ( ui->type_comboBox->currentText() == "sspkg" )
                 {
-                    str = str + " -f sspkg";
+                    outType = "sspkg";
+                }
+                if (!outType.isEmpty())
+                {
+                    args.push_back("-f");
+                    args.push_back(outType);
                 }
 
-                cnvProcess->start(str); //パスと引数
+                cnvProcess->start(execstr, args);
+
+                if (cnvProcess->error() == QProcess::FailedToStart)
+                {
+                    ui->textBrowser_err->setText(cnvProcess->errorString() + execstr);
+                    convert_error = true;
+                    break;
+                }
 
                 button_enable(false);
                 convert_exec = true;  //コンバート中か
