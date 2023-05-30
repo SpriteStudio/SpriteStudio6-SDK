@@ -3,7 +3,16 @@ setlocal
 set CURDIR=%~dp0
 set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
-set DEFAULT_QT_PREFIX=C:\Qt\6.3.1\msvc2019_64
+set DEFAULT_QT_PREFIX=C:\Qt\6.5.1
+for /f "tokens=2 delims==" %%I in (
+  'wmic cpu get architecture /value'
+) do set "cpuArch=%%I"
+if "%cpuArch%"=="12" (
+  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2019_arm64
+) else (
+  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2019_64
+)
+
 if "%QT_PREFIX%" == "" (
     set QT_PREFIX=%DEFAULT_QT_PREFIX%
 )
