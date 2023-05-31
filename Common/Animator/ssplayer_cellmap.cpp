@@ -67,7 +67,7 @@ SsCelMapLinker::SsCelMapLinker(SsCellMap* cellmap, SsString filePath)
 //	DEBUG_PRINTF("TextureFile Load %s \n", fullpath.c_str());
 //	tex = SSTextureFactory::loadTexture(fullpath.c_str());
 	SsString filePathFs = SsCharConverter::convert_path_string( fullpath );
-	DEBUG_PRINTF("TextureFile Load %s \n", filePathFs.c_str());
+	//DEBUG_PRINTF("TextureFile Load %s \n", filePathFs.c_str());
 	tex = SSTextureFactory::loadTexture(filePathFs.c_str());
 
 }
