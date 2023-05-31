@@ -96,7 +96,7 @@ ISSTexture*	SSTextureFactory::loadTexture(SsString filePath)
 		if (!cached)
 		{
 			//新規
-			//DEBUG_PRINTF("New Load Texture : %s \n", filePath.c_str());
+			DEBUG_PRINTF("New Load Texture : %s \n", filePath.c_str());
 			_tex = m_myInst->create();
 			_tex->filenamepath = filePath;
  
@@ -112,7 +112,7 @@ ISSTexture*	SSTextureFactory::loadTexture(SsString filePath)
 			_tex = m_myInst->textureCache[filePath];
 			if (_tex)
 			{
-				//DEBUG_PRINTF("Texture Cached : %s \n", filePath.c_str());
+				DEBUG_PRINTF("Texture Cached : %s \n", filePath.c_str());
 				_tex->addref();
 				return _tex;
 			}
@@ -141,7 +141,7 @@ void SSTextureFactory::releaseTextureForced(ISSTexture* tex)
 	if (SSTextureFactory::isExist(tex))
 	{
 		m_myInst->textureCache[tex->getFilename()] = 0;
-		//DEBUG_PRINTF("Release Texture refCount == 0  Deleted : %s \n", tex->getFilename());
+		DEBUG_PRINTF("Release Texture refCount == 0  Deleted : %s \n", tex->getFilename());
 		delete tex;
 	}
 }
@@ -155,14 +155,14 @@ void	SSTextureFactory::releaseTexture(ISSTexture* tex)
 		if (ret == 0)
 		{
 			m_myInst->textureCache[tex->getFilename()] = 0;
-			//DEBUG_PRINTF("Release Texture refCount == 0  Deleted : %s \n", tex->getFilename());
+			DEBUG_PRINTF("Release Texture refCount == 0  Deleted : %s \n", tex->getFilename());
 			delete tex;
 		}
 		else {
-			//DEBUG_PRINTF("Release Texture sub refCount : %s \n", tex->getFilename());
+			DEBUG_PRINTF("Release Texture sub refCount : %s \n", tex->getFilename());
 		}
 	}else{
-		//DEBUG_PRINTF("The specified texture is not under management. \n");
+		DEBUG_PRINTF("The specified texture is not under management. \n");
 	}
 }
 
