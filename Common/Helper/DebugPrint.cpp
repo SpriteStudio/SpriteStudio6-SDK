@@ -18,7 +18,7 @@ namespace SpriteStudio
 
 void DEBUG_PRINTF( const char* strFormat, ...   )
 {
-#if 1
+#if 0
 	char strBuffer[1024];
 
 	va_list arglist;
