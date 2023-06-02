@@ -17,8 +17,8 @@ jobs:
       shell: bash
       run: ${SCCACHE_PATH} --show-stats
     - uses: actions/checkout@v3
-    - name: "git submodule"
-      run: git submodule update --init --recursive
+      with:
+        submodules: 'recursive'
     - name: prepare build environment
       run: |
         brew install glfw3
@@ -47,15 +47,18 @@ jobs:
     steps:
     - name: Run sccache-cache
       uses: mozilla-actions/sccache-action@v0.0.3
+    - name: Run sccache stat for check
+      shell: cmd
+      run: ${SCCACHE_PATH} --show-stats
     - uses: actions/checkout@v3
-    - name: "git submodule"
-      run: git submodule update --init --recursive
-    - name: install cmake
+      with:
+        submodules: 'recursive'
+    - name: Install cmake
+      uses: jwlawson/actions-setup-cmake@v1.13
+      with:
+        cmake-version: '3.26.4'
+    - name: Check cmake
       run: |
-        curl -O https://cmake.org/files/v3.26/cmake-3.26.4-windows-x86_64.zip
-        7z x cmake-3.26.4-windows-x86_64.zip -oC:\projects\deps
-        move C:\projects\deps\cmake-* C:\projects\deps\cmake
-        $env:Path = "C:\projects\deps\cmake\bin" + ";" + $env:Path
         cmake --version
         cmake -h
     - name: Install Qt
