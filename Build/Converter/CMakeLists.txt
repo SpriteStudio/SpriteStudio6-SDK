@@ -34,6 +34,8 @@ FetchContent_MakeAvailable(zlib)
 include_directories(${zlib_SOURCE_DIR})
 
 message("fetch json")
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+set(JSON_Install OFF CACHE INTERNAL "")
 FetchContent_Declare(
     json
     GIT_REPOSITORY https://github.com/nlohmann/json.git
@@ -106,6 +108,8 @@ endif()
 
 
 message("fetch plog")
+set(PLOG_BUILD_SAMPLES OFF CACHE INTERNAL "")
+set(PLOG_INSTALL OFF CACHE INTERNAL "")
 FetchContent_Declare(
     plog
     GIT_REPOSITORY https://github.com/SergiusTheBest/plog.git
@@ -114,6 +118,9 @@ FetchContent_MakeAvailable(plog)
 include_directories(${plog_SOURCE_DIR}/include)
 
 message("fetch filesystem")
+set(GHC_FILESYSTEM_BUILD_EXAMPLES OFF CACHE INTERNAL "")
+set(GHC_FILESYSTEM_BUILD_TESTING OFF CACHE INTERNAL "")
+set(GHC_FILESYSTEM_WITH_INSTALL  OFF CACHE INTERNAL "")
 FetchContent_Declare(
     filesystem
     GIT_REPOSITORY https://github.com/gulrak/filesystem.git
@@ -158,6 +165,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper)
 # for win & mac suport thumbnail
 if(WIN32 OR APPLE)
     message("fetch glfw")
+    set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "")
+    set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "")
+    set(GLFW_BUILD_DOCS OFF CACHE INTERNAL "")
+    set(GLFW_INSTALL OFF CACHE INTERNAL "")
+    set(GLFW_VULKAN_STATIC OFF CACHE INTERNAL "")
     FetchContent_Declare(
             glfw
             GIT_REPOSITORY https://github.com/glfw/glfw.git
