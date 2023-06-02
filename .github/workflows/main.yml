@@ -8,7 +8,14 @@ jobs:
       matrix:
         platform: [macos-latest]
     runs-on: ${{ matrix.platform }}
+    env:
+      SCCACHE_GHA_ENABLED: "true"
     steps:
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.3
+    - name: Run sccache stat for check
+      shell: bash
+      run: ${SCCACHE_PATH} --show-stats
     - uses: actions/checkout@v2
     - name: "git submodule"
       run: git submodule update --init --recursive
@@ -34,8 +41,12 @@ jobs:
       matrix:
         platform: [windows-latest]
     runs-on: ${{ matrix.platform }}
+    env:
+      SCCACHE_GHA_ENABLED: "true"
     steps:
-    - uses: actions/checkout@v1
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.3
+    - uses: actions/checkout@v2
     - name: "git submodule"
       run: git submodule update --init --recursive
     - name: install cmake
