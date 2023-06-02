@@ -16,22 +16,23 @@ jobs:
     - name: Run sccache stat for check
       shell: bash
       run: ${SCCACHE_PATH} --show-stats
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: "git submodule"
       run: git submodule update --init --recursive
     - name: prepare build environment
       run: |
         brew install glfw3
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: '6.5.1'
+        cache: 'true'
     - name: "set QT_PREFIX"
       run: export QT_PREFIX="${Qt6_Dir}"
     - name: release build
       run: ./Scripts/release_macos.sh
     - name: Upload Tools
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: macos
         path: Tools
@@ -46,7 +47,7 @@ jobs:
     steps:
     - name: Run sccache-cache
       uses: mozilla-actions/sccache-action@v0.0.3
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: "git submodule"
       run: git submodule update --init --recursive
     - name: install cmake
@@ -58,16 +59,17 @@ jobs:
         cmake --version
         cmake -h
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: '6.5.1'
+        cache: true
     - name: "set QT_PREFIX"
       run: $env:QT_PREFIX = $env:Qt6_Dir
     - name: release build
       shell: cmd
       run: Scripts\release_win.bat
     - name: Upload Tools
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: windows
         path: Tools
