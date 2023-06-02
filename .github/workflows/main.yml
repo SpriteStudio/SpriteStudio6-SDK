@@ -47,9 +47,6 @@ jobs:
     steps:
     - name: Run sccache-cache
       uses: mozilla-actions/sccache-action@v0.0.3
-    - name: Run sccache stat for check
-      shell: cmd
-      run: ${SCCACHE_PATH} --show-stats
     - uses: actions/checkout@v3
       with:
         submodules: 'recursive'
