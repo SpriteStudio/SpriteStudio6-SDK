@@ -10,7 +10,6 @@ jobs:
     runs-on: ${{ matrix.platform }}
     env:
       SCCACHE_GHA_ENABLED: "true"
-      SCCACHE_CACHE_SIZE: "1G"
       SCCACHE_CACHE_MULTIARCH: "1"
     steps:
     - name: Run sccache-cache
@@ -43,7 +42,6 @@ jobs:
     runs-on: ${{ matrix.platform }}
     env:
       SCCACHE_GHA_ENABLED: "true"
-      SCCACHE_CACHE_SIZE: "1G"
       SCCACHE_CACHE_MULTIARCH: "1"
     steps:
     - name: Run sccache-cache
