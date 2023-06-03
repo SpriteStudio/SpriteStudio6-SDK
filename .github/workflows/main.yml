@@ -12,6 +12,8 @@ jobs:
       SCCACHE_GHA_ENABLED: "true"
       SCCACHE_CACHE_MULTIARCH: "1"
     steps:
+    - name: Setup Ninja
+      uses: ashutoshvarma/setup-ninja@master
     - name: Run sccache-cache
       uses: mozilla-actions/sccache-action@v0.0.3
     - uses: actions/checkout@v3
@@ -44,6 +46,8 @@ jobs:
       SCCACHE_GHA_ENABLED: "true"
       SCCACHE_CACHE_MULTIARCH: "1"
     steps:
+    - name: Setup Ninja
+      uses: ashutoshvarma/setup-ninja@master
 #    - name: Run sccache-cache
 #      uses: mozilla-actions/sccache-action@v0.0.3
     - uses: actions/checkout@v3
@@ -66,7 +70,7 @@ jobs:
       run: echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
     - name: release build
       shell: cmd
-      run: Scripts\release_win_ninja.bat
+      run: Scripts\release_win.bat
     - name: Upload Tools
       uses: actions/upload-artifact@v3
       with:
