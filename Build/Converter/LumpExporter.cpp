@@ -9,7 +9,6 @@
 #include "sscharconverter.h"
 #include "picojson.h"
 #include "flatbuffers/flatbuffers.h"
-#include "flatbuffers/util.h"
 #include "ssfb_generated.h"
 #include "Lump.h"
 
@@ -19,7 +18,7 @@ namespace LumpExporter {
 static std::string format(const char* fmt, std::va_list arg)
 {
 	char buffer[0x1000];
-	vsprintf(buffer, fmt, arg);
+	vsnprintf(buffer, 0x1000, fmt, arg);
 	return std::string(buffer);
 }
 
@@ -712,30 +711,82 @@ private:
 	std::vector<flatbuffers::Offset<ss::ssfb::AnimePackData>> m_ssfbAnimePacks;
 	std::vector<flatbuffers::Offset<ss::ssfb::EffectFile>> m_ssfbEffectFileList;
 
-	std::vector<struct ss::ssfb::CellMapT> m_cellMaps;
+    using CellMapCompare = std::function<bool(const struct ss::ssfb::CellMapT&, const struct ss::ssfb::CellMapT&)>;
+    CellMapCompare cellMapCompare = [](const struct ss::ssfb::CellMapT& lhs, const struct ss::ssfb::CellMapT& rhs) {
+        return std::tie(lhs.name, lhs.imagePath, lhs.index, lhs.wrapmode, lhs.filtermode)
+               <
+               std::tie(rhs.name, rhs.imagePath, rhs.index, rhs.wrapmode, rhs.filtermode);
+    };
+    std::map<struct ss::ssfb::CellMapT, flatbuffers::Offset<ss::ssfb::CellMap>, CellMapCompare> m_ssfbCellMapsMap{cellMapCompare};
 	std::vector<flatbuffers::Offset<ss::ssfb::CellMap>> m_ssfbCellMaps;
 
-	std::vector<struct ss::ssfb::AnimationInitialDataT> m_animationInitialDataVec;
+    using AnimationInitialDataCompare = std::function<bool(const struct ss::ssfb::AnimationInitialDataT&, const struct ss::ssfb::AnimationInitialDataT&)>;
+    AnimationInitialDataCompare animationInitialDataCompare = [](const struct ss::ssfb::AnimationInitialDataT& lhs, const struct ss::ssfb::AnimationInitialDataT& rhs) {
+        return std::tie(lhs.index, lhs.lowflag, lhs.highflag, lhs.priority, lhs.cellIndex, lhs.opacity, lhs.localopacity, lhs.masklimen, lhs.positionX, lhs.positionY,
+                        lhs.positionZ, lhs.pivotX, lhs.pivotY, lhs.rotationX, lhs.rotationY, lhs.rotationZ, lhs.scaleX, lhs.scaleY, lhs.localscaleX, lhs.localscaleY, lhs.size_X,
+                        lhs.size_Y, lhs.uv_move_X, lhs.uv_move_Y, lhs.uv_rotation, lhs.uv_scale_X, lhs.uv_scale_Y, lhs.boundingRadius, lhs.instanceValue_curKeyframe, lhs.instanceValue_startFrame,
+                        lhs.instanceValue_endFrame, lhs.instanceValue_loopNum, lhs.instanceValue_speed, lhs.instanceValue_loopflag, lhs.effectValue_curKeyframe, lhs.effectValue_startTime, lhs.effectValue_speed, lhs.effectValue_loopflag)
+                        <
+               std::tie(rhs.index, rhs.lowflag, rhs.highflag, rhs.priority, rhs.cellIndex, rhs.opacity, rhs.localopacity, rhs.masklimen, rhs.positionX, rhs.positionY,
+                        rhs.positionZ, rhs.pivotX, rhs.pivotY, rhs.rotationX, rhs.rotationY, rhs.rotationZ, rhs.scaleX, rhs.scaleY, rhs.localscaleX, rhs.localscaleY, rhs.size_X,
+                        rhs.size_Y, rhs.uv_move_X, rhs.uv_move_Y, rhs.uv_rotation, rhs.uv_scale_X, rhs.uv_scale_Y, rhs.boundingRadius, rhs.instanceValue_curKeyframe, rhs.instanceValue_startFrame,
+                        rhs.instanceValue_endFrame, rhs.instanceValue_loopNum, rhs.instanceValue_speed, rhs.instanceValue_loopflag, rhs.effectValue_curKeyframe, rhs.effectValue_startTime, rhs.effectValue_speed, rhs.effectValue_loopflag);
+    };
+    std::map<struct ss::ssfb::AnimationInitialDataT, flatbuffers::Offset<ss::ssfb::AnimationInitialData>, AnimationInitialDataCompare> m_ssfbAnimationInitialDataMap{animationInitialDataCompare};
 	std::vector<flatbuffers::Offset<ss::ssfb::AnimationInitialData>> m_ssfbAnimationInitialDataVec;
 
-	std::vector<struct ss::ssfb::PartDataT> m_partDataVec;
+    using PartDataCompare = std::function<bool(const struct ss::ssfb::PartDataT&, const struct ss::ssfb::PartDataT&)>;
+    PartDataCompare partDataCompare = [](const struct ss::ssfb::PartDataT& lhs, const struct ss::ssfb::PartDataT& rhs) {
+        return std::tie(lhs.name, lhs.index, lhs.parentIndex, lhs.type, lhs.boundsType, lhs.alphaBlendType, lhs.refname, lhs.effectfilename, lhs.colorLabel, lhs.maskInfluence)
+               <
+               std::tie(rhs.name, rhs.index, rhs.parentIndex, rhs.type, rhs.boundsType, rhs.alphaBlendType, rhs.refname, rhs.effectfilename, rhs.colorLabel, rhs.maskInfluence);
+    };
+    std::map<struct ss::ssfb::PartDataT, flatbuffers::Offset<ss::ssfb::PartData>, PartDataCompare> m_ssfbPartDataMap{partDataCompare};
 	std::vector<flatbuffers::Offset<ss::ssfb::PartData>> m_ssfbPartDataVec;
 
-	std::vector<std::vector<uint32_t>> m_uint32VecVec;
+	using VectorUint32Compare = std::function<bool(const std::vector<uint32_t>&, const std::vector<uint32_t>&)>;
+    VectorUint32Compare vectorUint32Compare = [](const std::vector<uint32_t>& lhs, const std::vector<uint32_t>& rhs) {
+        return lhs < rhs;
+    };
+	std::map<std::vector<uint32_t>, flatbuffers::Offset<flatbuffers::Vector<uint32_t>>, VectorUint32Compare> m_ssfbUint32VecMap{vectorUint32Compare};
 	std::vector<flatbuffers::Offset<flatbuffers::Vector<uint32_t>>> m_ssfbUint32VecVec;
 
-	std::vector<std::vector<float>> m_floatVecVec;
+	using VectorFloatCompare = std::function<bool(const std::vector<float>&, const std::vector<float>&)>;
+    VectorFloatCompare vectorFloatCompare = [](const std::vector<float>& lhs, const std::vector<float>& rhs) {
+        return lhs < rhs;
+    };
+	std::map<std::vector<float>, flatbuffers::Offset<flatbuffers::Vector<float>>, VectorFloatCompare> m_ssfbFloatVecMap{vectorFloatCompare};
 	std::vector<flatbuffers::Offset<flatbuffers::Vector<float>>> m_ssfbFloatVecVec;
 
-	std::vector<struct ss::ssfb::meshDataUVT> m_meshDataUVVec;
+	using meshDataUVCompare = std::function<bool(const struct ss::ssfb::meshDataUVT&, const struct ss::ssfb::meshDataUVT&)>;
+    meshDataUVCompare ddd = [](const struct ss::ssfb::meshDataUVT& lhs, const struct ss::ssfb::meshDataUVT& rhs) {
+        return lhs.uv < rhs.uv;
+    };
+    std::map<struct ss::ssfb::meshDataUVT, flatbuffers::Offset<ss::ssfb::meshDataUV>, meshDataUVCompare> m_ssfbMeshDataUVMap{ddd};
 	std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> m_ssfbMeshDataUVVec;
 
-	std::vector<struct ss::ssfb::meshDataIndicesT> m_meshDataIndicesVec;
+    using meshDataIndicesCompare = std::function<bool(const struct ss::ssfb::meshDataIndicesT&, const struct ss::ssfb::meshDataIndicesT&)>;
+    meshDataIndicesCompare eee = [](const struct ss::ssfb::meshDataIndicesT& lhs, const struct ss::ssfb::meshDataIndicesT& rhs) {
+        return lhs.indices < rhs.indices;
+    };
+	std::map<struct ss::ssfb::meshDataIndicesT, flatbuffers::Offset<ss::ssfb::meshDataIndices>, meshDataIndicesCompare> m_ssfbMeshDataIndicesMap{eee};
+
 	std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> m_ssfbMeshDataIndicesVec;
 
-	std::vector<struct ss::ssfb::partStateT> m_partStateVec;
+	using partStateCompare = std::function<bool(const struct ss::ssfb::partStateT&, const struct ss::ssfb::partStateT&)>;
+    partStateCompare ggg = [](const struct ss::ssfb::partStateT& lhs, const struct ss::ssfb::partStateT& rhs) {
+        return std::tie(lhs.index, lhs.flag1, lhs.flag2, lhs.data)
+               <
+               std::tie(rhs.index, rhs.flag1, rhs.flag2, rhs.data);
+    };
+    std::map<struct ss::ssfb::partStateT, flatbuffers::Offset<ss::ssfb::partState>, partStateCompare> m_ssfbPartStateMap{ggg};
 	std::vector<flatbuffers::Offset<ss::ssfb::partState>> m_ssfbPartStateVec;
 
+    using frameDataIndexCompare = std::function<bool(const struct ss::ssfb::frameDataIndexT&, const struct ss::ssfb::frameDataIndexT&)>;
+    frameDataIndexCompare hhh = [](const struct ss::ssfb::frameDataIndexT& lhs, const struct ss::ssfb::frameDataIndexT& rhs) {
+        return lhs.states < rhs.states;
+    };
+    std::map<struct ss::ssfb::frameDataIndexT, flatbuffers::Offset<ss::ssfb::frameDataIndex>, frameDataIndexCompare> m_ssfbFrameDataIndexMap{hhh};
 	std::vector<struct ss::ssfb::frameDataIndexT> m_frameDataIndexVec;
 	std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> m_ssfbFrameDataIndexVec;
 
@@ -802,23 +853,21 @@ private:
 		// 5:reserved(s16)
 
 		// search same cellMap from cellMap caches.
-		auto result = std::find(m_cellMaps.begin(), m_cellMaps.end(), cellMapT);
-		if (result == m_cellMaps.end()) {
-			// not found
-
-			// create ssfb cellMap
-			auto ssfbCellMapName = m_ssfbBuilder.CreateSharedString(cellMapT.name);
-			auto ssfbCellMapImagePath = m_ssfbBuilder.CreateSharedString(cellMapT.imagePath);
-			cellMap = ss::ssfb::CreateCellMap(m_ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath,
-											  cellMapT.index, cellMapT.wrapmode, cellMapT.filtermode);
-			// cache ssfb cellMap
-			m_cellMaps.push_back(cellMapT);
-			m_ssfbCellMaps.push_back(cellMap);
-		} else {
-			// found
-			auto idx = std::distance(m_cellMaps.begin(), result);
-			cellMap = m_ssfbCellMaps[idx];
-		}
+        auto it = m_ssfbCellMapsMap.find(cellMapT);
+        if (it == m_ssfbCellMapsMap.end()) {
+            // not found
+            // create ssfb cellMap
+            auto ssfbCellMapName = m_ssfbBuilder.CreateSharedString(cellMapT.name);
+            auto ssfbCellMapImagePath = m_ssfbBuilder.CreateSharedString(cellMapT.imagePath);
+            cellMap = ss::ssfb::CreateCellMap(m_ssfbBuilder, ssfbCellMapName, ssfbCellMapImagePath,
+                                              cellMapT.index, cellMapT.wrapmode, cellMapT.filtermode);
+            // cache ssfb cellMap
+            m_ssfbCellMapsMap[cellMapT] = cellMap;
+            m_ssfbCellMaps.push_back(cellMap);
+        } else {
+            // found
+            cellMap = it->second;
+        }
 
 		return cellMap;
 	}
@@ -874,8 +923,9 @@ private:
 		animationInitialDataT.effectValue_loopflag = GETS32(AnimationInitialDataItemVec[39]);
 
 		// search same cellMap from cellMap caches.
-		auto result = std::find(m_animationInitialDataVec.begin(), m_animationInitialDataVec.end(), animationInitialDataT);
-		if (result == m_animationInitialDataVec.end()) {
+        auto result = m_ssfbAnimationInitialDataMap.find(animationInitialDataT);
+		// auto result = std::find(m_animationInitialDataVec.begin(), m_animationInitialDataVec.end(), animationInitialDataT);
+		if (result == m_ssfbAnimationInitialDataMap.end()) {
 			// not found
 
 			// create ssfb partData
@@ -920,12 +970,11 @@ private:
 																		animationInitialDataT.effectValue_speed,
 																		animationInitialDataT.effectValue_loopflag);
 			// cache ssfb cellMap
-			m_animationInitialDataVec.push_back(animationInitialDataT);
+            m_ssfbAnimationInitialDataMap[animationInitialDataT] = animationInitialData;
 			m_ssfbAnimationInitialDataVec.push_back(animationInitialData);
 		} else {
 			// found
-			auto idx = std::distance(m_animationInitialDataVec.begin(), result);
-			animationInitialData = m_ssfbAnimationInitialDataVec[idx];
+			animationInitialData = m_ssfbAnimationInitialDataMap[animationInitialDataT];
 		}
 
 		return animationInitialData;
@@ -950,8 +999,8 @@ private:
 		partDataT.maskInfluence = GETS16(partDataItemVec[10]);
 
 		// search same cellMap from cellMap caches.
-		auto result = std::find(m_partDataVec.begin(), m_partDataVec.end(), partDataT);
-		if (result == m_partDataVec.end()) {
+        auto result = m_ssfbPartDataMap.find(partDataT);
+		if (result == m_ssfbPartDataMap.end()) {
 			// not found
 
 			// create ssfb partData
@@ -964,101 +1013,97 @@ private:
 												partDataT.boundsType, partDataT.alphaBlendType, ssfbRefname, ssfbEffectfilename, ssfbColorLabel,
 												partDataT.maskInfluence);
 			// cache ssfb cellMap
-			m_partDataVec.push_back(partDataT);
+			m_ssfbPartDataMap[partDataT] = partData;
 			m_ssfbPartDataVec.push_back(partData);
 		} else {
 			// found
-			auto idx = std::distance(m_partDataVec.begin(), result);
-			partData = m_ssfbPartDataVec[idx];
+			partData = result->second;
 		}
 
 		return partData;
 	}
 
 	flatbuffers::Offset<flatbuffers::Vector<uint32_t>> createSharedUint32Vec(const std::vector<uint32_t> &vec) {
-		flatbuffers::Offset<flatbuffers::Vector<uint32_t>> ssfbVec;
+        flatbuffers::Offset<flatbuffers::Vector<uint32_t>> ssfbVec;
 
-		auto result = std::find(m_uint32VecVec.begin(), m_uint32VecVec.end(), vec);
-		if (result == m_uint32VecVec.end()) {
-			// not found
+        auto result = m_ssfbUint32VecMap.find(vec);
+        if (result == m_ssfbUint32VecMap.end()) {
+            // not found
 
-			// create ssfb vec
-			ssfbVec = m_ssfbBuilder.CreateVector(vec);
+            // create ssfb vec
+            ssfbVec = m_ssfbBuilder.CreateVector(vec);
 
-			// cache ssfb vec
-			m_uint32VecVec.push_back(vec);
-			m_ssfbUint32VecVec.push_back(ssfbVec);
-		} else {
-			auto idx = std::distance(m_uint32VecVec.begin(), result);
-			ssfbVec = m_ssfbUint32VecVec[idx];
-		}
+            // cache ssfb vec
+            m_ssfbUint32VecMap[vec] = ssfbVec;
+            m_ssfbUint32VecVec.push_back(ssfbVec);
+        } else {
+            ssfbVec = m_ssfbUint32VecMap[vec];
+        }
 
-		return ssfbVec;
-	}
+        return ssfbVec;
+    }
 
 	flatbuffers::Offset<flatbuffers::Vector<float>> createSharedFloatVec(const std::vector<float> &vec) {
 		flatbuffers::Offset<flatbuffers::Vector<float>> ssfbVec;
 
-		auto result = std::find(m_floatVecVec.begin(), m_floatVecVec.end(), vec);
-		if (result == m_floatVecVec.end()) {
+		auto result = m_ssfbFloatVecMap.find(vec);
+		// auto result = std::find(m_floatVecVec.begin(), m_floatVecVec.end(), vec);
+		if (result == m_ssfbFloatVecMap.end()) {
 			// not found
 
 			// create ssfb vec
 			ssfbVec = m_ssfbBuilder.CreateVector(vec);
 
 			// cache ssfb vec
-			m_floatVecVec.push_back(vec);
+            m_ssfbFloatVecMap[vec] = ssfbVec;
 			m_ssfbFloatVecVec.push_back(ssfbVec);
 		} else {
-			auto idx = std::distance(m_floatVecVec.begin(), result);
-			ssfbVec = m_ssfbFloatVecVec[idx];
+			ssfbVec = m_ssfbFloatVecMap[vec];
 		}
 
 		return ssfbVec;
 	}
 
 	flatbuffers::Offset<ss::ssfb::meshDataUV> createSharedMeshDataUV(const std::vector<float> &uvPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &uv) {
-		flatbuffers::Offset<ss::ssfb::meshDataUV> meshDataUV;
+        flatbuffers::Offset<ss::ssfb::meshDataUV> meshDataUV;
 
-		struct ss::ssfb::meshDataUVT meshDataUVT;
-		meshDataUVT.uv = uvPrimitive;
+        struct ss::ssfb::meshDataUVT meshDataUVT;
+        meshDataUVT.uv = uvPrimitive;
 
-		auto result = std::find(m_meshDataUVVec.begin(), m_meshDataUVVec.end(), meshDataUVT);
-		if (result == m_meshDataUVVec.end()) {
-			// not found
+        auto result = m_ssfbMeshDataUVMap.find(meshDataUVT);
+        if (result == m_ssfbMeshDataUVMap.end()) {
+            // not found
 
-			// create ssfb vec
-			meshDataUV = ss::ssfb::CreatemeshDataUV(m_ssfbBuilder, uv);
+            // create ssfb vec
+            meshDataUV = ss::ssfb::CreatemeshDataUV(m_ssfbBuilder, uv);
 
-			// cache ssfb vec
-			m_meshDataUVVec.push_back(meshDataUVT);
-			m_ssfbMeshDataUVVec.push_back(meshDataUV);
-		} else {
-			auto idx = std::distance(m_meshDataUVVec.begin(), result);
-			meshDataUV = m_ssfbMeshDataUVVec[idx];
-		}
+            // cache ssfb vec
+            m_ssfbMeshDataUVMap[meshDataUVT] = meshDataUV;
+            m_ssfbMeshDataUVVec.push_back(meshDataUV);
+        } else {
+            meshDataUV = m_ssfbMeshDataUVMap[meshDataUVT];
+        }
 
-		return meshDataUV;
-	}
+        return meshDataUV;
+    }
 
 	flatbuffers::Offset<ss::ssfb::meshDataIndices> createSharedMeshDataIndices(const std::vector<float> &indicesPrimitive, const flatbuffers::Offset<flatbuffers::Vector<float>> &indices) {
 		flatbuffers::Offset<ss::ssfb::meshDataIndices> meshDataIndices;
 
 		struct ss::ssfb::meshDataIndicesT meshDataIndicesT;
 		meshDataIndicesT.indices = indicesPrimitive;
-		auto result = std::find(m_meshDataIndicesVec.begin(), m_meshDataIndicesVec.end(), meshDataIndicesT);
-		if (result == m_meshDataIndicesVec.end()) {
+		auto result = m_ssfbMeshDataIndicesMap.find(meshDataIndicesT);
+		if (result == m_ssfbMeshDataIndicesMap.end()) {
 			// not found
 
 			// create ssfb vec
 			meshDataIndices = ss::ssfb::CreatemeshDataIndices(m_ssfbBuilder, indices);
 
 			// cache ssfb vec
-			m_meshDataIndicesVec.push_back(meshDataIndicesT);
+			m_ssfbMeshDataIndicesMap[meshDataIndicesT] = meshDataIndices;
 			m_ssfbMeshDataIndicesVec.push_back(meshDataIndices);
 		} else {
-			auto idx = std::distance(m_meshDataIndicesVec.begin(), result);
-			meshDataIndices = m_ssfbMeshDataIndicesVec[idx];
+            meshDataIndices = m_ssfbMeshDataIndicesMap[meshDataIndicesT];
 		}
 
 		return meshDataIndices;
@@ -1066,28 +1111,29 @@ private:
 	
 	flatbuffers::Offset<ss::ssfb::partState>
 	createSharedPartState(int16_t index, uint32_t flag1, uint32_t flag2, const std::vector<uint32_t> &dataPrimitive) {
-		flatbuffers::Offset<ss::ssfb::partState> partState;
-		
-		struct ss::ssfb::partStateT partStateT;
-		partStateT.index = index;
-		partStateT.flag1 = flag1;
-		partStateT.flag2 = flag2;
-		partStateT.data = dataPrimitive;
-		auto result = std::find(m_partStateVec.begin(), m_partStateVec.end(), partStateT);
-		if (result == m_partStateVec.end()) {
-			// not found
-			auto serializePartStateData = createSharedUint32Vec(dataPrimitive);
-			partState = ss::ssfb::CreatepartState(m_ssfbBuilder, partStateT.index, partStateT.flag1, partStateT.flag2, serializePartStateData);
+        flatbuffers::Offset<ss::ssfb::partState> partState;
 
-			m_partStateVec.push_back(partStateT);
-			m_ssfbPartStateVec.push_back(partState);
-		} else {
-			auto idx = std::distance(m_partStateVec.begin(), result);
-			partState = m_ssfbPartStateVec[idx];
-		}
+        struct ss::ssfb::partStateT partStateT;
+        partStateT.index = index;
+        partStateT.flag1 = flag1;
+        partStateT.flag2 = flag2;
+        partStateT.data = dataPrimitive;
+        auto result = m_ssfbPartStateMap.find(partStateT);
+        // auto result = std::find(m_partStateVec.begin(), m_partStateVec.end(), partStateT);
+        if (result == m_ssfbPartStateMap.end()) {
+            // not found
+            auto serializePartStateData = createSharedUint32Vec(dataPrimitive);
+            partState = ss::ssfb::CreatepartState(m_ssfbBuilder, partStateT.index, partStateT.flag1, partStateT.flag2,
+                                                  serializePartStateData);
 
-		return partState;
-	}
+            m_ssfbPartStateMap[partStateT] = partState;
+            m_ssfbPartStateVec.push_back(partState);
+        } else {
+            partState = m_ssfbPartStateMap[partStateT];
+        }
+
+        return partState;
+    }
 
 	flatbuffers::Offset<ss::ssfb::frameDataIndex> createSharedFrameDataIndex(const std::vector<ss::ssfb::partStateT> &statesPrimitive) {
 		flatbuffers::Offset<ss::ssfb::frameDataIndex> frameDataIndex;
@@ -1102,7 +1148,7 @@ private:
 			frameDataIndexT1.states.push_back(std::move(p));
 		}
 		auto result = std::find_if(m_frameDataIndexVec.begin(), m_frameDataIndexVec.end(), [&frameDataIndexT1](const struct ss::ssfb::frameDataIndexT &item) {
-			if(frameDataIndexT1.states.size() != item.states.size())
+            if(frameDataIndexT1.states.size() != item.states.size())
 				return false;
 
 			int idx = 0;
