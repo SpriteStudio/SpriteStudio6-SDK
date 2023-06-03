@@ -20,7 +20,11 @@ pushd ${BUILDDIR}/Viewer2
 /bin/rm -rf cmakeBuild
 mkdir cmakeBuild
 pushd cmakeBuild
-cmake .. -DCMAKE_BUILD_TYPE=${BUILDTYPE}
+if type "ninja" > /dev/null; then
+    cmake -G Ninja -DCMAKE_BUILD_TYPE=${BUILDTYPE} ..
+else
+    cmake -DCMAKE_BUILD_TYPE=${BUILDTYPE} ..
+fi
 cmake --build . --parallel
 popd > /dev/null # cmakeBuild
 popd > /dev/null # ${BUILDDIR}/Viewer2

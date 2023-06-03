@@ -32,7 +32,11 @@ pushd Ss6ConverterGUI/Ss6ConverterGUI
 /bin/rm -rf build
 /bin/mkdir build
 pushd build > /dev/null
-cmake -DCMAKE_BUILD_TYPE=${BUILDTYPE} ..
+if type "ninja" > /dev/null; then
+    cmake -G Ninja -DCMAKE_BUILD_TYPE=${BUILDTYPE} ..
+else
+    cmake -DCMAKE_BUILD_TYPE=${BUILDTYPE} ..
+fi
 cmake --build . --parallel
 
 popd > /dev/null # build
