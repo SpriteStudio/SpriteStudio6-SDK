@@ -44,8 +44,8 @@ jobs:
       SCCACHE_GHA_ENABLED: "true"
       SCCACHE_CACHE_MULTIARCH: "1"
     steps:
-    - name: Run sccache-cache
-      uses: mozilla-actions/sccache-action@v0.0.3
+#    - name: Run sccache-cache
+#      uses: mozilla-actions/sccache-action@v0.0.3
     - uses: actions/checkout@v3
       with:
         submodules: 'recursive'
