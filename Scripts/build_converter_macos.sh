@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
 SCRIPTDIR=`dirname $0`
 SCRIPTDIR=`cd $SCRIPTDIR && pwd -P`
@@ -23,7 +23,11 @@ pushd Converter
 /bin/rm -rf build
 /bin/mkdir build
 pushd build
-cmake -DCMAKE_BUILD_TYPE=${BUILDTYPE} ..
+if type "ninja" > /dev/null; then
+    cmake -G Ninja -DCMAKE_BUILD_TYPE=${BUILDTYPE} ..
+else
+    cmake -DCMAKE_BUILD_TYPE=${BUILDTYPE} ..
+fi
 cmake --build . --parallel
 ctest .
 popd > /dev/null # build
