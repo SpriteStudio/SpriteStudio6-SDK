@@ -11,11 +11,20 @@ if not "%1" == "" (
     set BUILD_TYPE=%1
 )
 
+for /f "tokens=2 delims==" %%I in (
+  'wmic cpu get architecture /value'
+) do set "cpuArch=%%I"
+if "%cpuArch%"=="12" (
+  set ARCH=arm64
+) else (
+  set ARCH=x64
+)
+
 pushd %BUILDDIR%\Viewer2
 rmdir /S /Q cmakeBuild
 mkdir cmakeBuild
 pushd cmakeBuild
-cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
+cmake -A %ARCH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
 cmake --build . --target ALL_BUILD --parallel -- /p:Configuration=%BUILD_TYPE% || exit /b 1
 popd
 popd
