@@ -12,8 +12,6 @@ jobs:
       SCCACHE_GHA_ENABLED: "true"
       SCCACHE_CACHE_MULTIARCH: "1"
     steps:
-    - name: Setup Ninja
-      uses: ashutoshvarma/setup-ninja@master
     - name: Run sccache-cache
       uses: mozilla-actions/sccache-action@v0.0.3
     - uses: actions/checkout@v3
@@ -21,6 +19,7 @@ jobs:
         submodules: 'recursive'
     - name: prepare build environment
       run: |
+        brew install ninja
         brew install glfw3
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
