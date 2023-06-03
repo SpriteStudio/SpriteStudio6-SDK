@@ -1,4 +1,4 @@
-#!/bin/sh -xe
+#!/bin/bash -e
 
 
 if [ -z ${QT_PREFIX+x} ]; then
