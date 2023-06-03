@@ -33,6 +33,7 @@ jobs:
       with:
         name: macos
         path: Tools
+      if: startsWith(github.ref, 'refs/tags/')
 
   win_build:
     strategy:
@@ -70,3 +71,4 @@ jobs:
       with:
         name: windows
         path: Tools
+      if: startsWith(github.ref, 'refs/tags/')
