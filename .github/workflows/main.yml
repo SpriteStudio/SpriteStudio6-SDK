@@ -24,9 +24,8 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: '6.5.1'
-        cache: 'true'
     - name: "set QT_PREFIX"
-      run: export QT_PREFIX="${Qt6_Dir}"
+      run: echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
     - name: release build
       run: ./Scripts/release_macos.sh
     - name: Upload Tools
@@ -34,6 +33,7 @@ jobs:
       with:
         name: macos
         path: Tools
+      if: startsWith(github.ref, 'refs/tags/')
 
   win_build:
     strategy:
@@ -44,8 +44,8 @@ jobs:
       SCCACHE_GHA_ENABLED: "true"
       SCCACHE_CACHE_MULTIARCH: "1"
     steps:
-    - name: Run sccache-cache
-      uses: mozilla-actions/sccache-action@v0.0.3
+#    - name: Run sccache-cache
+#      uses: mozilla-actions/sccache-action@v0.0.3
     - uses: actions/checkout@v3
       with:
         submodules: 'recursive'
@@ -61,14 +61,15 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: '6.5.1'
-        cache: true
     - name: "set QT_PREFIX"
-      run: $env:QT_PREFIX = $env:Qt6_Dir
+      shell: bash
+      run: echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
     - name: release build
       shell: cmd
-      run: Scripts\release_win.bat
+      run: Scripts\release_win_ninja.bat
     - name: Upload Tools
       uses: actions/upload-artifact@v3
       with:
         name: windows
         path: Tools
+      if: startsWith(github.ref, 'refs/tags/')
