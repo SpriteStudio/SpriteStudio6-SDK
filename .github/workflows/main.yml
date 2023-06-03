@@ -24,7 +24,6 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: '6.5.1'
-        cache: 'true'
     - name: "set QT_PREFIX"
       run: export QT_PREFIX="${Qt6_Dir}"
     - name: release build
@@ -61,7 +60,6 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: '6.5.1'
-        cache: true
     - name: "set QT_PREFIX"
       run: $env:QT_PREFIX = $env:Qt6_Dir
     - name: release build
