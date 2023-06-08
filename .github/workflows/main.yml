@@ -64,12 +64,18 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: '6.5.1'
-    - name: "set QT_PREFIX"
+    - name: "set x64 QT_PREFIX"
       shell: bash
-      run: echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
-    - name: release build
+      run: echo "QT_PREFIX=${Qt6_DIR}/../msvc2019_64" >> $GITHUB_ENV
+    - name: release x64 build
       shell: cmd
-      run: Scripts\release_win.bat
+      run: Scripts\release_win.bat x64
+    - name: "set arm64 QT_PREFIX"
+      shell: bash
+      run: echo "QT_PREFIX=${Qt6_DIR}/../msvc2019_arm64" >> $GITHUB_ENV
+    - name: release arm64 build
+      shell: cmd
+      run: Scripts\release_win.bat arm64
     - name: Upload Tools
       uses: actions/upload-artifact@v3
       with:

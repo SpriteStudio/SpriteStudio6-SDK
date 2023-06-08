@@ -10,15 +10,10 @@ for /f "tokens=2 delims==" %%I in (
 ) do set "cpuArch=%%I"
 if "%cpuArch%"=="12" (
   set HOST_ARCH=arm64
-  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2019_arm64
 ) else (
   set HOST_ARCH=x64
-  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2019_64
 )
-
-if "%QT_PREFIX%" == "" (
-    set QT_PREFIX=%DEFAULT_QT_PREFIX%
-)
+set TARGET_ARCH=%HOST_ARCH%
 
 if exist "%VCDIR%\Enterprise" (
   set VCVARSALL="%VCDIR%\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
@@ -34,6 +29,20 @@ if not "%1" == "" (
     set BUILD_TYPE=%1
 )
 
+if not "%2" == "" (
+  set TARGET_ARCH=%2
+)
+if "%TARGET_ARCH%" == "arm64" (
+  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2019_arm64
+) else (
+  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2019_64
+)
+
+if "%QT_PREFIX%" == "" (
+    set QT_PREFIX=%DEFAULT_QT_PREFIX%
+)
+
+
 pushd "%BUILDDIR%\Ss6ConverterGUI\Ss6ConverterGUI"
 rmdir /S /Q build
 mkdir build
@@ -41,12 +50,16 @@ pushd build
 
 where ninja >nul 2>nul
 if ERRORLEVEL 1 (
-  cmake -A %HOST_ARCH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
+  cmake -A %TARGET_ARCH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
   cmake --build . --target ALL_BUILD --parallel -- /p:Configuration=%BUILD_TYPE% || exit /b 1
 ) else (
-  call %VCVARSALL% %HOST_ARCH%
+  if "%TARGET_ARCH%" == "%HOST_ARCH%" (
+      call %VCVARSALL% %TARGET_ARCH%
+  ) else (
+      call %VCVARSALL% %HOST_ARCH%_%TARGET_ARCH%
+  )
 
-  cmake -G Ninja -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
+  cmake -G Ninja -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_SYSTEM_PROCESSOR=%TARGET_ARCH% .. || exit /b 1
   cmake --build . --parallel || exit /b 1
 )
 
