@@ -51,6 +51,8 @@ if ERRORLEVEL 1 (
   cmake -G Ninja -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_SYSTEM_PROCESSOR=%TARGET_ARCH% .. || exit /b 1
   cmake --build . --parallel || exit /b 1
 )
-ctest -C %BUILD_TYPE% . || exit /b 1
+if "%TARGET_ARCH%" == "%HOST_ARCH%" (
+  ctest -C %BUILD_TYPE% . || exit /b 1
+)
 popd
 popd
