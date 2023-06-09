@@ -49,7 +49,7 @@ if ERRORLEVEL 1 (
       call %VCVARSALL% %HOST_ARCH%_%TARGET_ARCH%
   )
 
-  cmake -G Ninja -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
+  cmake -G Ninja -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_SYSTEM_PROCESSOR=%TARGET_ARCH% .. || exit /b 1
   cmake --build . --parallel || exit /b 1
 )
 popd
