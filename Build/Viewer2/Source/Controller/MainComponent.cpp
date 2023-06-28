@@ -189,6 +189,30 @@ void MainContentComponent::resized()
 	mainWindow->setBounds(getLocalBounds());
 }
 
+bool MainContentComponent::isInterestedInFileDrag(const juce::StringArray& files)
+{
+    for (auto &file : files)
+        if (! file.endsWith (".sspj")) // modify this condition to suit your needs
+            return false;
+
+    return true;
+}
+
+void MainContentComponent::filesDropped(const juce::StringArray& files, int x, int y)
+{
+    auto * animePlayer = Player::get();
+
+    for (auto &file : files)
+    {
+        if (file.isNotEmpty()) {
+            // プロジェクトを読み込み
+            animePlayer->loadProj(file.toRawUTF8());
+            return;
+        }
+    }
+}
+
+
 PropertiesFile & MainContentComponent::getProperties()
 {
 	return properties;
