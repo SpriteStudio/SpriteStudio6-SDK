@@ -13,6 +13,7 @@ if "%cpuArch%"=="12" (
 ) else (
   set HOST_ARCH=x64
 )
+set TARGET_ARCH=%HOST_ARCH%
 
 if exist "%VCDIR%\Enterprise" (
   set VCVARSALL="%VCDIR%\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
@@ -28,6 +29,10 @@ if not "%1" == "" (
     set BUILD_TYPE=%1
 )
 
+if not "%2" == "" (
+  set TARGET_ARCH=%2
+)
+
 pushd %BUILDDIR%\Viewer2
 rmdir /S /Q cmakeBuild
 mkdir cmakeBuild
@@ -35,12 +40,16 @@ pushd cmakeBuild
 
 where ninja >nul 2>nul
 if ERRORLEVEL 1 (
-  cmake -A %HOST_ARCH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
+  cmake -A %TARGET_ARCH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
   cmake --build . --target ALL_BUILD --parallel -- /p:Configuration=%BUILD_TYPE% || exit /b 1
 ) else (
-  call %VCVARSALL% %HOST_ARCH%
+  if "%TARGET_ARCH%" == "%HOST_ARCH%" (
+      call %VCVARSALL% %TARGET_ARCH%
+  ) else (
+      call %VCVARSALL% %HOST_ARCH%_%TARGET_ARCH%
+  )
 
-  cmake -G Ninja -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
+  cmake -G Ninja -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_SYSTEM_PROCESSOR=%TARGET_ARCH% .. || exit /b 1
   cmake --build . --parallel || exit /b 1
 )
 popd

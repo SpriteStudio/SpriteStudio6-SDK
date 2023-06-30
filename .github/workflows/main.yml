@@ -24,7 +24,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
-        version: '6.5.1'
+        version: "6.5.1"
     - name: "set QT_PREFIX"
       run: echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
     - name: release build
@@ -36,7 +36,7 @@ jobs:
         path: Tools
       if: startsWith(github.ref, 'refs/tags/')
 
-  win_build:
+  win_x64_build:
     strategy:
       matrix:
         platform: [windows-latest]
@@ -60,19 +60,23 @@ jobs:
       run: |
         cmake --version
         cmake -h
-    - name: Install Qt
+    - name: Install x64 Qt
       uses: jurplel/install-qt-action@v3
       with:
-        version: '6.5.1'
-    - name: "set QT_PREFIX"
+        version: "6.5.1"
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
+    - name: "set x64 QT_PREFIX"
       shell: bash
-      run: echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
-    - name: release build
+      run: |
+        echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
+    - name: release x64 build
       shell: cmd
-      run: Scripts\release_win.bat
+      run: Scripts\release_win.bat x64
     - name: Upload Tools
       uses: actions/upload-artifact@v3
       with:
-        name: windows
+        name: windows_x64
         path: Tools
       if: startsWith(github.ref, 'refs/tags/')

@@ -11,25 +11,34 @@ for /f "tokens=2 delims==" %%I in (
 ) do set "cpuArch=%%I"
 if "%cpuArch%"=="12" (
   set HOST_ARCH=arm64
-  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2019_arm64
 ) else (
   set HOST_ARCH=x64
+)
+set TARGET_ARCH=%HOST_ARCH%
+
+@echo on
+
+if not "%1" == "" (
+  set TARGET_ARCH=%1
+)
+if "%TARGET_ARCH%" == "arm64" (
+  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2019_arm64
+) else (
   set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2019_64
 )
+
 if "%QT_PREFIX%" == "" (
     set QT_PREFIX=%DEFAULT_QT_PREFIX%
 )
 
-if "%HOST_ARCH%"=="arm64" (
+if "%TARGET_ARCH%"=="arm64" (
   set QTPATHS=%QT_PREFIX%\bin\qtpaths6.bat
 ) else (
   set QTPATHS=%QT_PREFIX%\bin\qtpaths6.exe
 )
 
-@echo on
-
-call "%CURDIR%\build_converter_win.bat" Release || exit /b 1
-call "%CURDIR%\build_convertergui_win.bat" Release || exit /b 1
+call "%CURDIR%\build_converter_win.bat" Release %TARGET_ARCH% || exit /b 1
+call "%CURDIR%\build_convertergui_win.bat" Release %TARGET_ARCH% || exit /b 1
 
 pushd %BASEDIR%
 rmdir /S /Q Ss6Converter
@@ -43,7 +52,8 @@ if ERRORLEVEL 1 (
   copy "%BUILDDIR%\Ss6ConverterGUI\Ss6ConverterGUI\build\Ss6ConverterGUI.exe" Ss6Converter\
   %QT_PREFIX%\..\msvc2019_64\bin\windeployqt6.exe --qtpaths %QTPATHS% Ss6Converter\
 )
-powershell compress-archive Ss6Converter Ss6Converter.zip
-move /y Ss6Converter.zip "%TOOLSDIR%\"
+set ZIPNAME=Ss6Converter_%TARGET_ARCH%
+powershell compress-archive Ss6Converter %ZIPNAME%.zip
+move /y %ZIPNAME%.zip "%TOOLSDIR%\"
 rmdir /S /Q Ss6Converter
 popd
