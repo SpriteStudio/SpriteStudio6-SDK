@@ -1,0 +1,35 @@
+name: Windows Release
+
+on:
+  workflow_dispatch:
+
+env:
+  qtVersion: "6.5.1"
+
+jobs:
+  macos_build:
+    strategy:
+        matrix:
+          platform: [macos-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: prepare build environment
+        run: |
+          brew install ninja
+          brew install glfw3
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{ env.qtVersion }}
+      - name: "set QT_PREFIX"
+        run: echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
+      - name: release build
+        run: ./Scripts/release_macos.sh
+      - name: Upload Tools
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos
+          path: Tools

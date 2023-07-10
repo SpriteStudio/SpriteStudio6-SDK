@@ -1,0 +1,67 @@
+name: Windows Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      arch:
+        description: 'architecture'
+        required: true
+        default: 'x64'
+        type: choice
+        options:
+          - x64
+          # - arm64 
+
+env:
+  arch: ${{ inputs.arch }}
+  qtVersion: "6.5.1"
+  cmakeVersion: "3.26.4"  
+
+jobs:
+  win_build:
+    strategy:
+      matrix:
+        platform: [windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Setup Ninja
+        uses: ashutoshvarma/setup-ninja@master
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Install cmake
+        uses: jwlawson/actions-setup-cmake@v1.13
+        with:
+          cmake-version: ${{ env.cmakeVersion }}
+      - name: Check cmake
+        run: |
+          cmake --version
+          cmake -h
+      - name: Install x64 Qt
+        if: ${{ env.arch == 'x64' }}
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{ env.qtVersion }}
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+      - name: Install arm64 Qt
+        if: ${{ env.arch == 'arm64' }}
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{ env.qtVersion }}
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_arm64'
+      - name: "set QT_PREFIX"
+        shell: bash
+        run: |
+          echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
+      - name: release build
+        shell: cmd
+        run: Scripts\release_win.bat ${{ env.arch }}
+      - name: Upload Tools
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows_${{ env.arch }}
+          path: Tools
