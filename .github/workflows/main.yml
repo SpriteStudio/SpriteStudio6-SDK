@@ -2,15 +2,18 @@ name: CI
 
 on: [push]
 
+env:
+  SCCACHE_GHA_ENABLED: "true"
+  SCCACHE_CACHE_MULTIARCH: "1"
+  qtVersion: "6.5.1"
+  cmakeVersion: "3.26.4"
+
 jobs:
   build:
     strategy:
       matrix:
         platform: [macos-latest]
     runs-on: ${{ matrix.platform }}
-    env:
-      SCCACHE_GHA_ENABLED: "true"
-      SCCACHE_CACHE_MULTIARCH: "1"
     steps:
     - name: Run sccache-cache
       uses: mozilla-actions/sccache-action@v0.0.3
@@ -24,7 +27,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
-        version: "6.5.1"
+        version: ${{ env.qtVersion }}
     - name: "set QT_PREFIX"
       run: echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
     - name: release build
@@ -41,9 +44,6 @@ jobs:
       matrix:
         platform: [windows-latest]
     runs-on: ${{ matrix.platform }}
-    env:
-      SCCACHE_GHA_ENABLED: "true"
-      SCCACHE_CACHE_MULTIARCH: "1"
     steps:
     - name: Setup Ninja
       uses: ashutoshvarma/setup-ninja@master
@@ -55,7 +55,7 @@ jobs:
     - name: Install cmake
       uses: jwlawson/actions-setup-cmake@v1.13
       with:
-        cmake-version: '3.26.4'
+        cmake-version: ${{ env.cmakeVersion }}
     - name: Check cmake
       run: |
         cmake --version
@@ -63,7 +63,7 @@ jobs:
     - name: Install x64 Qt
       uses: jurplel/install-qt-action@v3
       with:
-        version: "6.5.1"
+        version: ${{ env.qtVersion }}
         host: 'windows'
         target: 'desktop'
         arch: 'win64_msvc2019_64'
