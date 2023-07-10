@@ -28,8 +28,10 @@ jobs:
         run: echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
       - name: release build
         run: ./Scripts/release_macos.sh
+      - name: Commit Hash
+        uses: pr-mpt/actions-commit-hash@v2
       - name: Upload Tools
         uses: actions/upload-artifact@v3
         with:
-          name: macos
+          name: macos_${{ steps.commit.outputs.short }}
           path: Tools
