@@ -60,7 +60,7 @@ jobs:
       - name: release build
         shell: cmd
         run: Scripts\release_win.bat ${{ env.arch }}
-      - name: Commit Hash
+      - id: commit
         uses: pr-mpt/actions-commit-hash@v2
       - name: Upload Tools
         uses: actions/upload-artifact@v3
