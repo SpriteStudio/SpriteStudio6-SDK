@@ -262,8 +262,9 @@ private:
 public:
 	ssloader_sspj(){}
 	virtual ~ssloader_sspj(){}
+	
 	static SsProject*	Load(const std::string& filename );
-
+	static SsProject*	Parse_ProjectOnly(const char* xml , size_t len);
 };
 
 
