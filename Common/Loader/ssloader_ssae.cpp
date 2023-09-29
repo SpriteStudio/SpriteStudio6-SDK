@@ -3,6 +3,21 @@
 namespace spritestudio6
 {
 
+SsAnimePack*	ssloader_ssae::Parse(const char* xmlstr , size_t len)
+{
+	libXML::XMLDocument xml;
+
+	if ( libXML::XML_SUCCESS == xml.Parse(xmlstr,len) )
+	{
+		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioAnimePack" );
+
+		SsAnimePack* animepack = new SsAnimePack();
+		animepack->__Serialize( &ar );
+		return animepack;
+	}
+
+
+}
 
 SsAnimePack*	ssloader_ssae::Load(const std::string& filename )
 {
@@ -21,6 +36,8 @@ SsAnimePack*	ssloader_ssae::Load(const std::string& filename )
 
 	return anime;
 }
+
+
 
 
 SsAnimation*	SsAnimePack::findAnimation(SsString& name)

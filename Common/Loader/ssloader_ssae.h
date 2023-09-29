@@ -427,6 +427,7 @@ public:
 
 	///ssaeファイル名を指定しロードが成功したらそのSsAnimePackのポインタを返します。
 	static SsAnimePack*	Load(const std::string& filename );
+	static SsAnimePack*	Parse(const char* xmlstr , size_t len);
 
 };
 
