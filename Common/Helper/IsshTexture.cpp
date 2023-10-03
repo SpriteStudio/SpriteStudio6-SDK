@@ -2,8 +2,9 @@
 #include "IsshTexture.h"
 #include "../Helper/DebugPrint.h"
 
+#ifndef _NOTUSE_STBI
 #include "stb_image.h"
-
+#endif
 
 namespace spritestudio6
 {
@@ -11,7 +12,11 @@ namespace spritestudio6
 
 static SSTextureLoader::DataHandle defaultLoadImageFromFile( const char* fileName, int* width, int* height, int* bpp )
 {
+#ifdef _NOTUSE_STBI
+	void* image = 0;
+#else
 	stbi_uc* image = stbi_load( fileName, width , height , bpp , 0 );
+#endif
 	if ( image == nullptr )
 	{	// エラー時処理
 		return SSTextureLoader::InvalidDataHandle;
@@ -23,12 +28,20 @@ static void defaultDecodeEndImageFile( SSTextureLoader::DataHandle handle )
 {
 	if ( handle != SSTextureLoader::InvalidDataHandle)
 	{
+#ifndef _NOTUSE_STBI
 		stbi_image_free( (void*)handle );
+#endif
 	}
 }
 static const char* defaultMessageGetFailureLoadFromFile()
 {
+#ifdef _NOTUSE_STBI
+	return 0;
+#else
 	return ( stbi_failure_reason() );
+
+#endif
+		
 }
 static bool defaultCheckSizePow2(int width, int height)
 {
