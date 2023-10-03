@@ -87,6 +87,7 @@ bool	is_digit_string( std::string &in_str , bool* is_priod )
 
 std::string getFullPath( const std::string& basePath , const std::string &relPath )
 {
+#ifndef _NOTUSE_TEXTURE_FULLPATH
 #ifdef _WIN32
 	char	curPath[_MAX_PATH];
 	char	buffer_[_MAX_PATH];
@@ -145,7 +146,9 @@ std::string getFullPath( const std::string& basePath , const std::string &relPat
     ret_temp+="/";
     return ret_temp;
 #endif
-
+#else
+	return relPath;
+#endif
 }
 std::string Replace( std::string String1, std::string String2, std::string String3 )
 {
