@@ -63,7 +63,7 @@ void	SsRenderDX9::initialize()
 
 }
 
-void	SsRenderDX9::renderSetup()
+void	SsRenderDX9::renderSetup(SsAnimeDecoder* state)
 {
 
 }

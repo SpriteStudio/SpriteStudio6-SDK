@@ -21,9 +21,15 @@ public:
 
 	static void clearShaderCache();
 	virtual void	initialize();
-	virtual void	renderSetup();
+	virtual void	renderSetup(SsAnimeDecoder* state);
+
+	//通常アニメパーツ描画
 	virtual void	renderPart( SsPartState* state );
 
+	//メッシュパーツのレンダリング
+	virtual void	renderMesh(SsMeshPart* mesh, float alpha);
+
+	//effect用スプライト
 	virtual void	renderSpriteSimple( float matrix[16], 
 										int width, int height, 
 										SsVector2& pivot , 
@@ -36,8 +42,6 @@ public:
 	virtual void	clearMask();
 	virtual void	enableMask(bool flag);
 
-
-	virtual void	renderMesh(SsMeshPart* mesh, float alpha);
 
 
 

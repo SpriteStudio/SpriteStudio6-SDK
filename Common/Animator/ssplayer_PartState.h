@@ -96,6 +96,9 @@ struct SsPartState
 
 	SsPart*			part;
 
+	//このStateを処理したdecoder
+	SsAnimeDecoder* execDecoder;
+
 	SsPartState();
 
 	virtual ~SsPartState();

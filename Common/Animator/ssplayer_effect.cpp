@@ -670,7 +670,7 @@ void	SsEffectRenderer::update(float delta)
 //------------------------------------------------------------------------------
 void	SsEffectRenderer::draw()
 {
-	SsCurrentRenderer::getRender()->renderSetup();					
+	SsCurrentRenderer::getRender()->renderSetup(0);					
 
 	int cnt = 0;
 
