@@ -57,7 +57,9 @@ SsCelMapLinker::SsCelMapLinker(SsCellMap* cellmap, SsString filePath)
 	if (!SSTextureFactory::isExist())
 	{
 		puts("SSTextureFactory not created yet.");
+#ifndef _NOTUSE_EXCEPTION		
 		throw;
+#endif		
 	}
 #ifdef _NOTUSE_TEXTURE_FULLPATH
 	//スルー
