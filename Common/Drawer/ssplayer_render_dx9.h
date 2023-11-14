@@ -18,7 +18,7 @@ public:
 	virtual ~SsRenderDX9(){}
 
 	virtual void	initialize();
-	virtual void	renderSetup();
+	virtual void	renderSetup(SsAnimeDecoder* state);
 	virtual void	renderPart( SsPartState* state );
 
 	//未実装

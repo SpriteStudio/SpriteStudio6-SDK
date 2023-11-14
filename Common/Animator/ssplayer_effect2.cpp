@@ -537,7 +537,7 @@ void	SsEffectRenderV2::drawSprite(
 
 	//SsCellValue*			dispCell;
 
-	SsCurrentRenderer::getRender()->renderSetup();	
+	SsCurrentRenderer::getRender()->renderSetup(0);	
 
 	switch( blendType )
 	{

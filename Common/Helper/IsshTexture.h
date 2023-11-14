@@ -87,6 +87,7 @@ private:
 	static SSTextureFactory*	m_myInst;
 
 	std::map<SsString, ISSTexture*> textureCache;
+	bool auto_release_baseclass;
 
 
 private:
@@ -94,16 +95,20 @@ private:
 
 public:
 	SSTextureFactory(){}
-	SSTextureFactory(ISSTexture* texture_base_class)
+	SSTextureFactory(ISSTexture* texture_base_class , bool auto_release_baseclass = true)
 	{ 
 		m_myInst = this ; m_texture_base_class = texture_base_class;
+		this->auto_release_baseclass = auto_release_baseclass;
 	}
 
 	virtual ~SSTextureFactory()
 	{
-		if ( m_texture_base_class )
-			delete m_texture_base_class;
-		m_myInst = 0;
+		if (this->auto_release_baseclass)
+		{
+			if ( m_texture_base_class )
+				delete m_texture_base_class;
+			m_myInst = 0;
+		}
 	}
 
 	static bool	isExist(){ return m_myInst != 0; }

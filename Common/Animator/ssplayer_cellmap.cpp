@@ -57,9 +57,14 @@ SsCelMapLinker::SsCelMapLinker(SsCellMap* cellmap, SsString filePath)
 	if (!SSTextureFactory::isExist())
 	{
 		puts("SSTextureFactory not created yet.");
+#ifndef _NOTUSE_EXCEPTION		
 		throw;
+#endif		
 	}
-
+#ifdef _NOTUSE_TEXTURE_FULLPATH
+	//スルー
+	SsString filePathFs = cellmap->imagePath;
+#else
 	std::string fullpath = getFullPath(filePath, path2dir(cellmap->imagePath));
 	fullpath = fullpath + path2file(cellmap->imagePath);
 	fullpath = nomarizeFilename(fullpath);
@@ -67,6 +72,7 @@ SsCelMapLinker::SsCelMapLinker(SsCellMap* cellmap, SsString filePath)
 //	DEBUG_PRINTF("TextureFile Load %s \n", fullpath.c_str());
 //	tex = SSTextureFactory::loadTexture(fullpath.c_str());
 	SsString filePathFs = SsCharConverter::convert_path_string( fullpath );
+#endif
 	DEBUG_PRINTF("TextureFile Load %s \n", filePathFs.c_str());
 	tex = SSTextureFactory::loadTexture(filePathFs.c_str());
 

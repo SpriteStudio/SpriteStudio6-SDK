@@ -337,7 +337,7 @@ void	SsRenderGL::initialize()
 
 }
 
-void	SsRenderGL::renderSetup()
+void	SsRenderGL::renderSetup(SsAnimeDecoder* state)
 {
 	glDisableClientState( GL_COLOR_ARRAY );
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);

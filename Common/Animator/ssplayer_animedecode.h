@@ -85,6 +85,8 @@ namespace spritestudio6
 		std::unique_ptr<SsMeshAnimator>	meshAnimator;
 		SsModel*		myModel;
 
+		void*	custom_data;
+
 	private:
 		void	updateState( int nowTime , SsPart* part , SsPartAnime* part_anime , SsPartState* state );
 		void	updateInstance( int nowTime , SsPart* part , SsPartAnime* part_anime , SsPartState* state );
@@ -159,6 +161,9 @@ namespace spritestudio6
 		void setMaskParentSetting(bool flg);							//親のマスク対象を設定する
 		bool getMaskParentSetting(void) { return maskParentSetting; };	//設定された親のマスク対象を取得する
 
+		void  setCustomData(void* d) {custom_data=d;}
+		void* getCustomData(){ return custom_data;}
+		
 	};
 
 

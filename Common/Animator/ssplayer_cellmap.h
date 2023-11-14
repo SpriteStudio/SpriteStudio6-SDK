@@ -71,8 +71,6 @@ private:
 	SsString	CellMapPath;
 
 private:
-	void	addIndex(SsCellMap* cellmap);
-	void	addMap(SsCellMap* cellmap);
 
 public:
 	SsCellMapList(){}
@@ -111,6 +109,12 @@ public:
 	
 	bool preloadTexture(SsProject* proj);
 	bool unloadTexture(SsProject* proj = 0);
+
+	//インデックスで参照するために登録する
+	void addIndex(SsCellMap* cellmap);
+
+	//辞書で検索するために登録する関数
+	void addMap(SsCellMap* cellmap);
 
 };
 

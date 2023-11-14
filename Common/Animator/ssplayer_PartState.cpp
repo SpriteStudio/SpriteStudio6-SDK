@@ -13,7 +13,8 @@ SsPartState::SsPartState() :
 	noCells(false),
 	alphaBlendType(SsBlendType::invalid),
 	refEffect(),
-	meshPart()
+	meshPart(),
+	execDecoder(0)
 {
 	init();
 	effectValue.attrInitialized = false;

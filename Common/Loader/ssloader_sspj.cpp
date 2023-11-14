@@ -142,6 +142,19 @@ SsSequence*		SsProject::findSequence( SsString& sequencePackName , SsString& Seq
 	return 0;
 }
 
+SsProject*	ssloader_sspj::Parse_ProjectOnly(const char* xmlstr , size_t len)
+{
+	libXML::XMLDocument xml;
+
+	if ( libXML::XML_SUCCESS == xml.Parse(xmlstr,len) )
+	{
+		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioProject" );
+
+		SsProject* proj = new SsProject();
+		proj->__Serialize( &ar );
+		return proj;
+	}
+}
 
 SsProject*	ssloader_sspj::Load(const std::string& filename )
 {

@@ -47,7 +47,8 @@ SsAnimeDecoder::SsAnimeDecoder() :
 	seedOffset(0),
 	maskFuncFlag(true),
 	maskParentSetting(true),
-	meshAnimator()
+	meshAnimator(),
+	custom_data(0)
 	{
 	}
 
@@ -821,6 +822,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 
 	//ステートの初期値を設定
 	state->init();
+	state->execDecoder = this;
 	state->inheritRates = part->inheritRates;
 
 	SsPartAnime* setupAnime = setupPartAnimeDic[part->name];	//セットアップアニメを取得する
@@ -1592,7 +1594,7 @@ void	SsAnimeDecoder::draw()
 
 	if (SsCurrentRenderer::getRender() == 0) return;
 
-	SsCurrentRenderer::getRender()->renderSetup();
+	SsCurrentRenderer::getRender()->renderSetup(this);
 
 
 	if (maskFuncFlag == true) //マスク機能が有効（インスタンスのソースアニメではない）
@@ -1616,6 +1618,7 @@ void	SsAnimeDecoder::draw()
 	SPRITESTUDIO6SDK_foreach( std::list<SsPartState*> , sortList , e )
 	{
 		SsPartState* state = (*e);
+		state->execDecoder = this;
 
 		if (state->partType == SsPartType::mask)
 		{

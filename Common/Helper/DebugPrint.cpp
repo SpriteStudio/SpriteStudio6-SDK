@@ -45,7 +45,11 @@ void	THROW_ERROR_MESSAGE_MAIN( std::string str , char* fname , size_t line )
 	std::string ___err_message = ___str__buffer;
 
 	DEBUG_PRINTF( ___str__buffer );
+
+#ifndef _NOTUSE_EXCEPTION		
 	throw ThrowErrorMessage( 0 , ___err_message );
+#endif		
+
 }
 
 

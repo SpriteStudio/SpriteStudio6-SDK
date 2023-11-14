@@ -133,6 +133,7 @@ public:
 	virtual ~ssloader_ssce(){}
 
 	static SsCellMap*	Load(const std::string& filename );
+	static SsCellMap*	Parse(const char* xmlstr , size_t len , int* error = 0);
 
 };
 

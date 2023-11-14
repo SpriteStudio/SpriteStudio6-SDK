@@ -213,9 +213,15 @@ public:
 
 
 	///AnimePack(ssae)のファイル名をパス付きで取得する
-	SsString	getAnimePackFilePath( size_t index ) { 
+	SsString	getAnimePackFilePath( size_t index , bool add_basepath = true) { 
 		if ( animepackNames.size() <= index ) return "";
-		return getSsaeBasepath() + animepackNames[index];
+
+		if (add_basepath)
+		{
+			return getSsaeBasepath() + animepackNames[index];
+		}else{
+			return animepackNames[index];
+		}
 	}
 
 
@@ -223,7 +229,6 @@ public:
 	SsString	getCellMapFilePath( size_t index ) { 
 		if ( cellmapNames.size() <= index ) return "";
         SsString str = getSsceBasepath();
-
 
 		std::string f = cellmapNames[index];
 		
@@ -262,8 +267,9 @@ private:
 public:
 	ssloader_sspj(){}
 	virtual ~ssloader_sspj(){}
+	
 	static SsProject*	Load(const std::string& filename );
-
+	static SsProject*	Parse_ProjectOnly(const char* xml , size_t len);
 };
 
 
