@@ -17,7 +17,9 @@ jobs:
     steps:
     - name: Run sccache-cache
       uses: mozilla-actions/sccache-action@v0.0.3
-    - uses: actions/checkout@v3
+      with:
+        version: "v0.7.2"
+    - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
     - name: prepare build environment
@@ -51,7 +53,7 @@ jobs:
       uses: ashutoshvarma/setup-ninja@master
 #    - name: Run sccache-cache
 #      uses: mozilla-actions/sccache-action@v0.0.3
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
     - name: Install cmake
