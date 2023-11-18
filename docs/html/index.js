@@ -5,8 +5,9 @@ var index =
     [ "SpriteStudioのXMLデータ構造について", "index.html#autotoc_md3", null ],
     [ "sspjファイルについて", "index.html#autotoc_md4", null ],
     [ "ssaeファイルについて", "index.html#autotoc_md5", [
-      [ "ssaeファイル　partListブロックの解説", "index.html#autotoc_md6", null ]
+      [ "partListブロックの解説", "index.html#autotoc_md6", null ],
+      [ "animeブロックの解説", "index.html#autotoc_md7", null ]
     ] ],
-    [ "ssaeファイル　animeブロックの解説", "index.html#autotoc_md7", null ],
-    [ "ssceファイルについて", "index.html#autotoc_md8", null ]
+    [ "ssceファイルについて", "index.html#autotoc_md8", null ],
+    [ "sseeファイルについて", "index.html#autotoc_md9", null ]
 ];

@@ -22,6 +22,7 @@
     DoxygenAwesomeParagraphLink.init()
     DoxygenAwesomeInteractiveToc.init()
     DoxygenAwesomeTabs.init()
+    DoxygenAwesomeInteractiveToc.init()
 </script>
 <link href="navtree.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="resize.js"></script>
@@ -121,10 +122,19 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <p>このドキュメントはOPTPiX SpriteStudioのデータを取り扱うためのC++ライブラリのドキュメントです。 また、SpriteStudioから排出されるXMLデータの構造を記載するドキュメントとなります。</p>
 <h1><a class="anchor" id="autotoc_md2"></a>
 本SDKの構成について</h1>
-<p>本SDKは、下記のライブラリが含まれております。</p>
+<p>本SDKは、<a href="http://www.webtech.co.jp/spritestudio/">OPTPiX SpriteStudio 6以降</a>以降で製作されたデータ(sspj,ssce,ssae,ssee)をユーザーの皆様の再生環境に応じて柔軟にご利用いただくためのライブラリ、およびツール群で構成されます。</p>
 <ul>
-<li>OPTPiX SpriteStudioのネイティブのファイルフォーマットである、sspj、ssae、ssceの読み込み用ライブラリ</li>
-<li>読み込んだデータの描画再生サンプル(簡易ビューア―)</li>
+<li>sspjLib :SpriteStudioのプロジェクトファイルsspjを解析するためのライブラリです。<ul>
+<li>ローダー：SpriteStudio 6 形式のファイル(sspj,ssce,ssae,ssee）の読み込みモジュール</li>
+<li>アニメータ：座標変換、補間計算などを行うアニメーションモジュール</li>
+<li>ドローワー：OpenGL を利用した描画モジュール</li>
+</ul>
+</li>
+<li>Tools：ライブラリを使用して作成されたツールです。<ul>
+<li>ビューアー：Windows/Mac 用ビューアーサンプル</li>
+<li>コンバータ：sspjファイルから再生プログラム用のファイル(.ssbp .json等)へ変換します。</li>
+</ul>
+</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md3"></a>
 SpriteStudioのXMLデータ構造について</h1>
@@ -162,14 +172,14 @@ ssaeファイルについて</h1>
 <div class="line">    &lt;/<span class="keywordtype">animeList</span>&gt;</div>
 <div class="line">&lt;/<span class="keywordtype">SpriteStudioAnimePack</span>&gt;</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md6"></a>
-ssaeファイル　partListブロックの解説</h2>
+partListブロックの解説</h2>
 <p>partListブロックは、１つのパーツを&lt;value&gt;と定義しパーツの配列として機能しています。 valueの中のタグについては、SsPartのクラス説明ページを参照下さい。</p>
-<h1><a class="anchor" id="autotoc_md7"></a>
-ssaeファイル　animeブロックの解説</h1>
+<h2><a class="anchor" id="autotoc_md7"></a>
+animeブロックの解説</h2>
 <p>&lt;anime&gt;ブロックは、アニメーションの再生FPSや名称などの設定値とそれぞれのキーフレームでパーツに適用するアトリビュート値が格納されています。 キーフレームのアトリビュート値は&lt;partAnimes&gt;ブロックに記載されています。 &lt;partAnimes&gt;は&lt;partAnime&gt;のコンテナとなっており、&lt;partAnime&gt;はモデルで定義された各パーツに対応したアトリビュート値がキーフレーム値と一緒に記載されています。</p>
 <p>(例） </p><div class="fragment"><div class="line">&lt;<span class="keywordtype">attribute</span> <span class="keyword">tag</span>=<span class="stringliteral">&quot;POSX&quot;</span>&gt;</div>
 <div class="line">    &lt;<span class="keywordtype">key</span> <span class="keyword">time</span>=<span class="stringliteral">&quot;0&quot;</span> <span class="keyword">ipType</span>=<span class="stringliteral">&quot;linear&quot;</span>&gt;</div>
-<div class="line">        \&lt;<span class="keywordtype">value</span>\&gt;0\&lt;/<span class="keywordtype">value</span>\&gt;</div>
+<div class="line">        &lt;<span class="keywordtype">value</span>&gt;0&lt;/<span class="keywordtype">value</span>&gt;</div>
 <div class="line">    &lt;/<span class="keywordtype">key</span>&gt;</div>
 <div class="line">&lt;/<span class="keywordtype">attribute</span>&gt;</div>
 </div><!-- fragment --><p>ここで、アトリビュートはPOSX=パーツの座標Xを示しており、そのキーフレームはtime=0の場所、補完方法はliner=線形補間となっており、 その値はvalue=0となっています。このvalue値がパーツの座標Xに適用されます。 このブロックはキーフレームがエディタ上で作成されている場合、作成されただけここに記載が行われます。 アトリビュートの種類については、SsAttributeKind で検索、補完方法については、SsInterpolationTypeを参照下さい。</p>
@@ -193,7 +203,10 @@ ssceファイルについて</h1>
 <div class="line">    :</div>
 <div class="line">    :</div>
 <div class="line">&lt;/<span class="keywordtype">cells</span>&gt;</div>
-</div><!-- fragment --><p>基本的にssceは、複雑なフォーマットにはなっておらず、cellの配列として記述が行われておりますので、 各タグを本ドキュメントで検索頂けるとご使用いただけます。 </p>
+</div><!-- fragment --><p>基本的にssceは、複雑なフォーマットにはなっておらず、cellの配列として記述が行われておりますので、 各タグを本ドキュメントで検索頂けるとご使用いただけます。</p>
+<h1><a class="anchor" id="autotoc_md9"></a>
+sseeファイルについて</h1>
+<p>... </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

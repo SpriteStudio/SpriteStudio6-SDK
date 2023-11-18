@@ -7,10 +7,15 @@
 
 # 本SDKの構成について
 
-本SDKは、下記のライブラリが含まれております。
+本SDKは、[OPTPiX SpriteStudio 6以降](http://www.webtech.co.jp/spritestudio/)以降で製作されたデータ(sspj,ssce,ssae,ssee)をユーザーの皆様の再生環境に応じて柔軟にご利用いただくためのライブラリ、およびツール群で構成されます。
 
-- OPTPiX SpriteStudioのネイティブのファイルフォーマットである、sspj、ssae、ssceの読み込み用ライブラリ
-- 読み込んだデータの描画再生サンプル(簡易ビューア―)
+- sspjLib :SpriteStudioのプロジェクトファイルsspjを解析するためのライブラリです。
+    - ローダー：SpriteStudio 6 形式のファイル(sspj,ssce,ssae,ssee）の読み込みモジュール
+    - アニメータ：座標変換、補間計算などを行うアニメーションモジュール
+    - ドローワー：OpenGL を利用した描画モジュール
+- Tools：ライブラリを使用して作成されたツールです。
+    - ビューアー：Windows/Mac 用ビューアーサンプル
+    - コンバータ：sspjファイルから再生プログラム用のファイル(.ssbp .json等)へ変換します。
 
 # SpriteStudioのXMLデータ構造について
 
@@ -61,11 +66,11 @@ Model部はXMLドキュメント中の `<Model>` で定義され、Animation部�
 </SpriteStudioAnimePack>
 ```
 
-## ssaeファイル　partListブロックの解説
+## partListブロックの解説
 partListブロックは、１つのパーツを<value>と定義しパーツの配列として機能しています。
 valueの中のタグについては、SsPartのクラス説明ページを参照下さい。
 
-# ssaeファイル　animeブロックの解説
+## animeブロックの解説
  
 <anime>ブロックは、アニメーションの再生FPSや名称などの設定値とそれぞれのキーフレームでパーツに適用するアトリビュート値が格納されています。
 キーフレームのアトリビュート値は<partAnimes>ブロックに記載されています。
@@ -75,7 +80,7 @@ valueの中のタグについては、SsPartのクラス説明ページを参照
 ```xml
 <attribute tag="POSX">
     <key time="0" ipType="linear">
-        \<value\>0\</value\>
+        <value>0</value>
     </key>
 </attribute>
 ```
@@ -113,3 +118,5 @@ valueの中のタグについては、SsPartのクラス説明ページを参照
  基本的にssceは、複雑なフォーマットにはなっておらず、cellの配列として記述が行われておりますので、
  各タグを本ドキュメントで検索頂けるとご使用いただけます。
 
+# sseeファイルについて
+...

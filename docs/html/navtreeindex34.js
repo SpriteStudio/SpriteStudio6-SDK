@@ -1,5 +1,6 @@
 var NAVTREEINDEX34 =
 {
+"khrplatform_8h.html#aff6bea8ea37be81840add529306b32a8":[3,0,0,3,0,0,1,0,2],
 "khrplatform_8h_source.html":[3,0,0,3,0,0,1,0],
 "namespacemembers.html":[1,1,0,0],
 "namespacemembers.html":[1,1,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX34 =
 "namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37bad1d47cabbf567421c8684fb89eb3b569":[1,0,0,2,0,34],
 "namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37bad5bdc7006babedb57c90aeaf31ed663e":[1,0,0,2,0,7],
 "namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37bae3755f6001578f9e749ae986e8af824e":[1,0,0,2,0,36],
-"namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37baf10dca7509b9cba0d0c911ba52133ab8":[1,0,0,2,0,40],
-"namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37baf6839dd055620d2c5ee7402bd33a4d6f":[1,0,0,2,0,9]
+"namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37baf10dca7509b9cba0d0c911ba52133ab8":[1,0,0,2,0,40]
 };

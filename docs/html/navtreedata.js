@@ -101,12 +101,12 @@ var NAVTREEINDEX =
 "glad_8h.html#ada2d30309cce4f97dafb81329c8e706a",
 "glad_8h.html#ae9ce6878a2ca84711fbc19d9def754a4",
 "glad_8h.html#af7416a59b6347316ebd7df36222496cf",
-"khrplatform_8h_source.html",
-"namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37baf807cf01d43c9a1a10943dc77acf93ba",
-"ssloader_8h.html#afa3319058b59e2f7f6049a04c03a58fb",
-"sstypes_8h.html#a3b800385d339d0f0d7b0fc85ce043707ac9834dc24151156af36db5e4e8ba6a5b",
-"structspritestudio6_1_1_ss_part_state.html#a0d7e536400bd0b0ca1965c4779882300",
-"structspritestudio6_1_1emit_pattern.html#a022548c2a7ab2e3f03c18dffd4c7b9d8"
+"khrplatform_8h.html#aff6bea8ea37be81840add529306b32a8",
+"namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37baf6839dd055620d2c5ee7402bd33a4d6f",
+"ssloader_8h.html",
+"sstypes_8h.html#a3b800385d339d0f0d7b0fc85ce043707aabfb0138cc657347671b3725dc39154d",
+"structspritestudio6_1_1_ss_part_state.html",
+"structspritestudio6_1_1emit_pattern.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
