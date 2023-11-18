@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OPTPiX SpriteStudio SDK: OPTPiX SpriteStudio SDK</title>
+<title>OPTPiX SpriteStudio SDK: SpriteStudio 6 SDK</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link rel="icon" type="image/svg+xml" href="logo.drawio.svg"/>
 <script type="text/javascript" src="jquery.js"></script>
@@ -112,113 +112,88 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div>
 
 <div><div class="header">
-  <div class="headertitle"><div class="title">OPTPiX SpriteStudio SDK </div></div>
+  <div class="headertitle"><div class="title">SpriteStudio 6 SDK </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="初めに"></a>
+<div class="textblock"><p><a class="anchor" id="md_misc_2mainpage"></a> </p>
+<h1><a class="anchor" id="autotoc_md1"></a>
 初めに</h1>
-<p>このドキュメントはOPTPiX SpriteStudioのデータを取り扱うためのC++ライブラリのドキュメントです。<br  />
- また、SpriteStudioから排出されるXMLデータの構造を記載するドキュメントとなります。</p>
-<h1><a class="anchor" id="本SDKの構成について"></a>
+<p>このドキュメントはOPTPiX SpriteStudioのデータを取り扱うためのC++ライブラリのドキュメントです。 また、SpriteStudioから排出されるXMLデータの構造を記載するドキュメントとなります。</p>
+<h1><a class="anchor" id="autotoc_md2"></a>
 本SDKの構成について</h1>
-<p>本SDKは、下記のライブラリが含まれております。<br  />
- ・OPTPiX SpriteStudioのネイティブのファイルフォーマットである、sspj、ssae、ssceの読み込み用ライブラリ<br  />
- ・読み込んだデータの描画再生サンプル(簡易ビューア―)<br  />
-</p>
-<h1><a class="anchor" id="SpriteStudioのXMLデータ構造について"></a>
+<p>本SDKは、下記のライブラリが含まれております。</p>
+<ul>
+<li>OPTPiX SpriteStudioのネイティブのファイルフォーマットである、sspj、ssae、ssceの読み込み用ライブラリ</li>
+<li>読み込んだデータの描画再生サンプル(簡易ビューア―)</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md3"></a>
 SpriteStudioのXMLデータ構造について</h1>
-<p>基本的にsssdkのクラス名、メンバー名はXML内ドキュメントのタグと一致しております。<br  />
- そのためXML内のタグの意味を知りたい場合、このドキュメントのクラスのメンバー、又は列挙型のドキュメントを参照下さい。<br  />
- <br  />
- OPTPiX SpriteStuidoで作成されるファイル形式はsspj、ssae、ssceの三種類となります。 旧形式のssaxにつきましては、別途あるssaxのドキュメントを参照下さい。 （SpriteStudioのユーザーサポートページにございます。）</p>
-<h1><a class="anchor" id="sspjファイルについて"></a>
+<p>基本的にsssdkのクラス名、メンバー名はXML内ドキュメントのタグと一致しております。 そのためXML内のタグの意味を知りたい場合、このドキュメントのクラスのメンバー、又は列挙型のドキュメントを参照下さい。</p>
+<p>OPTPiX SpriteStuidoで作成されるファイル形式はsspj、ssae、ssceの三種類となります。 旧形式のssaxにつきましては、別途あるssaxのドキュメントを参照下さい。 SpriteStudioのユーザーサポートページにございます。）</p>
+<h1><a class="anchor" id="autotoc_md4"></a>
 sspjファイルについて</h1>
-<p><br  />
- sspjは、SpriteStudioのプロジェクトファイルです。 このファイルには、プロジェクトに格納されているアニメーション、テクスチャ、セルマップの参照先の記載、 参照ファイル名の格納が行われています。 <br  />
-</p>
-<h1><a class="anchor" id="ssaeファイルについて"></a>
+<p>sspjは、SpriteStudioのプロジェクトファイルです。 このファイルには、プロジェクトに格納されているアニメーション、テクスチャ、セルマップの参照先の記載、 参照ファイル名の格納が行われています。</p>
+<h1><a class="anchor" id="autotoc_md5"></a>
 ssaeファイルについて</h1>
-<p>ssaeファイルは、アニメーションデータのパーツの内容とその組み合わせを記述した「Model」部と「Model」を使用してキーフレームアニメーションを記載したAnimation部で構成されています。<br  />
- Model部はXMLドキュメント中の&lt;Model&gt;で定義され、Animation部はXMLドキュメント中の&lt;animeList&gt;以下&lt;anime&gt;で定義されます。<br  />
- &lt;animeList&gt;のブロックには、&lt;anime&gt;が複数格納される場合があります。（同一のModelでアニメーションを作成している場合）<br  />
- <br  />
- </p><pre>
-    &lt;SpriteStudioAnimePack&gt;
-        &lt;settings&gt;
-            アニメーションの再生設定
-        &lt;/settings&gt;
-        &lt;name&gt;アニメーション名称&lt;/name&gt;
-        &lt;Model&gt;
-            &lt;partList&gt;
-            アニメーションを構成するパーツの種別、組み合わせデータの記述
-                :
-                :
-            &lt;/partList&gt;
-        &lt;/Model&gt;
-        &lt;cellmapNames&gt;
-            アニメーションで使用しているセルマップのファイル名リスト
-                :
-                :
-        &lt;/cellmapNames&gt;
-        &lt;animeList&gt;
-            &lt;anime&gt;
-                アニメーションデータ
-                    :
-                    :
-            &lt;/anime&gt;
-        &lt;/animeList&gt;
-    &lt;/SpriteStudioAnimePack&gt;
-  </pre><p> <br  />
- </p>
-<h2><a class="anchor" id="ssaeファイル　partListブロックの解説"></a>
+<p>ssaeファイルは、アニメーションデータのパーツの内容とその組み合わせを記述した「Model」部と「Model」を使用してキーフレームアニメーションを記載したAnimation部で構成されています。 Model部はXMLドキュメント中の <code>&lt;Model&gt;</code> で定義され、Animation部はXMLドキュメント中の <code>&lt;animeList&gt;</code> 以下 <code>&lt;anime&gt;</code> で定義されます。 <code>&lt;animeList&gt;</code> のブロックには、 <code>&lt;anime&gt;</code> が複数格納される場合があります。（同一のModelでアニメーションを作成している場合）</p>
+<div class="fragment"><div class="line">&lt;<span class="keywordtype">SpriteStudioAnimePack</span>&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">settings</span>&gt;</div>
+<div class="line">        <span class="keyword">アニメーションの再生設定</span></div>
+<div class="line">    &lt;/<span class="keywordtype">settings</span>&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">name</span>&gt;<span class="keyword">アニメーション名称</span>&lt;/<span class="keywordtype">name</span>&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">Model</span>&gt;</div>
+<div class="line">        &lt;<span class="keywordtype">partList</span>&gt;</div>
+<div class="line">        <span class="keyword">アニメーションを構成するパーツの種別、組み合わせデータの記述</span></div>
+<div class="line">            :</div>
+<div class="line">            :</div>
+<div class="line">        &lt;/<span class="keywordtype">partList</span>&gt;</div>
+<div class="line">    &lt;/<span class="keywordtype">Model</span>&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">cellmapNames</span>&gt;</div>
+<div class="line">        <span class="keyword">アニメーションで使用しているセルマップのファイル名リスト</span></div>
+<div class="line">            :</div>
+<div class="line">            :</div>
+<div class="line">    &lt;/<span class="keywordtype">cellmapNames</span>&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">animeList</span>&gt;</div>
+<div class="line">        &lt;<span class="keywordtype">anime</span>&gt;</div>
+<div class="line">            <span class="keyword">アニメーションデータ</span></div>
+<div class="line">                :</div>
+<div class="line">                :</div>
+<div class="line">        &lt;/<span class="keywordtype">anime</span>&gt;</div>
+<div class="line">    &lt;/<span class="keywordtype">animeList</span>&gt;</div>
+<div class="line">&lt;/<span class="keywordtype">SpriteStudioAnimePack</span>&gt;</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md6"></a>
 ssaeファイル　partListブロックの解説</h2>
-<p><br  />
- partListブロックは、１つのパーツを&lt;value&gt;と定義しパーツの配列として機能しています。<br  />
- valueの中のタグについては、SsPartのクラス説明ページを参照下さい。<br  />
- <br  />
- </p>
-<h2><a class="anchor" id="ssaeファイル　animeブロックの解説"></a>
-ssaeファイル　animeブロックの解説</h2>
-<p>&lt;anime&gt;ブロックは、アニメーションの再生FPSや名称などの設定値とそれぞれのキーフレームでパーツに適用するアトリビュート値が格納されています。<br  />
- キーフレームのアトリビュート値は&lt;partAnimes&gt;ブロックに記載されています。<br  />
- &lt;partAnimes&gt;は&lt;partAnime&gt;のコンテナとなっており、&lt;partAnime&gt;はモデルで定義された各パーツに対応したアトリビュート値がキーフレーム値と一緒に記載されています。<br  />
- <br  />
- (例）<br  />
- </p><pre>
-    &lt;attribute tag="POSX"&gt;
-        &lt;key time="0" ipType="linear"&gt;
-            &lt;value&gt;0&lt;/value&gt;
-        &lt;/key&gt;
-    &lt;/attribute&gt;
-  </pre><p> <br  />
- ここで、アトリビュートはPOSX=パーツの座標Xを示しており、そのキーフレームはtime=0の場所、補完方法はliner=線形補間となっており、<br  />
- その値はvalue=0となっています。このvalue値がパーツの座標Xに適用されます。<br  />
- このブロックはキーフレームがエディタ上で作成されている場合、作成されただけここに記載が行われます。<br  />
- アトリビュートの種類については、SsAttributeKind で検索、補完方法については、SsInterpolationTypeを参照下さい。<br  />
- <br  />
-</p>
-<h1><a class="anchor" id="ssceファイルについて"></a>
+<p>partListブロックは、１つのパーツを&lt;value&gt;と定義しパーツの配列として機能しています。 valueの中のタグについては、SsPartのクラス説明ページを参照下さい。</p>
+<h1><a class="anchor" id="autotoc_md7"></a>
+ssaeファイル　animeブロックの解説</h1>
+<p>&lt;anime&gt;ブロックは、アニメーションの再生FPSや名称などの設定値とそれぞれのキーフレームでパーツに適用するアトリビュート値が格納されています。 キーフレームのアトリビュート値は&lt;partAnimes&gt;ブロックに記載されています。 &lt;partAnimes&gt;は&lt;partAnime&gt;のコンテナとなっており、&lt;partAnime&gt;はモデルで定義された各パーツに対応したアトリビュート値がキーフレーム値と一緒に記載されています。</p>
+<p>(例） </p><div class="fragment"><div class="line">&lt;<span class="keywordtype">attribute</span> <span class="keyword">tag</span>=<span class="stringliteral">&quot;POSX&quot;</span>&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">key</span> <span class="keyword">time</span>=<span class="stringliteral">&quot;0&quot;</span> <span class="keyword">ipType</span>=<span class="stringliteral">&quot;linear&quot;</span>&gt;</div>
+<div class="line">        \&lt;<span class="keywordtype">value</span>\&gt;0\&lt;/<span class="keywordtype">value</span>\&gt;</div>
+<div class="line">    &lt;/<span class="keywordtype">key</span>&gt;</div>
+<div class="line">&lt;/<span class="keywordtype">attribute</span>&gt;</div>
+</div><!-- fragment --><p>ここで、アトリビュートはPOSX=パーツの座標Xを示しており、そのキーフレームはtime=0の場所、補完方法はliner=線形補間となっており、 その値はvalue=0となっています。このvalue値がパーツの座標Xに適用されます。 このブロックはキーフレームがエディタ上で作成されている場合、作成されただけここに記載が行われます。 アトリビュートの種類については、SsAttributeKind で検索、補完方法については、SsInterpolationTypeを参照下さい。</p>
+<h1><a class="anchor" id="autotoc_md8"></a>
 ssceファイルについて</h1>
-<p>ssceファイルは、OPTPiX SpriteStudioで作成されたセルマップの情報が記述されているファイルです。<br  />
- 各セルは、&lt;cells&gt;のブロック内で一つづつ&lt;cell&gt;要素で記述が行われています。<br  />
- 例） </p><pre>
-    &lt;cells&gt;
-        &lt;cell&gt;
-            &lt;name&gt;arm_l&lt;/name&gt;
-            &lt;pos&gt;128 0&lt;/pos&gt;
-            &lt;size&gt;128 192&lt;/size&gt;
-            &lt;pivot&gt;0.4296875 -0.354166656732559&lt;/pivot&gt;
-            &lt;rotated&gt;0&lt;/rotated&gt;
-            &lt;orgImageName&gt;&lt;/orgImageName&gt;
-            &lt;posStable&gt;0&lt;/posStable&gt;
-        &lt;/cell&gt;
-        :
-        :
- </pre><p> <br  />
- 基本的にssceは、複雑なフォーマットにはなっておらず、cellの配列として記述が行われておりますので、<br  />
- 各タグを本ドキュメントで検索頂けるとご使用いただけます。<br  />
- <br  />
-</p>
+<p>ssceファイルは、OPTPiX SpriteStudioで作成されたセルマップの情報が記述されているファイルです。 各セルは、&lt;cells&gt;のブロック内で一つづつ&lt;cell&gt;要素で記述が行われています。</p>
+<p>例） </p><div class="fragment"><div class="line">&lt;<span class="keywordtype">cells</span>&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">cell</span>&gt;</div>
+<div class="line">        &lt;<span class="keywordtype">name</span>&gt;<span class="keyword">arm_l</span>&lt;/<span class="keywordtype">name</span>&gt;</div>
+<div class="line">        &lt;<span class="keywordtype">pos</span>&gt;128 0&lt;/<span class="keywordtype">pos</span>&gt;</div>
+<div class="line">        &lt;<span class="keywordtype">size</span>&gt;128 192&lt;/<span class="keywordtype">size</span>&gt;</div>
+<div class="line">        &lt;<span class="keywordtype">pivot</span>&gt;0.4296875 -0.354166656732559&lt;/<span class="keywordtype">pivot</span>&gt;</div>
+<div class="line">        &lt;<span class="keywordtype">rotated</span>&gt;0&lt;/<span class="keywordtype">rotated</span>&gt;</div>
+<div class="line">        &lt;<span class="keywordtype">orgImageName</span>&gt;&lt;/<span class="keywordtype">orgImageName</span>&gt;</div>
+<div class="line">        &lt;<span class="keywordtype">posStable</span>&gt;0&lt;/<span class="keywordtype">posStable</span>&gt;</div>
+<div class="line">    &lt;/<span class="keywordtype">cell</span>&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">cell</span>&gt;</div>
+<div class="line">        :</div>
+<div class="line">        :</div>
+<div class="line">    &lt;/<span class="keywordtype">cell</span>&gt;</div>
+<div class="line">    :</div>
+<div class="line">    :</div>
+<div class="line">&lt;/<span class="keywordtype">cells</span>&gt;</div>
+</div><!-- fragment --><p>基本的にssceは、複雑なフォーマットにはなっておらず、cellの配列として記述が行われておりますので、 各タグを本ドキュメントで検索頂けるとご使用いただけます。 </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['sdk_0',['OPTPiX SpriteStudio SDK',['../index.html',1,'']]],
-  ['spritestudio_20sdk_1',['OPTPiX SpriteStudio SDK',['../index.html',1,'']]]
+  ['sdk_0',['SpriteStudio 6 SDK',['../index.html',1,'']]],
+  ['spritestudio_206_20sdk_1',['SpriteStudio 6 SDK',['../index.html',1,'']]]
 ];
