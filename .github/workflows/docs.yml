@@ -1,0 +1,35 @@
+name: generate documentation
+
+on:
+  workflow_dispatch:
+    
+
+jobs:
+  docs:
+    strategy:
+      matrix:
+        platform: [macos-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - name: prepare
+      run: |
+        brew install doxygen
+        brew install graphviz
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+        fetch-depth: 0
+    - name: generate documentation
+      run: ./Scripts/generate_docs.sh
+    - name: Set environment variable
+      run: echo "DATE=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+    - name: Create Pull Request
+      id: create_release_pr
+      uses: peter-evans/create-pull-request@v5
+      with:
+        path: ./docs
+        commit-message: "Update documentation"
+        branch: feature/docs_${{ env.DATE }}
+        base: develop
+        title: "Update document ${{ env.DATE }}"
+        draft: false
