@@ -1,0 +1,26 @@
+var classspritestudio6_1_1_i_ss_effect_renderer =
+[
+    [ "ISsEffectRenderer", "classspritestudio6_1_1_i_ss_effect_renderer.html#a4c1d48d0c296c42b509d11caca2fc140", null ],
+    [ "~ISsEffectRenderer", "classspritestudio6_1_1_i_ss_effect_renderer.html#a54ec81d755ae627dd7515bb8501583a1", null ],
+    [ "debugDraw", "classspritestudio6_1_1_i_ss_effect_renderer.html#a583e12952ac7347ee21763abd14a8549", null ],
+    [ "draw", "classspritestudio6_1_1_i_ss_effect_renderer.html#aa15d6052569dd98629383358a97f07b1", null ],
+    [ "getCurrentFPS", "classspritestudio6_1_1_i_ss_effect_renderer.html#a4046314b1ee0d6d51f742828017d592a", null ],
+    [ "getFrame", "classspritestudio6_1_1_i_ss_effect_renderer.html#a42cd27331fae546b4cc505b15b365c05", null ],
+    [ "isloop", "classspritestudio6_1_1_i_ss_effect_renderer.html#a1e33ca9184cc9212edc2daf100cee5ec", null ],
+    [ "ispause", "classspritestudio6_1_1_i_ss_effect_renderer.html#a7ee91ea7f95563352fa01498e7308435", null ],
+    [ "isplay", "classspritestudio6_1_1_i_ss_effect_renderer.html#a7a3eebc674d31051cb461cc32190fff5", null ],
+    [ "pause", "classspritestudio6_1_1_i_ss_effect_renderer.html#ab7d64095d1f97bd4d1a35af1cd19b6d1", null ],
+    [ "play", "classspritestudio6_1_1_i_ss_effect_renderer.html#ad5e81f692ba6cdb28190bcea5f818c44", null ],
+    [ "reload", "classspritestudio6_1_1_i_ss_effect_renderer.html#a61363a9a429df9df05fe6f536e0ddca9", null ],
+    [ "setEffectData", "classspritestudio6_1_1_i_ss_effect_renderer.html#ab90a793a27fa17e393979ee3ceb73af0", null ],
+    [ "setFrame", "classspritestudio6_1_1_i_ss_effect_renderer.html#a3ccce4ee3fe635b10490214cd27a34dc", null ],
+    [ "setLoop", "classspritestudio6_1_1_i_ss_effect_renderer.html#a9fa6d066c0b2c5b0c860da34994d2099", null ],
+    [ "setParentAnimeState", "classspritestudio6_1_1_i_ss_effect_renderer.html#aaba18cb5d041ad068a0c696387893719", null ],
+    [ "setSeed", "classspritestudio6_1_1_i_ss_effect_renderer.html#a8f364981155e84c05575697599054b53", null ],
+    [ "stop", "classspritestudio6_1_1_i_ss_effect_renderer.html#a2001a640ca3c4e546720dd9ab5ae48bb", null ],
+    [ "update", "classspritestudio6_1_1_i_ss_effect_renderer.html#a6a11c6d31122b8cbcf0f5515ad1d4a6d", null ],
+    [ "m_isLoop", "classspritestudio6_1_1_i_ss_effect_renderer.html#a9da638a7e663cd602c5ebb8b05c1039d", null ],
+    [ "m_isPause", "classspritestudio6_1_1_i_ss_effect_renderer.html#acfb90dc40b54a43a9a1e06e14332f6d3", null ],
+    [ "m_isPlay", "classspritestudio6_1_1_i_ss_effect_renderer.html#a4443b69eed16144a6adf69344a607027", null ],
+    [ "usePreMultiTexture", "classspritestudio6_1_1_i_ss_effect_renderer.html#afc3aa1a245841e284e2398b83282aaf1", null ]
+];
