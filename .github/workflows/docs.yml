@@ -32,7 +32,6 @@ jobs:
       id: create_release_pr
       uses: peter-evans/create-pull-request@v5
       with:
-        path: ./docs
         commit-message: "Update documentation"
         branch: feature/docs_${{ env.DATE }}
         base: develop
