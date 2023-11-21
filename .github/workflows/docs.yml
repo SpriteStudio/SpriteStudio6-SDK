@@ -24,12 +24,8 @@ jobs:
       run: ./Scripts/generate_docs.sh
     - name: Set environment variable
       run: echo "DATE=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
-    - name: config git
-      run: |
-        git config user.name github-actions
-        git config user.email github-actions@github.com
     - name: Create Pull Request
-      id: create_release_pr
+      id: cpr
       uses: peter-evans/create-pull-request@v5
       with:
         commit-message: "Update documentation"
@@ -37,3 +33,8 @@ jobs:
         base: develop
         title: "Update document ${{ env.DATE }}"
         draft: false
+    - name: check outputs
+      if: ${{ steps.cpr.outputs.pull-request-number }}
+      run: |
+        echo "Pull Request Number - ${{ steps.cpr.outputs.pr_number }}"
+        echo "Pull Request URL - ${{ steps.cpr.outputs.pr_url }}"
