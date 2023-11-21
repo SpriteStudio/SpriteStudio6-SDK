@@ -15,10 +15,11 @@ jobs:
       run: |
         brew install doxygen
         brew install graphviz
-    - uses: actions/checkout@v4
+    - name: checkout
+      uses: actions/checkout@v4
       with:
-        submodules: 'recursive'
         fetch-depth: 0
+        ref: develop
     - name: generate documentation
       run: ./Scripts/generate_docs.sh
     - name: Set environment variable
