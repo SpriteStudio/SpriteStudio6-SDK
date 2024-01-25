@@ -15,6 +15,10 @@ SsAnimePack*	ssloader_ssae::Parse(const char* xmlstr , size_t len)
 		animepack->__Serialize( &ar );
 		return animepack;
 	}
+	else
+	{
+		return 0;
+	}
 
 
 }
