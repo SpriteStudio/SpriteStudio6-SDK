@@ -13,11 +13,11 @@ CCACHE()
 PREPARE()
 
 if(NOT TARGET ssHelper)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common Ss6Converter_Common)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common ${PROJECT_NAME}_Common)
 endif()
 
 if(NOT TARGET glad)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad Ss6Converter_glad)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad ${PROJECT_NAME}_glad)
 endif()
 
 # dependency libraries
@@ -28,7 +28,7 @@ message("fetch zlib")
 FetchContent_Declare(
         zlib
         GIT_REPOSITORY https://github.com/madler/zlib
-        GIT_TAG        v1.2.13
+        GIT_TAG        v1.3.1
 )
 FetchContent_MakeAvailable(zlib)
 include_directories(${zlib_SOURCE_DIR})
@@ -39,7 +39,7 @@ set(JSON_Install OFF CACHE INTERNAL "")
 FetchContent_Declare(
     json
     GIT_REPOSITORY https://github.com/nlohmann/json.git
-    GIT_TAG        v3.11.2)
+    GIT_TAG        v3.11.3)
 FetchContent_GetProperties(json)
 if(NOT json_POPULATED)
   set(JSON_BuildTests OFF CACHE INTERNAL "") # skip json unit test
@@ -52,7 +52,7 @@ message("fetch flatbuffers")
 FetchContent_Declare(
     flatbuffers
     GIT_REPOSITORY https://github.com/google/flatbuffers.git
-    GIT_TAG        v23.5.26)
+    GIT_TAG        v24.3.7)
 if (ENABLE_FLATC)
     set(FLATBUFFERS_BUILD_TESTS OFF CACHE INTERNAL "Disable flatbuffers unit test")
     set(FLATBUFFERS_INSTALL OFF CACHE INTERNAL "Disable flatbuffers install")
@@ -113,7 +113,7 @@ set(PLOG_INSTALL OFF CACHE INTERNAL "")
 FetchContent_Declare(
     plog
     GIT_REPOSITORY https://github.com/SergiusTheBest/plog.git
-    GIT_TAG        1.1.9)
+    GIT_TAG        1.1.10)
 FetchContent_MakeAvailable(plog)
 include_directories(${plog_SOURCE_DIR}/include)
 
@@ -173,19 +173,19 @@ if(WIN32 OR APPLE)
     FetchContent_Declare(
             glfw
             GIT_REPOSITORY https://github.com/glfw/glfw.git
-            GIT_TAG        3.3.8)
+            GIT_TAG        3.4)
     FetchContent_MakeAvailable(glfw)
     include_directories(${glfw_SOURCE_DIR}/include)
     include_directories(${glfw_SOURCE_DIR}/deps)
 
-    list(APPEND Ss6Converter_SRCS 
+    list(APPEND Ss6Converter_SRCS
         BackGroudRender.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_render_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper/OpenGL/SSTextureGL.cpp
     )
 
-    list(APPEND Ss6Converter_HEADERS 
+    list(APPEND Ss6Converter_HEADERS
         BackGroudRender.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_render_gl.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer/ssplayer_shader_gl.h
@@ -196,7 +196,7 @@ if(WIN32 OR APPLE)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad/include)
 
-    add_definitions( -D_BACKBUFFER_RENDERING__) 
+    add_definitions( -D_BACKBUFFER_RENDERING__)
 endif()
 
 add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS} ${FlatBuffers_Library_SRCS})

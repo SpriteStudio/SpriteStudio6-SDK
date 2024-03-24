@@ -16,17 +16,19 @@ message("fetch JUCE")
 FetchContent_Declare(
     JUCE
     GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
-    GIT_TAG        7.0.5)
+    GIT_TAG        7.0.10)
 FetchContent_MakeAvailable(JUCE)
 
 message("finish fetching dependency libraries")
 
 add_definitions(-DUSE_GLEW)
 add_definitions(-DJUCE_MODAL_LOOPS_PERMITTED=1)
-
+if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+    add_definitions(-DJUCE_SILENCE_XCODE_15_LINKER_WARNING)
+endif()
 
 if(NOT TARGET ssHelper)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common SSView2_Common)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common ${PROJECT_NAME}_Common)
 endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Loader)
@@ -34,7 +36,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Animator)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper)
 
 if(NOT TARGET glad)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad SSView2_glad)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad ${PROJECT_NAME}_glad)
 endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Drawer)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Libs/glad/include)
