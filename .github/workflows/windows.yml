@@ -14,7 +14,7 @@ on:
 
 env:
   arch: ${{ inputs.arch }}
-  qtVersion: "6.5.1"
+  qtVersion: "6.7.0"
   cmakeVersion: "3.29.2"
 
 jobs:

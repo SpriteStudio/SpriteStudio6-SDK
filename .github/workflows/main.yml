@@ -5,7 +5,7 @@ on: [push]
 env:
   SCCACHE_GHA_ENABLED: "true"
   SCCACHE_CACHE_MULTIARCH: "1"
-  qtVersion: "6.5.1"
+  qtVersion: "6.7.0"
   cmakeVersion: "3.29.2"
 
 jobs:
@@ -51,8 +51,8 @@ jobs:
     steps:
     - name: Setup Ninja
       uses: ashutoshvarma/setup-ninja@master
-#    - name: Run sccache-cache
-#      uses: mozilla-actions/sccache-action@v0.0.4
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.4
     - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
