@@ -16,7 +16,7 @@ if((NOT CMAKE_PROJECT_NAME))
 endif()
 
 # find Qt6
-set(QT_DEFAULT_VERSION "6.5.1")
+set(QT_DEFAULT_VERSION "6.7.0")
 if(MSVC)
     if(NOT $ENV{QT_PREFIX})
         set(QT_PREFIX "$ENV{QT_PREFIX}")
