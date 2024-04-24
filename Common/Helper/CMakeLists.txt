@@ -1,5 +1,5 @@
 include(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/initialize.cmake)
-cmake_minimum_required(VERSION 3.19.2)
+cmake_minimum_required(VERSION 3.25)
 
 project(ssHelper)
 

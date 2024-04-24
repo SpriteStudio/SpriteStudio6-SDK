@@ -1,5 +1,5 @@
 include(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/initialize.cmake)
-CMAKE_MINIMUM_REQUIRED(VERSION 3.19.2)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.25)
 project(SSView2)
 
 # command options

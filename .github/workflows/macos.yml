@@ -31,7 +31,7 @@ jobs:
       - id: commit
         uses: pr-mpt/actions-commit-hash@v2
       - name: Upload Tools
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: macos_${{ steps.commit.outputs.short }}
           path: Tools

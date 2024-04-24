@@ -15,7 +15,7 @@ on:
 env:
   arch: ${{ inputs.arch }}
   qtVersion: "6.5.1"
-  cmakeVersion: "3.26.4"  
+  cmakeVersion: "3.29.2"
 
 jobs:
   win_build:
@@ -30,7 +30,7 @@ jobs:
         with:
           submodules: 'recursive'
       - name: Install cmake
-        uses: jwlawson/actions-setup-cmake@v1.13
+        uses: jwlawson/actions-setup-cmake@v2
         with:
           cmake-version: ${{ env.cmakeVersion }}
       - name: Check cmake

@@ -6,7 +6,7 @@ env:
   SCCACHE_GHA_ENABLED: "true"
   SCCACHE_CACHE_MULTIARCH: "1"
   qtVersion: "6.5.1"
-  cmakeVersion: "3.26.4"
+  cmakeVersion: "3.29.2"
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
     - name: Run sccache-cache
-      uses: mozilla-actions/sccache-action@v0.0.3
+      uses: mozilla-actions/sccache-action@v0.0.4
       with:
         version: "v0.7.2"
     - uses: actions/checkout@v4
@@ -37,7 +37,7 @@ jobs:
     - id: commit
       uses: pr-mpt/actions-commit-hash@v2
     - name: Upload Tools
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: macos_${{ steps.commit.outputs.short }}
         path: Tools
@@ -52,12 +52,12 @@ jobs:
     - name: Setup Ninja
       uses: ashutoshvarma/setup-ninja@master
 #    - name: Run sccache-cache
-#      uses: mozilla-actions/sccache-action@v0.0.3
+#      uses: mozilla-actions/sccache-action@v0.0.4
     - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
     - name: Install cmake
-      uses: jwlawson/actions-setup-cmake@v1.13
+      uses: jwlawson/actions-setup-cmake@v2
       with:
         cmake-version: ${{ env.cmakeVersion }}
     - name: Check cmake
@@ -81,7 +81,7 @@ jobs:
     - id: commit
       uses: pr-mpt/actions-commit-hash@v2
     - name: Upload Tools
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows_x64_${{ steps.commit.outputs.short }}
         path: Tools
