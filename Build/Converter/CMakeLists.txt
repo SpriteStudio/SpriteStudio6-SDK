@@ -52,7 +52,7 @@ message("fetch flatbuffers")
 FetchContent_Declare(
     flatbuffers
     GIT_REPOSITORY https://github.com/google/flatbuffers.git
-    GIT_TAG        v24.3.7)
+    GIT_TAG        v24.3.25)
 if (ENABLE_FLATC)
     set(FLATBUFFERS_BUILD_TESTS OFF CACHE INTERNAL "Disable flatbuffers unit test")
     set(FLATBUFFERS_INSTALL OFF CACHE INTERNAL "Disable flatbuffers install")
