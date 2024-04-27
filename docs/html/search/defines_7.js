@@ -16,7 +16,7 @@ var searchData=
   ['spritestudio6sdk_5floop_5ftype1_13',['SPRITESTUDIO6SDK_LOOP_TYPE1',['../ssplayer__effect2_8h.html#ae8aabd4969811a811cdad79a5b616cbc',1,'ssplayer_effect2.h']]],
   ['spritestudio6sdk_5floop_5ftype2_14',['SPRITESTUDIO6SDK_LOOP_TYPE2',['../ssplayer__effect2_8h.html#ab1ace6af12236ee4d5b5ff0ecc5241ff',1,'ssplayer_effect2.h']]],
   ['spritestudio6sdk_5floop_5ftype3_15',['SPRITESTUDIO6SDK_LOOP_TYPE3',['../ssplayer__effect2_8h.html#ae23893dcfd8f5784e1a2fecdda82f76c',1,'ssplayer_effect2.h']]],
-  ['spritestudio6sdk_5fnouse_5fargument_16',['spritestudio6sdk_nouse_argument',['../ssh_task_8h.html#a63dd1c86c7cb3328dcfd6e30155cbe8a',1,'SPRITESTUDIO6SDK_NOUSE_ARGUMENT:&#160;sshTask.h'],['../sstypes_8h.html#a63dd1c86c7cb3328dcfd6e30155cbe8a',1,'SPRITESTUDIO6SDK_NOUSE_ARGUMENT:&#160;sstypes.h']]],
+  ['spritestudio6sdk_5fnouse_5fargument_16',['SPRITESTUDIO6SDK_NOUSE_ARGUMENT',['../ssh_task_8h.html#a63dd1c86c7cb3328dcfd6e30155cbe8a',1,'SPRITESTUDIO6SDK_NOUSE_ARGUMENT:&#160;sshTask.h'],['../sstypes_8h.html#a63dd1c86c7cb3328dcfd6e30155cbe8a',1,'SPRITESTUDIO6SDK_NOUSE_ARGUMENT:&#160;sstypes.h']]],
   ['spritestudio6sdk_5fpfmem_5ftest_17',['SPRITESTUDIO6SDK_PFMEM_TEST',['../ssplayer__effect_8h.html#a2e5c7bc5bf04b6f5bb60d4a9e7e55a35',1,'ssplayer_effect.h']]],
   ['spritestudio6sdk_5fprogramable_5fshader_5fon_18',['SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON',['../ssplayer__render__gl_8cpp.html#add466bb9369d8d7b7ce8caeb193b4a22',1,'ssplayer_render_gl.cpp']]],
   ['spritestudio6sdk_5fput_5funiform_5fwarning_19',['SPRITESTUDIO6SDK_PUT_UNIFORM_WARNING',['../ssplayer__shader__gl_8h.html#a87248919c88807e7d8d55e4278c4d383',1,'ssplayer_shader_gl.h']]],
