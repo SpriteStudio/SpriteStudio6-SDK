@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['parse_0',['parse',['../classspritestudio6_1_1ssloader__ssae.html#a71d679c46a61c800f55da558c57bbfa2',1,'spritestudio6::ssloader_ssae::Parse()'],['../classspritestudio6_1_1ssloader__ssce.html#ac2d5c8221c39279f54c21ac51a841445',1,'spritestudio6::ssloader_ssce::Parse()']]],
+  ['parse_0',['Parse',['../classspritestudio6_1_1ssloader__ssae.html#a71d679c46a61c800f55da558c57bbfa2',1,'spritestudio6::ssloader_ssae::Parse()'],['../classspritestudio6_1_1ssloader__ssce.html#ac2d5c8221c39279f54c21ac51a841445',1,'spritestudio6::ssloader_ssce::Parse()']]],
   ['parse_5fprojectonly_1',['Parse_ProjectOnly',['../classspritestudio6_1_1ssloader__sspj.html#a2d87bd7b8e683587e49daa6d0075236a',1,'spritestudio6::ssloader_sspj']]],
   ['particledelete_2',['particleDelete',['../namespacespritestudio6.html#a64f54a13b1d568ede9a23184f6b6727b',1,'spritestudio6']]],
   ['particledeleteall_3',['particleDeleteAll',['../namespacespritestudio6.html#aa6a47a496915205d5304492709d77a54',1,'spritestudio6']]],
@@ -25,8 +25,8 @@ var searchData=
   ['particleturntodirectionenabled_22',['ParticleTurnToDirectionEnabled',['../classspritestudio6_1_1_particle_turn_to_direction_enabled.html#ab1c35dd0db2cccca8ee27ea1be67f873',1,'spritestudio6::ParticleTurnToDirectionEnabled']]],
   ['path2dir_23',['path2dir',['../namespacespritestudio6.html#ae043b527867376cb4c2d2955ff555792',1,'spritestudio6']]],
   ['path2file_24',['path2file',['../namespacespritestudio6.html#ab16e233c10aa1161c6bfa5a6ec6e9cfa',1,'spritestudio6']]],
-  ['pause_25',['pause',['../classspritestudio6_1_1_i_ss_effect_renderer.html#ab7d64095d1f97bd4d1a35af1cd19b6d1',1,'spritestudio6::ISsEffectRenderer::pause()'],['../classspritestudio6_1_1_ss_effect_render_v2.html#ae40df9b5af5723f09dc61ea15e7c14e0',1,'spritestudio6::SsEffectRenderV2::pause()'],['../classspritestudio6_1_1_ss_effect_renderer.html#ad1554b21be76871090cfc3cea4ffa86f',1,'spritestudio6::SsEffectRenderer::pause()']]],
-  ['play_26',['play',['../classspritestudio6_1_1_ss_effect_renderer.html#ac4602ae19e910199d56c205c2bdb3e77',1,'spritestudio6::SsEffectRenderer::play()'],['../classspritestudio6_1_1_ss_effect_render_v2.html#ae62357f18343ce6e63d2fddb3d0ede82',1,'spritestudio6::SsEffectRenderV2::play()'],['../classspritestudio6_1_1_i_ss_effect_renderer.html#ad5e81f692ba6cdb28190bcea5f818c44',1,'spritestudio6::ISsEffectRenderer::play()']]],
+  ['pause_25',['pause',['../classspritestudio6_1_1_i_ss_effect_renderer.html#ab7d64095d1f97bd4d1a35af1cd19b6d1',1,'spritestudio6::ISsEffectRenderer::pause()'],['../classspritestudio6_1_1_ss_effect_renderer.html#ad1554b21be76871090cfc3cea4ffa86f',1,'spritestudio6::SsEffectRenderer::pause()'],['../classspritestudio6_1_1_ss_effect_render_v2.html#ae40df9b5af5723f09dc61ea15e7c14e0',1,'spritestudio6::SsEffectRenderV2::pause()']]],
+  ['play_26',['play',['../classspritestudio6_1_1_i_ss_effect_renderer.html#ad5e81f692ba6cdb28190bcea5f818c44',1,'spritestudio6::ISsEffectRenderer::play()'],['../classspritestudio6_1_1_ss_effect_renderer.html#ac4602ae19e910199d56c205c2bdb3e77',1,'spritestudio6::SsEffectRenderer::play()'],['../classspritestudio6_1_1_ss_effect_render_v2.html#ae62357f18343ce6e63d2fddb3d0ede82',1,'spritestudio6::SsEffectRenderV2::play()']]],
   ['popmatrix_27',['popMatrix',['../classspritestudio6_1_1_ss_open_g_l_matrix.html#a7aea776e595f8c7240cc5972c59b67e8',1,'spritestudio6::SsOpenGLMatrix']]],
   ['precalculate2_28',['precalculate2',['../classspritestudio6_1_1_ss_effect_emitter.html#a621616e40c36548f6ca55fd7d84bf904',1,'spritestudio6::SsEffectEmitter']]],
   ['preloadtexture_29',['preloadTexture',['../classspritestudio6_1_1_ss_cell_map_list.html#a4cb398838c8b21c4c3baef30eeb9a464',1,'spritestudio6::SsCellMapList']]],

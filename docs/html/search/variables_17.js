@@ -6,5 +6,5 @@ var searchData=
   ['weightcolors_3',['weightColors',['../classspritestudio6_1_1_ss_mesh_part.html#af165b47262d7292bccaa21059bc91aed',1,'spritestudio6::SsMeshPart']]],
   ['weightimpact_4',['weightImpact',['../classspritestudio6_1_1_ss_part.html#a3d54fc6bba04695e24f6d3607597d7ec',1,'spritestudio6::SsPart']]],
   ['weightposition_5',['weightPosition',['../classspritestudio6_1_1_ss_part.html#a38f3f6c1ed934a812c490caff853206f',1,'spritestudio6::SsPart']]],
-  ['wrapmode_6',['wrapmode',['../structspritestudio6_1_1_ss_cell_value.html#ad410066401152dc3439446320e3c6eaf',1,'spritestudio6::SsCellValue::wrapMode'],['../classspritestudio6_1_1_ss_cell_map.html#a2648ec0ed1897e020693c44a243fca14',1,'spritestudio6::SsCellMap::wrapMode'],['../classspritestudio6_1_1_ss_project_setting.html#ae5e315a4148df8bb91276e3c722f7f00',1,'spritestudio6::SsProjectSetting::wrapMode']]]
+  ['wrapmode_6',['wrapMode',['../structspritestudio6_1_1_ss_cell_value.html#ad410066401152dc3439446320e3c6eaf',1,'spritestudio6::SsCellValue::wrapMode'],['../classspritestudio6_1_1_ss_cell_map.html#a2648ec0ed1897e020693c44a243fca14',1,'spritestudio6::SsCellMap::wrapMode'],['../classspritestudio6_1_1_ss_project_setting.html#ae5e315a4148df8bb91276e3c722f7f00',1,'spritestudio6::SsProjectSetting::wrapMode']]]
 ];
