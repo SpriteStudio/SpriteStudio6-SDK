@@ -16,8 +16,8 @@ rem Build flatc
 rmdir /S /Q build
 mkdir build
 pushd build
-cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% . || exit /b 1
-cmake --build . --target ALL_BUILD --parallel -- /p:Configuration=%BUILD_TYPE% || exit /b 1
+cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DENABLE_FLATC=ON .. || exit /b 1
+cmake --build . --target flatc --parallel -- /p:Configuration=%BUILD_TYPE% || exit /b 1
 set FLATC="%BUILDDIR%\Converter\build\_deps\flatbuffers-build\flatc.exe"
 popd
 
