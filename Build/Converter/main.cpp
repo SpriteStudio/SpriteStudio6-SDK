@@ -1880,8 +1880,8 @@ void createPackFileList(spritestudio6::SsProject* proj , std::string sspjPath , 
 //	LumpExporter::StringEncoding encoding, const std::string& sspjPath,
 //	const std::string& imageBaseDir, const std::string& creatorComment, const int outputFormat)
 
-void convertProject(const std::string& outPath, const std::string& outFName,
-	LumpExporter::StringEncoding encoding, const std::string& sspjPath,
+void convertProject(const fs::path& outPath, const std::string& outFName,
+	LumpExporter::StringEncoding encoding, const fs::path& sspjPath,
 	Options& options, const std::string& creatorComment )
 
 {
@@ -1891,9 +1891,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 	const int outputFormat = options.outputFormat;
 
 	std::string outputdirUTF8;
-	// 事前の parseArguments 処理時にUTF8変換するようにしたためここでの変換をカットしました。
-	//outputdirUTF8 = spritestudio6::SsCharConverter::sjis_to_utf8(outPath);
-	outputdirUTF8 = outPath;
+	outputdirUTF8 = outPath.string();
 
 	COI("output directory: " + outputdirUTF8);
 
@@ -1964,57 +1962,44 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 	}
 	else
 	{
+        auto outputFilePath = fs::path(spritestudio6::SsCharConverter::convert_path_string(outPath.string()));
 		std::fstream out;
 		static const std::string messageErrorFileOpen = "出力ファイルのオープンに失敗しました: ";
 
 		if (outputFormat == OUTPUT_FORMAT_FLAG_JSON)
 		{
 			COI( "convert type : OUTPUT_FORMAT_FLAG_JSON " );
-
-//			out.open((outPath + ".json").c_str(), std::ios_base::out);
-			std::string outPathJson = outPath + outFName + ".json";
-
-			out.open((spritestudio6::SsCharConverter::convert_path_string( outPathJson )).c_str()
-						, std::ios_base::out);
+            outputFilePath = outputFilePath / fs::path(outFName + ".json");
+            COI( "outputFilePath " + outputFilePath.string() );
+			out.open(outputFilePath, std::ios_base::out);
 			if(out)
 			{
 				LumpExporter::saveJson(out, encoding, lump, creatorComment);
 			}
 			else
 			{
-//				std::cerr << messageErrorFileOpen << convert_console_string(outPathJson) << std::endl;
-				COE(messageErrorFileOpen + convert_console_string(outPathJson));
+				COE(messageErrorFileOpen + convert_console_string(outputFilePath.string()));
 			}
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_CSOURCE)
 		{
 			COI("convert type : OUTPUT_FORMAT_FLAG_CSOURCE ");
 
-			// out.open((outPath + ".c").c_str(), std::ios_base::out);
-			// LumpExporter::saveCSource(out, encoding, lump, "topLabel", creatorComment);
-//			std::cerr << "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***"  << std::endl;
 			COE( "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***" );
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{
 			COI( "convert type : OUTPUT_FORMAT_FLAG_SSFB " );
-
-//			out.open((outPath + ".ssfb").c_str(), std::ios_base::binary | std::ios_base::out);
-			std::string outPathSsfb = outPath + outFName + ".ssfb";
-
-			COI( "outPathSsfb " + outPathSsfb );
-
-
-			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
-						, std::ios_base::binary | std::ios_base::out);
+            outputFilePath = outputFilePath / fs::path(outFName + ".ssfb");
+            COI( "outputFilePath " + outputFilePath.string() );
+			out.open(outputFilePath, std::ios_base::binary | std::ios_base::out);
 			if(out)
 			{
 				LumpExporter::saveSsfb(out, encoding, lump, creatorComment, s_frameIndexVec);
 			}
 			else
 			{
-				//std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
-				COE( messageErrorFileOpen + convert_console_string(outPathSsfb) );
+				COE( messageErrorFileOpen + convert_console_string(outputFilePath.string()) );
 			}
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
@@ -2044,10 +2029,9 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		else
 		{
 			COI( "convert type : OUTPUT_FORMAT_FLAG_SSBP " );
-
-			std::string outPathSsfb = outPath + outFName + ".ssbp";
-			out.open((spritestudio6::SsCharConverter::convert_path_string(outPathSsfb)).c_str()
-						, std::ios_base::binary | std::ios_base::out);
+            outputFilePath = outputFilePath / fs::path(outFName + ".ssbp");
+            COI( "outputFilePath " + outputFilePath.string() );
+			out.open(outputFilePath, std::ios_base::binary | std::ios_base::out);
 			if(out)
 			{
 				LumpExporter::saveBinary(out, encoding, lump, creatorComment);
@@ -2055,7 +2039,7 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 			else
 			{
 //				std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
-				COE( messageErrorFileOpen + convert_console_string(outPathSsfb) );
+				COE( messageErrorFileOpen + convert_console_string(outputFilePath.string()) );
 			}
 		}
 	/////////////
@@ -2447,29 +2431,14 @@ int convertMain(int argc, const char * argv[])
 	// コンバート実行
 	for (std::vector<std::string>::const_iterator it = sources.begin(); it != sources.end(); it++)
 	{
-		std::string sspjPath = *it;
-
-
-#if _WIN32
-		sspjPath = replaceString(sspjPath, "/", "\\");
-#else
-		sspjPath = replaceString(sspjPath, "\\", "/");
-#endif
-
-		std::string outPath = fs::path(sspjPath).replace_filename("").string();
-		std::string outFName = fs::path(sspjPath).filename().replace_extension("").string();
+		auto sspjPath = fs::weakly_canonical(fs::absolute(*it));
+        auto outPath = sspjPath.parent_path();
+        auto outFName = sspjPath.filename().stem().string();
 
 		//パスが指定されている場合
 		if ( options.outputDir != "" )
 		{
-
-#if _WIN32
-			options.outputDir = replaceString(options.outputDir, "/", "\\");
-#else
-			options.outputDir = replaceString(options.outputDir, "\\", "/");
-#endif
-			outPath = FileUtil::normalizeFilePath(options.outputDir);
-
+            outPath = fs::weakly_canonical(fs::absolute(options.outputDir));
 		}
 
 		if (options.isVerbose)
@@ -2477,7 +2446,7 @@ int convertMain(int argc, const char * argv[])
 			std::cout << "Convert: " << sspjPath << " -> " << outPath << std::endl;
 		}
 
-		COI( "Convert : " + sspjPath );
+		COI( "Convert : " + sspjPath.string() );
 		//COI( "Convert outPath : " + outPath );
 
 
@@ -2496,7 +2465,7 @@ int convertMain(int argc, const char * argv[])
 			{
 				if (!sspkg_info::getInst()->make_sspkg())
 				{
-					COE("An error occured during making zip file. " + outPath);
+					COE("An error occured during making zip file. " + outPath.string());
 
 					convert_error_exit = true;	//エラーが発生コンバート失敗
 				}
