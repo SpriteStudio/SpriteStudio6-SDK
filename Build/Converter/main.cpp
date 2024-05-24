@@ -381,7 +381,7 @@ static void parseParts_ssqe(Lump* topLump, spritestudio6::SsProject* proj, const
 {
 }
 
-static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& imageBaseDir , const std::string& outPath)
+static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& imageBaseDir , const fs::path& outPath)
 {
 	bool isWrite = false;
 
@@ -1909,7 +1909,7 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 		}
 	}
 
-	spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(sspjPath);
+	spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(sspjPath.string());
 
 	fs::path logfilepath = fs::path(outputdirUTF8).replace_filename("convert.log");
 
@@ -2015,10 +2015,10 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 				LumpExporter::saveSsfb(out, encoding, lump, creatorComment, s_frameIndexVec);
 
 				//ファイルリストの作成
-				filelist.push_back(sspjPath);
-				createPackFileList(proj, sspjPath , filelist);
+				filelist.push_back(sspjPath.string());
+				createPackFileList(proj, sspjPath.string() , filelist);
 
-				sspkg_info::getInst()->set_sspkg_filelist( proj->version , outFName, filelist, outPath);
+				sspkg_info::getInst()->set_sspkg_filelist( proj->version , outFName, filelist, outPath.string());
 			}
 			else
 			{
