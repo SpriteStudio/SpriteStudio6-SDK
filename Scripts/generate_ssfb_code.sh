@@ -16,8 +16,8 @@ pushd Converter
 mkdir build
 pushd build
 
-cmake -DENABLE_FLATC=ON ..
-cmake --build . --parallel
+cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_FLATC=ON ..
+cmake --build . --target flatc --parallel
 FLATC=$(pwd)/_deps/flatbuffers-build/flatc
 
 popd > /dev/null # build
