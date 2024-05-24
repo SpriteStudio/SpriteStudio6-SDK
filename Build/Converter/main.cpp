@@ -6,6 +6,16 @@
 //  Copyright (c) 2014年 Hiroki Azumada. All rights reserved.
 //
 
+#include <string>
+#include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <memory>
+
+#ifndef _WIN32
+#include <sys/stat.h>
+#endif
+
 // TODO
 #include "ssloader.h"
 #include "ssplayer_animedecode.h"
@@ -15,31 +25,12 @@
 
 #include "sscharconverter.h"
 
-#include <string>
-#include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <iostream>
-#include <memory>
-
-#ifndef _WIN32
-#include <sys/stat.h>
-#endif
-
 #include "Lump.h"
 #include "LumpExporter.h"
 #include "FileUtil.h"
 #include "SsPlayerConverter.h"
 
 #include "simpleFileLogger.h"
-
-/*
-#include "plog/Log.h"
-#include <plog/Initializers/RollingFileInitializer.h>
-#include <plog/Appenders/ConsoleAppender.h>
-#include <plog/Formatters/FuncMessageFormatter.h>
-#include <plog/Formatters/MessageOnlyFormatter.h>
-*/
 
 #ifdef _BACKBUFFER_RENDERING__
 	#include "BackGroudRender.h"
@@ -182,7 +173,6 @@ struct Options
 
 typedef std::map<const spritestudio6::SsCell*, int> CellList;
 
-//static plog::ConsoleAppender<plog::MessageOnlyFormatter> consoleAppender;
 
 
 CellList* makeCellList(spritestudio6::SsProject* proj)
@@ -200,7 +190,7 @@ CellList* makeCellList(spritestudio6::SsProject* proj)
 			cellList->insert(CellList::value_type(cell, cellListIndex++));
 		}
 	}
-	
+
 	return cellList;
 }
 
@@ -217,11 +207,11 @@ static const spritestudio6::SsKeyframe* findDefaultKeyframe(spritestudio6::SsAni
 		{
 			spritestudio6::SsAttribute* attr = *attrIt;
 			if (attr->tag != tag) continue;
-			
+
 			const spritestudio6::SsKeyframe* key = attr->firstKey();
 			return key;
 		}
-		
+
 	}
 	return NULL;
 }
@@ -347,8 +337,7 @@ void CO(std::string out)
 
 void COE(std::string str)
 {
-	std::string out;
-	out = convert_console_string(str);
+	const std::string out = convert_console_string(str);
 	logger.outputLog(Logger::ERR, out);
 }
 
@@ -442,9 +431,9 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	topLump->add(effectfileArray);
 
 	topLump->add(Lump::s16Data((int)cellList->size(), "numCells"));
-	
+
 	topLump->add(Lump::s16Data((int)proj->animeList.size(), "numAnimePacks"));
-	
+
 	topLump->add(Lump::s16Data((int)proj->effectfileList.size(), "numEffectFileList"));
 
 	topLump->add(Lump::s16Data((int)proj->sequenceList.size(), "numSequencePacks"));
@@ -496,7 +485,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		{
 //			std::cerr << "エラー：セルマップに全角が使用されています。半角英数でリネームしてください。: " << cellMap->name << "\n";
 			COE( "エラー：セルマップに全角が使用されています。半角英数でリネームしてください。: " + cellMap->name );
-			
+
 			convert_error_exit = true;	//エラーが発生コンバート失敗
 		}
 
@@ -514,7 +503,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 			Lump* cellData = Lump::set("ss::Cell", false, "Cell");
 			cellsData->add(cellData);
-			
+
 			cellData->add(Lump::stringData(cell->name, "name"));
 			cellData->add(cellMapData);
 
@@ -562,7 +551,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	{
 		const spritestudio6::SsAnimePack* animePack = proj->animeList[packIndex].get();
 		const spritestudio6::SsModel& model = animePack->Model;
-		
+
 		// AnimePackData
 		Lump* animePackData = Lump::set("ss::AnimePackData", false, "AnimePackData");
 		packDataArray->add(animePackData);
@@ -707,11 +696,11 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			spritestudio6::SsAnimePack* animePack = proj->getAnimePack(packIndex);
 			spritestudio6::SsModel* model = &animePack->Model;
 			spritestudio6::SsAnimation* anime = animePack->animeList[animeIndex];
-			
+
 			cellMapList->set(proj, animePack);
 			decoder.setAnimation(model, anime, cellMapList, proj);
 			std::list<spritestudio6::SsPartState*>& partList = decoder.getPartSortList();
-			
+
 			// AnimationData
 			Lump* animeData = Lump::set("ss::AnimationData", false, "AnimationData");
 			animeDataArray->add(animeData);
@@ -720,7 +709,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			// ※とりあえず先頭フレームの値を初期値にしているが、一番使われている値を初期値にすべきかも
 			size_t numParts = model->partList.size();
 			std::vector<PartInitialData> initialDataList;
-			
+
 			decoder.setPlayFrame(0);
 			decoder.update();
 
@@ -730,9 +719,9 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			{
 				spritestudio6::SsPart* part = it->first;
 //				spritestudio6::SsPartAnime* partAnime = it->second;
-				
+
 				const spritestudio6::SsPartState* state = findState(partList, part->arrayIndex);
-				
+
 				PartInitialData init;
 				init.sortedOrder = sortedOrder++;
 				init.index = state->index;
@@ -753,7 +742,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				int cellIndex = -1;
 				if (state->cellValue.cell) cellIndex = (*cellList)[state->cellValue.cell];
 				init.cellIndex = cellIndex;
-				
+
 				init.posX = state->position.x;
 				init.posY = state->position.y;
 				init.posZ = state->position.z;
@@ -814,7 +803,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				init.effectValue_curKeyframe = state->effectValue.curKeyframe;
 
 				initialDataList.push_back(init);
-				
+
 				Lump* initialData = Lump::set("ss::AnimationInitialData", false, "AnimationInitialData");
 				initialDataArray->add(initialData);
 
@@ -948,7 +937,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				// パラメータを計算し更新する
 				decoder.setPlayFrame(static_cast<float>(frame));
 				decoder.update();
-				
+
 				// パーツの描画順が初期値と変わっていないかチェックする
 				bool prioChanged = false;
 //				int initialDataListIndex = 0;
@@ -1004,7 +993,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 					int cellIndex = -1;
 					if (state->cellValue.cell) cellIndex = (*cellList)[state->cellValue.cell];
-					
+
 					// フラグのみパラメータ
 					int s_flags = 0;
 					if (state->hide)	s_flags |= PART_FLAG_INVISIBLE;
@@ -1013,7 +1002,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					bool vFlip = state->vFlip ^ state->imageFlipV;
 					if (hFlip)			s_flags |= PART_FLAG_FLIP_H;
 					if (vFlip)			s_flags |= PART_FLAG_FLIP_V;
-					
+
 					// 以下、規定値のときは出力を省略する
 					int p_flags = 0;
 					const PartInitialData& init = initialDataList.at(state->index);
@@ -1081,7 +1070,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 						switch (state->partsColorValue.target)
 						{
 							case spritestudio6::SsColorBlendTarget::whole:
-								if ( 
+								if (
 									  ( state->partsColorValue.color.rgba.a == 0 )
 								   && ( state->partsColorValue.color.rgba.r == 0 )
 								   && ( state->partsColorValue.color.rgba.g == 0 )
@@ -1106,7 +1095,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 								assert(false);
 								break;
 						}
-						
+
 						if (cb_flags) p_flags |= PART_FLAG_PARTS_COLOR;
 					}
 
@@ -1150,14 +1139,14 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 						p_flags2 |= PART_FLAG_MESHDATA;
 					}
 
-					
+
 
 //					if (!prioChanged && s_flags == init.flags && p_flags == 0)
 //					{
 //						// このパーツは出力を省略する
 //						continue;
 //					}
-					
+
 					// パーツの座標値、回転、スケールなどを出力する
 					std::string tagname = "part_" + std::to_string(outPartsCount) + "_";
 					outPartsCount++;
@@ -1380,7 +1369,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 						}
 					}
 				}
-				
+
 				// 出力されたパーツ数と、描画順の変更があるかのフラグ
 				frameFlag->data.i = outPartsCount | (prioChanged ? 0x8000 : 0);
 
@@ -1411,7 +1400,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 						{
 							hasUserData = true;
 							partsCount++;
-							
+
 							const spritestudio6::SsKeyframe* keyframe = attr->key_dic.at(frame);
 							spritestudio6::SsUserDataAnime udat;
 							GetSsUserDataAnime(keyframe, udat);
@@ -1450,7 +1439,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 						}
 					}
 				}
-				
+
 				if (partsCount)
 				{
 					userData->addFirst(Lump::s16Data(partsCount));
@@ -1496,7 +1485,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			{
 				LabelDataIndexArray->add(Lump::s32Data(0));
 			}
-			
+
 			animeData->add(Lump::stringData(anime->name, "name"));
 			animeData->add(initialDataArray);
 			animeData->add(frameDataIndexArray);
@@ -1521,7 +1510,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			if ( isOpenGLContextInitialized())
 			{
 
-				ConverterOpenGLClear(	anime->settings.canvasSize.x, anime->settings.canvasSize.y , 
+				ConverterOpenGLClear(	anime->settings.canvasSize.x, anime->settings.canvasSize.y ,
 										anime->settings.pivot.x , anime->settings.pivot.y );
 				//対象フレームを検査して良さそうなところを持ってくる
 
@@ -1843,15 +1832,15 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			}
 		}
 	}
-	
-	
+
+
 
 	// シーケンス情報
 	parseParts_ssqe( topLump, proj, imageBaseDir );
 
 //	std::cerr << "convert end" << "\n";
 	COE("convert end");
-	
+
 	return topLump;
 }
 
@@ -1925,7 +1914,6 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 	spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(sspjPath);
 
 	fs::path logfilepath = fs::path(outputdirUTF8).replace_filename("convert.log");
-//	static plog::RollingFileAppender<plog::MessageOnlyFormatter> fileAppender(logfilepath.c_str());
 
 
 	if (isLogout)
@@ -1934,12 +1922,11 @@ void convertProject(const std::string& outPath, const std::string& outFName,
 		{
 			fs::remove(logfilepath.c_str());
 		}
-//		plog::init(plog::info, &fileAppender);
 		logger.setOutputLogFile(logfilepath.wstring());
 		logger.setOutputLogFileMode(true);
 	}
 
-	//COE( convert_console_string(sspjPath) ); 
+	//COE( convert_console_string(sspjPath) );
 
 
 	COI( "parseParts " );
@@ -2135,7 +2122,7 @@ public:
 	{
 		return _index < _argc;
 	}
-	
+
 	std::string next()
 	{
 		assert(hasNext());
@@ -2165,7 +2152,7 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		std::string enc = args.next();
 		std::string uppered = enc;
 		std::transform(uppered.begin(), uppered.end(), uppered.begin(), toupper);
-		
+
 		if      (uppered == "UTF8") options.encoding = LumpExporter::UTF8;
 		else if (uppered == "SJIS") options.encoding = LumpExporter::SJIS;
 		else
@@ -2396,7 +2383,7 @@ int convertMain(int argc, const char * argv[])
 	std::vector<std::string> sources;
 	{
 		Options::StringList& in = options.inList;
-	
+
 		bool error = false;
 		for (Options::StringList::iterator it = in.begin(); it != in.end(); it++)
 		{
@@ -2448,12 +2435,12 @@ int convertMain(int argc, const char * argv[])
             return SSPC_NOT_EXIST_INPUT_FILE;
         }
 	}
-	
+
 //	std::vector<std::string> copyfilelist;
-	
+
 	std::string creatorComment = "Created by " APP_NAME " " APP_VERSION;
 	LumpExporter::StringEncoding encoding = options.encoding;
-	
+
 
 	COI( "### Run Convert ###" );
 
@@ -2554,7 +2541,6 @@ int convertMain(int argc, const char * argv[])
 
 int main(int argc, const char * argv[])
 {
-//	plog::init(plog::info, &consoleAppender);
 
 
 	int resultCode = convertMain(argc, argv);

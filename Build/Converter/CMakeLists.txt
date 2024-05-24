@@ -106,17 +106,6 @@ else()
     endif()
 endif()
 
-
-message("fetch plog")
-set(PLOG_BUILD_SAMPLES OFF CACHE INTERNAL "")
-set(PLOG_INSTALL OFF CACHE INTERNAL "")
-FetchContent_Declare(
-    plog
-    GIT_REPOSITORY https://github.com/SergiusTheBest/plog.git
-    GIT_TAG        1.1.10)
-FetchContent_MakeAvailable(plog)
-include_directories(${plog_SOURCE_DIR}/include)
-
 message("fetch filesystem")
 set(GHC_FILESYSTEM_BUILD_EXAMPLES OFF CACHE INTERNAL "")
 set(GHC_FILESYSTEM_BUILD_TESTING OFF CACHE INTERNAL "")
