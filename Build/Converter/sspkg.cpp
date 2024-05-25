@@ -101,16 +101,14 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
     return 0;
 }
 
-static void    createFileInfoJson(std::string versioninfo , std::string outputfilenamepath , std::vector<std::string> org_filelist)
+static void   createFileInfoJson(const std::string& versioninfo , const fs::path& outputfilenamepath , const std::vector<std::string>& org_filelist)
 {
-
     std::vector<std::string> paths;
-    for (auto i : org_filelist)
+    for (const auto& i : org_filelist)
     {
-        std::string f = fs::path(i).filename().string() + fs::path(i).extension().string();
+        std::string f = fs::path(i).filename().string();
         paths.push_back(f);
     }
-
 
     json j = {
       {"version", 1.0},
@@ -119,10 +117,8 @@ static void    createFileInfoJson(std::string versioninfo , std::string outputfi
 
     j["filelist"] = paths;
 
-
-    std::ofstream o(sscc::convert_path_string(outputfilenamepath));
-    o << std::setw(4) << j << std::endl; 
-
+    std::ofstream o(sscc::convert_path_string(outputfilenamepath.string()));
+    o << std::setw(4) << j << std::endl;
 }
 
 
@@ -149,7 +145,7 @@ void sspkg_info::init_sspkg(std::string outputdir , std::string pkgname)
     }
 
     fs::path temp = fs::temp_directory_path();
-    
+
     //    tempdir = fs::path(outputdir);
     tempdir = temp;
     tempdir += fs::path("sspkg/");
@@ -168,7 +164,7 @@ void sspkg_info::init_sspkg(std::string outputdir , std::string pkgname)
 
 
 
-void sspkg_info::set_sspkg_filelist(std::string ssversion, std::string pkgname, std::vector<std::string> filelist, std::string outputdir)
+void sspkg_info::set_sspkg_filelist(const std::string& ssversion, const std::string& pkgname, const std::vector<fs::path>& filelist, const fs::path& outputdir)
 {
     archive_file_lists.clear();
     org_file_lists.clear();
@@ -176,29 +172,25 @@ void sspkg_info::set_sspkg_filelist(std::string ssversion, std::string pkgname, 
     fs::path tempdir = get_sspkg_temppath();
     fs::path metadir = get_sspkg_metapath();
 
-
-    fs::path ssfb_dst = fs::path(tempdir).replace_filename(pkgname).replace_extension(".ssfb");
+    fs::path ssfb_dst = fs::path(tempdir) / fs::path(pkgname).replace_extension(".ssfb");
     archive_file_lists.push_back(ssfb_dst.string());
 
-
-    for (auto i : filelist)
+    for (const auto& i : filelist)
     {
-
-        org_file_lists.push_back(i);
+        org_file_lists.push_back(i.string());
     }
 
-    archivefilename = fs::path(outputdir).replace_filename(pkgname).replace_extension(".sspkg");
-    jsonfilename = fs::path(metadir).replace_filename("sspkg").replace_extension(".json");
+    archivefilepath = outputdir / fs::path(pkgname).replace_extension(".sspkg");
+    jsonfilepath = metadir / fs::path("sspkg.json");
 
-    //archive_file_lists.push_back(jsonfilename.string());
+    //archive_file_lists.push_back(jsonfilepath.string());
 
-    thumbnailename = fs::path(metadir).replace_filename("thumbnail").replace_extension(".png");
+    thumbnailefilepath = metadir / fs::path("thumbnail.png");
 
-    //archive_file_lists.push_back(thumbnailename.string());
+    //archive_file_lists.push_back(thumbnailefilepath.string());
     data_version = ssversion;
 
-    createFileInfoJson(ssversion, jsonfilename.string(), org_file_lists);
-
+    createFileInfoJson(ssversion, jsonfilepath, org_file_lists);
 }
 
 
@@ -223,13 +215,13 @@ bool sspkg_info::make_sspkg()
             org_file_lists.push_back(copyfilename.filename().string()+ copyfilename.filename().extension().string());
         }
 
-        fs::path archivefilename = fs::path(outputdir).replace_filename(pkgname).replace_extension(".sspkg");
-        fs::path jsonfilename = fs::path(metadir).replace_filename("sspkg").replace_extension(".json");
+        fs::path archivefilepath = fs::path(outputdir).replace_filename(pkgname).replace_extension(".sspkg");
+        fs::path jsonfilepath = fs::path(metadir).replace_filename("sspkg").replace_extension(".json");
 
-        archive_file_lists.push_back(jsonfilename.string());
+        archive_file_lists.push_back(jsonfilepath.string());
 
-        fs::path thumbnailename = fs::path(metadir).replace_filename("thumbnail").replace_extension(".png");
-        archive_file_lists.push_back(thumbnailename.string());
+        fs::path thumbnailefilepath = fs::path(metadir).replace_filename("thumbnail").replace_extension(".png");
+        archive_file_lists.push_back(thumbnailefilepath.string());
     */
 
     fs::path tempdir = get_sspkg_temppath();
@@ -244,16 +236,16 @@ bool sspkg_info::make_sspkg()
     }
 
 
-    archive_file_lists.push_back(jsonfilename.string());
+    archive_file_lists.push_back(jsonfilepath.string());
 
-    if (fs::exists(thumbnailename)) {
-        archive_file_lists.push_back(thumbnailename.string());
+    if (fs::exists(thumbnailefilepath)) {
+        archive_file_lists.push_back(thumbnailefilepath.string());
     } else {
-        std::cerr << "  not found thumbnail file: " << thumbnailename << "\n";
+        std::cerr << "  not found thumbnail file: " << thumbnailefilepath << "\n";
     }
 
     // Windosでは最終的に zipOpen 内の fopen64 で SJIS が必要になるため。
-    auto tmp_arch_path = sscc::convert_path_string(archivefilename.string());
+    auto tmp_arch_path = sscc::convert_path_string(archivefilepath.string());
     decltype(archive_file_lists) tmp_archive_file_lists;
 
 #ifdef _WIN32

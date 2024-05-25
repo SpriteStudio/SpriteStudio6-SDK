@@ -19,9 +19,7 @@
 // TODO
 #include "ssloader.h"
 #include "ssplayer_animedecode.h"
-#include "ssHelper.h"
 #include "sshTextureBMP.h"
-#include "ssplayer_mesh.h"
 
 #include "sscharconverter.h"
 
@@ -38,7 +36,7 @@
 
 #include "sspkg.h"
 
-std::vector<std::string> filelist;
+std::vector<fs::path> filelist;
 static bool isLogout = false;
 
 static const int DATA_VERSION_1			= 1;
@@ -330,18 +328,18 @@ struct PartInitialData
 static Logger logger;
 
 //encodeしない
-void CO(std::string out)
+void CO(const std::string& out)
 {
 	logger.outputLog(Logger::INF, out);
 }
 
-void COE(std::string str)
+void COE(const std::string& str)
 {
 	const std::string out = convert_console_string(str);
 	logger.outputLog(Logger::ERR, out);
 }
 
-void COI(std::string str)
+void COI(const std::string& str)
 {
 	std::string out;
 	out = convert_console_string(str);
@@ -1844,41 +1842,35 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	return topLump;
 }
 
-void createPackFileList(spritestudio6::SsProject* proj , std::string sspjPath , std::vector<std::string>& filelist)
+void createPackFileList(const spritestudio6::SsProject* proj ,const fs::path& sspjPath , std::vector<fs::path>& filelist)
 {
-	std::string pjpath = FileUtil::getFilePath(sspjPath);
-	pjpath = FileUtil::normalizeFilePath(pjpath);
+	auto pjpath = sspjPath.parent_path();
 
 	//sspjのパスを調べる
-	for (auto n : proj->cellmapNames)
+	for (const auto& n : proj->cellmapNames)
 	{
-		filelist.push_back(pjpath+n);
-
+		filelist.push_back(pjpath / n);
 	}
-	for (auto n : proj->animepackNames)
+	for (const auto& n : proj->animepackNames)
 	{
-		filelist.push_back(pjpath+n);
+		filelist.push_back(pjpath / n);
 	}
-	for (auto n : proj->effectFileNames)
+	for (const auto& n : proj->effectFileNames)
 	{
-		filelist.push_back(pjpath+n);
+        filelist.push_back(pjpath / n);
 	}
-	for (auto n : proj->textureList)
+	for (const auto& n : proj->textureList)
 	{
-		filelist.push_back(pjpath+n);
+        filelist.push_back(pjpath / n);
 	}
-	for (auto n : proj->sequencepackNames)
+	for (const auto& n : proj->sequencepackNames)
 	{
-		filelist.push_back(pjpath+n);
+        filelist.push_back(pjpath / n);
 	}
 
 }
 
 
-
-//void convertProject(const std::string& outPath, const std::string& outFName,
-//	LumpExporter::StringEncoding encoding, const std::string& sspjPath,
-//	const std::string& imageBaseDir, const std::string& creatorComment, const int outputFormat)
 
 void convertProject(const fs::path& outPath, const std::string& outFName,
 	LumpExporter::StringEncoding encoding, const fs::path& sspjPath,
@@ -1969,7 +1961,7 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 		if (outputFormat == OUTPUT_FORMAT_FLAG_JSON)
 		{
 			COI( "convert type : OUTPUT_FORMAT_FLAG_JSON " );
-            outputFilePath = outputFilePath / fs::path(outFName + ".json");
+            outputFilePath = outputFilePath / fs::path(outFName).replace_extension(".json");
             COI( "outputFilePath " + outputFilePath.string() );
 			out.open(outputFilePath, std::ios_base::out);
 			if(out)
@@ -1990,7 +1982,7 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{
 			COI( "convert type : OUTPUT_FORMAT_FLAG_SSFB " );
-            outputFilePath = outputFilePath / fs::path(outFName + ".ssfb");
+            outputFilePath = outputFilePath / fs::path(outFName).replace_extension(".ssfb");
             COI( "outputFilePath " + outputFilePath.string() );
 			out.open(outputFilePath, std::ios_base::binary | std::ios_base::out);
 			if(out)
@@ -2015,21 +2007,20 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 				LumpExporter::saveSsfb(out, encoding, lump, creatorComment, s_frameIndexVec);
 
 				//ファイルリストの作成
-				filelist.push_back(sspjPath.string());
-				createPackFileList(proj, sspjPath.string() , filelist);
+				filelist.push_back(sspjPath);
+				createPackFileList(proj, sspjPath, filelist);
 
-				sspkg_info::getInst()->set_sspkg_filelist( proj->version , outFName, filelist, outPath.string());
+				sspkg_info::getInst()->set_sspkg_filelist( proj->version , outFName, filelist, outPath);
 			}
 			else
 			{
-//				std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
 				COE( messageErrorFileOpen +  convert_console_string(outPathSsfb) );
 			}
 		}
 		else
 		{
 			COI( "convert type : OUTPUT_FORMAT_FLAG_SSBP " );
-            outputFilePath = outputFilePath / fs::path(outFName + ".ssbp");
+            outputFilePath = outputFilePath / fs::path(outFName).replace_extension(".ssbp");
             COI( "outputFilePath " + outputFilePath.string() );
 			out.open(outputFilePath, std::ios_base::binary | std::ios_base::out);
 			if(out)
@@ -2038,7 +2029,6 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 			}
 			else
 			{
-//				std::cerr << messageErrorFileOpen << convert_console_string(outPathSsfb) << std::endl;
 				COE( messageErrorFileOpen + convert_console_string(outputFilePath.string()) );
 			}
 		}
@@ -2429,9 +2419,9 @@ int convertMain(int argc, const char * argv[])
 	COI( "### Run Convert ###" );
 
 	// コンバート実行
-	for (std::vector<std::string>::const_iterator it = sources.begin(); it != sources.end(); it++)
+	for (auto & source : sources)
 	{
-		auto sspjPath = fs::weakly_canonical(fs::absolute(*it));
+		auto sspjPath = fs::weakly_canonical(fs::absolute(source));
         auto outPath = sspjPath.parent_path();
         auto outFName = sspjPath.filename().stem().string();
 
