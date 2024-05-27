@@ -30,9 +30,9 @@ private:
     std::vector<std::string> org_file_lists;
 
 
-    fs::path archivefilename;
-    fs::path jsonfilename;
-    fs::path thumbnailename;
+    fs::path archivefilepath;
+    fs::path jsonfilepath;
+    fs::path thumbnailefilepath;
     std::string data_version;
 
 public:
@@ -58,7 +58,7 @@ public:
     std::string get_sspkg_metapath();
     void init_sspkg(std::string outputdir, std::string pkgname);
 
-    void set_sspkg_filelist(std::string ssversion, std::string pkgname, std::vector<std::string> filelist, std::string outputdir);
+    void set_sspkg_filelist(const std::string& ssversion, const std::string& pkgname, const std::vector<fs::path>& filelist, const fs::path& outputdir);
 
     bool make_sspkg();
     void sspkg_cleanup_file();
