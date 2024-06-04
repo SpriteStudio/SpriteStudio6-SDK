@@ -7,6 +7,14 @@
 #include "ssstring_uty.h"
 #include "../Helper/DebugPrint.h"
 #include "sscharconverter.h"
+#include "ssFilesystem.h"
+
+#if _WIN32 || _WIN64
+#include <string>
+#include <Windows.h>
+#endif
+
+
 
 namespace spritestudio6
 {
@@ -159,14 +167,7 @@ SsProject*	ssloader_sspj::Parse_ProjectOnly(const char* xmlstr , size_t len)
 SsProject*	ssloader_sspj::Load(const std::string& filename ) {
 	libXML::XMLDocument xml;
 
-	FILE *fp = 0;
-#if _WIN32 || _WIN64
-    std::wstring wfilesspj = SsCharConverter::convert_path_string( filename );
-    _wfopen_s(&fp, wfilesspj.c_str(), L"rb");
-#else
-	fp = fopen( SsCharConverter::convert_path_string( filename ).c_str(), "rb" );
-#endif
-
+	FILE *fp = ssFilesystem::openFile(filename);
 	libXML::XMLError result = xml.LoadFile(fp);
 	fclose(fp);
 	if (result != libXML::XML_SUCCESS) {

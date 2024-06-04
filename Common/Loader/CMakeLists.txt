@@ -28,6 +28,7 @@ set(ssLoader_SRCS
     ssInterpolation.cpp
     ssattribute.cpp
     sscharconverter.cpp
+    ssFilesystem.cpp
 )
 #if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
 #    set(ssLoader_SRCS ${ssLoader_SRCS} sscharconverter_mac.mm)
@@ -50,6 +51,7 @@ set(ssLoader_HEADERS
     ssstring_uty.h
 #    ${CMAKE_CURRENT_SOURCE_DIR}/../Animator/ssplayer_animedecode.h
     sscharconverter.h
+    ssFilesystem.h
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
