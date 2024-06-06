@@ -168,6 +168,7 @@ SsProject*	ssloader_sspj::Load(const std::string& filename ) {
 	libXML::XMLDocument xml;
 
 	FILE *fp = ssFilesystem::openFile(filename);
+	if (fp == NULL) return 0;
 	libXML::XMLError result = xml.LoadFile(fp);
 	fclose(fp);
 	if (result != libXML::XML_SUCCESS) {

@@ -34,14 +34,14 @@ SsCellMap*	ssloader_ssce::Parse(const char* xmlstr , size_t len, int* error)
 
 SsCellMap*	ssloader_ssce::Load(const std::string& filename )
 {
-	SsCellMap* cellmap = new SsCellMap();
-
 	libXML::XMLDocument xml;
 
 	FILE *fp = ssFilesystem::openFile(filename);
+	if (fp == NULL) return 0;
 	libXML::XMLError result = xml.LoadFile(fp);
 	fclose(fp);
 
+	SsCellMap* cellmap = new SsCellMap();
 	if ( libXML::XML_SUCCESS == result )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioCellMap" );

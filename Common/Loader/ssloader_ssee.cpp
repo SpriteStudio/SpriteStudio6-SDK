@@ -13,13 +13,13 @@ namespace spritestudio6
 
 SsEffectFile*	ssloader_ssee::Load(const std::string& filename )
 {
-	SsEffectFile* effectFile = new SsEffectFile();
-
 	libXML::XMLDocument xml;
 	FILE *fp = ssFilesystem::openFile(filename);
+	if (fp == NULL) return 0;
 	libXML::XMLError result = xml.LoadFile(fp);
 	fclose(fp);
 
+	SsEffectFile* effectFile = new SsEffectFile();
 	if ( libXML::XML_SUCCESS == result )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioEffect" );

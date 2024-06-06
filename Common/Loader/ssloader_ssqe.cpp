@@ -7,14 +7,14 @@ namespace spritestudio6
 
 SsSequencePack*	ssloader_ssqe::Load(const std::string& filename )
 {
-	SsSequencePack* sequence = new SsSequencePack();
-
 	libXML::XMLDocument xml;
 
 	FILE *fp = ssFilesystem::openFile(filename);
+	if (fp == NULL) return 0;
 	libXML::XMLError result = xml.LoadFile(fp);
 	fclose(fp);
 
+	SsSequencePack* sequence = new SsSequencePack();
 	if ( libXML::XML_SUCCESS == result )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioSequencePack" );

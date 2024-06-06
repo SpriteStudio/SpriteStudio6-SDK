@@ -26,14 +26,13 @@ SsAnimePack*	ssloader_ssae::Parse(const char* xmlstr , size_t len)
 
 SsAnimePack*	ssloader_ssae::Load(const std::string& filename )
 {
-
-	SsAnimePack* anime = new SsAnimePack();
-
 	libXML::XMLDocument xml;
 	FILE *fp = ssFilesystem::openFile(filename);
+	if (fp == NULL) return 0;
 	libXML::XMLError result = xml.LoadFile(fp);
 	fclose(fp);
 
+	SsAnimePack* anime = new SsAnimePack();
 	if ( libXML::XML_SUCCESS == result )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioAnimePack" );
