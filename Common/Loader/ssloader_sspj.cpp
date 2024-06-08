@@ -217,6 +217,10 @@ SsProject*	ssloader_sspj::Load(const std::string& filename ) {
 	{
 		SsString sscepath = SsCharConverter::convert_path_string(proj->getCellMapFilePath(i));
 		SsCellMap* cell = ssloader_ssce::Load( sscepath );
+		if (!cell) {
+			delete proj;
+			return 0;
+		}
 		cell->loadFilepath = proj->getCelMapFileOriginalPath(i);
 		proj->cellmapList.push_back( std::move( std::unique_ptr<SsCellMap>( cell ) ) );
 
@@ -249,6 +253,10 @@ SsProject*	ssloader_sspj::Load(const std::string& filename ) {
 	{
 		SsString sscepath = SsCharConverter::convert_path_string(proj->getEffectFilePath(i));
 		SsEffectFile* efile = ssloader_ssee::Load( sscepath );
+        if (!efile) {
+            delete proj;
+            return 0;
+        }
 		ssloader_ssee::loadPostProcessing( efile, proj );
 		proj->effectfileList.push_back( std::move( std::unique_ptr<SsEffectFile>( efile ) ) );
 		/*
