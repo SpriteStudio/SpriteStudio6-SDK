@@ -1923,6 +1923,11 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 	std::string outputdirUTF8;
 	outputdirUTF8 = outPath.string();
 
+    if (!fs::exists(outPath)) {
+        COE( "not found output directory: " + outputdirUTF8);
+        convert_error_exit = true;
+        return;
+    }
 	COI("output directory: " + outputdirUTF8);
 
 
@@ -1934,7 +1939,7 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 		catch (...)
 		{
 			COE( "init_sspkg Error" );
-
+            convert_error_exit = true;
 			return;
 		}
 	}
