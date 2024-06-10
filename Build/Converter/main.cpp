@@ -14,10 +14,6 @@
 #include <set>
 #include <filesystem>
 
-#ifndef _WIN32
-#include <sys/stat.h>
-#endif
-
 // TODO
 #include "ssloader.h"
 #include "ssplayer_animedecode.h"
@@ -27,7 +23,6 @@
 
 #include "Lump.h"
 #include "LumpExporter.h"
-#include "FileUtil.h"
 #include "SsPlayerConverter.h"
 
 #include "simpleFileLogger.h"
@@ -2406,35 +2401,10 @@ int convertMain(int argc, const char * argv[])
 		Options::StringList& in = options.inList;
 
 		bool error = false;
-		for (Options::StringList::iterator it = in.begin(); it != in.end(); it++)
+		for (auto & str : in)
 		{
-			const std::string& str = *it;
-
-			COI( "Find : " + str );
-
-#ifdef _WIN32
-			// Win32プラットフォーム用コード。Win32APIを使ってワイルドカード展開する
-			// MEMO: FileUtilで使用している文字コードはSJISであることに注意
-			std::vector<std::string> fileList = FileUtil::findPath(spritestudio6::SsCharConverter::utf8_to_sjis(str));
-			if (!fileList.empty())
-			{
-				for(std::vector<std::string>::iterator it=fileList.begin(); it != fileList.end(); it++)
-				{
-					sources.push_back(spritestudio6::SsCharConverter::sjis_to_utf8(*it));
-				}
-			}
-			else
-			{
-//				std::cerr << "Cannot find input file: " << convert_console_string(str) << std::endl;
-				COE(  "Cannot find input file: " + convert_console_string(str) );
-				error = true;
-			}
-#else
-			// Mac/Unixプラットフォーム用コード
-			// 本当にファイルが存在するか確認し、見つからないものがあるときはエラーとする
-			struct stat st;
-			int result = stat(str.c_str(), &st);
-			if (result == 0)
+			auto inputFile = std::filesystem::path(str);
+			if (std::filesystem::exists(inputFile))
 			{
 				sources.push_back(str);
 			}
@@ -2443,10 +2413,9 @@ int convertMain(int argc, const char * argv[])
 				std::cerr << "Cannot find input file: " << str << std::endl;
 				error = true;
 			}
-#endif
 		}
 		if (error)
-        {
+		{
 			COE( "### Error illegalArgument!!! ###" );
 
 			if (options.endAfterStop)

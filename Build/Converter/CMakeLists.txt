@@ -140,7 +140,6 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/version.h.in"
 set(Ss6Converter_SRCS
     main.cpp
     BinaryDataWriter.cpp
-    FileUtil.cpp
     Lump.cpp
     LumpExporter.cpp
     sspkg.cpp
@@ -152,7 +151,6 @@ set(Ss6Converter_SRCS
 set(Ss6Converter_HEADERS
     ssfb_generated.h
     BinaryDataWriter.h
-    FileUtil.h
     Lump.h
     LumpExporter.h
     SsPlayerConverter.h
