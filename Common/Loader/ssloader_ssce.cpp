@@ -1,5 +1,6 @@
 ﻿#include "ssloader_ssce.h"
 #include "ssstring_uty.h"
+#include "ssFilesystem.h"
 
 
 namespace spritestudio6
@@ -33,13 +34,15 @@ SsCellMap*	ssloader_ssce::Parse(const char* xmlstr , size_t len, int* error)
 
 SsCellMap*	ssloader_ssce::Load(const std::string& filename )
 {
-	SsString _basepath = "";
-
-	
-	SsCellMap* cellmap = new SsCellMap();
-
 	libXML::XMLDocument xml;
-	if ( libXML::XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
+
+	FILE *fp = ssFilesystem::openFile(filename);
+	if (fp == NULL) return 0;
+	libXML::XMLError result = xml.LoadFile(fp);
+	fclose(fp);
+
+	SsCellMap* cellmap = new SsCellMap();
+	if ( libXML::XML_SUCCESS == result )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioCellMap" );
 		cellmap->__Serialize( &ar );

@@ -1,4 +1,5 @@
 ﻿#include "ssloader_ssae.h"
+#include "ssFilesystem.h"
 
 namespace spritestudio6
 {
@@ -25,11 +26,14 @@ SsAnimePack*	ssloader_ssae::Parse(const char* xmlstr , size_t len)
 
 SsAnimePack*	ssloader_ssae::Load(const std::string& filename )
 {
+	libXML::XMLDocument xml;
+	FILE *fp = ssFilesystem::openFile(filename);
+	if (fp == NULL) return 0;
+	libXML::XMLError result = xml.LoadFile(fp);
+	fclose(fp);
 
 	SsAnimePack* anime = new SsAnimePack();
-
-	libXML::XMLDocument xml;
-	if ( libXML::XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
+	if ( libXML::XML_SUCCESS == result )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioAnimePack" );
 		anime->__Serialize( &ar );

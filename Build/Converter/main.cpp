@@ -11,6 +11,7 @@
 #include <iostream>
 #include <fstream>
 #include <memory>
+#include <set>
 
 #ifndef _WIN32
 #include <sys/stat.h>
@@ -535,7 +536,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		}
 	}
 
-	COI( "convert animetion" );
+	COI( "convert animation" );
 	//アニメーション警告
 	if (proj->animeList.size() == 0)
 	{
@@ -544,6 +545,17 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		convert_error_exit = true;	//エラーが発生コンバート失敗
 		return 0;
 	}
+
+	std::set<spritestudio6::SsPart*> error_parts;
+	auto error_once = [&](spritestudio6::SsPart* part, const std::string msg)
+		{
+			if (error_parts.find(part) == error_parts.end())
+			{
+				COE(msg);
+				error_parts.insert(part);
+			}
+		};
+
 	// パーツ、アニメ情報
 	for (int packIndex = 0; packIndex < (int)proj->animeList.size(); packIndex++)
 	{
@@ -870,13 +882,20 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 						meshData->add(Lump::s32Data((int)state->meshPart->isBind, "isBind"));	//バインドの有無
 						meshData->add(Lump::s32Data(meshsize, "meshsize"));	//サイズ
 						int i;
-						std::vector<float>& uvsRaw = *(state->meshPart->uvs.get());
-						for (i = 0; i < meshsize; i++)
+						if (state->meshPart->uvs.get() == nullptr)
 						{
-							float u = uvsRaw[i * 2 + 0];
-							float v = uvsRaw[i * 2 + 1];
-							meshData->add(Lump::floatData(u, "u"));
-							meshData->add(Lump::floatData(v, "v"));
+							error_once(part, "エラー：メッシュパーツのUV情報が存在しません。ssae:" + animePack->name + " anime:" + anime->name + " part:" + part->name);
+						}
+						else
+						{
+							std::vector<float>& uvsRaw = *(state->meshPart->uvs.get());
+							for (i = 0; i < meshsize; i++)
+							{
+								float u = uvsRaw[i * 2 + 0];
+								float v = uvsRaw[i * 2 + 1];
+								meshData->add(Lump::floatData(u, "u"));
+								meshData->add(Lump::floatData(v, "v"));
+							}
 						}
 					}
 					else
@@ -887,7 +906,6 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				}
 
 			}
-
 			Lump* meshsDataIndices = Lump::set("ss::ss_u16*[]", true, "meshsDataIndices");
 			{
 				decoder.setPlayFrame(0);
@@ -909,14 +927,21 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 						meshData->add(Lump::s32Data(tri_size, "tri_size"));	//サイズ
 						int i;
 						std::vector<unsigned short>& indicesRaw = *(state->meshPart->indices.get());
-						for (i = 0; i < tri_size; i++)
+						if (state->meshPart->indices.get() == nullptr)
 						{
-							int po1 = indicesRaw[i * 3 + 0];
-							int po2 = indicesRaw[i * 3 + 1];
-							int po3 = indicesRaw[i * 3 + 2];
-							meshData->add(Lump::s32Data(po1, "po1"));
-							meshData->add(Lump::s32Data(po2, "po2"));
-							meshData->add(Lump::s32Data(po3, "po3"));
+							error_once(part, "エラー：メッシュパーツにメッシュ情報が存在しません。ssae: " + animePack->name + " anime:" + anime->name + " part:" + part->name);
+						}
+						else
+						{
+							for (i = 0; i < tri_size; i++)
+							{
+								int po1 = indicesRaw[i * 3 + 0];
+								int po2 = indicesRaw[i * 3 + 1];
+								int po3 = indicesRaw[i * 3 + 2];
+								meshData->add(Lump::s32Data(po1, "po1"));
+								meshData->add(Lump::s32Data(po2, "po2"));
+								meshData->add(Lump::s32Data(po3, "po3"));
+							}
 						}
 					}
 					else
@@ -1349,21 +1374,29 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					if (p_flags2 & PART_FLAG_MESHDATA)
 					{
 						//頂点情報を出力
-						int i;
-						int size = state->meshPart->ver_size;
-						std::vector<float>& draw_verticesRaw = *(state->meshPart->draw_vertices.get());
-						for (i = 0; i < size; i++)
-						{
-							std::string tagname_mesh_x = tagname + "mesh_" + std::to_string(i) + "_x";
-							std::string tagname_mesh_y = tagname + "mesh_" + std::to_string(i) + "_y";
-							std::string tagname_mesh_z = tagname + "mesh_" + std::to_string(i) + "_z";
 
-							float mesh_x = draw_verticesRaw[i * 3 + 0];
-							float mesh_y = draw_verticesRaw[i * 3 + 1];
-							float mesh_z = draw_verticesRaw[i * 3 + 2];
-							frameData->add(Lump::floatData(mesh_x, tagname_mesh_x));		//x
-							frameData->add(Lump::floatData(mesh_y, tagname_mesh_y));		//y
-							frameData->add(Lump::floatData(mesh_z, tagname_mesh_z));		//z
+						if (state->meshPart->draw_vertices.get() == nullptr)
+						{
+							error_once(state->part, "エラー：メッシュパーツに頂点情報が存在しません。ssae: " + animePack->name + " anime:" + anime->name + " part:" + state->part->name);
+						}
+						else
+						{
+							int i;
+							int size = state->meshPart->ver_size;
+							std::vector<float>& draw_verticesRaw = *(state->meshPart->draw_vertices.get());
+							for (i = 0; i < size; i++)
+							{
+								std::string tagname_mesh_x = tagname + "mesh_" + std::to_string(i) + "_x";
+								std::string tagname_mesh_y = tagname + "mesh_" + std::to_string(i) + "_y";
+								std::string tagname_mesh_z = tagname + "mesh_" + std::to_string(i) + "_z";
+
+								float mesh_x = draw_verticesRaw[i * 3 + 0];
+								float mesh_y = draw_verticesRaw[i * 3 + 1];
+								float mesh_z = draw_verticesRaw[i * 3 + 2];
+								frameData->add(Lump::floatData(mesh_x, tagname_mesh_x));		//x
+								frameData->add(Lump::floatData(mesh_y, tagname_mesh_y));		//y
+								frameData->add(Lump::floatData(mesh_z, tagname_mesh_z));		//z
+							}
 						}
 					}
 				}
@@ -1550,6 +1583,11 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 #endif
 
 		}
+	}
+
+	if (error_parts.size()  >= 1)
+	{
+		return nullptr;
 	}
 
 	//エフェクトデータ
@@ -1837,7 +1875,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	parseParts_ssqe( topLump, proj, imageBaseDir );
 
 //	std::cerr << "convert end" << "\n";
-	COE("convert end");
+	CO("convert end");
 
 	return topLump;
 }
@@ -1885,6 +1923,11 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 	std::string outputdirUTF8;
 	outputdirUTF8 = outPath.string();
 
+    if (!fs::exists(outPath)) {
+        COE( "not found output directory: " + outputdirUTF8);
+        convert_error_exit = true;
+        return;
+    }
 	COI("output directory: " + outputdirUTF8);
 
 
@@ -1896,12 +1939,17 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 		catch (...)
 		{
 			COE( "init_sspkg Error" );
-
+            convert_error_exit = true;
 			return;
 		}
 	}
 
 	spritestudio6::SsProject* proj = spritestudio6::ssloader_sspj::Load(sspjPath.string());
+	if (proj == nullptr)
+	{
+		COE("ssloader_sspj::Load Error");
+		return;
+	}
 
 	fs::path logfilepath = fs::path(outputdirUTF8).replace_filename("convert.log");
 
@@ -1924,11 +1972,8 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 	Lump* lump;
 	try
 	{
-		if (proj)
-		{
-			lump = parseParts(proj, imageBaseDir, outPath);
-		}
-		else
+		lump = parseParts(proj, imageBaseDir, outPath);
+		if (lump == nullptr)
 		{
 			convert_error_exit = true;	//エラーが発生
 			COE ( "Convert Error " );
