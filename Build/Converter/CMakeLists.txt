@@ -122,6 +122,35 @@ endif()
 
 message("finish fetching dependency libraries")
 
+# get a short commit hash
+find_package(Git QUIET)
+
+# git コマンドが存在する場合のみ実行
+if(GIT_FOUND)
+    execute_process(
+            COMMAND git rev-parse --is-inside-work-tree
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            RESULT_VARIABLE GIT_REPOSITORY_FOUND
+            OUTPUT_QUIET
+            ERROR_QUIET
+    )
+
+    if(GIT_REPOSITORY_FOUND EQUAL 0)
+        execute_process(
+                COMMAND git rev-parse --short HEAD
+                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                OUTPUT_VARIABLE GIT_SHORT_COMMIT_HASH
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+    endif()
+endif()
+if(NOT DEFINED GIT_SHORT_COMMIT_HASH)
+    set(GIT_SHORT_COMMIT_HASH "")
+endif()
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/version.h.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/version.h"
+)
+
 set(Ss6Converter_SRCS
     main.cpp
     BinaryDataWriter.cpp
@@ -189,6 +218,7 @@ if(WIN32 OR APPLE)
 endif()
 
 add_executable(Ss6Converter ${Ss6Converter_SRCS} ${Ss6Converter_HEADERS} ${FlatBuffers_Library_SRCS})
+target_include_directories(Ss6Converter PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 
 if(NOT (WIN32 OR APPLE))
     # For Linux
