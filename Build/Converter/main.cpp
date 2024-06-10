@@ -36,6 +36,7 @@
 #endif
 
 #include "sspkg.h"
+#include "version.h"
 
 std::vector<fs::path> filelist;
 static bool isLogout = false;
@@ -2102,7 +2103,7 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 
 
 #define APP_NAME		"Ss6Converter"
-#define APP_VERSION		SPRITESTUDIOSDK_VERSION " (Build: " __DATE__ " " __TIME__ ")"
+#define APP_VERSION		SPRITESTUDIOSDK_VERSION " (hash: " GIT_SHORT_COMMIT_HASH " Build: " __DATE__ " " __TIME__ ")"
 
 
 static const char* HELP =
