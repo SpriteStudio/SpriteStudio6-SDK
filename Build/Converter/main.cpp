@@ -12,6 +12,7 @@
 #include <fstream>
 #include <memory>
 #include <set>
+#include <filesystem>
 
 #ifndef _WIN32
 #include <sys/stat.h>
@@ -38,7 +39,7 @@
 #include "sspkg.h"
 #include "version.h"
 
-std::vector<fs::path> filelist;
+std::vector<std::filesystem::path> filelist;
 static bool isLogout = false;
 
 static const int DATA_VERSION_1			= 1;
@@ -381,7 +382,7 @@ static void parseParts_ssqe(Lump* topLump, spritestudio6::SsProject* proj, const
 {
 }
 
-static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& imageBaseDir , const fs::path& outPath)
+static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& imageBaseDir , const std::filesystem::path& outPath)
 {
 	bool isWrite = false;
 
@@ -1881,7 +1882,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	return topLump;
 }
 
-void createPackFileList(const spritestudio6::SsProject* proj ,const fs::path& sspjPath , std::vector<fs::path>& filelist)
+void createPackFileList(const spritestudio6::SsProject* proj ,const std::filesystem::path& sspjPath , std::vector<std::filesystem::path>& filelist)
 {
 	auto pjpath = sspjPath.parent_path();
 
@@ -1911,8 +1912,8 @@ void createPackFileList(const spritestudio6::SsProject* proj ,const fs::path& ss
 
 
 
-void convertProject(const fs::path& outPath, const std::string& outFName,
-	LumpExporter::StringEncoding encoding, const fs::path& sspjPath,
+void convertProject(const std::filesystem::path& outPath, const std::string& outFName,
+	LumpExporter::StringEncoding encoding, const std::filesystem::path& sspjPath,
 	Options& options, const std::string& creatorComment )
 
 {
@@ -1924,7 +1925,7 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 	std::string outputdirUTF8;
 	outputdirUTF8 = outPath.string();
 
-    if (!fs::exists(outPath)) {
+    if (!std::filesystem::exists(outPath)) {
         COE( "not found output directory: " + outputdirUTF8);
         convert_error_exit = true;
         return;
@@ -1952,14 +1953,14 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 		return;
 	}
 
-	fs::path logfilepath = fs::path(outputdirUTF8).replace_filename("convert.log");
+	auto logfilepath = std::filesystem::path(outputdirUTF8).replace_filename("convert.log");
 
 
 	if (isLogout)
 	{
-		if (fs::exists(logfilepath.c_str()))
+		if (std::filesystem::exists(logfilepath.c_str()))
 		{
-			fs::remove(logfilepath.c_str());
+            std::filesystem::remove(logfilepath.c_str());
 		}
 		logger.setOutputLogFile(logfilepath.wstring());
 		logger.setOutputLogFileMode(true);
@@ -2000,14 +2001,14 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 	}
 	else
 	{
-        auto outputFilePath = fs::path(spritestudio6::SsCharConverter::convert_path_string(outPath.string()));
+        auto outputFilePath = std::filesystem::path(spritestudio6::SsCharConverter::convert_path_string(outPath.string()));
 		std::fstream out;
 		static const std::string messageErrorFileOpen = "出力ファイルのオープンに失敗しました: ";
 
 		if (outputFormat == OUTPUT_FORMAT_FLAG_JSON)
 		{
 			COI( "convert type : OUTPUT_FORMAT_FLAG_JSON " );
-            outputFilePath = outputFilePath / fs::path(outFName).replace_extension(".json");
+            outputFilePath = outputFilePath / std::filesystem::path(outFName).replace_extension(".json");
             COI( "outputFilePath " + outputFilePath.string() );
 			out.open(outputFilePath, std::ios_base::out);
 			if(out)
@@ -2028,7 +2029,7 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{
 			COI( "convert type : OUTPUT_FORMAT_FLAG_SSFB " );
-            outputFilePath = outputFilePath / fs::path(outFName).replace_extension(".ssfb");
+            outputFilePath = outputFilePath / std::filesystem::path(outFName).replace_extension(".ssfb");
             COI( "outputFilePath " + outputFilePath.string() );
 			out.open(outputFilePath, std::ios_base::binary | std::ios_base::out);
 			if(out)
@@ -2066,7 +2067,7 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 		else
 		{
 			COI( "convert type : OUTPUT_FORMAT_FLAG_SSBP " );
-            outputFilePath = outputFilePath / fs::path(outFName).replace_extension(".ssbp");
+            outputFilePath = outputFilePath / std::filesystem::path(outFName).replace_extension(".ssbp");
             COI( "outputFilePath " + outputFilePath.string() );
 			out.open(outputFilePath, std::ios_base::binary | std::ios_base::out);
 			if(out)
@@ -2467,14 +2468,14 @@ int convertMain(int argc, const char * argv[])
 	// コンバート実行
 	for (auto & source : sources)
 	{
-		auto sspjPath = fs::weakly_canonical(fs::absolute(source));
+		auto sspjPath = std::filesystem::weakly_canonical(std::filesystem::absolute(source));
         auto outPath = sspjPath.parent_path();
         auto outFName = sspjPath.filename().stem().string();
 
 		//パスが指定されている場合
 		if ( options.outputDir != "" )
 		{
-            outPath = fs::weakly_canonical(fs::absolute(options.outputDir));
+            outPath = std::filesystem::weakly_canonical(std::filesystem::absolute(options.outputDir));
 		}
 
 		if (options.isVerbose)

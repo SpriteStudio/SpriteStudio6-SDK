@@ -8,7 +8,7 @@
 #include <nlohmann/json.hpp>
 
 #include <iostream>
-#include <sstream>
+#include <fstream>
 #include <iomanip>
 #include <string>
 
@@ -42,16 +42,16 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
                 zip_fileinfo zfi = { 0 };
 
 #ifdef _WIN32
-                // fs::path 内で SJIS に対して utf8 to wchar 変換が行われ文字化けるため一時的に utf8 に戻す。(不本意)
+                // std::filesystem::path 内で SJIS に対して utf8 to wchar 変換が行われ文字化けるため一時的に utf8 に戻す。(不本意)
                 auto utf8_path = sscc::sjis_to_utf8(path);
 #else
                 auto utf8_path = path;
 #endif
-                // ファイルネーム単体の取得はエンコードを配慮したセパレータ検出のため fs::path 経由でないと不都合があった？と思われるためここは変えない。
+                // ファイルネーム単体の取得はエンコードを配慮したセパレータ検出のため std::filesystem::path 経由でないと不都合があった？と思われるためここは変えない。
                 //std::string fileName = path.substr(path.rfind('\\') + 1);
-                fs::path f = fs::path(utf8_path);
+                auto f = std::filesystem::path(utf8_path);
                 std::string fileName = f.filename().string();
-                //fs::path p = f.parent_path(); // unused
+                //std::filesystem::path p = f.parent_path(); // unused
 
 #ifdef _WIN32
                 // 再び sjis に戻す。
@@ -101,12 +101,12 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
     return 0;
 }
 
-static void   createFileInfoJson(const std::string& versioninfo , const fs::path& outputfilenamepath , const std::vector<std::string>& org_filelist)
+static void   createFileInfoJson(const std::string& versioninfo , const std::filesystem::path& outputfilenamepath , const std::vector<std::string>& org_filelist)
 {
     std::vector<std::string> paths;
     for (const auto& i : org_filelist)
     {
-        std::string f = fs::path(i).filename().string();
+        std::string f = std::filesystem::path(i).filename().string();
         paths.push_back(f);
     }
 
@@ -136,43 +136,43 @@ std::string sspkg_info::get_sspkg_metapath()
 void sspkg_info::init_sspkg(std::string outputdir , std::string pkgname)
 {
 
-    if (!fs::exists(fs::path(outputdir)))
+    if (!std::filesystem::exists(std::filesystem::path(outputdir)))
     {
-        if (!fs::create_directory(fs::path(outputdir)))
+        if (!std::filesystem::create_directory(std::filesystem::path(outputdir)))
         {
             throw "create_directory failed.";
         }
     }
 
-    fs::path temp = fs::temp_directory_path();
+    std::filesystem::path temp = std::filesystem::temp_directory_path();
 
-    //    tempdir = fs::path(outputdir);
+    //    tempdir = std::filesystem::path(outputdir);
     tempdir = temp;
-    tempdir += fs::path("sspkg/");
-    fs::create_directory(tempdir);
+    tempdir += std::filesystem::path("sspkg/");
+    std::filesystem::create_directory(tempdir);
     //cleaningDir.push_back(tempdir);
 
-    tempdir += fs::path(pkgname + "/");
-    fs::create_directory(tempdir);
+    tempdir += std::filesystem::path(pkgname + "/");
+    std::filesystem::create_directory(tempdir);
     cleaningDir.push_back(tempdir);
 
     metadir = tempdir;
-    metadir += fs::path("meta/");
-    fs::create_directory(metadir);
+    metadir += std::filesystem::path("meta/");
+    std::filesystem::create_directory(metadir);
     cleaningDir.push_back(metadir);
 }
 
 
 
-void sspkg_info::set_sspkg_filelist(const std::string& ssversion, const std::string& pkgname, const std::vector<fs::path>& filelist, const fs::path& outputdir)
+void sspkg_info::set_sspkg_filelist(const std::string& ssversion, const std::string& pkgname, const std::vector<std::filesystem::path>& filelist, const std::filesystem::path& outputdir)
 {
     archive_file_lists.clear();
     org_file_lists.clear();
 
-    fs::path tempdir = get_sspkg_temppath();
-    fs::path metadir = get_sspkg_metapath();
+    auto tempdir = get_sspkg_temppath();
+    auto metadir = get_sspkg_metapath();
 
-    fs::path ssfb_dst = fs::path(tempdir) / fs::path(pkgname).replace_extension(".ssfb");
+    std::filesystem::path ssfb_dst = std::filesystem::path(tempdir) / std::filesystem::path(pkgname).replace_extension(".ssfb");
     archive_file_lists.push_back(ssfb_dst.string());
 
     for (const auto& i : filelist)
@@ -180,12 +180,12 @@ void sspkg_info::set_sspkg_filelist(const std::string& ssversion, const std::str
         org_file_lists.push_back(i.string());
     }
 
-    archivefilepath = outputdir / fs::path(pkgname).replace_extension(".sspkg");
-    jsonfilepath = metadir / fs::path("sspkg.json");
+    archivefilepath = outputdir / std::filesystem::path(pkgname).replace_extension(".sspkg");
+    jsonfilepath = metadir / std::filesystem::path("sspkg.json");
 
     //archive_file_lists.push_back(jsonfilepath.string());
 
-    thumbnailefilepath = metadir / fs::path("thumbnail.png");
+    thumbnailefilepath = metadir / std::filesystem::path("thumbnail.png");
 
     //archive_file_lists.push_back(thumbnailefilepath.string());
     data_version = ssversion;
@@ -198,39 +198,39 @@ bool sspkg_info::make_sspkg()
 {
 
     /*
-        fs::path tempdir = get_sspkg_temppath();
-        fs::path metadir = get_sspkg_metapath();
+        std::filesystem::path tempdir = get_sspkg_temppath();
+        std::filesystem::path metadir = get_sspkg_metapath();
 
 
-        fs::path ssfb_dst = fs::path(tempdir).replace_filename(pkgname).replace_extension(".ssfb");
+        std::filesystem::path ssfb_dst = std::filesystem::path(tempdir).replace_filename(pkgname).replace_extension(".ssfb");
         archive_file_lists.push_back(ssfb_dst.string());
 
 
         for (auto i : filelist)
         {
-            fs::path copyfilename = fs::path(tempdir).replace_filename(fs::path(i).filename());
-            fs::copy_file(i, copyfilename, fs::copy_options::update_existing);
+            std::filesystem::path copyfilename = std::filesystem::path(tempdir).replace_filename(std::filesystem::path(i).filename());
+            std::filesystem::copy_file(i, copyfilename, std::filesystem::copy_options::update_existing);
 
             archive_file_lists.push_back(copyfilename.string());
             org_file_lists.push_back(copyfilename.filename().string()+ copyfilename.filename().extension().string());
         }
 
-        fs::path archivefilepath = fs::path(outputdir).replace_filename(pkgname).replace_extension(".sspkg");
-        fs::path jsonfilepath = fs::path(metadir).replace_filename("sspkg").replace_extension(".json");
+        std::filesystem::path archivefilepath = std::filesystem::path(outputdir).replace_filename(pkgname).replace_extension(".sspkg");
+        std::filesystem::path jsonfilepath = std::filesystem::path(metadir).replace_filename("sspkg").replace_extension(".json");
 
         archive_file_lists.push_back(jsonfilepath.string());
 
-        fs::path thumbnailefilepath = fs::path(metadir).replace_filename("thumbnail").replace_extension(".png");
+        std::filesystem::path thumbnailefilepath = std::filesystem::path(metadir).replace_filename("thumbnail").replace_extension(".png");
         archive_file_lists.push_back(thumbnailefilepath.string());
     */
 
-    fs::path tempdir = get_sspkg_temppath();
+    auto tempdir = get_sspkg_temppath();
 
     for (auto i : org_file_lists)
     {
-        fs::path copyfilename = fs::path(tempdir).replace_filename(fs::path(i).filename());
+        auto copyfilename = std::filesystem::path(tempdir).replace_filename(std::filesystem::path(i).filename());
 
-        fs::copy_file(i, copyfilename, fs::copy_options::update_existing);
+        std::filesystem::copy_file(i, copyfilename, std::filesystem::copy_options::update_existing);
 
         archive_file_lists.push_back(copyfilename.string());
     }
@@ -238,7 +238,7 @@ bool sspkg_info::make_sspkg()
 
     archive_file_lists.push_back(jsonfilepath.string());
 
-    if (fs::exists(thumbnailefilepath)) {
+    if (std::filesystem::exists(thumbnailefilepath)) {
         archive_file_lists.push_back(thumbnailefilepath.string());
     } else {
         std::cerr << "  not found thumbnail file: " << thumbnailefilepath << "\n";
@@ -259,7 +259,7 @@ bool sspkg_info::make_sspkg()
 #endif
 
     bool result = true;
-    if (CreateZipFile(tmp_arch_path, tmp_archive_file_lists, tempdir.string()) != 0)
+    if (CreateZipFile(tmp_arch_path, tmp_archive_file_lists, tempdir) != 0)
     {
         result = false;
     }
@@ -281,7 +281,7 @@ void sspkg_info::sspkg_cleanup_file()
     for (auto i : cleaningFileList)
     {
         try {
-            fs::remove(i);
+            std::filesystem::remove(i);
         }
         catch (...)
         {
@@ -289,16 +289,16 @@ void sspkg_info::sspkg_cleanup_file()
         }
     }
 
-    fs::path temp = fs::temp_directory_path();
+    auto temp = std::filesystem::temp_directory_path();
 
 
     try {
-        fs::remove(cleaningDir[1]);
+        std::filesystem::remove(cleaningDir[1]);
     }
     catch (...) {}
 
     try {
-        fs::remove(cleaningDir[0]);
+        std::filesystem::remove(cleaningDir[0]);
     }
     catch (...) {}
 

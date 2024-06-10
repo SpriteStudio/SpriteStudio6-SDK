@@ -106,20 +106,6 @@ else()
     endif()
 endif()
 
-message("fetch filesystem")
-set(GHC_FILESYSTEM_BUILD_EXAMPLES OFF CACHE INTERNAL "")
-set(GHC_FILESYSTEM_BUILD_TESTING OFF CACHE INTERNAL "")
-set(GHC_FILESYSTEM_WITH_INSTALL  OFF CACHE INTERNAL "")
-FetchContent_Declare(
-    filesystem
-    GIT_REPOSITORY https://github.com/gulrak/filesystem.git
-    GIT_TAG        v1.5.14)
-FetchContent_GetProperties(filesystem)
-if(NOT filesystem_POPULATED)
-  FetchContent_Populate(filesystem)
-  include_directories(${filesystem_SOURCE_DIR}/include)
-endif()
-
 message("finish fetching dependency libraries")
 
 # get a short commit hash

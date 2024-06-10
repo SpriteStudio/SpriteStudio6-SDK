@@ -3,8 +3,8 @@
 
 #include <string>
 #include <vector>
-#include <ghc/filesystem.hpp>
-namespace fs = ghc::filesystem;
+#include <filesystem>
+
 /*
 void make_sspkg(std::string ssversion, std::string pkgname, std::vector<std::string> filelist, std::string outputdir);
 
@@ -18,21 +18,21 @@ std::string get_sspkg_metapath();
 class sspkg_info {
 private:
 
-    std::vector<fs::path> cleaningFileList;
-    std::vector<fs::path> cleaningDir;
+    std::vector<std::filesystem::path> cleaningFileList;
+    std::vector<std::filesystem::path> cleaningDir;
 
     static sspkg_info* myinst;
 
-     fs::path tempdir;
-     fs::path metadir;
+    std::filesystem::path tempdir;
+    std::filesystem::path metadir;
 
     std::vector<std::string> archive_file_lists;
     std::vector<std::string> org_file_lists;
 
 
-    fs::path archivefilepath;
-    fs::path jsonfilepath;
-    fs::path thumbnailefilepath;
+    std::filesystem::path archivefilepath;
+    std::filesystem::path jsonfilepath;
+    std::filesystem::path thumbnailefilepath;
     std::string data_version;
 
 public:
@@ -58,7 +58,7 @@ public:
     std::string get_sspkg_metapath();
     void init_sspkg(std::string outputdir, std::string pkgname);
 
-    void set_sspkg_filelist(const std::string& ssversion, const std::string& pkgname, const std::vector<fs::path>& filelist, const fs::path& outputdir);
+    void set_sspkg_filelist(const std::string& ssversion, const std::string& pkgname, const std::vector<std::filesystem::path>& filelist, const std::filesystem::path& outputdir);
 
     bool make_sspkg();
     void sspkg_cleanup_file();
