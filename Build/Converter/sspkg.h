@@ -18,26 +18,26 @@ std::string get_sspkg_metapath();
 class sspkg_info {
 private:
 
-    std::vector<std::filesystem::path> cleaningFileList;
-    std::vector<std::filesystem::path> cleaningDir;
+    std::vector<std::filesystem::path> cleaningFileList{};
+    std::vector<std::filesystem::path> cleaningDir{};
 
     static sspkg_info* myinst;
 
-    std::filesystem::path tempdir;
-    std::filesystem::path metadir;
+    std::filesystem::path tempdir{};
+    std::filesystem::path metadir{};
 
-    std::vector<std::string> archive_file_lists;
-    std::vector<std::string> org_file_lists;
+    std::vector<std::string> archive_file_lists{};
+    std::vector<std::string> org_file_lists{};
 
 
-    std::filesystem::path archivefilepath;
-    std::filesystem::path jsonfilepath;
-    std::filesystem::path thumbnailefilepath;
-    std::string data_version;
+    std::filesystem::path archivefilepath{};
+    std::filesystem::path jsonfilepath{};
+    std::filesystem::path thumbnailefilepath{};
+    std::string data_version{};
 
 public:
-    sspkg_info() {}
-    virtual ~sspkg_info() {}
+    sspkg_info() = default;
+    virtual ~sspkg_info() = default;
 
     static sspkg_info* getInst() { return myinst; }
     static sspkg_info* create()
