@@ -150,6 +150,10 @@ void    SsMeshPart::updateTransformMesh()
 //	float matrix[16];
 	std::vector<float>&	draw_verticesRaw = *(draw_vertices.get());
 	std::vector<float>&	verticesRaw = *(vertices.get());
+
+	if (!bindBoneInfo.get())
+		return;
+
 	std::vector<StBoneWeight>&	bindBoneInfoRaw = *(bindBoneInfo.get());
 
 	for (int i = 0; i < ver_size; i++)
