@@ -2103,16 +2103,17 @@ constexpr std::string_view APP_VERSION =  SPRITESTUDIOSDK_VERSION " (hash: "  GI
 const std::string HELP = std::string(APP_NAME) +  " converter version " + std::string(APP_VERSION) + "\n" +
 "usage: " + std::string(APP_NAME) + " Input files(.sspj) ...\n" +
 "\n" +
-"option:\n" +
+"options:\n" +
 "  -h      Display usage.\n" +
 "  -v      Verbose mode.\n" +
-"  -o      set output path.\n" +
+"  -o      Set output path. (default: the same directory of existing the input sspj file)\n" +
 //"  -e arg  Encoding of output file (UTF8/SJIS) default:UTF8\n" +
 //"  -p arg  Specify image file load base path.\n" +
 "  -pkg    sspkg output mode\n" +
-"  -f      set output format.\n" +
-"  -p      Stop after the end\n" +
-"  usage exsample : " + std::string(APP_NAME) + " -o <outputpath> -f < json , ssfb , c , sspkg> <input file name path>\n";
+"  -f      Set output format. (ssbp, json, ssfb, sspkg) (default: ssbp)\n" +
+"  -p      Pause after the end\n" +
+"\n" +
+"usage example : " + std::string(APP_NAME) + " -o output_directory_path -f (ssbp|json|ssfb|sspkg) input_sspj_file_path\n";
 
 class ArgumentPointer
 {
