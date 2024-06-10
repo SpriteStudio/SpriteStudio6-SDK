@@ -547,7 +547,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	}
 
 	std::set<spritestudio6::SsPart*> error_parts;
-	auto error_once = [&](spritestudio6::SsPart* part, auto& msg)
+	auto error_once = [&](spritestudio6::SsPart* part, const std::string msg)
 		{
 			if (error_parts.find(part) == error_parts.end())
 			{
