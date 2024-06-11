@@ -12,10 +12,7 @@
 #include <fstream>
 #include <memory>
 #include <set>
-
-#ifndef _WIN32
-#include <sys/stat.h>
-#endif
+#include <filesystem>
 
 // TODO
 #include "ssloader.h"
@@ -26,7 +23,6 @@
 
 #include "Lump.h"
 #include "LumpExporter.h"
-#include "FileUtil.h"
 #include "SsPlayerConverter.h"
 
 #include "simpleFileLogger.h"
@@ -38,24 +34,23 @@
 #include "sspkg.h"
 #include "version.h"
 
-std::vector<fs::path> filelist;
+std::vector<std::filesystem::path> filelist;
 static bool isLogout = false;
 
-static const int DATA_VERSION_1			= 1;
-static const int DATA_VERSION_2         = 2;
-static const int DATA_VERSION_3         = 3;
-static const int DATA_VERSION_4			= 4;
-static const int DATA_VERSION_5			= 5;
-static const int DATA_VERSION_6			= 6;
-static const int DATA_VERSION_7			= 7;
-static const int DATA_VERSION_8			= 8;
-static const int DATA_VERSION_9			= 9;
-static const int DATA_VERSION_10		= 10;
-static const int DATA_VERSION_11		= 11;
+constexpr int DATA_VERSION_1 = 1;
+constexpr int DATA_VERSION_2 = 2;
+constexpr int DATA_VERSION_3 = 3;
+constexpr int DATA_VERSION_4 = 4;
+constexpr int DATA_VERSION_5 = 5;
+constexpr int DATA_VERSION_6 = 6;
+constexpr int DATA_VERSION_7 = 7;
+constexpr int DATA_VERSION_8 = 8;
+constexpr int DATA_VERSION_9 = 9;
+constexpr int DATA_VERSION_10 = 10;
+constexpr int DATA_VERSION_11 = 11;
 
-static const int DATA_ID				= 0x42505353;
-static const int CURRENT_DATA_VERSION	= DATA_VERSION_11;
-
+constexpr int DATA_ID				= 0x42505353;
+constexpr int CURRENT_DATA_VERSION	= DATA_VERSION_11;
 
 enum {
 	PART_FLAG_INVISIBLE			= 1 << 0,
@@ -381,7 +376,7 @@ static void parseParts_ssqe(Lump* topLump, spritestudio6::SsProject* proj, const
 {
 }
 
-static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& imageBaseDir , const fs::path& outPath)
+static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& imageBaseDir , const std::filesystem::path& outPath)
 {
 	bool isWrite = false;
 
@@ -1881,7 +1876,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	return topLump;
 }
 
-void createPackFileList(const spritestudio6::SsProject* proj ,const fs::path& sspjPath , std::vector<fs::path>& filelist)
+void createPackFileList(const spritestudio6::SsProject* proj ,const std::filesystem::path& sspjPath , std::vector<std::filesystem::path>& filelist)
 {
 	auto pjpath = sspjPath.parent_path();
 
@@ -1911,8 +1906,8 @@ void createPackFileList(const spritestudio6::SsProject* proj ,const fs::path& ss
 
 
 
-void convertProject(const fs::path& outPath, const std::string& outFName,
-	LumpExporter::StringEncoding encoding, const fs::path& sspjPath,
+void convertProject(const std::filesystem::path& outPath, const std::string& outFName,
+	LumpExporter::StringEncoding encoding, const std::filesystem::path& sspjPath,
 	Options& options, const std::string& creatorComment )
 
 {
@@ -1924,7 +1919,7 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 	std::string outputdirUTF8;
 	outputdirUTF8 = outPath.string();
 
-    if (!fs::exists(outPath)) {
+    if (!std::filesystem::exists(outPath)) {
         COE( "not found output directory: " + outputdirUTF8);
         convert_error_exit = true;
         return;
@@ -1952,14 +1947,14 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 		return;
 	}
 
-	fs::path logfilepath = fs::path(outputdirUTF8).replace_filename("convert.log");
+	auto logfilepath = std::filesystem::path(outputdirUTF8).replace_filename("convert.log");
 
 
 	if (isLogout)
 	{
-		if (fs::exists(logfilepath.c_str()))
+		if (std::filesystem::exists(logfilepath.c_str()))
 		{
-			fs::remove(logfilepath.c_str());
+            std::filesystem::remove(logfilepath.c_str());
 		}
 		logger.setOutputLogFile(logfilepath.wstring());
 		logger.setOutputLogFileMode(true);
@@ -2000,14 +1995,14 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 	}
 	else
 	{
-        auto outputFilePath = fs::path(spritestudio6::SsCharConverter::convert_path_string(outPath.string()));
+        auto outputFilePath = std::filesystem::path(spritestudio6::SsCharConverter::convert_path_string(outPath.string()));
 		std::fstream out;
-		static const std::string messageErrorFileOpen = "出力ファイルのオープンに失敗しました: ";
+        constexpr std::string_view messageErrorFileOpen = "出力ファイルのオープンに失敗しました: ";
 
 		if (outputFormat == OUTPUT_FORMAT_FLAG_JSON)
 		{
 			COI( "convert type : OUTPUT_FORMAT_FLAG_JSON " );
-            outputFilePath = outputFilePath / fs::path(outFName).replace_extension(".json");
+            outputFilePath = outputFilePath / std::filesystem::path(outFName).replace_extension(".json");
             COI( "outputFilePath " + outputFilePath.string() );
 			out.open(outputFilePath, std::ios_base::out);
 			if(out)
@@ -2016,7 +2011,7 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 			}
 			else
 			{
-				COE(messageErrorFileOpen + convert_console_string(outputFilePath.string()));
+				COE(std::string(messageErrorFileOpen) + convert_console_string(outputFilePath.string()));
 			}
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_CSOURCE)
@@ -2028,7 +2023,7 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
 		{
 			COI( "convert type : OUTPUT_FORMAT_FLAG_SSFB " );
-            outputFilePath = outputFilePath / fs::path(outFName).replace_extension(".ssfb");
+            outputFilePath = outputFilePath / std::filesystem::path(outFName).replace_extension(".ssfb");
             COI( "outputFilePath " + outputFilePath.string() );
 			out.open(outputFilePath, std::ios_base::binary | std::ios_base::out);
 			if(out)
@@ -2037,7 +2032,7 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 			}
 			else
 			{
-				COE( messageErrorFileOpen + convert_console_string(outputFilePath.string()) );
+				COE( std::string(messageErrorFileOpen) + convert_console_string(outputFilePath.string()) );
 			}
 		}
 		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
@@ -2060,13 +2055,13 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 			}
 			else
 			{
-				COE( messageErrorFileOpen +  convert_console_string(outPathSsfb) );
+				COE( std::string(messageErrorFileOpen) +  convert_console_string(outPathSsfb) );
 			}
 		}
 		else
 		{
 			COI( "convert type : OUTPUT_FORMAT_FLAG_SSBP " );
-            outputFilePath = outputFilePath / fs::path(outFName).replace_extension(".ssbp");
+            outputFilePath = outputFilePath / std::filesystem::path(outFName).replace_extension(".ssbp");
             COI( "outputFilePath " + outputFilePath.string() );
 			out.open(outputFilePath, std::ios_base::binary | std::ios_base::out);
 			if(out)
@@ -2075,7 +2070,7 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 			}
 			else
 			{
-				COE( messageErrorFileOpen + convert_console_string(outputFilePath.string()) );
+				COE( std::string(messageErrorFileOpen) + convert_console_string(outputFilePath.string()) );
 			}
 		}
 	/////////////
@@ -2102,30 +2097,23 @@ void convertProject(const fs::path& outPath, const std::string& outFName,
 
 
 
-#define APP_NAME		"Ss6Converter"
-#define APP_VERSION		SPRITESTUDIOSDK_VERSION " (hash: " GIT_SHORT_COMMIT_HASH " Build: " __DATE__ " " __TIME__ ")"
+constexpr std::string_view APP_NAME = "Ss6Converter";
+constexpr std::string_view APP_VERSION =  SPRITESTUDIOSDK_VERSION " (hash: "  GIT_SHORT_COMMIT_HASH  " Build: " __DATE__ " " __TIME__ ")";
 
-
-static const char* HELP =
-"\n"
-APP_NAME " converter version " APP_VERSION "\n"
-"usage: " APP_NAME " Input files(.sspj) ...\n"
-"\n"
-"option:\n"
-"  -h      Display usage.\n"
-"  -v      Verbose mode.\n"
-"  -o      set output path.\n"
-//"  -e arg  Encoding of output file (UTF8/SJIS) default:UTF8\n"
-//"  -p arg  Specify image file load base path.\n"
-"  -pkg    sspkg output mode\n"
-"  -f      set output format.\n"
-"  -p      Stop after the end\n"
-"  usage exsample : " APP_NAME " -o <outputpath> -f < json , ssfb , c , sspkg> <input file name path>\n"
-"\n";
-
-
-
-
+const std::string HELP = std::string(APP_NAME) +  " converter version " + std::string(APP_VERSION) + "\n" +
+"usage: " + std::string(APP_NAME) + " Input files(.sspj) ...\n" +
+"\n" +
+"options:\n" +
+"  -h      Display usage.\n" +
+"  -v      Verbose mode.\n" +
+"  -o      Set output path. (default: the same directory of existing the input sspj file)\n" +
+//"  -e arg  Encoding of output file (UTF8/SJIS) default:UTF8\n" +
+//"  -p arg  Specify image file load base path.\n" +
+"  -pkg    sspkg output mode\n" +
+"  -f      Set output format. (ssbp, json, ssfb, sspkg) (default: ssbp)\n" +
+"  -p      Pause after the end\n" +
+"\n" +
+"usage example : " + std::string(APP_NAME) + " -o output_directory_path -f (ssbp|json|ssfb|sspkg) input_sspj_file_path\n";
 
 class ArgumentPointer
 {
@@ -2362,7 +2350,7 @@ int convertMain(int argc, const char * argv[])
 		COE( "Invalid arguments: " + illegalArgument );
 
 //		std::cout << HELP;
-		COI( HELP );
+		COI( std::string(HELP) );
 
 		return SSPC_ILLEGAL_ARGUMENT;
 	}
@@ -2405,35 +2393,10 @@ int convertMain(int argc, const char * argv[])
 		Options::StringList& in = options.inList;
 
 		bool error = false;
-		for (Options::StringList::iterator it = in.begin(); it != in.end(); it++)
+		for (auto & str : in)
 		{
-			const std::string& str = *it;
-
-			COI( "Find : " + str );
-
-#ifdef _WIN32
-			// Win32プラットフォーム用コード。Win32APIを使ってワイルドカード展開する
-			// MEMO: FileUtilで使用している文字コードはSJISであることに注意
-			std::vector<std::string> fileList = FileUtil::findPath(spritestudio6::SsCharConverter::utf8_to_sjis(str));
-			if (!fileList.empty())
-			{
-				for(std::vector<std::string>::iterator it=fileList.begin(); it != fileList.end(); it++)
-				{
-					sources.push_back(spritestudio6::SsCharConverter::sjis_to_utf8(*it));
-				}
-			}
-			else
-			{
-//				std::cerr << "Cannot find input file: " << convert_console_string(str) << std::endl;
-				COE(  "Cannot find input file: " + convert_console_string(str) );
-				error = true;
-			}
-#else
-			// Mac/Unixプラットフォーム用コード
-			// 本当にファイルが存在するか確認し、見つからないものがあるときはエラーとする
-			struct stat st;
-			int result = stat(str.c_str(), &st);
-			if (result == 0)
+			auto inputFile = std::filesystem::path(str);
+			if (std::filesystem::exists(inputFile))
 			{
 				sources.push_back(str);
 			}
@@ -2442,10 +2405,9 @@ int convertMain(int argc, const char * argv[])
 				std::cerr << "Cannot find input file: " << str << std::endl;
 				error = true;
 			}
-#endif
 		}
 		if (error)
-        {
+		{
 			COE( "### Error illegalArgument!!! ###" );
 
 			if (options.endAfterStop)
@@ -2458,7 +2420,7 @@ int convertMain(int argc, const char * argv[])
 
 //	std::vector<std::string> copyfilelist;
 
-	std::string creatorComment = "Created by " APP_NAME " " APP_VERSION;
+	std::string creatorComment = "Created by " + std::string(APP_NAME) + " " + std::string(APP_VERSION);
 	LumpExporter::StringEncoding encoding = options.encoding;
 
 
@@ -2467,14 +2429,14 @@ int convertMain(int argc, const char * argv[])
 	// コンバート実行
 	for (auto & source : sources)
 	{
-		auto sspjPath = fs::weakly_canonical(fs::absolute(source));
+		auto sspjPath = std::filesystem::weakly_canonical(std::filesystem::absolute(source));
         auto outPath = sspjPath.parent_path();
         auto outFName = sspjPath.filename().stem().string();
 
 		//パスが指定されている場合
 		if ( options.outputDir != "" )
 		{
-            outPath = fs::weakly_canonical(fs::absolute(options.outputDir));
+            outPath = std::filesystem::weakly_canonical(std::filesystem::absolute(options.outputDir));
 		}
 
 		if (options.isVerbose)

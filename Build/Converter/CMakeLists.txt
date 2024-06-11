@@ -106,20 +106,6 @@ else()
     endif()
 endif()
 
-message("fetch filesystem")
-set(GHC_FILESYSTEM_BUILD_EXAMPLES OFF CACHE INTERNAL "")
-set(GHC_FILESYSTEM_BUILD_TESTING OFF CACHE INTERNAL "")
-set(GHC_FILESYSTEM_WITH_INSTALL  OFF CACHE INTERNAL "")
-FetchContent_Declare(
-    filesystem
-    GIT_REPOSITORY https://github.com/gulrak/filesystem.git
-    GIT_TAG        v1.5.14)
-FetchContent_GetProperties(filesystem)
-if(NOT filesystem_POPULATED)
-  FetchContent_Populate(filesystem)
-  include_directories(${filesystem_SOURCE_DIR}/include)
-endif()
-
 message("finish fetching dependency libraries")
 
 # get a short commit hash
@@ -154,7 +140,6 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/version.h.in"
 set(Ss6Converter_SRCS
     main.cpp
     BinaryDataWriter.cpp
-    FileUtil.cpp
     Lump.cpp
     LumpExporter.cpp
     sspkg.cpp
@@ -166,7 +151,6 @@ set(Ss6Converter_SRCS
 set(Ss6Converter_HEADERS
     ssfb_generated.h
     BinaryDataWriter.h
-    FileUtil.h
     Lump.h
     LumpExporter.h
     SsPlayerConverter.h
