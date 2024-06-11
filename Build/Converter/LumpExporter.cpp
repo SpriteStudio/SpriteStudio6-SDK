@@ -49,48 +49,48 @@ static std::string encode(const std::string& str, StringEncoding encoding)
 class CSourceExporter
 {
 public:
-	static void save(std::ostream& out, StringEncoding encoding, const Lump* lump, const std::string& topLabel, const std::string& creatorComment)
+	static void save(std::ostream& out, StringEncoding encoding, const std::shared_ptr<Lump>& lump, const std::string& topLabel, const std::string& creatorComment)
 	{
 		CSourceExporter* exporter = new CSourceExporter();
 		exporter->m_encoding = encoding;
 		exporter->m_topLabel = topLabel;
-		
+
 		out << "// " << creatorComment << std::endl;
-		
+
 		const LumpSet* lset = lump->data.p;
 		out << format("extern const %s %s;\n",
 			lset->className.c_str(),
 			topLabel.c_str());
-		
+
 		exporter->writeStrings(out, lump);
 		exporter->writeReferenceLumpSet(out, lump);
 		delete exporter;
 	}
 
 private:
-	typedef std::map<const void*, std::string> LabelMapType;
+	typedef std::map<const std::shared_ptr<Lump>, std::string> LabelMapType;
 
 	LabelMapType	m_labelMap;
 	StringEncoding	m_encoding;
 	std::string		m_topLabel;
 
 
-	void writeStrings(std::ostream& out, const Lump* lump)
+	void writeStrings(std::ostream& out, const std::shared_ptr<Lump>& lump)
 	{
 		const LumpSet* lset = lump->data.p;
 
 		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
 		{
-			const Lump* child = *it;
+			const auto child = *it;
 			if (child->type == Lump::SET)
 			{
 				writeStrings(out, child);
 			}
 		}
-	
+
 		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
 		{
-			const Lump* child = *it;
+			const auto child = *it;
 			if (child->type == Lump::STRING)
 			{
 				if (m_labelMap.find(child) == m_labelMap.end())
@@ -105,7 +105,7 @@ private:
 			}
 		}
 	}
-	
+
 
 	union MixType
 	{
@@ -113,7 +113,7 @@ private:
 		float f;
 	};
 
-	void writeLumpSetBlock(std::ostream& out, const Lump* lump)
+	void writeLumpSetBlock(std::ostream& out, const std::shared_ptr<Lump>& lump)
 	{
 		const LumpSet* lset = lump->data.p;
 
@@ -129,7 +129,7 @@ private:
 				if (second) out << format(",");
 				second = true;
 
-				const Lump* child = *it;
+				const auto child = *it;
 				switch (child->type)
 				{
 					case Lump::S16:
@@ -177,7 +177,7 @@ private:
 				if (second) out << format(",");
 				second = true;
 
-				const Lump* child = *it;
+				const auto child = *it;
 				switch (child->type)
 				{
 					case Lump::S16:
@@ -212,19 +212,19 @@ private:
 				}
 			}
 		}
-			
+
 		out << format("}");
 	}
 
 
-	void writeReferenceLumpSet(std::ostream& out, const Lump* lump, int callDepth = 0)
+	void writeReferenceLumpSet(std::ostream& out, const std::shared_ptr<Lump>& lump, int callDepth = 0)
 	{
 		const LumpSet* lset = lump->data.p;
-		
+
 		for (LumpSet::SetType::const_iterator it = lset->set.begin();
 			it != lset->set.end(); it++)
 		{
-			const Lump* child = *it;
+			const auto child = *it;
 			if (child->type == Lump::SET)
 			{
 				writeReferenceLumpSet(out, child, callDepth + 1);
@@ -263,7 +263,7 @@ private:
 class BinaryExporter
 {
 public:
-	static void save(std::ostream& out, StringEncoding encoding, const Lump* lump, const std::string& creatorComment)
+	static void save(std::ostream& out, StringEncoding encoding, const std::shared_ptr<Lump>& lump, const std::string& creatorComment)
 	{
 		BinaryExporter* exporter = new BinaryExporter();
 		exporter->m_encoding = encoding;
@@ -275,45 +275,45 @@ public:
 		// creator情報埋め込み
 		writer.writeString(creatorComment);
 		writer.align(64);
-		
+
 		exporter->writeStrings(writer, lump);
 		exporter->writeReferenceLumpSet(writer, lump);
-		
+
 		writer.fixReferences();
-		
+
 		delete exporter;
 	}
 
 private:
-	typedef std::map<const void*, std::string> LabelMapType;
+	typedef std::map<const std::shared_ptr<Lump>, std::string> LabelMapType;
 
 	LabelMapType	m_labelMap;
 	StringEncoding	m_encoding;
 
 
-	void writeStrings(BinaryDataWriter& writer, const Lump* lump)
+	void writeStrings(BinaryDataWriter& writer, const std::shared_ptr<Lump>& lump)
 	{
 		const LumpSet* lset = lump->data.p;
 
 		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
 		{
-			const Lump* child = *it;
+			const auto child = *it;
 			if (child->type == Lump::SET)
 			{
 				writeStrings(writer, child);
 			}
 		}
-	
+
 		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
 		{
-			const Lump* child = *it;
+			const auto child = *it;
 			if (child->type == Lump::STRING)
 			{
 				if (m_labelMap.find(child) == m_labelMap.end())
 				{
 					std::string label = format("label_%04d", m_labelMap.size());
 					m_labelMap[child] = label;
-					
+
 					std::string str = encode(*child->data.s, m_encoding);
 
 					writer.setReference(label);
@@ -324,7 +324,7 @@ private:
 	}
 
 
-	void writeLumpSetBlock(BinaryDataWriter& writer, const Lump* lump)
+	void writeLumpSetBlock(BinaryDataWriter& writer, const std::shared_ptr<Lump>& lump)
 	{
 		const LumpSet* lset = lump->data.p;
 
@@ -334,7 +334,7 @@ private:
 			for (LumpSet::SetType::const_iterator it = lset->set.begin();
 				it != lset->set.end(); it++)
 			{
-				const Lump* child = *it;
+				const auto child = *it;
 				switch (child->type)
 				{
 					case Lump::S16:
@@ -376,7 +376,7 @@ private:
 			for (LumpSet::SetType::const_iterator it = lset->set.begin();
 				it != lset->set.end(); it++)
 			{
-				const Lump* child = *it;
+				const auto child = *it;
 				switch (child->type)
 				{
 					case Lump::S16:
@@ -408,14 +408,14 @@ private:
 	}
 
 
-	void writeReferenceLumpSet(BinaryDataWriter& writer, const Lump* lump, int callDepth = 0)
+	void writeReferenceLumpSet(BinaryDataWriter& writer, const std::shared_ptr<Lump>& lump, int callDepth = 0)
 	{
 		const LumpSet* lset = lump->data.p;
-		
+
 		for (LumpSet::SetType::const_iterator it = lset->set.begin();
 			it != lset->set.end(); it++)
 		{
-			const Lump* child = *it;
+			const auto child = *it;
 			if (child->type == Lump::SET)
 			{
 				writeReferenceLumpSet(writer, child, callDepth + 1);
@@ -431,7 +431,7 @@ private:
 
 				// トップはファイル先頭に書き込む
 				if (callDepth == 0) writer.seekp(0);
-				
+
 				writer.setReference(label);
 				writeLumpSetBlock(writer, lump);
 			}
@@ -444,7 +444,7 @@ private:
 class JsonExporter
 {
 public:
-	static void save(std::ostream& out, StringEncoding encoding, const Lump* lump,  const std::string& creatorComment)
+	static void save(std::ostream& out, StringEncoding encoding, const std::shared_ptr<Lump>& lump,  const std::string& creatorComment)
 	{
 		JsonExporter* exporter = new JsonExporter();
 		exporter->m_encoding = encoding;
@@ -462,20 +462,20 @@ public:
 private:
 	picojson::object ssjson;
 
-	typedef std::map<const void*, std::string> LabelMapType;
+	typedef std::map<const std::shared_ptr<Lump>, std::string> LabelMapType;
 
 	LabelMapType	m_labelMap;
 	StringEncoding	m_encoding;
 	std::string		m_topLabel;
 
 
-	void writeStrings(std::ostream& out, const Lump* lump)
+	void writeStrings(std::ostream& out, const std::shared_ptr<Lump>& lump)
 	{
 		const LumpSet* lset = lump->data.p;
 
 		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
 		{
-			const Lump* child = *it;
+			const auto child = *it;
 			if (child->type == Lump::SET)
 			{
 				writeStrings(out, child);
@@ -484,7 +484,7 @@ private:
 
 		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
 		{
-			const Lump* child = *it;
+			const auto child = *it;
 			if (child->type == Lump::STRING)
 			{
 				if (m_labelMap.find(child) == m_labelMap.end())
@@ -505,7 +505,7 @@ private:
 		float f;
 	};
 
-	void writeLumpSetBlock(std::ostream& out, const Lump* lump, picojson::object& ssjson)
+	void writeLumpSetBlock(std::ostream& out, const std::shared_ptr<Lump>& lump, picojson::object& ssjson)
 	{
 		const LumpSet* lset = lump->data.p;
 
@@ -520,7 +520,7 @@ private:
 				it != lset->set.end(); it++)
 			{
 
-				const Lump* child = *it;
+				const auto child = *it;
 
 				switch (child->type)
 				{
@@ -607,7 +607,7 @@ private:
 			for (LumpSet::SetType::const_iterator it = lset->set.begin();
 				it != lset->set.end(); it++)
 			{
-				const Lump* child = *it;
+				const auto child = *it;
 
 				switch (child->type)
 				{
@@ -639,7 +639,7 @@ private:
 	}
 
 
-	void writeReferenceLumpSet(std::ostream& out, const Lump* lump, picojson::object& ssjson, int callDepth = 0 )
+	void writeReferenceLumpSet(std::ostream& out, const std::shared_ptr<Lump>& lump, picojson::object& ssjson, int callDepth = 0 )
 	{
 		const LumpSet* lset = lump->data.p;
 
@@ -668,7 +668,7 @@ private:
 class SsfbExporter
 {
 public:
-	static void save(std::ostream &out, StringEncoding encoding, const Lump *root, const std::string &creatorComment,
+	static void save(std::ostream &out, StringEncoding encoding, const std::shared_ptr<Lump>& root, const std::string &creatorComment,
                         const std::vector<int16_t> &frameIndexVec)
 	{
 		if(encoding != UTF8) {
@@ -697,7 +697,7 @@ public:
 
 private:
 	StringEncoding	m_encoding{};
-	const Lump *m_root{};
+	std::shared_ptr<Lump> m_root{nullptr};
 	std::vector<int16_t> m_frameIndexVec;
 	int m_frameIndex;
 
@@ -838,7 +838,7 @@ private:
 		}
 	}
 
-	flatbuffers::Offset<ss::ssfb::CellMap> createSharedCellMap(const Lump *lump)
+	flatbuffers::Offset<ss::ssfb::CellMap> createSharedCellMap(const std::shared_ptr<Lump>& lump)
 	{
 		flatbuffers::Offset<ss::ssfb::CellMap> cellMap;
 
@@ -872,7 +872,7 @@ private:
 		return cellMap;
 	}
 
-	flatbuffers::Offset<ss::ssfb::AnimationInitialData> createSharedAnimationInitialData(const Lump *lump)
+	flatbuffers::Offset<ss::ssfb::AnimationInitialData> createSharedAnimationInitialData(const std::shared_ptr<Lump>& lump)
 	{
 		flatbuffers::Offset<ss::ssfb::AnimationInitialData> animationInitialData;
 		auto AnimationInitialDataItemVec = lump->getChildren();
@@ -980,7 +980,7 @@ private:
 		return animationInitialData;
 	}
 
-	flatbuffers::Offset<ss::ssfb::PartData> createSharedPartData(const Lump *lump)
+	flatbuffers::Offset<ss::ssfb::PartData> createSharedPartData(const std::shared_ptr<Lump>& lump)
 	{
 		flatbuffers::Offset<ss::ssfb::PartData> partData;
 		auto partDataItemVec = lump->getChildren();
@@ -1108,7 +1108,7 @@ private:
 
 		return meshDataIndices;
 	}
-	
+
 	flatbuffers::Offset<ss::ssfb::partState>
 	createSharedPartState(int16_t index, uint32_t flag1, uint32_t flag2, const std::vector<uint32_t> &dataPrimitive) {
         flatbuffers::Offset<ss::ssfb::partState> partState;
@@ -1215,7 +1215,7 @@ private:
 		}
 	}
 
-	std::vector<flatbuffers::Offset<ss::ssfb::PartData>> createParts(const Lump* lump)
+	std::vector<flatbuffers::Offset<ss::ssfb::PartData>> createParts(const std::shared_ptr<Lump>& lump)
 	{
 		std::vector<flatbuffers::Offset<ss::ssfb::PartData>> ssfbParts;
 
@@ -1228,7 +1228,7 @@ private:
 		return ssfbParts;
 	}
 
-	std::vector<flatbuffers::Offset<ss::ssfb::AnimationData>> createAnimationDataList(const Lump *lump)
+	std::vector<flatbuffers::Offset<ss::ssfb::AnimationData>> createAnimationDataList(const std::shared_ptr<Lump>& lump)
 	{
 		std::vector<flatbuffers::Offset<ss::ssfb::AnimationData>> ssfbAnimationDataList;
 
@@ -1778,22 +1778,22 @@ private:
 #undef GETSSFBSTRING
 
 
-void saveBinary(std::ostream& out, StringEncoding encoding, const Lump* lump, const std::string& creatorComment)
+void saveBinary(std::ostream& out, StringEncoding encoding, const std::shared_ptr<Lump>& lump, const std::string& creatorComment)
 {
 	BinaryExporter::save(out, encoding, lump, creatorComment);
 }
 
-void saveCSource(std::ostream& out, StringEncoding encoding, const Lump* lump, const std::string& topLabel, const std::string& creatorComment)
+void saveCSource(std::ostream& out, StringEncoding encoding, const std::shared_ptr<Lump>& lump, const std::string& topLabel, const std::string& creatorComment)
 {
 	CSourceExporter::save(out, encoding, lump, topLabel, creatorComment);
 }
 
-void saveJson(std::ostream& out, StringEncoding encoding, const Lump* lump, const std::string& creatorComment)
+void saveJson(std::ostream& out, StringEncoding encoding, const std::shared_ptr<Lump>& lump, const std::string& creatorComment)
 {
 	JsonExporter::save(out, encoding, lump, creatorComment);
 }
 
-void saveSsfb(std::ostream &out, StringEncoding encoding, const Lump *lump, const std::string &creatorComment,
+void saveSsfb(std::ostream &out, StringEncoding encoding, const std::shared_ptr<Lump>& lump, const std::string &creatorComment,
               const std::vector<int16_t> &frameIndexVec)
 {
     SsfbExporter::save(out, encoding, lump, creatorComment, frameIndexVec);

@@ -313,11 +313,11 @@ bool isZenkaku( const spritestudio6::SsString* str )
 
 static std::vector<int16_t> s_frameIndexVec;
 
-static void parseParts_ssqe(Lump* topLump, spritestudio6::SsProject* proj, const std::string& imageBaseDir)
+static void parseParts_ssqe(std::shared_ptr<Lump>& topLump, spritestudio6::SsProject* proj, const std::string& imageBaseDir)
 {
 }
 
-static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& imageBaseDir , const std::filesystem::path& outPath)
+static std::shared_ptr<Lump> parseParts(spritestudio6::SsProject* proj, const std::string& imageBaseDir , const std::filesystem::path& outPath)
 {
 	bool isWrite = false;
 
@@ -327,7 +327,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 	auto cellList = makeCellList(proj);
 
-	Lump* topLump = Lump::set("ss::ProjectData", true, "ProjectData");
+	auto topLump = Lump::set("ss::ProjectData", true, "ProjectData");
 
 	if (spritestudio6::checkFileVersion(proj->version, SPRITESTUDIO6_SSPJVERSION) == false)
 	{
@@ -359,11 +359,11 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		topLump->add(Lump::stringData("", "imageBaseDir"));
 	}
 
-	Lump* cellsData = Lump::set("ss::Cell[]", true, "Cell");
+	auto cellsData = Lump::set("ss::Cell[]", true, "Cell");
 	topLump->add(cellsData);
-	Lump* packDataArray = Lump::set("ss::AnimePackData[]", true, "AnimePackData");
+	auto packDataArray = Lump::set("ss::AnimePackData[]", true, "AnimePackData");
 	topLump->add(packDataArray);
-	Lump* effectfileArray = Lump::set("ss::EffectFile[]", true, "EffectFile");
+	auto effectfileArray = Lump::set("ss::EffectFile[]", true, "EffectFile");
 	topLump->add(effectfileArray);
 
 	topLump->add(Lump::s16Data((int)cellList->size(), "numCells"));
@@ -391,7 +391,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	{
 		const spritestudio6::SsCellMap* cellMap = proj->cellmapList[mapIndex].get();
 
-		Lump* cellMapData = Lump::set("ss::CellMap", true, "CellMap");
+		auto cellMapData = Lump::set("ss::CellMap", true, "CellMap");
 		cellMapData->add(Lump::stringData(cellMap->name, "name"));
 		cellMapData->add(Lump::stringData(cellMap->imagePath, "imagePath"));
 
@@ -437,7 +437,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		{
 			const spritestudio6::SsCell* cell = cellMap->cells[cellIndex];
 
-			Lump* cellData = Lump::set("ss::Cell", false, "Cell");
+			auto cellData = Lump::set("ss::Cell", false, "Cell");
 			cellsData->add(cellData);
 
 			cellData->add(Lump::stringData(cell->name, "name"));
@@ -500,11 +500,11 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		const spritestudio6::SsModel& model = animePack->Model;
 
 		// AnimePackData
-		Lump* animePackData = Lump::set("ss::AnimePackData", false, "AnimePackData");
+		auto animePackData = Lump::set("ss::AnimePackData", false, "AnimePackData");
 		packDataArray->add(animePackData);
 
-		Lump* partDataArray = Lump::set("ss::PartData[]", true, "PartData");
-		Lump* animeDataArray = Lump::set("ss::AnimationData[]", true, "AnimationData");
+		auto partDataArray = Lump::set("ss::PartData[]", true, "PartData");
+		auto animeDataArray = Lump::set("ss::AnimationData[]", true, "AnimationData");
 
 		animePackData->add(Lump::stringData(animePack->name, "name"));
 
@@ -527,7 +527,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			const spritestudio6::SsPart* part = model.partList[partIndex];
 
 			// PartData
-			Lump* partData = Lump::set("ss::PartData", false, "PartData" );
+			auto partData = Lump::set("ss::PartData", false, "PartData" );
 			partDataArray->add(partData);
 
 			partData->add(Lump::stringData(part->name, "name"));
@@ -649,7 +649,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			std::list<spritestudio6::SsPartState*>& partList = decoder.getPartSortList();
 
 			// AnimationData
-			Lump* animeData = Lump::set("ss::AnimationData", false, "AnimationData");
+			auto animeData = Lump::set("ss::AnimationData", false, "AnimationData");
 			animeDataArray->add(animeData);
 
 			// パーツごとのアニメーションパラメータ初期値
@@ -660,7 +660,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			decoder.setPlayFrame(0);
 			decoder.update();
 
-			Lump* initialDataArray = Lump::set("ss::AnimationInitialData[]", true, "AnimationInitialData");
+			auto initialDataArray = Lump::set("ss::AnimationInitialData[]", true, "AnimationInitialData");
 			int sortedOrder = 0;
 			SPRITESTUDIO6SDK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
 			{
@@ -751,7 +751,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 				initialDataList.push_back(init);
 
-				Lump* initialData = Lump::set("ss::AnimationInitialData", false, "AnimationInitialData");
+				auto initialData = Lump::set("ss::AnimationInitialData", false, "AnimationInitialData");
 				initialDataArray->add(initialData);
 
 				initialData->add(Lump::s16Data(init.index, "index"));
@@ -798,7 +798,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				initialData->add(Lump::s32Data(init.effectValue_loopflag, "effectValue_loopflag"));
 			}
 
-			Lump* meshsDataUV = Lump::set("ss::ss_u16*[]", true, "meshsDataUV");
+			auto meshsDataUV = Lump::set("ss::ss_u16*[]", true, "meshsDataUV");
 			{
 				decoder.setPlayFrame(0);
 				decoder.update();
@@ -809,7 +809,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					const spritestudio6::SsPartState* state = findState(partList, part->arrayIndex);
 
 					//サイズ分のUV出力
-					Lump* meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
+					auto meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
 					meshsDataUV->add(meshData);
 
 					//メッシュのサイズを書き出す
@@ -843,7 +843,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				}
 
 			}
-			Lump* meshsDataIndices = Lump::set("ss::ss_u16*[]", true, "meshsDataIndices");
+			auto meshsDataIndices = Lump::set("ss::ss_u16*[]", true, "meshsDataIndices");
 			{
 				decoder.setPlayFrame(0);
 				decoder.update();
@@ -854,7 +854,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					const spritestudio6::SsPartState* state = findState(partList, part->arrayIndex);
 
 					//サイズ分のUV出力
-					Lump* meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
+					auto meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
 					meshsDataIndices->add(meshData);
 
 					//メッシュのサイズを書き出す
@@ -890,7 +890,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 
 
 			// フレーム毎データ
-			Lump* frameDataIndexArray = Lump::set("ss::ss_u16*[]", true, "frameDataIndexArray");
+			auto frameDataIndexArray = Lump::set("ss::ss_u16*[]", true, "frameDataIndexArray");
 
 			for (int frame = 0; frame < decoder.getAnimeTotalFrame(); frame++)
 			{
@@ -913,10 +913,10 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 //				}
 
 				// パーツごとのデータを出力する
-				Lump* frameData = Lump::set("ss::ss_u16[]", true, "frameData");
+				auto frameData = Lump::set("ss::ss_u16[]", true, "frameData");
 				frameDataIndexArray->add(frameData);
 
-				Lump* frameFlag = Lump::s16Data(0, "frameFlag");
+				auto frameFlag = Lump::s16Data(0, "frameFlag");
 //				frameData->add(frameFlag);
 
 				int outPartsCount = 0;
@@ -1334,12 +1334,12 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			}
 
 			// ユーザーデータ
-			Lump* userDataIndexArray = Lump::set("ss::ss_u16*[]", true, "userDataIndexArray");
+			auto userDataIndexArray = Lump::set("ss::ss_u16*[]", true, "userDataIndexArray");
 			bool hasUserData = false;
 
 			for (int frame = 0; frame < decoder.getAnimeTotalFrame(); frame++)
 			{
-				Lump* userData = Lump::set("ss::ss_u16[]", true, "userData");
+				auto userData = Lump::set("ss::ss_u16[]", true, "userData");
 				int partsCount = 0;
 
 				SPRITESTUDIO6SDK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
@@ -1407,18 +1407,17 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 				else
 				{
 					userDataIndexArray->add(Lump::s32Data(0));
-					delete userData;
 				}
 			}
 
 
 			// ラベルデータ
-			Lump* LabelDataIndexArray = Lump::set("ss::ss_u16*[]", true, "LabelDataIndexArray");
+            auto LabelDataIndexArray = Lump::set("ss::ss_u16*[]", true, "LabelDataIndexArray");
 			bool hasLabelData = false;
 			int label_idx = 0;
 			for (label_idx = 0; label_idx < (int)anime->labels.size(); label_idx++)
 			{
-				Lump* labelData = Lump::set("ss::ss_u16[]", true, "labelData");
+				auto labelData = Lump::set("ss::ss_u16[]", true, "labelData");
 
 				spritestudio6::SsString str;
 				str = anime->labels[label_idx]->name;
@@ -1520,7 +1519,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	//エフェクトデータ
 	for (int effectIndex = 0; effectIndex < (int)proj->effectfileList.size(); effectIndex++)
 	{
-		Lump* effectFile = Lump::set("ss::EffectFile", false, "EffectFile");
+		auto effectFile = Lump::set("ss::EffectFile", false, "EffectFile");
 		effectfileArray->add(effectFile);
 
 		const spritestudio6::SsEffectFile* effectfile = proj->getEffectFile(effectIndex);
@@ -1541,13 +1540,13 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 		effectFile->add(Lump::s16Data((int)effectmodel->nodeList.size(), "numNodeList"));	//エフェクトノード数
 
 
-		Lump* effectNodeArray = Lump::set("ss::EffectNode[]", true, "EffectNodeArray");
+		auto effectNodeArray = Lump::set("ss::EffectNode[]", true, "EffectNodeArray");
 		effectFile->add(effectNodeArray);									//ノード配列
 
 		for (size_t nodeindex = 0; nodeindex < effectmodel->nodeList.size(); nodeindex++)
 		{
 			//エフェクトノードを追加
-			Lump* effectNode = Lump::set("ss::EffectNode", false, "EffectNode");
+			auto effectNode = Lump::set("ss::EffectNode", false, "EffectNode");
 			effectNodeArray->add(effectNode);
 
 			spritestudio6::SsEffectNode *node = effectmodel->nodeList[nodeindex];
@@ -1576,13 +1575,13 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 			effectNode->add(Lump::s16Data(blendType, "blendType"));		//描画方法
 			effectNode->add(Lump::s16Data((int)(behavior.plist.size()), "numBehavior"));	//コマンドパラメータ数
 
-			Lump* effectBehaviorArray = Lump::set("ss::ss_u16*[]", true, "effectBehaviorArray");
+			auto effectBehaviorArray = Lump::set("ss::ss_u16*[]", true, "effectBehaviorArray");
 			effectNode->add(effectBehaviorArray);			//コマンドパラメータ配列
 
 			//コマンドパラメータ
 			for (size_t plistindex = 0; plistindex < behavior.plist.size(); plistindex++)
 			{
-				Lump* effectBehavior = Lump::set("ss::ss_u16[]", true, "effectBehavior");
+				auto effectBehavior = Lump::set("ss::ss_u16[]", true, "effectBehavior");
 				effectBehaviorArray->add(effectBehavior);
 
 				spritestudio6::SsEffectElementBase *elementbase = behavior.plist[plistindex].get();
@@ -1896,7 +1895,7 @@ void convertProject(const std::filesystem::path& outPath, const std::string& out
 
 	COI( "parseParts " );
 
-	Lump* lump;
+	std::shared_ptr<Lump> lump = nullptr;
 	try
 	{
 		lump = parseParts(proj, imageBaseDir, outPath);
