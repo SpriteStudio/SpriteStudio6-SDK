@@ -175,51 +175,6 @@ auto makeCellList(spritestudio6::SsProject* proj)
 	return cellList;
 }
 
-
-static const spritestudio6::SsKeyframe* findDefaultKeyframe(spritestudio6::SsAnimeDecoder& decoder, int partIndex, spritestudio6::SsAttributeKind::_enum tag)
-{
-	SPRITESTUDIO6SDK_foreach(std::vector<spritestudio6::SsPartAndAnime>, decoder.getPartAnime(), it)
-	{
-		spritestudio6::SsPartAnime* partAnime = it->second;
-		spritestudio6::SsPart* part = it->first;
-		if (part->arrayIndex != partIndex) continue;
-
-		SPRITESTUDIO6SDK_foreach(spritestudio6::SsAttributeList, partAnime->attributes, attrIt)
-		{
-			spritestudio6::SsAttribute* attr = *attrIt;
-			if (attr->tag != tag) continue;
-
-			const spritestudio6::SsKeyframe* key = attr->firstKey();
-			return key;
-		}
-
-	}
-	return NULL;
-}
-
-
-static spritestudio6::SsAttribute* findAttribute(spritestudio6::SsPartAnime* partAnime, spritestudio6::SsAttributeKind::_enum tag)
-{
-	SPRITESTUDIO6SDK_foreach(spritestudio6::SsAttributeList, partAnime->attributes, attrIt)
-	{
-		spritestudio6::SsAttribute* attr = *attrIt;
-		if (attr->tag == tag) return attr;
-	}
-	return NULL;
-}
-
-
-static const spritestudio6::SsKeyframe* findFirstKey(spritestudio6::SsPartAnime* partAnime, spritestudio6::SsAttributeKind::_enum tag)
-{
-	spritestudio6::SsAttribute* attr = findAttribute(partAnime, tag);
-	if (attr)
-	{
-		return attr->firstKey();
-	}
-	return NULL;
-}
-
-
 static const spritestudio6::SsPartState* findState(std::list<spritestudio6::SsPartState*>& partList, int partIndex)
 {
 	SPRITESTUDIO6SDK_foreach(std::list<spritestudio6::SsPartState*>, partList, it)
