@@ -7,7 +7,7 @@
 #include <string>
 
 static int cnt = 0;
-Lump::Lump(DataType type) : type(type) 
+Lump::Lump(DataType type) : type(type)
 {
 	parent = NULL;
 	name = "NoName" + std::to_string(cnt);
@@ -33,11 +33,11 @@ Lump::~Lump()
 	}
 }
 
-Lump* Lump::s16Data(int value, std::string name)
+Lump* Lump::s16Data(int value, const std::string& name)
 {
 	Lump* v = new Lump(S16);
 	v->data.i = value;
-	if (name != "")
+	if (!name.empty())
 	{
 		v->name = name;
 	}
@@ -45,11 +45,11 @@ Lump* Lump::s16Data(int value, std::string name)
 	return v;
 }
 
-Lump* Lump::s32Data(int value, std::string name)
+Lump* Lump::s32Data(int value, const std::string& name)
 {
 	Lump* v = new Lump(S32);
 	v->data.i = value;
-	if (name != "")
+	if (!name.empty())
 	{
 		v->name = name;
 	}
@@ -57,11 +57,11 @@ Lump* Lump::s32Data(int value, std::string name)
 	return v;
 }
 
-Lump* Lump::floatData(float value, std::string name)
+Lump* Lump::floatData(float value, const std::string& name)
 {
 	Lump* v = new Lump(FLOAT);
 	v->data.f = value;
-	if (name != "")
+	if (!name.empty())
 	{
 		v->name = name;
 	}
@@ -69,11 +69,11 @@ Lump* Lump::floatData(float value, std::string name)
 	return v;
 }
 
-Lump* Lump::colorData(int color, std::string name)
+Lump* Lump::colorData(int color, const std::string& name)
 {
 	Lump* v = new Lump(COLOR);
 	v->data.i = color;
-	if (name != "")
+	if (!name.empty())
 	{
 		v->name = name;
 	}
@@ -81,11 +81,11 @@ Lump* Lump::colorData(int color, std::string name)
 	return v;
 }
 
-Lump* Lump::stringData(const std::string& value, std::string name)
+Lump* Lump::stringData(const std::string& value, const std::string& name)
 {
 	Lump* v = new Lump(STRING);
 	v->data.s = new std::string(value);
-	if (name != "")
+	if (!name.empty())
 	{
 		v->name = name;
 	}
@@ -93,10 +93,10 @@ Lump* Lump::stringData(const std::string& value, std::string name)
 	return v;
 }
 
-Lump *Lump::findLump(const Lump *lump, std::string name)
+Lump *Lump::findLump(const Lump *lump, const std::string& name)
 {
 	Lump *found = nullptr;
-	if(lump == nullptr || name == "")
+	if(lump == nullptr || name.empty())
 		return nullptr;
 
 	if(lump->name == name) {
@@ -149,7 +149,7 @@ void Lump::walkTree(const Lump *root, const std::function<void(const Lump *)> &c
 }
 */
 
-void Lump::namechack( void )
+void Lump::namechack()
 {
 /*
 	if (parent)
@@ -170,7 +170,7 @@ void Lump::namechack( void )
 */
 }
 
-Lump* Lump::set(const std::string& className, bool isReference, std::string name)
+Lump* Lump::set(const std::string& className, bool isReference, const std::string& name)
 {
 	size_t len = className.length();
 	bool isArray = className.at(len-2) == '[' && className.at(len-1) == ']';
@@ -229,7 +229,7 @@ Lump *Lump::getChild(std::size_t idx)
     return data.p->getChild(idx);
 }
 
-std::vector<Lump *> Lump::getChildren() const {
+std::vector<Lump *>& Lump::getChildren() const {
     assert(type == SET);
     return data.p->set;
 }
@@ -263,7 +263,7 @@ Lump *LumpSet::findChild(const std::function<bool(const Lump *)> &compCallback) 
 	if(compCallback == nullptr)
 		return findLump;
 
-	for(auto lump : this->set) {
+	for(const auto lump : this->set) {
 		bool ret = compCallback(lump);
 		if(ret) {
 			findLump = lump;
