@@ -35,7 +35,6 @@
 #include "version.h"
 
 std::vector<std::filesystem::path> filelist;
-static bool isLogout = false;
 
 constexpr int DATA_VERSION_1 = 1;
 constexpr int DATA_VERSION_2 = 2;
@@ -156,12 +155,14 @@ struct Options
 	int								argumentEncode;
 
 	bool							endAfterStop;
+	bool							isLogout;
 
 	Options()
 		: isHelp(false)
 		, isVerbose(false)
 		, endAfterStop(false)
 		, encoding(LumpExporter::UTF8)
+		, isLogout(false)
 	{}
 };
 
@@ -1950,7 +1951,7 @@ void convertProject(const std::filesystem::path& outPath, const std::string& out
 	auto logfilepath = std::filesystem::path(outputdirUTF8).replace_filename("convert.log");
 
 
-	if (isLogout)
+	if (options.isLogout)
 	{
 		if (std::filesystem::exists(logfilepath.c_str()))
 		{
@@ -2196,7 +2197,7 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 	else if (opt == "-l")
 	{
 		std::cout << "output log mode" << std::endl;
-		isLogout = true;
+		options.isLogout = true;
 //		options.isOutputLog = true;
 		COI( "output Log : On" );
 	}
