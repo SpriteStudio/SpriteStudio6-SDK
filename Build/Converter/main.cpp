@@ -320,7 +320,7 @@ static std::shared_ptr<Lump> parseParts(spritestudio6::SsProject* proj, const st
 {
 	bool isWrite = false;
 
-	CO( std::string(SPRITESTUDIOSDK_VERSION) );	//バージョン表記は ssloader.h　にあります。
+	CO( std::string(SPRITESTUDIOSDK_VERSION " hash:" GIT_SHORT_COMMIT_HASH));	//バージョン表記は ssloader.h　にあります。
 	CO("Ss6Converter ssbpFormatVersion=" + std::to_string( CURRENT_DATA_VERSION ) );
 	CO( "convert start!");
 
