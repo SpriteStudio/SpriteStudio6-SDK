@@ -131,15 +131,6 @@ enum {
 
 bool convert_error_exit = false;	//データにエラーがありコンバートを中止した
 
-union converter32 {
-	int i;
-	unsigned int ui;
-	float f;
-};
-converter32 c32;
-
-
-
 struct Options
 {
 	typedef std::vector<std::string> StringList;
@@ -1173,10 +1164,8 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					frameData->add(Lump::s16Data(state->index, tagname + "index"));
 //					frameData->add(Lump::s16Data(0));				//32bitアライメント用ダミーデータ
 					frameData->add(Lump::s32Data(s_flags | p_flags, tagname + "flag1"));
-					c32.ui = s_flags | p_flags;
 					//intで出力すると上位ビットが立った場合に丸めが発生するので、floatで出力し、プレイヤーではbitを整数で扱う事になる
 					frameData->add(Lump::s32Data(p_flags2, tagname + "flag2"));
-					c32.ui = p_flags2;
 					//intで出力すると上位ビットが立った場合に丸めが発生するので、floatで出力し、プレイヤーではbitを整数で扱う事になる
 
 					if (p_flags & PART_FLAG_CELL_INDEX)
@@ -1289,27 +1278,19 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 					if (p_flags & PART_FLAG_INSTANCE_KEYFRAME)
 					{
 						frameData->add(Lump::s32Data(state->instanceValue.curKeyframe, tagname + "instanceValue_curKeyframe"));
-						c32.i = state->instanceValue.curKeyframe;
 						frameData->add(Lump::s32Data(state->instanceValue.startFrame, tagname + "instanceValue_startFrame"));
-						c32.i = state->instanceValue.startFrame;
 						frameData->add(Lump::s32Data(state->instanceValue.endFrame, tagname + "instanceValue_endFrame"));
-						c32.i = state->instanceValue.endFrame;
 						frameData->add(Lump::s32Data(state->instanceValue.loopNum, tagname + "instanceValue_loopNum"));
-						c32.i = state->instanceValue.loopNum;
 						frameData->add(Lump::floatData(state->instanceValue.speed, tagname + "instanceValue_speed"));
 						frameData->add(Lump::s32Data(state->instanceValue.loopflag, tagname + "instanceValue_loopflag"));
-						c32.i = state->instanceValue.loopflag;
 					}
 					//エフェクト情報出力
 					if (p_flags & PART_FLAG_EFFECT_KEYFRAME)
 					{
 						frameData->add(Lump::s32Data(state->effectValue.curKeyframe, tagname + "effectValue_curKeyframe"));	//キー配置フレーム
-						c32.i = state->effectValue.curKeyframe;
 						frameData->add(Lump::s32Data(state->effectValue.startTime, tagname + "effectValue_startTime"));	//開始フレーム
-						c32.i = state->effectValue.startTime;
 						frameData->add(Lump::floatData(state->effectValue.speed, tagname + "effectValue_speed"));		//再生速度
 						frameData->add(Lump::s32Data(state->effectValue.loopflag, tagname + "effectValue_loopflag"));		//独立動作
-						c32.i = state->effectValue.loopflag;
 					}
 
 
