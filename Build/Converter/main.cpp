@@ -157,24 +157,18 @@ struct Options
 	{}
 };
 
-
-typedef std::map<const spritestudio6::SsCell*, int> CellList;
-
-
-
-CellList* makeCellList(spritestudio6::SsProject* proj)
+auto makeCellList(spritestudio6::SsProject* proj)
 {
 	// セルデータの出力と、全てセルデータを集約したリストを作る
-	CellList* cellList = new std::map<const spritestudio6::SsCell*, int>();
+	auto cellList = std::make_shared<std::map<const spritestudio6::SsCell*, int>>();
 	int cellListIndex = 0;
 
 	for (size_t mapIndex = 0; mapIndex < proj->cellmapList.size(); mapIndex++)
 	{
-		const spritestudio6::SsCellMap* cellMap = proj->getCellMap((int)mapIndex);
-		for (size_t cellIndex = 0; cellIndex < cellMap->cells.size(); cellIndex++)
+		const auto* cellMap = proj->getCellMap((int)mapIndex);
+		for (auto cell : cellMap->cells)
 		{
-			const spritestudio6::SsCell* cell = cellMap->cells[cellIndex];
-			cellList->insert(CellList::value_type(cell, cellListIndex++));
+			cellList->insert({cell, cellListIndex++});
 		}
 	}
 
@@ -376,7 +370,7 @@ static Lump* parseParts(spritestudio6::SsProject* proj, const std::string& image
 	CO("Ss6Converter ssbpFormatVersion=" + std::to_string( CURRENT_DATA_VERSION ) );
 	CO( "convert start!");
 
-	CellList* cellList = makeCellList(proj);
+	auto cellList = makeCellList(proj);
 
 	Lump* topLump = Lump::set("ss::ProjectData", true, "ProjectData");
 
