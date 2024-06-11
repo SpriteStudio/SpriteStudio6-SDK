@@ -2,10 +2,10 @@
 //  LumpExporter.cpp
 //
 
+#include <cassert>
+#include <cstdarg>
 #include "LumpExporter.h"
 #include "BinaryDataWriter.h"
-#include <assert.h>
-#include <cstdarg>
 #include "sscharconverter.h"
 #include "picojson.h"
 #include "flatbuffers/flatbuffers.h"
@@ -19,7 +19,7 @@ static std::string format(const char* fmt, std::va_list arg)
 {
 	char buffer[0x1000];
 	vsnprintf(buffer, 0x1000, fmt, arg);
-	return std::string(buffer);
+	return {buffer};
 }
 
 static std::string format(const char* fmt, ...)
@@ -51,7 +51,7 @@ class CSourceExporter
 public:
 	static void save(std::ostream& out, StringEncoding encoding, const std::shared_ptr<Lump>& lump, const std::string& topLabel, const std::string& creatorComment)
 	{
-		CSourceExporter* exporter = new CSourceExporter();
+		auto* exporter = new CSourceExporter();
 		exporter->m_encoding = encoding;
 		exporter->m_topLabel = topLabel;
 
@@ -79,18 +79,16 @@ private:
 	{
 		const LumpSet* lset = lump->data.p;
 
-		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
+		for (const auto& child : lset->set)
 		{
-			const auto child = *it;
 			if (child->type == Lump::SET)
 			{
 				writeStrings(out, child);
 			}
 		}
 
-		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
+		for (const auto& child : lset->set)
 		{
-			const auto child = *it;
 			if (child->type == Lump::STRING)
 			{
 				if (m_labelMap.find(child) == m_labelMap.end())
@@ -123,14 +121,12 @@ private:
 		if (lset->arrayType == LumpSet::NO_ARRAY || lset->arrayType == LumpSet::ARRAY)
 		{
 			bool second = false;
-			for (LumpSet::SetType::const_iterator it = lset->set.begin();
-				it != lset->set.end(); it++)
+			for (const auto& child : lset->set)
 			{
 				if (second) out << format(",");
 				second = true;
 
-				const auto child = *it;
-				switch (child->type)
+                switch (child->type)
 				{
 					case Lump::S16:
 					case Lump::S32:
@@ -171,14 +167,12 @@ private:
 		else if (lset->arrayType == LumpSet::U16_ARRAY)
 		{
 			bool second = false;
-			for (LumpSet::SetType::const_iterator it = lset->set.begin();
-				it != lset->set.end(); it++)
+			for (const auto& child : lset->set)
 			{
 				if (second) out << format(",");
 				second = true;
 
-				const auto child = *it;
-				switch (child->type)
+                switch (child->type)
 				{
 					case Lump::S16:
 						out << format("0x%x", child->data.i);
@@ -188,7 +182,7 @@ private:
 						break;
 					case Lump::FLOAT:
 						{
-							MixType mix;
+							MixType mix{};
 							mix.f = child->data.f;
 							int value = mix.i;
 							out << format("0x%x,0x%x", value & 0xffff, (value >> 16) & 0xffff);
@@ -221,11 +215,9 @@ private:
 	{
 		const LumpSet* lset = lump->data.p;
 
-		for (LumpSet::SetType::const_iterator it = lset->set.begin();
-			it != lset->set.end(); it++)
+		for (const auto& child : lset->set)
 		{
-			const auto child = *it;
-			if (child->type == Lump::SET)
+				if (child->type == Lump::SET)
 			{
 				writeReferenceLumpSet(out, child, callDepth + 1);
 			}
@@ -265,7 +257,7 @@ class BinaryExporter
 public:
 	static void save(std::ostream& out, StringEncoding encoding, const std::shared_ptr<Lump>& lump, const std::string& creatorComment)
 	{
-		BinaryExporter* exporter = new BinaryExporter();
+		auto* exporter = new BinaryExporter();
 		exporter->m_encoding = encoding;
 
 		BinaryDataWriter writer(out);
@@ -295,19 +287,17 @@ private:
 	{
 		const LumpSet* lset = lump->data.p;
 
-		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
+		for (const auto& child : lset->set)
 		{
-			const auto child = *it;
-			if (child->type == Lump::SET)
+            if (child->type == Lump::SET)
 			{
 				writeStrings(writer, child);
 			}
 		}
 
-		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
+		for (const auto& child : lset->set)
 		{
-			const auto child = *it;
-			if (child->type == Lump::STRING)
+            if (child->type == Lump::STRING)
 			{
 				if (m_labelMap.find(child) == m_labelMap.end())
 				{
@@ -326,16 +316,14 @@ private:
 
 	void writeLumpSetBlock(BinaryDataWriter& writer, const std::shared_ptr<Lump>& lump)
 	{
-		const LumpSet* lset = lump->data.p;
+		const auto* lset = lump->data.p;
 
 		// ノーマルのデータ構造
 		if (lset->arrayType == LumpSet::NO_ARRAY || lset->arrayType == LumpSet::ARRAY)
 		{
-			for (LumpSet::SetType::const_iterator it = lset->set.begin();
-				it != lset->set.end(); it++)
+			for (const auto& child : lset->set)
 			{
-				const auto child = *it;
-				switch (child->type)
+                switch (child->type)
 				{
 					case Lump::S16:
 						writer.writeShort(child->data.i);
@@ -373,11 +361,9 @@ private:
 		// u16型の配列
 		else if (lset->arrayType == LumpSet::U16_ARRAY)
 		{
-			for (LumpSet::SetType::const_iterator it = lset->set.begin();
-				it != lset->set.end(); it++)
+			for (const auto& child : lset->set)
 			{
-				const auto child = *it;
-				switch (child->type)
+                switch (child->type)
 				{
 					case Lump::S16:
 						writer.writeShort(child->data.i);
@@ -412,11 +398,9 @@ private:
 	{
 		const LumpSet* lset = lump->data.p;
 
-		for (LumpSet::SetType::const_iterator it = lset->set.begin();
-			it != lset->set.end(); it++)
+		for (const auto& child : lset->set)
 		{
-			const auto child = *it;
-			if (child->type == Lump::SET)
+            if (child->type == Lump::SET)
 			{
 				writeReferenceLumpSet(writer, child, callDepth + 1);
 			}
@@ -446,7 +430,7 @@ class JsonExporter
 public:
 	static void save(std::ostream& out, StringEncoding encoding, const std::shared_ptr<Lump>& lump,  const std::string& creatorComment)
 	{
-		JsonExporter* exporter = new JsonExporter();
+		auto* exporter = new JsonExporter();
 		exporter->m_encoding = encoding;
 
 		exporter->ssjson.clear();
@@ -473,19 +457,17 @@ private:
 	{
 		const LumpSet* lset = lump->data.p;
 
-		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
+		for (const auto& child : lset->set)
 		{
-			const auto child = *it;
-			if (child->type == Lump::SET)
+            if (child->type == Lump::SET)
 			{
 				writeStrings(out, child);
 			}
 		}
 
-		for (LumpSet::SetType::const_iterator it = lset->set.begin(); it != lset->set.end(); it++)
+		for (const auto& child : lset->set)
 		{
-			const auto child = *it;
-			if (child->type == Lump::STRING)
+            if (child->type == Lump::STRING)
 			{
 				if (m_labelMap.find(child) == m_labelMap.end())
 				{
@@ -516,12 +498,8 @@ private:
 			arrayjson.clear();
 
 			bool second = false;
-			for (LumpSet::SetType::const_iterator it = lset->set.begin();
-				it != lset->set.end(); it++)
+            for (const auto& child : lset->set)
 			{
-
-				const auto child = *it;
-
 				switch (child->type)
 				{
 				case Lump::S16:
@@ -604,12 +582,9 @@ private:
 			picojson::object json;
 			json.clear();
 
-			for (LumpSet::SetType::const_iterator it = lset->set.begin();
-				it != lset->set.end(); it++)
+			for (const auto& child : lset->set)
 			{
-				const auto child = *it;
-
-				switch (child->type)
+                switch (child->type)
 				{
 				case Lump::S16:
 				case Lump::S32:
@@ -799,7 +774,7 @@ private:
 
 	void createHeader()
 	{
-		auto rootChildVec = m_root->getChildren();
+		const auto& rootChildVec = m_root->getChildren();
 		m_dataId = GETS32(rootChildVec[0]);
 		m_version = GETS32(rootChildVec[1]);
 		m_flags = GETS32(rootChildVec[2]);
@@ -808,13 +783,13 @@ private:
 
 	void createCells()
 	{
-		auto rootChildVec = m_root->getChildren();
+		const auto& rootChildVec = m_root->getChildren();
 		// 4:Cell
-		auto cellsLump = rootChildVec[4];
+		const auto& cellsLump = rootChildVec[4];
 
-		auto cellsVec = cellsLump->getChildren();
-		for(auto cellItem : cellsVec) {
-			auto cellItemVec = cellItem->getChildren();
+		const auto& cellsVec = cellsLump->getChildren();
+		for(const auto& cellItem : cellsVec) {
+			auto& cellItemVec = cellItem->getChildren();
 			auto ssfbCellMap = createSharedCellMap(cellItemVec[1]);
 			auto ssfbCellName = GETSSFBSTRING(m_ssfbBuilder, cellItemVec[0], m_encoding);
 
@@ -842,7 +817,7 @@ private:
 	{
 		flatbuffers::Offset<ss::ssfb::CellMap> cellMap;
 
-		auto cellMapVec = lump->getChildren();
+		auto& cellMapVec = lump->getChildren();
 
 		struct ss::ssfb::CellMapT cellMapT;
 		cellMapT.name = GETSTRING(cellMapVec[0], m_encoding);
@@ -875,7 +850,7 @@ private:
 	flatbuffers::Offset<ss::ssfb::AnimationInitialData> createSharedAnimationInitialData(const std::shared_ptr<Lump>& lump)
 	{
 		flatbuffers::Offset<ss::ssfb::AnimationInitialData> animationInitialData;
-		auto AnimationInitialDataItemVec = lump->getChildren();
+		auto& AnimationInitialDataItemVec = lump->getChildren();
 
 		struct ss::ssfb::AnimationInitialDataT animationInitialDataT;
 
@@ -983,7 +958,7 @@ private:
 	flatbuffers::Offset<ss::ssfb::PartData> createSharedPartData(const std::shared_ptr<Lump>& lump)
 	{
 		flatbuffers::Offset<ss::ssfb::PartData> partData;
-		auto partDataItemVec = lump->getChildren();
+		auto& partDataItemVec = lump->getChildren();
 
 		struct ss::ssfb::PartDataT partDataT;
 
@@ -1139,7 +1114,7 @@ private:
 		flatbuffers::Offset<ss::ssfb::frameDataIndex> frameDataIndex;
 
 		struct ss::ssfb::frameDataIndexT frameDataIndexT1;
-		for(auto state : statesPrimitive) {
+		for(const auto& state : statesPrimitive) {
 			std::unique_ptr<ss::ssfb::partStateT> p(new ss::ssfb::partStateT());
 			p->index = state.index;
 			p->flag1 = state.flag1;
@@ -1190,17 +1165,17 @@ private:
 
 	void createAnimePacks()
 	{
-		auto rootChildVec = m_root->getChildren();
+		const auto& rootChildVec = m_root->getChildren();
 		// 5:AnimePackData
-		auto animePackDataLump = rootChildVec[5];
+		const auto animePackDataLump = rootChildVec[5];
 
-		auto animePackDataVec = animePackDataLump->getChildren();
-		for (auto animePackDataItem : animePackDataVec) {
+		const auto& animePackDataVec = animePackDataLump->getChildren();
+		for (const auto& animePackDataItem : animePackDataVec) {
 			flatbuffers::Offset<flatbuffers::String> ssfbAnimePackDataName;
 			std::vector<flatbuffers::Offset<ss::ssfb::PartData>> ssfbParts;
 			std::vector<flatbuffers::Offset<ss::ssfb::AnimationData>> ssfbAnimations;
 
-			auto animePackDataItemVec = animePackDataItem->getChildren();
+			const auto& animePackDataItemVec = animePackDataItem->getChildren();
 
 			ssfbAnimePackDataName = GETSSFBSTRING(m_ssfbBuilder, animePackDataItemVec[0], m_encoding);
 			ssfbParts = createParts(animePackDataItemVec[1]); // PartData
@@ -1219,8 +1194,8 @@ private:
 	{
 		std::vector<flatbuffers::Offset<ss::ssfb::PartData>> ssfbParts;
 
-		auto partDataVec = lump->getChildren();
-		for(auto partDataItem : partDataVec) {
+		const auto& partDataVec = lump->getChildren();
+		for(const auto& partDataItem : partDataVec) {
 			auto ssfbPartDataItem = createSharedPartData(partDataItem);
 			ssfbParts.push_back(ssfbPartDataItem);
 		}
@@ -1232,16 +1207,16 @@ private:
 	{
 		std::vector<flatbuffers::Offset<ss::ssfb::AnimationData>> ssfbAnimationDataList;
 
-		auto animationDataVec = lump->getChildren();
-		for(auto animationDataItem : animationDataVec) {
+		const auto& animationDataVec = lump->getChildren();
+		for(const auto& animationDataItem : animationDataVec) {
 			auto ssAnimationDataVec = animationDataItem->getChildren();
 
 			// 1:AnimationInitialData
 
 			std::vector<flatbuffers::Offset<ss::ssfb::AnimationInitialData>> ssfbDefaultData;
 			{
-				auto AnimationInitialDataVec = ssAnimationDataVec[1]->getChildren();
-				for(auto AnimationInitialDataItem : AnimationInitialDataVec)
+				const auto& AnimationInitialDataVec = ssAnimationDataVec[1]->getChildren();
+				for(const auto& AnimationInitialDataItem : AnimationInitialDataVec)
 				{
 					auto item = createSharedAnimationInitialData(AnimationInitialDataItem);
 					ssfbDefaultData.push_back(item);
@@ -1251,11 +1226,11 @@ private:
 			// 5:meshDataUV
 			std::vector<flatbuffers::Offset<ss::ssfb::meshDataUV>> ssfbMeshsDataUV;
 			{
-				auto meshDataUVVec = ssAnimationDataVec[5]->getChildren();
-				for(auto meshDataUVItem : meshDataUVVec) {
+				const auto& meshDataUVVec = ssAnimationDataVec[5]->getChildren();
+				for(const auto& meshDataUVItem : meshDataUVVec) {
 				    std::vector<float> ssfbUV;
-					auto frameDataVec = meshDataUVItem->getChildren();
-					for(auto frameDataItem : frameDataVec) {
+					const auto& frameDataVec = meshDataUVItem->getChildren();
+					for(const auto& frameDataItem : frameDataVec) {
 						switch (frameDataItem->type) {
 						case Lump::DataType::S32:
 							ssfbUV.push_back((float)(GETS32(frameDataItem)));
@@ -1276,11 +1251,11 @@ private:
 			// 6:meshsDataIndices
 			std::vector<flatbuffers::Offset<ss::ssfb::meshDataIndices>> ssfbMeshsDataIndices;
 			{
-				auto meshsDataIndicesVec = ssAnimationDataVec[6]->getChildren();
-				for(auto meshsDataIndicesItem : meshsDataIndicesVec) {
+				const auto& meshsDataIndicesVec = ssAnimationDataVec[6]->getChildren();
+				for(const auto& meshsDataIndicesItem : meshsDataIndicesVec) {
 				    std::vector<float> ssfbIndices;
-					auto meshsDataVec = meshsDataIndicesItem->getChildren();
-					for(auto meshDataItem : meshsDataVec) {
+					const auto& meshsDataVec = meshsDataIndicesItem->getChildren();
+					for(const auto& meshDataItem : meshsDataVec) {
 						ssfbIndices.push_back((float)(GETS32(meshDataItem)));
 					}
 
@@ -1293,10 +1268,10 @@ private:
 
 			std::vector<flatbuffers::Offset<ss::ssfb::frameDataIndex>> ssfbFrameData;
 			{
-				auto frameDataIndexArrayVec = ssAnimationDataVec[2]->getChildren();
+				const auto& frameDataIndexArrayVec = ssAnimationDataVec[2]->getChildren();
 
-				for(auto frameDataIndexArrayItem : frameDataIndexArrayVec) {
-					auto frameDataVec = frameDataIndexArrayItem->getChildren();
+				for(const auto& frameDataIndexArrayItem : frameDataIndexArrayVec) {
+					const auto& frameDataVec = frameDataIndexArrayItem->getChildren();
 
 					struct ss::ssfb::partStateT partStateTItem;
 					std::vector<struct ss::ssfb::partStateT> partStateTVec;
@@ -1307,7 +1282,7 @@ private:
 					int16_t index;
 					std::string tagname;
 					std::vector<uint32_t > partStateData;
-					for(auto frameDataItem : frameDataVec) {
+					for(const auto& frameDataItem : frameDataVec) {
 						if(frameDataItem->name.find("part_") != std::string::npos &&
 						   frameDataItem->name.find("_index") != std::string::npos) {
 							if(outPartsCount != -1) {
@@ -1377,8 +1352,8 @@ private:
 			{
 				if(ssAnimationDataVec[3]->type == Lump::DataType::SET) {
 
-					auto userDataIndexArrayVec = ssAnimationDataVec[3]->getChildren();
-					for(auto userDataIndexArrayItem : userDataIndexArrayVec) {
+					const auto& userDataIndexArrayVec = ssAnimationDataVec[3]->getChildren();
+					for(const auto& userDataIndexArrayItem : userDataIndexArrayVec) {
 						if(userDataIndexArrayItem->type != Lump::DataType::SET) {
 							continue;
 						}
@@ -1387,7 +1362,7 @@ private:
 						std::vector<flatbuffers::Offset<void>> ssfbDataArray;
 						std::vector<uint8_t> ssfbDataArrayType;
 
-						auto userDataIndexArrayItemVec = userDataIndexArrayItem->getChildren();
+						const auto& userDataIndexArrayItemVec = userDataIndexArrayItem->getChildren();
 						auto num = GETS16(userDataIndexArrayItemVec[0]);
 						int idx = 1;
 						for(int i=0; i<num; i++) {
@@ -1447,8 +1422,8 @@ private:
 			std::vector<flatbuffers::Offset<ss::ssfb::labelDataItem>> ssfbLabelData;
 			{
 				if(ssAnimationDataVec[4]->type == Lump::DataType::SET) {
-					auto LabelDataIndexArrayVec = ssAnimationDataVec[4]->getChildren();
-					for(auto LabelDataIndexArrayItem : LabelDataIndexArrayVec) {
+					const auto& LabelDataIndexArrayVec = ssAnimationDataVec[4]->getChildren();
+					for(const auto& LabelDataIndexArrayItem : LabelDataIndexArrayVec) {
 						auto labelDataVec = LabelDataIndexArrayItem->getChildren();
 						auto ssfbLabelDataItemName = GETSSFBSTRING(m_ssfbBuilder, labelDataVec[0], m_encoding);
 						auto time = GETS16(labelDataVec[1]);
@@ -1491,13 +1466,13 @@ private:
 	}
 
 	void createEffectFile() {
-		auto rootChildVec = m_root->getChildren();
-		auto effectFileLump = rootChildVec[6];
+		const auto& rootChildVec = m_root->getChildren();
+		const auto& effectFileLump = rootChildVec[6];
 		// 6:EffectFile
 
-		auto effectFileLumpVec = effectFileLump->getChildren();
-		for(auto effectFileLumpItem : effectFileLumpVec) {
-			auto effectFileLumpItemVec = effectFileLumpItem->getChildren();
+		const auto& effectFileLumpVec = effectFileLump->getChildren();
+		for(const auto& effectFileLumpItem : effectFileLumpVec) {
+			const auto& effectFileLumpItemVec = effectFileLumpItem->getChildren();
 			auto ssfbEffectFileName = GETSSFBSTRING(m_ssfbBuilder, effectFileLumpItemVec[0], m_encoding);
 			auto fps = GETS16(effectFileLumpItemVec[1]);
 			auto isLockRandSeed = GETS16(effectFileLumpItemVec[2]);
@@ -1509,8 +1484,8 @@ private:
 			auto EffectNodeArrayVec = EffectNodeArray->getChildren();
 
 			std::vector<flatbuffers::Offset<ss::ssfb::EffectNode>> ssfbEffectNode;
-			for(auto EffectNodeArrayItem : EffectNodeArrayVec) {
-				auto EffectNodeVec = EffectNodeArrayItem->getChildren();
+			for(const auto& EffectNodeArrayItem : EffectNodeArrayVec) {
+				const auto& EffectNodeVec = EffectNodeArrayItem->getChildren();
 
 				auto arrayIndex = GETS16(EffectNodeVec[0]);
 				auto parentIndex = GETS16(EffectNodeVec[1]);
@@ -1518,12 +1493,12 @@ private:
 				auto cellIndex = GETS16(EffectNodeVec[3]);
 				auto blendType = GETS16(EffectNodeVec[4]);
 				auto numBehavior = GETS16(EffectNodeVec[5]);
-				auto effectBehaviorArrayVec = EffectNodeVec[6]->getChildren();
+				const auto& effectBehaviorArrayVec = EffectNodeVec[6]->getChildren();
 
 				std::vector<flatbuffers::Offset<void>> ssfbEffectNodeBehavior;
 				std::vector<uint8_t> ssfbEffectNodeBehaviorType;
-				for(auto effectBehaviorArrayItem : effectBehaviorArrayVec) {
-					auto effectBehaviorArrayItemVec = effectBehaviorArrayItem->getChildren();
+				for(const auto& effectBehaviorArrayItem : effectBehaviorArrayVec) {
+					const auto& effectBehaviorArrayItemVec = effectBehaviorArrayItem->getChildren();
 
 					auto SsEffectFunctionType = (ss::ssfb::EffectNodeBehavior)GETS32(effectBehaviorArrayItemVec[0]);
 					switch(SsEffectFunctionType) {
