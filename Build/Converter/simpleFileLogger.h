@@ -29,7 +29,7 @@ public:
 private:
     static std::string OSLocaleString(const std::string &str) {
 #if _WIN32
-        str = spritestudio6::SsCharConverter::sjis_to_utf8(str);
+        return spritestudio6::SsCharConverter::sjis_to_utf8(str);
 #endif
         return str;
     }
