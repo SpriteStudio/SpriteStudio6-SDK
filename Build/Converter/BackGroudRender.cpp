@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 
+#include "utils.h"
 #include "ssOpenGLSetting.h"
 #if USE_NATIVE_OSMESA
  #define GLFW_EXPOSE_NATIVE_OSMESA
@@ -15,8 +16,6 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image.h"
 #include "stb_image_write.h"
-
-
 
 
 static spritestudio6::SSTextureFactory* texfactory = nullptr;
@@ -55,16 +54,16 @@ bool ConverterOpenGLInit()
     if (!glfwInit())
         exit(EXIT_FAILURE);
 
-#ifdef _WIN32
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-#else
-    // macOS
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);	/* 前方互換プロファイル */
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);	/* プロファイル */
-#endif
+    if (isWindows()) {
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    } else {
+        // macOS
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);    /* 前方互換プロファイル */
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);    /* プロファイル */
+    }
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
     window = glfwCreateWindow(width, height, "Simple example", NULL, NULL);
@@ -190,7 +189,7 @@ void ConverterOpenGLOutputBitMapImage(const std::string filename)
 
 //	GLenum		eFormat = GL_RGBA_INTEGER;
     GLenum		eFormat = GL_RGBA;
-    
+
     pcBitmap = (char*)malloc(sizeof(char) * width * height * 4);
 
 /*

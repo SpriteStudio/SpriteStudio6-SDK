@@ -6,7 +6,7 @@
 #include<fstream>
 
 #include "sscharconverter.h"
-
+#include "utils.h"
 
 class Logger {
 private:
@@ -28,10 +28,7 @@ public:
 
 private:
     static std::string OSLocaleString(const std::string &str) {
-#if _WIN32
-        return spritestudio6::SsCharConverter::sjis_to_utf8(str);
-#endif
-        return str;
+        return (isWindows())? spritestudio6::SsCharConverter::sjis_to_utf8(str) : str;
     }
 
 public:

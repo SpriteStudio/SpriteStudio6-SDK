@@ -26,6 +26,7 @@
 #include "LumpExporter.h"
 #include "SsPlayerConverter.h"
 
+#include "utils.h"
 #include "simpleFileLogger.h"
 
 #ifdef _BACKBUFFER_RENDERING__
@@ -220,11 +221,7 @@ static const spritestudio6::SsPartState* findState(std::list<spritestudio6::SsPa
 static std::string convert_console_string(const std::string& srcUTF8, int kindArgumentEncode=-1) {
     std::string dst;
     if (kindArgumentEncode < 0) {
-#if _WIN32 || _WIN64
-        kindArgumentEncode = ARGUMENT_ENCODE_SJIS;
-#else
-        kindArgumentEncode = ARGUMENT_ENCODE_UTF8;
-#endif
+        kindArgumentEncode = (isWindows())? ARGUMENT_ENCODE_SJIS : kindArgumentEncode = ARGUMENT_ENCODE_UTF8;
     }
 
     switch (kindArgumentEncode) {
@@ -1344,12 +1341,14 @@ static std::shared_ptr<Lump> parseParts(spritestudio6::SsProject* proj, const st
                 ConverterOpenGLDrawEnd();
 
                 //std::filesystem::path opath = outPath;
-#ifdef    _WIN32
+                std::string outputfile;
+                if (isWindows()) {
                 //				std::string outputfile = get_sspkg_metapath() + anime->name + ".png";
-                                std::string outputfile = sspkg_info::getInst()->get_sspkg_metapath() + "thumbnail.png";
-#else
-                std::string outputfile = sspkg_info::getInst()->get_sspkg_metapath() + anime->name + ".png";
-#endif
+                                outputfile = sspkg_info::getInst()->get_sspkg_metapath() + "thumbnail.png";
+                } else {
+                    outputfile = sspkg_info::getInst()->get_sspkg_metapath() + anime->name + ".png";
+                }
+
                 // ConverterOpenGLOutputBitMapImage 内の stbi_write_png は fopen を使っており narrow 文字のみなのでWin向けにSJIS化が必要。
                 // ToDo: sspkg 以外で Win の全角対応をする場合、 ConverterOpenGLOutputBitMapImage 側に以下相当の変換を追加。
                 outputfile = spritestudio6::SsCharConverter::convert_path_string(outputfile);
@@ -1858,25 +1857,22 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		else if (outputFormat == "ssfb") options.outputFormat = OUTPUT_FORMAT_FLAG_SSFB;
 		else if (outputFormat == "sspkg") options.outputFormat = OUTPUT_FORMAT_FLAG_SSPKG;
 	}
-#ifdef _WIN32
 	else if (opt == "-c")
 	{
-		COI( "argumentEncodeMode" );
-		if (!args.hasNext()) return false;
+        if(isWindows()) {
+            COI("argumentEncodeMode");
+            if (!args.hasNext()) return false;
 
-		std::string argumentEncode = args.next();
-		if (argumentEncode == "utf8") {
-			options.argumentEncode = ARGUMENT_ENCODE_UTF8;
-			COI(  "Encode : utf-8" );
-		}
-		else if (argumentEncode == "sjis") {
-			options.argumentEncode = ARGUMENT_ENCODE_SJIS;
-			COI( "Encode : sjis" );
-		}
-
+            std::string argumentEncode = args.next();
+            if (argumentEncode == "utf8") {
+                options.argumentEncode = ARGUMENT_ENCODE_UTF8;
+                COI("Encode : utf-8");
+            } else if (argumentEncode == "sjis") {
+                options.argumentEncode = ARGUMENT_ENCODE_SJIS;
+                COI("Encode : sjis");
+            }
+        }
 	}
-#else
-#endif	/* def _WIN32 */
 	else
 	{
 		// unknown
@@ -1893,11 +1889,7 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
     options.outputDir = "";
     options.imageBaseDir = "";
     options.outputFormat = OUTPUT_FORMAT_FLAG_SSBP;
-#ifdef _WIN32
-    options.argumentEncode = ARGUMENT_ENCODE_SJIS;
-#else
-    options.argumentEncode = ARGUMENT_ENCODE_UTF8;
-#endif    /* def _WIN32 */
+    options.argumentEncode = (isWindows())? ARGUMENT_ENCODE_SJIS : ARGUMENT_ENCODE_UTF8;
 
     // COI( "#### parseOption ####" );
 
@@ -1925,15 +1917,11 @@ bool parseArguments(Options& options, int argc, const char* argv[], std::string&
             std::string nameUTF8;
             switch (options.argumentEncode) {
                 case ARGUMENT_ENCODE_SJIS:
-#ifdef _WIN32
-
-                    nameUTF8 = 	spritestudio6::SsCharConverter::sjis_to_utf8(name);;
-    //				LOGI << "name : (sjis)" << nameUTF8;
+                    if (isWindows()) {
+                        nameUTF8 = spritestudio6::SsCharConverter::sjis_to_utf8(name);;
+                        //				LOGI << "name : (sjis)" << nameUTF8;
+                    }
                     break;
-#else
-                    /* Fall-Through */
-#endif    /* def _WIN32 */
-
                 case ARGUMENT_ENCODE_UTF8:
                 default:
                     nameUTF8 = name;
