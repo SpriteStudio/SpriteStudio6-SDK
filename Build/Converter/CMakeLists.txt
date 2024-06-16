@@ -155,6 +155,7 @@ set(Ss6Converter_HEADERS
     LumpExporter.h
     SsPlayerConverter.h
     sspkg.h
+    SSException.h
     ${zlib_SOURCE_DIR}/contrib/minizip/zip.h
 )
 

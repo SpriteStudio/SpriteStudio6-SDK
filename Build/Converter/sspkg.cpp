@@ -1,8 +1,3 @@
-#include "sspkg.h"
-#include "sscharconverter.h"
-
-
-
 #include <zlib.h>
 #include <contrib/minizip/zip.h>
 #include <nlohmann/json.hpp>
@@ -12,8 +7,10 @@
 #include <iomanip>
 #include <string>
 
-//#include "sscharconverter.h"
-
+#include "sspkg.h"
+#include "sscharconverter.h"
+#include "SSException.h"
+#include "SsPlayerConverter.h"
 
 using json = nlohmann::json;
 
@@ -140,7 +137,7 @@ void sspkg_info::init_sspkg(std::string outputdir , std::string pkgname)
     {
         if (!std::filesystem::create_directory(std::filesystem::path(outputdir)))
         {
-            throw "create_directory failed.";
+            throw SSException("create_directory failed.", SSPC_SSPKG_ERROR);
         }
     }
 
