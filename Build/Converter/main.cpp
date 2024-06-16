@@ -34,6 +34,7 @@
 
 #include "sspkg.h"
 #include "version.h"
+#include "SSException.h"
 
 std::vector<std::filesystem::path> filelist;
 
@@ -125,7 +126,7 @@ enum OutputFormat {
 };
 
 const std::map<int, std::string> OutputFormatToString = {
-        {OutputFormat::OUTPUT_FORMAT_FLAG_SSBP, "OUTPUT_FORMAT_FLAG_SSBP"},
+    {OutputFormat::OUTPUT_FORMAT_FLAG_SSBP, "OUTPUT_FORMAT_FLAG_SSBP"},
         {OutputFormat::OUTPUT_FORMAT_FLAG_JSON, "OUTPUT_FORMAT_FLAG_JSON"},
         {OutputFormat::OUTPUT_FORMAT_FLAG_CSOURCE, "OUTPUT_FORMAT_FLAG_CSOURCE"},
         {OutputFormat::OUTPUT_FORMAT_FLAG_SSFB, "OUTPUT_FORMAT_FLAG_SSFB"},
@@ -325,16 +326,6 @@ bool isZenkaku( const spritestudio6::SsString* str ) {
     }
     return rc;
 }
-
-class SSException : public std::runtime_error {
-public:
-    SSException(const std::string& msg, SsPlayerConverterResultCode code) : std::runtime_error(msg), error_code(code) {}
-
-    int getErrorCode() const { return error_code; }
-
-private:
-    int error_code;
-};
 
 static std::vector<int16_t> s_frameIndexVec;
 
@@ -1686,13 +1677,7 @@ void convertProject(const std::filesystem::path& outPath, const std::string& out
     COI("output directory: " + outputdirUTF8);
 
     if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG) {
-        try {
-            sspkg_info::getInst()->init_sspkg(outputdirUTF8, outFName);
-        }
-        catch (...) {
-            const std::string msg = u8"init_sspkg Error";
-            throw SSException(msg, SSPC_SSPKG_ERROR);
-        }
+        sspkg_info::getInst()->init_sspkg(outputdirUTF8, outFName);
     }
 
     spritestudio6::SsProject *proj = spritestudio6::ssloader_sspj::Load(sspjPath.string());
