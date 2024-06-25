@@ -1,25 +1,24 @@
 #include "BackGroudRender.h"
-#include <string>
-#include <iostream>
 
-#include "utils.h"
+#include <iostream>
+#include <string>
+
 #include "ssOpenGLSetting.h"
+#include "utils.h"
 #if USE_NATIVE_OSMESA
- #define GLFW_EXPOSE_NATIVE_OSMESA
- #include <GLFW/glfw3native.h>
+#define GLFW_EXPOSE_NATIVE_OSMESA
+#include <GLFW/glfw3native.h>
 #endif
 
+#include "OpenGL/SSTextureGL.h"
 #include "ssplayer_render.h"
 #include "ssplayer_render_gl.h"
-#include "OpenGL/SSTextureGL.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image.h"
 #include "stb_image_write.h"
 
-
 static spritestudio6::SSTextureFactory* texfactory = nullptr;
-
 
 GLuint FramebufferName = 0;
 GLuint renderedTexture;
@@ -28,15 +27,11 @@ GLFWwindow* window;
 
 static bool isGPUInit = false;
 
-
-static void error_callback(int error, const char* description)
-{
+static void error_callback(int error, const char* description) {
     fprintf(stderr, "Error: %s\n", description);
 }
 
-bool ConverterOpenGLInit()
-{
-
+bool ConverterOpenGLInit() {
     GLuint vertex_buffer, vertex_shader, fragment_shader, program;
     GLint mvp_location, vpos_location, vcol_location;
     float ratio;
@@ -61,30 +56,27 @@ bool ConverterOpenGLInit()
         // macOS
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);    /* 前方互換プロファイル */
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);    /* プロファイル */
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);           /* 前方互換プロファイル */
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); /* プロファイル */
     }
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
     window = glfwCreateWindow(width, height, "Simple example", NULL, NULL);
-    if (!window)
-    {
+    if (!window) {
         glfwTerminate();
         return false;
     }
 
     glfwMakeContextCurrent(window);
 
-//    gladLoadGL(glfwGetProcAddress);
+    //    gladLoadGL(glfwGetProcAddress);
 
-    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
-    {
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
         std::cerr << "Failed to initialize GLAD" << std::endl;
         return false;
     }
 
     isGPUInit = true;
-
 
     spritestudio6::SsCurrentRenderer::SetCurrentRender(new spritestudio6::SsRenderGL());
     texfactory = new spritestudio6::SSTextureFactory(new spritestudio6::SSTextureGL());
@@ -106,114 +98,98 @@ bool ConverterOpenGLInit()
 
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
 
-
     glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 
     return true;
-
 }
 
-
-
-bool isOpenGLContextInitialized()
-{
-	return isGPUInit;
+bool isOpenGLContextInitialized() {
+    return isGPUInit;
 }
 
 //
 void ConverterOpenGLClear(float canvasWidth, float canvasHeight, float pivotx, float pivoty)
-//void ConverterOpenGLClear(int canvasWidth , int canvasHeight)
+// void ConverterOpenGLClear(int canvasWidth , int canvasHeight)
 {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    // glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_STENCIL_TEST);
+    glEnable(GL_DEPTH_TEST);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	//glClear(GL_COLOR_BUFFER_BIT);
-	glDisable(GL_STENCIL_TEST);
-	glEnable(GL_DEPTH_TEST);
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glClearColor(0, 0, 0, 0.0f);
 
-	glClearColor( 0, 0, 0, 0.0f);
-
-	//projection setup
-    int width;// = canvasWidth;	//プロジェクト枠のサイズで確定させるのが良さそう
-    int height;// = canvasHeight;
+    // projection setup
+    int width;   // = canvasWidth;	//プロジェクト枠のサイズで確定させるのが良さそう
+    int height;  // = canvasHeight;
 
     glfwGetFramebufferSize(window, &width, &height);
 
-	glMatrixMode(GL_PROJECTION);
-	glViewport(0, 0, width, height);
-	glLoadIdentity();
+    glMatrixMode(GL_PROJECTION);
+    glViewport(0, 0, width, height);
+    glLoadIdentity();
 
-    float camX = -pivotx * ( canvasWidth / 2 );
-    float camY = -pivoty * ( canvasHeight / 2);
+    float camX = -pivotx * (canvasWidth / 2);
+    float camY = -pivoty * (canvasHeight / 2);
 
     float _max = canvasWidth > canvasHeight ? canvasWidth : canvasHeight;
 
-//    glOrtho( -width / 2, width / 2, -height / 2, height / 2, -width, height);
-    //PNGレンダリングなので最初から転地する
-    glOrtho( camX -_max / 2.0f,
-             camX + _max / 2.0f,
-             camY +_max / 2.0f,
-             camY -_max / 2.0f,
-                -1, 1);
+    //    glOrtho( -width / 2, width / 2, -height / 2, height / 2, -width, height);
+    // PNGレンダリングなので最初から転地する
+    glOrtho(camX - _max / 2.0f,
+            camX + _max / 2.0f,
+            camY + _max / 2.0f,
+            camY - _max / 2.0f,
+            -1, 1);
 
     glMatrixMode(GL_MODELVIEW);
 }
 
-void  ConverterOpenGLDrawEnd()
-{
+void ConverterOpenGLDrawEnd() {
     glFinish();
 }
 
-void  ConverterOpenGLRelease()
-{
-
-
-	delete texfactory;
-	texfactory = nullptr;
+void ConverterOpenGLRelease() {
+    delete texfactory;
+    texfactory = nullptr;
 }
 
-void ConverterOpenGLOutputBitMapImage(const std::string filename)
-{
-	char* pcBitmap;
+void ConverterOpenGLOutputBitMapImage(const std::string filename) {
+    char* pcBitmap;
     char* buffer;
-	int width;	//プロジェクト枠のサイズで確定させるのが良さそう
-	int height;
+    int width;  // プロジェクト枠のサイズで確定させるのが良さそう
+    int height;
 
     glfwGetFramebufferSize(window, &width, &height);
     GLenum err = glGetError();
 
-    if (err != GL_NO_ERROR)
-    {
+    if (err != GL_NO_ERROR) {
         printf("glGetError = %x \n", err);
     }
 
-//	GLenum		eFormat = GL_RGBA_INTEGER;
-    GLenum		eFormat = GL_RGBA;
+    //	GLenum		eFormat = GL_RGBA_INTEGER;
+    GLenum eFormat = GL_RGBA;
 
     pcBitmap = (char*)malloc(sizeof(char) * width * height * 4);
 
-/*
-#if USE_NATIVE_OSMESA
-    glfwGetOSMesaColorBuffer(window, &width, &height, NULL, (void**) &pcBitmap);
-#else
-    glReadPixels(0, 0, width, height, eFormat, GL_UNSIGNED_BYTE, pcBitmap);
-#endif
-*/
+    /*
+    #if USE_NATIVE_OSMESA
+        glfwGetOSMesaColorBuffer(window, &width, &height, NULL, (void**) &pcBitmap);
+    #else
+        glReadPixels(0, 0, width, height, eFormat, GL_UNSIGNED_BYTE, pcBitmap);
+    #endif
+    */
     glReadBuffer(GL_COLOR_ATTACHMENT0);
     err = glGetError();
-    if (err != GL_NO_ERROR)
-    {
+    if (err != GL_NO_ERROR) {
         printf("glGetError = %x \n", err);
     }
 
     glReadPixels(0, 0, width, height, eFormat, GL_UNSIGNED_BYTE, pcBitmap);
     err = glGetError();
-    if (err != GL_NO_ERROR)
-    {
+    if (err != GL_NO_ERROR) {
         printf("glGetError = %x \n", err);
     }
 
     stbi_write_png(filename.c_str(), width, height, 4, (const void*)pcBitmap, 0);
-
-
 }

@@ -1,43 +1,40 @@
-#include <zlib.h>
-#include <contrib/minizip/zip.h>
-#include <nlohmann/json.hpp>
+#include "sspkg.h"
 
-#include <iostream>
+#include <contrib/minizip/zip.h>
+#include <zlib.h>
+
 #include <fstream>
 #include <iomanip>
+#include <iostream>
+#include <nlohmann/json.hpp>
 #include <string>
 
-#include "sspkg.h"
-#include "sscharconverter.h"
 #include "SSException.h"
 #include "SsPlayerConverter.h"
+#include "sscharconverter.h"
 #include "utils.h"
 
 using json = nlohmann::json;
 
 using sscc = spritestudio6::SsCharConverter;
 
-int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::string remove_path )
-{
-    zipFile zf = zipOpen( zippath.c_str() , APPEND_STATUS_CREATE);
+int CreateZipFile(std::string zippath, std::vector<std::string> paths, std::string remove_path) {
+    zipFile zf = zipOpen(zippath.c_str(), APPEND_STATUS_CREATE);
     if (zf == NULL)
         return 1;
 
     bool _return = true;
-    for (size_t i = 0; i < paths.size(); i++)
-    {
+    for (size_t i = 0; i < paths.size(); i++) {
         auto path = paths[i];
         std::fstream file(path.c_str(), std::ios::binary | std::ios::in);
-        if (file.is_open())
-        {
+        if (file.is_open()) {
             file.seekg(0, std::ios::end);
             std::fstream::pos_type size = file.tellg();
             file.seekg(0, std::ios::beg);
 
             std::vector<char> buffer(size);
-            if (size == 0 || file.read(&buffer[0], size))
-            {
-                zip_fileinfo zfi = { 0 };
+            if (size == 0 || file.read(&buffer[0], size)) {
+                zip_fileinfo zfi = {0};
 
                 std::string utf8_path;
                 if (isWindows()) {
@@ -48,24 +45,22 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
                 }
 
                 // ファイルネーム単体の取得はエンコードを配慮したセパレータ検出のため std::filesystem::path 経由でないと不都合があった？と思われるためここは変えない。
-                //std::string fileName = path.substr(path.rfind('\\') + 1);
+                // std::string fileName = path.substr(path.rfind('\\') + 1);
                 auto f = std::filesystem::path(utf8_path);
                 std::string fileName = f.filename().string();
-                //std::filesystem::path p = f.parent_path(); // unused
+                // std::filesystem::path p = f.parent_path(); // unused
 
                 if (isWindows()) {
                     // 再び sjis に戻す。
                     fileName = sscc::utf8_to_sjis(fileName);
                 }
 
-                if (fileName == "sspkg.json" || fileName == "thumbnail.png")
-                {
+                if (fileName == "sspkg.json" || fileName == "thumbnail.png") {
                     fileName = "meta/" + fileName;
                 }
 
-//                if (S_OK == zipOpenNewFileInZip(zf, std::string(fileName.begin(), fileName.end()).c_str(), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION))
-                if (0 == zipOpenNewFileInZip(zf, fileName.c_str(), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION))
-                {
+                //                if (S_OK == zipOpenNewFileInZip(zf, std::string(fileName.begin(), fileName.end()).c_str(), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION))
+                if (0 == zipOpenNewFileInZip(zf, fileName.c_str(), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION)) {
                     if (zipWriteInFileInZip(zf, size == 0 ? "" : &buffer[0], size))
                         _return = false;
 
@@ -74,20 +69,14 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
 
                     file.close();
                     continue;
-                }
-                else
-                {
+                } else {
                     std::cerr << "  new zip failure: " << fileName << "\n";
                 }
-            }
-            else
-            {
+            } else {
                 std::cerr << "  read failure: " << path << "\n";
             }
             file.close();
-        }
-        else
-        {
+        } else {
             std::cerr << "  open failure: " << path << "\n";
         }
         _return = false;
@@ -101,18 +90,16 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
     return 0;
 }
 
-static void   createFileInfoJson(const std::string& versioninfo , const std::filesystem::path& outputfilenamepath , const std::vector<std::string>& org_filelist)
-{
+static void createFileInfoJson(const std::string& versioninfo, const std::filesystem::path& outputfilenamepath, const std::vector<std::string>& org_filelist) {
     std::vector<std::string> paths;
-    for (const auto& i : org_filelist)
-    {
+    for (const auto& i : org_filelist) {
         std::string f = std::filesystem::path(i).filename().string();
         paths.push_back(f);
     }
 
     json j = {
-      {"version", 1.0},
-      {"ssversion", versioninfo},
+        {"version", 1.0},
+        {"ssversion", versioninfo},
     };
 
     j["filelist"] = paths;
@@ -121,25 +108,18 @@ static void   createFileInfoJson(const std::string& versioninfo , const std::fil
     o << std::setw(4) << j << std::endl;
 }
 
-
 sspkg_info* sspkg_info::myinst = 0;
 
-std::string sspkg_info::get_sspkg_temppath()
-{
+std::string sspkg_info::get_sspkg_temppath() {
     return tempdir.string();
 }
-std::string sspkg_info::get_sspkg_metapath()
-{
+std::string sspkg_info::get_sspkg_metapath() {
     return metadir.string();
 }
 
-void sspkg_info::init_sspkg(std::string outputdir , std::string pkgname)
-{
-
-    if (!std::filesystem::exists(std::filesystem::path(outputdir)))
-    {
-        if (!std::filesystem::create_directory(std::filesystem::path(outputdir)))
-        {
+void sspkg_info::init_sspkg(std::string outputdir, std::string pkgname) {
+    if (!std::filesystem::exists(std::filesystem::path(outputdir))) {
+        if (!std::filesystem::create_directory(std::filesystem::path(outputdir))) {
             throw SSException("create_directory failed.", SSPC_SSPKG_ERROR);
         }
     }
@@ -150,7 +130,7 @@ void sspkg_info::init_sspkg(std::string outputdir , std::string pkgname)
     tempdir = temp;
     tempdir += std::filesystem::path("sspkg/");
     std::filesystem::create_directory(tempdir);
-    //cleaningDir.push_back(tempdir);
+    // cleaningDir.push_back(tempdir);
 
     tempdir += std::filesystem::path(pkgname + "/");
     std::filesystem::create_directory(tempdir);
@@ -162,10 +142,7 @@ void sspkg_info::init_sspkg(std::string outputdir , std::string pkgname)
     cleaningDir.push_back(metadir);
 }
 
-
-
-void sspkg_info::set_sspkg_filelist(const std::string& ssversion, const std::string& pkgname, const std::vector<std::filesystem::path>& filelist, const std::filesystem::path& outputdir)
-{
+void sspkg_info::set_sspkg_filelist(const std::string& ssversion, const std::string& pkgname, const std::vector<std::filesystem::path>& filelist, const std::filesystem::path& outputdir) {
     archive_file_lists.clear();
     org_file_lists.clear();
 
@@ -175,28 +152,24 @@ void sspkg_info::set_sspkg_filelist(const std::string& ssversion, const std::str
     std::filesystem::path ssfb_dst = std::filesystem::path(tempdir) / std::filesystem::path(pkgname).replace_extension(".ssfb");
     archive_file_lists.push_back(ssfb_dst.string());
 
-    for (const auto& i : filelist)
-    {
+    for (const auto& i : filelist) {
         org_file_lists.push_back(i.string());
     }
 
     archivefilepath = outputdir / std::filesystem::path(pkgname).replace_extension(".sspkg");
     jsonfilepath = metadir / std::filesystem::path("sspkg.json");
 
-    //archive_file_lists.push_back(jsonfilepath.string());
+    // archive_file_lists.push_back(jsonfilepath.string());
 
     thumbnailefilepath = metadir / std::filesystem::path("thumbnail.png");
 
-    //archive_file_lists.push_back(thumbnailefilepath.string());
+    // archive_file_lists.push_back(thumbnailefilepath.string());
     data_version = ssversion;
 
     createFileInfoJson(ssversion, jsonfilepath, org_file_lists);
 }
 
-
-bool sspkg_info::make_sspkg()
-{
-
+bool sspkg_info::make_sspkg() {
     /*
         std::filesystem::path tempdir = get_sspkg_temppath();
         std::filesystem::path metadir = get_sspkg_metapath();
@@ -226,15 +199,13 @@ bool sspkg_info::make_sspkg()
 
     auto tempdir = get_sspkg_temppath();
 
-    for (auto i : org_file_lists)
-    {
+    for (auto i : org_file_lists) {
         auto copyfilename = std::filesystem::path(tempdir).replace_filename(std::filesystem::path(i).filename());
 
         std::filesystem::copy_file(i, copyfilename, std::filesystem::copy_options::update_existing);
 
         archive_file_lists.push_back(copyfilename.string());
     }
-
 
     archive_file_lists.push_back(jsonfilepath.string());
 
@@ -249,7 +220,7 @@ bool sspkg_info::make_sspkg()
     decltype(archive_file_lists) tmp_archive_file_lists;
 
     if (isWindows()) {
-        for (auto &path: archive_file_lists) {
+        for (auto& path : archive_file_lists) {
             tmp_archive_file_lists.push_back(sscc::utf8_to_sjis(path));
         }
     } else {
@@ -257,44 +228,35 @@ bool sspkg_info::make_sspkg()
     }
 
     bool result = true;
-    if (CreateZipFile(tmp_arch_path, tmp_archive_file_lists, tempdir) != 0)
-    {
+    if (CreateZipFile(tmp_arch_path, tmp_archive_file_lists, tempdir) != 0) {
         result = false;
     }
 
     cleaningFileList.clear();
-    for (auto i : archive_file_lists)
-    {
+    for (auto i : archive_file_lists) {
         cleaningFileList.push_back(i);
     }
 
     return result;
 }
 
-void sspkg_info::sspkg_cleanup_file()
-{
-    for (auto i : cleaningFileList)
-    {
+void sspkg_info::sspkg_cleanup_file() {
+    for (auto i : cleaningFileList) {
         try {
             std::filesystem::remove(i);
-        }
-        catch (...)
-        {
-
+        } catch (...) {
         }
     }
 
     auto temp = std::filesystem::temp_directory_path();
 
-
     try {
         std::filesystem::remove(cleaningDir[1]);
+    } catch (...) {
     }
-    catch (...) {}
 
     try {
         std::filesystem::remove(cleaningDir[0]);
+    } catch (...) {
     }
-    catch (...) {}
-
 }

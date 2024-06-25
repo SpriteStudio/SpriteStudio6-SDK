@@ -9,5 +9,4 @@ inline bool isWindows() {
 #endif
 }
 
-
-#endif //SSSDK_UTIL_H
+#endif  // SSSDK_UTIL_H
