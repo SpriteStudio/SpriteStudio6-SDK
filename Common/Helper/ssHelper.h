@@ -2,14 +2,11 @@
 #define __GLHELPER__
 
 #include "../Loader/ssloader.h"
-
-
-#include "sshObject.h"
-#include "sshTask.h"
-#include "sshScene.h"
-#include "IsshTexture.h"
-
-#include "XPFileOpenDlg.h"
 #include "DebugPrint.h"
+#include "IsshTexture.h"
+#include "XPFileOpenDlg.h"
+#include "sshObject.h"
+#include "sshScene.h"
+#include "sshTask.h"
 
 #endif

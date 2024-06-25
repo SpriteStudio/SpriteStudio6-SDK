@@ -3,43 +3,40 @@
 
 #include "ssplayer_render.h"
 
-namespace spritestudio6
-{
+namespace spritestudio6 {
 
 struct SsPartState;
 
-class SsRenderDX9 : public ISsRenderer
-{
-private:
-	//static bool	m_isInit;
+class SsRenderDX9 : public ISsRenderer {
+   private:
+    // static bool	m_isInit;
 
-public:
-	SsRenderDX9(){}
-	virtual ~SsRenderDX9(){}
+   public:
+    SsRenderDX9() {}
+    virtual ~SsRenderDX9() {}
 
-	virtual void	initialize();
-	virtual void	renderSetup(SsAnimeDecoder* state);
-	virtual void	renderPart( SsPartState* state );
+    virtual void initialize();
+    virtual void renderSetup(SsAnimeDecoder* state);
+    virtual void renderPart(SsPartState* state);
 
-	//未実装
-	virtual void	execMask(SsPartState* state) {}
-	virtual void	clearMask() {}
-	virtual void	enableMask(bool flag) {}
+    // 未実装
+    virtual void execMask(SsPartState* state) {}
+    virtual void clearMask() {}
+    virtual void enableMask(bool flag) {}
 
+    virtual void renderSpriteSimple(float matrix[16],
+                                    int width,
+                                    int height,
+                                    SsVector2& pivot,
+                                    SsVector2 uv1,
+                                    SsVector2 uv2,
+                                    const SsFColor& color) {}
 
-	virtual void	renderSpriteSimple( float matrix[16], 
-										int width, int height, 
-										SsVector2& pivot , 
-										SsVector2 uv1, SsVector2 uv2, 
-										const SsFColor& color ){}
-
-	//後実装
-	virtual void	SetAlphaBlendMode(SsBlendType::_enum type){}
-	virtual void	SetTexture( SsCellValue* cell ){}
-
-
+    // 後実装
+    virtual void SetAlphaBlendMode(SsBlendType::_enum type) {}
+    virtual void SetTexture(SsCellValue* cell) {}
 };
 
-}	// namespace spritestudio6
+}  // namespace spritestudio6
 
 #endif
