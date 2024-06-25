@@ -1,8 +1,3 @@
-#include "sspkg.h"
-#include "sscharconverter.h"
-
-
-
 #include <zlib.h>
 #include <contrib/minizip/zip.h>
 #include <nlohmann/json.hpp>
@@ -12,8 +7,11 @@
 #include <iomanip>
 #include <string>
 
-//#include "sscharconverter.h"
-
+#include "sspkg.h"
+#include "sscharconverter.h"
+#include "SSException.h"
+#include "SsPlayerConverter.h"
+#include "utils.h"
 
 using json = nlohmann::json;
 
@@ -41,22 +39,24 @@ int CreateZipFile(std::string zippath ,  std::vector<std::string> paths , std::s
             {
                 zip_fileinfo zfi = { 0 };
 
-#ifdef _WIN32
-                // std::filesystem::path 内で SJIS に対して utf8 to wchar 変換が行われ文字化けるため一時的に utf8 に戻す。(不本意)
-                auto utf8_path = sscc::sjis_to_utf8(path);
-#else
-                auto utf8_path = path;
-#endif
+                std::string utf8_path;
+                if (isWindows()) {
+                    // std::filesystem::path 内で SJIS に対して utf8 to wchar 変換が行われ文字化けるため一時的に utf8 に戻す。(不本意)
+                    utf8_path = sscc::sjis_to_utf8(path);
+                } else {
+                    utf8_path = path;
+                }
+
                 // ファイルネーム単体の取得はエンコードを配慮したセパレータ検出のため std::filesystem::path 経由でないと不都合があった？と思われるためここは変えない。
                 //std::string fileName = path.substr(path.rfind('\\') + 1);
                 auto f = std::filesystem::path(utf8_path);
                 std::string fileName = f.filename().string();
                 //std::filesystem::path p = f.parent_path(); // unused
 
-#ifdef _WIN32
-                // 再び sjis に戻す。
-                fileName = sscc::utf8_to_sjis(fileName);
-#endif
+                if (isWindows()) {
+                    // 再び sjis に戻す。
+                    fileName = sscc::utf8_to_sjis(fileName);
+                }
 
                 if (fileName == "sspkg.json" || fileName == "thumbnail.png")
                 {
@@ -140,7 +140,7 @@ void sspkg_info::init_sspkg(std::string outputdir , std::string pkgname)
     {
         if (!std::filesystem::create_directory(std::filesystem::path(outputdir)))
         {
-            throw "create_directory failed.";
+            throw SSException("create_directory failed.", SSPC_SSPKG_ERROR);
         }
     }
 
@@ -248,15 +248,13 @@ bool sspkg_info::make_sspkg()
     auto tmp_arch_path = sscc::convert_path_string(archivefilepath.string());
     decltype(archive_file_lists) tmp_archive_file_lists;
 
-#ifdef _WIN32
-    // std::fstream で要SJIS
-    for (auto& path : archive_file_lists)
-    {
-        tmp_archive_file_lists.push_back(sscc::utf8_to_sjis(path));
+    if (isWindows()) {
+        for (auto &path: archive_file_lists) {
+            tmp_archive_file_lists.push_back(sscc::utf8_to_sjis(path));
+        }
+    } else {
+        tmp_archive_file_lists = archive_file_lists;
     }
-#else
-    tmp_archive_file_lists = archive_file_lists;
-#endif
 
     bool result = true;
     if (CreateZipFile(tmp_arch_path, tmp_archive_file_lists, tempdir) != 0)
@@ -264,9 +262,6 @@ bool sspkg_info::make_sspkg()
         result = false;
     }
 
-#ifndef _DEBUG
-
-#endif
     cleaningFileList.clear();
     for (auto i : archive_file_lists)
     {

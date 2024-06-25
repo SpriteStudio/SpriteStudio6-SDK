@@ -6,108 +6,89 @@
 #include<fstream>
 
 #include "sscharconverter.h"
+#include "utils.h"
 
-
-class Logger
-{
+class Logger {
 private:
-	bool outputLogFileFlag;
+    bool outputLogFileFlag;
 
-	std::vector<std::string> textline;
+    std::vector<std::string> textline;
 
-	std::ofstream* ofs;
+    std::ofstream *ofs;
 
 public:
 
-	enum LogLevel
-	{
-		ERR = 1 << 1,
-		WAR = 1 << 2 ,
-		INF = 1 << 3
-	};
+    enum LogLevel {
+        ERR = 1 << 1,
+        WAR = 1 << 2,
+        INF = 1 << 3
+    };
 
-	int mLogLevel;
+    int mLogLevel;
 
 private:
-	std::string OSLocaleString(std::string str)
-	{
-#if _WIN32
-		str = spritestudio6::SsCharConverter::sjis_to_utf8(str);
-#endif
-		return str;
-	}
+    static std::string OSLocaleString(const std::string &str) {
+        return (isWindows())? spritestudio6::SsCharConverter::sjis_to_utf8(str) : str;
+    }
 
 public:
-	Logger() : outputLogFileFlag(false) , mLogLevel( LogLevel::ERR | LogLevel::WAR | LogLevel::INF ) , ofs(0){}
+    Logger() : outputLogFileFlag(false), mLogLevel(LogLevel::ERR | LogLevel::WAR | LogLevel::INF), ofs(nullptr) {}
 
-	virtual ~Logger()
-	{
-		LogFileFlush();
-		if (ofs)
-			ofs->close();
-	}
+    virtual ~Logger() {
+        LogFileFlush();
+        if (ofs)
+            ofs->close();
+    }
 
 
-	void outputLog(LogLevel level , std::string str )
-	{
-		
-		switch (level)
-		{
-		case LogLevel::ERR:
-			if (mLogLevel & LogLevel::ERR)
-			{
-				//console
-				std::cerr << str << std::endl;
+    void outputLog(LogLevel level, const std::string &str) {
 
-				textline.push_back(OSLocaleString(str));
+        switch (level) {
+            case LogLevel::ERR:
+                if (mLogLevel & LogLevel::ERR) {
+                    //console
+                    std::cerr << str << std::endl;
 
-//				*ofs << str << std::endl;
-			}
-			break;
-		case LogLevel::WAR:
-			if (mLogLevel & LogLevel::WAR)
-			{
-				//console
-				std::cerr << str << std::endl;
-				textline.push_back(OSLocaleString(str));
-				//				*ofs << str << std::endl;
-			}
-			break;
-		case LogLevel::INF:
-			//console
-			if (mLogLevel & LogLevel::INF)
-			{
-				std::cout << str << std::endl;
-				textline.push_back(OSLocaleString(str));
-//				*ofs << str << std::endl;
-			}
-			break;
-		}
-	}
+                    textline.push_back(OSLocaleString(str));
 
-	void LogFileFlush()
-	{
-		if (ofs == 0) return; 
+                }
+                break;
+            case LogLevel::WAR:
+                if (mLogLevel & LogLevel::WAR) {
+                    //console
+                    std::cerr << str << std::endl;
+                    textline.push_back(OSLocaleString(str));
+                }
+                break;
+            case LogLevel::INF:
+                //console
+                if (mLogLevel & LogLevel::INF) {
+                    std::cout << str << std::endl;
+                    textline.push_back(OSLocaleString(str));
+                }
+                break;
+        }
+    }
 
-		for (const auto item : textline)
-		{
-			std::string out = item;
-			*ofs << out << std::endl;
-		}
-		textline.clear();
-		
-	}
+    void LogFileFlush() {
+        if (ofs == nullptr) return;
 
-	void setOutputLogFile(std::wstring filepath)
-	{
-		if (ofs) return;
-		ofs = new std::ofstream(filepath);
-	}
+        for (const auto &item: textline) {
+            auto out = item;
+            *ofs << out << std::endl;
+        }
+        textline.clear();
 
-	void setOutputLogFileMode(bool flag)
-	{
-		outputLogFileFlag = flag;
-	}
+    }
+
+    void setOutputLogFile(const std::wstring &filepath) {
+        if (ofs) return;
+        ofs = new std::ofstream(filepath);
+    }
+
+    void setOutputLogFileMode(bool flag) {
+        outputLogFileFlag = flag;
+    }
 
 };
 
