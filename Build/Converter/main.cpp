@@ -129,7 +129,7 @@ const std::map<int, std::string> OutputFormatToString = {
     {OutputFormat::OUTPUT_FORMAT_FLAG_SSPKG, "OUTPUT_FORMAT_FLAG_SSPKG"},
 };
 
-std::string getFormatExtension(int format) {
+auto getFormatExtension(int format) -> std::string {
     switch ((OutputFormat)format) {
         case OUTPUT_FORMAT_FLAG_SSBP:
             return ".ssbp";
@@ -145,7 +145,7 @@ std::string getFormatExtension(int format) {
     }
 }
 
-uint16_t getFormatMode(int format) {
+auto getFormatMode(int format) -> uint16_t {
     switch ((OutputFormat)format) {
         case OUTPUT_FORMAT_FLAG_SSBP:
             return std::ios_base::out | std::ios_base::binary;
@@ -177,8 +177,8 @@ struct Options {
     std::string imageBaseDir;
     std::string outputDir;
 
-    int outputFormat;
-    int argumentEncode;
+    int outputFormat{};
+    int argumentEncode{};
 
     bool endAfterStop{false};
     bool isLogout{false};
@@ -201,7 +201,7 @@ auto makeCellList(spritestudio6::SsProject *proj) {
     return cellList;
 }
 
-static const spritestudio6::SsPartState *findState(std::list<spritestudio6::SsPartState *> &partList, int partIndex) {
+static auto findState(std::list<spritestudio6::SsPartState *> &partList, int partIndex) -> const spritestudio6::SsPartState * {
     for (const auto &state : partList) {
         if (state->index == partIndex) return state;
     }
@@ -210,7 +210,7 @@ static const spritestudio6::SsPartState *findState(std::list<spritestudio6::SsPa
 
 // 各機種用のコンソール用に文字コードを変換する関数
 //  kindArgumentEncodeはARGUMENT_ENCODE_～の値で、強制指定する場合だけ有効な値を与えてください。
-static std::string convert_console_string(const std::string &srcUTF8, int kindArgumentEncode = -1) {
+static auto convert_console_string(const std::string &srcUTF8, int kindArgumentEncode = -1) -> std::string {
     std::string dst;
     if (kindArgumentEncode < 0) {
         kindArgumentEncode = (isWindows()) ? ARGUMENT_ENCODE_SJIS : ARGUMENT_ENCODE_UTF8;
@@ -294,7 +294,7 @@ void COI(const std::string &str) {
 }
 
 // 全全角が使われてるかのチェック
-bool isZenkaku(const spritestudio6::SsString *str) {
+auto isZenkaku(const spritestudio6::SsString *str) -> bool {
     bool rc = false;
     int i = 0;
     int size = (int)str->length();
@@ -321,7 +321,7 @@ static std::vector<int16_t> s_frameIndexVec;
 static void parseParts_ssqe(std::shared_ptr<Lump> &topLump, spritestudio6::SsProject *proj, const std::string &imageBaseDir) {
 }
 
-static std::shared_ptr<Lump> parseParts(spritestudio6::SsProject *proj, const std::string &imageBaseDir, const std::filesystem::path &outPath) {
+static auto parseParts(spritestudio6::SsProject *proj, const std::string &imageBaseDir, const std::filesystem::path &outPath) -> std::shared_ptr<Lump> {
     bool isWrite = false;
 
     CO(std::string(SPRITESTUDIOSDK_VERSION " hash:" GIT_SHORT_COMMIT_HASH));  // バージョン表記は ssloader.h　にあります。
@@ -1725,17 +1725,17 @@ class ArgumentPointer {
     ArgumentPointer(int argc, const char *argv[])
         : _argc(argc), _argv(argv), _index(1) {}
 
-    bool hasNext() const {
+    auto hasNext() const -> bool {
         return _index < _argc;
     }
 
-    std::string next() {
+    auto next() -> std::string {
         assert(hasNext());
         return {_argv[_index++]};
     }
 };
 
-bool parseOption(Options &options, const std::string &opt, ArgumentPointer &args, std::string &illegalArgument) {
+auto parseOption(Options &options, const std::string &opt, ArgumentPointer &args, std::string &illegalArgument) -> bool {
     if (opt == "-h") {
         options.isHelp = true;
     } else if (opt == "-v") {
@@ -1821,7 +1821,7 @@ bool parseOption(Options &options, const std::string &opt, ArgumentPointer &args
     return true;
 }
 
-bool parseArguments(Options &options, int argc, const char *argv[], std::string &illegalArgument) {
+auto parseArguments(Options &options, int argc, const char *argv[], std::string &illegalArgument) -> bool {
     // オプションフラグの初期化
     options.outputDir = "";
     options.imageBaseDir = "";
@@ -1880,7 +1880,7 @@ bool parseArguments(Options &options, int argc, const char *argv[], std::string 
     return true;
 }
 
-int convertMain(int argc, const char *argv[]) {
+auto convertMain(int argc, const char *argv[]) -> int {
     // 引数をパースする
     Options options;
     std::string illegalArgument;
@@ -2005,7 +2005,7 @@ int convertMain(int argc, const char *argv[]) {
     }
 }
 
-int main(int argc, const char *argv[]) {
+auto main(int argc, const char *argv[]) -> int {
     int result = convertMain(argc, argv);
     if (isOpenGLContextInitialized()) {
         ConverterOpenGLRelease();
