@@ -1,23 +1,21 @@
 #ifndef __SIMPLEFILELOGGER__
 #define __SIMPLEFILELOGGER__
 
-
-#include<iostream>
-#include<fstream>
+#include <fstream>
+#include <iostream>
 
 #include "sscharconverter.h"
 #include "utils.h"
 
 class Logger {
-private:
+   private:
     bool outputLogFileFlag;
 
     std::vector<std::string> textline;
 
     std::ofstream *ofs;
 
-public:
-
+   public:
     enum LogLevel {
         ERR = 1 << 1,
         WAR = 1 << 2,
@@ -26,12 +24,12 @@ public:
 
     int mLogLevel;
 
-private:
+   private:
     static std::string OSLocaleString(const std::string &str) {
-        return (isWindows())? spritestudio6::SsCharConverter::sjis_to_utf8(str) : str;
+        return (isWindows()) ? spritestudio6::SsCharConverter::sjis_to_utf8(str) : str;
     }
 
-public:
+   public:
     Logger() : outputLogFileFlag(false), mLogLevel(LogLevel::ERR | LogLevel::WAR | LogLevel::INF), ofs(nullptr) {}
 
     virtual ~Logger() {
@@ -40,28 +38,25 @@ public:
             ofs->close();
     }
 
-
     void outputLog(LogLevel level, const std::string &str) {
-
         switch (level) {
             case LogLevel::ERR:
                 if (mLogLevel & LogLevel::ERR) {
-                    //console
+                    // console
                     std::cerr << str << std::endl;
 
                     textline.push_back(OSLocaleString(str));
-
                 }
                 break;
             case LogLevel::WAR:
                 if (mLogLevel & LogLevel::WAR) {
-                    //console
+                    // console
                     std::cerr << str << std::endl;
                     textline.push_back(OSLocaleString(str));
                 }
                 break;
             case LogLevel::INF:
-                //console
+                // console
                 if (mLogLevel & LogLevel::INF) {
                     std::cout << str << std::endl;
                     textline.push_back(OSLocaleString(str));
@@ -73,12 +68,11 @@ public:
     void LogFileFlush() {
         if (ofs == nullptr) return;
 
-        for (const auto &item: textline) {
+        for (const auto &item : textline) {
             auto out = item;
             *ofs << out << std::endl;
         }
         textline.clear();
-
     }
 
     void setOutputLogFile(const std::wstring &filepath) {
@@ -89,8 +83,6 @@ public:
     void setOutputLogFileMode(bool flag) {
         outputLogFileFlag = flag;
     }
-
 };
 
 #endif
-

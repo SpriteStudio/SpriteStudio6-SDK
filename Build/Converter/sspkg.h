@@ -1,9 +1,9 @@
 #ifndef __SSPKG__
 #define __SSPKG__
 
+#include <filesystem>
 #include <string>
 #include <vector>
-#include <filesystem>
 
 /*
 void make_sspkg(std::string ssversion, std::string pkgname, std::vector<std::string> filelist, std::string outputdir);
@@ -16,8 +16,7 @@ std::string get_sspkg_metapath();
 */
 
 class sspkg_info {
-private:
-
+   private:
     std::vector<std::filesystem::path> cleaningFileList{};
     std::vector<std::filesystem::path> cleaningDir{};
 
@@ -29,21 +28,18 @@ private:
     std::vector<std::string> archive_file_lists{};
     std::vector<std::string> org_file_lists{};
 
-
     std::filesystem::path archivefilepath{};
     std::filesystem::path jsonfilepath{};
     std::filesystem::path thumbnailefilepath{};
     std::string data_version{};
 
-public:
+   public:
     sspkg_info() = default;
     virtual ~sspkg_info() = default;
 
     static sspkg_info* getInst() { return myinst; }
-    static sspkg_info* create()
-    {
-        if (myinst == 0)
-        {
+    static sspkg_info* create() {
+        if (myinst == 0) {
             myinst = new sspkg_info();
         }
         return myinst;
@@ -62,12 +58,6 @@ public:
 
     bool make_sspkg();
     void sspkg_cleanup_file();
-
-
 };
 
-
-
 #endif
-
-

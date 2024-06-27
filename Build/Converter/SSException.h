@@ -4,13 +4,13 @@
 #include <stdexcept>
 
 class SSException : public std::runtime_error {
-public:
+   public:
     SSException(const std::string &msg, int code) : std::runtime_error(msg), error_code(code) {}
 
     int getErrorCode() const { return error_code; }
 
-private:
+   private:
     int error_code;
 };
 
-#endif //SSSDK_SSEXCEPTION_H
+#endif  // SSSDK_SSEXCEPTION_H
