@@ -3,7 +3,6 @@ BasedOnStyle: Google
 ColumnLimit: 0
 UseTab: Never
 IndentWidth: 4
-SortIncludes: true
 BinPackParameters: false
 AllowAllParametersOfDeclarationOnNextLine: false
-
+SortIncludes: false

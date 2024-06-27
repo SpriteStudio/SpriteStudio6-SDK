@@ -1,13 +1,12 @@
 ﻿#ifndef __SSEFFECTRENDER_V3__
 #define __SSEFFECTRENDER_V3__
 
-
 #include "xorshift32.h"
 
-//SsVectorなど
-//#include "SsUtility.h"
+// SsVectorなど
+// #include "SsUtility.h"
 
-//#include "ISSEffectRender.h"
+// #include "ISSEffectRender.h"
 
 #include <memory>
 #include <utility>
@@ -17,8 +16,7 @@
 #define SPRITESTUDIO6SDK_LOOP_TYPE2 (0)
 #define SPRITESTUDIO6SDK_LOOP_TYPE3 (1)
 
-namespace spritestudio6
-{
+namespace spritestudio6 {
 
 class SsEffectModel;
 class SsRenderEffectBase;
@@ -27,67 +25,57 @@ struct SsPartState;
 class SsEffectRenderAtom;
 class SsCell;
 
-
 constexpr auto SEED_MAGIC = 7573;
 constexpr auto LIFE_EXTEND_SCALE = 8;
 constexpr auto LIFE_EXTEND_MIN = 64;
 
-
-struct TimeAndValue
-{
-	float time;
-	float value;
+struct TimeAndValue {
+    float time;
+    float value;
 };
 
+// v3.1
+struct particleExistSt {
+    int id;
+    int cycle;
+    int exist;
+    int born;
+    long stime;
+    long endtime;
 
-//v3.1
-struct particleExistSt
-{
-	int  id;
-	int	 cycle;
-	int	 exist;
-    int	 born;
-	long stime;
-	long endtime;
-
-	inline void Cleanup()
-	{
-		id = 0;
-		cycle = 0;
-		exist = 0;
-		born = 0;
-		stime = 0;
-		endtime = 0;
-	}
+    inline void Cleanup() {
+        id = 0;
+        cycle = 0;
+        exist = 0;
+        born = 0;
+        stime = 0;
+        endtime = 0;
+    }
 };
 
-
-//v3.1
-struct emitPattern
-{
-	int	  uid;
-	int   life;
-    int   cycle;
+// v3.1
+struct emitPattern {
+    int uid;
+    int life;
+    int cycle;
 };
 
-//最終描画用データ
-struct particleDrawData
-{
-	int	id;
-	int	pid;
-	int	stime;		//生成された開始時間
-	int lifetime;
+// 最終描画用データ
+struct particleDrawData {
+    int id;
+    int pid;
+    int stime;  // 生成された開始時間
+    int lifetime;
 
-	//描画用ワーク
-	float	x;
-	float	y;
-	float	rot;
-	float	direc;
+    // 描画用ワーク
+    float x;
+    float y;
+    float rot;
+    float direc;
 
     SsU8Color color;
     SsVector2 scale;
 };
-
 
 #if 0
 //リングバッファだが実はもういらないかも
@@ -149,336 +137,310 @@ public:
 
 #endif
 
+// エミッターが持つパラメータ
+// エディタやファイルから入力される
+struct emitterParameter {
+    int life;
+    int interval;
+    int emitnum;        // 一度に排出される個数
+    int emitmax;        // 最大排出数
+    int particleLife;   // 生成されるパーティクルの寿命
+    int particleLife2;  // 寿命最大値
+    bool Infinite;      // 無限発生
 
-//エミッターが持つパラメータ
-//エディタやファイルから入力される
-struct emitterParameter
-{
-	int	life;
-	int interval;
-	int	emitnum;		//一度に排出される個数
-	int emitmax;		//最大排出数
-	int	particleLife;	//生成されるパーティクルの寿命
-	int particleLife2;	//寿命最大値
-    bool Infinite;      //無限発生
+    int loopStart;
+    int loopEnd;
+    int loopLen;
+    int loopGen;
 
-	int	loopStart;
-	int loopEnd;
-	int loopLen;
-	int	loopGen;
-
-
-	//テスト用デフォルト
-	emitterParameter() : life(15),interval(1),emitnum(2),emitmax(32),particleLife(15),particleLife2(15),Infinite(false){}
-
+    // テスト用デフォルト
+    emitterParameter() : life(15), interval(1), emitnum(2), emitmax(32), particleLife(15), particleLife2(15), Infinite(false) {}
 };
 
+// パーティクルが持つパラメータ
+// エディタやファイルから入力される
+struct particleParameter {
+    SsVector2 scale;
 
-//パーティクルが持つパラメータ
-//エディタやファイルから入力される
-struct particleParameter
-{
+    SsU8Color startcolor;  // スタート時のカラー
+    SsU8Color endcolor;    // 終了時のカラー
 
-	SsVector2 	scale;
+    // 初速
+    float speed;   // 初速
+    float speed2;  // 初速最大値
 
-	SsU8Color   startcolor; //スタート時のカラー
-	SsU8Color   endcolor;   //終了時のカラー
+    float angle;          // 向いてる角度
+    float angleVariance;  // 変差
 
-	//初速
-	float		speed;		//初速
-	float		speed2;		//初速最大値
+    bool useGravity;
+    SsVector2 gravity;
 
+    bool useOffset;
+    SsVector2 offset;
+    SsVector2 offset2;
 
-	float		angle;		  //向いてる角度
-	float       angleVariance;//変差
+    bool useRotation;
+    float rotation;
+    float rotation2;
 
-	bool		useGravity;
-	SsVector2	gravity;
+    float rotationAdd;
+    float rotationAdd2;
 
+    bool useRotationTrans;
+    float rotationFactor;
+    float endLifeTimePer;
 
-	bool		useOffset;
-	SsVector2   offset;
-	SsVector2   offset2;
+    bool useTanAccel;
+    float tangentialAccel;
+    float tangentialAccel2;
 
-	bool        useRotation;
-	float		rotation;
-	float		rotation2;
+    bool useColor;
+    SsU8Color initColor;
+    SsU8Color initColor2;
 
-	float		rotationAdd;
-	float		rotationAdd2;
+    bool useTransColor;
+    SsU8Color transColor;
+    SsU8Color transColor2;
 
-	bool		useRotationTrans;
-	float		rotationFactor;
-	float		endLifeTimePer;
+    bool useInitScale;
+    SsVector2 scaleRange;
+    float scaleFactor;
+    float scaleFactor2;
 
-	bool        useTanAccel;
-	float		tangentialAccel;
-	float		tangentialAccel2;
+    bool useTransScale;
+    SsVector2 transscale;
+    SsVector2 transscaleRange;
+    float transscaleFactor;
+    float transscaleFactor2;
 
-	bool        useColor;
-	SsU8Color   initColor;
-	SsU8Color   initColor2;
+    float delay;
 
-	bool		useTransColor;
-	SsU8Color   transColor;
-	SsU8Color   transColor2;
+    bool usePGravity;
+    SsVector2 gravityPos;
+    float gravityPower;
 
-	bool        useInitScale;
-	SsVector2   scaleRange;
-	float		scaleFactor;
-	float		scaleFactor2;
+    bool useAlphaFade;
+    float alphaFade;
+    float alphaFade2;
 
-	bool        useTransScale;
-	SsVector2   transscale;
-	SsVector2   transscaleRange;
-	float		transscaleFactor;
-	float		transscaleFactor2;
+    bool useTransSpeed;
+    float transSpeed;
+    float transSpeed2;
 
-	float		delay;
+    bool useTurnDirec;
+    float direcRotAdd;
 
-	bool		usePGravity;
-	SsVector2	gravityPos;
-	float		gravityPower;
+    bool userOverrideRSeed;
+    int overrideRSeed;
 
-	bool		useAlphaFade;
-	float       alphaFade;
-	float       alphaFade2;
-
-	bool		useTransSpeed;
-	float	   	transSpeed;
-	float	   	transSpeed2;
-
-	bool		useTurnDirec;
-    float		direcRotAdd;
-
-    bool		userOverrideRSeed;
-	int			overrideRSeed;
-
-
-	particleParameter(){}
+    particleParameter() {}
 };
 
+// エミッタ動作クラス
+class SsEffectEmitter {
+   public:
+    SsCellValue dispCell;
 
-//エミッタ動作クラス
-class SsEffectEmitter
-{
-public:
-	SsCellValue		 dispCell;
+    int priority;
 
+    emitterParameter emitter;
+    particleParameter particle;
+    xorshift32 rand;
 
-	int					priority;
+    int emitterSeed;
+    int seedOffset;
 
-	emitterParameter  	emitter;
-	particleParameter   particle;
-	xorshift32			rand;
+    // 生成用のリングバッファ
+    std::vector<emitPattern> _emitpattern;
+    std::vector<int> _offsetPattern;
+    std::unique_ptr<std::vector<particleExistSt>> particleExistList;
 
+    // 事前計算バッファ
+    // particleLifeSt*				particleList;
+    int particleIdMax;
 
-	int					emitterSeed;
-	int					seedOffset;
+    size_t particleListBufferSize;
+    std::unique_ptr<std::vector<unsigned long>> seedList;
 
-	//生成用のリングバッファ
-	std::vector<emitPattern>    	_emitpattern;
-	std::vector<int>				_offsetPattern;
-	std::unique_ptr<std::vector<particleExistSt>>	particleExistList;
+    SsVector2 position;
+    //	SsEffectEmitter*			_child;
+    SsEffectEmitter* _parent;
 
-	//事前計算バッファ
-	//particleLifeSt*				particleList;
-	int							particleIdMax;
+    int _parentIndex;
 
-	size_t						particleListBufferSize;
-	std::unique_ptr<std::vector<unsigned long>>	seedList;
+    SsCell* refCell;            // 描画用セル
+    SsEffectBehavior* refData;  // データ更新用
 
-	SsVector2   				position;
-//	SsEffectEmitter*			_child;
-	SsEffectEmitter*			_parent;
+    size_t globaltime;
+    size_t seedTableLen;
 
-    int							_parentIndex;
+    int uid;
 
-	SsCell*						refCell;    //描画用セル
-	SsEffectBehavior*           refData;	//データ更新用
+   public:
+    SsEffectEmitter() :  //			particleList(0),
+                        _parentIndex(-1),
+                        seedList(),
+                        particleListBufferSize(180 * 100),  // 生成出来るパーティクルの最大値
+                        _emitpattern(0),
+                        particleExistList(),
+                        globaltime(0),
+                        seedOffset(0) {
+        emitterSeed = SEED_MAGIC;
+    }
+    virtual ~SsEffectEmitter() {
+        particleExistList.reset();
+        seedList.reset();
+    }
 
-	size_t						globaltime;
-	size_t						seedTableLen;
+    void setSeedOffset(int offset) {
+        seedOffset = offset;
+    }
 
-	int							uid;
+    //	const particleLifeSt*	getParticleDataFromID(int id) { return &particleList[id]; }
 
-public:
-	SsEffectEmitter() :
-//			particleList(0),
-			_parentIndex(-1),
-			seedList(),
-			particleListBufferSize(180*100),  //生成出来るパーティクルの最大値
-			_emitpattern(0),
-			particleExistList(),
-			globaltime(0),
-			seedOffset(0)
-	{
-		emitterSeed = SEED_MAGIC;
-	}
-	virtual ~SsEffectEmitter()
-	{
-		particleExistList.reset();
-		seedList.reset();
-	}
+#if SPRITESTUDIO6SDK_LOOP_TYPE3
 
-	void	setSeedOffset( int offset ) { 
-		seedOffset = offset; 
-	}
+    int getParticleIDMax() { return (int)(_offsetPattern.size()); }
 
-//	const particleLifeSt*	getParticleDataFromID(int id) { return &particleList[id]; }
-
-#if  SPRITESTUDIO6SDK_LOOP_TYPE3
-
-	int	getParticleIDMax() { return (int)(_offsetPattern.size()); }
-
-	const 	particleExistSt*	getParticleDataFromID(int id);
-	void	updateEmitter( double time  , int slide );
+    const particleExistSt* getParticleDataFromID(int id);
+    void updateEmitter(double time, int slide);
 
 #else
 
-	int	getParticleIDMax() { return particleIdMax; }
-	const particleLifeSt*	getParticleDataFromID(int id);
+    int getParticleIDMax() { return particleIdMax; }
+    const particleLifeSt* getParticleDataFromID(int id);
 #endif
 
+    int getTimeLength() { return emitter.life + (emitter.particleLife + emitter.particleLife2); }
 
-	int	getTimeLength() { return emitter.life + ( emitter.particleLife + emitter.particleLife2); }
+    // 現在時間から産出される位置を求める
+    // time変数から求められる式とする
+    void updateParticle(float time, particleDrawData* p, bool recalc = false);
 
-	//現在時間から産出される位置を求める
-	//time変数から求められる式とする
-	void	updateParticle(float time, particleDrawData* p, bool recalc = false );
+    // パーティクルの発生間隔を事前計算する
+    // ここで出力が確定する
 
-	//パーティクルの発生間隔を事前計算する
-	//ここで出力が確定する
-
-	void	precalculate2();
-
+    void precalculate2();
 };
 
+class SsEffectRenderV2 {
+   public:
+    // エフェクトのパラメータデータ
+    SsEffectModel* effectData;
 
-class SsEffectRenderV2
-{
-public:
+    // Modelに記載されているエミッタのリスト
+    std::vector<std::unique_ptr<SsEffectEmitter>> emmiterList;
 
-	//エフェクトのパラメータデータ
-	SsEffectModel*		effectData;
+    // MEMO: updateListは、更新用でemitterListの内容への参照なのでスマートポインタ化しない（所有権を保持しない）
+    std::vector<SsEffectEmitter*> updateList;
 
-	//Modelに記載されているエミッタのリスト
-	std::vector<std::unique_ptr<SsEffectEmitter>>	emmiterList;
+    // ランダムシード
+    u32 mySeed;
 
-	//MEMO: updateListは、更新用でemitterListの内容への参照なのでスマートポインタ化しない（所有権を保持しない）
-	std::vector<SsEffectEmitter*>   updateList;
+    SsVector3 layoutPosition;
+    SsVector2 layoutScale;
 
-	//ランダムシード
-	u32				mySeed;
+    float nowFrame;
+    float targetFrame;
+    float secondNowFrame;
 
-	SsVector3		layoutPosition;
-	SsVector2		layoutScale;
+    size_t effectTimeLength;
 
-	float			nowFrame;
-	float			targetFrame;
-    float			secondNowFrame;
+    bool Infinite;  // 無限に発生出来るかどうか
 
-	size_t          effectTimeLength;
+    SsPartState* parentState;
 
-    bool			Infinite;	//無限に発生出来るかどうか
+    bool isIntFrame;
 
-	SsPartState*	parentState;
+    bool m_isPlay;
+    bool m_isPause;
+    bool m_isLoop;
 
-	bool			isIntFrame;
+    int seedOffset;
 
-	bool			m_isPlay;
-	bool			m_isPause;
-	bool			m_isLoop;
+    SsCellMapList* curCellMapManager;  /// セルマップのリスト（アニメデコーダーからもらう
 
-	int				seedOffset;
+    bool _isWarningData;
 
-	SsCellMapList*	curCellMapManager;/// セルマップのリスト（アニメデコーダーからもらう
+   public:
+   protected:
+    void particleDraw(SsEffectEmitter* e, double t, SsEffectEmitter* parent = 0, particleDrawData* plp = 0);
+    void initEmitter(SsEffectEmitter* e, SsEffectNode* node);
 
-	bool		_isWarningData;
-public:
+    void clearEmitterList();
 
+   public:
+    SsEffectRenderV2() : effectTimeLength(0), isIntFrame(true), seedOffset(0), mySeed(0) {}
+    virtual ~SsEffectRenderV2() {
+        clearEmitterList();
+    }
 
-protected:
-	void 	particleDraw(SsEffectEmitter* e , double t , SsEffectEmitter* parent = 0 , particleDrawData* plp = 0 );
-	void	initEmitter( SsEffectEmitter* e , SsEffectNode* node);
+    virtual void play() {
+        m_isPause = false;
+        m_isPlay = true;
+    }
+    virtual void stop() { m_isPlay = false; }
+    virtual void pause() {
+        m_isPause = true;
+        m_isPlay = false;
+    }
+    virtual void setLoop(bool flag) { m_isLoop = flag; }
+    virtual bool isplay() { return m_isPlay; }
+    virtual bool ispause() { return m_isPause; }
+    virtual bool isloop() { return m_isLoop; }
 
-	void	clearEmitterList();
+    virtual void setEffectData(SsEffectModel* data);
 
-public:
-	SsEffectRenderV2() : effectTimeLength(0) ,isIntFrame(true),seedOffset(0), mySeed(0){}
-	virtual ~SsEffectRenderV2()
-	{
-		clearEmitterList();
-	}
+    virtual void setSeed(u32 seed) {
+        mySeed = seed * SEED_MAGIC;
+    }
 
-	virtual void    play(){ m_isPause = false;m_isPlay=true; }
-	virtual void	stop(){ m_isPlay = false;}
-	virtual void    pause(){m_isPause = true;m_isPlay=false;}
-	virtual void	setLoop(bool flag){ m_isLoop = flag; }
-	virtual bool	isplay(){return m_isPlay;}
-	virtual bool	ispause(){return m_isPause;}
-	virtual bool	isloop(){return m_isLoop;}
+    virtual void setFrame(float frame) {
+        nowFrame = frame;
+    }
 
-	virtual void	setEffectData(SsEffectModel* data);
+    virtual float getFrame() { return nowFrame; }
 
+    virtual void update();
+    virtual void draw();
 
-	virtual void	setSeed( u32 seed )
-	{
-   		mySeed = seed * SEED_MAGIC;
-	}
+    virtual void reload();
 
+    virtual size_t getEffectTimeLength();
 
-	virtual void	setFrame( float frame )
-	{
-    	nowFrame = frame;
-	}
+    //	virtual int		getVersion(){ return EFFECTRENDERVERSION_V2; }
 
-    virtual float	getFrame(){ return nowFrame; }
+    virtual void setParentAnimeState(SsPartState* state) { parentState = state; }
 
-	virtual void	update();
-	virtual void	draw();
+    virtual int getCurrentFPS();
 
-	virtual void    reload();
+    void setCellmapManager(SsCellMapList* plist) { curCellMapManager = plist; }
 
-    virtual size_t  getEffectTimeLength();
+    bool getPlayStatus(void) {
+        return (m_isPlay);
+    }
 
-//	virtual int		getVersion(){ return EFFECTRENDERVERSION_V2; }
+    void drawSprite(
+        SsCellValue* dispCell,
+        SsVector2 _position,
+        SsVector2 _size,
+        float _rotation,
+        float direction,
+        SsFColor _color,
+        SsRenderBlendType::_enum blendType);
 
-	virtual  void	setParentAnimeState( SsPartState* state ){ parentState = state; }
+    void setSeedOffset(int offset) {
+        if (effectData->isLockRandSeed) {
+            seedOffset = 0;
+        } else {
+            seedOffset = offset;
+        }
+    }
 
-	virtual int	getCurrentFPS();
-
-	void	setCellmapManager( SsCellMapList* plist ) { curCellMapManager = plist; }
-
-	bool	getPlayStatus(void){
-		return(m_isPlay);
-	}
-
-	void	drawSprite(
-			SsCellValue*		dispCell,
-			SsVector2	_position,
-			SsVector2 _size,
-			float     _rotation,
-			float	  direction,
-			SsFColor	_color,
-			SsRenderBlendType::_enum blendType
-		);
-	
-	
-	void	setSeedOffset( int offset ) { 
-		if ( effectData->isLockRandSeed )
-		{
-			seedOffset = 0;
-		}else{
-			seedOffset = offset; 
-		}
-	}
-
-	virtual bool	isInfinity(){ return Infinite; }
-    virtual bool	isWarning(){ return _isWarningData; }
-
+    virtual bool isInfinity() { return Infinite; }
+    virtual bool isWarning() { return _isWarningData; }
 };
 
-}	// namespace spritestudio6
+}  // namespace spritestudio6
 
 #endif

@@ -9,10 +9,9 @@
 #include <memory>
 
 // PFMEM_TEST
-#define SPRITESTUDIO6SDK_PFMEM_TEST ( 1 )
+#define SPRITESTUDIO6SDK_PFMEM_TEST (1)
 
-namespace spritestudio6
-{
+namespace spritestudio6 {
 
 class SsEffectModel;
 class SsRenderEffectBase;
@@ -25,359 +24,310 @@ class SsCell;
 class SsEffectBehavior;
 class SsEffectRenderer;
 
-
-namespace SsRenderType
-{
-	enum _enum{
-		BaseNode,
-		EmmiterNode,
-		ParticleNode,
-	};
+namespace SsRenderType {
+enum _enum {
+    BaseNode,
+    EmmiterNode,
+    ParticleNode,
+};
 };
 
-
-namespace EmmiterType
-{
-	enum _enum{
-		EmmiterTypeNormal,
-		EmmiterTypeRibbon,
-	};
+namespace EmmiterType {
+enum _enum {
+    EmmiterTypeNormal,
+    EmmiterTypeRibbon,
 };
-
-
+};
 
 //--------------------------------------------------------------------------
 //
 //--------------------------------------------------------------------------
-class SsEffectRenderAtom
-{
-public:
-	SsVector3  			position;
-	float				rotation;
-	SsVector2	  		scale;
+class SsEffectRenderAtom {
+   public:
+    SsVector3 position;
+    float rotation;
+    SsVector2 scale;
 
-	SsEffectRenderAtom*	parent;
-	SsEffectNode*		data;
-    bool				m_isLive;
-	bool				m_isInit;
-    bool				m_isCreateChild;
+    SsEffectRenderAtom* parent;
+    SsEffectNode* data;
+    bool m_isLive;
+    bool m_isInit;
+    bool m_isCreateChild;
 
-	float				_lifetime;		//オブジェクトの最大生存時間
-	float				_exsitTime;		//存在した時間
-	float				_life;          //寿命 = 0で死
+    float _lifetime;   // オブジェクトの最大生存時間
+    float _exsitTime;  // 存在した時間
+    float _life;       // 寿命 = 0で死
 
-	bool                undead;
+    bool undead;
 
-	float				alpha;
+    float alpha;
 
-public:
+   public:
+    SsEffectRenderAtom() : parent(0),
+                           m_isInit(false),
+                           m_isLive(true),
+                           _lifetime(10.0f),
+                           _life(1.0f),
+                           rotation(0),
+                           position(0, 0, 0),
+                           scale(1.0f, 1.0f),
+                           m_isCreateChild(false) {
+    }
 
-	SsEffectRenderAtom() :
-		parent(0),
-		m_isInit(false),
-		m_isLive(true),
-		_lifetime(10.0f),
-		_life(1.0f),
-		rotation(0),
-		position(0,0,0),
-		scale(1.0f,1.0f),
-		m_isCreateChild(false)
-		{
-		}
-
-	SsEffectRenderAtom( SsEffectNode* refdata , SsEffectRenderAtom* _p){
+    SsEffectRenderAtom(SsEffectNode* refdata, SsEffectRenderAtom* _p) {
         data = refdata;
-		setParent(_p);
+        setParent(_p);
 
-		_lifetime = 0;
-		position = SsVector3(0,0,0);
-		scale = SsVector2(0,0);
-		rotation = 0.0f;
-	}
+        _lifetime = 0;
+        position = SsVector3(0, 0, 0);
+        scale = SsVector2(0, 0);
+        rotation = 0.0f;
+    }
 
-	virtual ~SsEffectRenderAtom(){}
+    virtual ~SsEffectRenderAtom() {}
 
-	void	setParent( SsEffectRenderAtom* _p ){ parent = _p; }
-    SsRenderType::_enum	getMyType(){ return SsRenderType::BaseNode;}
+    void setParent(SsEffectRenderAtom* _p) { parent = _p; }
+    SsRenderType::_enum getMyType() { return SsRenderType::BaseNode; }
 
-	bool	   	isInit(){ return m_isInit; }
+    bool isInit() { return m_isInit; }
 
-	virtual void	Initialize()
-	{
-		parent = 0;
-		m_isInit = false;
-		m_isLive = true;
-		_lifetime = 10.0f;
-		_life = 1.0f;
-		rotation = 0;
-		position = SsVector3(0,0,0);
-		scale = SsVector2(1,1);
-		m_isCreateChild = false;
-		m_isInit = false;
-	}
-	virtual bool	genarate( SsEffectRenderer* render ){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(render);	return true; }
+    virtual void Initialize() {
+        parent = 0;
+        m_isInit = false;
+        m_isLive = true;
+        _lifetime = 10.0f;
+        _life = 1.0f;
+        rotation = 0;
+        position = SsVector3(0, 0, 0);
+        scale = SsVector2(1, 1);
+        m_isCreateChild = false;
+        m_isInit = false;
+    }
+    virtual bool genarate(SsEffectRenderer* render) {
+        SPRITESTUDIO6SDK_NOUSE_ARGUMENT(render);
+        return true;
+    }
 
-    virtual void	update(float delta){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(delta); }
-	virtual void	draw(SsEffectRenderer* render){ SPRITESTUDIO6SDK_NOUSE_ARGUMENT(render); }
+    virtual void update(float delta) { SPRITESTUDIO6SDK_NOUSE_ARGUMENT(delta); }
+    virtual void draw(SsEffectRenderer* render) { SPRITESTUDIO6SDK_NOUSE_ARGUMENT(render); }
 
-	virtual void	debugdraw(){}
+    virtual void debugdraw() {}
 
-	SsVector3	getPosition() const
-	{
-		return position;
-	}
+    SsVector3 getPosition() const {
+        return position;
+    }
 
-	void	setPosistion( float x , float y , float z )
-	{
-		position.x = x;
-		position.y = y;
-		position.z = z;
-	}
+    void setPosistion(float x, float y, float z) {
+        position.x = x;
+        position.y = y;
+        position.z = z;
+    }
 
-	void	setScale( float x , float y )
-	{
-		scale.x = x;
-		scale.y = y;
-	}
-	void	setRotation( float z  )
-	{
+    void setScale(float x, float y) {
+        scale.x = x;
+        scale.y = y;
+    }
+    void setRotation(float z) {
 #ifdef _WIN32
-        
-		rotation = (float)( std::fmod( z , 360 ) ) ;
+
+        rotation = (float)(std::fmod(z, 360));
 #else
-        rotation = fmod( z , 360 ) ;
-        
+        rotation = fmod(z, 360);
+
 #endif
-        
-	}
+    }
 
-	float		getRotation() const { return rotation; }
-	SsVector2	getScale() const { return scale; }
- 	virtual void	count(){}
-
+    float getRotation() const { return rotation; }
+    SsVector2 getScale() const { return scale; }
+    virtual void count() {}
 };
 
 class SsEffectDrawBatch;
-class SsEffectDrawBatch
-{
-public:
-	int	priority;
-	SsCellValue*			dispCell;
-	SsEffectNode*			targetNode;
+class SsEffectDrawBatch {
+   public:
+    int priority;
+    SsCellValue* dispCell;
+    SsEffectNode* targetNode;
 
-	SsRenderBlendType::_enum       blendType;
-	std::list<SsEffectRenderAtom*> drawlist;
+    SsRenderBlendType::_enum blendType;
+    std::list<SsEffectRenderAtom*> drawlist;
 
+    SsEffectDrawBatch() : priority(0), dispCell(0), targetNode(0) {}
+    ~SsEffectDrawBatch() {}
 
-	SsEffectDrawBatch() : priority(0) , dispCell(0),targetNode(0) {}
-	~SsEffectDrawBatch(){}
-
-	void	drawSetting();
-
-
+    void drawSetting();
 };
 
-
 //--------------------------------------------------------------------------
-//パーティクル生成能力を持つオブジェクト
+// パーティクル生成能力を持つオブジェクト
 //--------------------------------------------------------------------------
-class  SsEffectRenderEmitter : public SsEffectRenderAtom
-{
-public:
-	unsigned int myseed;
-	SsCellValue				dispCell;
-	//エミッターパラメータ
+class SsEffectRenderEmitter : public SsEffectRenderAtom {
+   public:
+    unsigned int myseed;
+    SsCellValue dispCell;
+    // エミッターパラメータ
 
-	//パーティクルパラメータ
-    SsEffectNode*		param_particle;
+    // パーティクルパラメータ
+    SsEffectNode* param_particle;
 
-	std::unique_ptr<CMersenneTwister>	MT;
+    std::unique_ptr<CMersenneTwister> MT;
 
-	//以前からの移植
-	int				maxParticle;    //
-	int				delay;
-	float				interval;
-	float				intervalleft;
-	float   		frame;
-	float			frameDelta;
-    int				burst;
+    // 以前からの移植
+    int maxParticle;  //
+    int delay;
+    float interval;
+    float intervalleft;
+    float frame;
+    float frameDelta;
+    int burst;
 
-	EmmiterType::_enum		type;
+    EmmiterType::_enum type;
 
-	SsString		MyName;
-    size_t 			particleCount;
+    SsString MyName;
+    size_t particleCount;
 
+    bool generate_ok;
+    int drawPriority;
 
-    bool			generate_ok;
-	int				drawPriority;
+   public:
+    SsEffectDrawBatch* myBatchList;
 
+   public:
+    void InitParameter() {
+        if (!MT) MT.reset(new CMersenneTwister());
 
-public:
+        SsEffectRenderAtom::Initialize();
+        delay = 0;
+        interval = 0;
+        intervalleft = 0;
+        frame = 0;
+        frameDelta = 0;
+        particleCount = 0;
+        _exsitTime = 0;
 
-	SsEffectDrawBatch*  myBatchList;
+        generate_ok = true;
 
+        param_particle = 0;
+        type = EmmiterType::EmmiterTypeNormal;
+    }
 
-public:
-	void	InitParameter()
-	{
-		if ( !MT ) MT.reset( new CMersenneTwister() );
+    SsEffectRenderEmitter() : MT() {
+    }
+    SsEffectRenderEmitter(SsEffectNode* refdata, SsEffectRenderAtom* _p) {
+        data = refdata;
+        parent = _p;
+        InitParameter();
+    }
 
-		SsEffectRenderAtom::Initialize();
-		delay = 0;
-		interval = 0;
-		intervalleft = 0;
-		frame = 0;
-		frameDelta = 0;
-		particleCount = 0;
-		_exsitTime = 0;
+    virtual ~SsEffectRenderEmitter() {
+        MT.reset();
+    }
+    SsRenderType::_enum getMyType() { return SsRenderType::EmmiterNode; }
+    void setMySeed(unsigned int seed);
+    void TrushRandom(int loop) {
+        for (int i = 0; i < loop; i++)
+            (MT.get())->genrand_uint32();
+    }
 
-		generate_ok = true;
+    virtual void Initialize();
+    virtual bool genarate(SsEffectRenderer* render);
 
-		param_particle = 0;
-		type = EmmiterType::EmmiterTypeNormal;
-
-	}
-
-	SsEffectRenderEmitter() :
-		MT()
-	{
-	}
-	SsEffectRenderEmitter( SsEffectNode* refdata , SsEffectRenderAtom* _p){
-		data = refdata;
-		parent = _p;
-		InitParameter();
-	}
-
-	virtual ~SsEffectRenderEmitter()
-	{
-		MT.reset();
-	}
-	SsRenderType::_enum		getMyType(){ return SsRenderType::EmmiterNode;}
-	void			setMySeed( unsigned int seed );
-	void			TrushRandom(int loop)
-	{
-		for ( int i = 0 ; i < loop ; i++ )
-			(MT.get())->genrand_uint32();
-	}
-
-	virtual void	Initialize();
-	virtual bool	genarate( SsEffectRenderer* render );
-
-	virtual void	update(float delta);
-	virtual void	count(){ particleCount = 0 ; }
-
+    virtual void update(float delta);
+    virtual void count() { particleCount = 0; }
 };
 
-
-
-
-
 //--------------------------------------------------------------------------
-//パーティクルオブジェクト
+// パーティクルオブジェクト
 //--------------------------------------------------------------------------
-class  SsEffectRenderParticle : public SsEffectRenderAtom
-{
-public:
-	SsCellValue*			dispCell;
+class SsEffectRenderParticle : public SsEffectRenderAtom {
+   public:
+    SsCellValue* dispCell;
 
-	float   				size;
-	SsEffectRenderEmitter*  parentEmitter;
-    SsEffectBehavior*		refBehavior;
+    float size;
+    SsEffectRenderEmitter* parentEmitter;
+    SsEffectBehavior* refBehavior;
 
-	SsVector2   _baseEmiterPosition;   //もしかしてもう使ってないかも
-	SsVector2   _backposition;         //force計算前のポジション
-	SsVector2   _position;             //描画用ポジション
+    SsVector2 _baseEmiterPosition;  // もしかしてもう使ってないかも
+    SsVector2 _backposition;        // force計算前のポジション
+    SsVector2 _position;            // 描画用ポジション
 
-	float		_rotation;
-	float		_rotationAdd;
-	float		_rotationAddDst;
-	float		_rotationAddOrg;
+    float _rotation;
+    float _rotationAdd;
+    float _rotationAddDst;
+    float _rotationAddOrg;
 
-	SsVector2   _size;
-	SsVector2  	_startsize;
-	SsVector2   _divsize;
+    SsVector2 _size;
+    SsVector2 _startsize;
+    SsVector2 _divsize;
 
-	SsU8Color	_color;
-	SsU8Color	_startcolor;
-	SsU8Color	_endcolor;
+    SsU8Color _color;
+    SsU8Color _startcolor;
+    SsU8Color _endcolor;
 
+    float speed;  // 現在持っている速度
+    float firstspeed;
+    float lastspeed;
+    SsVector2 vector;
 
-	float		speed;		//現在持っている速度
-	float		firstspeed;
-    float		lastspeed;
-	SsVector2   vector;
+    SsVector2 _force;
+    SsVector2 _gravity;
+    //	SsVector2   _orggravity;
 
-	SsVector2   _force;
-	SsVector2   _gravity;
-//	SsVector2   _orggravity;
+    float _radialAccel;
+    float _tangentialAccel;
+    float direction;
+    bool isTurnDirection;
 
-	float 		_radialAccel;
-	float 		_tangentialAccel;
-	float		direction;
-	bool		isTurnDirection;
+    SsVector2 _execforce;  // 処理中の力 最終的には単位当たりの力に変換
 
-	SsVector2   _execforce;				//処理中の力 最終的には単位当たりの力に変換
+   public:
+    void InitParameter() {
+        SsEffectRenderAtom::Initialize();
 
-
-
-
-public:
-	void	InitParameter()
-	{
-
-		SsEffectRenderAtom::Initialize();
-
-		_position = SsVector2(0,0);
-		_baseEmiterPosition = SsVector2(0,0);
-		_backposition = SsVector2(0,0);
-		_rotation = 0;
-		_size = SsVector2( 1.0f , 1.0f );
-		_startsize = SsVector2( 1.0f , 1.0f );
-		_divsize = SsVector2( 0.0f , 0.0f );
-		_force = SsVector2(0,0);
-		_gravity = SsVector2(0,0);
-		_radialAccel = 0;
-		_tangentialAccel = 0;
-		_color = SsU8Color(255,255,255,255) ;
+        _position = SsVector2(0, 0);
+        _baseEmiterPosition = SsVector2(0, 0);
+        _backposition = SsVector2(0, 0);
+        _rotation = 0;
+        _size = SsVector2(1.0f, 1.0f);
+        _startsize = SsVector2(1.0f, 1.0f);
+        _divsize = SsVector2(0.0f, 0.0f);
+        _force = SsVector2(0, 0);
+        _gravity = SsVector2(0, 0);
+        _radialAccel = 0;
+        _tangentialAccel = 0;
+        _color = SsU8Color(255, 255, 255, 255);
         _startcolor = _color;
         _exsitTime = 0;
-		_execforce = SsVector2(0,0);
-		parentEmitter = 0;
-		dispCell = 0;
-	}
+        _execforce = SsVector2(0, 0);
+        parentEmitter = 0;
+        dispCell = 0;
+    }
 
-
-
-	SsEffectRenderParticle(): parentEmitter(0){}
-	SsEffectRenderParticle( SsEffectNode* refdata , SsEffectRenderAtom* _p){
-		data = refdata;
-		parent = _p;
+    SsEffectRenderParticle() : parentEmitter(0) {}
+    SsEffectRenderParticle(SsEffectNode* refdata, SsEffectRenderAtom* _p) {
+        data = refdata;
+        parent = _p;
         InitParameter();
-	}
+    }
 
-	virtual ~SsEffectRenderParticle(){}
-    SsRenderType::_enum	getMyType(){ return SsRenderType::ParticleNode;}
+    virtual ~SsEffectRenderParticle() {}
+    SsRenderType::_enum getMyType() { return SsRenderType::ParticleNode; }
 
-	//生成フェーズ
-	virtual void	Initialize();
+    // 生成フェーズ
+    virtual void Initialize();
 
-	virtual bool	genarate( SsEffectRenderer* render );
+    virtual bool genarate(SsEffectRenderer* render);
 
-    virtual void	update(float delta);
-	virtual void	draw(SsEffectRenderer* render);
+    virtual void update(float delta);
+    virtual void draw(SsEffectRenderer* render);
 
-
-	virtual void	count()
-	{
-		if ( parentEmitter )
-			parentEmitter->particleCount++;
-	}
-	virtual void	updateDelta(float delta);
-	virtual void 	updateForce(float delta);
+    virtual void count() {
+        if (parentEmitter)
+            parentEmitter->particleCount++;
+    }
+    virtual void updateDelta(float delta);
+    virtual void updateForce(float delta);
 };
-
-
-
 
 //-------------------------------------------------------------
 // 画面に存在できるパーティクルバッファのサイズを指定します。
@@ -393,7 +343,7 @@ public:
 // パーツ単位でバッファを作成するので、バッファ数を多く設定すると
 // アニメーション初期化時にバッファ確保の時間が長くなります。
 // 再生するアニメーションにエフェクトパーツがない場合は初期化が行われなわれないので負荷は発生しません。
-//SpriteStudio本体の設定
+// SpriteStudio本体の設定
 constexpr auto SSEFFECTRENDER_EMMITER_MAX = 1024;
 constexpr auto SSEFFECTRENDER_PARTICLE_MAX = 4096;
 // constexpr auto SSEFFECTRENDER_EMMITER_MAX = 256;
@@ -401,131 +351,109 @@ constexpr auto SSEFFECTRENDER_PARTICLE_MAX = 4096;
 //-------------------------------------------------------------
 constexpr auto SSEFFECTRENDER_BACTH_MAX = 256;
 
-
-
 //--------------------------------------------------------------------------
-//エフェクトの描画処理メイン
+// エフェクトの描画処理メイン
 //--------------------------------------------------------------------------
-class SsEffectRenderer
-{
-private:
-	SsEffectModel*		effectData;
+class SsEffectRenderer {
+   private:
+    SsEffectModel* effectData;
 
+    bool m_isPlay;
+    bool m_isPause;
+    bool m_isLoop;
+    u32 mySeed;
 
-	bool			m_isPlay;
-	bool			m_isPause;
-	bool			m_isLoop;
-	u32				mySeed;
+    SsVector3 layoutPosition;
 
-
-	SsVector3		layoutPosition;
-
-	SsCellMapList*	curCellMapManager;/// セルマップのリスト（アニメデコーダーからもらう
-
+    SsCellMapList* curCellMapManager;  /// セルマップのリスト（アニメデコーダーからもらう
 
 #if SPRITESTUDIO6SDK_PFMEM_TEST
-	SsEffectRenderEmitter    em_pool[SSEFFECTRENDER_EMMITER_MAX+1];
-	SsEffectRenderParticle   pa_pool[SSEFFECTRENDER_PARTICLE_MAX+1];
+    SsEffectRenderEmitter em_pool[SSEFFECTRENDER_EMMITER_MAX + 1];
+    SsEffectRenderParticle pa_pool[SSEFFECTRENDER_PARTICLE_MAX + 1];
 
-	SsEffectDrawBatch		 drawPr_pool[SSEFFECTRENDER_BACTH_MAX+1];
+    SsEffectDrawBatch drawPr_pool[SSEFFECTRENDER_BACTH_MAX + 1];
 
-
-	int						em_pool_count;
-	int						pa_pool_count;
-	int						dpr_pool_count;
+    int em_pool_count;
+    int pa_pool_count;
+    int dpr_pool_count;
 #endif
 
-public:
-	//アップデート物のリスト
-	std::unique_ptr<SsEffectRenderAtom>	render_root;
+   public:
+    // アップデート物のリスト
+    std::unique_ptr<SsEffectRenderAtom> render_root;
 
-	bool			usePreMultiTexture;
-	u32				parentAnimeStartFrame;
-	bool			renderTexture;
-	float           frameDelta;
-	SsPartState*		parentState;
+    bool usePreMultiTexture;
+    u32 parentAnimeStartFrame;
+    bool renderTexture;
+    float frameDelta;
+    SsPartState* parentState;
 
+    std::vector<SsEffectRenderAtom*> updatelist;
+    std::vector<SsEffectRenderAtom*> createlist;
 
- 	std::vector<SsEffectRenderAtom*> updatelist;
-	std::vector<SsEffectRenderAtom*> createlist;
+    std::list<SsEffectDrawBatch*> drawBatchList;
 
-    std::list<SsEffectDrawBatch*>  drawBatchList;
-
-
-public:
-	SsEffectRenderer() :
-		effectData(0)
-		,parentState(0)
-		,mySeed(0)
-		,render_root()
-		,parentAnimeStartFrame(0)
-		,m_isLoop(false)
+   public:
+    SsEffectRenderer() : effectData(0), parentState(0), mySeed(0), render_root(), parentAnimeStartFrame(0), m_isLoop(false)
 #if SPRITESTUDIO6SDK_PFMEM_TEST
-		,em_pool_count(0)
-		,pa_pool_count(0)
-		,dpr_pool_count(0)
-		,usePreMultiTexture(true)
-		,renderTexture(false)
-		,frameDelta(0)
+                         ,
+                         em_pool_count(0),
+                         pa_pool_count(0),
+                         dpr_pool_count(0),
+                         usePreMultiTexture(true),
+                         renderTexture(false),
+                         frameDelta(0)
 #endif
-	{}
+    {
+    }
 
+    virtual ~SsEffectRenderer();
 
-	virtual ~SsEffectRenderer();
+    void clearUpdateList();
 
-    void	clearUpdateList();
+   public:
+    void setSeed(u32 seed) { mySeed = seed; }
+    virtual void update(float delta);
+    virtual void draw();
+    virtual void reload();
 
+    // 操作
+    void play();
+    void stop();
+    void pause();
+    void setLoop(bool flag);
+    bool getPlayStatus(void);  // 追加
 
-public:
+    int getCurrentFPS() {
+        if (effectData) {
+            if (effectData->fps == 0) return 30;
 
+            return effectData->fps;
+        }
+        return 30;
+    }
 
-	void	setSeed( u32 seed ){  mySeed = seed; }
-	virtual void	update(float delta);
-    virtual void	draw();
-	virtual void    reload();
+    SsEffectModel* getEffectData() {
+        return effectData;
+    }
 
-    //操作
-	void    play();
-	void	stop();
-	void    pause();
-	void	setLoop(bool flag);
-	bool	getPlayStatus(void);	//追加
+    // データセット
+    void setEffectData(SsEffectModel* data) {
+        stop();
+        clearUpdateList();
+        effectData = data;
+    }
+    void setParentAnimeState(SsPartState* state) { parentState = state; }
 
-	int	getCurrentFPS(){
-		if (effectData)
-		{
-        	if ( effectData->fps == 0 ) return 30;
+    SsEffectRenderAtom* CreateAtom(unsigned int seed, SsEffectRenderAtom* parent, SsEffectNode* node);
 
-        	return effectData->fps;
-		}
-		return 30;
-	}
+    void setCellmapManager(SsCellMapList* plist) { curCellMapManager = plist; }
 
-	SsEffectModel* getEffectData()
-	{
-		return effectData;
-	}
+    SsEffectDrawBatch* findBatchList(SsEffectNode* n);
 
-	//データセット
-	void	setEffectData(SsEffectModel* data){
-					stop();
-                    clearUpdateList();
-					effectData = data;
-			}
-	void	setParentAnimeState( SsPartState* state ){ parentState = state; }
-
-	SsEffectRenderAtom* CreateAtom( unsigned int seed , SsEffectRenderAtom* parent , SsEffectNode* node );
-
-	void	setCellmapManager( SsCellMapList* plist ) { curCellMapManager = plist; }
-
-	SsEffectDrawBatch*	findBatchList(SsEffectNode* n);
-
-	SsEffectDrawBatch*	findBatchListSub(SsEffectNode* n);
-
-
+    SsEffectDrawBatch* findBatchListSub(SsEffectNode* n);
 };
 
-
-}	// namespace spritestudio6
+}  // namespace spritestudio6
 
 #endif

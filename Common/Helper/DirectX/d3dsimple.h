@@ -1,41 +1,56 @@
 ﻿#ifndef __RS_DX9__
 #define __RS_DX9__
 
-//#include "Draw.h"
-//#include "DirectDraw_Font.h"
-
-
+// #include "Draw.h"
+// #include "DirectDraw_Font.h"
 
 #include <d3d9.h>
 #include <vector>
 #include <string>
 
+#pragma comment(lib, "d3d9.lib")
+// #pragma	comment(lib, "d3dx9.lib")
 
-
-#pragma	comment(lib, "d3d9.lib")
-//#pragma	comment(lib, "d3dx9.lib")
-
-
-#define		RELEASE(o)		if (o){o->Release();o=NULL;}
-#define		PI				(3.1415926f)		//!< π
-#define		DEGtoRAD(deg)		((float)deg * 0.017453292f)	//!< デグリーからラジアンへ
-#define		RADtoDEG(rad)		((float)rad * 57.29578049f)	//!< ラジアンからデグリーへ
-#define		SAFE_DELETE(p)			{ if(p){ delete (p); (p)=NULL; } }		//!< メモリを解放
-#define		SAFE_DELETE_ARRAY(p)	{ if(p){ delete [](p); (p)=NULL; } }	//!< 配列でとったメモリを解放
-#define		SAFE_RELEASE(p)			{ if(p){ (p)->Release(); (p)=NULL; } }	//!< DXオブジェクトを解放
-
+#define RELEASE(o)    \
+    if (o) {          \
+        o->Release(); \
+        o = NULL;     \
+    }
+#define PI (3.1415926f)                            //!< π
+#define DEGtoRAD(deg) ((float)deg * 0.017453292f)  //!< デグリーからラジアンへ
+#define RADtoDEG(rad) ((float)rad * 57.29578049f)  //!< ラジアンからデグリーへ
+#define SAFE_DELETE(p)  \
+    {                   \
+        if (p) {        \
+            delete (p); \
+            (p) = NULL; \
+        }               \
+    }  //!< メモリを解放
+#define SAFE_DELETE_ARRAY(p) \
+    {                        \
+        if (p) {             \
+            delete[] (p);    \
+            (p) = NULL;      \
+        }                    \
+    }  //!< 配列でとったメモリを解放
+#define SAFE_RELEASE(p)     \
+    {                       \
+        if (p) {            \
+            (p)->Release(); \
+            (p) = NULL;     \
+        }                   \
+    }  //!< DXオブジェクトを解放
 
 //---------------------------------------------------------------------------------------------------------
 //
 //
 //---------------------------------------------------------------------------------------------------------
-typedef void (*CDirectDrawCALLBACK)();				//ハッシュ値作成 	
+typedef void (*CDirectDrawCALLBACK)();  // ハッシュ値作成
 
-class	IDirectDrawResourceManager
-{
-	virtual BOOL	Dispose() = 0;
-	virtual BOOL	Restore() = 0;
-	virtual BOOL	Release() = 0;
+class IDirectDrawResourceManager {
+    virtual BOOL Dispose() = 0;
+    virtual BOOL Restore() = 0;
+    virtual BOOL Release() = 0;
 };
 
 #if 0
@@ -87,150 +102,133 @@ public:
 };
 #endif
 
-class CDirectDrawSimple 
-{
-public:
-	enum DISPLAYMODE
-	{
-		DISPLAYMODE_NONE,		//!< よくわからない
-		DISPLAYMODE_WINDOW,		//!< ウインドウモード
-		DISPLAYMODE_FULL,		//!< フルスクリーンモード
-	};
+class CDirectDrawSimple {
+   public:
+    enum DISPLAYMODE {
+        DISPLAYMODE_NONE,    //!< よくわからない
+        DISPLAYMODE_WINDOW,  //!< ウインドウモード
+        DISPLAYMODE_FULL,    //!< フルスクリーンモード
+    };
 
-private:	
-	static CDirectDrawSimple*	myInst;
-	LPDIRECT3D9	m_pD3D;
+   private:
+    static CDirectDrawSimple* myInst;
+    LPDIRECT3D9 m_pD3D;
 
-	int	m_dwWidth;
-	int	m_dwHeight;
+    int m_dwWidth;
+    int m_dwHeight;
 
-	DWORD	m_VertexShaderVersion;
-	DWORD	m_PixelShaderVersion;
+    DWORD m_VertexShaderVersion;
+    DWORD m_PixelShaderVersion;
 
-	D3DPRESENT_PARAMETERS	m_d3dParam_current;
-	D3DPRESENT_PARAMETERS	m_d3dParam_window;			
-	D3DPRESENT_PARAMETERS	m_d3dParam_full;
+    D3DPRESENT_PARAMETERS m_d3dParam_current;
+    D3DPRESENT_PARAMETERS m_d3dParam_window;
+    D3DPRESENT_PARAMETERS m_d3dParam_full;
 
-	LPDIRECT3DDEVICE9		m_pd3dDev;
-	LPDIRECT3DSURFACE9		m_pBackBuffer;		
-	LPDIRECT3DSURFACE9		m_currentRenderTarget;
+    LPDIRECT3DDEVICE9 m_pd3dDev;
+    LPDIRECT3DSURFACE9 m_pBackBuffer;
+    LPDIRECT3DSURFACE9 m_currentRenderTarget;
 
-	HWND					m_hwnd;
-	int			m_Vertextype;
-	static bool	m_DeviceLost;
+    HWND m_hwnd;
+    int m_Vertextype;
+    static bool m_DeviceLost;
 
-	bool		m_pause;
-	DISPLAYMODE	m_current_displaymode;
+    bool m_pause;
+    DISPLAYMODE m_current_displaymode;
 
-	RECT  g_rectWindow;
+    RECT g_rectWindow;
 
-	BYTE	bgcolorR;
-	BYTE	bgcolorG;
-	BYTE	bgcolorB;
+    BYTE bgcolorR;
+    BYTE bgcolorG;
+    BYTE bgcolorB;
 
-		
-	CDirectDrawCALLBACK		m_ReleaseDeviceCallback;
-	CDirectDrawCALLBACK		m_RestoreDeviceCallback;
+    CDirectDrawCALLBACK m_ReleaseDeviceCallback;
+    CDirectDrawCALLBACK m_RestoreDeviceCallback;
 
-private:
-	void	CreateCaps();
-	BOOL	Create( void* HWND , int ScreenWidth , int ScreenHeight );
+   private:
+    void CreateCaps();
+    BOOL Create(void* HWND, int ScreenWidth, int ScreenHeight);
 
-public:
-	CDirectDrawSimple()
-	{
-		m_pause = false;
-	}
+   public:
+    CDirectDrawSimple() {
+        m_pause = false;
+    }
 
-	CDirectDrawSimple(
-				HWND HWND , 
-				int ScreenWidth , 
-				int ScreenHeight, 
-				CDirectDrawSimple::DISPLAYMODE displaymode = DISPLAYMODE_WINDOW )
-	{
-		m_pBackBuffer = 0;
-		m_DeviceLost = false;
-		m_current_displaymode = displaymode;
-		Create( HWND , ScreenWidth , ScreenHeight );
-		m_hwnd = HWND;
-		m_pause = false;
-		myInst = this;
+    CDirectDrawSimple(
+        HWND HWND,
+        int ScreenWidth,
+        int ScreenHeight,
+        CDirectDrawSimple::DISPLAYMODE displaymode = DISPLAYMODE_WINDOW) {
+        m_pBackBuffer = 0;
+        m_DeviceLost = false;
+        m_current_displaymode = displaymode;
+        Create(HWND, ScreenWidth, ScreenHeight);
+        m_hwnd = HWND;
+        m_pause = false;
+        myInst = this;
+    }
 
-	}
+    ~CDirectDrawSimple() {
+        Cleanup();
+        myInst = 0;
+    }
 
-	~CDirectDrawSimple()
-	{
-		Cleanup();
-		myInst = 0;
-	}
+    BOOL Cleanup();
 
-	BOOL	Cleanup();
+    virtual HRESULT BeginScene();
+    virtual HRESULT EndScene();
 
-	virtual HRESULT	BeginScene();
-	virtual	HRESULT	EndScene();
+    HWND GetHWnd() { return m_hwnd; }
+    LPDIRECT3D9 GetD3D() { return m_pD3D; }
+    LPDIRECT3DDEVICE9 GetDevice() { return m_pd3dDev; }
 
-	HWND			GetHWnd(){ return m_hwnd; }
-	LPDIRECT3D9		GetD3D(){ return m_pD3D; }
-	LPDIRECT3DDEVICE9 GetDevice(){ return m_pd3dDev;} 
+    static CDirectDrawSimple* GetInstance() { return myInst; }
 
-	static	CDirectDrawSimple*	GetInstance(){return myInst;}
+    int GetScreenWidth() { return m_dwWidth; }
+    int GetScreenHeight() { return m_dwHeight; }
+    void SetScreenWidth(int w) { m_dwWidth = w; }
+    void SetScreenHeight(int h) { m_dwHeight = h; }
 
+    LPDIRECT3DSURFACE9 getBackBuffer();
 
-	int	GetScreenWidth(){ return m_dwWidth;}
-	int	GetScreenHeight(){ return m_dwHeight;}
-	void	SetScreenWidth( int w ) { m_dwWidth = w;}
-	void	SetScreenHeight( int h ) { m_dwHeight = h;}
+    void SetRenderTarget(int index, LPDIRECT3DSURFACE9 surface, LPDIRECT3DSURFACE9 depath = 0) {
+        m_currentRenderTarget = surface;
+        m_pd3dDev->SetRenderTarget(index, surface);
+        if (depath) {
+            m_pd3dDev->SetDepthStencilSurface(depath);
+        }
+    }
 
+    LPDIRECT3DSURFACE9 GetRenderTarget() {
+        return m_currentRenderTarget;
+    }
 
+    void SetPause(bool flag) {
+        m_pause = flag;
+    }
 
-	LPDIRECT3DSURFACE9 getBackBuffer();
+    virtual void ChangeDisplayMode(DISPLAYMODE mode);
+    DISPLAYMODE GetCurrentDisplayMode() { return m_current_displaymode; }
+    virtual BOOL DeviceChk();
 
-	void	SetRenderTarget(int index , LPDIRECT3DSURFACE9 surface , LPDIRECT3DSURFACE9 depath = 0)
-	{
-		m_currentRenderTarget = surface;
-		m_pd3dDev->SetRenderTarget( index , surface );
-		if ( depath )
-		{
-			m_pd3dDev->SetDepthStencilSurface( depath );
-		}
-	}
+    void SetBackGroundColor(BYTE r, BYTE g, BYTE b) {
+        bgcolorR = r;
+        bgcolorG = g;
+        bgcolorB = b;
+    }
 
-	LPDIRECT3DSURFACE9 GetRenderTarget()
-	{
-		return m_currentRenderTarget;
-	}
+    DWORD GetVSVersion() { return m_VertexShaderVersion; }
+    DWORD GetPSVersion() { return m_PixelShaderVersion; }
+    void SetReleaseDeviceCallBackFunc(CDirectDrawCALLBACK func) { m_ReleaseDeviceCallback = func; }
+    void SetRestoreDeviceCallBackFunc(CDirectDrawCALLBACK func) { m_RestoreDeviceCallback = func; }
 
-	void	SetPause( bool flag )
-	{
-		m_pause = flag;
-	}
+    //		CDirectDraw_RenderState*	GetRenderState();
 
-	virtual void	ChangeDisplayMode( DISPLAYMODE mode );
-	DISPLAYMODE		GetCurrentDisplayMode(){ return m_current_displaymode; }
-	virtual BOOL	DeviceChk();
-
-	void	SetBackGroundColor( BYTE r , BYTE g , BYTE b )
-	{
-		bgcolorR = r;
-		bgcolorG = g;
-		bgcolorB = b;
-
-	}
-
-	DWORD GetVSVersion(){return m_VertexShaderVersion;	}
-	DWORD GetPSVersion(){return m_PixelShaderVersion;	}
-	void	SetReleaseDeviceCallBackFunc(CDirectDrawCALLBACK func ) { m_ReleaseDeviceCallback = func; }
-	void	SetRestoreDeviceCallBackFunc(CDirectDrawCALLBACK func ) { m_RestoreDeviceCallback = func; }
-
-//		CDirectDraw_RenderState*	GetRenderState();
- 
-	void	DeviceReset();
+    void DeviceReset();
 };
 
 /*
 void	Setup2DMatrix( int width , int height , float center_posx , float center_posy );
 void	Setup2DMatrix( int width , int height );
 */
-
 
 #endif

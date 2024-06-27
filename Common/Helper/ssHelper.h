@@ -3,7 +3,6 @@
 
 #include "../Loader/ssloader.h"
 
-
 #include "sshObject.h"
 #include "sshTask.h"
 #include "sshScene.h"

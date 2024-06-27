@@ -16,8 +16,7 @@ FILE *ssFilesystem::openFile(const std::string &filepath) {
 
     _wfopen_s(&fp, wstr.c_str(), L"rb");
 #else
-    fp = fopen( SsCharConverter::convert_path_string(filepath).c_str(), "rb");
+    fp = fopen(SsCharConverter::convert_path_string(filepath).c_str(), "rb");
 #endif
     return fp;
 }
-

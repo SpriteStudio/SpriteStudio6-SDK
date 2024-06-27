@@ -11,26 +11,23 @@
 #ifndef __XP_FILEOPENDLG__
 #define __XP_FILEOPENDLG__
 
-namespace spritestudio6
-{
+namespace spritestudio6 {
 
 class XPFileOpenDlg {
-private:
-	char*	pszChar;
-public:
+   private:
+    char* pszChar;
+
+   public:
     XPFileOpenDlg() : pszChar(0) {}
-    virtual ~XPFileOpenDlg()
-	{
-		if ( pszChar )
-			delete [] pszChar;
-	}
-    bool    Show();
+    virtual ~XPFileOpenDlg() {
+        if (pszChar)
+            delete[] pszChar;
+    }
+    bool Show();
 
-	const char* getFilePath(){ return pszChar;}
-
+    const char* getFilePath() { return pszChar; }
 };
 
-
-}	// namespace spritestudio6
+}  // namespace spritestudio6
 
 #endif

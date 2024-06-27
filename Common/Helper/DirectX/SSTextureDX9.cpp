@@ -1,13 +1,11 @@
 ﻿#include <stdio.h>
 #include <cstdlib>
 
-
 #include "stb_image.h"
 #include "ssHelper.h"
 #include "SSTextureDX9.h"
 
-namespace spritestudio6
-{
+namespace spritestudio6 {
 
 #if 0
 /* =====================================================================================
@@ -53,18 +51,15 @@ GLuint	LoadTextureGL( const char* Filename ,int& width , int& height)
 }
 #endif
 
-
-SSTextureDX9::~SSTextureDX9()
-{
-	//glDeleteTextures( 1 , &tex );
+SSTextureDX9::~SSTextureDX9() {
+    // glDeleteTextures( 1 , &tex );
 }
 
-bool SSTextureDX9::Load( const char* filename )
-{
-	//tex = LoadTextureGL( fname , tex_width , tex_height );
-	//return tex != 0;
+bool SSTextureDX9::Load(const char* filename) {
+    // tex = LoadTextureGL( fname , tex_width , tex_height );
+    // return tex != 0;
 
-	return true;
+    return true;
 }
 
-}	// namespace spritestudio6
+}  // namespace spritestudio6
