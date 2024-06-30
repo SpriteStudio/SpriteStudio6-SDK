@@ -1173,7 +1173,7 @@ static auto parseParts(spritestudio6::SsProject *proj, const std::string &imageB
                 }
 
                 // 出力されたパーツ数と、描画順の変更があるかのフラグ
-                frameFlag->data.i = outPartsCount | (prioChanged ? 0x8000 : 0);
+                frameFlag->data = outPartsCount | (prioChanged ? 0x8000 : 0);
             }
 
             // ユーザーデータ

@@ -51,7 +51,7 @@ class CSourceExporter {
 
         out << "// " << creatorComment << std::endl;
 
-        const LumpSet* lset = lump->data.p;
+        const auto& lset = std::get<std::shared_ptr<LumpSet>>(lump->data);
         out << format("extern const %s %s;\n",
                       lset->className.c_str(),
                       topLabel.c_str());
@@ -69,21 +69,21 @@ class CSourceExporter {
     std::string m_topLabel;
 
     void writeStrings(std::ostream& out, const std::shared_ptr<Lump>& lump) {
-        const LumpSet* lset = lump->data.p;
+        const auto& lset = std::get<std::shared_ptr<LumpSet>>(lump->data);
 
         for (const auto& child : lset->set) {
-            if (child->type == Lump::SET) {
+            if (child->type == Lump::DataType::SET) {
                 writeStrings(out, child);
             }
         }
 
         for (const auto& child : lset->set) {
-            if (child->type == Lump::STRING) {
+            if (child->type == Lump::DataType::STRING) {
                 if (m_labelMap.find(child) == m_labelMap.end()) {
                     std::string label = format("label_%04d", m_labelMap.size());
                     m_labelMap[child] = label;
 
-                    std::string str = encode(*child->data.s, m_encoding);
+                    std::string str = encode(std::get<std::string>(lump->data), m_encoding);
 
                     out << format("static const char %s[] = \"%s\";\n", label.c_str(), str.c_str());
                 }
@@ -97,7 +97,7 @@ class CSourceExporter {
     };
 
     void writeLumpSetBlock(std::ostream& out, const std::shared_ptr<Lump>& lump) {
-        const LumpSet* lset = lump->data.p;
+        const auto& lset = std::get<std::shared_ptr<LumpSet>>(lump->data);
 
         out << format("{");
 
@@ -109,31 +109,34 @@ class CSourceExporter {
                 second = true;
 
                 switch (child->type) {
-                    case Lump::S16:
-                    case Lump::S32:
-                        out << format("%d", child->data.i);
+                    case Lump::DataType::S16:
+                    case Lump::DataType::S32:
+                        out << format("%d", std::get<int>(child->data));
                         break;
-                    case Lump::FLOAT:
-                        out << format("%f", child->data.f);
+                    case Lump::DataType::FLOAT:
+                        out << format("%f", std::get<float>(child->data));
                         break;
-                    case Lump::COLOR:
-                        out << format("%x", child->data.i);
+                    case Lump::DataType::COLOR:
+                        out << format("%x", std::get<int>(child->data));
                         break;
-                    case Lump::STRING:
+                    case Lump::DataType::STRING:
                         out << format("(ss_offset)((char*)%s - (char*)&%s)/*%s*/", m_labelMap[child].c_str(),
                                       m_topLabel.c_str(),
-                                      child->data.s->c_str());
+                                      std::get<std::string>(child->data).c_str());
                         break;
-                    case Lump::SET:
-                        if (child->data.p->isReference) {
+                    case Lump::DataType::SET:
+                    {
+                        auto p = std::get<std::shared_ptr<LumpSet>>(lump->data);
+                        if (p->isReference) {
                             out << format("(ss_offset)((char*)%s%s - (char*)&%s)",
-                                          child->data.p->arrayType == LumpSet::NO_ARRAY ? "&" : "",
+                                          p->arrayType == LumpSet::NO_ARRAY ? "&" : "",
                                           m_labelMap[child].c_str(),
                                           m_topLabel.c_str());
                         } else {
                             if (second) out << format("\n");
                             writeLumpSetBlock(out, child);
                         }
+                    }
                         break;
                     default:
                         assert(false);
@@ -149,27 +152,27 @@ class CSourceExporter {
                 second = true;
 
                 switch (child->type) {
-                    case Lump::S16:
-                        out << format("0x%x", child->data.i);
+                    case Lump::DataType::S16:
+                        out << format("0x%x", std::get<int>(child->data));
                         break;
-                    case Lump::S32:
-                        out << format("0x%x,0x%x", child->data.i & 0xffff, (child->data.i >> 16) & 0xffff);
+                    case Lump::DataType::S32:
+                        out << format("0x%x,0x%x", std::get<int>(child->data) & 0xffff, (std::get<int>(child->data) >> 16) & 0xffff);
                         break;
-                    case Lump::FLOAT: {
+                    case Lump::DataType::FLOAT: {
                         MixType mix{};
-                        mix.f = child->data.f;
+                        mix.f = std::get<float>(child->data);
                         int value = mix.i;
                         out << format("0x%x,0x%x", value & 0xffff, (value >> 16) & 0xffff);
                     } break;
-                    case Lump::COLOR:
-                        out << format("0x%x,0x%x", child->data.i & 0xffff, (child->data.i >> 16) & 0xffff);
+                    case Lump::DataType::COLOR:
+                        out << format("0x%x,0x%x", std::get<int>(child->data) & 0xffff, (std::get<int>(child->data) >> 16) & 0xffff);
                         break;
-                    case Lump::STRING:
+                    case Lump::DataType::STRING:
                         //						w.format("(ss_offset)((char*)%s - (char*)&%s)/*%s*/", m_labelMap[child].c_str(),
                         //							m_topLabel.c_str(),
                         //							child->data.s->c_str());
                         break;
-                    case Lump::SET:
+                    case Lump::DataType::SET:
                         // Not support
                         assert(false);
                         break;
@@ -184,10 +187,10 @@ class CSourceExporter {
     }
 
     void writeReferenceLumpSet(std::ostream& out, const std::shared_ptr<Lump>& lump, int callDepth = 0) {
-        const LumpSet* lset = lump->data.p;
+        const auto& lset = std::get<std::shared_ptr<LumpSet>>(lump->data);
 
         for (const auto& child : lset->set) {
-            if (child->type == Lump::SET) {
+            if (child->type == Lump::DataType::SET) {
                 writeReferenceLumpSet(out, child, callDepth + 1);
             }
         }
@@ -236,27 +239,27 @@ class BinaryExporter {
     }
 
    private:
-    typedef std::map<const std::shared_ptr<Lump>, std::string> LabelMapType;
+    using LabelMapType = std::map<const std::shared_ptr<Lump>, std::string>;
 
     LabelMapType m_labelMap;
     StringEncoding m_encoding;
 
     void writeStrings(BinaryDataWriter& writer, const std::shared_ptr<Lump>& lump) {
-        const LumpSet* lset = lump->data.p;
+        const auto& lset = std::get<std::shared_ptr<LumpSet>>(lump->data);
 
         for (const auto& child : lset->set) {
-            if (child->type == Lump::SET) {
+            if (child->type == Lump::DataType::SET) {
                 writeStrings(writer, child);
             }
         }
 
         for (const auto& child : lset->set) {
-            if (child->type == Lump::STRING) {
+            if (child->type == Lump::DataType::STRING) {
                 if (m_labelMap.find(child) == m_labelMap.end()) {
                     std::string label = format("label_%04d", m_labelMap.size());
                     m_labelMap[child] = label;
 
-                    std::string str = encode(*child->data.s, m_encoding);
+                    std::string str = encode(std::get<std::string>(child->data), m_encoding);
 
                     writer.setReference(label);
                     writer.writeString(str);
@@ -266,35 +269,37 @@ class BinaryExporter {
     }
 
     void writeLumpSetBlock(BinaryDataWriter& writer, const std::shared_ptr<Lump>& lump) {
-        const auto* lset = lump->data.p;
+        const auto& lset = std::get<std::shared_ptr<LumpSet>>(lump->data);
 
         // ノーマルのデータ構造
         if (lset->arrayType == LumpSet::NO_ARRAY || lset->arrayType == LumpSet::ARRAY) {
             for (const auto& child : lset->set) {
                 switch (child->type) {
-                    case Lump::S16:
-                        writer.writeShort(child->data.i);
+                    case Lump::DataType::S16:
+                        writer.writeShort(std::get<int>(child->data));
                         break;
-                    case Lump::S32:
-                        writer.writeInt(child->data.i);
+                    case Lump::DataType::S32:
+                        writer.writeInt(std::get<int>(child->data));
                         break;
-                    case Lump::FLOAT:
-                        writer.writeFloat(child->data.f);
+                    case Lump::DataType::FLOAT:
+                        writer.writeFloat(std::get<float>(child->data));
                         break;
-                    case Lump::COLOR:
-                        writer.writeInt(child->data.i);
+                    case Lump::DataType::COLOR:
+                        writer.writeInt(std::get<int>(child->data));
                         break;
-                    case Lump::STRING:
+                    case Lump::DataType::STRING:
                         assert(m_labelMap.find(child) != m_labelMap.end());
                         writer.writeReference(m_labelMap[child]);
                         break;
-                    case Lump::SET:
-                        if (child->data.p->isReference) {
+                    case Lump::DataType::SET: {
+                        auto p = std::get<std::shared_ptr<LumpSet>>(child->data);
+                        if (p->isReference) {
                             assert(m_labelMap.find(child) != m_labelMap.end());
                             writer.writeReference(m_labelMap[child]);
                         } else {
                             writeLumpSetBlock(writer, child);
                         }
+                    }
                         break;
                     default:
                         assert(false);
@@ -306,23 +311,23 @@ class BinaryExporter {
         else if (lset->arrayType == LumpSet::U16_ARRAY) {
             for (const auto& child : lset->set) {
                 switch (child->type) {
-                    case Lump::S16:
-                        writer.writeShort(child->data.i);
+                    case Lump::DataType::S16:
+                        writer.writeShort(std::get<int>(child->data));
                         break;
-                    case Lump::S32:
-                        writer.writeInt(child->data.i);
+                    case Lump::DataType::S32:
+                        writer.writeInt(std::get<int>(child->data));
                         break;
-                    case Lump::FLOAT:
-                        writer.writeFloat(child->data.f);
+                    case Lump::DataType::FLOAT:
+                        writer.writeFloat(std::get<float>(child->data));
                         break;
-                    case Lump::COLOR:
-                        writer.writeInt(child->data.i);
+                    case Lump::DataType::COLOR:
+                        writer.writeInt(std::get<int>(child->data));
                         break;
-                    case Lump::STRING:
+                    case Lump::DataType::STRING:
                         assert(m_labelMap.find(child) != m_labelMap.end());
                         writer.writeReference(m_labelMap[child], false);  // 4バイト境界化しない
                         break;
-                    case Lump::SET:
+                    case Lump::DataType::SET:
                         // Not support
                         assert(false);
                         break;
@@ -335,10 +340,10 @@ class BinaryExporter {
     }
 
     void writeReferenceLumpSet(BinaryDataWriter& writer, const std::shared_ptr<Lump>& lump, int callDepth = 0) {
-        const LumpSet* lset = lump->data.p;
+        const auto& lset = std::get<std::shared_ptr<LumpSet>>(lump->data);
 
         for (const auto& child : lset->set) {
-            if (child->type == Lump::SET) {
+            if (child->type == Lump::DataType::SET) {
                 writeReferenceLumpSet(writer, child, callDepth + 1);
             }
         }
@@ -384,21 +389,21 @@ class JsonExporter {
     std::string m_topLabel;
 
     void writeStrings(std::ostream& out, const std::shared_ptr<Lump>& lump) {
-        const LumpSet* lset = lump->data.p;
+        const auto& lset = std::get<std::shared_ptr<LumpSet>>(lump->data);
 
         for (const auto& child : lset->set) {
-            if (child->type == Lump::SET) {
+            if (child->type == Lump::DataType::SET) {
                 writeStrings(out, child);
             }
         }
 
         for (const auto& child : lset->set) {
-            if (child->type == Lump::STRING) {
+            if (child->type == Lump::DataType::STRING) {
                 if (m_labelMap.find(child) == m_labelMap.end()) {
                     std::string label = format("label_%04d", m_labelMap.size());
                     m_labelMap[child] = label;
 
-                    std::string str = encode(*child->data.s, m_encoding);
+                    std::string str = encode(std::get<std::string>(child->data), m_encoding);
                 }
             }
         }
@@ -410,7 +415,7 @@ class JsonExporter {
     };
 
     void writeLumpSetBlock(std::ostream& out, const std::shared_ptr<Lump>& lump, picojson::object& ssjson) {
-        const LumpSet* lset = lump->data.p;
+        const auto& lset = std::get<std::shared_ptr<LumpSet>>(lump->data);
 
         // ノーマルのデータ構造
         if (lset->arrayType == LumpSet::NO_ARRAY || lset->arrayType == LumpSet::ARRAY) {
@@ -420,30 +425,30 @@ class JsonExporter {
             bool second = false;
             for (const auto& child : lset->set) {
                 switch (child->type) {
-                    case Lump::S16:
-                    case Lump::S32:
-                    case Lump::COLOR:
+                    case Lump::DataType::S16:
+                    case Lump::DataType::S32:
+                    case Lump::DataType::COLOR:
                         if (lset->arrayType == LumpSet::ARRAY) {
-                            arrayjson.push_back(picojson::value((double)child->data.i));
+                            arrayjson.push_back(picojson::value((double)std::get<int>(child->data)));
                         } else {
-                            ssjson.insert(std::make_pair(child->name, picojson::value((double)child->data.i)));
+                            ssjson.insert(std::make_pair(child->name, picojson::value((double)std::get<int>(child->data))));
                         }
                         break;
-                    case Lump::FLOAT:
+                    case Lump::DataType::FLOAT:
                         if (lset->arrayType == LumpSet::ARRAY) {
-                            arrayjson.push_back(picojson::value((double)child->data.f));
+                            arrayjson.push_back(picojson::value((double)std::get<float>(child->data)));
                         } else {
-                            ssjson.insert(std::make_pair(child->name, picojson::value((double)child->data.f)));
+                            ssjson.insert(std::make_pair(child->name, picojson::value((double)std::get<int>(child->data))));
                         }
                         break;
-                    case Lump::STRING:
+                    case Lump::DataType::STRING:
                         if (lset->arrayType == LumpSet::ARRAY) {
-                            arrayjson.push_back(picojson::value(child->data.s->c_str()));
+                            arrayjson.push_back(picojson::value(std::get<std::string>(child->data).c_str()));
                         } else {
-                            ssjson.insert(std::make_pair(child->name, picojson::value(child->data.s->c_str())));
+                            ssjson.insert(std::make_pair(child->name, picojson::value(std::get<std::string>(child->data).c_str())));
                         }
                         break;
-                    case Lump::SET:
+                    case Lump::DataType::SET:
 
                         if (lset->arrayType == LumpSet::ARRAY) {
                             picojson::object json;
@@ -451,7 +456,7 @@ class JsonExporter {
                             writeLumpSetBlock(out, child, json);
                             arrayjson.push_back(picojson::value(json));
                         } else {
-                            const LumpSet* clset = child->data.p;
+                            const auto& clset = std::get<std::shared_ptr<LumpSet>>(child->data);
                             if (clset->arrayType == LumpSet::ARRAY) {
                                 // 子供が配列の場合はそのまま出力する
                                 writeLumpSetBlock(out, child, ssjson);
@@ -484,19 +489,19 @@ class JsonExporter {
 
             for (const auto& child : lset->set) {
                 switch (child->type) {
-                    case Lump::S16:
-                    case Lump::S32:
-                    case Lump::COLOR:
-                        arrayjson.push_back(picojson::value((double)child->data.i));
+                    case Lump::DataType::S16:
+                    case Lump::DataType::S32:
+                    case Lump::DataType::COLOR:
+                        arrayjson.push_back(picojson::value((double)std::get<int>(child->data)));
                         //					json.insert(std::make_pair(child->name, picojson::value((double)child->data.i)));
                         break;
-                    case Lump::FLOAT:
-                        arrayjson.push_back(picojson::value((double)child->data.f));
+                    case Lump::DataType::FLOAT:
+                        arrayjson.push_back(picojson::value((double)std::get<float>(child->data)));
                         //					json.insert(std::make_pair(child->name, picojson::value((double)child->data.f)));
                         break;
-                    case Lump::STRING:
+                    case Lump::DataType::STRING:
                         break;
-                    case Lump::SET:
+                    case Lump::DataType::SET:
                         // Not support
                         assert(false);
                         break;
@@ -512,7 +517,7 @@ class JsonExporter {
     }
 
     void writeReferenceLumpSet(std::ostream& out, const std::shared_ptr<Lump>& lump, picojson::object& ssjson, int callDepth = 0) {
-        const LumpSet* lset = lump->data.p;
+        const auto& lset = std::get<std::shared_ptr<LumpSet>>(lump->data);
 
         if (lset->isReference) {
             if (m_labelMap.find(lump) == m_labelMap.end()) {
@@ -525,11 +530,11 @@ class JsonExporter {
     }
 };
 
-#define GETS16(l) (int16_t)(l->data.i)
-#define GETS32(l) (int32_t)(l->data.i)
-#define GETU32(l) (uint32_t)(l->data.i)
-#define GETFLOAT(l) (float)(l->data.f)
-#define GETSTRING(l, enc) encode(*l->data.s, enc)
+#define GETS16(l) (int16_t)(std::get<int>(l->data))
+#define GETS32(l) (int32_t)(std::get<int>(l->data))
+#define GETU32(l) (uint32_t)(std::get<int>(l->data))
+#define GETFLOAT(l) (float)(std::get<float>(l->data))
+#define GETSTRING(l, enc) encode(std::get<std::string>(l->data), enc)
 #define GETSSFBSTRING(builder, l, enc) builder.CreateSharedString(GETSTRING(l, enc))
 
 class SsfbExporter {

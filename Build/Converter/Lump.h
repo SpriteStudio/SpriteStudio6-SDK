@@ -15,7 +15,7 @@ class LumpSet;
 
 class Lump : public std::enable_shared_from_this<Lump> {
    public:
-    enum DataType {
+    enum class DataType {
         S16,
         S32,
         FLOAT,
@@ -25,12 +25,7 @@ class Lump : public std::enable_shared_from_this<Lump> {
     };
 
     const DataType type;
-    union {
-        int i;
-        float f;
-        std::string* s;
-        LumpSet* p;
-    } data{};
+    std::variant<int, float, std::string, std::shared_ptr<LumpSet>> data;
 
     std::string name;
     std::shared_ptr<Lump> parent;
