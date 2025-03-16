@@ -4,7 +4,7 @@ set CURDIR=%~dp0
 set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
 set VCDIR=C:\Program Files\Microsoft Visual Studio\2022
-set DEFAULT_QT_PREFIX=C:\Qt\6.7.0
+set DEFAULT_QT_PREFIX=C:\Qt\6.8.2
 for /f "tokens=2 delims==" %%I in (
   'wmic cpu get architecture /value'
 ) do set "cpuArch=%%I"

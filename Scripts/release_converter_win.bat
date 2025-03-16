@@ -4,7 +4,7 @@ set CURDIR=%~dp0
 set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
 set TOOLSDIR=%BASEDIR%\Tools
-set DEFAULT_QT_PREFIX=C:\Qt\6.7.0
+set DEFAULT_QT_PREFIX=C:\Qt\6.8.2
 
 for /f "tokens=2 delims==" %%I in (
   'wmic cpu get architecture /value'

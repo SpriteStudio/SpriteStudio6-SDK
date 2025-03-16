@@ -14,7 +14,7 @@ on:
 
 env:
   arch: ${{ inputs.arch }}
-  qtVersion: "6.7.0"
+  qtVersion: "6.8.2"
   cmakeVersion: "3.31.6"
 
 jobs:
@@ -44,7 +44,7 @@ jobs:
           version: ${{ env.qtVersion }}
           host: 'windows'
           target: 'desktop'
-          arch: 'win64_msvc2019_64'
+          arch: 'win64_msvc2022_64'
       - name: Install arm64 Qt
         if: ${{ env.arch == 'arm64' }}
         uses: jurplel/install-qt-action@v4
@@ -52,7 +52,7 @@ jobs:
           version: ${{ env.qtVersion }}
           host: 'windows'
           target: 'desktop'
-          arch: 'win64_msvc2019_arm64'
+          arch: 'win64_msvc2022_arm64'
       - name: "set QT_PREFIX"
         shell: bash
         run: |
