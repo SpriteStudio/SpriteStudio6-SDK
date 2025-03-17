@@ -22,9 +22,9 @@ if not "%1" == "" (
   set TARGET_ARCH=%1
 )
 if "%TARGET_ARCH%" == "arm64" (
-  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2019_arm64
+  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2022_arm64
 ) else (
-  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2019_64
+  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2022_64
 )
 
 if "%QT_PREFIX%" == "" (
@@ -50,7 +50,7 @@ if ERRORLEVEL 1 (
   robocopy "%BUILDDIR%\Ss6ConverterGUI\Ss6ConverterGUI\build\Release" Ss6Converter /E
 ) else (
   copy "%BUILDDIR%\Ss6ConverterGUI\Ss6ConverterGUI\build\Ss6ConverterGUI.exe" Ss6Converter\
-  %QT_PREFIX%\..\msvc2019_64\bin\windeployqt6.exe --qtpaths %QTPATHS% Ss6Converter\
+  %QT_PREFIX%\..\msvc2022_64\bin\windeployqt6.exe --qtpaths %QTPATHS% Ss6Converter\
 )
 set ZIPNAME=Ss6Converter_%TARGET_ARCH%
 powershell compress-archive Ss6Converter %ZIPNAME%.zip

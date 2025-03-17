@@ -33,9 +33,9 @@ if not "%2" == "" (
   set TARGET_ARCH=%2
 )
 if "%TARGET_ARCH%" == "arm64" (
-  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2019_arm64
+  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2022_arm64
 ) else (
-  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2019_64
+  set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2022_64
 )
 
 if "%QT_PREFIX%" == "" (
