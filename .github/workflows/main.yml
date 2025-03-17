@@ -74,7 +74,7 @@ jobs:
     - name: "set x64 QT_PREFIX"
       shell: bash
       run: |
-        echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
+        echo "QT_PREFIX=${QT_ROOT_DIR}" >> $GITHUB_ENV
     - name: release x64 build
       shell: cmd
       run: Scripts\release_win.bat x64
