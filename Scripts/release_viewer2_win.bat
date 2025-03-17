@@ -5,14 +5,7 @@ set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
 set DEPENDDIR=%BUILDDIR%\Depends
 set TOOLSDIR=%BASEDIR%\Tools
-for /f "tokens=2 delims==" %%I in (
-  'wmic cpu get architecture /value'
-) do set "cpuArch=%%I"
-if "%cpuArch%"=="12" (
-  set HOST_ARCH=arm64
-) else (
-  set HOST_ARCH=x64
-)
+set HOST_ARCH=%PROCESSOR_ARCHITECTURE%
 set TARGET_ARCH=%HOST_ARCH%
 @echo on
 

@@ -6,14 +6,7 @@ set BUILDDIR=%BASEDIR%\Build
 set TOOLSDIR=%BASEDIR%\Tools
 set DEFAULT_QT_PREFIX=C:\Qt\6.8.2
 
-for /f "tokens=2 delims==" %%I in (
-  'wmic cpu get architecture /value'
-) do set "cpuArch=%%I"
-if "%cpuArch%"=="12" (
-  set HOST_ARCH=arm64
-) else (
-  set HOST_ARCH=x64
-)
+set HOST_ARCH=%PROCESSOR_ARCHITECTURE%
 set TARGET_ARCH=%HOST_ARCH%
 
 @echo on
@@ -21,7 +14,7 @@ set TARGET_ARCH=%HOST_ARCH%
 if not "%1" == "" (
   set TARGET_ARCH=%1
 )
-if "%TARGET_ARCH%" == "arm64" (
+if /I "%TARGET_ARCH%" == "ARM64" (
   set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2022_arm64
 ) else (
   set DEFAULT_QT_PREFIX=%DEFAULT_QT_PREFIX%\msvc2022_64
@@ -31,11 +24,7 @@ if "%QT_PREFIX%" == "" (
     set QT_PREFIX=%DEFAULT_QT_PREFIX%
 )
 
-if "%TARGET_ARCH%"=="arm64" (
-  set QTPATHS=%QT_PREFIX%\bin\qtpaths6.bat
-) else (
-  set QTPATHS=%QT_PREFIX%\bin\qtpaths6.exe
-)
+set QTPATHS=%QT_PREFIX%\bin\qtpaths6.exe
 
 call "%CURDIR%\build_converter_win.bat" Release %TARGET_ARCH% || exit /b 1
 call "%CURDIR%\build_convertergui_win.bat" Release %TARGET_ARCH% || exit /b 1
