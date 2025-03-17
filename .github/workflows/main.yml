@@ -70,7 +70,7 @@ jobs:
         version: ${{ env.qtVersion }}
         host: 'windows'
         target: 'desktop'
-        arch: 'win64_msvc2019_64'
+        arch: 'win64_msvc2022_64'
     - name: "set x64 QT_PREFIX"
       shell: bash
       run: |
