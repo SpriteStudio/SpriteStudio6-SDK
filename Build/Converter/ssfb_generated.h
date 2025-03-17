@@ -8,9 +8,9 @@
 
 // Ensure the included flatbuffers.h is the same version as when this file was
 // generated, otherwise it may not be compatible.
-static_assert(FLATBUFFERS_VERSION_MAJOR == 24 &&
-              FLATBUFFERS_VERSION_MINOR == 3 &&
-              FLATBUFFERS_VERSION_REVISION == 25,
+static_assert(FLATBUFFERS_VERSION_MAJOR == 25 &&
+              FLATBUFFERS_VERSION_MINOR == 2 &&
+              FLATBUFFERS_VERSION_REVISION == 10,
              "Non-compatible flatbuffers version included");
 
 namespace ss {
@@ -4543,7 +4543,7 @@ inline void EffectFile::UnPackTo(EffectFileT *_o, const ::flatbuffers::resolver_
   { auto _e = layoutScaleX(); _o->layoutScaleX = _e; }
   { auto _e = layoutScaleY(); _o->layoutScaleY = _e; }
   { auto _e = numNodeList(); _o->numNodeList = _e; }
-  { auto _e = effectNode(); if (_e) { _o->effectNode.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->effectNode[_i]) { _e->Get(_i)->UnPackTo(_o->effectNode[_i].get(), _resolver); } else { _o->effectNode[_i] = std::unique_ptr<ss::ssfb::EffectNodeT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->effectNode.resize(0); } }
+  { auto _e = effectNode(); if (_e) { _o->effectNode.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->effectNode[_i]) { _e->Get(_i)->UnPackTo(_o->effectNode[_i].get(), _resolver); } else { _o->effectNode[_i] = std::unique_ptr<ss::ssfb::EffectNodeT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->effectNode.resize(0); } }
 }
 
 inline ::flatbuffers::Offset<EffectFile> EffectFile::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const EffectFileT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
@@ -4898,7 +4898,7 @@ inline frameDataIndexT *frameDataIndex::UnPack(const ::flatbuffers::resolver_fun
 inline void frameDataIndex::UnPackTo(frameDataIndexT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = states(); if (_e) { _o->states.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->states[_i]) { _e->Get(_i)->UnPackTo(_o->states[_i].get(), _resolver); } else { _o->states[_i] = std::unique_ptr<ss::ssfb::partStateT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->states.resize(0); } }
+  { auto _e = states(); if (_e) { _o->states.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->states[_i]) { _e->Get(_i)->UnPackTo(_o->states[_i].get(), _resolver); } else { _o->states[_i] = std::unique_ptr<ss::ssfb::partStateT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->states.resize(0); } }
 }
 
 inline ::flatbuffers::Offset<frameDataIndex> frameDataIndex::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const frameDataIndexT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
@@ -5038,7 +5038,7 @@ inline void userDataPerFrame::UnPackTo(userDataPerFrameT *_o, const ::flatbuffer
   (void)_o;
   (void)_resolver;
   { auto _e = frameIndex(); _o->frameIndex = _e; }
-  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->data[_i]) { _e->Get(_i)->UnPackTo(_o->data[_i].get(), _resolver); } else { _o->data[_i] = std::unique_ptr<ss::ssfb::userDataItemT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->data.resize(0); } }
+  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->data[_i]) { _e->Get(_i)->UnPackTo(_o->data[_i].get(), _resolver); } else { _o->data[_i] = std::unique_ptr<ss::ssfb::userDataItemT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->data.resize(0); } }
 }
 
 inline ::flatbuffers::Offset<userDataPerFrame> userDataPerFrame::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const userDataPerFrameT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
@@ -5179,12 +5179,12 @@ inline void AnimationData::UnPackTo(AnimationDataT *_o, const ::flatbuffers::res
   (void)_o;
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); }
-  { auto _e = defaultData(); if (_e) { _o->defaultData.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->defaultData[_i]) { _e->Get(_i)->UnPackTo(_o->defaultData[_i].get(), _resolver); } else { _o->defaultData[_i] = std::unique_ptr<ss::ssfb::AnimationInitialDataT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->defaultData.resize(0); } }
-  { auto _e = frameData(); if (_e) { _o->frameData.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->frameData[_i]) { _e->Get(_i)->UnPackTo(_o->frameData[_i].get(), _resolver); } else { _o->frameData[_i] = std::unique_ptr<ss::ssfb::frameDataIndexT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->frameData.resize(0); } }
-  { auto _e = userData(); if (_e) { _o->userData.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->userData[_i]) { _e->Get(_i)->UnPackTo(_o->userData[_i].get(), _resolver); } else { _o->userData[_i] = std::unique_ptr<ss::ssfb::userDataPerFrameT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->userData.resize(0); } }
-  { auto _e = labelData(); if (_e) { _o->labelData.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->labelData[_i]) { _e->Get(_i)->UnPackTo(_o->labelData[_i].get(), _resolver); } else { _o->labelData[_i] = std::unique_ptr<ss::ssfb::labelDataItemT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->labelData.resize(0); } }
-  { auto _e = meshsDataUV(); if (_e) { _o->meshsDataUV.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->meshsDataUV[_i]) { _e->Get(_i)->UnPackTo(_o->meshsDataUV[_i].get(), _resolver); } else { _o->meshsDataUV[_i] = std::unique_ptr<ss::ssfb::meshDataUVT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->meshsDataUV.resize(0); } }
-  { auto _e = meshsDataIndices(); if (_e) { _o->meshsDataIndices.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->meshsDataIndices[_i]) { _e->Get(_i)->UnPackTo(_o->meshsDataIndices[_i].get(), _resolver); } else { _o->meshsDataIndices[_i] = std::unique_ptr<ss::ssfb::meshDataIndicesT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->meshsDataIndices.resize(0); } }
+  { auto _e = defaultData(); if (_e) { _o->defaultData.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->defaultData[_i]) { _e->Get(_i)->UnPackTo(_o->defaultData[_i].get(), _resolver); } else { _o->defaultData[_i] = std::unique_ptr<ss::ssfb::AnimationInitialDataT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->defaultData.resize(0); } }
+  { auto _e = frameData(); if (_e) { _o->frameData.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->frameData[_i]) { _e->Get(_i)->UnPackTo(_o->frameData[_i].get(), _resolver); } else { _o->frameData[_i] = std::unique_ptr<ss::ssfb::frameDataIndexT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->frameData.resize(0); } }
+  { auto _e = userData(); if (_e) { _o->userData.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->userData[_i]) { _e->Get(_i)->UnPackTo(_o->userData[_i].get(), _resolver); } else { _o->userData[_i] = std::unique_ptr<ss::ssfb::userDataPerFrameT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->userData.resize(0); } }
+  { auto _e = labelData(); if (_e) { _o->labelData.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->labelData[_i]) { _e->Get(_i)->UnPackTo(_o->labelData[_i].get(), _resolver); } else { _o->labelData[_i] = std::unique_ptr<ss::ssfb::labelDataItemT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->labelData.resize(0); } }
+  { auto _e = meshsDataUV(); if (_e) { _o->meshsDataUV.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->meshsDataUV[_i]) { _e->Get(_i)->UnPackTo(_o->meshsDataUV[_i].get(), _resolver); } else { _o->meshsDataUV[_i] = std::unique_ptr<ss::ssfb::meshDataUVT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->meshsDataUV.resize(0); } }
+  { auto _e = meshsDataIndices(); if (_e) { _o->meshsDataIndices.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->meshsDataIndices[_i]) { _e->Get(_i)->UnPackTo(_o->meshsDataIndices[_i].get(), _resolver); } else { _o->meshsDataIndices[_i] = std::unique_ptr<ss::ssfb::meshDataIndicesT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->meshsDataIndices.resize(0); } }
   { auto _e = startFrames(); _o->startFrames = _e; }
   { auto _e = endFrames(); _o->endFrames = _e; }
   { auto _e = totalFrames(); _o->totalFrames = _e; }
@@ -5536,8 +5536,8 @@ inline void AnimePackData::UnPackTo(AnimePackDataT *_o, const ::flatbuffers::res
   (void)_o;
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); }
-  { auto _e = parts(); if (_e) { _o->parts.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->parts[_i]) { _e->Get(_i)->UnPackTo(_o->parts[_i].get(), _resolver); } else { _o->parts[_i] = std::unique_ptr<ss::ssfb::PartDataT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->parts.resize(0); } }
-  { auto _e = animations(); if (_e) { _o->animations.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->animations[_i]) { _e->Get(_i)->UnPackTo(_o->animations[_i].get(), _resolver); } else { _o->animations[_i] = std::unique_ptr<ss::ssfb::AnimationDataT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->animations.resize(0); } }
+  { auto _e = parts(); if (_e) { _o->parts.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->parts[_i]) { _e->Get(_i)->UnPackTo(_o->parts[_i].get(), _resolver); } else { _o->parts[_i] = std::unique_ptr<ss::ssfb::PartDataT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->parts.resize(0); } }
+  { auto _e = animations(); if (_e) { _o->animations.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->animations[_i]) { _e->Get(_i)->UnPackTo(_o->animations[_i].get(), _resolver); } else { _o->animations[_i] = std::unique_ptr<ss::ssfb::AnimationDataT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->animations.resize(0); } }
 }
 
 inline ::flatbuffers::Offset<AnimePackData> AnimePackData::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const AnimePackDataT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
@@ -5621,9 +5621,9 @@ inline void ProjectData::UnPackTo(ProjectDataT *_o, const ::flatbuffers::resolve
   { auto _e = version(); _o->version = _e; }
   { auto _e = flags(); _o->flags = _e; }
   { auto _e = imageBaseDir(); if (_e) _o->imageBaseDir = _e->str(); }
-  { auto _e = cells(); if (_e) { _o->cells.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->cells[_i]) { _e->Get(_i)->UnPackTo(_o->cells[_i].get(), _resolver); } else { _o->cells[_i] = std::unique_ptr<ss::ssfb::CellT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->cells.resize(0); } }
-  { auto _e = animePacks(); if (_e) { _o->animePacks.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->animePacks[_i]) { _e->Get(_i)->UnPackTo(_o->animePacks[_i].get(), _resolver); } else { _o->animePacks[_i] = std::unique_ptr<ss::ssfb::AnimePackDataT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->animePacks.resize(0); } }
-  { auto _e = effectFileList(); if (_e) { _o->effectFileList.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->effectFileList[_i]) { _e->Get(_i)->UnPackTo(_o->effectFileList[_i].get(), _resolver); } else { _o->effectFileList[_i] = std::unique_ptr<ss::ssfb::EffectFileT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->effectFileList.resize(0); } }
+  { auto _e = cells(); if (_e) { _o->cells.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->cells[_i]) { _e->Get(_i)->UnPackTo(_o->cells[_i].get(), _resolver); } else { _o->cells[_i] = std::unique_ptr<ss::ssfb::CellT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->cells.resize(0); } }
+  { auto _e = animePacks(); if (_e) { _o->animePacks.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->animePacks[_i]) { _e->Get(_i)->UnPackTo(_o->animePacks[_i].get(), _resolver); } else { _o->animePacks[_i] = std::unique_ptr<ss::ssfb::AnimePackDataT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->animePacks.resize(0); } }
+  { auto _e = effectFileList(); if (_e) { _o->effectFileList.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->effectFileList[_i]) { _e->Get(_i)->UnPackTo(_o->effectFileList[_i].get(), _resolver); } else { _o->effectFileList[_i] = std::unique_ptr<ss::ssfb::EffectFileT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->effectFileList.resize(0); } }
   { auto _e = numCells(); _o->numCells = _e; }
   { auto _e = numAnimePacks(); _o->numAnimePacks = _e; }
   { auto _e = numEffectFileList(); _o->numEffectFileList = _e; }
