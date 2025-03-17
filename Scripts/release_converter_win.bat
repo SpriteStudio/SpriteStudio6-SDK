@@ -5,7 +5,6 @@ set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
 set TOOLSDIR=%BASEDIR%\Tools
 set DEFAULT_QT_PREFIX=C:\Qt\6.8.2
-
 set HOST_ARCH=%PROCESSOR_ARCHITECTURE%
 set TARGET_ARCH=%HOST_ARCH%
 
@@ -24,7 +23,11 @@ if "%QT_PREFIX%" == "" (
     set QT_PREFIX=%DEFAULT_QT_PREFIX%
 )
 
-set QTPATHS=%QT_PREFIX%\bin\qtpaths6.exe
+if /I "%TARGET_ARCH%" == "ARM64" (
+  set QTPATHS=%QT_PREFIX%\bin\qtpaths6.bat
+) else (
+  set QTPATHS=%QT_PREFIX%\bin\qtpaths6.exe
+)
 
 call "%CURDIR%\build_converter_win.bat" Release %TARGET_ARCH% || exit /b 1
 call "%CURDIR%\build_convertergui_win.bat" Release %TARGET_ARCH% || exit /b 1

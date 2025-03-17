@@ -76,7 +76,7 @@ if(WIN32 OR WIN64)
         find_program(DEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt_bin_dir}")
 
         if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64|ARM64|arm64")
-            set(QTPATHS "${QT_PREFIX}\\..\\msvc2022_arm64\\bin\\qtpaths6.exe")
+            set(QTPATHS "${QT_PREFIX}\\..\\msvc2022_arm64\\bin\\qtpaths6.bat")
         else()
             set(QTPATHS "${QT_PREFIX}\\..\\msvc2022_64\\bin\\qtpaths6.exe")
         endif()
