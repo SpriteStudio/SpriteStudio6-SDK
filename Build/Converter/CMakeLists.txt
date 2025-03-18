@@ -24,14 +24,14 @@ endif()
 message("start fetching dependency libraries")
 include(FetchContent)
 
-message("fetch zlib")
+message("fetch minizip-ng")
 FetchContent_Declare(
-        zlib
-        GIT_REPOSITORY https://github.com/madler/zlib
-        GIT_TAG        v1.3.1
+        minizip-ng
+        GIT_REPOSITORY https://github.com/zlib-ng/minizip-ng
+        GIT_TAG        4.0.8
 )
-FetchContent_MakeAvailable(zlib)
-include_directories(${zlib_SOURCE_DIR})
+FetchContent_MakeAvailable(minizip-ng)
+include_directories(${minizip-ng_SOURCE_DIR})
 
 message("fetch json")
 set(JSON_BuildTests OFF CACHE INTERNAL "")
@@ -144,8 +144,8 @@ set(Ss6Converter_SRCS
     LumpExporter.cpp
     sspkg.cpp
 
-    ${zlib_SOURCE_DIR}/contrib/minizip/zip.c
-    ${zlib_SOURCE_DIR}/contrib/minizip/ioapi.c
+    ${minizip-ng_SOURCE_DIR}/compat/zip.c
+    ${minizip-ng_SOURCE_DIR}/compat/ioapi.c
 )
 
 set(Ss6Converter_HEADERS
@@ -157,7 +157,7 @@ set(Ss6Converter_HEADERS
     sspkg.h
     SSException.h
     utils.h
-    ${zlib_SOURCE_DIR}/contrib/minizip/zip.h
+    ${minizip-ng_SOURCE_DIR}/compat/zip.h
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -235,7 +235,7 @@ elseif(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
     ADD_DEFINITIONS(-DAPPLE)
 endif()
 
-target_link_libraries(Ss6Converter PRIVATE ssLoader ssAnimator ssHelper zlibstatic glfw glad nlohmann_json::nlohmann_json ${PLATFORM_DEPS})
+target_link_libraries(Ss6Converter PRIVATE ssLoader ssAnimator ssHelper minizip glfw glad nlohmann_json::nlohmann_json ${PLATFORM_DEPS})
 
 
 # --- If we are on OS X copy all the embedded libraries to the app bundle
