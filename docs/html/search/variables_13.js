@@ -1,8 +1,8 @@
 var searchData=
 [
   ['scale_0',['scale',['../classspritestudio6_1_1_ss_effect_render_atom.html#a4dfcf7211c1e117fbb179e8ca8ad3a22',1,'spritestudio6::SsEffectRenderAtom::scale'],['../structspritestudio6_1_1particle_draw_data.html#ae6d126f85c04af5d4551163fd9871e12',1,'spritestudio6::particleDrawData::scale'],['../structspritestudio6_1_1particle_parameter.html#a9cecdc10298ccbd3907cd0375ffa3cbe',1,'spritestudio6::particleParameter::scale'],['../structspritestudio6_1_1_ss_part_state.html#a80bc79312f7297fb2b7055ce4fe4e33b',1,'spritestudio6::SsPartState::scale']]],
-  ['scalefactor_1',['scaleFactor',['../structspritestudio6_1_1particle_parameter.html#ae9ec55ee0aa4f17bd3ebdf453f4d682a',1,'spritestudio6::particleParameter']]],
-  ['scalefactor_2',['ScaleFactor',['../classspritestudio6_1_1_particle_element_size.html#aabaa131482590884f977251e8474af3c',1,'spritestudio6::ParticleElementSize::ScaleFactor'],['../classspritestudio6_1_1_particle_element_trans_size.html#ae25e64543c292ca7f90f54ddb12a3dba',1,'spritestudio6::ParticleElementTransSize::ScaleFactor']]],
+  ['scalefactor_1',['ScaleFactor',['../classspritestudio6_1_1_particle_element_size.html#aabaa131482590884f977251e8474af3c',1,'spritestudio6::ParticleElementSize::ScaleFactor'],['../classspritestudio6_1_1_particle_element_trans_size.html#ae25e64543c292ca7f90f54ddb12a3dba',1,'spritestudio6::ParticleElementTransSize::ScaleFactor']]],
+  ['scalefactor_2',['scaleFactor',['../structspritestudio6_1_1particle_parameter.html#ae9ec55ee0aa4f17bd3ebdf453f4d682a',1,'spritestudio6::particleParameter']]],
   ['scalefactor2_3',['scaleFactor2',['../structspritestudio6_1_1particle_parameter.html#ac5f0d1363fd9e504a1a608de01f1ee0b',1,'spritestudio6::particleParameter']]],
   ['scalerange_4',['scaleRange',['../structspritestudio6_1_1particle_parameter.html#a72582378720c3360658838b573734693',1,'spritestudio6::particleParameter']]],
   ['secondnowframe_5',['secondNowFrame',['../classspritestudio6_1_1_ss_effect_render_v2.html#a7cf3d66072f0da72a672b54db7a14e0a',1,'spritestudio6::SsEffectRenderV2']]],

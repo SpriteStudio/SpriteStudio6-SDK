@@ -1,9 +1,0 @@
-<map id="Common/Helper/DirectX/d3dsimple.h" name="Common/Helper/DirectX/d3dsimple.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="36,5,200,46"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,94,66,120"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="100,48,61,85,58,81,96,44"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="90,94,147,120"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="121,46,121,78,116,78,116,46"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="172,94,225,120"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="140,45,177,81,173,85,136,48"/>
-</map>

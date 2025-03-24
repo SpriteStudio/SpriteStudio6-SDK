@@ -80,6 +80,7 @@ var annotated_dup =
       [ "SsEffectRenderer", "classspritestudio6_1_1_ss_effect_renderer.html", "classspritestudio6_1_1_ss_effect_renderer" ],
       [ "SsEffectRenderParticle", "classspritestudio6_1_1_ss_effect_render_particle.html", "classspritestudio6_1_1_ss_effect_render_particle" ],
       [ "SsEffectRenderV2", "classspritestudio6_1_1_ss_effect_render_v2.html", "classspritestudio6_1_1_ss_effect_render_v2" ],
+      [ "ssFilesystem", "classspritestudio6_1_1ss_filesystem.html", null ],
       [ "SsInstanceAttr", "classspritestudio6_1_1_ss_instance_attr.html", "classspritestudio6_1_1_ss_instance_attr" ],
       [ "SsKeyframe", "classspritestudio6_1_1_ss_keyframe.html", "classspritestudio6_1_1_ss_keyframe" ],
       [ "SsLabel", "classspritestudio6_1_1_ss_label.html", "classspritestudio6_1_1_ss_label" ],

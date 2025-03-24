@@ -7,7 +7,7 @@ var searchData=
   ['weightimpact_4',['weightImpact',['../classspritestudio6_1_1_ss_part.html#a3d54fc6bba04695e24f6d3607597d7ec',1,'spritestudio6::SsPart']]],
   ['weightposition_5',['weightPosition',['../classspritestudio6_1_1_ss_part.html#a38f3f6c1ed934a812c490caff853206f',1,'spritestudio6::SsPart']]],
   ['whole_6',['whole',['../namespacespritestudio6_1_1_ss_color_blend_target.html#a57e99689b8bf3c6b1197bafb6daa999da77cf136fe93a2f134d7bf16340063396',1,'spritestudio6::SsColorBlendTarget']]],
-  ['width_7',['width',['../glad_8h.html#a6879d830f164725df67adeeabca3ea47',1,'glad.h']]],
+  ['width_7',['width',['../glad_8h.html#a40951c575f383898be1ef550ed9cef60',1,'glad.h']]],
   ['winmain_2ecpp_8',['WinMain.cpp',['../_win_main_8cpp.html',1,'']]],
   ['wrapmode_9',['wrapMode',['../structspritestudio6_1_1_ss_cell_value.html#ad410066401152dc3439446320e3c6eaf',1,'spritestudio6::SsCellValue::wrapMode'],['../classspritestudio6_1_1_ss_cell_map.html#a2648ec0ed1897e020693c44a243fca14',1,'spritestudio6::SsCellMap::wrapMode'],['../classspritestudio6_1_1_ss_project_setting.html#ae5e315a4148df8bb91276e3c722f7f00',1,'spritestudio6::SsProjectSetting::wrapMode']]],
   ['writebuffer_10',['writeBuffer',['../glad_8h.html#a1ee0c6ac700a3b1aeb60feaf73314e0b',1,'glad.h']]],

@@ -1,7 +1,0 @@
-<map id="spritestudio6::ISsRenderer" name="spritestudio6::ISsRenderer">
-<area shape="rect" id="Node000001" title=" " alt="" coords="114,5,290,31"/>
-<area shape="rect" id="Node000002" href="$classspritestudio6_1_1_ss_render_d_x9.html" title=" " alt="" coords="5,79,193,105"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="174,42,118,81,115,76,171,38"/>
-<area shape="rect" id="Node000003" href="$classspritestudio6_1_1_ss_render_g_l.html" title=" " alt="" coords="217,79,395,105"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="233,38,289,76,286,81,230,42"/>
-</map>
