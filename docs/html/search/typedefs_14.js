@@ -5,7 +5,7 @@ var searchData=
   ['target_2',['target',['../glad_8h.html#af9d0cbbbeb7414e786c41899e5a856d7',1,'glad.h']]],
   ['task_5fbase_3',['task_base',['../namespacespritestudio6.html#a24ee9913451e633b9b500d41f57d1255',1,'spritestudio6']]],
   ['textarget_4',['textarget',['../glad_8h.html#aa2b93e62bdaaf32ad646f8df1e87cfdb',1,'glad.h']]],
-  ['texture_5',['texture',['../glad_8h.html#a0b57774cb59b667df4a205ae0b1a50e2',1,'glad.h']]],
+  ['texture_5',['texture',['../glad_8h.html#ab21590c4736d1459a5a0674a42b5a655',1,'glad.h']]],
   ['textures_6',['textures',['../glad_8h.html#ad7efdf5e51a2ededbce545cab1782cab',1,'glad.h']]],
   ['timeout_7',['timeout',['../glad_8h.html#ad29bb0d8468b264a4e3d9204366cfaab',1,'glad.h']]],
   ['top_8',['top',['../glad_8h.html#ae78295170773f8782029afc65913897a',1,'glad.h']]],

@@ -9,5 +9,6 @@ var searchData=
   ['tkscene_6',['tkScene',['../classspritestudio6_1_1tk_scene.html',1,'spritestudio6']]],
   ['tolower_7',['ToLower',['../structspritestudio6_1_1_to_lower.html',1,'spritestudio6']]],
   ['treeitem_8',['treeitem',['../classspritestudio6_1_1treeitem.html',1,'spritestudio6']]],
-  ['treeitem_5fuid_9',['treeitem_uid',['../classspritestudio6_1_1treeitem__uid.html',1,'spritestudio6']]]
+  ['treeitem_3c_20task_5fimp_20_3e_9',['treeitem&lt; task_imp &gt;',['../classspritestudio6_1_1treeitem.html',1,'spritestudio6']]],
+  ['treeitem_5fuid_10',['treeitem_uid',['../classspritestudio6_1_1treeitem__uid.html',1,'spritestudio6']]]
 ];

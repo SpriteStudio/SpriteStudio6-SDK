@@ -1,9 +1,0 @@
-<map id="Common/Helper/sshTask.h" name="Common/Helper/sshTask.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="16,5,196,31"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,63,105"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="96,33,59,70,55,66,92,29"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="87,79,125,105"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="109,31,109,63,103,63,103,31"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="149,79,218,105"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="121,30,161,66,157,70,117,34"/>
-</map>

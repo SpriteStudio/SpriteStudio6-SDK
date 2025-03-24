@@ -29,9 +29,10 @@ var searchData=
   ['play_26',['play',['../classspritestudio6_1_1_i_ss_effect_renderer.html#ad5e81f692ba6cdb28190bcea5f818c44',1,'spritestudio6::ISsEffectRenderer::play()'],['../classspritestudio6_1_1_ss_effect_renderer.html#ac4602ae19e910199d56c205c2bdb3e77',1,'spritestudio6::SsEffectRenderer::play()'],['../classspritestudio6_1_1_ss_effect_render_v2.html#ae62357f18343ce6e63d2fddb3d0ede82',1,'spritestudio6::SsEffectRenderV2::play()']]],
   ['popmatrix_27',['popMatrix',['../classspritestudio6_1_1_ss_open_g_l_matrix.html#a7aea776e595f8c7240cc5972c59b67e8',1,'spritestudio6::SsOpenGLMatrix']]],
   ['precalculate2_28',['precalculate2',['../classspritestudio6_1_1_ss_effect_emitter.html#a621616e40c36548f6ca55fd7d84bf904',1,'spritestudio6::SsEffectEmitter']]],
-  ['preloadtexture_29',['preloadTexture',['../classspritestudio6_1_1_ss_cell_map_list.html#a4cb398838c8b21c4c3baef30eeb9a464',1,'spritestudio6::SsCellMapList']]],
-  ['prependsibling_5fsub_30',['prependsibling_sub',['../classspritestudio6_1_1treeitem.html#aaf04479d1a871be44cb0b7aceb0bad06',1,'spritestudio6::treeitem']]],
-  ['prependtask_31',['prependtask',['../classspritestudio6_1_1treeitem.html#abfb096d4b8498af617024066ffa8f3a7',1,'spritestudio6::treeitem']]],
-  ['pushmatrix_32',['pushMatrix',['../classspritestudio6_1_1_ss_open_g_l_matrix.html#a9150e0447a9564657b6f0cb53ec0932b',1,'spritestudio6::SsOpenGLMatrix']]],
-  ['pushpgobject_33',['PushPgObject',['../classspritestudio6_1_1_s_s_open_g_l_shader_man.html#a0e23ebe5d2acfdac4515d3d1e768c583',1,'spritestudio6::SSOpenGLShaderMan']]]
+  ['preferred_5fseparator_29',['preferred_separator',['../namespacespritestudio6.html#a3f8de6a7cd1022964b1eb405f4f1ff12',1,'spritestudio6']]],
+  ['preloadtexture_30',['preloadTexture',['../classspritestudio6_1_1_ss_cell_map_list.html#a4cb398838c8b21c4c3baef30eeb9a464',1,'spritestudio6::SsCellMapList']]],
+  ['prependsibling_5fsub_31',['prependsibling_sub',['../classspritestudio6_1_1treeitem.html#aaf04479d1a871be44cb0b7aceb0bad06',1,'spritestudio6::treeitem']]],
+  ['prependtask_32',['prependtask',['../classspritestudio6_1_1treeitem.html#abfb096d4b8498af617024066ffa8f3a7',1,'spritestudio6::treeitem']]],
+  ['pushmatrix_33',['pushMatrix',['../classspritestudio6_1_1_ss_open_g_l_matrix.html#a9150e0447a9564657b6f0cb53ec0932b',1,'spritestudio6::SsOpenGLMatrix']]],
+  ['pushpgobject_34',['PushPgObject',['../classspritestudio6_1_1_s_s_open_g_l_shader_man.html#a0e23ebe5d2acfdac4515d3d1e768c583',1,'spritestudio6::SSOpenGLShaderMan']]]
 ];

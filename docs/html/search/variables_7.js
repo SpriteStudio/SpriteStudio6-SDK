@@ -1074,8 +1074,8 @@ var searchData=
   ['glpgobject_1071',['glpgObject',['../namespacespritestudio6.html#a4a9c5ebbbbbcfa5070eb34d63cbfa4d9',1,'spritestudio6']]],
   ['glshaderman_1072',['glshaderMan',['../namespacespritestudio6.html#a17a4e905d8248886dc39a3a04e4c67b9',1,'spritestudio6']]],
   ['glversion_1073',['GLVersion',['../glad_8h.html#ae67346f059e05b267a9f972854df2c15',1,'GLVersion:&#160;glad.h'],['../glad_8c.html#a936871a0ece33eb83e12fe9a0b19aec5',1,'GLVersion:&#160;glad.c']]],
-  ['gravity_1074',['gravity',['../structspritestudio6_1_1particle_parameter.html#a89dbcc035ff963cb59b22f04d3123cbd',1,'spritestudio6::particleParameter']]],
-  ['gravity_1075',['Gravity',['../classspritestudio6_1_1_particle_element_gravity.html#adda7592a6813d8bc351583b7cdd891ad',1,'spritestudio6::ParticleElementGravity']]],
+  ['gravity_1074',['Gravity',['../classspritestudio6_1_1_particle_element_gravity.html#adda7592a6813d8bc351583b7cdd891ad',1,'spritestudio6::ParticleElementGravity']]],
+  ['gravity_1075',['gravity',['../structspritestudio6_1_1particle_parameter.html#a89dbcc035ff963cb59b22f04d3123cbd',1,'spritestudio6::particleParameter']]],
   ['gravitypos_1076',['gravityPos',['../structspritestudio6_1_1particle_parameter.html#a26b2d80cf540e5aceb44852bf10ffdfc',1,'spritestudio6::particleParameter']]],
   ['gravitypower_1077',['gravityPower',['../structspritestudio6_1_1particle_parameter.html#a8de726863041ce2e346f6ad3123339f0',1,'spritestudio6::particleParameter']]]
 ];

@@ -21,9 +21,9 @@ var searchData=
   ['rotation_18',['Rotation',['../classspritestudio6_1_1_particle_element_rotation.html#a1249a181d84d4c9ce8c0dd84db6dfe3c',1,'spritestudio6::ParticleElementRotation::Rotation'],['../classspritestudio6_1_1_particle_turn_to_direction_enabled.html#a36cd09c436368ebe29beec748f0495c8',1,'spritestudio6::ParticleTurnToDirectionEnabled::Rotation']]],
   ['rotation_19',['rotation',['../classspritestudio6_1_1_ss_effect_render_atom.html#a1ee03657dda6557e4ee5d29096beee93',1,'spritestudio6::SsEffectRenderAtom::rotation'],['../structspritestudio6_1_1particle_parameter.html#a78bfc04bc4ea95e837f0fbb2df366c2e',1,'spritestudio6::particleParameter::rotation'],['../structspritestudio6_1_1_ss_part_state.html#a1cd28c3e0125ccc65c065fa82ba995a2',1,'spritestudio6::SsPartState::rotation']]],
   ['rotation2_20',['rotation2',['../structspritestudio6_1_1particle_parameter.html#a2ef1cff991941866b5bc4263ca3c01f6',1,'spritestudio6::particleParameter']]],
-  ['rotationadd_21',['rotationAdd',['../structspritestudio6_1_1particle_parameter.html#a9dec740b5543be92bbf23fa42116c51c',1,'spritestudio6::particleParameter']]],
-  ['rotationadd_22',['RotationAdd',['../classspritestudio6_1_1_particle_element_rotation.html#a145a954fac38ce405ad00dc7fed895a4',1,'spritestudio6::ParticleElementRotation']]],
+  ['rotationadd_21',['RotationAdd',['../classspritestudio6_1_1_particle_element_rotation.html#a145a954fac38ce405ad00dc7fed895a4',1,'spritestudio6::ParticleElementRotation']]],
+  ['rotationadd_22',['rotationAdd',['../structspritestudio6_1_1particle_parameter.html#a9dec740b5543be92bbf23fa42116c51c',1,'spritestudio6::particleParameter']]],
   ['rotationadd2_23',['rotationAdd2',['../structspritestudio6_1_1particle_parameter.html#a35143ff37fff11e4a6ceac503d13d44a',1,'spritestudio6::particleParameter']]],
-  ['rotationfactor_24',['rotationFactor',['../structspritestudio6_1_1particle_parameter.html#a91c0f54cf6f1bd15a6385b816086e6fe',1,'spritestudio6::particleParameter']]],
-  ['rotationfactor_25',['RotationFactor',['../classspritestudio6_1_1_particle_element_rotation_trans.html#af99c4a37582e3185614d8328fb1bab7d',1,'spritestudio6::ParticleElementRotationTrans']]]
+  ['rotationfactor_24',['RotationFactor',['../classspritestudio6_1_1_particle_element_rotation_trans.html#af99c4a37582e3185614d8328fb1bab7d',1,'spritestudio6::ParticleElementRotationTrans']]],
+  ['rotationfactor_25',['rotationFactor',['../structspritestudio6_1_1particle_parameter.html#a91c0f54cf6f1bd15a6385b816086e6fe',1,'spritestudio6::particleParameter']]]
 ];

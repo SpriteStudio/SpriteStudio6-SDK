@@ -6,7 +6,7 @@ var searchData=
   ['next_3',['next',['../classspritestudio6_1_1_simple_tree.html#a58125391d05e1807cc1abacd5cd9683b',1,'spritestudio6::SimpleTree']]],
   ['nocells_4',['noCells',['../structspritestudio6_1_1_ss_part_state.html#a522be655374b61b42441bfa0c58629ce',1,'spritestudio6::SsPartState']]],
   ['nodelist_5',['nodeList',['../classspritestudio6_1_1_ss_effect_model.html#abe7126794ccfdf2d5a7d54dae53202ed',1,'spritestudio6::SsEffectModel']]],
-  ['nomarizefilename_6',['nomarizeFilename',['../namespacespritestudio6.html#adf6ab251c373835be712bca43a552e52',1,'spritestudio6']]],
+  ['nomarizefilename_6',['nomarizeFilename',['../namespacespritestudio6.html#a9d9fadb6704223604a90fd6a9920cc3e',1,'spritestudio6']]],
   ['none_7',['none',['../namespacespritestudio6_1_1_ss_bounds_type.html#a7fef63bee85b271b587254a2b7bf40a1a90d0746a06be39c4fbdfa2b47f0b6aa0',1,'spritestudio6::SsBoundsType::none'],['../namespacespritestudio6_1_1_ss_interpolation_type.html#ad55a2abe2f7e17d4a1f02507754c4df0afd77520c8c5004855f3fcff76edf18ae',1,'spritestudio6::SsInterpolationType::none'],['../namespacespritestudio6_1_1_ss_signal_param_type.html#acc0a8010459b90521a1bf990253eb0eaa33d29c816ca2df9729304d2184a091bf',1,'spritestudio6::SsSignalParamType::none']]],
   ['normal_8',['normal',['../namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888a711d44973480e679559b0db46e2f82d5',1,'spritestudio6::SsPartType']]],
   ['normalize_9',['normalize',['../structspritestudio6_1_1_ss_point2.html#afd0b8d833447f1eafd95b0e114b6c09b',1,'spritestudio6::SsPoint2::normalize(const SsPoint2 &amp;in, SsPoint2 *out)'],['../structspritestudio6_1_1_ss_point2.html#a433852a2cb63d19c00ab735cce503e8d',1,'spritestudio6::SsPoint2::normalize()']]],

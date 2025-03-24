@@ -18,5 +18,5 @@ var ssplayer__effectfunction_8cpp =
     [ "spritestudio6::FuncParticlePointGravity", "classspritestudio6_1_1_func_particle_point_gravity.html", "classspritestudio6_1_1_func_particle_point_gravity" ],
     [ "spritestudio6::FuncParticleTurnToDirectionEnabled", "classspritestudio6_1_1_func_particle_turn_to_direction_enabled.html", "classspritestudio6_1_1_func_particle_turn_to_direction_enabled" ],
     [ "spritestudio6::FuncParticleInfiniteEmitEnabled", "classspritestudio6_1_1_func_particle_infinite_emit_enabled.html", "classspritestudio6_1_1_func_particle_infinite_emit_enabled" ],
-    [ "frand", "ssplayer__effectfunction_8cpp.html#a516617f362142329a5aa999f60807764", null ]
+    [ "spritestudio6::frand", "namespacespritestudio6.html#a516617f362142329a5aa999f60807764", null ]
 ];

@@ -42,5 +42,5 @@ var searchData=
   ['glvdpausurfacenv_39',['GLvdpauSurfaceNV',['../glad_8h.html#adba870a8bc26c517de6050c0552feca3',1,'glad.h']]],
   ['glvoid_40',['GLvoid',['../glad_8h.html#a1e5eb1ac5e47603cc80ab58338b92393',1,'glad.h']]],
   ['glvulkanprocnv_41',['GLVULKANPROCNV',['../glad_8h.html#a85090348c3970dd6c9f1bcef3a2fcf72',1,'glad.h']]],
-  ['green_42',['green',['../glad_8h.html#aef30e4e3dccbffce99b7509d5366faef',1,'glad.h']]]
+  ['green_42',['green',['../glad_8h.html#acfc73868fcc1b42f2ca577767d9add9f',1,'glad.h']]]
 ];

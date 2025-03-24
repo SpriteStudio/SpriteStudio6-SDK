@@ -10,6 +10,8 @@ var dir_b87832979d05d3cff567f40ed80d5d47 =
     [ "SsEffectBehavior.h", "_ss_effect_behavior_8h.html", "_ss_effect_behavior_8h" ],
     [ "SsEffectElement.cpp", "_ss_effect_element_8cpp.html", null ],
     [ "SsEffectElement.h", "_ss_effect_element_8h.html", "_ss_effect_element_8h" ],
+    [ "ssFilesystem.cpp", "ss_filesystem_8cpp.html", null ],
+    [ "ssFilesystem.h", "ss_filesystem_8h.html", "ss_filesystem_8h" ],
     [ "ssInterpolation.cpp", "ss_interpolation_8cpp.html", "ss_interpolation_8cpp" ],
     [ "ssInterpolation.h", "ss_interpolation_8h.html", "ss_interpolation_8h" ],
     [ "ssloader.h", "ssloader_8h.html", "ssloader_8h" ],

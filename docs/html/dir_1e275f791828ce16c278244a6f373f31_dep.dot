@@ -1,0 +1,14 @@
+digraph "Common/Libs/glad/include/glad"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  compound=true
+  subgraph clusterdir_f555a06836ba5241376c3b748c2ab993 {
+    graph [ bgcolor="#daedff", pencolor="grey50", label="include", fontname=Helvetica,fontsize=10 style="filled,dashed", URL="dir_f555a06836ba5241376c3b748c2ab993.html",tooltip=""]
+  dir_f6ad8a92a1d3b5a6c33e227384825044 [label="KHR", fillcolor="#4ea9ff", color="grey25", style="filled", URL="dir_f6ad8a92a1d3b5a6c33e227384825044.html",tooltip=""];
+  dir_1e275f791828ce16c278244a6f373f31 [label="glad", fillcolor="#daedff", color="grey25", style="filled,bold", URL="dir_1e275f791828ce16c278244a6f373f31.html",tooltip=""];
+  }
+  dir_1e275f791828ce16c278244a6f373f31->dir_f6ad8a92a1d3b5a6c33e227384825044 [headlabel="1", labeldistance=1.5 headhref="dir_000005_000008.html" href="dir_000005_000008.html" color="steelblue1" fontcolor="steelblue1"];
+}

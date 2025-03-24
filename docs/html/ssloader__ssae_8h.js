@@ -11,5 +11,5 @@ var ssloader__ssae_8h =
     [ "spritestudio6::SsAnimePack", "classspritestudio6_1_1_ss_anime_pack.html", "classspritestudio6_1_1_ss_anime_pack" ],
     [ "spritestudio6::ssloader_ssae", "classspritestudio6_1_1ssloader__ssae.html", "classspritestudio6_1_1ssloader__ssae" ],
     [ "SPRITESTUDIO6_SSAEVERSION", "ssloader__ssae_8h.html#af9912780d14f8c3656fa23f0d2db6135", null ],
-    [ "SsAttributeList", "ssloader__ssae_8h.html#a36abc32b4b9aca41567c3da098201670", null ]
+    [ "spritestudio6::SsAttributeList", "namespacespritestudio6.html#a36abc32b4b9aca41567c3da098201670", null ]
 ];

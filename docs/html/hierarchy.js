@@ -1,11 +1,7 @@
 var hierarchy =
 [
     [ "__myclass", null, [
-      [ "spritestudio6::treeitem< __myclass >", "classspritestudio6_1_1treeitem.html", [
-        [ "spritestudio6::tkObject", "classspritestudio6_1_1tk_object.html", [
-          [ "spritestudio6::tkScene", "classspritestudio6_1_1tk_scene.html", null ]
-        ] ]
-      ] ]
+      [ "spritestudio6::treeitem< __myclass >", "classspritestudio6_1_1treeitem.html", null ]
     ] ],
     [ "CDirectDrawSimple", "class_c_direct_draw_simple.html", null ],
     [ "CMersenneTwister", "class_c_mersenne_twister.html", null ],
@@ -104,6 +100,7 @@ var hierarchy =
     ] ],
     [ "spritestudio6::SsEffectRenderer", "classspritestudio6_1_1_ss_effect_renderer.html", null ],
     [ "spritestudio6::SsEffectRenderV2", "classspritestudio6_1_1_ss_effect_render_v2.html", null ],
+    [ "spritestudio6::ssFilesystem", "classspritestudio6_1_1ss_filesystem.html", null ],
     [ "spritestudio6::SsInstanceAttr", "classspritestudio6_1_1_ss_instance_attr.html", null ],
     [ "spritestudio6::SsKeyframe", "classspritestudio6_1_1_ss_keyframe.html", null ],
     [ "spritestudio6::SsLabel", "classspritestudio6_1_1_ss_label.html", null ],
@@ -144,12 +141,9 @@ var hierarchy =
     [ "spritestudio6::SsSignalParamValue", "unionspritestudio6_1_1_ss_signal_param_value.html", null ],
     [ "spritestudio6::SsStringTokenizer", "classspritestudio6_1_1_ss_string_tokenizer.html", null ],
     [ "spritestudio6::SsTColor< T >", "classspritestudio6_1_1_ss_t_color.html", null ],
-    [ "spritestudio6::SsTColor< u32 >", "classspritestudio6_1_1_ss_t_color.html", null ],
-    [ "spritestudio6::SsTColor< u8 >", "classspritestudio6_1_1_ss_t_color.html", null ],
     [ "spritestudio6::SSTextureFactory", "classspritestudio6_1_1_s_s_texture_factory.html", null ],
     [ "spritestudio6::SSTextureLoader", "classspritestudio6_1_1_s_s_texture_loader.html", null ],
     [ "spritestudio6::SsTRect< T >", "classspritestudio6_1_1_ss_t_rect.html", null ],
-    [ "spritestudio6::SsTRect< int >", "classspritestudio6_1_1_ss_t_rect.html", null ],
     [ "spritestudio6::SsTriangle", "structspritestudio6_1_1_ss_triangle.html", null ],
     [ "spritestudio6::SsUserDataAnime", "classspritestudio6_1_1_ss_user_data_anime.html", null ],
     [ "spritestudio6::SsValue", "classspritestudio6_1_1_ss_value.html", null ],
@@ -161,7 +155,13 @@ var hierarchy =
       [ "spritestudio6::VarianceValue< mytype >", "classspritestudio6_1_1_variance_value.html", null ]
     ] ],
     [ "spritestudio6::StBoneWeight", "structspritestudio6_1_1_st_bone_weight.html", null ],
-    [ "spritestudio6::task_imp", "classspritestudio6_1_1task__imp.html", null ],
+    [ "spritestudio6::task_imp", "classspritestudio6_1_1task__imp.html", [
+      [ "spritestudio6::treeitem< task_imp >", "classspritestudio6_1_1treeitem.html", [
+        [ "spritestudio6::tkObject", "classspritestudio6_1_1tk_object.html", [
+          [ "spritestudio6::tkScene", "classspritestudio6_1_1tk_scene.html", null ]
+        ] ]
+      ] ]
+    ] ],
     [ "spritestudio6::task_manager", "classspritestudio6_1_1task__manager.html", [
       [ "spritestudio6::task_manager_singleton", "classspritestudio6_1_1task__manager__singleton.html", null ]
     ] ],

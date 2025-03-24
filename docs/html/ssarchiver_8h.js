@@ -13,16 +13,16 @@ var ssarchiver_8h =
     [ "SPRITESTUDIO6SDK_SSAR_DECLARE_LIST2", "ssarchiver_8h.html#af203ec1f51b5c991d6c4fe1efa6690b2", null ],
     [ "SPRITESTUDIO6SDK_SSAR_DECLARE_LISTEX", "ssarchiver_8h.html#ae786fc39ffea68ce98a6ec3287c494c8", null ],
     [ "SPRITESTUDIO6SDK_SSAR_STRUCT_DECLARE", "ssarchiver_8h.html#a3dcf2ae63596e02f72b4bffab7cd8e9a", null ],
-    [ "Type", "ssarchiver_8h.html#a31467720c33f079b0abe69f8734e681f", [
-      [ "unkown", "ssarchiver_8h.html#a31467720c33f079b0abe69f8734e681fa4899059d021ddd265d2de173898eb328", null ],
-      [ "in", "ssarchiver_8h.html#a31467720c33f079b0abe69f8734e681fabb60a2f60fac8091bed2796fba04d7b4", null ],
-      [ "out", "ssarchiver_8h.html#a31467720c33f079b0abe69f8734e681fae69953ae8374f1786d214c4ca108a8d6", null ]
+    [ "spritestudio6::EnumSsArchiver::Type", "namespacespritestudio6_1_1_enum_ss_archiver.html#a31467720c33f079b0abe69f8734e681f", [
+      [ "spritestudio6::EnumSsArchiver::unkown", "namespacespritestudio6_1_1_enum_ss_archiver.html#a31467720c33f079b0abe69f8734e681fa4899059d021ddd265d2de173898eb328", null ],
+      [ "spritestudio6::EnumSsArchiver::in", "namespacespritestudio6_1_1_enum_ss_archiver.html#a31467720c33f079b0abe69f8734e681fabb60a2f60fac8091bed2796fba04d7b4", null ],
+      [ "spritestudio6::EnumSsArchiver::out", "namespacespritestudio6_1_1_enum_ss_archiver.html#a31467720c33f079b0abe69f8734e681fae69953ae8374f1786d214c4ca108a8d6", null ]
     ] ],
-    [ "__SSAR_DECLARE_ATTRIBUTE_ENUM__", "ssarchiver_8h.html#aaf547f7052b697d61d31b1a589aafa3a", null ],
-    [ "__SSAR_DECLARE_ENUM__", "ssarchiver_8h.html#ab4093221fdeec19fe8ca23dc5cef0ead", null ],
-    [ "__SSAR_DECLARE_LIST__", "ssarchiver_8h.html#a333696f5de7e4f7e973321152d3efa8f", null ],
-    [ "SsArchiverInit", "ssarchiver_8h.html#a832643f0fd684399df239fa367cea4bb", null ],
-    [ "StringToIRect", "ssarchiver_8h.html#a5c6126648f58f9c5e91c2cb38274ad4f", null ],
-    [ "StringToPoint2", "ssarchiver_8h.html#ab327e4282e88c737925d664bae490772", null ],
-    [ "StringToTriangle", "ssarchiver_8h.html#a593c1a81fbdb0320705d2385bbad45b1", null ]
+    [ "spritestudio6::__SSAR_DECLARE_ATTRIBUTE_ENUM__", "namespacespritestudio6.html#aaf547f7052b697d61d31b1a589aafa3a", null ],
+    [ "spritestudio6::__SSAR_DECLARE_ENUM__", "namespacespritestudio6.html#ab4093221fdeec19fe8ca23dc5cef0ead", null ],
+    [ "spritestudio6::__SSAR_DECLARE_LIST__", "namespacespritestudio6.html#a333696f5de7e4f7e973321152d3efa8f", null ],
+    [ "spritestudio6::SsArchiverInit", "namespacespritestudio6.html#a832643f0fd684399df239fa367cea4bb", null ],
+    [ "spritestudio6::StringToIRect", "namespacespritestudio6.html#a5c6126648f58f9c5e91c2cb38274ad4f", null ],
+    [ "spritestudio6::StringToPoint2", "namespacespritestudio6.html#ab327e4282e88c737925d664bae490772", null ],
+    [ "spritestudio6::StringToTriangle", "namespacespritestudio6.html#a593c1a81fbdb0320705d2385bbad45b1", null ]
 ];
