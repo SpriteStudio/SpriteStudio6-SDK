@@ -6,10 +6,10 @@ on:
       arch:
         description: 'architecture'
         required: true
-        default: 'x64'
+        default: 'amd64'
         type: choice
         options:
-          - x64
+          - amd64
           # - arm64 
 
 env:
@@ -37,8 +37,8 @@ jobs:
         run: |
           cmake --version
           cmake -h
-      - name: Install x64 Qt
-        if: ${{ env.arch == 'x64' }}
+      - name: Install amd64 Qt
+        if: ${{ env.arch == 'amd64' }}
         uses: jurplel/install-qt-action@v4
         with:
           version: ${{ env.qtVersion }}
