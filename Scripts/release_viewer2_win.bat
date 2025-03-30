@@ -5,11 +5,11 @@ set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
 set DEPENDDIR=%BUILDDIR%\Depends
 set TOOLSDIR=%BASEDIR%\Tools
-if /I "%PROCESSOR_ARCHITECTURE%" == "AMD64" {
+if /I "%PROCESSOR_ARCHITECTURE%" == "AMD64" (
   set HOST_ARCH="x64"
-} else {
+) else (
   set HOST_ARCH=%PROCESSOR_ARCHITECTURE%
-}
+)
 set TARGET_ARCH=%HOST_ARCH%
 @echo on
 

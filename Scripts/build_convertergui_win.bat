@@ -5,11 +5,11 @@ set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
 set VCDIR=C:\Program Files\Microsoft Visual Studio\2022
 set DEFAULT_QT_PREFIX=C:\Qt\6.8.2
-if /I "%PROCESSOR_ARCHITECTURE%" == "AMD64" {
+if /I "%PROCESSOR_ARCHITECTURE%" == "AMD64" (
   set HOST_ARCH="x64"
-} else {
+) else (
   set HOST_ARCH=%PROCESSOR_ARCHITECTURE%
-}
+)
 set TARGET_ARCH=%HOST_ARCH%
 
 if exist "%VCDIR%\Enterprise" (
