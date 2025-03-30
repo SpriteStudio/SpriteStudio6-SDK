@@ -5,7 +5,7 @@ set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
 set VCDIR=C:\Program Files\Microsoft Visual Studio\2022
 if /I "%PROCESSOR_ARCHITECTURE%" == "AMD64" (
-  set HOST_ARCH="x64"
+  set HOST_ARCH=x64
 ) else (
   set HOST_ARCH=%PROCESSOR_ARCHITECTURE%
 )
