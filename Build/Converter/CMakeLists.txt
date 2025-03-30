@@ -30,11 +30,14 @@ FetchContent_Declare(
         GIT_REPOSITORY https://github.com/zlib-ng/minizip-ng
         GIT_TAG        4.0.8
 )
+set(MZ_COMPAT ON CACHE INTERNAL "")
 set(MZ_BZIP2 OFF CACHE INTERNAL "")
 set(MZ_LZMA OFF CACHE INTERNAL "")
 set(MZ_ZSTD OFF CACHE INTERNAL "")
 set(MZ_LIBCOMP OFF CACHE INTERNAL "")
-set(MZ_ZLIB OFF CACHE INTERNAL "")
+set(MZ_ZLIB ON CACHE INTERNAL "")
+set(MZ_FORCE_FETCH_LIBS ON CACHE INTERNAL "")
+set(ZLIB_COMPAT ON)
 set(MZ_PKCRYPT OFF CACHE INTERNAL "")
 set(MZ_WZAES OFF CACHE INTERNAL "")
 set(MZ_OPENSSL OFF CACHE INTERNAL "")
@@ -42,6 +45,7 @@ set(MZ_LIBBSD OFF CACHE INTERNAL "")
 set(MZ_ICONV OFF CACHE INTERNAL "")
 FetchContent_MakeAvailable(minizip-ng)
 include_directories(${minizip-ng_SOURCE_DIR})
+include_directories(${minizip-ng_SOURCE_DIR}/compat)
 
 message("fetch json")
 set(JSON_BuildTests OFF CACHE INTERNAL "")
@@ -153,9 +157,6 @@ set(Ss6Converter_SRCS
     Lump.cpp
     LumpExporter.cpp
     sspkg.cpp
-
-    ${minizip-ng_SOURCE_DIR}/compat/zip.c
-    ${minizip-ng_SOURCE_DIR}/compat/ioapi.c
 )
 
 set(Ss6Converter_HEADERS
@@ -167,7 +168,6 @@ set(Ss6Converter_HEADERS
     sspkg.h
     SSException.h
     utils.h
-    ${minizip-ng_SOURCE_DIR}/compat/zip.h
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
