@@ -10,7 +10,7 @@ on:
         type: choice
         options:
           - x64
-          # - arm64 
+          - arm64 
 
 env:
   arch: ${{ inputs.arch }}
