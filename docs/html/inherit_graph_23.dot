@@ -1,9 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
- // LATEX_PDF_SIZE
-  bgcolor="transparent";
-  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
-  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
-  rankdir="LR";
-  Node0 [id="Node000000",label="spritestudio6::SsAnimePack",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classspritestudio6_1_1_ss_anime_pack.html",tooltip="パーツを組み合わせた構造とその構造を使用するアニメーションを格納するデータです。 パーツの組み合わせ構造をSsModel、Modelを使用するアニメデータをSsAnimationで定義しています。"];
-}

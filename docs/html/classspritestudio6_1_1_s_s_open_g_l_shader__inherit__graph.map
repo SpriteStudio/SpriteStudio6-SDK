@@ -1,0 +1,7 @@
+<map id="spritestudio6::SSOpenGLShader" name="spritestudio6::SSOpenGLShader">
+<area shape="rect" id="Node000001" title=" " alt="" coords="132,5,343,31"/>
+<area shape="rect" id="Node000002" href="$classspritestudio6_1_1_s_s_open_g_l_fragment_shader.html" title=" " alt="" coords="5,79,230,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="208,42,149,81,146,76,205,37"/>
+<area shape="rect" id="Node000003" href="$classspritestudio6_1_1_s_s_open_g_l_vertex_shader.html" title=" " alt="" coords="254,79,461,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="270,37,329,76,326,81,267,42"/>
+</map>

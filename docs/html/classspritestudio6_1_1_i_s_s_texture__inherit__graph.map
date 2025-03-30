@@ -1,0 +1,9 @@
+<map id="spritestudio6::ISSTexture" name="spritestudio6::ISSTexture">
+<area shape="rect" id="Node000001" title=" " alt="" coords="234,5,402,31"/>
+<area shape="rect" id="Node000002" href="$classspritestudio6_1_1_s_s_texture_b_m_p.html" title=" " alt="" coords="5,79,199,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="268,39,140,81,138,76,266,34"/>
+<area shape="rect" id="Node000003" href="$classspritestudio6_1_1_s_s_texture_d_x9.html" title=" " alt="" coords="223,79,413,105"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="321,46,321,79,315,79,315,46"/>
+<area shape="rect" id="Node000004" href="$classspritestudio6_1_1_s_s_texture_g_l.html" title=" " alt="" coords="437,79,618,105"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="369,34,493,76,491,81,367,39"/>
+</map>
