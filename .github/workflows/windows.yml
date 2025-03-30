@@ -56,7 +56,7 @@ jobs:
       - name: "set QT_PREFIX"
         shell: bash
         run: |
-          echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
+          echo "QT_PREFIX=${QT_ROOT_DIR}" >> $GITHUB_ENV
       - name: release build
         shell: cmd
         run: Scripts\release_win.bat ${{ env.arch }}
