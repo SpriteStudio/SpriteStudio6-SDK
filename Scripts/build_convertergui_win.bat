@@ -5,7 +5,11 @@ set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
 set VCDIR=C:\Program Files\Microsoft Visual Studio\2022
 set DEFAULT_QT_PREFIX=C:\Qt\6.8.2
-set HOST_ARCH=%PROCESSOR_ARCHITECTURE%
+if /I "%PROCESSOR_ARCHITECTURE%" == "AMD64" {
+  set HOST_ARCH="x64"
+} else {
+  set HOST_ARCH=%PROCESSOR_ARCHITECTURE%
+}
 set TARGET_ARCH=%HOST_ARCH%
 
 if exist "%VCDIR%\Enterprise" (
@@ -47,6 +51,7 @@ if ERRORLEVEL 1 (
   cmake -A %TARGET_ARCH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
   cmake --build . --target ALL_BUILD --parallel -- /p:Configuration=%BUILD_TYPE% || exit /b 1
 ) else (
+
   if /I "%TARGET_ARCH%" == "%HOST_ARCH%" (
       call %VCVARSALL% %TARGET_ARCH%
   ) else (

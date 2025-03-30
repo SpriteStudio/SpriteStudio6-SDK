@@ -25,7 +25,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Setup Ninja
-        uses: ashutoshvarma/setup-ninja@master
+        uses: seanmiddleditch/gha-setup-ninja@master
       - uses: actions/checkout@v4
         with:
           submodules: 'recursive'

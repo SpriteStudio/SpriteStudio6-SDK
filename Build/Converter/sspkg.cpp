@@ -1,5 +1,5 @@
-#include <zlib.h>
-#include <contrib/minizip/zip.h>
+// #include <zlib.h>
+#include <compat/zip.h>
 #include <nlohmann/json.hpp>
 
 #include <iostream>
