@@ -27,7 +27,7 @@ namespace EnumSsArchiver
 		in,			//Input
 		out,		//Output
 	};
-};
+}
 
 class SsXmlIArchiver;
 

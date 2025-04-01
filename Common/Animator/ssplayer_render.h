@@ -16,6 +16,7 @@ class SsAnimeDecoder;
 class ISsRenderer
 {
 public:
+	virtual ~ISsRenderer(){}
 	virtual void	initialize() = 0;
 	virtual void	renderSetup(SsAnimeDecoder* state) = 0;
 	virtual void	renderPart(SsPartState* state) = 0;

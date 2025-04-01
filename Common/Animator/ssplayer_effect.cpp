@@ -679,7 +679,7 @@ void	SsEffectRenderer::draw()
 		//セットアップ
 		if ( (*e)->dispCell )
 		{
-			switch( (*e)->blendType )
+			switch( static_cast<int>((*e)->blendType) )
 			{
 				case SsRenderBlendType::Mix:
 					SsCurrentRenderer::getRender()->SetAlphaBlendMode(SsBlendType::mix);					

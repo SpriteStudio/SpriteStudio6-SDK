@@ -539,7 +539,7 @@ void	SsEffectRenderV2::drawSprite(
 
 	SsCurrentRenderer::getRender()->renderSetup(0);	
 
-	switch( blendType )
+	switch( static_cast<int>(blendType) )
 	{
 		case SsRenderBlendType::Mix:
 			SsCurrentRenderer::getRender()->SetAlphaBlendMode(SsBlendType::mix);					

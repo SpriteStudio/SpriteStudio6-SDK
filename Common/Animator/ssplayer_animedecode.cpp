@@ -260,7 +260,8 @@ void	SsAnimeDecoder::setAnimation( SsModel*	model , SsAnimation* anime , SsCellM
 				//使用するセルを調査する
 				bool ret;
 				SsCellValue cellv;
-				if (ret = getFirstCell(p, cellv))
+				ret = getFirstCell(p, cellv);
+				if (ret)
 				{
 					mesh->targetCell = cellv.cell;
 					mesh->targetTexture = cellv.texture;
@@ -898,7 +899,7 @@ void	SsAnimeDecoder::updateState( int nowTime , SsPart* part , SsPartAnime* anim
 		SPRITESTUDIO6SDK_foreach( SsAttributeList , attList , e )
 		{
 			SsAttribute* attr = (*e);
-			switch( attr->tag )
+			switch( static_cast<int>(attr->tag) )
 			{
 				case SsAttributeKind::invalid:	///< 無効値。旧データからの変換時など
 					break;

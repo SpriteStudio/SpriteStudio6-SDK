@@ -1,6 +1,8 @@
 ﻿#ifndef __SSTYPES__
 #define __SSTYPES__
+#ifdef _MSC_VER
 #pragma warning(disable : 4819)
+#endif // _MSC_VER
 #include <stdlib.h>
 #include <string>
 #include <vector>
@@ -12,7 +14,7 @@
 //===============================================================
 #define	SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(type) \
 	SsString	__EnumToString_( type::_enum n );\
-	void	__StringToEnum_( SsString n , type::_enum& out);\
+	void	__StringToEnum_( SsString n , type::_enum& out)
 
 // 未使用引数の警告避け
 #ifndef SPRITESTUDIO6SDK_NOUSE_ARGUMENT
@@ -101,7 +103,7 @@ public:
 		float len = in.length();
 		float div = 0;
 
-		if ( len == 0 )
+		if ( len == 0.f )
 		{
 			div = 0;
 		}else{
@@ -269,7 +271,7 @@ template<> inline void SsTColor<float>::fromBGRA(u32 c)
 }
 template<> inline u32 SsTColor<float>::toARGB() const
 {
-	u32 c = (u8)(a * 255) << 24 | (u8)(r * 255) << 16 | (u8)(g * 255) << 8 | (u8)(b * 255);
+	u32 c = static_cast<u32>((u8)(a * 255) << 24) | static_cast<u32>((u8)(r * 255) << 16) | static_cast<u32>((u8)(g * 255) << 8) | static_cast<u32>((u8)(b * 255));
 	return c;
 }
 
@@ -316,7 +318,7 @@ template<> inline void SsTColor<u8>::fromBGRA(u32 c)
 }
 template<> inline u32 SsTColor<u8>::toARGB() const
 {
-	u32 c = (u8)(a) << 24 | (u8)(r) << 16 | (u8)(g) << 8 | (u8)(b);
+	u32 c = static_cast<u32>((u8)(a) << 24) | static_cast<u32>((u8)(r) << 16) | static_cast<u32>((u8)(g) << 8) | static_cast<u32>((u8)(b));
 	return c;
 }
 
@@ -382,7 +384,7 @@ namespace SsPartsSortMode
 		z,				///< 描画順はＺ座標で制御する。Ｚ座標を表示し、優先度を隠す。
 		num
 	};
-};
+}
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsPartsSortMode );
 
 //---------------------------------------------------------------
@@ -407,7 +409,7 @@ namespace SsPartType
 
 		num
 	};
-};
+}
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsPartType );
 
 
@@ -426,7 +428,7 @@ namespace SsBoundsType
 		circle_smax,	///< 真円の半径で距離により判定する (スケールはx,yの最大値をとる）
 		num
 	};
-};
+}
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsBoundsType );
 
 
@@ -441,7 +443,7 @@ namespace SsInheritType
 		self,			///< 自身がアトリビュート別に持つ継承方法を使う
 		num
 	};
-};
+}
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsInheritType );
 
 //---------------------------------------------------------------
@@ -460,7 +462,7 @@ namespace SsBlendType
 		invert, 		///< 7 反転
 		num
 	};
-};
+}
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsBlendType );
 
 
@@ -473,7 +475,7 @@ namespace SsColorBlendTarget
 		vertex,	///< 頂点単位
 		num
 	};
-};
+}
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsColorBlendTarget );
 
 
@@ -492,7 +494,7 @@ namespace SsInterpolationType
 		deceleration,	///< 減速度
 		num,
 	};
-};
+}
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsInterpolationType );
 
 
@@ -507,7 +509,7 @@ namespace SsTexWrapMode
 		mirror,			/// ミラー
 		num
 	};
-};
+}
 
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsTexWrapMode);
 
@@ -521,7 +523,7 @@ namespace SsTexFilterMode
 		linear,		///< リニア、バイリニア
 		num
 	};
-};
+}
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsTexFilterMode);
 
 
@@ -576,7 +578,7 @@ namespace SsAttributeKind
 		deform,		///< [DEFM]デフォーム用パラメータ
 		num,
 	};
-};
+}
 
 
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsAttributeKind);
@@ -596,7 +598,7 @@ namespace SsKeyValueType
 		_userData,
 		_instance,
 	};
-};
+}
 
 
 
@@ -690,7 +692,7 @@ namespace SsEffectNodeType
 		particle,
 		num
 	};
-};
+}
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
 
 
@@ -705,7 +707,7 @@ namespace SsRenderBlendType
 		Add,
 		num
 	};
-};
+}
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
 
 
@@ -720,7 +722,7 @@ namespace SsIkRotationArrow
 		anticlockwise,
 		num
 	};
-};
+}
 
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsIkRotationArrow);
 
@@ -735,7 +737,7 @@ namespace SsSequenceType
 		top,		///< 2 全体を繰り返し再生
 		num,
 	};
-};
+}
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsSequenceType );
 
 namespace SsSignalParamType
@@ -748,7 +750,7 @@ namespace SsSignalParamType
 		floating,
 		num
 	};
-};
+}
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsSignalParamType );
 
 
@@ -927,7 +929,7 @@ namespace SsMeshDivType
 		boxdiv,
 		num
 	};
-};
+}
 SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsMeshDivType);
 
 struct SsTriangle
