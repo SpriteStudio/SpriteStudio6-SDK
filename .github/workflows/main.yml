@@ -6,7 +6,7 @@ env:
   SCCACHE_GHA_ENABLED: "true"
   SCCACHE_CACHE_MULTIARCH: "1"
   qtVersion: "6.8.2"
-  cmakeVersion: "3.31.6"
+  cmakeVersion: "4.0.0"
 
 jobs:
   build:
@@ -51,8 +51,8 @@ jobs:
     steps:
     - name: Setup Ninja
       uses: seanmiddleditch/gha-setup-ninja@master
-    - name: Run sccache-cache
-      uses: mozilla-actions/sccache-action@v0.0.8
+#    - name: Run sccache-cache
+#      uses: mozilla-actions/sccache-action@v0.0.8
     - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
