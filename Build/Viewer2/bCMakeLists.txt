@@ -44,7 +44,7 @@ jucer_project_settings(
 jucer_project_files("SSViewer2/Source/Lib"
 # Compile   Xcode     Binary    File
 #           Resource  Resource
-  x         .         .         "lib/glew-2.1.0/src/glew.c"
+  x         .         .         "lib/glew-2.2.0/src/glew.c"
 )
 
 jucer_project_files("SSViewer2/Source/Controller"
@@ -263,7 +263,7 @@ jucer_export_target_configuration(
     "..\\..\\Common\\Helper"
     "..\\..\\Common\\Loader"
     "Source"
-    "lib\\glew-2.1.0\\include"
+    "lib\\glew-2.2.0\\include"
   LINK_TIME_OPTIMISATION OFF
   OPTIMISATION "-O0 (no optimisation)"
   ENABLE_PLUGIN_COPY_STEP ON
@@ -280,7 +280,7 @@ jucer_export_target_configuration(
     "..\\..\\Common\\Helper"
     "..\\..\\Common\\Loader"
     "Source"
-    "lib\\glew-2.1.0\\include"
+    "lib\\glew-2.2.0\\include"
   LINK_TIME_OPTIMISATION ON
   OPTIMISATION "-O3 (fastest with safe optimisations)"
   ENABLE_PLUGIN_COPY_STEP ON
@@ -302,7 +302,7 @@ jucer_export_target_configuration(
     "..\\..\\Common\\Helper"
     "..\\..\\Common\\Loader"
     "Source"
-    "lib\\glew-2.1.0\\include"
+    "lib\\glew-2.2.0\\include"
   LINK_TIME_OPTIMISATION OFF
   OPTIMISATION "No optimisation"
   ENABLE_PLUGIN_COPY_STEP OFF
@@ -324,7 +324,7 @@ jucer_export_target_configuration(
     "..\\..\\Common\\Helper"
     "..\\..\\Common\\Loader"
     "Source"
-    "lib\\glew-2.1.0\\include"
+    "lib\\glew-2.2.0\\include"
   LINK_TIME_OPTIMISATION ON
   OPTIMISATION "Maximise speed"
   ENABLE_PLUGIN_COPY_STEP OFF
@@ -349,7 +349,7 @@ jucer_export_target_configuration(
     "..\\..\\Common\\Helper"
     "..\\..\\Common\\Loader"
     "Source"
-    "lib\\glew-2.1.0\\include"
+    "lib\\glew-2.2.0\\include"
 )
 
 jucer_export_target_configuration(
@@ -363,7 +363,7 @@ jucer_export_target_configuration(
     "..\\..\\Common\\Helper"
     "..\\..\\Common\\Loader"
     "Source"
-    "lib\\glew-2.1.0\\include"
+    "lib\\glew-2.2.0\\include"
 )
 
 jucer_project_end()

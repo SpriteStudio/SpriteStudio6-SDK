@@ -59,8 +59,8 @@ juce_add_gui_app(SSView2
     CXX_LANGUAGE_STANDARD "C++11")
 
 # lib
-set(glew lib/glew-2.1.0/src/glew.c)
-include_directories(lib/glew-2.1.0/include)
+set(glew lib/glew-2.2.0/src/glew.c)
+include_directories(lib/glew-2.2.0/include)
 
 # Controller
 set(Controller
