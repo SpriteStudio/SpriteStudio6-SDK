@@ -51,8 +51,8 @@ jobs:
     steps:
     - name: Setup Ninja
       uses: seanmiddleditch/gha-setup-ninja@master
-    - name: Run sccache-cache
-      uses: mozilla-actions/sccache-action@v0.0.8
+#    - name: Run sccache-cache
+#      uses: mozilla-actions/sccache-action@v0.0.8
     - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
