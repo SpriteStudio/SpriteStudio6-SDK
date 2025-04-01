@@ -6,7 +6,7 @@ env:
   SCCACHE_GHA_ENABLED: "true"
   SCCACHE_CACHE_MULTIARCH: "1"
   qtVersion: "6.8.2"
-  cmakeVersion: "3.31.6"
+  cmakeVersion: "4.0.0"
 
 jobs:
   build:
