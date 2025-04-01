@@ -1692,7 +1692,7 @@ void convertProject(const std::filesystem::path& outPath, const std::string& out
             if (std::filesystem::exists(logfilepath)) {
                 std::filesystem::remove(logfilepath);
             }
-            logger.setOutputLogFile(logfilepath.wstring());
+            logger.setOutputLogFile(logfilepath);
             logger.setOutputLogFileMode(true);
         }
 

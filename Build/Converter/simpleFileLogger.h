@@ -4,6 +4,7 @@
 
 #include<iostream>
 #include<fstream>
+#include <filesystem>
 
 #include "sscharconverter.h"
 #include "utils.h"
@@ -81,7 +82,7 @@ public:
 
     }
 
-    void setOutputLogFile(const std::wstring &filepath) {
+    void setOutputLogFile(const std::filesystem::path &filepath) {
         if (ofs) return;
         ofs = new std::ofstream(filepath);
     }
