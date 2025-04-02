@@ -15,10 +15,10 @@ jobs:
         platform: [macos-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-    - name: Run sccache-cache
-      uses: mozilla-actions/sccache-action@v0.0.8
-      with:
-        version: "v0.10.0"
+#    - name: Run sccache-cache
+#      uses: mozilla-actions/sccache-action@v0.0.8
+#      with:
+#        version: "v0.10.0"
     - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
@@ -53,6 +53,8 @@ jobs:
       uses: seanmiddleditch/gha-setup-ninja@master
 #    - name: Run sccache-cache
 #      uses: mozilla-actions/sccache-action@v0.0.8
+#      with:
+#        version: "v0.10.0"
     - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
