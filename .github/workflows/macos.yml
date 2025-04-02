@@ -25,7 +25,7 @@ jobs:
         with:
           version: ${{ env.qtVersion }}
       - name: "set QT_PREFIX"
-        run: echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
+        run: echo "QT_PREFIX=${QT_ROOT_DIR}" >> $GITHUB_ENV
       - name: release build
         run: ./Scripts/release_macos.sh
       - id: commit
