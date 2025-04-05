@@ -2,7 +2,7 @@
 
 
 if [ -z ${QT_PREFIX+x} ]; then
-    QT_PREFIX=${HOME}/Qt/6.8.2/macos
+    QT_PREFIX=${HOME}/Qt/6.9.0/macos
 
     if [ ! -d $QT_PREFIX ]; then
         PREFIX=/usr/local
