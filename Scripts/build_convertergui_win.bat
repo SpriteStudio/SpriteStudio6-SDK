@@ -4,7 +4,7 @@ set CURDIR=%~dp0
 set BASEDIR=%CURDIR%..
 set BUILDDIR=%BASEDIR%\Build
 set VCDIR=C:\Program Files\Microsoft Visual Studio\2022
-set DEFAULT_QT_PREFIX=C:\Qt\6.8.2
+set DEFAULT_QT_PREFIX=C:\Qt\6.9.0
 if /I "%PROCESSOR_ARCHITECTURE%" == "AMD64" (
   set HOST_ARCH=x64
 ) else (

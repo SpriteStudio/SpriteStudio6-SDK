@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  qtVersion: "6.8.2"
+  qtVersion: "6.9.0"
 
 jobs:
   macos_build:

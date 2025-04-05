@@ -14,5 +14,7 @@ enable_testing()
 # Ss6Converter
 add_subdirectory(Converter)
 
+add_subdirectory(Ss6ConverterGUI/Ss6ConverterGUI)
+
 # SSViewer2
 add_subdirectory(Viewer2)
