@@ -19,6 +19,12 @@
 #include "ssplayer_cellmap.h"
 #include "ssplayer_mesh.h"
 
+#ifdef _WIN32
+	#define SS_FASTCALL __fastcall
+#else
+	#define SS_FASTCALL
+#endif
+
 #define SPRITESTUDIO6SDK_PROGRAMABLE_SHADER_ON (1)
 
 namespace spritestudio6
@@ -27,22 +33,25 @@ namespace spritestudio6
 
 //ISsRenderer*	SsCurrentRenderer::m_currentrender = 0;
 
-static const char* glshader_sprite_vs = 
-#include "GLSL/sprite.vs";
+static const char* glshader_sprite_vs =
+#include "GLSL/sprite.vs"
 
-static const char* glshader_sprite_fs = 
-#include "GLSL/sprite.fs";
 
-static const char* glshader_sprite_fs_pot = 
-#include "GLSL/sprite_pot.fs";
+static const char* glshader_sprite_fs =
+#include "GLSL/sprite.fs"
+
+
+static const char* glshader_sprite_fs_pot =
+#include "GLSL/sprite_pot.fs"
+
 
 class SSOpenGLProgramObject;
 
 struct ShaderSetting
 {
-	char*	name;
-	char*	vs;
-	char*	fs;
+	const char*	name;
+	const char*	vs;
+	const char*	fs;
 };
 
 //MEMO: 現在デストラクト時に（定義リソースが）自動解放されることを期待しています。
@@ -143,13 +152,13 @@ enum{
 //6.2対応
 //パーツカラー、ミックス、頂点
 /// カラー値を byte(0~255) -> float(0.0~1.0) に変換する。
-inline float __fastcall floatFromByte_(u8 color8)
+inline float SS_FASTCALL floatFromByte_(u8 color8)
 {
 	return static_cast<float>(color8) / 255.f;
 }
 
 /// RGBA の各値を byte(0~255) -> float(0.0~1.0) に変換し、配列 dest の[0,1,2,3] に設定する。
-inline void __fastcall rgbaByteToFloat_(float* dest, const SsColorBlendValue& src)
+inline void SS_FASTCALL rgbaByteToFloat_(float* dest, const SsColorBlendValue& src)
 {
 	const SsColor* srcColor = &src.rgba;
 
@@ -164,7 +173,7 @@ static int			s_iVArgCount	= 0;
 static ShaderVArg*	s_pVArg			= NULL;
 
 /// // RGB=100%テクスチャ、A=テクスチャｘ頂点カラーの設定にする。
-static void __fastcall setupTextureCombinerTo_NoBlendRGB_MultiplyAlpha_()
+static void SS_FASTCALL setupTextureCombinerTo_NoBlendRGB_MultiplyAlpha_()
 {
 
 	// カラーは１００％テクスチャ
@@ -188,7 +197,7 @@ target			ミックス時のみ参照される。
 
 参考：http://www.opengl.org/sdk/docs/man/xhtml/glTexEnv.xml
 */
-static void __fastcall setupSimpleTextureCombiner_for_PartsColor_(SsBlendType::_enum type, float rateOrAlpha, SsColorBlendTarget::_enum target)
+static void SS_FASTCALL setupSimpleTextureCombiner_for_PartsColor_(SsBlendType::_enum type, float rateOrAlpha, SsColorBlendTarget::_enum target)
 {
 	//static const float oneColor[4] = {1.f,1.f,1.f,1.f};
 	float constColor[4] = { 0.5f,0.5f,0.5f,rateOrAlpha };
@@ -201,7 +210,7 @@ static void __fastcall setupSimpleTextureCombiner_for_PartsColor_(SsBlendType::_
 	// false: constColor のαをブレンドする。
 	bool combineAlpha = true;
 
-	switch (type)
+	switch (static_cast<int>(type))
 	{
 	case SsBlendType::mix:
 	case SsBlendType::mul:
@@ -372,7 +381,7 @@ void	SsRenderGL::SetAlphaBlendMode(SsBlendType::_enum type)
 {
 	glBlendEquation( GL_FUNC_ADD );
 
-	switch ( type )
+	switch ( static_cast<int>(type) )
 	{
 	case SsBlendType::mix:				//< 0 ブレンド（ミックス）
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -587,7 +596,7 @@ void	SsRenderGL::execMask(SsPartState* state)
 
 [in/out] colors, rates の [0~3] の平均値を [4] に入れる。
 */
-inline void __fastcall calcCenterVertexColor(float* colors, float* rates, float* vertexID)
+inline void SS_FASTCALL calcCenterVertexColor(float* colors, float* rates, float* vertexID)
 {
 	float a, r, g, b, rate;
 	a = r = g = b = rate = 0;
@@ -889,7 +898,7 @@ void	SsRenderGL::renderPart( SsPartState* state )
 		SsTexWrapMode::_enum wmode = state->cellValue.wrapMode;
 
 
-		switch (fmode)
+		switch (static_cast<int>(fmode))
 		{
 		default:
 		case SsTexFilterMode::nearlest:

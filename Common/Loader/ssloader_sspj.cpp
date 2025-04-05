@@ -162,6 +162,8 @@ SsProject*	ssloader_sspj::Parse_ProjectOnly(const char* xmlstr , size_t len)
 		proj->__Serialize( &ar );
 		return proj;
 	}
+
+	return 0;
 }
 
 SsProject*	ssloader_sspj::Load(const std::string& filename ) {

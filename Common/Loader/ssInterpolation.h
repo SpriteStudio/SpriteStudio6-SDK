@@ -9,7 +9,7 @@ class SsCurve;
 ///補間でカーブパラメータが必要なタイプか判定する
 inline bool SsNeedsCurveParams(SsInterpolationType::_enum type)
 {
-	switch (type)
+	switch (static_cast<int>(type))
 	{
 	case SsInterpolationType::bezier:
 	case SsInterpolationType::hermite:

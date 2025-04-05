@@ -15,10 +15,10 @@ jobs:
         platform: [macos-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-    - name: Run sccache-cache
-      uses: mozilla-actions/sccache-action@v0.0.8
-      with:
-        version: "v0.10.0"
+#    - name: Run sccache-cache
+#      uses: mozilla-actions/sccache-action@v0.0.8
+#      with:
+#        version: "v0.10.0"
     - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
@@ -31,7 +31,7 @@ jobs:
       with:
         version: ${{ env.qtVersion }}
     - name: "set QT_PREFIX"
-      run: echo "QT_PREFIX=${Qt6_DIR}" >> $GITHUB_ENV
+      run: echo "QT_PREFIX=${QT_ROOT_DIR}" >> $GITHUB_ENV
     - name: release build
       run: ./Scripts/release_macos.sh
     - id: commit
@@ -53,6 +53,8 @@ jobs:
       uses: seanmiddleditch/gha-setup-ninja@master
 #    - name: Run sccache-cache
 #      uses: mozilla-actions/sccache-action@v0.0.8
+#      with:
+#        version: "v0.10.0"
     - uses: actions/checkout@v4
       with:
         submodules: 'recursive'

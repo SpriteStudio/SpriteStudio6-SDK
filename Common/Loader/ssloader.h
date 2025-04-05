@@ -1,5 +1,7 @@
-﻿#pragma warning(disable : 4819)
- 
+﻿#ifdef _MSC_VER
+#pragma warning(disable : 4819)
+#endif // _MSC_VER
+
 #ifndef __SSLIB__
 #define __SSLIB__
 
