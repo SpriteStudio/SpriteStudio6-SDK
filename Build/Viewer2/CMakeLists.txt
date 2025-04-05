@@ -56,7 +56,7 @@ juce_add_gui_app(SSView2
     SPLASH_SCREEN_COLOUR "Dark"
     PROJECT_TYPE "GUI Application"
     INCLUDE_BINARYDATA ON
-    CXX_LANGUAGE_STANDARD "C++11")
+    CXX_LANGUAGE_STANDARD "C++17")
 
 # lib
 set(glew lib/glew-2.2.0/src/glew.c)
