@@ -12,14 +12,9 @@ TOOLSDIR=`cd ${TOOLSDIR} && pwd -P`
 ${SCRIPTDIR}/build_viewer2_macos.sh Release
 
 pushd ${BASEDIR}
-DIR=viewer_sample_2_Mac
-/bin/rm -f ${DIR}.zip
-/bin/rm -rf ${DIR}
-/bin/mkdir ${DIR}
 
-/bin/cp -rp ${BUILDDIR}/Viewer2/cmakeBuild/SSView2_artefacts/Release/SSViewer2.app ./${DIR}
-zip -r ${DIR}.zip ${DIR}
+/bin/rm -f SSViewer2_Mac.zip
+ditto -c -k --sequesterRsrc --keepParent ${BUILDDIR}/Viewer2/cmakeBuild/SSView2_artefacts/Release/SSViewer2.app ./SSViewer2_Mac.zip
+mv SSViewer2_Mac.zip ${TOOLSDIR}/
 
-mv ${DIR}.zip ${TOOLSDIR}/
-/bin/rm -rf ${DIR}/
 popd > /dev/null # ${BASEDIR}

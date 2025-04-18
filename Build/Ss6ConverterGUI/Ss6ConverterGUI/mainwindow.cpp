@@ -57,7 +57,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->type_comboBox->addItem("ssbp");
     ui->type_comboBox->addItem("json");
     ui->type_comboBox->addItem("ssfb");
+#ifdef Q_OS_WIN32
     ui->type_comboBox->addItem("sspkg");
+#endif
 
 }
 
@@ -226,9 +228,7 @@ void MainWindow::on_pushButton_convert_clicked()
         #else
                 // Mac
                 QDir appDir(QCoreApplication::applicationDirPath());
-                appDir.cdUp();
-                QString resourcesPath = appDir.filePath("Resources");
-                QString commandPath = QDir(resourcesPath).filePath("Ss6Converter");
+                QString commandPath = QDir(appDir).filePath("Ss6Converter");
                 if (QFile(commandPath).exists()) {
                     execstr = commandPath;
                 } else {
