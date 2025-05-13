@@ -225,13 +225,21 @@ void MainWindow::on_pushButton_convert_clicked()
                 execstr = "Ss6Converter.exe";
         #else
                 // Mac
-                QDir dir = QDir(execPathStr);
-                dir.cd("..");
-                dir.cd("..");
-                dir.cd("..");
-                dir.cd("..");
-                QString str_current_path = dir.path();
-                execstr = str_current_path + "/Ss6Converter";
+                QDir appDir(QCoreApplication::applicationDirPath());
+                appDir.cdUp();
+                QString resourcesPath = appDir.filePath("Resources");
+                QString commandPath = QDir(resourcesPath).filePath("Ss6Converter");
+                if (QFile(commandPath).exists()) {
+                    execstr = commandPath;
+                } else {
+                    QDir dir = QDir(execPathStr);
+                    dir.cd("..");
+                    dir.cd("..");
+                    dir.cd("..");
+                    dir.cd("..");
+                    QString str_current_path = dir.path();
+                    execstr = str_current_path + "/Ss6Converter";
+                }
         #endif
 
                 QStringList args;
