@@ -28,7 +28,7 @@ message("fetch minizip-ng")
 FetchContent_Declare(
         minizip-ng
         GIT_REPOSITORY https://github.com/zlib-ng/minizip-ng
-        GIT_TAG        4.0.8
+        GIT_TAG        4.0.10
 )
 set(MZ_COMPAT ON CACHE INTERNAL "")
 set(MZ_BZIP2 OFF CACHE INTERNAL "")
@@ -53,7 +53,7 @@ set(JSON_Install OFF CACHE INTERNAL "")
 FetchContent_Declare(
     json
     GIT_REPOSITORY https://github.com/nlohmann/json.git
-    GIT_TAG        v3.11.3)
+    GIT_TAG        v3.12.0)
 FetchContent_GetProperties(json)
 if(NOT json_POPULATED)
   set(JSON_BuildTests OFF CACHE INTERNAL "") # skip json unit test
