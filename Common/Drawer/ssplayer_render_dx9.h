@@ -3,6 +3,9 @@
 
 #include "ssplayer_render.h"
 
+namespace spritestudio6
+{
+
 struct SsPartState;
 
 class SsRenderDX9 : public ISsRenderer
@@ -15,7 +18,7 @@ public:
 	virtual ~SsRenderDX9(){}
 
 	virtual void	initialize();
-	virtual void	renderSetup();
+	virtual void	renderSetup(SsAnimeDecoder* state);
 	virtual void	renderPart( SsPartState* state );
 
 	//未実装
@@ -36,5 +39,7 @@ public:
 
 
 };
+
+}	// namespace spritestudio6
 
 #endif

@@ -2,18 +2,23 @@
 #define __SSPLAYER_RENDER__
 
 
-#include "sstypes.h"
+#include "../Loader/sstypes.h"
 
 
+namespace spritestudio6
+{
 
 struct SsPartState;
 struct SsCellValue;
+class SsAnimeDecoder;
+
 
 class ISsRenderer
 {
 public:
+	virtual ~ISsRenderer(){}
 	virtual void	initialize() = 0;
-	virtual void	renderSetup() = 0;
+	virtual void	renderSetup(SsAnimeDecoder* state) = 0;
 	virtual void	renderPart(SsPartState* state) = 0;
 	virtual void	execMask(SsPartState* state) = 0;
 	virtual void	clearMask() = 0;
@@ -27,6 +32,7 @@ public:
 	virtual void	SetAlphaBlendMode(SsBlendType::_enum type)=0;
 	virtual void	SetTexture( SsCellValue* cell )=0;
 	virtual void	enableMask(bool flag) = 0;
+//	virtual void	renderMesh(SsMeshPart* mesh , float alpha );
 
 };
 
@@ -56,5 +62,6 @@ public:
 };
 
 
+}	//	namespace spritestudio6
 
 #endif

@@ -1,9 +1,16 @@
-cmake_minimum_required(VERSION 3.11)
+include(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/initialize.cmake)
+cmake_minimum_required(VERSION 3.25)
 
 project(ssLoader)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+OPTIONS()
+
+CCACHE()
+
+PREPARE()
 
 set(ssLoader_SRCS
     tinyxml2/tinyxml2.cpp
@@ -11,6 +18,7 @@ set(ssLoader_SRCS
     ssloader_ssae.cpp
     ssloader_ssce.cpp
     ssloader_ssee.cpp
+    ssloader_ssqe.cpp
     SsEffectBehavior.cpp
     SsEffectElement.cpp
     ssstring_uty.cpp
@@ -20,6 +28,7 @@ set(ssLoader_SRCS
     ssInterpolation.cpp
     ssattribute.cpp
     sscharconverter.cpp
+    ssFilesystem.cpp
 )
 #if(APPLE AND (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
 #    set(ssLoader_SRCS ${ssLoader_SRCS} sscharconverter_mac.mm)
@@ -34,13 +43,15 @@ set(ssLoader_HEADERS
     ssloader_ssae.h
     ssloader_ssce.h
     ssloader_ssee.h
+    ssloader_ssqe.h
     sstypes.h
     ssvalue.h
     ssInterpolation.h
     ssattribute.h
     ssstring_uty.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/../Animator/ssplayer_animedecode.h
+#    ${CMAKE_CURRENT_SOURCE_DIR}/../Animator/ssplayer_animedecode.h
     sscharconverter.h
+    ssFilesystem.h
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

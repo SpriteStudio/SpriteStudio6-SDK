@@ -6,43 +6,53 @@
 //  Copyright (c) 2014年 Hiroki Azumada. All rights reserved.
 //
 
-// TODO
-#include "ssloader.h"
-#include "ssplayer_animedecode.h"
-#include "ssHelper.h"
-#include "sshTextureBMP.h"
-#include "ssplayer_mesh.h"
-
 #include <string>
 #include <algorithm>
 #include <iostream>
 #include <fstream>
-#include <iostream>
+#include <memory>
+#include <set>
+#include <filesystem>
+#include <stdexcept>
 
-#ifndef _WIN32
-#include <sys/stat.h>
-#endif
+// TODO
+#include "ssloader.h"
+#include "ssplayer_animedecode.h"
+#include "sshTextureBMP.h"
+
+#include "sscharconverter.h"
 
 #include "Lump.h"
 #include "LumpExporter.h"
-#include "FileUtil.h"
 #include "SsPlayerConverter.h"
 
-static const int DATA_VERSION_1			= 1;
-static const int DATA_VERSION_2         = 2;
-static const int DATA_VERSION_3         = 3;
-static const int DATA_VERSION_4			= 4;
-static const int DATA_VERSION_5			= 5;
-static const int DATA_VERSION_6			= 6;
-static const int DATA_VERSION_7			= 7;
-static const int DATA_VERSION_8			= 8;
-static const int DATA_VERSION_9			= 9;
-static const int DATA_VERSION_10		= 10;
-static const int DATA_VERSION_11		= 11;
+#include "utils.h"
+#include "simpleFileLogger.h"
 
-static const int DATA_ID				= 0x42505353;
-static const int CURRENT_DATA_VERSION	= DATA_VERSION_11;
+#ifdef _BACKBUFFER_RENDERING__
+	#include "BackGroudRender.h"
+#endif
 
+#include "sspkg.h"
+#include "version.h"
+#include "SSException.h"
+
+std::vector<std::filesystem::path> filelist;
+
+constexpr int DATA_VERSION_1 = 1;
+constexpr int DATA_VERSION_2 = 2;
+constexpr int DATA_VERSION_3 = 3;
+constexpr int DATA_VERSION_4 = 4;
+constexpr int DATA_VERSION_5 = 5;
+constexpr int DATA_VERSION_6 = 6;
+constexpr int DATA_VERSION_7 = 7;
+constexpr int DATA_VERSION_8 = 8;
+constexpr int DATA_VERSION_9 = 9;
+constexpr int DATA_VERSION_10 = 10;
+constexpr int DATA_VERSION_11 = 11;
+
+constexpr int DATA_ID				= 0x42505353;
+constexpr int CURRENT_DATA_VERSION	= DATA_VERSION_11;
 
 enum {
 	PART_FLAG_INVISIBLE			= 1 << 0,
@@ -108,198 +118,233 @@ enum {
 	USER_DATA_FLAG_STRING	= 1 << 3
 };
 
-enum {
+enum OutputFormat {
 	OUTPUT_FORMAT_FLAG_SSBP	= 1 << 0,
 	OUTPUT_FORMAT_FLAG_JSON	= 1 << 1,
 	OUTPUT_FORMAT_FLAG_CSOURCE	= 1 << 2,
 	OUTPUT_FORMAT_FLAG_SSFB	= 1 << 3,
+	OUTPUT_FORMAT_FLAG_SSPKG = 1 << 4 ,
 };
 
-bool convert_error_exit = false;	//データにエラーがありコンバートを中止した
-
-union converter32 {
-	int i;
-	unsigned int ui;
-	float f;
-};
-converter32 c32;
-
-
-typedef std::map<const SsCell*, int> CellList;
-
-CellList* makeCellList(SsProject* proj)
-{
-	// セルデータの出力と、全てセルデータを集約したリストを作る
-	CellList* cellList = new std::map<const SsCell*, int>();
-	int cellListIndex = 0;
-
-	for (size_t mapIndex = 0; mapIndex < proj->cellmapList.size(); mapIndex++)
-	{
-		const SsCellMap* cellMap = proj->cellmapList[mapIndex];
-
-		for (size_t cellIndex = 0; cellIndex < cellMap->cells.size(); cellIndex++)
-		{
-			const SsCell* cell = cellMap->cells[cellIndex];
-			cellList->insert(CellList::value_type(cell, cellListIndex++));
-		}
-	}
-	
-	return cellList;
-}
-
-
-static const SsKeyframe* findDefaultKeyframe(SsAnimeDecoder& decoder, int partIndex, SsAttributeKind::_enum tag)
-{
-	foreach(std::vector<SsPartAndAnime>, decoder.getPartAnime(), it)
-	{
-		SsPartAnime* partAnime = it->second;
-		SsPart* part = it->first;
-		if (part->arrayIndex != partIndex) continue;
-		
-		foreach(SsAttributeList, partAnime->attributes, attrIt)
-		{
-			SsAttribute* attr = *attrIt;
-			if (attr->tag != tag) continue;
-			
-			const SsKeyframe* key = attr->firstKey();
-			return key;
-		}
-		
-	}
-	return NULL;
-}
-
-
-static SsAttribute* findAttribute(SsPartAnime* partAnime, SsAttributeKind::_enum tag)
-{
-	foreach(SsAttributeList, partAnime->attributes, attrIt)
-	{
-		SsAttribute* attr = *attrIt;
-		if (attr->tag == tag) return attr;
-	}
-	return NULL;
-}
-
-
-static const SsKeyframe* findFirstKey(SsPartAnime* partAnime, SsAttributeKind::_enum tag)
-{
-	SsAttribute* attr = findAttribute(partAnime, tag);
-	if (attr)
-	{
-		return attr->firstKey();
-	}
-	return NULL;
-}
-
-
-static const SsPartState* findState(std::list<SsPartState*>& partList, int partIndex)
-{
-	foreach (std::list<SsPartState*>, partList, it)
-	{
-		const SsPartState* state = *it;
-		if (state->index == partIndex) return state;
-	}
-	return NULL;
-}
-
-
-
-
-struct PartInitialData
-{
-	int		sortedOrder;
-	int		index;
-	int		lowflag;
-	int		highflag;
-	int		cellIndex;
-	float	posX;
-	float	posY;
-	float	posZ;
-	float	pivotX;
-	float	pivotY;
-	float	rotationZ;
-	float	rotationX;
-	float	rotationY;
-	float	scaleX;
-	float	scaleY;
-	float	localscaleX;
-	float	localscaleY;
-	int		opacity;
-	int		localopacity;
-	float	size_X;
-	float	size_Y;
-	float	uv_move_X;
-	float	uv_move_Y;
-	float	uv_rotation;
-	float	uv_scale_X;
-	float	uv_scale_Y;
-	float	boundingRadius;
-	int		masklimen;
-	int		priority;
-
-	//インスタンスアトリビュート
-	int		instanceValue_curKeyframe;
-	int		instanceValue_startFrame;
-	int		instanceValue_endFrame;
-	int		instanceValue_loopNum;
-	float	instanceValue_speed;
-	int		instanceValue_loopflag;
-	//エフェクトアトリビュート
-	int		effectValue_curKeyframe;
-	int		effectValue_startTime;
-	float	effectValue_speed;
-	int		effectValue_loopflag;
+const std::map<int, std::string> OutputFormatToString = {
+    {OutputFormat::OUTPUT_FORMAT_FLAG_SSBP, "OUTPUT_FORMAT_FLAG_SSBP"},
+        {OutputFormat::OUTPUT_FORMAT_FLAG_JSON, "OUTPUT_FORMAT_FLAG_JSON"},
+        {OutputFormat::OUTPUT_FORMAT_FLAG_CSOURCE, "OUTPUT_FORMAT_FLAG_CSOURCE"},
+        {OutputFormat::OUTPUT_FORMAT_FLAG_SSFB, "OUTPUT_FORMAT_FLAG_SSFB"},
+        {OutputFormat::OUTPUT_FORMAT_FLAG_SSPKG, "OUTPUT_FORMAT_FLAG_SSPKG"},
 };
 
+std::string getFormatExtension(int format) {
+    switch ((OutputFormat)format) {
+        case OUTPUT_FORMAT_FLAG_SSBP:
+            return ".ssbp";
+        case OUTPUT_FORMAT_FLAG_JSON:
+            return ".json";
+        case OUTPUT_FORMAT_FLAG_SSFB:
+            return ".ssfb";
+        case OUTPUT_FORMAT_FLAG_SSPKG:
+            return ".sspkg";
+        case OUTPUT_FORMAT_FLAG_CSOURCE:
+        default:
+            return "";
+    }
+}
 
+uint16_t getFormatMode(int format) {
+    switch ((OutputFormat)format) {
+        case OUTPUT_FORMAT_FLAG_SSBP:
+            return std::ios_base::out | std::ios_base::binary;
+        case OUTPUT_FORMAT_FLAG_JSON:
+            return std::ios_base::out;
+        case OUTPUT_FORMAT_FLAG_SSFB:
+            return std::ios_base::out | std::ios_base::binary;
+        case OUTPUT_FORMAT_FLAG_SSPKG:
+            return std::ios_base::out | std::ios_base::binary;
+        case OUTPUT_FORMAT_FLAG_CSOURCE:
+        default:
+            return std::ios_base::out;
+    }
+}
+
+
+// MEMO: LumpExporter::StringEncodingと内容は同じだがmain.cppの中で閉じるもの＋厳密には目的が異なるので、別個に定義しておく
+enum {
+	ARGUMENT_ENCODE_UTF8 = 0,
+	ARGUMENT_ENCODE_SJIS,
+};
+
+struct Options {
+    typedef std::vector<std::string> StringList;
+
+    bool isHelp;
+    bool isVerbose;
+    StringList inList;
+    LumpExporter::StringEncoding encoding;
+    std::string imageBaseDir;
+    std::string outputDir;
+
+    int outputFormat;
+    int argumentEncode;
+
+    bool endAfterStop;
+    bool isLogout;
+
+    Options() : isHelp(false), isVerbose(false), endAfterStop(false), encoding(LumpExporter::UTF8), isLogout(false) {
+
+    }
+};
+
+auto makeCellList(spritestudio6::SsProject* proj) {
+    // セルデータの出力と、全てセルデータを集約したリストを作る
+    auto cellList = std::make_shared<std::map<const spritestudio6::SsCell *, int>>();
+    int cellListIndex = 0;
+
+    for (size_t mapIndex = 0; mapIndex < proj->cellmapList.size(); mapIndex++) {
+        const auto *cellMap = proj->getCellMap((int) mapIndex);
+        for (auto cell: cellMap->cells) {
+            cellList->insert({cell, cellListIndex++});
+        }
+    }
+
+    return cellList;
+}
+
+static const spritestudio6::SsPartState* findState(std::list<spritestudio6::SsPartState*>& partList, int partIndex) {
+    for (const auto &state: partList) {
+        if (state->index == partIndex) return state;
+    }
+    return nullptr;
+}
+
+//各機種用のコンソール用に文字コードを変換する関数
+// kindArgumentEncodeはARGUMENT_ENCODE_～の値で、強制指定する場合だけ有効な値を与えてください。
+static std::string convert_console_string(const std::string& srcUTF8, int kindArgumentEncode=-1) {
+    std::string dst;
+    if (kindArgumentEncode < 0) {
+        kindArgumentEncode = (isWindows())? ARGUMENT_ENCODE_SJIS : kindArgumentEncode = ARGUMENT_ENCODE_UTF8;
+    }
+
+    switch (kindArgumentEncode) {
+        case ARGUMENT_ENCODE_SJIS:
+            dst = spritestudio6::SsCharConverter::utf8_to_sjis(srcUTF8);
+            break;
+
+        case ARGUMENT_ENCODE_UTF8:
+        default:
+            dst = srcUTF8;
+            break;
+    }
+
+    return dst;
+}
+
+struct PartInitialData {
+    int sortedOrder;
+    int index;
+    int lowflag;
+    int highflag;
+    int cellIndex;
+    float posX;
+    float posY;
+    float posZ;
+    float pivotX;
+    float pivotY;
+    float rotationZ;
+    float rotationX;
+    float rotationY;
+    float scaleX;
+    float scaleY;
+    float localscaleX;
+    float localscaleY;
+    int opacity;
+    int localopacity;
+    float size_X;
+    float size_Y;
+    float uv_move_X;
+    float uv_move_Y;
+    float uv_rotation;
+    float uv_scale_X;
+    float uv_scale_Y;
+    float boundingRadius;
+    int masklimen;
+    int priority;
+
+    //インスタンスアトリビュート
+    int instanceValue_curKeyframe;
+    int instanceValue_startFrame;
+    int instanceValue_endFrame;
+    int instanceValue_loopNum;
+    float instanceValue_speed;
+    int instanceValue_loopflag;
+    //エフェクトアトリビュート
+    int effectValue_curKeyframe;
+    int effectValue_startTime;
+    float effectValue_speed;
+    int effectValue_loopflag;
+};
+
+static Logger logger;
+
+//encodeしない
+void CO(const std::string& out) {
+    logger.outputLog(Logger::INF, out);
+}
+
+void COE(const std::string& str) {
+    const std::string out = convert_console_string(str);
+    logger.outputLog(Logger::ERR, out);
+}
+
+void COI(const std::string& str) {
+    std::string out;
+    out = convert_console_string(str);
+    logger.outputLog(Logger::INF, out);
+}
 
 //全全角が使われてるかのチェック
-bool isZenkaku( const SsString* str )
-{
-	bool rc = false;
-	int i = 0;
-	int size = str->length();
-	const char *c = str->c_str();
+bool isZenkaku( const spritestudio6::SsString* str ) {
+    bool rc = false;
+    int i = 0;
+    int size = (int) str->length();
+    const char *c = str->c_str();
 
-	while ( true )
-	{
-		if ( ( c[i] == '\0' ) || ( size == i ) )
-		{
-			//終了
-			break;
-		}
-		if ( ( c[i] < 0x20 ) || ( c[i] > 0x7e ) )
-		{
-			//半角以外
-			rc = true;
-			//終了
-			break;
-		}
-		i++;
-	}
-	return( rc );
+    while (true) {
+        if ((c[i] == '\0') || (size == i)) {
+            //終了
+            break;
+        }
+        if ((c[i] < 0x20) || (c[i] > 0x7e)) {
+            //半角以外
+            rc = true;
+            //終了
+            break;
+        }
+        i++;
+    }
+    return rc;
 }
 
 static std::vector<int16_t> s_frameIndexVec;
 
-static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
-{
-//	static SsPartStateLess _ssPartStateLess;
-	std::cerr << SPRITESTUDIOSDK_VERSION << "\n";	//バージョン表記は ssloader.h　にあります。
-	std::cerr << "Ss6Converter ssbpFormatVersion=" << CURRENT_DATA_VERSION << "\n";
-	std::cerr << "convert start!" << "\n";
+static void parseParts_ssqe(std::shared_ptr<Lump>& topLump, spritestudio6::SsProject* proj, const std::string& imageBaseDir) {
+}
 
-	CellList* cellList = makeCellList(proj);
+static std::shared_ptr<Lump> parseParts(spritestudio6::SsProject* proj, const std::string& imageBaseDir , const std::filesystem::path& outPath) {
+	bool isWrite = false;
 
-	Lump* topLump = Lump::set("ss::ProjectData", true, "ProjectData");
+	CO( std::string(SPRITESTUDIOSDK_VERSION " hash:" GIT_SHORT_COMMIT_HASH));	//バージョン表記は ssloader.h　にあります。
+	CO("Ss6Converter ssbpFormatVersion=" + std::to_string( CURRENT_DATA_VERSION ) );
+	CO( "convert start!");
 
-	if (checkFileVersion(proj->version, SPRITESTUDIO6_SSPJVERSION) == false)
-	{
-		std::cerr << "エラー：SpriteStudio Ver.5.xのプロジェクトは使用できません。\n";
-		std::cerr << "SpriteStudio Ver.6.xで保存する必要があります。\n";
-		convert_error_exit = true;	//エラーが発生コンバート失敗
-		return 0;
-	}
+	auto cellList = makeCellList(proj);
+
+	auto topLump = Lump::set("ss::ProjectData", true, "ProjectData");
+
+	if (!spritestudio6::checkFileVersion(proj->version, SPRITESTUDIO6_SSPJVERSION)) {
+        const std::string msg = u8"エラー：SpriteStudio Ver.5.xのプロジェクトは使用できません。\n"
+                                u8"SpriteStudio Ver.6.xで保存する必要があります。";
+        throw SSException(msg, SSPC_INCOMPATIBLE_VERSION_ERROR);
+    }
 
 	topLump->add(Lump::s32Data(DATA_ID, "dataId"));
 
@@ -308,344 +353,320 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 	//4互換設定の出力
 	topLump->add(Lump::s32Data(0, "flags"));
 
-	if (imageBaseDir.length() > 0)
-	{
-		topLump->add(Lump::stringData(imageBaseDir, "imageBaseDir"));
-	}
-	else
-	{
-		topLump->add(Lump::stringData("", "imageBaseDir"));
-	}
+    topLump->add(Lump::stringData((!imageBaseDir.empty())? imageBaseDir : "", "imageBaseDir"));
 
-	Lump* cellsData = Lump::set("ss::Cell[]", true, "Cell");
+	auto cellsData = Lump::set("ss::Cell[]", true, "Cell");
 	topLump->add(cellsData);
-	Lump* packDataArray = Lump::set("ss::AnimePackData[]", true, "AnimePackData");
+	auto packDataArray = Lump::set("ss::AnimePackData[]", true, "AnimePackData");
 	topLump->add(packDataArray);
-	Lump* effectfileArray = Lump::set("ss::EffectFile[]", true, "EffectFile");
+	auto effectfileArray = Lump::set("ss::EffectFile[]", true, "EffectFile");
 	topLump->add(effectfileArray);
 
 	topLump->add(Lump::s16Data((int)cellList->size(), "numCells"));
-	
+
 	topLump->add(Lump::s16Data((int)proj->animeList.size(), "numAnimePacks"));
-	
+
 	topLump->add(Lump::s16Data((int)proj->effectfileList.size(), "numEffectFileList"));
 
+	topLump->add(Lump::s16Data((int)proj->sequenceList.size(), "numSequencePacks"));
+
+
+	COI("convert cellmap");
+
 	//セルマップ警告
-	if (proj->cellmapList.size() == 0)
-	{
-		std::cerr << "警告：セルマップが存在しません。" << "\n";
-		convert_error_exit = true;	//エラーが発生コンバート失敗
-		return 0;
-	}
+	if (proj->cellmapList.empty()) {
+        const std::string msg = u8"警告：セルマップが存在しません。";
+        throw SSException(msg, SSPC_NOT_EXIST_CELLMAP);
+    }
+
 	// セルの情報
-	for (size_t mapIndex = 0; mapIndex < proj->cellmapList.size(); mapIndex++)
-	{
-		const SsCellMap* cellMap = proj->cellmapList[mapIndex];
+	for (size_t mapIndex = 0; mapIndex < proj->cellmapList.size(); mapIndex++) {
+        const spritestudio6::SsCellMap *cellMap = proj->cellmapList[mapIndex].get();
 
-		Lump* cellMapData = Lump::set("ss::CellMap", true, "CellMap");
-		cellMapData->add(Lump::stringData(cellMap->name, "name"));
-		cellMapData->add(Lump::stringData(cellMap->imagePath, "imagePath"));
+        auto cellMapData = Lump::set("ss::CellMap", true, "CellMap");
+        cellMapData->add(Lump::stringData(cellMap->name, "name"));
+        cellMapData->add(Lump::stringData(cellMap->imagePath, "imagePath"));
 
-		cellMapData->add(Lump::s16Data((int)mapIndex, "index"));
-		short wrapMode;
-		short filterMode;
-		if (cellMap->overrideTexSettings == true )							///< テクスチャ設定をプロジェクトの設定ではなく下記設定を使う
-		{
-			//個別の設定を使う
-			cellMapData->add(Lump::s16Data(cellMap->wrapMode, "wrapmode"));				///< テクスチャのラップモード
-			wrapMode = cellMap->wrapMode;
-			cellMapData->add(Lump::s16Data(cellMap->filterMode, "filtermode"));			///< テクスチャのフィルタモード
-			filterMode = cellMap->filterMode;
-		}
-		else
-		{
-			//プロジェクトの設定を使う
-			cellMapData->add(Lump::s16Data(proj->settings.wrapMode, "wrapmode"));		///< テクスチャのラップモード
-			wrapMode = proj->settings.wrapMode;
-			cellMapData->add(Lump::s16Data(proj->settings.filterMode, "filtermode"));		///< テクスチャのフィルタモード
-			filterMode = proj->settings.filterMode;
-		}
-		cellMapData->add(Lump::s16Data(0, "reserved"));	// reserved
+        cellMapData->add(Lump::s16Data((int) mapIndex, "index"));
+        short wrapMode;
+        short filterMode;
+        if (cellMap->overrideTexSettings)                            ///< テクスチャ設定をプロジェクトの設定ではなく下記設定を使う
+        {
+            //個別の設定を使う
+            cellMapData->add(Lump::s16Data(cellMap->wrapMode, "wrapmode"));                ///< テクスチャのラップモード
+            wrapMode = cellMap->wrapMode;
+            cellMapData->add(Lump::s16Data(cellMap->filterMode, "filtermode"));            ///< テクスチャのフィルタモード
+            filterMode = cellMap->filterMode;
+        } else {
+            //プロジェクトの設定を使う
+            cellMapData->add(Lump::s16Data(proj->settings.wrapMode, "wrapmode"));        ///< テクスチャのラップモード
+            wrapMode = proj->settings.wrapMode;
+            cellMapData->add(Lump::s16Data(proj->settings.filterMode, "filtermode"));        ///< テクスチャのフィルタモード
+            filterMode = proj->settings.filterMode;
+        }
+        cellMapData->add(Lump::s16Data(0, "reserved"));    // reserved
 
-		//全角チェック
-		if ( isZenkaku( &cellMap->name ) == true )
-		{
-			std::cerr << "エラー：セルマップに全角が使用されています。半角英数でリネームしてください。: " << cellMap->name << "\n";
-			convert_error_exit = true;	//エラーが発生コンバート失敗
-		}
+        //全角チェック
+        if (isZenkaku(&cellMap->name)) {
+            const std::string msg = u8"エラー：セルマップに全角が使用されています。半角英数でリネームしてください。: " + cellMap->name;
+            throw SSException(msg, SSPC_ZENKAKU_ERROR);
+        }
 
-		if (cellMap->cells.size() == 0)
-		{
-			//セルマップにセルが１つも登録されていない場合はエラーにする
-			std::cerr << "エラー：セルマップにセルが存在しません。セルを１つ以上作成してください。: " << cellMap->name << "\n";
-			convert_error_exit = true;	//エラーが発生コンバート失敗
-			return 0;
-		}
-		for (size_t cellIndex = 0; cellIndex < cellMap->cells.size(); cellIndex++)
-		{
-			const SsCell* cell = cellMap->cells[cellIndex];
+        if (cellMap->cells.empty()) {
+            //セルマップにセルが１つも登録されていない場合はエラーにする
+            const std::string msg = u8"エラー：セルマップにセルが存在しません。セルを１つ以上作成してください。: " + cellMap->name;
+            throw SSException(msg, SSPC_NOT_CELL_IN_CELLMAP);
+        }
+        for (size_t cellIndex = 0; cellIndex < cellMap->cells.size(); cellIndex++) {
+            const spritestudio6::SsCell *cell = cellMap->cells[cellIndex];
 
-			Lump* cellData = Lump::set("ss::Cell", false, "Cell");
-			cellsData->add(cellData);
-			
-			cellData->add(Lump::stringData(cell->name, "name"));
-			cellData->add(cellMapData);
+            auto cellData = Lump::set("ss::Cell", false, "Cell");
+            cellsData->add(cellData);
 
-			cellData->add(Lump::s16Data((int)cellIndex, "indexInCellMap"));
-			cellData->add(Lump::s16Data((int)cell->pos.x, "x"));
-			cellData->add(Lump::s16Data((int)cell->pos.y, "y"));
-			cellData->add(Lump::s16Data((int)cell->size.x, "width"));
-			cellData->add(Lump::s16Data((int)cell->size.y, "height"));
-			cellData->add(Lump::s16Data(0, "reserved"));	// reserved
-			cellData->add(Lump::floatData(cell->pivot.x, "pivot_x"));
-			cellData->add(Lump::floatData(cell->pivot.y, "pivot_y"));
-			float u1 = cell->pos.x / cellMap->pixelSize.x;
-			float v1 = cell->pos.y / cellMap->pixelSize.y;
-			float u2 = ( cell->pos.x + cell->size.x ) / cellMap->pixelSize.x;
-			float v2 = ( cell->pos.y + cell->size.y ) / cellMap->pixelSize.y;
-			cellData->add(Lump::floatData(u1, "u1"));			//テクスチャのサイズを出力
-			cellData->add(Lump::floatData(v1, "v1"));
-			cellData->add(Lump::floatData(u2, "u2"));			//テクスチャのサイズを出力
-			cellData->add(Lump::floatData(v2, "v2"));
+            cellData->add(Lump::stringData(cell->name, "name"));
+            cellData->add(cellMapData);
 
-			//全角チェック
-			if (isZenkaku(&cell->name) == true)
-			{
-				std::cerr << "エラー：セルに全角が使用されています。半角英数でリネームしてください。: " << cell->name << "\n";
-				convert_error_exit = true;	//エラーが発生コンバート失敗
-				return 0;
-			}
-		}
-	}
+            cellData->add(Lump::s16Data((int) cellIndex, "indexInCellMap"));
+            cellData->add(Lump::s16Data((int) cell->pos.x, "x"));
+            cellData->add(Lump::s16Data((int) cell->pos.y, "y"));
+            cellData->add(Lump::s16Data((int) cell->size.x, "width"));
+            cellData->add(Lump::s16Data((int) cell->size.y, "height"));
+            cellData->add(Lump::s16Data(0, "reserved"));    // reserved
+            cellData->add(Lump::floatData(cell->pivot.x, "pivot_x"));
+            cellData->add(Lump::floatData(cell->pivot.y, "pivot_y"));
+            float u1 = cell->pos.x / cellMap->pixelSize.x;
+            float v1 = cell->pos.y / cellMap->pixelSize.y;
+            float u2 = (cell->pos.x + cell->size.x) / cellMap->pixelSize.x;
+            float v2 = (cell->pos.y + cell->size.y) / cellMap->pixelSize.y;
+            cellData->add(Lump::floatData(u1, "u1"));            //テクスチャのサイズを出力
+            cellData->add(Lump::floatData(v1, "v1"));
+            cellData->add(Lump::floatData(u2, "u2"));            //テクスチャのサイズを出力
+            cellData->add(Lump::floatData(v2, "v2"));
 
+            //全角チェック
+            if (isZenkaku(&cell->name)) {
+                const std::string msg = u8"エラー：セルに全角が使用されています。半角英数でリネームしてください。: " + cell->name;
+                throw SSException(msg, SSPC_ZENKAKU_ERROR);
+            }
+        }
+    }
+
+	COI( "convert animation" );
 	//アニメーション警告
-	if (proj->animeList.size() == 0)
-	{
-		std::cerr << "警告：アニメーションが存在しません" << "\n";
-		convert_error_exit = true;	//エラーが発生コンバート失敗
-		return 0;
-	}
+	if (proj->animeList.empty()) {
+        const std::string msg = u8"警告：アニメーションが存在しません";
+        throw SSException(msg, SSPC_NOT_ANIMATION);
+    }
+
+	std::set<const spritestudio6::SsPart*> error_parts;
+	auto error_once = [&](const spritestudio6::SsPart* part, const std::string& msg) {
+        if (error_parts.find(part) == error_parts.end()) {
+            COE(msg);
+            error_parts.insert(part);
+        }
+    };
+
 	// パーツ、アニメ情報
 	for (int packIndex = 0; packIndex < (int)proj->animeList.size(); packIndex++)
 	{
-		const SsAnimePack* animePack = proj->animeList[packIndex];
-		const SsModel& model = animePack->Model;
-		
+		const auto* animePack = proj->animeList[packIndex].get();
+		const auto& model = animePack->Model;
+
 		// AnimePackData
-		Lump* animePackData = Lump::set("ss::AnimePackData", false, "AnimePackData");
+		auto animePackData = Lump::set("ss::AnimePackData", false, "AnimePackData");
 		packDataArray->add(animePackData);
 
-		Lump* partDataArray = Lump::set("ss::PartData[]", true, "PartData");
-		Lump* animeDataArray = Lump::set("ss::AnimationData[]", true, "AnimationData");
+		auto partDataArray = Lump::set("ss::PartData[]", true, "PartData");
+		auto animeDataArray = Lump::set("ss::AnimationData[]", true, "AnimationData");
 
 		animePackData->add(Lump::stringData(animePack->name, "name"));
 
 		//全角チェック
-		if ( isZenkaku( &animePack->name ) == true )
-		{
-			std::cerr << "エラー：ファイル名に全角が使用されています。半角英数でリネームしてください。: " << animePack->name << "\n";
-			convert_error_exit = true;	//エラーが発生コンバート失敗
-			return 0;
-		}
+		if (isZenkaku(&animePack->name)) {
+            const std::string msg = u8"エラー：ファイル名に全角が使用されています。半角英数でリネームしてください。: " + animePack->name;
+            throw SSException(msg, SSPC_ZENKAKU_ERROR);
+        }
 		animePackData->add(partDataArray);
 		animePackData->add(animeDataArray);
 		animePackData->add(Lump::s16Data((int)model.partList.size(), "numParts"));
 		animePackData->add(Lump::s16Data((int)animePack->animeList.size(), "numAnimations"));
 
 		// パーツ情報（モデル）の出力
-		for (int partIndex = 0; partIndex < (int)model.partList.size(); partIndex++)
-		{
-			const SsPart* part = model.partList[partIndex];
+		for (const auto part : model.partList) {
+            // PartData
+            auto partData = Lump::set("ss::PartData", false, "PartData");
+            partDataArray->add(partData);
 
-			// PartData
-			Lump* partData = Lump::set("ss::PartData", false, "PartData" );
-			partDataArray->add(partData);
+            partData->add(Lump::stringData(part->name, "name"));
 
-			partData->add(Lump::stringData(part->name, "name"));
+            //全角チェック
+            if (isZenkaku(&part->name)) {
+                const std::string msg = u8"エラー：パーツ名に全角が使用されています。半角英数でリネームしてください。: " + part->name;
+                throw SSException(msg, SSPC_ZENKAKU_ERROR);
+            }
+            partData->add(Lump::s16Data(part->arrayIndex, "index"));
+            partData->add(Lump::s16Data(part->parentIndex, "parentIndex"));
 
-			//全角チェック
-			if ( isZenkaku( &part->name ) == true )
-			{
-				std::cerr << "エラー：パーツ名に全角が使用されています。半角英数でリネームしてください。: " << part->name << "\n";
-				convert_error_exit = true;	//エラーが発生コンバート失敗
-				return 0;
-			}
-			partData->add(Lump::s16Data(part->arrayIndex, "index"));
-			partData->add(Lump::s16Data(part->parentIndex, "parentIndex"));
+            //5.5対応5.3.5に無いパーツ種別がある場合ワーニングを表示する
+            switch (part->type) {
+                case spritestudio6::SsPartType::null:            // null。領域を持たずSRT情報のみ。ただし円形の当たり判定は設定可能。
+                case spritestudio6::SsPartType::normal:        // 通常パーツ。領域を持つ。画像は無くてもいい。
+                case spritestudio6::SsPartType::mask:            // 6.0マスクパーツ
+                case spritestudio6::SsPartType::constraint:    // 6.0コンストレイントパーツ
+                case spritestudio6::SsPartType::bonepoint:        // 6.0ボーンエフェクトパーツ
+                case spritestudio6::SsPartType::joint:            // 6.0ジョイントパーツ
+                case spritestudio6::SsPartType::armature:        // 6.0ボーンパーツ
+                case spritestudio6::SsPartType::mesh:            // 6.0メッシュパーツ
+                    partData->add(Lump::s16Data(part->type, "type"));
+                    break;
+                case spritestudio6::SsPartType::instance:        // インスタンス。他アニメ、パーツへの参照。シーン編集モードの代替になるもの
+                    //参照アニメのポインタが無い場合はNULLパーツになる。
+                {
+                    auto packname = part->refAnimePack;
+                    auto animename = part->refAnime;
+                    auto *refpack = proj->findAnimationPack(packname);
+                    auto *refanime = refpack->findAnimation(animename);
+                    if (refanime == nullptr) {
+                        partData->add(Lump::s16Data(spritestudio6::SsPartType::null, "type"));
+                        COE(u8"警告：参照のないインスタンスパーツが存在します: " + animePack->name + ".ssae " + part->name);
+                    } else {
+                        partData->add(Lump::s16Data(part->type, "type"));
+                    }
+                }
+                    break;
+                case spritestudio6::SsPartType::effect:        // 5.5エフェクトパーツ
+                    //参照エフェクト名が空の場合はNULLパーツになる。
+                    if (part->refEffectName.empty()) {
+                        partData->add(Lump::s16Data(spritestudio6::SsPartType::null, "type"));
+                        //未実装　ワーニングを表示しNULLパーツにする
+                        COE(u8"警告：参照のないエフェクトパーツが存在します: " + animePack->name + ".ssae " + part->name);
+                    } else {
+                        partData->add(Lump::s16Data(part->type, "type"));
+                    }
+                    break;
+                default:
+                    //未対応パーツ　ワーニングを表示しNULLパーツにする
+                    COE(u8"警告：未対応のパーツ種別が使われています: " + animePack->name + ".ssae " + part->name);
+                    partData->add(Lump::s16Data(spritestudio6::SsPartType::null, "type"));
+                    break;
+            }
+            partData->add(Lump::s16Data(part->boundsType, "boundsType"));
+            partData->add(Lump::s16Data(part->alphaBlendType, "alphaBlendType"));
+            partData->add(Lump::s16Data(0, "reserved"));    // reserved
 
-			//5.5対応5.3.5に無いパーツ種別がある場合ワーニングを表示する
-			switch (part->type)
-			{
-			case SsPartType::null:			// null。領域を持たずSRT情報のみ。ただし円形の当たり判定は設定可能。
-			case SsPartType::normal:		// 通常パーツ。領域を持つ。画像は無くてもいい。
-			case SsPartType::mask:			// 6.0マスクパーツ
-			case SsPartType::constraint:	// 6.0コンストレイントパーツ
-			case SsPartType::bonepoint:		// 6.0ボーンエフェクトパーツ
-			case SsPartType::joint:			// 6.0ジョイントパーツ
-			case SsPartType::armature:		// 6.0ボーンパーツ
-			case SsPartType::mesh:			// 6.0メッシュパーツ
-				partData->add(Lump::s16Data(part->type, "type"));
-				break;
-			case SsPartType::instance:		// インスタンス。他アニメ、パーツへの参照。シーン編集モードの代替になるもの
-				//参照アニメのポインタが無い場合はNULLパーツになる。
-				{
-					SsString packname = part->refAnimePack;
-					SsString animename = part->refAnime;
-					SsAnimePack* refpack = proj->findAnimationPack(packname);
-					SsAnimation* refanime = refpack->findAnimation(animename);
-					if (refanime == NULL)
-					{
-						partData->add(Lump::s16Data(SsPartType::null, "type"));
-						std::cerr << "警告：参照のないインスタンスパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
-					}
-					else
-					{
-						partData->add(Lump::s16Data(part->type, "type"));
-					}
-				}
-				break;
-			case SsPartType::effect:		// 5.5エフェクトパーツ
-				//参照エフェクト名が空の場合はNULLパーツになる。
-				if (part->refEffectName == "")
-				{
-					partData->add(Lump::s16Data(SsPartType::null, "type"));
-					//未実装　ワーニングを表示しNULLパーツにする
-					std::cerr << "警告：参照のないエフェクトパーツが存在します: " << animePack->name << ".ssae " << part->name << "\n";
-				}
-				else
-				{
-					partData->add(Lump::s16Data(part->type, "type"));
-				}
-				break;
-			default:
-				//未対応パーツ　ワーニングを表示しNULLパーツにする
-				std::cerr << "警告：未対応のパーツ種別が使われています: " << animePack->name << ".ssae " << part->name << "\n";
-				partData->add(Lump::s16Data(SsPartType::null, "type"));
-				break;
-			}
-			partData->add(Lump::s16Data(part->boundsType, "boundsType"));
-			partData->add(Lump::s16Data(part->alphaBlendType, "alphaBlendType"));
-			partData->add(Lump::s16Data(0, "reserved"));	// reserved
-
-			//インスタンスアニメ名
-			if ( part->refAnime == "" )
-			{
-				const SsString str = "";
+            //インスタンスアニメ名
+            if (part->refAnime.empty()) {
+                const spritestudio6::SsString str;
 //				partData->add(Lump::s16Data((int)str.length()));				//文字列のサイズ
-				partData->add(Lump::stringData(str, "refname"));							//文字列
-			}
-			else
-			{
-				const SsString str = part->refAnimePack + "/" + part->refAnime;
+                partData->add(Lump::stringData(str, "refname"));                            //文字列
+            } else {
+                const auto str = part->refAnimePack + "/" + part->refAnime;
 //				partData->add(Lump::s16Data((int)str.length()));				//文字列のサイズ
-				partData->add(Lump::stringData(str, "refname"));							//文字列
-			}
-			//エフェクト名
-			if (part->refEffectName == "")
-			{
-				const SsString str = "";
-				partData->add(Lump::stringData(str, "effectfilename"));							//文字列
-			}
-			else
-			{
-				const SsString str = part->refEffectName;
-				partData->add(Lump::stringData(str, "effectfilename"));							//文字列
-			}
-			//カラーラベル
-			const SsString str = part->colorLabel;
-			partData->add(Lump::stringData(str, "colorLabel"));								//文字列
+                partData->add(Lump::stringData(str, "refname"));                            //文字列
+            }
+            //エフェクト名
+            if (part->refEffectName.empty()) {
+                const spritestudio6::SsString str;
+                partData->add(Lump::stringData(str, "effectfilename"));                            //文字列
+            } else {
+                const auto str = part->refEffectName;
+                partData->add(Lump::stringData(str, "effectfilename"));                            //文字列
+            }
+            //カラーラベル
+            const auto str = part->colorLabel;
+            partData->add(Lump::stringData(str, "colorLabel"));                                //文字列
 
-			//マスク対象
-			partData->add(Lump::s16Data(part->maskInfluence, "maskInfluence"));
-
-		}
+            //マスク対象
+            partData->add(Lump::s16Data(part->maskInfluence, "maskInfluence"));
+        }
 
 		// アニメ情報の出力
-		SsCellMapList* cellMapList = new SsCellMapList();	// SsAnimeDecoderのデストラクタで破棄される
-		SsAnimeDecoder decoder;
+		auto* cellMapList = new spritestudio6::SsCellMapList();	// SsAnimeDecoderのデストラクタで破棄される
+		spritestudio6::SsAnimeDecoder decoder;
 //		const SsKeyframe* key;
 
-		for (int animeIndex = 0; animeIndex < (int)animePack->animeList.size(); animeIndex++)
-		{
-			SsAnimePack* animePack = proj->getAnimePackList()[packIndex];
-			SsModel* model = &animePack->Model;
-			SsAnimation* anime = animePack->animeList[animeIndex];
-			
+		for (int animeIndex = 0; animeIndex < (int)animePack->animeList.size(); animeIndex++) {
+			auto* animePack = proj->getAnimePack(packIndex);
+			auto* model = &animePack->Model;
+			auto* anime = animePack->animeList[animeIndex];
+
 			cellMapList->set(proj, animePack);
 			decoder.setAnimation(model, anime, cellMapList, proj);
-			std::list<SsPartState*>& partList = decoder.getPartSortList();
-			
+            auto& partList = decoder.getPartSortList();
+
 			// AnimationData
-			Lump* animeData = Lump::set("ss::AnimationData", false, "AnimationData");
+			auto animeData = Lump::set("ss::AnimationData", false, "AnimationData");
 			animeDataArray->add(animeData);
 
 			// パーツごとのアニメーションパラメータ初期値
 			// ※とりあえず先頭フレームの値を初期値にしているが、一番使われている値を初期値にすべきかも
 			size_t numParts = model->partList.size();
 			std::vector<PartInitialData> initialDataList;
-			
+
 			decoder.setPlayFrame(0);
 			decoder.update();
 
-			Lump* initialDataArray = Lump::set("ss::AnimationInitialData[]", true, "AnimationInitialData");
+			auto initialDataArray = Lump::set("ss::AnimationInitialData[]", true, "AnimationInitialData");
 			int sortedOrder = 0;
-			foreach(std::vector<SsPartAndAnime>, decoder.getPartAnime(), it)
-			{
-				SsPart* part = it->first;
-//				SsPartAnime* partAnime = it->second;
-				
-				const SsPartState* state = findState(partList, part->arrayIndex);
-				
-				PartInitialData init;
-				init.sortedOrder = sortedOrder++;
-				init.index = state->index;
 
-				int flags = 0;
-				int flags2 = 0;
-				if (state->hide)  flags |= PART_FLAG_INVISIBLE;
-				//イメージ反転を適用する
-				bool hFlip = state->hFlip ^ state->imageFlipH;
-				bool vFlip = state->vFlip ^ state->imageFlipV;
-				if (hFlip) flags |= PART_FLAG_FLIP_H;
-				if (vFlip) flags |= PART_FLAG_FLIP_V;
+            for (const auto& partAndAnime : decoder.getPartAnime()) {
+                auto *part = partAndAnime.first;
+//				spritestudio6::SsPartAnime* partAnime = partAndAnime.second;
 
-				init.lowflag = flags;
-				init.highflag = flags2;
+                const auto *state = findState(partList, part->arrayIndex);
+                if (!state) {
+                    throw SSException("Not Found", SSPC_INTERNAL_ERROR);
+                }
 
-				// cellIndex
-				int cellIndex = -1;
-				if (state->cellValue.cell) cellIndex = (*cellList)[state->cellValue.cell];
-				init.cellIndex = cellIndex;
-				
-				init.posX = state->position.x;
-				init.posY = state->position.y;
-				init.posZ = state->position.z;
-				init.pivotX = state->pivotOffset.x;
-				init.pivotY = state->pivotOffset.y;
-				init.rotationX = state->rotation.x;
-				init.rotationY = state->rotation.y;
-				init.rotationZ = state->rotation.z;
+                PartInitialData init{};
+                init.sortedOrder = sortedOrder++;
+                init.index = state->index;
 
-				init.scaleX = state->scale.x;
-				init.scaleY = state->scale.y;
-				init.localscaleX = state->localscale.x;
-				init.localscaleY = state->localscale.y;
+                int flags = 0;
+                int flags2 = 0;
+                if (state->hide) flags |= PART_FLAG_INVISIBLE;
+                //イメージ反転を適用する
+                bool hFlip = state->hFlip ^ state->imageFlipH;
+                bool vFlip = state->vFlip ^ state->imageFlipV;
+                if (hFlip) flags |= PART_FLAG_FLIP_H;
+                if (vFlip) flags |= PART_FLAG_FLIP_V;
 
-				init.opacity = (int)(state->alpha * 255);
-				init.localopacity = (int)(state->localalpha * 255);
+                init.lowflag = flags;
+                init.highflag = flags2;
 
-				//サイズはエディターでは初期値が1が設定されているが、
-				//本来であればキーがないときはセルのサイズが初期値になる
-				init.size_X = state->size.x;
-				init.size_Y = state->size.y;
-				SsCell * cell = state->cellValue.cell;
-				if ( cell )
-				{
-					//セルデータがある場合はセルのサイズを初期値にする
-					init.size_X = cell->size.x;
-					init.size_Y = cell->size.y;
-				}
-				//初期値をSSのディフォルトにする
+                // cellIndex
+                int cellIndex = -1;
+                if (state->cellValue.cell) cellIndex = (*cellList)[state->cellValue.cell];
+                init.cellIndex = cellIndex;
+
+                init.posX = state->position.x;
+                init.posY = state->position.y;
+                init.posZ = state->position.z;
+                init.pivotX = state->pivotOffset.x;
+                init.pivotY = state->pivotOffset.y;
+                init.rotationX = state->rotation.x;
+                init.rotationY = state->rotation.y;
+                init.rotationZ = state->rotation.z;
+
+                init.scaleX = state->scale.x;
+                init.scaleY = state->scale.y;
+                init.localscaleX = state->localscale.x;
+                init.localscaleY = state->localscale.y;
+
+                init.opacity = (int) (state->alpha * 255);
+                init.localopacity = (int) (state->localalpha * 255);
+
+                //サイズはエディターでは初期値が1が設定されているが、
+                //本来であればキーがないときはセルのサイズが初期値になる
+                init.size_X = state->size.x;
+                init.size_Y = state->size.y;
+                spritestudio6::SsCell *cell = state->cellValue.cell;
+                if (cell) {
+                    //セルデータがある場合はセルのサイズを初期値にする
+                    init.size_X = cell->size.x;
+                    init.size_Y = cell->size.y;
+                }
+                //初期値をSSのディフォルトにする
 /*
 				init.uv_move_X = state->uvTranslate.x;
 				init.uv_move_Y = state->uvTranslate.y;
@@ -653,144 +674,152 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				init.uv_scale_X = state->uvScale.x;
 				init.uv_scale_Y = state->uvScale.y;
 */
-				init.uv_move_X = 0;
-				init.uv_move_Y = 0;
-				init.uv_rotation = 0;
-				init.uv_scale_X = 1;
-				init.uv_scale_Y = 1;
-				init.boundingRadius = state->boundingRadius;
+                init.uv_move_X = 0;
+                init.uv_move_Y = 0;
+                init.uv_rotation = 0;
+                init.uv_scale_X = 1;
+                init.uv_scale_Y = 1;
+                init.boundingRadius = state->boundingRadius;
 
-				init.masklimen = state->masklimen;
-				init.priority = state->prio;
+                init.masklimen = state->masklimen;
+                init.priority = state->prio;
 
-				//インスタンス関連
-				init.instanceValue_curKeyframe = state->instanceValue.curKeyframe;
-				init.instanceValue_startFrame = state->instanceValue.startFrame;
-				init.instanceValue_endFrame = state->instanceValue.endFrame;
-				init.instanceValue_loopNum = state->instanceValue.loopNum;
-				init.instanceValue_speed = state->instanceValue.speed;
-				init.instanceValue_loopflag = state->instanceValue.loopflag;
-				//エフェクト関連
-				init.effectValue_startTime = state->effectValue.startTime;
-				init.effectValue_speed = state->effectValue.speed;
-				init.effectValue_loopflag = state->effectValue.loopflag;
-				init.effectValue_curKeyframe = state->effectValue.curKeyframe;
+                //インスタンス関連
+                init.instanceValue_curKeyframe = state->instanceValue.curKeyframe;
+                init.instanceValue_startFrame = state->instanceValue.startFrame;
+                init.instanceValue_endFrame = state->instanceValue.endFrame;
+                init.instanceValue_loopNum = state->instanceValue.loopNum;
+                init.instanceValue_speed = state->instanceValue.speed;
+                init.instanceValue_loopflag = state->instanceValue.loopflag;
+                //エフェクト関連
+                init.effectValue_startTime = state->effectValue.startTime;
+                init.effectValue_speed = state->effectValue.speed;
+                init.effectValue_loopflag = state->effectValue.loopflag;
+                init.effectValue_curKeyframe = state->effectValue.curKeyframe;
 
-				initialDataList.push_back(init);
-				
-				Lump* initialData = Lump::set("ss::AnimationInitialData", false, "AnimationInitialData");
-				initialDataArray->add(initialData);
+                initialDataList.push_back(init);
 
-				initialData->add(Lump::s16Data(init.index, "index"));
-				initialData->add(Lump::s16Data(0, "reserved")); //ダミーデータ
-				initialData->add(Lump::s32Data(init.lowflag, "lowflag"));
-				initialData->add(Lump::s32Data(init.highflag, "highflag"));
-				initialData->add(Lump::s16Data(init.priority, "priority"));
-				initialData->add(Lump::s16Data(init.cellIndex, "cellIndex"));
-				initialData->add(Lump::s16Data(init.opacity, "opacity"));
-				initialData->add(Lump::s16Data(init.localopacity, "localopacity"));
-				initialData->add(Lump::s16Data(init.masklimen, "masklimen"));
-				initialData->add(Lump::s16Data(0, "reserved")); //ダミーデータ
-				initialData->add(Lump::floatData(init.posX, "positionX"));
-				initialData->add(Lump::floatData(init.posY, "positionY"));
-				initialData->add(Lump::floatData(init.posZ, "positionZ"));
-				initialData->add(Lump::floatData(init.pivotX, "pivotX"));
-				initialData->add(Lump::floatData(init.pivotY, "pivotY"));
-				initialData->add(Lump::floatData(init.rotationX, "rotationX"));
-				initialData->add(Lump::floatData(init.rotationY, "rotationY"));
-				initialData->add(Lump::floatData(init.rotationZ, "rotationZ"));
-				initialData->add(Lump::floatData(init.scaleX, "scaleX"));
-				initialData->add(Lump::floatData(init.scaleY, "scaleY"));
-				initialData->add(Lump::floatData(init.localscaleX, "localscaleX"));
-				initialData->add(Lump::floatData(init.localscaleY, "localscaleY"));
-				initialData->add(Lump::floatData(init.size_X, "size_X"));
-				initialData->add(Lump::floatData(init.size_Y, "size_Y"));
-				initialData->add(Lump::floatData(init.uv_move_X, "uv_move_X"));
-				initialData->add(Lump::floatData(init.uv_move_Y, "uv_move_Y"));
-				initialData->add(Lump::floatData(init.uv_rotation, "uv_rotation"));
-				initialData->add(Lump::floatData(init.uv_scale_X, "uv_scale_X"));
-				initialData->add(Lump::floatData(init.uv_scale_Y, "uv_scale_Y"));
-				initialData->add(Lump::floatData(init.boundingRadius, "boundingRadius"));
-				//インスタンス関連
-				initialData->add(Lump::s32Data(init.instanceValue_curKeyframe, "instanceValue_curKeyframe"));
-				initialData->add(Lump::s32Data(init.instanceValue_startFrame, "instanceValue_startFrame"));
-				initialData->add(Lump::s32Data(init.instanceValue_endFrame, "instanceValue_endFrame"));
-				initialData->add(Lump::s32Data(init.instanceValue_loopNum, "instanceValue_loopNum"));
-				initialData->add(Lump::floatData(init.instanceValue_speed, "instanceValue_speed"));
-				initialData->add(Lump::s32Data(init.instanceValue_loopflag, "instanceValue_loopflag"));
-				//エフェクト関連
-				initialData->add(Lump::s32Data(init.effectValue_curKeyframe, "effectValue_curKeyframe"));
-				initialData->add(Lump::s32Data(init.effectValue_startTime, "effectValue_startTime"));
-				initialData->add(Lump::floatData(init.effectValue_speed, "effectValue_speed"));
-				initialData->add(Lump::s32Data(init.effectValue_loopflag, "effectValue_loopflag"));
-			}
+                auto initialData = Lump::set("ss::AnimationInitialData", false, "AnimationInitialData");
+                initialDataArray->add(initialData);
 
-			Lump* meshsDataUV = Lump::set("ss::ss_u16*[]", true, "meshsDataUV");
+                initialData->add(Lump::s16Data(init.index, "index"));
+                initialData->add(Lump::s16Data(0, "reserved")); //ダミーデータ
+                initialData->add(Lump::s32Data(init.lowflag, "lowflag"));
+                initialData->add(Lump::s32Data(init.highflag, "highflag"));
+                initialData->add(Lump::s16Data(init.priority, "priority"));
+                initialData->add(Lump::s16Data(init.cellIndex, "cellIndex"));
+                initialData->add(Lump::s16Data(init.opacity, "opacity"));
+                initialData->add(Lump::s16Data(init.localopacity, "localopacity"));
+                initialData->add(Lump::s16Data(init.masklimen, "masklimen"));
+                initialData->add(Lump::s16Data(0, "reserved")); //ダミーデータ
+                initialData->add(Lump::floatData(init.posX, "positionX"));
+                initialData->add(Lump::floatData(init.posY, "positionY"));
+                initialData->add(Lump::floatData(init.posZ, "positionZ"));
+                initialData->add(Lump::floatData(init.pivotX, "pivotX"));
+                initialData->add(Lump::floatData(init.pivotY, "pivotY"));
+                initialData->add(Lump::floatData(init.rotationX, "rotationX"));
+                initialData->add(Lump::floatData(init.rotationY, "rotationY"));
+                initialData->add(Lump::floatData(init.rotationZ, "rotationZ"));
+                initialData->add(Lump::floatData(init.scaleX, "scaleX"));
+                initialData->add(Lump::floatData(init.scaleY, "scaleY"));
+                initialData->add(Lump::floatData(init.localscaleX, "localscaleX"));
+                initialData->add(Lump::floatData(init.localscaleY, "localscaleY"));
+                initialData->add(Lump::floatData(init.size_X, "size_X"));
+                initialData->add(Lump::floatData(init.size_Y, "size_Y"));
+                initialData->add(Lump::floatData(init.uv_move_X, "uv_move_X"));
+                initialData->add(Lump::floatData(init.uv_move_Y, "uv_move_Y"));
+                initialData->add(Lump::floatData(init.uv_rotation, "uv_rotation"));
+                initialData->add(Lump::floatData(init.uv_scale_X, "uv_scale_X"));
+                initialData->add(Lump::floatData(init.uv_scale_Y, "uv_scale_Y"));
+                initialData->add(Lump::floatData(init.boundingRadius, "boundingRadius"));
+                //インスタンス関連
+                initialData->add(Lump::s32Data(init.instanceValue_curKeyframe, "instanceValue_curKeyframe"));
+                initialData->add(Lump::s32Data(init.instanceValue_startFrame, "instanceValue_startFrame"));
+                initialData->add(Lump::s32Data(init.instanceValue_endFrame, "instanceValue_endFrame"));
+                initialData->add(Lump::s32Data(init.instanceValue_loopNum, "instanceValue_loopNum"));
+                initialData->add(Lump::floatData(init.instanceValue_speed, "instanceValue_speed"));
+                initialData->add(Lump::s32Data(init.instanceValue_loopflag, "instanceValue_loopflag"));
+                //エフェクト関連
+                initialData->add(Lump::s32Data(init.effectValue_curKeyframe, "effectValue_curKeyframe"));
+                initialData->add(Lump::s32Data(init.effectValue_startTime, "effectValue_startTime"));
+                initialData->add(Lump::floatData(init.effectValue_speed, "effectValue_speed"));
+                initialData->add(Lump::s32Data(init.effectValue_loopflag, "effectValue_loopflag"));
+            }
+
+			auto meshsDataUV = Lump::set("ss::ss_u16*[]", true, "meshsDataUV");
+            {
+                decoder.setPlayFrame(0);
+                decoder.update();
+
+                for (const auto &partAndAnime: decoder.getPartAnime()) {
+                    const auto *part = partAndAnime.first;
+                    const auto *state = findState(partList, part->arrayIndex);
+
+                    //サイズ分のUV出力
+                    auto meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
+                    meshsDataUV->add(meshData);
+
+                    //メッシュのサイズを書き出す
+                    if (part->type == spritestudio6::SsPartType::mesh) {
+                        int meshsize = state->meshPart->ver_size;
+                        meshData->add(Lump::s32Data((int) state->meshPart->isBind, "isBind"));    //バインドの有無
+                        meshData->add(Lump::s32Data(meshsize, "meshsize"));    //サイズ
+                        int i;
+                        if (state->meshPart->uvs == nullptr) {
+                            const std::string msg = u8"エラー：メッシュパーツのUV情報が存在しません。ssae:" + animePack->name + " anime:" + anime->name + " part:" + part->name;
+                            error_once(part, msg);
+                        } else {
+                            auto &uvsRaw = *(state->meshPart->uvs);
+                            for (i = 0; i < meshsize; i++) {
+                                float u = uvsRaw[i * 2 + 0];
+                                float v = uvsRaw[i * 2 + 1];
+                                meshData->add(Lump::floatData(u, "u"));
+                                meshData->add(Lump::floatData(v, "v"));
+                            }
+                        }
+                    } else {
+                        meshData->add(Lump::s32Data(0, "isBind"));
+                    }
+                }
+            }
+
+			auto meshsDataIndices = Lump::set("ss::ss_u16*[]", true, "meshsDataIndices");
 			{
 				decoder.setPlayFrame(0);
 				decoder.update();
 
-				foreach(std::vector<SsPartAndAnime>, decoder.getPartAnime(), it)
+                for (const auto& partAndAnime : decoder.getPartAnime())
 				{
-					SsPart* part = it->first;
-					const SsPartState* state = findState(partList, part->arrayIndex);
+					const auto* part = partAndAnime.first;
+					const auto state = findState(partList, part->arrayIndex);
 
 					//サイズ分のUV出力
-					Lump* meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
-					meshsDataUV->add(meshData);
-
-					//メッシュのサイズを書き出す
-					if (part->type == SsPartType::mesh)
-					{
-						int meshsize = state->meshPart->ver_size;
-						meshData->add(Lump::s32Data((int)state->meshPart->isBind, "isBind"));	//バインドの有無
-						meshData->add(Lump::s32Data(meshsize, "meshsize"));	//サイズ
-						int i;
-						for (i = 0; i < meshsize; i++)
-						{
-							float u = state->meshPart->uvs[i * 2 + 0];
-							float v = state->meshPart->uvs[i * 2 + 1];
-							meshData->add(Lump::floatData(u, "u"));
-							meshData->add(Lump::floatData(v, "v"));
-						}
-					}
-					else
-					{
-						meshData->add(Lump::s32Data(0, "isBind"));
-					}
-
-				}
-
-			}
-
-			Lump* meshsDataIndices = Lump::set("ss::ss_u16*[]", true, "meshsDataIndices");
-			{
-				decoder.setPlayFrame(0);
-				decoder.update();
-
-				foreach(std::vector<SsPartAndAnime>, decoder.getPartAnime(), it)
-				{
-					SsPart* part = it->first;
-					const SsPartState* state = findState(partList, part->arrayIndex);
-
-					//サイズ分のUV出力
-					Lump* meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
+					auto meshData = Lump::set("ss::ss_u16*[]", true, "meshData");
 					meshsDataIndices->add(meshData);
 
 					//メッシュのサイズを書き出す
-					if (part->type == SsPartType::mesh)
+					if (part->type == spritestudio6::SsPartType::mesh)
 					{
 						int tri_size = state->meshPart->tri_size;
 						meshData->add(Lump::s32Data(tri_size, "tri_size"));	//サイズ
 						int i;
-						for (i = 0; i < tri_size; i++)
+                        auto& indicesRaw = *(state->meshPart->indices);
+						if (state->meshPart->indices == nullptr)
 						{
-							int po1 = (int)state->meshPart->indices[i * 3 + 0];
-							int po2 = (int)state->meshPart->indices[i * 3 + 1];
-							int po3 = (int)state->meshPart->indices[i * 3 + 2];
-							meshData->add(Lump::s32Data(po1, "po1"));
-							meshData->add(Lump::s32Data(po2, "po2"));
-							meshData->add(Lump::s32Data(po3, "po3"));
+                            const std::string msg = u8"エラー：メッシュパーツにメッシュ情報が存在しません。ssae: " + animePack->name + " anime:" + anime->name + " part:" + part->name;
+							error_once(part, msg);
+						}
+						else
+						{
+							for (i = 0; i < tri_size; i++)
+							{
+								int po1 = indicesRaw[i * 3 + 0];
+								int po2 = indicesRaw[i * 3 + 1];
+								int po3 = indicesRaw[i * 3 + 2];
+								meshData->add(Lump::s32Data(po1, "po1"));
+								meshData->add(Lump::s32Data(po2, "po2"));
+								meshData->add(Lump::s32Data(po3, "po3"));
+							}
 						}
 					}
 					else
@@ -800,18 +829,16 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 				}
 			}
 
-
 			// フレーム毎データ
-			Lump* frameDataIndexArray = Lump::set("ss::ss_u16*[]", true, "frameDataIndexArray");
+			auto frameDataIndexArray = Lump::set("ss::ss_u16*[]", true, "frameDataIndexArray");
 
-			for (int frame = 0; frame < decoder.getAnimeTotalFrame(); frame++)
-			{
-				// パラメータを計算し更新する
-				decoder.setPlayFrame(static_cast<float>(frame));
-				decoder.update();
-				
-				// パーツの描画順が初期値と変わっていないかチェックする
-				bool prioChanged = false;
+			for (int frame = 0; frame < decoder.getAnimeTotalFrame(); frame++) {
+                // パラメータを計算し更新する
+                decoder.setPlayFrame(static_cast<float>(frame));
+                decoder.update();
+
+                // パーツの描画順が初期値と変わっていないかチェックする
+                bool prioChanged = false;
 //				int initialDataListIndex = 0;
 //				foreach(std::list<SsPartState*>, partList, it)
 //				{
@@ -824,22 +851,20 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 //					}
 //				}
 
-				// パーツごとのデータを出力する
-				Lump* frameData = Lump::set("ss::ss_u16[]", true, "frameData");
-				frameDataIndexArray->add(frameData);
+                // パーツごとのデータを出力する
+                auto frameData = Lump::set("ss::ss_u16[]", true, "frameData");
+                frameDataIndexArray->add(frameData);
 
-				Lump* frameFlag = Lump::s16Data(0, "frameFlag");
+                auto frameFlag = Lump::s16Data(0, "frameFlag");
 //				frameData->add(frameFlag);
 
-				int outPartsCount = 0;
-				foreach(std::list<SsPartState*>, partList, it)
-				{
-					const SsPartState* state = *it;
-					//セルに設定された原点補正を取得
-					SsVector2 pivot;
-					pivot.x = 0;
-					pivot.y = 0;
-					//セルの原点情報はセル情報へ含める
+                int outPartsCount = 0;
+                for (const auto state: partList) {
+                    //セルに設定された原点補正を取得
+                    spritestudio6::SsVector2 pivot;
+                    pivot.x = 0;
+                    pivot.y = 0;
+                    //セルの原点情報はセル情報へ含める
 /*
 					SsCell * cell = state->cellValue.cell;
 					float cpx = 0;
@@ -859,503 +884,431 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 					pivot.x = cpx + state->pivotOffset.x;
 					pivot.y = cpy + -state->pivotOffset.y;
 */
-					pivot.x = state->pivotOffset.x;
-					pivot.y = state->pivotOffset.y;
+                    pivot.x = state->pivotOffset.x;
+                    pivot.y = state->pivotOffset.y;
 
 
-					int cellIndex = -1;
-					if (state->cellValue.cell) cellIndex = (*cellList)[state->cellValue.cell];
-					
-					// フラグのみパラメータ
-					int s_flags = 0;
-					if (state->hide)	s_flags |= PART_FLAG_INVISIBLE;
-					//イメージ反転を適用する
-					bool hFlip = state->hFlip ^ state->imageFlipH;
-					bool vFlip = state->vFlip ^ state->imageFlipV;
-					if (hFlip)			s_flags |= PART_FLAG_FLIP_H;
-					if (vFlip)			s_flags |= PART_FLAG_FLIP_V;
-					
-					// 以下、規定値のときは出力を省略する
-					int p_flags = 0;
-					const PartInitialData& init = initialDataList.at(state->index);
-					if (cellIndex != init.cellIndex)						p_flags |= PART_FLAG_CELL_INDEX;
-					if (state->position.x != init.posX)						p_flags |= PART_FLAG_POSITION_X;
-					if (state->position.y != init.posY)						p_flags |= PART_FLAG_POSITION_Y;
-					if (state->position.z != init.posZ)						p_flags |= PART_FLAG_POSITION_Z;
-					if (pivot.x != init.pivotX)								p_flags |= PART_FLAG_PIVOT_X;
-					if (pivot.y != init.pivotY)								p_flags |= PART_FLAG_PIVOT_Y;
-					if (state->rotation.x != init.rotationX)				p_flags |= PART_FLAG_ROTATIONX;
-					if (state->rotation.y != init.rotationY)				p_flags |= PART_FLAG_ROTATIONY;
-					if (state->rotation.z != init.rotationZ)				p_flags |= PART_FLAG_ROTATIONZ;
+                    int cellIndex = -1;
+                    if (state->cellValue.cell) cellIndex = (*cellList)[state->cellValue.cell];
 
-					if (state->scale.x != init.scaleX)						p_flags |= PART_FLAG_SCALE_X;
-					if (state->scale.y != init.scaleY)						p_flags |= PART_FLAG_SCALE_Y;
-					if (state->localscale.x != init.localscaleX)			p_flags |= PART_FLAG_LOCALSCALE_X;
-					if (state->localscale.y != init.localscaleY)			p_flags |= PART_FLAG_LOCALSCALE_Y;
-					if ((int)( state->alpha * 255 ) != init.opacity)		p_flags |= PART_FLAG_OPACITY;
-					if ((int)( state->localalpha * 255 ) != init.localopacity)		p_flags |= PART_FLAG_LOCALOPACITY;
-					if (state->size.x != init.size_X)						p_flags |= PART_FLAG_SIZE_X;
-					if (state->size.y != init.size_Y)						p_flags |= PART_FLAG_SIZE_Y;
-					if (state->uvTranslate.x != init.uv_move_X )			p_flags |= PART_FLAG_U_MOVE;
-					if (state->uvTranslate.y != init.uv_move_Y)				p_flags |= PART_FLAG_V_MOVE;
-					if (state->uvRotation != init.uv_rotation)				p_flags |= PART_FLAG_UV_ROTATION;
-					if (state->uvScale.x != init.uv_scale_X)				p_flags |= PART_FLAG_U_SCALE;
-					if (state->uvScale.y != init.uv_scale_Y)				p_flags |= PART_FLAG_V_SCALE;
-					if (state->boundingRadius != init.boundingRadius)		p_flags |= PART_FLAG_BOUNDINGRADIUS;
-					if (state->masklimen != init.masklimen)					p_flags |= PART_FLAG_MASK;
-					if (state->prio != init.priority)						p_flags |= PART_FLAG_PRIORITY;
-					//インスタンス情報出力チェック
-					if (state->refAnime)
-					{
-						//インスタンス関連
-						if (
-							(state->instanceValue.curKeyframe != init.instanceValue_curKeyframe)
-							|| (state->instanceValue.startFrame != init.instanceValue_startFrame)
-							|| (state->instanceValue.endFrame != init.instanceValue_endFrame)
-							|| (state->instanceValue.loopNum != init.instanceValue_loopNum)
-							|| (state->instanceValue.speed != init.instanceValue_speed)
-							|| (state->instanceValue.loopflag != init.instanceValue_loopflag)
-							)
-						{
-							p_flags |= PART_FLAG_INSTANCE_KEYFRAME;
-						}
-					}
-					//エフェクト情報の出力チェック
-					if (state->refEffect)
-					{
-						//エフェクト関連
-						if (
-							(state->effectValue.startTime != init.effectValue_startTime)
-							|| (state->effectValue.speed != init.effectValue_speed)
-							|| (state->effectValue.loopflag != init.effectValue_loopflag)
-							|| (state->effectValue.curKeyframe != init.effectValue_curKeyframe)
-							)
-						{
-							p_flags |= PART_FLAG_EFFECT_KEYFRAME;
-						}
-					}
+                    // フラグのみパラメータ
+                    int s_flags = 0;
+                    if (state->hide) s_flags |= PART_FLAG_INVISIBLE;
+                    //イメージ反転を適用する
+                    bool hFlip = state->hFlip ^ state->imageFlipH;
+                    bool vFlip = state->vFlip ^ state->imageFlipV;
+                    if (hFlip) s_flags |= PART_FLAG_FLIP_H;
+                    if (vFlip) s_flags |= PART_FLAG_FLIP_V;
 
-					// パーツカラー値を格納する必要があるかチェック
-					int cb_flags = 0;
-					if (state->is_parts_color)
-					{
-						switch (state->partsColorValue.target)
-						{
-							case SsColorBlendTarget::whole:
-								if ( 
-									  ( state->partsColorValue.color.rgba.a == 0 )
-								   && ( state->partsColorValue.color.rgba.r == 0 )
-								   && ( state->partsColorValue.color.rgba.g == 0 )
-								   && ( state->partsColorValue.color.rgba.b == 0 )
-								   )
-								{
-									//右のキーが単色、左のキーが4頂点などの場合に単色の色出力ができないため
-									//フラグがあるのに単色の色が設定されていない場合は4頂点カラーとして出力
-									cb_flags = VERTEX_FLAG_LT|VERTEX_FLAG_RT|VERTEX_FLAG_LB|VERTEX_FLAG_RB;
-								}
-								else
-								{
-									cb_flags = VERTEX_FLAG_ONE;
-								}
+                    // 以下、規定値のときは出力を省略する
+                    int p_flags = 0;
+                    const PartInitialData &init = initialDataList.at(state->index);
+                    if (cellIndex != init.cellIndex) p_flags |= PART_FLAG_CELL_INDEX;
+                    if (state->position.x != init.posX) p_flags |= PART_FLAG_POSITION_X;
+                    if (state->position.y != init.posY) p_flags |= PART_FLAG_POSITION_Y;
+                    if (state->position.z != init.posZ) p_flags |= PART_FLAG_POSITION_Z;
+                    if (pivot.x != init.pivotX) p_flags |= PART_FLAG_PIVOT_X;
+                    if (pivot.y != init.pivotY) p_flags |= PART_FLAG_PIVOT_Y;
+                    if (state->rotation.x != init.rotationX) p_flags |= PART_FLAG_ROTATIONX;
+                    if (state->rotation.y != init.rotationY) p_flags |= PART_FLAG_ROTATIONY;
+                    if (state->rotation.z != init.rotationZ) p_flags |= PART_FLAG_ROTATIONZ;
 
-								break;
-							case SsColorBlendTarget::vertex:
-								cb_flags = VERTEX_FLAG_LT|VERTEX_FLAG_RT|VERTEX_FLAG_LB|VERTEX_FLAG_RB;
-								break;
-							default:
-								// Unsupported
-								assert(false);
-								break;
-						}
-						
-						if (cb_flags) p_flags |= PART_FLAG_PARTS_COLOR;
-					}
+                    if (state->scale.x != init.scaleX) p_flags |= PART_FLAG_SCALE_X;
+                    if (state->scale.y != init.scaleY) p_flags |= PART_FLAG_SCALE_Y;
+                    if (state->localscale.x != init.localscaleX) p_flags |= PART_FLAG_LOCALSCALE_X;
+                    if (state->localscale.y != init.localscaleY) p_flags |= PART_FLAG_LOCALSCALE_Y;
+                    if ((int) (state->alpha * 255) != init.opacity) p_flags |= PART_FLAG_OPACITY;
+                    if ((int) (state->localalpha * 255) != init.localopacity) p_flags |= PART_FLAG_LOCALOPACITY;
+                    if (state->size.x != init.size_X) p_flags |= PART_FLAG_SIZE_X;
+                    if (state->size.y != init.size_Y) p_flags |= PART_FLAG_SIZE_Y;
+                    if (state->uvTranslate.x != init.uv_move_X) p_flags |= PART_FLAG_U_MOVE;
+                    if (state->uvTranslate.y != init.uv_move_Y) p_flags |= PART_FLAG_V_MOVE;
+                    if (state->uvRotation != init.uv_rotation) p_flags |= PART_FLAG_UV_ROTATION;
+                    if (state->uvScale.x != init.uv_scale_X) p_flags |= PART_FLAG_U_SCALE;
+                    if (state->uvScale.y != init.uv_scale_Y) p_flags |= PART_FLAG_V_SCALE;
+                    if (state->boundingRadius != init.boundingRadius) p_flags |= PART_FLAG_BOUNDINGRADIUS;
+                    if (state->masklimen != init.masklimen) p_flags |= PART_FLAG_MASK;
+                    if (state->prio != init.priority) p_flags |= PART_FLAG_PRIORITY;
+                    //インスタンス情報出力チェック
+                    if (state->refAnime) {
+                        //インスタンス関連
+                        if (
+                                (state->instanceValue.curKeyframe != init.instanceValue_curKeyframe)
+                                || (state->instanceValue.startFrame != init.instanceValue_startFrame)
+                                || (state->instanceValue.endFrame != init.instanceValue_endFrame)
+                                || (state->instanceValue.loopNum != init.instanceValue_loopNum)
+                                || (state->instanceValue.speed != init.instanceValue_speed)
+                                || (state->instanceValue.loopflag != init.instanceValue_loopflag)
+                                ) {
+                            p_flags |= PART_FLAG_INSTANCE_KEYFRAME;
+                        }
+                    }
+                    //エフェクト情報の出力チェック
+                    if (state->refEffect) {
+                        //エフェクト関連
+                        if (
+                                (state->effectValue.startTime != init.effectValue_startTime)
+                                || (state->effectValue.speed != init.effectValue_speed)
+                                || (state->effectValue.loopflag != init.effectValue_loopflag)
+                                || (state->effectValue.curKeyframe != init.effectValue_curKeyframe)
+                                ) {
+                            p_flags |= PART_FLAG_EFFECT_KEYFRAME;
+                        }
+                    }
 
-					// 頂点変形のオフセット値を格納する必要あるかチェック
-					int vt_flags = 0;
-					if (state->is_vertex_transform)
-					{
-						for (int vtxNo = 0; vtxNo < 4; vtxNo++)
-						{
-							if (proj->settings.vertexAnimeFloat != 0)
-							{
-								// 小数対応
-								if (
-								     ( state->vertexValue.offsets[vtxNo].x != 0.0f )
-								  || ( state->vertexValue.offsets[vtxNo].y != 0.0f)
-								   )
-								{
-									vt_flags |= 1 << vtxNo;
-								}
-							}
-							else
-							{
-								// 小数点以下切り捨てで
-								if (
-								     ( (int)state->vertexValue.offsets[vtxNo].x != 0 )
-								  || ( (int)state->vertexValue.offsets[vtxNo].y != 0 )
-								   )
-								{
-									vt_flags |= 1 << vtxNo;
-								}
-							}
-						}
+                    // パーツカラー値を格納する必要があるかチェック
+                    int cb_flags = 0;
+                    if (state->is_parts_color) {
+                        switch (state->partsColorValue.target) {
+                            case spritestudio6::SsColorBlendTarget::whole:
+                                if (
+                                        (state->partsColorValue.color.rgba.a == 0)
+                                        && (state->partsColorValue.color.rgba.r == 0)
+                                        && (state->partsColorValue.color.rgba.g == 0)
+                                        && (state->partsColorValue.color.rgba.b == 0)
+                                        ) {
+                                    //右のキーが単色、左のキーが4頂点などの場合に単色の色出力ができないため
+                                    //フラグがあるのに単色の色が設定されていない場合は4頂点カラーとして出力
+                                    cb_flags = VERTEX_FLAG_LT | VERTEX_FLAG_RT | VERTEX_FLAG_LB | VERTEX_FLAG_RB;
+                                } else {
+                                    cb_flags = VERTEX_FLAG_ONE;
+                                }
 
-						if (vt_flags) p_flags |= PART_FLAG_VERTEX_TRANSFORM;
-					}
+                                break;
+                            case spritestudio6::SsColorBlendTarget::vertex:
+                                cb_flags = VERTEX_FLAG_LT | VERTEX_FLAG_RT | VERTEX_FLAG_LB | VERTEX_FLAG_RB;
+                                break;
+                            default:
+                                // Unsupported
+                                assert(false);
+                                break;
+                        }
 
-					int p_flags2 = 0;
-					//メッシュ情報を出力する必要があるかチェックする
-					if (state->partType == SsPartType::mesh)
-					{
-						p_flags2 |= PART_FLAG_MESHDATA;
-					}
+                        if (cb_flags) p_flags |= PART_FLAG_PARTS_COLOR;
+                    }
 
-					
+                    // 頂点変形のオフセット値を格納する必要あるかチェック
+                    int vt_flags = 0;
+                    if (state->is_vertex_transform) {
+                        for (int vtxNo = 0; vtxNo < 4; vtxNo++) {
+                            if (proj->settings.vertexAnimeFloat != 0) {
+                                // 小数対応
+                                if (
+                                        (state->vertexValue.offsets[vtxNo].x != 0.0f)
+                                        || (state->vertexValue.offsets[vtxNo].y != 0.0f)
+                                        ) {
+                                    vt_flags |= 1 << vtxNo;
+                                }
+                            } else {
+                                // 小数点以下切り捨てで
+                                if (
+                                        ((int) state->vertexValue.offsets[vtxNo].x != 0)
+                                        || ((int) state->vertexValue.offsets[vtxNo].y != 0)
+                                        ) {
+                                    vt_flags |= 1 << vtxNo;
+                                }
+                            }
+                        }
+
+                        if (vt_flags) p_flags |= PART_FLAG_VERTEX_TRANSFORM;
+                    }
+
+                    int p_flags2 = 0;
+                    //メッシュ情報を出力する必要があるかチェックする
+                    if (state->partType == spritestudio6::SsPartType::mesh) {
+                        p_flags2 |= PART_FLAG_MESHDATA;
+                    }
+
+
 
 //					if (!prioChanged && s_flags == init.flags && p_flags == 0)
 //					{
 //						// このパーツは出力を省略する
 //						continue;
 //					}
-					
-					// パーツの座標値、回転、スケールなどを出力する
-					std::string tagname = "part_" + std::to_string(outPartsCount) + "_";
-					outPartsCount++;
-					frameData->add(Lump::s16Data(state->index, tagname + "index"));
+
+                    // パーツの座標値、回転、スケールなどを出力する
+                    std::string tagname = "part_" + std::to_string(outPartsCount) + "_";
+                    outPartsCount++;
+                    frameData->add(Lump::s16Data(state->index, tagname + "index"));
 //					frameData->add(Lump::s16Data(0));				//32bitアライメント用ダミーデータ
-					frameData->add(Lump::s32Data(s_flags | p_flags, tagname + "flag1"));
-					c32.ui = s_flags | p_flags;
-					//intで出力すると上位ビットが立った場合に丸めが発生するので、floatで出力し、プレイヤーではbitを整数で扱う事になる
-					frameData->add(Lump::s32Data(p_flags2, tagname + "flag2"));
-					c32.ui = p_flags2;
-					//intで出力すると上位ビットが立った場合に丸めが発生するので、floatで出力し、プレイヤーではbitを整数で扱う事になる
+                    frameData->add(Lump::s32Data(s_flags | p_flags, tagname + "flag1"));
+                    //intで出力すると上位ビットが立った場合に丸めが発生するので、floatで出力し、プレイヤーではbitを整数で扱う事になる
+                    frameData->add(Lump::s32Data(p_flags2, tagname + "flag2"));
+                    //intで出力すると上位ビットが立った場合に丸めが発生するので、floatで出力し、プレイヤーではbitを整数で扱う事になる
 
-					if (p_flags & PART_FLAG_CELL_INDEX)
-					{
-						frameData->add(Lump::s16Data(cellIndex, tagname + "cellIndex"));
-					}
-					if (p_flags & PART_FLAG_POSITION_X)
-					{
-						frameData->add(Lump::floatData(state->position.x, tagname + "position_x"));
-					}
-					if (p_flags & PART_FLAG_POSITION_Y)
-					{
-						frameData->add(Lump::floatData(state->position.y, tagname + "position_y"));
-					}
-					if (p_flags & PART_FLAG_POSITION_Z)
-					{
-						frameData->add(Lump::floatData(state->position.z, tagname + "position_z"));
-					}
+                    if (p_flags & PART_FLAG_CELL_INDEX) {
+                        frameData->add(Lump::s16Data(cellIndex, tagname + "cellIndex"));
+                    }
+                    if (p_flags & PART_FLAG_POSITION_X) {
+                        frameData->add(Lump::floatData(state->position.x, tagname + "position_x"));
+                    }
+                    if (p_flags & PART_FLAG_POSITION_Y) {
+                        frameData->add(Lump::floatData(state->position.y, tagname + "position_y"));
+                    }
+                    if (p_flags & PART_FLAG_POSITION_Z) {
+                        frameData->add(Lump::floatData(state->position.z, tagname + "position_z"));
+                    }
 
-					if (p_flags & PART_FLAG_PIVOT_X)
-					{
-						frameData->add(Lump::floatData(pivot.x, tagname + "pivot_x"));
-					}
-					if (p_flags & PART_FLAG_PIVOT_Y)
-					{
-						frameData->add(Lump::floatData(pivot.y, tagname + "pivot_y"));
-					}
-					if (p_flags & PART_FLAG_ROTATIONX)
-					{
-						frameData->add(Lump::floatData(state->rotation.x, tagname + "rotation_x"));	// degree
-					}
-					if (p_flags & PART_FLAG_ROTATIONY)
-					{
-						frameData->add(Lump::floatData(state->rotation.y, tagname + "rotation_y"));	// degree
-					}
-					if (p_flags & PART_FLAG_ROTATIONZ)
-					{
-						frameData->add(Lump::floatData(state->rotation.z, tagname + "rotation_z"));	// degree
-					}
-					if (p_flags & PART_FLAG_SCALE_X)
-					{
-						frameData->add(Lump::floatData(state->scale.x, tagname + "scale_x"));
-					}
-					if (p_flags & PART_FLAG_SCALE_Y)
-					{
-						frameData->add(Lump::floatData(state->scale.y, tagname + "scale_y"));
-					}
-					if (p_flags & PART_FLAG_LOCALSCALE_X)
-					{
-						frameData->add(Lump::floatData(state->localscale.x, tagname + "localscale_x"));
-					}
-					if (p_flags & PART_FLAG_LOCALSCALE_Y)
-					{
-						frameData->add(Lump::floatData(state->localscale.y, tagname + "localscale_y"));
-					}
-					if (p_flags & PART_FLAG_OPACITY)
-					{
-						frameData->add(Lump::s16Data((int)(state->alpha * 255), tagname + "alpha"));
-					}
-					if (p_flags & PART_FLAG_LOCALOPACITY)
-					{
-						frameData->add(Lump::s16Data((int)(state->localalpha * 255), tagname + "localalpha"));
-					}
+                    if (p_flags & PART_FLAG_PIVOT_X) {
+                        frameData->add(Lump::floatData(pivot.x, tagname + "pivot_x"));
+                    }
+                    if (p_flags & PART_FLAG_PIVOT_Y) {
+                        frameData->add(Lump::floatData(pivot.y, tagname + "pivot_y"));
+                    }
+                    if (p_flags & PART_FLAG_ROTATIONX) {
+                        frameData->add(Lump::floatData(state->rotation.x, tagname + "rotation_x"));    // degree
+                    }
+                    if (p_flags & PART_FLAG_ROTATIONY) {
+                        frameData->add(Lump::floatData(state->rotation.y, tagname + "rotation_y"));    // degree
+                    }
+                    if (p_flags & PART_FLAG_ROTATIONZ) {
+                        frameData->add(Lump::floatData(state->rotation.z, tagname + "rotation_z"));    // degree
+                    }
+                    if (p_flags & PART_FLAG_SCALE_X) {
+                        frameData->add(Lump::floatData(state->scale.x, tagname + "scale_x"));
+                    }
+                    if (p_flags & PART_FLAG_SCALE_Y) {
+                        frameData->add(Lump::floatData(state->scale.y, tagname + "scale_y"));
+                    }
+                    if (p_flags & PART_FLAG_LOCALSCALE_X) {
+                        frameData->add(Lump::floatData(state->localscale.x, tagname + "localscale_x"));
+                    }
+                    if (p_flags & PART_FLAG_LOCALSCALE_Y) {
+                        frameData->add(Lump::floatData(state->localscale.y, tagname + "localscale_y"));
+                    }
+                    if (p_flags & PART_FLAG_OPACITY) {
+                        frameData->add(Lump::s16Data((int) (state->alpha * 255), tagname + "alpha"));
+                    }
+                    if (p_flags & PART_FLAG_LOCALOPACITY) {
+                        frameData->add(Lump::s16Data((int) (state->localalpha * 255), tagname + "localalpha"));
+                    }
 
-					if (p_flags & PART_FLAG_SIZE_X)
-					{
-						frameData->add(Lump::floatData(state->size.x, tagname + "size_x"));
-					}
-					if (p_flags & PART_FLAG_SIZE_Y)
-					{
-						frameData->add(Lump::floatData(state->size.y, tagname + "size_y"));
-					}
+                    if (p_flags & PART_FLAG_SIZE_X) {
+                        frameData->add(Lump::floatData(state->size.x, tagname + "size_x"));
+                    }
+                    if (p_flags & PART_FLAG_SIZE_Y) {
+                        frameData->add(Lump::floatData(state->size.y, tagname + "size_y"));
+                    }
 
-					if (p_flags & PART_FLAG_U_MOVE)
-					{
-						frameData->add(Lump::floatData(state->uvTranslate.x, tagname + "uvTranslate.x"));
-					}
-					if (p_flags & PART_FLAG_V_MOVE)
-					{
-						frameData->add(Lump::floatData(state->uvTranslate.y, tagname + "uvTranslate.y"));
-					}
-					if (p_flags & PART_FLAG_UV_ROTATION)
-					{
-						frameData->add(Lump::floatData(state->uvRotation, tagname + "uvRotation"));
-					}
-					if (p_flags & PART_FLAG_U_SCALE)
-					{
-						frameData->add(Lump::floatData(state->uvScale.x, tagname + "uvScale_x"));
-					}
-					if (p_flags & PART_FLAG_V_SCALE)
-					{
-						frameData->add(Lump::floatData(state->uvScale.y, tagname + "uvScale_y"));
-					}
+                    if (p_flags & PART_FLAG_U_MOVE) {
+                        frameData->add(Lump::floatData(state->uvTranslate.x, tagname + "uvTranslate.x"));
+                    }
+                    if (p_flags & PART_FLAG_V_MOVE) {
+                        frameData->add(Lump::floatData(state->uvTranslate.y, tagname + "uvTranslate.y"));
+                    }
+                    if (p_flags & PART_FLAG_UV_ROTATION) {
+                        frameData->add(Lump::floatData(state->uvRotation, tagname + "uvRotation"));
+                    }
+                    if (p_flags & PART_FLAG_U_SCALE) {
+                        frameData->add(Lump::floatData(state->uvScale.x, tagname + "uvScale_x"));
+                    }
+                    if (p_flags & PART_FLAG_V_SCALE) {
+                        frameData->add(Lump::floatData(state->uvScale.y, tagname + "uvScale_y"));
+                    }
 
-					if (p_flags & PART_FLAG_BOUNDINGRADIUS)
-					{
-						frameData->add(Lump::floatData(state->boundingRadius, tagname + "boundingRadius"));
-					}
+                    if (p_flags & PART_FLAG_BOUNDINGRADIUS) {
+                        frameData->add(Lump::floatData(state->boundingRadius, tagname + "boundingRadius"));
+                    }
 
-					if (p_flags & PART_FLAG_MASK)
-					{
-						frameData->add(Lump::s16Data(state->masklimen, tagname + "masklimen"));
-					}
-					if (p_flags & PART_FLAG_PRIORITY)
-					{
-						frameData->add(Lump::s16Data(state->prio, tagname + "prio"));
-					}
+                    if (p_flags & PART_FLAG_MASK) {
+                        frameData->add(Lump::s16Data(state->masklimen, tagname + "masklimen"));
+                    }
+                    if (p_flags & PART_FLAG_PRIORITY) {
+                        frameData->add(Lump::s16Data(state->prio, tagname + "prio"));
+                    }
 
-					//インスタンス情報出力
-					if (p_flags & PART_FLAG_INSTANCE_KEYFRAME)
-					{
-						frameData->add(Lump::s32Data(state->instanceValue.curKeyframe, tagname + "instanceValue_curKeyframe"));
-						c32.i = state->instanceValue.curKeyframe;
-						frameData->add(Lump::s32Data(state->instanceValue.startFrame, tagname + "instanceValue_startFrame"));
-						c32.i = state->instanceValue.startFrame;
-						frameData->add(Lump::s32Data(state->instanceValue.endFrame, tagname + "instanceValue_endFrame"));
-						c32.i = state->instanceValue.endFrame;
-						frameData->add(Lump::s32Data(state->instanceValue.loopNum, tagname + "instanceValue_loopNum"));
-						c32.i = state->instanceValue.loopNum;
-						frameData->add(Lump::floatData(state->instanceValue.speed, tagname + "instanceValue_speed"));
-						frameData->add(Lump::s32Data(state->instanceValue.loopflag, tagname + "instanceValue_loopflag"));
-						c32.i = state->instanceValue.loopflag;
-					}
-					//エフェクト情報出力
-					if (p_flags & PART_FLAG_EFFECT_KEYFRAME)
-					{
-						frameData->add(Lump::s32Data(state->effectValue.curKeyframe, tagname + "effectValue_curKeyframe"));	//キー配置フレーム
-						c32.i = state->effectValue.curKeyframe;
-						frameData->add(Lump::s32Data(state->effectValue.startTime, tagname + "effectValue_startTime"));	//開始フレーム
-						c32.i = state->effectValue.startTime;
-						frameData->add(Lump::floatData(state->effectValue.speed, tagname + "effectValue_speed"));		//再生速度
-						frameData->add(Lump::s32Data(state->effectValue.loopflag, tagname + "effectValue_loopflag"));		//独立動作
-						c32.i = state->effectValue.loopflag;
-					}
+                    //インスタンス情報出力
+                    if (p_flags & PART_FLAG_INSTANCE_KEYFRAME) {
+                        frameData->add(Lump::s32Data(state->instanceValue.curKeyframe, tagname + "instanceValue_curKeyframe"));
+                        frameData->add(Lump::s32Data(state->instanceValue.startFrame, tagname + "instanceValue_startFrame"));
+                        frameData->add(Lump::s32Data(state->instanceValue.endFrame, tagname + "instanceValue_endFrame"));
+                        frameData->add(Lump::s32Data(state->instanceValue.loopNum, tagname + "instanceValue_loopNum"));
+                        frameData->add(Lump::floatData(state->instanceValue.speed, tagname + "instanceValue_speed"));
+                        frameData->add(Lump::s32Data(state->instanceValue.loopflag, tagname + "instanceValue_loopflag"));
+                    }
+                    //エフェクト情報出力
+                    if (p_flags & PART_FLAG_EFFECT_KEYFRAME) {
+                        frameData->add(Lump::s32Data(state->effectValue.curKeyframe,tagname + "effectValue_curKeyframe"));    //キー配置フレーム
+                        frameData->add(Lump::s32Data(state->effectValue.startTime,tagname + "effectValue_startTime"));    //開始フレーム
+                        frameData->add(Lump::floatData(state->effectValue.speed, tagname + "effectValue_speed"));        //再生速度
+                        frameData->add(Lump::s32Data(state->effectValue.loopflag,tagname + "effectValue_loopflag"));        //独立動作
+                    }
 
+                    // 頂点変形データ
+                    if (p_flags & PART_FLAG_VERTEX_TRANSFORM) {
+                        // どの頂点のオフセット値が格納されているかのフラグ
+                        frameData->add(Lump::s16Data(vt_flags));
 
-					// 頂点変形データ
-					if (p_flags & PART_FLAG_VERTEX_TRANSFORM)
-					{
-						// どの頂点のオフセット値が格納されているかのフラグ
-						frameData->add(Lump::s16Data(vt_flags));
+                        // 各頂点のオフセット値
+                        for (int vtxNo = 0; vtxNo < 4; vtxNo++) {
+                            if (vt_flags & (1 << vtxNo)) {
+                                std::string tagname_x = tagname + "vertexValue.offsets_" + std::to_string(vtxNo) + "_x";
+                                std::string tagname_y = tagname + "vertexValue.offsets_" + std::to_string(vtxNo) + "_x";
+                                if (proj->settings.vertexAnimeFloat != 0) {
+                                    //頂点変形の少数対応
+                                    frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].x, tagname_x));
+                                    frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].y, tagname_y));
+                                } else {
+                                    frameData->add(Lump::floatData((float) ((int) state->vertexValue.offsets[vtxNo].x),tagname_x));
+                                    frameData->add(Lump::floatData((float) ((int) state->vertexValue.offsets[vtxNo].y),tagname_y));
+                                }
+                            }
+                        }
+                    }
 
-						// 各頂点のオフセット値
-						for (int vtxNo = 0; vtxNo < 4; vtxNo++)
-						{
-							if (vt_flags & (1 << vtxNo))
-							{
-								std::string tagname_x = tagname + "vertexValue.offsets_" + std::to_string(vtxNo) + "_x";
-								std::string tagname_y = tagname + "vertexValue.offsets_" + std::to_string(vtxNo) + "_x";
-								if (proj->settings.vertexAnimeFloat != 0)
-								{
-									//頂点変形の少数対応
-									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].x, tagname_x));
-									frameData->add(Lump::floatData(state->vertexValue.offsets[vtxNo].y, tagname_y));
-								}
-								else
-								{
-									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].x, tagname_x));
-									frameData->add(Lump::floatData((int)state->vertexValue.offsets[vtxNo].y, tagname_y));
-								}
-							}
-						}
-					}
+                    // パーツカラーデータ
+                    if (p_flags & PART_FLAG_PARTS_COLOR) {
+                        // ブレンド方法と、単色もしくはどの頂点に対するカラー値が格納されているかをu16にまとめる
+                        int typeAndFlags = (int) state->partsColorValue.blendType | (cb_flags << 8);
+                        frameData->add(Lump::s16Data(typeAndFlags));
 
-					// パーツカラーデータ
-					if (p_flags & PART_FLAG_PARTS_COLOR)
-					{
-						// ブレンド方法と、単色もしくはどの頂点に対するカラー値が格納されているかをu16にまとめる
-						int typeAndFlags = (int)state->partsColorValue.blendType | (cb_flags << 8);
-						frameData->add(Lump::s16Data(typeAndFlags));
+                        if (cb_flags & VERTEX_FLAG_ONE) {
+                            frameData->add(Lump::floatData(state->partsColorValue.color.rate,
+                                                           tagname + "partsColorValue_color_rate"));
+                            frameData->add(Lump::colorData(state->partsColorValue.color.rgba.toARGB(),
+                                                           tagname + "partsColorValue_color_rgba"));
+                        } else {
+                            for (int vtxNo = 0; vtxNo < 4; vtxNo++) {
+                                std::string tagname_rate =
+                                        tagname + "partsColorValue_colors_" + std::to_string(vtxNo) + "_rate";
+                                std::string tagname_rgba =
+                                        tagname + "partsColorValue_colors_" + std::to_string(vtxNo) + "_rgba";
+                                if (cb_flags & (1 << vtxNo)) {
+                                    frameData->add(
+                                            Lump::floatData(state->partsColorValue.colors[vtxNo].rate, tagname_rate));
+                                    frameData->add(Lump::colorData(state->partsColorValue.colors[vtxNo].rgba.toARGB(),
+                                                                   tagname_rgba));
+                                }
+                            }
+                        }
+                    }
+                    //メッシュ情報を出力する必要があるかチェックする
+                    if (p_flags2 & PART_FLAG_MESHDATA) {
+                        //頂点情報を出力
 
-						if (cb_flags & VERTEX_FLAG_ONE)
-						{
-							frameData->add(Lump::floatData(state->partsColorValue.color.rate, tagname + "partsColorValue_color_rate"));
-							frameData->add(Lump::colorData(state->partsColorValue.color.rgba.toARGB(), tagname + "partsColorValue_color_rgba"));
-						}
-						else
-						{
-							for (int vtxNo = 0; vtxNo < 4; vtxNo++)
-							{
-								std::string tagname_rate = tagname + "partsColorValue_colors_" + std::to_string(vtxNo) + "_rate";
-								std::string tagname_rgba = tagname + "partsColorValue_colors_" + std::to_string(vtxNo) + "_rgba";
-								if (cb_flags & (1 << vtxNo))
-								{
-									frameData->add(Lump::floatData(state->partsColorValue.colors[vtxNo].rate, tagname_rate));
-									frameData->add(Lump::colorData(state->partsColorValue.colors[vtxNo].rgba.toARGB(), tagname_rgba));
-								}
-							}
-						}
-					}
-					//メッシュ情報を出力する必要があるかチェックする
-					if (p_flags2 & PART_FLAG_MESHDATA)
-					{
-						//頂点情報を出力
-						int i;
-						int size = state->meshPart->ver_size;
-						for (i = 0; i < size; i++)
-						{
-							std::string tagname_mesh_x = tagname + "mesh_" + std::to_string(i) + "_x";
-							std::string tagname_mesh_y = tagname + "mesh_" + std::to_string(i) + "_y";
-							std::string tagname_mesh_z = tagname + "mesh_" + std::to_string(i) + "_z";
+                        if (state->meshPart->draw_vertices == nullptr) {
+                            error_once(state->part,
+                                       "エラー：メッシュパーツに頂点情報が存在しません。ssae: " + animePack->name +
+                                       " anime:" + anime->name + " part:" + state->part->name);
+                        } else {
+                            int i;
+                            int size = state->meshPart->ver_size;
+                            auto &draw_verticesRaw = *(state->meshPart->draw_vertices);
+                            for (i = 0; i < size; i++) {
+                                std::string tagname_mesh_x = tagname + "mesh_" + std::to_string(i) + "_x";
+                                std::string tagname_mesh_y = tagname + "mesh_" + std::to_string(i) + "_y";
+                                std::string tagname_mesh_z = tagname + "mesh_" + std::to_string(i) + "_z";
 
-							float mesh_x = state->meshPart->draw_vertices[i * 3 + 0];
-							float mesh_y = state->meshPart->draw_vertices[i * 3 + 1];
-							float mesh_z = state->meshPart->draw_vertices[i * 3 + 2];
-							frameData->add(Lump::floatData(mesh_x, tagname_mesh_x));		//x
-							frameData->add(Lump::floatData(mesh_y, tagname_mesh_y));		//y
-							frameData->add(Lump::floatData(mesh_z, tagname_mesh_z));		//z
-						}
-					}
-				}
-				
-				// 出力されたパーツ数と、描画順の変更があるかのフラグ
-				frameFlag->data.i = outPartsCount | (prioChanged ? 0x8000 : 0);
+                                float mesh_x = draw_verticesRaw[i * 3 + 0];
+                                float mesh_y = draw_verticesRaw[i * 3 + 1];
+                                float mesh_z = draw_verticesRaw[i * 3 + 2];
+                                frameData->add(Lump::floatData(mesh_x, tagname_mesh_x));        //x
+                                frameData->add(Lump::floatData(mesh_y, tagname_mesh_y));        //y
+                                frameData->add(Lump::floatData(mesh_z, tagname_mesh_z));        //z
+                            }
+                        }
+                    }
+                }
 
-			}
+                // 出力されたパーツ数と、描画順の変更があるかのフラグ
+                frameFlag->data.i = outPartsCount | (prioChanged ? 0x8000 : 0);
+            }
 
 			// ユーザーデータ
-			Lump* userDataIndexArray = Lump::set("ss::ss_u16*[]", true, "userDataIndexArray");
+			auto userDataIndexArray = Lump::set("ss::ss_u16*[]", true, "userDataIndexArray");
 			bool hasUserData = false;
 
-			for (int frame = 0; frame < decoder.getAnimeTotalFrame(); frame++)
-			{
-				Lump* userData = Lump::set("ss::ss_u16[]", true, "userData");
-				int partsCount = 0;
+			for (int frame = 0; frame < decoder.getAnimeTotalFrame(); frame++) {
+                auto userData = Lump::set("ss::ss_u16[]", true, "userData");
+                int partsCount = 0;
 
-				foreach(std::vector<SsPartAndAnime>, decoder.getPartAnime(), it)
-				{
-					SsPart* part = it->first;
-					SsPartAnime* partAnime = it->second;
-					if (!partAnime) continue;
+                for (const auto &partAndAnime: decoder.getPartAnime()) {
+                    auto *part = partAndAnime.first;
+                    auto *partAnime = partAndAnime.second;
+                    if (!partAnime) continue;
 
-					foreach(SsAttributeList, partAnime->attributes, attrIt)
-					{
-						SsAttribute* attr = *attrIt;
-						if (attr->tag != SsAttributeKind::user) continue;
+                    for (const auto attr: partAnime->attributes) {
+                        if (attr->tag != spritestudio6::SsAttributeKind::user) continue;
 
-						// このフレームのデータを含む?
-						if (attr->key_dic.find(frame) != attr->key_dic.end())
-						{
-							hasUserData = true;
-							partsCount++;
-							
-							const SsKeyframe* keyframe = attr->key_dic.at(frame);
-							SsUserDataAnime udat;
-							GetSsUserDataAnime(keyframe, udat);
+                        // このフレームのデータを含む?
+                        if (attr->key_dic.find(frame) != attr->key_dic.end()) {
+                            hasUserData = true;
+                            partsCount++;
 
-							int flags = 0;
-							if (udat.useInteger) flags |= USER_DATA_FLAG_INTEGER;
-							if (udat.useRect)    flags |= USER_DATA_FLAG_RECT;
-							if (udat.usePoint)   flags |= USER_DATA_FLAG_POINT;
-							if (udat.useString)  flags |= USER_DATA_FLAG_STRING;
+                            const auto *keyframe = attr->key_dic.at(frame);
+                            spritestudio6::SsUserDataAnime udat;
+                            GetSsUserDataAnime(keyframe, udat);
 
-							userData->add(Lump::s16Data(flags, "flags"));
-							userData->add(Lump::s16Data(part->arrayIndex, "arrayIndex"));
+                            int flags = 0;
+                            if (udat.useInteger) flags |= USER_DATA_FLAG_INTEGER;
+                            if (udat.useRect) flags |= USER_DATA_FLAG_RECT;
+                            if (udat.usePoint) flags |= USER_DATA_FLAG_POINT;
+                            if (udat.useString) flags |= USER_DATA_FLAG_STRING;
 
-							if (udat.useInteger)
-							{
-								userData->add(Lump::s32Data(udat.integer, "integer"));
-							}
-							if (udat.useRect)
-							{
-								userData->add(Lump::s32Data(udat.rect.x, "rect_x"));
-								userData->add(Lump::s32Data(udat.rect.y, "rect_y"));
-								userData->add(Lump::s32Data(udat.rect.w, "rect_w"));
-								userData->add(Lump::s32Data(udat.rect.h, "rect_h"));
-							}
-							if (udat.usePoint)
-							{
-								userData->add(Lump::s32Data((int)udat.point.x, "point_x"));
-								userData->add(Lump::s32Data((int)udat.point.y, "point_y"));
-							}
-							if (udat.useString)
-							{
-								const SsString& str = udat.string;
-								userData->add(Lump::s16Data((int)str.length(), "str_length"));
-								userData->add(Lump::stringData(str, "str"));
-							}
-						}
-					}
-				}
-				
-				if (partsCount)
-				{
-					userData->addFirst(Lump::s16Data(partsCount));
-					userDataIndexArray->add(userData);
-					s_frameIndexVec.push_back(frame);
-				}
-				else
-				{
-					userDataIndexArray->add(Lump::s32Data(0));
-					delete userData;
-				}
-			}
+                            userData->add(Lump::s16Data(flags, "flags"));
+                            userData->add(Lump::s16Data(part->arrayIndex, "arrayIndex"));
+
+                            if (udat.useInteger) {
+                                userData->add(Lump::s32Data(udat.integer, "integer"));
+                            }
+                            if (udat.useRect) {
+                                userData->add(Lump::s32Data(udat.rect.x, "rect_x"));
+                                userData->add(Lump::s32Data(udat.rect.y, "rect_y"));
+                                userData->add(Lump::s32Data(udat.rect.w, "rect_w"));
+                                userData->add(Lump::s32Data(udat.rect.h, "rect_h"));
+                            }
+                            if (udat.usePoint) {
+                                userData->add(Lump::s32Data((int) udat.point.x, "point_x"));
+                                userData->add(Lump::s32Data((int) udat.point.y, "point_y"));
+                            }
+                            if (udat.useString) {
+                                const spritestudio6::SsString &str = udat.string;
+                                userData->add(Lump::s16Data((int) str.length(), "str_length"));
+                                userData->add(Lump::stringData(str, "str"));
+                            }
+                        }
+                    }
+                }
+
+                if (partsCount) {
+                    userData->addFirst(Lump::s16Data(partsCount));
+                    userDataIndexArray->add(userData);
+                    s_frameIndexVec.push_back(frame);
+                } else {
+                    userDataIndexArray->add(Lump::s32Data(0));
+                }
+            }
 
 
 			// ラベルデータ
-			Lump* LabelDataIndexArray = Lump::set("ss::ss_u16*[]", true, "LabelDataIndexArray");
+            auto LabelDataIndexArray = Lump::set("ss::ss_u16*[]", true, "LabelDataIndexArray");
 			bool hasLabelData = false;
 			int label_idx = 0;
-			for (label_idx = 0; label_idx < (int)anime->labels.size(); label_idx++)
-			{
-				Lump* labelData = Lump::set("ss::ss_u16[]", true, "labelData");
+			for (label_idx = 0; label_idx < (int)anime->labels.size(); label_idx++) {
+                auto labelData = Lump::set("ss::ss_u16[]", true, "labelData");
 
-				SsString str;
-				str = anime->labels[label_idx]->name;
-				//全角チェック
-				if ( isZenkaku( &str ) == true )
-				{
-					std::cerr << "エラー：ラベルに全角が使用されています。半角英数でリネームしてください。: " << str << "\n";
-					convert_error_exit = true;	//エラーが発生コンバート失敗
-					return 0;
-				}
+                spritestudio6::SsString str;
+                str = anime->labels[label_idx]->name;
+                //全角チェック
+                if (isZenkaku(&str)) {
+                    const std::string msg = u8"エラー：ラベルに全角が使用されています。半角英数でリネームしてください。: " + str;
+                    throw SSException(msg, SSPC_ZENKAKU_ERROR);
+                }
 
 //				labelData->add(Lump::s16Data((int)str.length()));				//文字列のサイズ
-				labelData->add(Lump::stringData(str, "str"));							//文字列
-				labelData->add(Lump::s16Data(anime->labels[label_idx]->time, "time"));	//設定されたフレーム
-				hasLabelData = true;
+                labelData->add(Lump::stringData(str, "str"));                            //文字列
+                labelData->add(Lump::s16Data(anime->labels[label_idx]->time, "time"));    //設定されたフレーム
+                hasLabelData = true;
 
-				LabelDataIndexArray->add(labelData);
-			}
+                LabelDataIndexArray->add(labelData);
+            }
 
-			if ( hasLabelData == false )
+			if (!hasLabelData)
 			{
 				LabelDataIndexArray->add(Lump::s32Data(0));
 			}
-			
+
 			animeData->add(Lump::stringData(anime->name, "name"));
 			animeData->add(initialDataArray);
 			animeData->add(frameDataIndexArray);
@@ -1368,24 +1321,69 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 			animeData->add(Lump::s16Data(decoder.getAnimeTotalFrame(), "totalFrames"));
 			animeData->add(Lump::s16Data(anime->settings.fps, "fps"));
 			animeData->add(Lump::s16Data(label_idx, "labelNum"));							//ラベルデータ数
-			animeData->add(Lump::s16Data(anime->settings.canvasSize.x, "canvasSizeW"));		//基準枠W
-			animeData->add(Lump::s16Data(anime->settings.canvasSize.y, "canvasSizeH"));		//基準枠H
+			animeData->add(Lump::s16Data((int)anime->settings.canvasSize.x, "canvasSizeW"));		//基準枠W
+			animeData->add(Lump::s16Data((int)anime->settings.canvasSize.y, "canvasSizeH"));		//基準枠H
 			animeData->add(Lump::s16Data(0, "reserved"));									//ダミーデータ
 			animeData->add(Lump::floatData(anime->settings.pivot.x, "canvasPvotX"));			//基準枠位置
 			animeData->add(Lump::floatData(anime->settings.pivot.y, "canvasPvotY"));			//基準枠位置
+
+
+#if _BACKBUFFER_RENDERING__
+
+			if ( isOpenGLContextInitialized()) {
+                ConverterOpenGLClear(anime->settings.canvasSize.x, anime->settings.canvasSize.y, anime->settings.pivot.x, anime->settings.pivot.y);
+                //対象フレームを検査して良さそうなところを持ってくる
+
+                int frame = anime->settings.endFrame / 2;
+
+                decoder.setPlayFrame(frame);
+                decoder.draw();
+                ConverterOpenGLDrawEnd();
+
+                //std::filesystem::path opath = outPath;
+                std::string outputfile;
+                if (isWindows()) {
+                //				std::string outputfile = get_sspkg_metapath() + anime->name + ".png";
+                                outputfile = sspkg_info::getInst()->get_sspkg_metapath() + "thumbnail.png";
+                } else {
+                    outputfile = sspkg_info::getInst()->get_sspkg_metapath() + anime->name + ".png";
+                }
+
+                // ConverterOpenGLOutputBitMapImage 内の stbi_write_png は fopen を使っており narrow 文字のみなのでWin向けにSJIS化が必要。
+                // ToDo: sspkg 以外で Win の全角対応をする場合、 ConverterOpenGLOutputBitMapImage 側に以下相当の変換を追加。
+                outputfile = spritestudio6::SsCharConverter::convert_path_string(outputfile);
+
+                //filelist.push_back(outputfile);
+                if (!isWrite) {
+                    if (animePack->animeList.size() > 1) {
+                        if (anime->name != "Setup") {
+                            isWrite = true;
+                            ConverterOpenGLOutputBitMapImage(outputfile);
+                        }
+                    } else {
+                        isWrite = true;
+                        ConverterOpenGLOutputBitMapImage(outputfile);
+                    }
+                }
+            }
+#endif
 		}
 	}
+
+	if (!error_parts.empty()) {
+        return nullptr;
+    }
 
 	//エフェクトデータ
 	for (int effectIndex = 0; effectIndex < (int)proj->effectfileList.size(); effectIndex++)
 	{
-		Lump* effectFile = Lump::set("ss::EffectFile", false, "EffectFile");
+		auto effectFile = Lump::set("ss::EffectFile", false, "EffectFile");
 		effectfileArray->add(effectFile);
 
-		const SsEffectFile* effectfile = proj->effectfileList[effectIndex];
+		const auto* effectfile = proj->getEffectFile(effectIndex);
 		effectFile->add(Lump::stringData(effectfile->name, "name"));				//エフェクト名
 
-		const SsEffectModel *effectmodel = &effectfile->effectData;
+		const auto* effectmodel = &effectfile->effectData;
 		effectFile->add(Lump::s16Data(effectmodel->fps, "fps"));					//FPS
 
 		effectFile->add(Lump::s16Data(effectmodel->isLockRandSeed, "isLockRandSeed"));		//乱数を固定するかどうか
@@ -1400,384 +1398,369 @@ static Lump* parseParts(SsProject* proj, const std::string& imageBaseDir)
 		effectFile->add(Lump::s16Data((int)effectmodel->nodeList.size(), "numNodeList"));	//エフェクトノード数
 
 
-		Lump* effectNodeArray = Lump::set("ss::EffectNode[]", true, "EffectNodeArray");
+		auto effectNodeArray = Lump::set("ss::EffectNode[]", true, "EffectNodeArray");
 		effectFile->add(effectNodeArray);									//ノード配列
 
-		for (size_t nodeindex = 0; nodeindex < effectmodel->nodeList.size(); nodeindex++)
-		{
-			//エフェクトノードを追加
-			Lump* effectNode = Lump::set("ss::EffectNode", false, "EffectNode");
-			effectNodeArray->add(effectNode);
+		for (const auto node : effectmodel->nodeList) {
+            //エフェクトノードを追加
+            auto effectNode = Lump::set("ss::EffectNode", false, "EffectNode");
+            effectNodeArray->add(effectNode);
 
-			SsEffectNode *node = effectmodel->nodeList[nodeindex];
-			int	arrayIndex = node->arrayIndex;				//通し番号
-			int	parentIndex = node->parentIndex;			//親の番号
-			SsEffectNodeType::_enum	type = node->type;		//ノードの種類
-			//			bool visible = = node->visible;					//エディター用
-			SsEffectBehavior behavior = node->behavior;		//動作パラメータ
-			SsRenderBlendType::_enum blendType = behavior.BlendType;	//描画方法
-			//セル番号
-			SsCell*	refCell = behavior.refCell;
-			int cellIndex = -1;
-			if (refCell)
-			{
-				cellIndex = (*cellList)[refCell];
-			}
-			SsString CellName = behavior.CellName;
-			SsString CellMapName = behavior.CellMapName;
-			//ファイルへ書き出し
-			effectNode->add(Lump::s16Data(arrayIndex, "arrayIndex"));		//通し番号
-			effectNode->add(Lump::s16Data(parentIndex, "parentIndex"));	//親の番号
-			effectNode->add(Lump::s16Data(type, "type"));			//ノードの種類
-			effectNode->add(Lump::s16Data(cellIndex, "cellIndex"));		//セルの番号
-			effectNode->add(Lump::s16Data(blendType, "blendType"));		//描画方法
-			effectNode->add(Lump::s16Data(behavior.plist.size(), "numBehavior"));	//コマンドパラメータ数
+            int arrayIndex = node->arrayIndex; //通し番号
+            int parentIndex = node->parentIndex; //親の番号
+            auto type = node->type; //ノードの種類
+            // bool visible = = node->visible; //エディター用
+            //MEMO: 旧ソースではbehaviorが実体にしてnode->behaviorの内容をコピーしていたが……スマートポインタ化後は
+            //      所有権の問題でエラーがでるので注意（スマートポインタの所有権の関係）
+            auto &behavior = node->behavior; //動作パラメータ
+            auto blendType = behavior.BlendType; //描画方法
+            //セル番号
+            auto *refCell = behavior.refCell;
+            int cellIndex = -1;
+            if (refCell) {
+                cellIndex = (*cellList)[refCell];
+            }
+            auto CellName = behavior.CellName;
+            auto CellMapName = behavior.CellMapName;
+            //ファイルへ書き出し
+            effectNode->add(Lump::s16Data(arrayIndex, "arrayIndex")); //通し番号
+            effectNode->add(Lump::s16Data(parentIndex, "parentIndex")); //親の番号
+            effectNode->add(Lump::s16Data(type, "type")); //ノードの種類
+            effectNode->add(Lump::s16Data(cellIndex, "cellIndex")); //セルの番号
+            effectNode->add(Lump::s16Data(blendType, "blendType")); //描画方法
+            effectNode->add(Lump::s16Data((int) (behavior.plist.size()), "numBehavior"));    //コマンドパラメータ数
 
-			Lump* effectBehaviorArray = Lump::set("ss::ss_u16*[]", true, "effectBehaviorArray");
-			effectNode->add(effectBehaviorArray);			//コマンドパラメータ配列
+            auto effectBehaviorArray = Lump::set("ss::ss_u16*[]", true, "effectBehaviorArray");
+            effectNode->add(effectBehaviorArray); //コマンドパラメータ配列
 
-			//コマンドパラメータ
-			for (size_t plistindex = 0; plistindex < behavior.plist.size(); plistindex++)
-			{
-				Lump* effectBehavior = Lump::set("ss::ss_u16[]", true, "effectBehavior");
-				effectBehaviorArray->add(effectBehavior);
+            //コマンドパラメータ
+            for (const auto &plistindex: behavior.plist) {
+                auto effectBehavior = Lump::set("ss::ss_u16[]", true, "effectBehavior");
+                effectBehaviorArray->add(effectBehavior);
 
-				SsEffectElementBase *elementbase = behavior.plist[plistindex];
-				SsEffectFunctionType::enum_ myType = elementbase->myType;
-				effectBehavior->add(Lump::s32Data(myType, "SsEffectFunctionType"));	//コマンドタイプ
+                auto *elementbase = plistindex.get();
+                auto myType = elementbase->myType;
+                effectBehavior->add(Lump::s32Data(myType, "SsEffectFunctionType"));    //コマンドタイプ
 
-				switch (myType)
-				{
-				case SsEffectFunctionType::Basic:
-				{
-					//基本情報
-					ParticleElementBasic *element = (ParticleElementBasic*)elementbase;
+                switch (myType) {
+                    case spritestudio6::SsEffectFunctionType::Basic: {
+                        //基本情報
+                        auto *element = (spritestudio6::ParticleElementBasic *) elementbase;
 
-					int			maximumParticle = element->maximumParticle;
-					f32VValue	speed = element->speed;
-					i32VValue 	lifespan = element->lifespan;
-					float		angle = element->angle;
-					float		angleVariance = element->angleVariance;
-					int			interval = element->interval;
-					int			lifetime = element->lifetime;
-					int			attimeCreate = element->attimeCreate;
-					int			priority = element->priority;
-					float speedMinValue = speed.getMinValue();	//初速最小
-					float speedMaxValue = speed.getMaxValue();	//初速最大
-					int lifespanMinValue = lifespan.getMinValue();	//パーティクル生存時間最小
-					int lifespanMaxValue = lifespan.getMaxValue();	//パーティクル生存時間最大
+                        int maximumParticle = element->maximumParticle;
+                        auto speed = element->speed;
+                        auto lifespan = element->lifespan;
+                        float angle = element->angle;
+                        float angleVariance = element->angleVariance;
+                        int interval = element->interval;
+                        int lifetime = element->lifetime;
+                        int attimeCreate = element->attimeCreate;
+                        int priority = element->priority;
+                        float speedMinValue = speed.getMinValue();    //初速最小
+                        float speedMaxValue = speed.getMaxValue();    //初速最大
+                        int lifespanMinValue = lifespan.getMinValue();    //パーティクル生存時間最小
+                        int lifespanMaxValue = lifespan.getMaxValue();    //パーティクル生存時間最大
 
-					effectBehavior->add(Lump::s32Data(priority, "priority"));				//表示優先度
-					effectBehavior->add(Lump::s32Data(maximumParticle, "maximumParticle"));		//最大パーティクル数
-					effectBehavior->add(Lump::s32Data(attimeCreate, "attimeCreate"));			//一度に作成するパーティクル数
-					effectBehavior->add(Lump::s32Data(interval, "interval"));				//生成間隔
-					effectBehavior->add(Lump::s32Data(lifetime, "lifetime"));				//エミッター生存時間
-					effectBehavior->add(Lump::floatData(speedMinValue, "speedMinValue"));		//初速最小
-					effectBehavior->add(Lump::floatData(speedMaxValue, "speedMaxValue"));		//初速最大
-					effectBehavior->add(Lump::s32Data(lifespanMinValue, "lifespanMinValue"));		//パーティクル生存時間最小
-					effectBehavior->add(Lump::s32Data(lifespanMaxValue, "lifespanMaxValue"));		//パーティクル生存時間最大
-					effectBehavior->add(Lump::floatData(angle, "angle"));				//射出方向
-					effectBehavior->add(Lump::floatData(angleVariance, "angleVariance"));		//射出方向範囲
-					break;
-				}
-				case SsEffectFunctionType::RndSeedChange:
-				{
-					//シード上書き
-					ParticleElementRndSeedChange *element = (ParticleElementRndSeedChange*)elementbase;
-					int		Seed = element->Seed;
-					effectBehavior->add(Lump::s32Data(Seed, "Seed"));					//上書きする値
-					break;
-				}
-				case SsEffectFunctionType::Delay:
-				{
-					//発生：タイミング
-					ParticleElementDelay *element = (ParticleElementDelay*)elementbase;
-					int		DelayTime = element->DelayTime;
-					effectBehavior->add(Lump::s32Data(DelayTime, "DelayTime"));				//遅延時間
-					break;
-				}
-				case SsEffectFunctionType::Gravity:
-				{
-					//重力を加える
-					ParticleElementGravity *element = (ParticleElementGravity*)elementbase;
-					SsVector2   Gravity = element->Gravity;
-					effectBehavior->add(Lump::floatData(Gravity.x, "Gravity_x"));				//X方向の重力
-					effectBehavior->add(Lump::floatData(Gravity.y, "Gravity_y"));				//Y方向の重力
-					break;
-				}
-				case SsEffectFunctionType::Position:
-				{
-					//座標：生成時
-					ParticleElementPosition *element = (ParticleElementPosition*)elementbase;
-					f32VValue   OffsetX = element->OffsetX;
-					f32VValue   OffsetY = element->OffsetY;
-					effectBehavior->add(Lump::floatData(OffsetX.getMinValue(), "OffsetXMinValue"));				//X座標に加算最小
-					effectBehavior->add(Lump::floatData(OffsetX.getMaxValue(), "OffsetXMaxValue"));				//X座標に加算最大
-					effectBehavior->add(Lump::floatData(OffsetY.getMinValue(), "OffsetYMinValue"));				//X座標に加算最小
-					effectBehavior->add(Lump::floatData(OffsetY.getMaxValue(), "OffsetYMaxValue"));				//X座標に加算最大
-					break;
-				}
-				case SsEffectFunctionType::Rotation:
-				{
-					//Z回転を追加
-					ParticleElementRotation *element = (ParticleElementRotation*)elementbase;
-					f32VValue   Rotation = element->Rotation;
-					f32VValue   RotationAdd = element->RotationAdd;
-					effectBehavior->add(Lump::floatData(Rotation.getMinValue(), "RotationMinValue"));			//角度初期値最小
-					effectBehavior->add(Lump::floatData(Rotation.getMaxValue(), "RotationMaxValue"));			//角度初期値最大
-					effectBehavior->add(Lump::floatData(RotationAdd.getMinValue(), "RotationAddMinValue"));			//角度初期加算値最小
-					effectBehavior->add(Lump::floatData(RotationAdd.getMaxValue(), "RotationAddMaxValue"));			//角度初期加算値最大
-					break;
-				}
-				case SsEffectFunctionType::TransRotation:
-				{
-					//Z回転速度変更
-					ParticleElementRotationTrans *element = (ParticleElementRotationTrans*)elementbase;
-					float   RotationFactor = element->RotationFactor;
-					float	EndLifeTimePer = element->EndLifeTimePer;
-					effectBehavior->add(Lump::floatData(RotationFactor, "RotationFactor"));					//角度目標加算値
-					effectBehavior->add(Lump::floatData(EndLifeTimePer, "EndLifeTimePer"));					//到達時間
-					break;
-				}
-				case SsEffectFunctionType::TransSpeed:
-				{
-					//速度：変化
-					ParticleElementTransSpeed *element = (ParticleElementTransSpeed*)elementbase;
-					f32VValue	Speed = element->Speed;
-					effectBehavior->add(Lump::floatData(Speed.getMinValue(), "SpeedMinValue"));				//速度目標値最小
-					effectBehavior->add(Lump::floatData(Speed.getMaxValue(), "SpeedMaxValue"));				//速度目標値最大
-					break;
-				}
-				case SsEffectFunctionType::TangentialAcceleration:
-				{
-					//接線加速度
-					ParticleElementTangentialAcceleration *element = (ParticleElementTangentialAcceleration*)elementbase;
-					f32VValue	Acceleration = element->Acceleration;
+                        effectBehavior->add(Lump::s32Data(priority, "priority"));                //表示優先度
+                        effectBehavior->add(Lump::s32Data(maximumParticle, "maximumParticle"));        //最大パーティクル数
+                        effectBehavior->add(Lump::s32Data(attimeCreate, "attimeCreate"));            //一度に作成するパーティクル数
+                        effectBehavior->add(Lump::s32Data(interval, "interval"));                //生成間隔
+                        effectBehavior->add(Lump::s32Data(lifetime, "lifetime"));                //エミッター生存時間
+                        effectBehavior->add(Lump::floatData(speedMinValue, "speedMinValue"));        //初速最小
+                        effectBehavior->add(Lump::floatData(speedMaxValue, "speedMaxValue"));        //初速最大
+                        effectBehavior->add(Lump::s32Data(lifespanMinValue, "lifespanMinValue"));        //パーティクル生存時間最小
+                        effectBehavior->add(Lump::s32Data(lifespanMaxValue, "lifespanMaxValue"));        //パーティクル生存時間最大
+                        effectBehavior->add(Lump::floatData(angle, "angle"));                //射出方向
+                        effectBehavior->add(Lump::floatData(angleVariance, "angleVariance"));        //射出方向範囲
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::RndSeedChange: {
+                        //シード上書き
+                        auto *element = (spritestudio6::ParticleElementRndSeedChange *) elementbase;
+                        int Seed = element->Seed;
+                        effectBehavior->add(Lump::s32Data(Seed, "Seed"));                    //上書きする値
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::Delay: {
+                        //発生：タイミング
+                        auto *element = (spritestudio6::ParticleElementDelay *) elementbase;
+                        int DelayTime = element->DelayTime;
+                        effectBehavior->add(Lump::s32Data(DelayTime, "DelayTime"));                //遅延時間
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::Gravity: {
+                        //重力を加える
+                        auto *element = (spritestudio6::ParticleElementGravity *) elementbase;
+                        auto Gravity = element->Gravity;
+                        effectBehavior->add(Lump::floatData(Gravity.x, "Gravity_x"));                //X方向の重力
+                        effectBehavior->add(Lump::floatData(Gravity.y, "Gravity_y"));                //Y方向の重力
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::Position: {
+                        //座標：生成時
+                        auto *element = (spritestudio6::ParticleElementPosition *) elementbase;
+                        auto OffsetX = element->OffsetX;
+                        auto OffsetY = element->OffsetY;
+                        effectBehavior->add(Lump::floatData(OffsetX.getMinValue(), "OffsetXMinValue"));                //X座標に加算最小
+                        effectBehavior->add(Lump::floatData(OffsetX.getMaxValue(), "OffsetXMaxValue"));                //X座標に加算最大
+                        effectBehavior->add(Lump::floatData(OffsetY.getMinValue(), "OffsetYMinValue"));                //X座標に加算最小
+                        effectBehavior->add(Lump::floatData(OffsetY.getMaxValue(), "OffsetYMaxValue"));                //X座標に加算最大
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::Rotation: {
+                        //Z回転を追加
+                        auto *element = (spritestudio6::ParticleElementRotation *) elementbase;
+                        auto Rotation = element->Rotation;
+                        auto RotationAdd = element->RotationAdd;
+                        effectBehavior->add(Lump::floatData(Rotation.getMinValue(), "RotationMinValue"));            //角度初期値最小
+                        effectBehavior->add(Lump::floatData(Rotation.getMaxValue(), "RotationMaxValue"));            //角度初期値最大
+                        effectBehavior->add(Lump::floatData(RotationAdd.getMinValue(),"RotationAddMinValue"));            //角度初期加算値最小
+                        effectBehavior->add(Lump::floatData(RotationAdd.getMaxValue(),"RotationAddMaxValue"));            //角度初期加算値最大
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::TransRotation: {
+                        //Z回転速度変更
+                        auto *element = (spritestudio6::ParticleElementRotationTrans *) elementbase;
+                        float RotationFactor = element->RotationFactor;
+                        float EndLifeTimePer = element->EndLifeTimePer;
+                        effectBehavior->add(Lump::floatData(RotationFactor, "RotationFactor"));                    //角度目標加算値
+                        effectBehavior->add(Lump::floatData(EndLifeTimePer, "EndLifeTimePer"));                    //到達時間
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::TransSpeed: {
+                        //速度：変化
+                        auto *element = (spritestudio6::ParticleElementTransSpeed *) elementbase;
+                        auto Speed = element->Speed;
+                        effectBehavior->add(Lump::floatData(Speed.getMinValue(), "SpeedMinValue"));                //速度目標値最小
+                        effectBehavior->add(Lump::floatData(Speed.getMaxValue(), "SpeedMaxValue"));                //速度目標値最大
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::TangentialAcceleration: {
+                        //接線加速度
+                        auto *element = (spritestudio6::ParticleElementTangentialAcceleration *) elementbase;
+                        auto Acceleration = element->Acceleration;
 
-					effectBehavior->add(Lump::floatData(Acceleration.getMinValue(), "AccelerationMinValue"));		//設定加速度最小
-					effectBehavior->add(Lump::floatData(Acceleration.getMaxValue(), "AccelerationMaxValue"));		//設定加速度最大
-					break;
-				}
-				case SsEffectFunctionType::InitColor:
-				{
-					//カラーRGBA：生成時
-					ParticleElementInitColor *element = (ParticleElementInitColor*)elementbase;
-					SsU8cVValue Color = element->Color;
-					effectBehavior->add(Lump::s32Data(Color.getMinValue().toARGB(), "ColorMinValue"));		//設定カラー最小
-					effectBehavior->add(Lump::s32Data(Color.getMaxValue().toARGB(), "ColorMaxValue"));		//設定カラー最大
-					break;
-				}
-				case SsEffectFunctionType::TransColor:
-				{
-					//カラーRGB：変化
-					ParticleElementTransColor *element = (ParticleElementTransColor*)elementbase;
-					SsU8cVValue Color = element->Color;
-					effectBehavior->add(Lump::s32Data(Color.getMinValue().toARGB(), "ColorMinValue"));		//設定カラー最小
-					effectBehavior->add(Lump::s32Data(Color.getMaxValue().toARGB(), "ColorMaxValue"));		//設定カラー最大
-					break;
-				}
-				case SsEffectFunctionType::AlphaFade:
-				{
-					//フェード
-					ParticleElementAlphaFade *element = (ParticleElementAlphaFade*)elementbase;
-					f32VValue  disprange = element->disprange; // mnagaku 頭小文字
-					effectBehavior->add(Lump::floatData(disprange.getMinValue(), "disprangeMinValue"));			//表示区間開始
-					effectBehavior->add(Lump::floatData(disprange.getMaxValue(), "disprangeMaxValue"));			//表示区間終了
-					break;
-				}
-				case SsEffectFunctionType::Size:
-				{
-					//スケール：生成時
-					ParticleElementSize *element = (ParticleElementSize*)elementbase;
-					f32VValue SizeX = element->SizeX;
-					f32VValue SizeY = element->SizeY;
-					f32VValue ScaleFactor = element->ScaleFactor;
-					effectBehavior->add(Lump::floatData(SizeX.getMinValue(), "SizeXMinValue"));				//幅倍率最小
-					effectBehavior->add(Lump::floatData(SizeX.getMaxValue(), "SizeXMaxValue"));				//幅倍率最大
-					effectBehavior->add(Lump::floatData(SizeY.getMinValue(), "SizeYMinValue"));				//高さ倍率最小
-					effectBehavior->add(Lump::floatData(SizeY.getMaxValue(), "SizeYMaxValue"));				//高さ倍率最大
-					effectBehavior->add(Lump::floatData(ScaleFactor.getMinValue(), "ScaleFactorMinValue"));			//倍率最小
-					effectBehavior->add(Lump::floatData(ScaleFactor.getMaxValue(), "ScaleFactorMaxValue"));			//倍率最大
-					break;
-				}
-				case SsEffectFunctionType::TransSize:
-				{
-					//スケール：変化
-					ParticleElementTransSize *element = (ParticleElementTransSize*)elementbase;
-					f32VValue SizeX = element->SizeX;
-					f32VValue SizeY = element->SizeY;
-					f32VValue ScaleFactor = element->ScaleFactor;
-					effectBehavior->add(Lump::floatData(SizeX.getMinValue(), "SizeXMinValue"));				//幅倍率最小
-					effectBehavior->add(Lump::floatData(SizeX.getMaxValue(), "SizeXMaxValue"));				//幅倍率最大
-					effectBehavior->add(Lump::floatData(SizeY.getMinValue(), "SizeYMinValue"));				//高さ倍率最小
-					effectBehavior->add(Lump::floatData(SizeY.getMaxValue(), "SizeYMaxValue"));				//高さ倍率最大
-					effectBehavior->add(Lump::floatData(ScaleFactor.getMinValue(), "ScaleFactorMinValue"));			//倍率最小
-					effectBehavior->add(Lump::floatData(ScaleFactor.getMaxValue(), "ScaleFactorMaxValue"));			//倍率最大
-					break;
-				}
-				case SsEffectFunctionType::PointGravity:
-				{
-					//重力点の追加
-					ParticlePointGravity *element = (ParticlePointGravity*)elementbase;
-					SsVector2   Position = element->Position;
-					float		Power = element->Power;
-					effectBehavior->add(Lump::floatData(Position.x, "Position_x"));						//重力点X
-					effectBehavior->add(Lump::floatData(Position.y, "Position_y"));						//重力点Y
-					effectBehavior->add(Lump::floatData(Power, "Power"));							//パワー
-					break;
-				}
-				case SsEffectFunctionType::TurnToDirectionEnabled:
-				{
-					//進行方向に向ける
-					ParticleTurnToDirectionEnabled *element = (ParticleTurnToDirectionEnabled*)elementbase;
-					//コマンドがあれば有効
-					effectBehavior->add(Lump::floatData(element->Rotation, "Rotation"));				//方向オフセット
-					break;
-				}
-				case SsEffectFunctionType::InfiniteEmitEnabled:
-				{
-					//無限にする
-					ParticleInfiniteEmitEnabled *element = (ParticleInfiniteEmitEnabled*)elementbase;
-					//コマンドがあれば有効
-					effectBehavior->add(Lump::s32Data(1, "flag"));									//ダミーデータ
-					break;
-				}
-				case SsEffectFunctionType::Base:
-				default:
-					//未使用のコマンドが含まれている
-					std::cerr << "警告：未使用のエフェクトコマンドが含まれています。 \n";
-					break;
-				}
-			}
-		}
+                        effectBehavior->add(Lump::floatData(Acceleration.getMinValue(), "AccelerationMinValue"));        //設定加速度最小
+                        effectBehavior->add(Lump::floatData(Acceleration.getMaxValue(), "AccelerationMaxValue"));        //設定加速度最大
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::InitColor: {
+                        //カラーRGBA：生成時
+                        auto *element = (spritestudio6::ParticleElementInitColor *) elementbase;
+                        auto Color = element->Color;
+                        effectBehavior->add(Lump::s32Data(Color.getMinValue().toARGB(), "ColorMinValue"));        //設定カラー最小
+                        effectBehavior->add(Lump::s32Data(Color.getMaxValue().toARGB(), "ColorMaxValue"));        //設定カラー最大
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::TransColor: {
+                        //カラーRGB：変化
+                        auto *element = (spritestudio6::ParticleElementTransColor *) elementbase;
+                        auto Color = element->Color;
+                        effectBehavior->add(Lump::s32Data(Color.getMinValue().toARGB(), "ColorMinValue"));        //設定カラー最小
+                        effectBehavior->add(Lump::s32Data(Color.getMaxValue().toARGB(), "ColorMaxValue"));        //設定カラー最大
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::AlphaFade: {
+                        //フェード
+                        auto *element = (spritestudio6::ParticleElementAlphaFade *) elementbase;
+                        auto disprange = element->disprange; // mnagaku 頭小文字
+                        effectBehavior->add(Lump::floatData(disprange.getMinValue(), "disprangeMinValue"));            //表示区間開始
+                        effectBehavior->add(Lump::floatData(disprange.getMaxValue(), "disprangeMaxValue"));            //表示区間終了
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::Size: {
+                        //スケール：生成時
+                        auto *element = (spritestudio6::ParticleElementSize *) elementbase;
+                        auto SizeX = element->SizeX;
+                        auto SizeY = element->SizeY;
+                        auto ScaleFactor = element->ScaleFactor;
+                        effectBehavior->add(Lump::floatData(SizeX.getMinValue(), "SizeXMinValue"));                //幅倍率最小
+                        effectBehavior->add(Lump::floatData(SizeX.getMaxValue(), "SizeXMaxValue"));                //幅倍率最大
+                        effectBehavior->add(Lump::floatData(SizeY.getMinValue(), "SizeYMinValue"));                //高さ倍率最小
+                        effectBehavior->add(Lump::floatData(SizeY.getMaxValue(), "SizeYMaxValue"));                //高さ倍率最大
+                        effectBehavior->add(Lump::floatData(ScaleFactor.getMinValue(), "ScaleFactorMinValue"));            //倍率最小
+                        effectBehavior->add(Lump::floatData(ScaleFactor.getMaxValue(), "ScaleFactorMaxValue"));            //倍率最大
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::TransSize: {
+                        //スケール：変化
+                        auto *element = (spritestudio6::ParticleElementTransSize *) elementbase;
+                        auto SizeX = element->SizeX;
+                        auto SizeY = element->SizeY;
+                        auto ScaleFactor = element->ScaleFactor;
+                        effectBehavior->add(Lump::floatData(SizeX.getMinValue(), "SizeXMinValue"));                //幅倍率最小
+                        effectBehavior->add(Lump::floatData(SizeX.getMaxValue(), "SizeXMaxValue"));                //幅倍率最大
+                        effectBehavior->add(Lump::floatData(SizeY.getMinValue(), "SizeYMinValue"));                //高さ倍率最小
+                        effectBehavior->add(Lump::floatData(SizeY.getMaxValue(), "SizeYMaxValue"));                //高さ倍率最大
+                        effectBehavior->add(Lump::floatData(ScaleFactor.getMinValue(), "ScaleFactorMinValue"));            //倍率最小
+                        effectBehavior->add(Lump::floatData(ScaleFactor.getMaxValue(), "ScaleFactorMaxValue"));            //倍率最大
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::PointGravity: {
+                        //重力点の追加
+                        auto *element = (spritestudio6::ParticlePointGravity *) elementbase;
+                        auto Position = element->Position;
+                        float Power = element->Power;
+                        effectBehavior->add(Lump::floatData(Position.x, "Position_x"));                        //重力点X
+                        effectBehavior->add(Lump::floatData(Position.y, "Position_y"));                        //重力点Y
+                        effectBehavior->add(Lump::floatData(Power, "Power"));                            //パワー
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::TurnToDirectionEnabled: {
+                        //進行方向に向ける
+                        auto *element = (spritestudio6::ParticleTurnToDirectionEnabled *) elementbase;
+                        //コマンドがあれば有効
+                        effectBehavior->add(Lump::floatData(element->Rotation, "Rotation"));                //方向オフセット
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::InfiniteEmitEnabled: {
+                        //無限にする
+                        auto *element = (spritestudio6::ParticleInfiniteEmitEnabled *) elementbase;
+                        //コマンドがあれば有効
+                        effectBehavior->add(Lump::s32Data(1, "flag"));                                    //ダミーデータ
+                        break;
+                    }
+                    case spritestudio6::SsEffectFunctionType::Base:
+                    default:
+                        //未使用のコマンドが含まれている
+                        throw SSException(u8"警告：未使用のエフェクトコマンドが含まれています。", SSPC_UNSUPPORT_EFFECT_COMMAND);
+                }
+            }
+        }
 	}
 
-	std::cerr << "convert end" << "\n";
+	// シーケンス情報
+	parseParts_ssqe( topLump, proj, imageBaseDir );
+
+	CO("convert end");
 
 	return topLump;
 }
 
+void createPackFileList(const spritestudio6::SsProject* proj ,const std::filesystem::path& sspjPath , std::vector<std::filesystem::path>& filelist) {
+    auto pjpath = sspjPath.parent_path();
 
-
-void convertProject(const std::string& outPath, LumpExporter::StringEncoding encoding, const std::string& sspjPath,
-	const std::string& imageBaseDir, const std::string& creatorComment, const int outputFormat)
-{
-	SSTextureFactory texFactory(new SSTextureBMP());
-	std::cerr << sspjPath << "\n";
-	SsProject* proj = ssloader_sspj::Load(sspjPath);
-	Lump* lump;
-	try
-	{
-		if (proj)
-		{
-			lump = parseParts(proj, imageBaseDir);
-		}
-		else
-		{
-			convert_error_exit = true;	//エラーが発生
-		}
-	}
-	catch (...)
-	{
-		convert_error_exit = true;	//エラーが発生
-	}
-
-	if ( convert_error_exit == true )
-	{
-		//データにエラーがありコンバートを中止した
-		//ファイルの出力を行なわない
-		std::cerr << "データにエラーがありコンバートを中止しました \n";
-	}
-	else
-	{
-
-		std::fstream out;
-
-		if (outputFormat == OUTPUT_FORMAT_FLAG_JSON)
-		{
-			out.open((outPath + ".json").c_str(), std::ios_base::out);
-			LumpExporter::saveJson(out, encoding, lump, creatorComment);
-		}
-		else if (outputFormat == OUTPUT_FORMAT_FLAG_CSOURCE)
-		{
-
-			// out.open((outPath + ".c").c_str(), std::ios_base::out);
-			// LumpExporter::saveCSource(out, encoding, lump, "topLabel", creatorComment);
-			std::cerr << "*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***"  << std::endl;
-
-		}
-		else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB)
-		{
-			out.open((outPath + ".ssfb").c_str(), std::ios_base::binary | std::ios_base::out);
-            LumpExporter::saveSsfb(out, encoding, lump, creatorComment, s_frameIndexVec);
-		}
-		else
-		{
-			out.open(outPath.c_str(), std::ios_base::binary | std::ios_base::out);
-			LumpExporter::saveBinary(out, encoding, lump, creatorComment);
-		}
-
-	/////////////
-	#if 0
-		out.close();
-		std::string hOutPath = outPath + ".h";
-		out.open(hOutPath.c_str(), std::ios_base::binary | std::ios_base::out);
-		LumpExporter::saveCSource(out, encoding, lump, "animeData", creatorComment);
-	#endif
-	/////////////
-
-	//	delete lump;
-		delete proj;
-	}
+    //sspjのパスを調べる
+    for (const auto &n: proj->cellmapNames) {
+        filelist.push_back(pjpath / n);
+    }
+    for (const auto &n: proj->animepackNames) {
+        filelist.push_back(pjpath / n);
+    }
+    for (const auto &n: proj->effectFileNames) {
+        filelist.push_back(pjpath / n);
+    }
+    for (const auto &n: proj->textureList) {
+        filelist.push_back(pjpath / n);
+    }
+    for (const auto &n: proj->sequencepackNames) {
+        filelist.push_back(pjpath / n);
+    }
 }
 
+void convertProject(const std::filesystem::path& outPath, const std::string& outFName,
+                    LumpExporter::StringEncoding encoding, const std::filesystem::path& sspjPath,
+                    Options& options, const std::string& creatorComment ) {
+    filelist.clear();
 
+    const std::string imageBaseDir = options.imageBaseDir;
+    const int outputFormat = options.outputFormat;
 
+    std::string outputdirUTF8;
+    outputdirUTF8 = outPath.string();
 
+    if (!std::filesystem::exists(outPath)) {
+        const std::string msg = u8"not found output directory: " + outputdirUTF8;
+        throw SSException(msg, SSPC_NOT_EXIST_OUTPUT_DIR);
+    }
+    COI("output directory: " + outputdirUTF8);
 
+    if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG) {
+        sspkg_info::getInst()->init_sspkg(outputdirUTF8, outFName);
+    }
 
+    spritestudio6::SsProject *proj = spritestudio6::ssloader_sspj::Load(sspjPath.string());
+    if (proj == nullptr) {
+        const std::string msg = u8"ssloader_sspj::Load Error";
+        throw SSException(msg, SSPC_SSPJ_PARSE_FAILED);
+    }
 
+    try {
+        auto logfilepath = std::filesystem::path(outputdirUTF8).replace_filename("convert.log");
 
-#define APP_NAME		"Ss6Converter"
-#define APP_VERSION		SPRITESTUDIOSDK_VERSION " (Build: " __DATE__ " " __TIME__ ")"
+        if (options.isLogout) {
+            if (std::filesystem::exists(logfilepath)) {
+                std::filesystem::remove(logfilepath);
+            }
+            logger.setOutputLogFile(logfilepath);
+            logger.setOutputLogFileMode(true);
+        }
 
+        COI("parseParts ");
 
-static const char* HELP =
-"\n"
-APP_NAME " converter version " APP_VERSION "\n"
-"usage: " APP_NAME " Input files(.sspj) ...\n"
-"\n"
-"option:\n"
-"  -h      Display usage.\n"
-"  -v      Verbose mode.\n"
-"  -o      set output path.\n"
-//"  -e arg  Encoding of output file (UTF8/SJIS) default:UTF8\n"
-//"  -p arg  Specify image file load base path.\n"
-"  -f      set output format.\n"
-"\n";
+        std::shared_ptr<Lump> lump = nullptr;
+        lump = parseParts(proj, imageBaseDir, outPath);
+        if(!lump) {
+            throw SSException("parseParts error", SSPC_PARTS_ERROR);
+        }
 
-struct Options
-{
-	typedef std::vector<std::string> StringList;
+        auto outputFilePath = std::filesystem::path(spritestudio6::SsCharConverter::convert_path_string(outPath.string()));
+        std::fstream out;
 
-	bool							isHelp;
-	bool							isVerbose;
-	StringList						inList;
-	LumpExporter::StringEncoding	encoding;
-	std::string						imageBaseDir;
-	std::string						outputDir;
+        outputFilePath = outputFilePath / std::filesystem::path(outFName).replace_extension(getFormatExtension(outputFormat));
+        out.open(outputFilePath, getFormatMode(outputFormat));
+        if (!out.is_open()) {
+            const std::string msg = u8"出力ファイルのオープンに失敗しました: " + convert_console_string(outputFilePath.string());
+            throw SSException(msg, SSPC_NOT_OUTPUT_FILE);
+        }
 
-	int								outputFormat;
+        COI("convert type : " + OutputFormatToString.at(static_cast<int>(outputFormat)) + " ");
+        COI("output file: " + outputFilePath.filename().string());
+        if (outputFormat == OUTPUT_FORMAT_FLAG_JSON) {
+            LumpExporter::saveJson(out, encoding, lump, creatorComment);
+        } else if (outputFormat == OUTPUT_FORMAT_FLAG_CSOURCE) {
+            throw SSException(u8"*** OBSOLETE C LANGUAGE SOURCE FORMAT. ***", SSPC_UNSUPPORT_FORMAT);
+        } else if (outputFormat == OUTPUT_FORMAT_FLAG_SSFB) {
+            LumpExporter::saveSsfb(out, encoding, lump, creatorComment, s_frameIndexVec);
+        } else if (outputFormat == OUTPUT_FORMAT_FLAG_SSPKG) {
+            // sspkg に格納する ssfb ファイルの作成
+            auto outPathSsfb = std::filesystem::path(sspkg_info::getInst()->get_sspkg_temppath()) / std::filesystem::path( outFName + getFormatExtension(OUTPUT_FORMAT_FLAG_SSFB) );
+            std::fstream outSsfb;
+            outSsfb.open(outPathSsfb, getFormatMode(OUTPUT_FORMAT_FLAG_SSFB));
+            LumpExporter::saveSsfb(outSsfb, encoding, lump, creatorComment, s_frameIndexVec);
 
-	Options()
-	: isHelp(false)
-	, isVerbose(false)
-	, encoding(LumpExporter::UTF8)
-	{}
-};
+            //ファイルリストの作成
+            filelist.push_back(sspjPath);
+            createPackFileList(proj, sspjPath, filelist);
 
+            sspkg_info::getInst()->set_sspkg_filelist(proj->version, outFName, filelist, outPath);
+        } else {
+            LumpExporter::saveBinary(out, encoding, lump, creatorComment);
+        }
+    } catch (const SSException& e) {
+        delete proj;
+        throw e;
+    }
+    delete proj;
+}
 
+constexpr std::string_view APP_NAME = "Ss6Converter";
+constexpr std::string_view APP_VERSION =  SPRITESTUDIOSDK_VERSION " (hash: "  GIT_SHORT_COMMIT_HASH  " Build: " __DATE__ " " __TIME__ ")";
 
+const std::string HELP = std::string(APP_NAME) +  " converter version " + std::string(APP_VERSION) + "\n" +
+"usage: " + std::string(APP_NAME) + " Input files(.sspj) ...\n" +
+"\n" +
+"options:\n" +
+"  -h      Display usage.\n" +
+"  -v      Verbose mode.\n" +
+"  -o      Set output path. (default: the same directory of existing the input sspj file)\n" +
+//"  -e arg  Encoding of output file (UTF8/SJIS) default:UTF8\n" +
+//"  -p arg  Specify image file load base path.\n" +
+"  -pkg    sspkg output mode\n" +
+"  -f      Set output format. (ssbp, json, ssfb, sspkg) (default: ssbp)\n" +
+"  -p      Pause after the end\n" +
+"\n" +
+"usage example : " + std::string(APP_NAME) + " -o output_directory_path -f (ssbp|json|ssfb|sspkg) input_sspj_file_path\n";
 
 class ArgumentPointer
 {
@@ -1794,17 +1777,17 @@ public:
 	{
 		return _index < _argc;
 	}
-	
+
 	std::string next()
 	{
 		assert(hasNext());
-		return std::string(_argv[_index++]);
+		return {_argv[_index++]};
 	}
 };
 
-
 bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args, std::string& illegalArgument)
 {
+
 	if (opt == "-h")
 	{
 		options.isHelp = true;
@@ -1823,7 +1806,7 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		std::string enc = args.next();
 		std::string uppered = enc;
 		std::transform(uppered.begin(), uppered.end(), uppered.begin(), toupper);
-		
+
 		if      (uppered == "UTF8") options.encoding = LumpExporter::UTF8;
 		else if (uppered == "SJIS") options.encoding = LumpExporter::SJIS;
 		else
@@ -1842,20 +1825,53 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 		options.imageBaseDir = args.next();
 	}
 */
+
 	else if (opt == "-o")
 	{
+
 		if (!args.hasNext()) return false;
 
 		options.outputDir = args.next();
+		//COI( "outputDir : " + options.outputDir );
+	}
+	else if (opt == "-p")
+	{
+		options.endAfterStop = true;
+		COI( "pauseMode : On" );
+	}
+	else if (opt == "-l")
+	{
+		std::cout << "output log mode" << std::endl;
+		options.isLogout = true;
+//		options.isOutputLog = true;
+		COI( "output Log : On" );
 	}
 	else if (opt == "-f")
 	{
 		if (!args.hasNext()) return false;
 
 		std::string outputFormat = args.next();
+        options.outputFormat = OUTPUT_FORMAT_FLAG_SSBP;
 		if (outputFormat == "json") options.outputFormat = OUTPUT_FORMAT_FLAG_JSON;
 		else if (outputFormat == "c") options.outputFormat = OUTPUT_FORMAT_FLAG_CSOURCE;
 		else if (outputFormat == "ssfb") options.outputFormat = OUTPUT_FORMAT_FLAG_SSFB;
+		else if (outputFormat == "sspkg") options.outputFormat = OUTPUT_FORMAT_FLAG_SSPKG;
+	}
+	else if (opt == "-c")
+	{
+        if(isWindows()) {
+            COI("argumentEncodeMode");
+            if (!args.hasNext()) return false;
+
+            std::string argumentEncode = args.next();
+            if (argumentEncode == "utf8") {
+                options.argumentEncode = ARGUMENT_ENCODE_UTF8;
+                COI("Encode : utf-8");
+            } else if (argumentEncode == "sjis") {
+                options.argumentEncode = ARGUMENT_ENCODE_SJIS;
+                COI("Encode : sjis");
+            }
+        }
 	}
 	else
 	{
@@ -1868,52 +1884,66 @@ bool parseOption(Options& options, const std::string& opt, ArgumentPointer& args
 	return true;
 }
 
+bool parseArguments(Options& options, int argc, const char* argv[], std::string& illegalArgument) {
+    //オプションフラグの初期化
+    options.outputDir = "";
+    options.imageBaseDir = "";
+    options.outputFormat = OUTPUT_FORMAT_FLAG_SSBP;
+    options.argumentEncode = (isWindows())? ARGUMENT_ENCODE_SJIS : ARGUMENT_ENCODE_UTF8;
 
-bool parseArguments(Options& options, int argc, const char* argv[], std::string& illegalArgument)
-{
-	//オプションフラグの初期化
-	options.outputDir = "";
-	options.imageBaseDir = "";
-	options.outputFormat = 0;
-	
-	//引数解析
-	Options::StringList inList;
-	ArgumentPointer args(argc, argv);
-	if (!args.hasNext())
-	{
-		options.isHelp = true;
-		return true;
-	}
+    // COI( "#### parseOption ####" );
 
-	while (args.hasNext())
-	{
-		std::string name = args.next();
-		if (name[0] == '-')
-		{
-			bool success = parseOption(options, name, args, illegalArgument);
-			if (!success)
-			{
-				return false;
-			}
-		}
-		else
-		{
-			inList.push_back(name);
-		}
-	}
+    //引数解析
+    Options::StringList inList;
+    ArgumentPointer args(argc, argv);
+    if (!args.hasNext()) {
+        options.isHelp = true;
+        return true;
+    }
 
-	options.inList = inList;
-	// success
-	return true;
+    while (args.hasNext()) {
+        std::string name = args.next();
+
+        //COI( name );
+
+        if (name[0] == '-') {
+            bool success = parseOption(options, name, args, illegalArgument);
+            if (!success) {
+                // COE( "### Error illegalArgument!!! ###" );
+                return false;
+            }
+        } else {
+//			inList.push_back(name);
+            std::string nameUTF8;
+            switch (options.argumentEncode) {
+                case ARGUMENT_ENCODE_SJIS:
+                    if (isWindows()) {
+                        nameUTF8 = spritestudio6::SsCharConverter::sjis_to_utf8(name);;
+                        //				LOGI << "name : (sjis)" << nameUTF8;
+                    }
+                    break;
+                case ARGUMENT_ENCODE_UTF8:
+                default:
+                    nameUTF8 = name;
+                    break;
+            }
+
+
+            inList.push_back(nameUTF8);
+        }
+    }
+
+    options.inList = inList;
+
+    if (options.argumentEncode == ARGUMENT_ENCODE_SJIS) {
+        options.outputDir = spritestudio6::SsCharConverter::sjis_to_utf8(options.outputDir);
+    }
+
+    // success
+    return true;
 }
 
-
-
-
-
-
-int convertMain(int argc, const char * argv[])
-{
+int convertMain(int argc, const char * argv[]) {
 	// 引数をパースする
 	Options options;
 	std::string illegalArgument;
@@ -1921,9 +1951,8 @@ int convertMain(int argc, const char * argv[])
 	if (!success)
 	{
 		// 引数が不正
-		std::cerr << "Invalid arguments: " << illegalArgument << std::endl;
-		std::cout << HELP;
-		return SSPC_ILLEGAL_ARGUMENT;
+        COE(u8"Invalid arguments: " + illegalArgument + "\n" + std::string(HELP));
+        return SSPC_ILLEGAL_ARGUMENT;
 	}
 
 	if (options.isHelp)
@@ -1932,116 +1961,125 @@ int convertMain(int argc, const char * argv[])
 		std::cout << HELP;
 		return SSPC_SUCCESS;
 	}
-	
-	
+
+#ifdef _BACKBUFFER_RENDERING__
+	std::unique_ptr<spritestudio6::SSTextureFactory> texFactory;
+	//spritestudio6::SSTextureFactory* texFactory = nullptr;
+
+	if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG)
+	{
+		sspkg_info::create();
+
+		if (!ConverterOpenGLInit())
+		{
+			COE( "OpenGL not initialized ");
+		}
+	}
+	else {
+		texFactory.reset(
+			new spritestudio6::SSTextureFactory(
+				new spritestudio6::SSTextureBMP()
+			)
+		);
+	}
+#endif
+
+	// COI( "### Input File Check ###" );
+
 	// *** 入力ファイル名チェック
 	std::vector<std::string> sources;
-	{
-		Options::StringList& in = options.inList;
-	
-		bool error = false;
-		for (Options::StringList::iterator it = in.begin(); it != in.end(); it++)
-		{
-			const std::string& str = *it;
-		
-#ifdef _WIN32
-			// Win32プラットフォーム用コード。Win32APIを使ってワイルドカード展開する
-			std::vector<std::string> fileList = FileUtil::findPath(str);
-			if (!fileList.empty())
-			{
-				std::copy(fileList.begin(), fileList.end(), std::back_inserter(sources));
-			}
-			else
-			{
-				std::cerr << "Cannot find input file: " << str << std::endl;
-				error = true;
-			}
-#else
-			// Mac/Unixプラットフォーム用コード
-			// 本当にファイルが存在するか確認し、見つからないものがあるときはエラーとする
-			struct stat st;
-			int result = stat(str.c_str(), &st);
-			if (result == 0)
-			{
-				sources.push_back(str);
-			}
-			else
-			{
-				std::cerr << "Cannot find input file: " << str << std::endl;
-				error = true;
-			}
-#endif
-		}
-		if (error)
-        {
+    {
+        Options::StringList &in = options.inList;
+
+        std::vector<std::string> errorSources;
+        for (const auto &str: in) {
+            auto inputFile = std::filesystem::path(str);
+            if (std::filesystem::exists(inputFile)) {
+                sources.push_back(str);
+            } else {
+                errorSources.push_back(str);
+            }
+        }
+        if (!errorSources.empty()) {
+            std::string e;
+            for(const auto& a : errorSources) {
+                e += " " + a;
+            }
+            COE("Not found input files:" + e);
+
+            if (options.endAfterStop) {
+                getc(stdin);
+            }
             return SSPC_NOT_EXIST_INPUT_FILE;
         }
-	}
-	
-	
-	
-	std::string creatorComment = "Created by " APP_NAME " " APP_VERSION;
-	LumpExporter::StringEncoding encoding = options.encoding;
-	
-	// コンバート実行
-	for (std::vector<std::string>::const_iterator it = sources.begin(); it != sources.end(); it++)
-	{
-		std::string sspjPath = *it;
-		std::string outPath = FileUtil::replaceExtension(sspjPath, ".sspj", ".ssbp");
-		
-		if ( options.outputDir != "" ) 
-		{
-			//パスが指定されている場合
-			int st = 0;
-#ifdef _WIN32
-			st = outPath.find_last_of("\\");
-#else
-            st = outPath.find_last_of("/");
-#endif
-			std::string ssbpname = outPath.substr(st+1);
+    }
 
-#ifdef _WIN32
-			if ( options.outputDir.substr(options.outputDir.length() - 1) != "\\" )
-#else
-			if ( options.outputDir.substr(options.outputDir.length() - 1) != "/" )
-#endif
-			{
-				//最後の１文字が"\\"でない場合付加する
-#ifdef _WIN32
-				options.outputDir = options.outputDir + "\\";
-#else
-                options.outputDir = options.outputDir + "/";
-#endif
-			}
-			outPath = options.outputDir + ssbpname;
-		}
+	std::string creatorComment = "Created by " + std::string(APP_NAME) + " " + std::string(APP_VERSION);
+	auto encoding = options.encoding;
 
-		if (options.isVerbose)
-		{
-			std::cout << "Convert: " << sspjPath << " -> " << outPath << std::endl;
-		}
-		
-		convertProject(outPath, encoding, sspjPath, options.imageBaseDir, creatorComment, options.outputFormat);
-	}
+	// COI( "### Run Convert ###" );
 
-	if ( convert_error_exit == true )
-	{
-		//データにエラーがありコンバートを中止した
-	    return SSPC_SSPJ_PARSE_FAILED;
-	}
-	else
-	{
-	    return SSPC_SUCCESS;
-	}
+    try {
+        // コンバート実行
+        for (auto &source: sources) {
+            auto sspjPath = std::filesystem::weakly_canonical(std::filesystem::absolute(source));
+            auto outPath = sspjPath.parent_path();
+            auto outFName = sspjPath.filename().stem().string();
+
+            //パスが指定されている場合
+            if (!options.outputDir.empty()) {
+                outPath = std::filesystem::weakly_canonical(std::filesystem::absolute(options.outputDir));
+            }
+
+            if (options.isVerbose) {
+                COI("Convert: " + sspjPath.string() + " -> " + outPath.string());
+            }
+
+            COI("Convert : " + sspjPath.string());
+
+            convertProject(outPath, outFName, encoding, sspjPath, options, creatorComment);
+
+            //ssfbはここまでファイルロックされている 最終的なクローズはここでされている？
+            //手前でパックすると失敗しそう
+            if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG) {
+                if (!sspkg_info::getInst()->make_sspkg()) {
+                    const std::string msg = u8"An error occured during making zip file. " + outPath.string();
+                    throw SSException(msg, SSPC_SSPKG_ERROR);
+                }
+                sspkg_info::getInst()->sspkg_cleanup_file();
+            }
+        }
+
+        if (options.outputFormat == OUTPUT_FORMAT_FLAG_SSPKG) {
+            sspkg_info::destroy();
+        }
+
+        COI(u8"Convert : SUCCESS");
+        logger.LogFileFlush();
+
+        if (options.endAfterStop) {
+            getc(stdin);
+        }
+
+        return SSPC_SUCCESS;
+    } catch(const SSException &e) {
+
+        COE(e.what());
+        //データにエラーがありコンバートを中止した
+        logger.LogFileFlush();
+
+        if (options.endAfterStop) {
+            getc(stdin);
+        }
+
+        return e.getErrorCode();
+    }
 }
 
-
-
-
-int main(int argc, const char * argv[])
-{
-	int resultCode = convertMain(argc, argv);
-	return resultCode;
+int main(int argc, const char * argv[]) {
+    int result = convertMain(argc, argv);
+    if (isOpenGLContextInitialized()) {
+        ConverterOpenGLRelease();
+    }
+    return result;
 }
-
-

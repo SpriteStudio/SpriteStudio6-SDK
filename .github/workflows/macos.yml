@@ -1,0 +1,94 @@
+name: macOS Release
+
+on:
+  workflow_dispatch:
+
+env:
+  qtVersion: "6.9.0"
+
+jobs:
+  macos_build:
+    strategy:
+        matrix:
+          platform: [macos-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: prepare build environment
+        run: |
+          brew install ninja
+          brew install glfw3
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.qtVersion }}
+      - name: "set QT_PREFIX"
+        run: echo "QT_PREFIX=${QT_ROOT_DIR}" >> $GITHUB_ENV
+      - name: build
+        run: ./Scripts/build_macos.sh
+
+      - name: Retrieve the secret and decode it to a file
+        env:
+          DEV_CERT_APP2: ${{ secrets.DEV_CERT_APP2 }}
+          DEV_CERT_PASS: ${{ secrets.DEV_CERT_PASS }}
+          KC_PASS: ${{ secrets.KC_PASS }}
+        run: |
+          # create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          KEYCHAIN_PATH=app-signing.keychain-db
+
+          # import certificate and provisioning profile from secrets
+          echo -n "$DEV_CERT_APP2" | base64 --decode > $CERTIFICATE_PATH
+
+          # create temporary keychain
+          security create-keychain -p "$KC_PASS" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KC_PASS" $KEYCHAIN_PATH
+
+          # import certificate to keychain
+          security import $CERTIFICATE_PATH -P "$DEV_CERT_PASS" -f pkcs12 -k $KEYCHAIN_PATH -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KC_PASS" $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+      - name: codesign
+        env:
+          DEV_ID_APPLICATION: ${{ secrets.DEV_ID_APPLICATION }}
+        run: |
+          KEYCHAIN_PATH=app-signing.keychain-db
+
+          codesign --force --verify --verbose --keychain $KEYCHAIN_PATH --sign "${DEV_ID_APPLICATION}" ./Build/Converter/build/Ss6Converter --deep --options runtime --timestamp
+          /bin/cp ./Build/Converter/build/Ss6Converter ./Build/Ss6ConverterGUI/Ss6ConverterGUI/build/Ss6ConverterGUI.app/Contents/MacOS/
+          codesign --force --verify --verbose --keychain $KEYCHAIN_PATH --sign "${DEV_ID_APPLICATION}" ./Build/Ss6ConverterGUI/Ss6ConverterGUI/build/Ss6ConverterGUI.app --deep --options runtime --timestamp
+          codesign --force --verify --verbose --keychain $KEYCHAIN_PATH --sign "${DEV_ID_APPLICATION}" ./Build/Viewer2/cmakeBuild/SSView2_artefacts/Release/SSViewer2.app --deep --options runtime --timestamp
+
+      - name: notary
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+          NOTRIZATION_PWD: ${{ secrets.NOTARIZATION_PWD }}
+        run: |
+          xcrun notarytool store-credentials "notarytool-profile" --apple-id "$APPLE_ID" --team-id "$TEAM_ID" --password "$NOTRIZATION_PWD"
+
+          echo "xcrun notarytool"
+
+          NOTARIZATION_FILE=Ss6ConverterGUI_notarization.zip
+          ditto -c -k --sequesterRsrc --keepParent "./Build/Ss6ConverterGUI/Ss6ConverterGUI/build/Ss6ConverterGUI.app" "$NOTARIZATION_FILE"
+          xcrun notarytool submit "$NOTARIZATION_FILE" --keychain-profile "notarytool-profile" --wait
+
+          NOTARIZATION_FILE=SSViewer2_notarization.zip
+          ditto -c -k --sequesterRsrc --keepParent "./Build/Viewer2/cmakeBuild/SSView2_artefacts/Release/SSViewer2.app" "$NOTARIZATION_FILE"
+          xcrun notarytool submit "$NOTARIZATION_FILE" --keychain-profile "notarytool-profile" --wait
+
+          echo "xcrun stapler"
+          xcrun stapler staple -v "./Build/Ss6ConverterGUI/Ss6ConverterGUI/build/Ss6ConverterGUI.app"
+          xcrun stapler staple -v "./Build/Viewer2/cmakeBuild/SSView2_artefacts/Release/SSViewer2.app"
+      - name: pack
+        run: ./Scripts/release_pack_macos.sh
+      - id: commit
+        uses: pr-mpt/actions-commit-hash@v3
+      - name: Upload Tools
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos_${{ steps.commit.outputs.short }}
+          path: Tools

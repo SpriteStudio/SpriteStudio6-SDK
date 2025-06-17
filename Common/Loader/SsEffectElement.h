@@ -4,6 +4,10 @@
 
 #include "sstypes.h"
 #include "ssarchiver.h"
+#include "SsEffectElement.h"
+
+namespace spritestudio6
+{
 
 enum EffectPartType
 {
@@ -39,7 +43,6 @@ namespace SsEffectFunctionType
 		InfiniteEmitEnabled,
 	};
 }
-
 
 class SsCell;
 
@@ -166,7 +169,7 @@ public:
 #endif
 	//シリアライザ
 
-	virtual SSSERIALIZE_BLOCK
+	virtual SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
 		ar = ar;
 	}
@@ -211,17 +214,17 @@ public:
 	virtual void InitializeParticle( SsEffectRenderEmitter* e , SsEffectRenderParticle* particle );
 	virtual void UpdateParticle( SsEffectRenderParticle* particle ){}
 */
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( maximumParticle );
-		SSAR_DECLARE( speed );
-		SSAR_DECLARE( lifespan );
-		SSAR_DECLARE( angle );
-		SSAR_DECLARE( angleVariance );
-		SSAR_DECLARE( interval );
-		SSAR_DECLARE( lifetime );
-		SSAR_DECLARE( attimeCreate );
-		SSAR_DECLARE( priority );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( maximumParticle );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( speed );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( lifespan );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( angle );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( angleVariance );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( interval );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( lifetime );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( attimeCreate );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( priority );
 	}
 
 };
@@ -247,9 +250,9 @@ public:
 */
 
 	//シリアライザ
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( Seed );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( Seed );
 	}
 
 };
@@ -277,9 +280,9 @@ public:
 
 	virtual void UpdateEndEmmiter( SsEffectRenderEmitter* emmiter );
 */
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( DelayTime );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( DelayTime );
 	}
 
 
@@ -306,9 +309,9 @@ public:
 	virtual void InitializeParticle( SsEffectRenderEmitter* e , SsEffectRenderParticle* particle );
 	virtual void UpdateParticle( SsEffectRenderParticle* particle );
 */
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( Gravity );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( Gravity );
 	}
 
 };
@@ -332,10 +335,10 @@ public:
 	virtual    SsEffectElementBase*  new_(){ return new ParticleElementPosition(); }
 	virtual void InitializeParticle( SsEffectRenderEmitter* e , SsEffectRenderParticle* particle );
 */
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( OffsetX );
-		SSAR_DECLARE( OffsetY );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( OffsetX );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( OffsetY );
 	}
 
 
@@ -362,10 +365,10 @@ public:
 	virtual    SsEffectElementBase*  new_(){ return new ParticleElementTransPosition(); }
 	virtual void InitializeParticle( SsEffectRenderEmitter* e , SsEffectRenderParticle* particle ){}
 	*/
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( OffsetX );
-		SSAR_DECLARE( OffsetY );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( OffsetX );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( OffsetY );
 	}
 
 };
@@ -394,10 +397,10 @@ public:
 	virtual void UpdateParticle( SsEffectRenderParticle* particle );
 */
 	//シリアライザ
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( Rotation );
-		SSAR_DECLARE( RotationAdd );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( Rotation );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( RotationAdd );
 	}
 
 
@@ -424,10 +427,10 @@ public:
 	virtual void InitializeParticle( SsEffectRenderEmitter* e , SsEffectRenderParticle* particle );
  	virtual void UpdateParticle( SsEffectRenderParticle* particle );
 */
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( RotationFactor );
-		SSAR_DECLARE( EndLifeTimePer );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( RotationFactor );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( EndLifeTimePer );
 	}
 
 
@@ -451,9 +454,9 @@ public:
 	virtual void InitializeParticle( SsEffectRenderEmitter* e , SsEffectRenderParticle* particle );
  	virtual void UpdateParticle( SsEffectRenderParticle* particle );
 */
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( Speed );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( Speed );
 	}
 };
 
@@ -477,9 +480,9 @@ public:
 
 	virtual void InitializeParticle( SsEffectRenderEmitter* e , SsEffectRenderParticle* particle );
 */
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( Acceleration );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( Acceleration );
 	}
 
 };
@@ -503,9 +506,9 @@ public:
 	virtual void InitializeParticle( SsEffectRenderEmitter* e , SsEffectRenderParticle* particle );
 	virtual void UpdateParticle( SsEffectRenderParticle* particle );
 */
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( Color );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( Color );
 	}
 };
 
@@ -527,9 +530,9 @@ public:
 	virtual void InitializeParticle( SsEffectRenderEmitter* e , SsEffectRenderParticle* particle );
 	virtual void UpdateParticle( SsEffectRenderParticle* particle );
 */
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( Color );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( Color );
 	}
 
 };
@@ -554,9 +557,9 @@ public:
 	virtual void InitializeParticle( SsEffectRenderEmitter* e , SsEffectRenderParticle* particle );
 	virtual void UpdateParticle( SsEffectRenderParticle* particle );
 */
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( disprange );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( disprange );
 	}
 
 
@@ -584,11 +587,11 @@ public:
 	virtual void InitializeParticle( SsEffectRenderEmitter* e , SsEffectRenderParticle* particle );
 	virtual void UpdateParticle( SsEffectRenderParticle* particle );
 */
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( SizeX );
-		SSAR_DECLARE( SizeY );
-		SSAR_DECLARE( ScaleFactor );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( SizeX );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( SizeY );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( ScaleFactor );
 	}
 
 
@@ -618,11 +621,11 @@ public:
 	virtual void InitializeParticle( SsEffectRenderEmitter* e , SsEffectRenderParticle* particle );
 	virtual void UpdateParticle( SsEffectRenderParticle* particle );
 */
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( SizeX );
-		SSAR_DECLARE( SizeY );
-		SSAR_DECLARE( ScaleFactor );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( SizeX );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( SizeY );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( ScaleFactor );
 	}
 
 };
@@ -655,10 +658,10 @@ public:
 	virtual void UpdateParticle( SsEffectRenderParticle* particle );
 */
 
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( Position );
-		SSAR_DECLARE( Power );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( Position );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( Power );
 	}
 
 };
@@ -690,9 +693,9 @@ public:
 	virtual void InitializeParticle( SsEffectRenderEmitter* e , SsEffectRenderParticle* particle );
 	virtual void UpdateParticle( SsEffectRenderParticle* particle ){}
 */
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE( Rotation );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( Rotation );
 	}
 };
 
@@ -708,7 +711,7 @@ public:
 	}
 	virtual ~ParticleInfiniteEmitEnabled(){}
 
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
 
 	}
@@ -717,6 +720,6 @@ public:
 
 
 
-
+}	// namespace spritestudio6
 
 #endif

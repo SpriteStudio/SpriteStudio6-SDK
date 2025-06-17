@@ -31,7 +31,8 @@ enum CommandIDs
 // コマンド処理を行うコンポーネント
 class MainContentComponent :	public Component,
 								public ApplicationCommandTarget,
-								public Value::Listener
+								public Value::Listener,
+                                public FileDragAndDropTarget
 {
 public:
     //==============================================================================
@@ -45,6 +46,11 @@ public:
 	bool	perform(const InvocationInfo& info) override;
 	void	valueChanged(Value & value) override;
 	void	resized() override;
+
+    // FileDragAndDropTarget interface
+    bool		isInterestedInFileDrag (const juce::StringArray& files) override;
+    void		filesDropped(const juce::StringArray& files, int x, int y) override;
+
 	PropertiesFile &	getProperties();
 	ApplicationCommandManager	commandManager;
 private:

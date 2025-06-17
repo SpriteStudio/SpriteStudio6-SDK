@@ -13,18 +13,17 @@ if not "%1" == "" (
 pushd "%BUILDDIR%\Converter"
 
 rem Build flatc
-pushd "flatbuffers"
-
-git clean -fdx .
-cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% . || exit /b 1
-cmake --build . --target ALL_BUILD -- /p:Configuration=%BUILD_TYPE% || exit /b 1
-set FLATC="%BUILDDIR%\Converter\flatbuffers\%BUILD_TYPE%\flatc.exe"
-
+rmdir /S /Q build
+mkdir build
+pushd build
+cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DENABLE_FLATC=ON .. || exit /b 1
+cmake --build . --target flatc --parallel -- /p:Configuration=%BUILD_TYPE% || exit /b 1
+set FLATC="%BUILDDIR%\Converter\build\_deps\flatbuffers-build\flatc.exe"
 popd
 
 rem generate ssfb code
 %FLATC% -c fbs\ssfb.fbs --gen-compare --gen-object-api
-%FLATC% -s fbs\ssfb.fbs
-%FLATC% -T fbs\ssfb.fbs --no-fb-import
+%FLATC% -n fbs\ssfb.fbs
+%FLATC% -T fbs\ssfb.fbs
 
 popd

@@ -1,0 +1,69 @@
+name: Windows Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      arch:
+        description: 'architecture'
+        required: true
+        default: 'x64'
+        type: choice
+        options:
+          - x64
+          # - arm64 
+
+env:
+  arch: ${{ inputs.arch }}
+  qtVersion: "6.9.0"
+  cmakeVersion: "4.0.0"
+
+jobs:
+  win_build:
+    strategy:
+      matrix:
+        platform: [windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Setup Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: Install cmake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: ${{ env.cmakeVersion }}
+      - name: Check cmake
+        run: |
+          cmake --version
+          cmake -h
+      - name: Install x64 Qt
+        if: ${{ env.arch == 'x64' }}
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.qtVersion }}
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2022_64'
+      - name: Install arm64 Qt
+        if: ${{ env.arch == 'arm64' }}
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.qtVersion }}
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2022_arm64'
+      - name: "set QT_PREFIX"
+        shell: bash
+        run: |
+          echo "QT_PREFIX=${QT_ROOT_DIR}" >> $GITHUB_ENV
+      - name: release build
+        shell: cmd
+        run: Scripts\release_win.bat ${{ env.arch }}
+      - id: commit
+        uses: pr-mpt/actions-commit-hash@v3
+      - name: Upload Tools
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows_${{ env.arch }}_${{ steps.commit.outputs.short }}
+          path: Tools

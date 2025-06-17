@@ -3,19 +3,24 @@
 #include "ssloader_ssce.h"
 #include "ssloader_ssee.h"
 #include "ssstring_uty.h"
+#include "ssFilesystem.h"
 
 #include "../Helper/DebugPrint.h"
 
-SsEffectFile*	ssloader_ssee::Load(const std::string& filename )
+namespace spritestudio6
 {
 
-	SsString _basepath = "";
 
-	
+SsEffectFile*	ssloader_ssee::Load(const std::string& filename )
+{
+	libXML::XMLDocument xml;
+	FILE *fp = ssFilesystem::openFile(filename);
+	if (fp == NULL) return 0;
+	libXML::XMLError result = xml.LoadFile(fp);
+	fclose(fp);
+
 	SsEffectFile* effectFile = new SsEffectFile();
-
-	XMLDocument xml;
-	if ( XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
+	if ( libXML::XML_SUCCESS == result )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioEffect" );
 		effectFile->__Serialize( &ar );
@@ -59,3 +64,5 @@ void	ssloader_ssee::loadPostProcessing( SsEffectFile* file , SsProject* pj )
 
 
 }
+
+}	// namespace spritestudio6

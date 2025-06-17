@@ -1,21 +1,28 @@
 ﻿#ifndef __SSTYPES__
 #define __SSTYPES__
+#ifdef _MSC_VER
 #pragma warning(disable : 4819)
+#endif // _MSC_VER
 #include <stdlib.h>
 #include <string>
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include <algorithm>
 
 //===============================================================
 //Macros 
 //===============================================================
-#define	SS_DECLARE_ENUM_STRING_DEF(type) \
+#define	SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(type) \
 	SsString	__EnumToString_( type::_enum n );\
-	void	__StringToEnum_( SsString n , type::_enum& out);\
+	void	__StringToEnum_( SsString n , type::_enum& out)
 
+// 未使用引数の警告避け
+#ifndef SPRITESTUDIO6SDK_NOUSE_ARGUMENT
+	#define	SPRITESTUDIO6SDK_NOUSE_ARGUMENT(_name_)	( void )( &_name_ );
+#endif
 
-
+namespace spritestudio6
+{
 
 //===============================================================
 // Declare Type
@@ -96,7 +103,7 @@ public:
 		float len = in.length();
 		float div = 0;
 
-		if ( len == 0 )
+		if ( len == 0.f )
 		{
 			div = 0;
 		}else{
@@ -264,7 +271,7 @@ template<> inline void SsTColor<float>::fromBGRA(u32 c)
 }
 template<> inline u32 SsTColor<float>::toARGB() const
 {
-	u32 c = (u8)(a * 255) << 24 | (u8)(r * 255) << 16 | (u8)(g * 255) << 8 | (u8)(b * 255);
+	u32 c = static_cast<u32>((u8)(a * 255) << 24) | static_cast<u32>((u8)(r * 255) << 16) | static_cast<u32>((u8)(g * 255) << 8) | static_cast<u32>((u8)(b * 255));
 	return c;
 }
 
@@ -311,7 +318,7 @@ template<> inline void SsTColor<u8>::fromBGRA(u32 c)
 }
 template<> inline u32 SsTColor<u8>::toARGB() const
 {
-	u32 c = (u8)(a) << 24 | (u8)(r) << 16 | (u8)(g) << 8 | (u8)(b);
+	u32 c = static_cast<u32>((u8)(a) << 24) | static_cast<u32>((u8)(r) << 16) | static_cast<u32>((u8)(g) << 8) | static_cast<u32>((u8)(b));
 	return c;
 }
 
@@ -377,8 +384,8 @@ namespace SsPartsSortMode
 		z,				///< 描画順はＺ座標で制御する。Ｚ座標を表示し、優先度を隠す。
 		num
 	};
-};
-SS_DECLARE_ENUM_STRING_DEF( SsPartsSortMode );
+}
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsPartsSortMode );
 
 //---------------------------------------------------------------
 /// Animation Part Type
@@ -402,8 +409,8 @@ namespace SsPartType
 
 		num
 	};
-};
-SS_DECLARE_ENUM_STRING_DEF( SsPartType );
+}
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsPartType );
 
 
 //---------------------------------------------------------------
@@ -421,8 +428,8 @@ namespace SsBoundsType
 		circle_smax,	///< 真円の半径で距離により判定する (スケールはx,yの最大値をとる）
 		num
 	};
-};
-SS_DECLARE_ENUM_STRING_DEF( SsBoundsType );
+}
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsBoundsType );
 
 
 //---------------------------------------------------------------
@@ -436,8 +443,8 @@ namespace SsInheritType
 		self,			///< 自身がアトリビュート別に持つ継承方法を使う
 		num
 	};
-};
-SS_DECLARE_ENUM_STRING_DEF( SsInheritType );
+}
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsInheritType );
 
 //---------------------------------------------------------------
 /// ブレンドタイプ
@@ -455,8 +462,8 @@ namespace SsBlendType
 		invert, 		///< 7 反転
 		num
 	};
-};
-SS_DECLARE_ENUM_STRING_DEF( SsBlendType );
+}
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsBlendType );
 
 
 ///カラーブレンドキーが使用されている際のカラー適用範囲の定義
@@ -468,8 +475,8 @@ namespace SsColorBlendTarget
 		vertex,	///< 頂点単位
 		num
 	};
-};
-SS_DECLARE_ENUM_STRING_DEF( SsColorBlendTarget );
+}
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsColorBlendTarget );
 
 
 
@@ -487,8 +494,8 @@ namespace SsInterpolationType
 		deceleration,	///< 減速度
 		num,
 	};
-};
-SS_DECLARE_ENUM_STRING_DEF( SsInterpolationType );
+}
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsInterpolationType );
 
 
 /// テクスチャラップモード
@@ -502,9 +509,9 @@ namespace SsTexWrapMode
 		mirror,			/// ミラー
 		num
 	};
-};
+}
 
-SS_DECLARE_ENUM_STRING_DEF(SsTexWrapMode);
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsTexWrapMode);
 
 /// テクスチャフィルターモード 画素補間方法
 namespace SsTexFilterMode
@@ -516,8 +523,8 @@ namespace SsTexFilterMode
 		linear,		///< リニア、バイリニア
 		num
 	};
-};
-SS_DECLARE_ENUM_STRING_DEF(SsTexFilterMode);
+}
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsTexFilterMode);
 
 
 
@@ -547,6 +554,7 @@ namespace SsAttributeKind
 		hide,		///< [HIDE]非表示
 		partsColor,	///< [PCOL]パーツカラー
 		color,		///< [VCOL]カラーブレンド
+		shader,		///< [SHDR]シェーダー
 		vertex,		///< [VERT]頂点変形
 		pivotx,		///< [PVTX]原点オフセット.X
 		pivoty,		///< [PVTY]原点オフセット.Y
@@ -564,15 +572,16 @@ namespace SsAttributeKind
 		boundr,		///< [BNDR]当たり判定用の半径
 		mask,		///< [MASK]マスク閾値
 		user,		///< [USER]ユーザーデータ
+		signal,		///< [SIGN]シグナル
 		instance,	///< [IPRM]インスタンスパーツパラメータ
 		effect,		///< [EFCT]エフェクトパラメータ
 		deform,		///< [DEFM]デフォーム用パラメータ
 		num,
 	};
-};
+}
 
 
-SS_DECLARE_ENUM_STRING_DEF(SsAttributeKind);
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsAttributeKind);
 
 namespace SsKeyValueType
 {
@@ -589,7 +598,7 @@ namespace SsKeyValueType
 		_userData,
 		_instance,
 	};
-};
+}
 
 
 
@@ -655,6 +664,22 @@ struct SsColorAnime
 
 };
 
+///シェーダー使用時のシェーダータイプとシェーダー値
+struct SsShaderAnime
+{
+	SsString				id;				// シェーダータイプ
+	float					param[4];		// シェーダー値
+
+	SsShaderAnime()
+	{
+		id = "";
+		for ( int i = 0; i < 4; i++ ) {
+			param[i] = 0.0f;
+		}
+	}
+
+};
+
 
 //エフェクト関連の定義
 //エフェクトのノードタイプ
@@ -667,8 +692,8 @@ namespace SsEffectNodeType
 		particle,
 		num
 	};
-};
-SS_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
+}
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
 
 
 
@@ -682,8 +707,8 @@ namespace SsRenderBlendType
 		Add,
 		num
 	};
-};
-SS_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
+}
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
 
 
 //2.0.1で追加　IKの方向
@@ -697,9 +722,36 @@ namespace SsIkRotationArrow
 		anticlockwise,
 		num
 	};
-};
+}
 
-SS_DECLARE_ENUM_STRING_DEF(SsIkRotationArrow);
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsIkRotationArrow);
+
+/// シーケンスタイプ
+namespace SsSequenceType
+{
+	enum _enum
+	{
+		invalid=-1,
+		last,		///< 0 最後のアイテムを繰り返し再生
+		keep,		///< 1 最終フレームを維持
+		top,		///< 2 全体を繰り返し再生
+		num,
+	};
+}
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsSequenceType );
+
+namespace SsSignalParamType
+{
+	enum _enum
+	{
+		none,
+		index,
+		integer,
+		floating,
+		num
+	};
+}
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsSignalParamType );
 
 
 class SsEffectAttr
@@ -761,6 +813,55 @@ public:
 		useRect(false),
 		useString(false)
 	{}
+};
+
+union SsSignalParamValue
+{
+	int			i;
+	float		f;
+};
+
+class SsSignalParam
+{
+public:
+	SsString					paramId;	///<
+	SsSignalParamType::_enum	type;		///<
+	SsSignalParamValue			value;		///<
+
+	SsSignalParam()
+	:	paramId	("")
+	,	type	(SsSignalParamType::none)
+	{
+		value.i = 0;
+	}
+};
+
+class SsSignalCommand
+{
+public:
+	bool						active;		///<
+	SsString					commandId;	///<
+	std::vector<SsSignalParam>	params;		///<
+	SsString					note;		///<
+
+	SsSignalCommand()
+	:	active		(true)
+	,	commandId	("")
+	,	note		("")
+	{
+		params.clear();
+	}
+};
+
+class SsSignalAttr
+{
+public:
+	std::vector<SsSignalCommand>	commands;	///<
+
+	SsSignalAttr()
+	{
+		commands.clear();
+	}
 };
 
 class SsInstanceAttr
@@ -828,8 +929,8 @@ namespace SsMeshDivType
 		boxdiv,
 		num
 	};
-};
-SS_DECLARE_ENUM_STRING_DEF(SsMeshDivType);
+}
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF(SsMeshDivType);
 
 struct SsTriangle
 {
@@ -868,8 +969,8 @@ public:
 		return !(*this == r);
 	}
 
-	bool	operator ==(int n) const { return false; }
-	bool	operator !=(int n) const { return false; }
+	bool	operator ==(int n) const { SPRITESTUDIO6SDK_NOUSE_ARGUMENT(n);	return false; }
+	bool	operator !=(int n) const { SPRITESTUDIO6SDK_NOUSE_ARGUMENT(n);	return false; }
 
 	SsDeformAttr		operator +(const SsDeformAttr& rhs) const
 	{
@@ -892,5 +993,6 @@ public:
 
 };
 
+}	// namespace spritestudio6
 
 #endif

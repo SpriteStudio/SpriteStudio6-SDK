@@ -2,14 +2,14 @@
 //  Lump.cpp
 //
 
-#include "Lump.h"
-#include <assert.h>
+#include <cassert>
 #include <string>
+#include "Lump.h"
 
 static int cnt = 0;
-Lump::Lump(DataType type) : type(type) 
+Lump::Lump(DataType type) : type(type)
 {
-	parent = NULL;
+	parent = nullptr;
 	name = "NoName" + std::to_string(cnt);
 //	name = "NoName";
 	cnt++;
@@ -33,11 +33,11 @@ Lump::~Lump()
 	}
 }
 
-Lump* Lump::s16Data(int value, std::string name)
+std::shared_ptr<Lump> Lump::s16Data(int value, const std::string& name)
 {
-	Lump* v = new Lump(S16);
+	auto v = std::make_shared<Lump>(S16);
 	v->data.i = value;
-	if (name != "")
+	if (!name.empty())
 	{
 		v->name = name;
 	}
@@ -45,11 +45,11 @@ Lump* Lump::s16Data(int value, std::string name)
 	return v;
 }
 
-Lump* Lump::s32Data(int value, std::string name)
+std::shared_ptr<Lump> Lump::s32Data(int value, const std::string& name)
 {
-	Lump* v = new Lump(S32);
+	auto v = std::make_shared<Lump>(S32);
 	v->data.i = value;
-	if (name != "")
+	if (!name.empty())
 	{
 		v->name = name;
 	}
@@ -57,11 +57,11 @@ Lump* Lump::s32Data(int value, std::string name)
 	return v;
 }
 
-Lump* Lump::floatData(float value, std::string name)
+std::shared_ptr<Lump> Lump::floatData(float value, const std::string& name)
 {
-	Lump* v = new Lump(FLOAT);
+	auto v = std::make_shared<Lump>(FLOAT);
 	v->data.f = value;
-	if (name != "")
+	if (!name.empty())
 	{
 		v->name = name;
 	}
@@ -69,11 +69,11 @@ Lump* Lump::floatData(float value, std::string name)
 	return v;
 }
 
-Lump* Lump::colorData(int color, std::string name)
+std::shared_ptr<Lump> Lump::colorData(int color, const std::string& name)
 {
-	Lump* v = new Lump(COLOR);
+	auto v = std::make_shared<Lump>(COLOR);
 	v->data.i = color;
-	if (name != "")
+	if (!name.empty())
 	{
 		v->name = name;
 	}
@@ -81,11 +81,11 @@ Lump* Lump::colorData(int color, std::string name)
 	return v;
 }
 
-Lump* Lump::stringData(const std::string& value, std::string name)
+std::shared_ptr<Lump> Lump::stringData(const std::string& value, const std::string& name)
 {
-	Lump* v = new Lump(STRING);
+	auto v = std::make_shared<Lump>(STRING);
 	v->data.s = new std::string(value);
-	if (name != "")
+	if (!name.empty())
 	{
 		v->name = name;
 	}
@@ -93,18 +93,18 @@ Lump* Lump::stringData(const std::string& value, std::string name)
 	return v;
 }
 
-Lump *Lump::findLump(const Lump *lump, std::string name)
+std::shared_ptr<Lump> Lump::findLump(const std::shared_ptr<Lump>& lump, const std::string& name)
 {
-	Lump *found = nullptr;
-	if(lump == nullptr || name == "")
+    std::shared_ptr<Lump> found = nullptr;
+	if(lump == nullptr || name.empty())
 		return nullptr;
 
 	if(lump->name == name) {
-		found = const_cast<Lump *>(lump);
+		found = lump;
 	} else {
 		if (lump->type == Lump::DataType::SET) {
 			const LumpSet *lset = lump->data.p;
-			for (auto child : lset->set) {
+			for (const auto& child : lset->set) {
 				found = findLump(child, name);
 				if(found != nullptr)
 					break;
@@ -149,7 +149,7 @@ void Lump::walkTree(const Lump *root, const std::function<void(const Lump *)> &c
 }
 */
 
-void Lump::namechack( void )
+void Lump::namechack()
 {
 /*
 	if (parent)
@@ -170,7 +170,7 @@ void Lump::namechack( void )
 */
 }
 
-Lump* Lump::set(const std::string& className, bool isReference, std::string name)
+std::shared_ptr<Lump> Lump::set(const std::string& className, bool isReference, const std::string& name)
 {
 	size_t len = className.length();
 	bool isArray = className.at(len-2) == '[' && className.at(len-1) == ']';
@@ -197,23 +197,23 @@ Lump* Lump::set(const std::string& className, bool isReference, std::string name
 		}
 	}
 
-	Lump* v = new Lump(SET);
+	auto v = std::make_shared<Lump>(SET);
 	v->data.p = new LumpSet(cname, arrayType, isReference);
 	v->name = name;
 	return v;
 }
 
-void Lump::add(Lump* lump)
+void Lump::add(const std::shared_ptr<Lump>& lump)
 {
 	assert(type == SET);
-	lump->parent = this;
+	lump->parent = shared_from_this();
 	data.p->set.push_back(lump);
 }
 
-void Lump::addFirst(Lump* lump)
+void Lump::addFirst(const std::shared_ptr<Lump>& lump)
 {
 	assert(type == SET);
-	lump->parent = this;
+	lump->parent = shared_from_this();
 	data.p->set.insert(data.p->set.begin(), lump);
 }
 
@@ -223,18 +223,18 @@ size_t Lump::count() const
 	return static_cast<int>(data.p->set.size());
 }
 
-Lump *Lump::getChild(std::size_t idx)
+std::shared_ptr<Lump> Lump::getChild(std::size_t idx)
 {
     assert(type == SET);
     return data.p->getChild(idx);
 }
 
-std::vector<Lump *> Lump::getChildren() const {
+std::vector<std::shared_ptr<Lump>>& Lump::getChildren() const {
     assert(type == SET);
     return data.p->set;
 }
 
-Lump *Lump::findChild(const std::function<bool(const Lump *)> &compCallback) {
+std::shared_ptr<Lump> Lump::findChild(const std::function<bool(const std::shared_ptr<Lump>&)> &compCallback) {
 	assert(type == SET);
 	return data.p->findChild(compCallback);
 }
@@ -247,23 +247,22 @@ LumpSet::LumpSet(const std::string& className, ArrayType arrayType, bool isRefer
 
 LumpSet::~LumpSet()
 {
-	for (SetType::reverse_iterator it = set.rbegin(); it != set.rend(); it++)
+	for (auto& lump : set)
 	{
-		Lump* lump = *it;
-		delete lump;
+		lump.reset();
 	}
 }
 
-Lump *LumpSet::getChild(std::size_t idx) {
+std::shared_ptr<Lump> LumpSet::getChild(std::size_t idx) {
     return this->set[idx];
 }
 
-Lump *LumpSet::findChild(const std::function<bool(const Lump *)> &compCallback) {
-	Lump *findLump = nullptr;
+std::shared_ptr<Lump> LumpSet::findChild(const std::function<bool(const std::shared_ptr<Lump>&)> &compCallback) {
+    std::shared_ptr<Lump> findLump = nullptr;
 	if(compCallback == nullptr)
 		return findLump;
 
-	for(auto lump : this->set) {
+	for(const auto& lump : this->set) {
 		bool ret = compCallback(lump);
 		if(ret) {
 			findLump = lump;

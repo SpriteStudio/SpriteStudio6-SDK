@@ -7,7 +7,18 @@
 #include "ssarchiver.h"
 #include "ssstring_uty.h"
 
+#include "ssloader_ssae.h"
+#include "ssloader_ssce.h"
+#include "ssloader_ssee.h"
+#include "ssloader_ssqe.h"
+
+#include <memory>
+#include <utility>
+
 #define SPRITESTUDIO6_SSPJVERSION "2.00.00"
+
+namespace spritestudio6
+{
 
 /// プロジェクトファイルの設定が記載されているデータです。
 /// 以下のタグはエディタ編集用のデータなので読み飛ばします。
@@ -48,38 +59,35 @@ public:
 	}
 	
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE(animeBaseDirectory);
-		SSAR_DECLARE(cellMapBaseDirectory);
-		SSAR_DECLARE(imageBaseDirectory);
-		SSAR_DECLARE(effectBaseDirectory);
+		SPRITESTUDIO6SDK_SSAR_DECLARE(animeBaseDirectory);
+		SPRITESTUDIO6SDK_SSAR_DECLARE(cellMapBaseDirectory);
+		SPRITESTUDIO6SDK_SSAR_DECLARE(imageBaseDirectory);
+		SPRITESTUDIO6SDK_SSAR_DECLARE(effectBaseDirectory);
 
-		SSAR_DECLARE(exportBaseDirectory);
-		SSAR_DECLARE(queryExportBaseDirectory);
-		SSAR_DECLARE_ENUM( wrapMode );
-		SSAR_DECLARE_ENUM( filterMode );
-		SSAR_DECLARE_ENUM(vertexAnimeFloat);
+		SPRITESTUDIO6SDK_SSAR_DECLARE(exportBaseDirectory);
+		SPRITESTUDIO6SDK_SSAR_DECLARE(queryExportBaseDirectory);
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( wrapMode );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM( filterMode );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ENUM(vertexAnimeFloat);
 
 	}
 };
 
 
-class SsAnimation;
-class SsAnimePack;
-class SsCellMap;
-class SsEffectFile;
+typedef std::vector<std::unique_ptr<SsAnimePack>> SsAnimePackList;
+typedef SsAnimePackList::iterator SsAnimePackListItr;
+
+typedef std::vector<std::unique_ptr<SsCellMap>> SsSsCellMapList;
+typedef SsSsCellMapList::iterator SsSsCellMapListItr;
 
 
-typedef std::vector<SsAnimePack*> SsAnimePackList;
-typedef std::vector<SsAnimePack*>::iterator SsAnimePackListItr;
+typedef std::vector<std::unique_ptr<SsEffectFile>> SsEffectFileList;
+typedef SsEffectFileList::iterator SsEffectFileListItr;
 
-typedef std::vector<SsCellMap*> SsSsCellMapList;
-typedef std::vector<SsCellMap*>::iterator SsSsCellMapListItr;
-
-
-typedef std::vector<SsEffectFile*> SsEffectFileList;
-typedef std::vector<SsEffectFile*>::iterator SsEffectFileListItr;
+typedef std::vector<std::unique_ptr<SsSequencePack>> SsSequencePackList;
+typedef SsSequencePackList::iterator SsSequencePackListItr;
 
 /// XMLドキュメントとなっているsspjファイルのデータ保持を提供するクラスです。
 ///以下はエディタ情報のため読み飛ばします。
@@ -91,15 +99,17 @@ public:
 
 	SsString				version;
 	SsProjectSetting		settings;			//!< プロジェクト設定
+
 	std::vector<SsString>	cellmapNames;		//!< セルマップファイルのリスト
 	std::vector<SsString>	animepackNames;		//!< アニメファイルのリスト
 	std::vector<SsString>	effectFileNames;	//!< エフェクトファイルのリスト
 	std::vector<SsString>	textureList;		//!< セルマップから取得したテクスチャのリスト
-
+	std::vector<SsString>	sequencepackNames;	//!< シーケンスファイルのリスト
 
 	SsAnimePackList		animeList;		//!< アニメーションのリスト	
 	SsSsCellMapList		cellmapList;	//!< セルマップリスト
-	SsEffectFileList	effectfileList;
+	SsEffectFileList	effectfileList;	//!< エフェクトのリスト
+	SsSequencePackList	sequenceList;	//!< シーケンスのリスト	
 
 	//ロード時に作成されるワーク
 	SsString	m_proj_filepath;	///プロジェクトファイルのパス
@@ -120,6 +130,9 @@ public:
 	///セルマップデータの数量を取得
 	const size_t getEffectFileNum(){ return effectFileNames.size(); }
 
+	///シーケンスパックの数量を取得する
+	const size_t getSequencePackNum(){ return sequencepackNames.size(); }
+
 
 	///アニメパックデータのコンテナを取得する
 	SsAnimePackList&	getAnimePackList(){ return animeList;}
@@ -130,6 +143,21 @@ public:
 	//エフェクトファイルのリスト
 	SsEffectFileList&	getEffectFileList(){ return effectfileList;}
 
+	///シーケンスパックデータのコンテナを取得する
+	SsSequencePackList&	getSequencePackList(){ return sequenceList;}
+
+	///アニメパックデータの各情報を取得する
+	SsAnimePack*	getAnimePack(int index){ return animeList[index].get();}
+
+	///セルマップデータの各情報を取得する
+	SsCellMap*	getCellMap(int index){ return cellmapList[index].get();}
+
+	//エフェクトファイルの各情報を取得する
+	SsEffectFile*	getEffectFile(int index){ return effectfileList[index].get();}
+
+	///シーケンスパックデータの各情報を取得する
+	SsSequencePack*	getSequencePack(int index){ return sequenceList[index].get();}
+
 
 	//アニメパック名とアニメ名からアニメーションを取得する
 	SsAnimation*		findAnimation( SsString& animePackName , SsString& AnimeName );
@@ -139,22 +167,26 @@ public:
 	//エフェクトの名前からエフェクトを取得する
 	SsEffectFile*		findEffect( SsString& effectName );
 
+
+	//シーケンスパック名とシーケンス名からシーケンスを取得する
+	SsSequence*			findSequence( SsString& sequencePackName , SsString& SequenceName );
+
+	SsSequencePack*		findSequencePack( SsString& sequencePackName );
+
 	
 
-
-
 	SsCellMap* findCellMap( SsString& str );
-	SsCellMap* getCellMap( int index );
 
 
 	///シリアライズのための宣言です。
-	SSSERIALIZE_BLOCK
+	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
-		SSAR_DECLARE_ATTRIBUTE(version);
-		SSAR_STRUCT_DECLARE( settings );
-		SSAR_DECLARE( cellmapNames );
-		SSAR_DECLARE( animepackNames );
-		SSAR_DECLARE( effectFileNames );
+		SPRITESTUDIO6SDK_SSAR_DECLARE_ATTRIBUTE(version);
+		SPRITESTUDIO6SDK_SSAR_STRUCT_DECLARE( settings );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( cellmapNames );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( animepackNames );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( effectFileNames );
+		SPRITESTUDIO6SDK_SSAR_DECLARE( sequencepackNames );
 
 	}
 
@@ -176,11 +208,20 @@ public:
 
 	SsString	getImageBasepath();
 
+	///ssqeデータの読み込み元の基準パスを取得する。
+	SsString	getSsqeBasepath();
+
 
 	///AnimePack(ssae)のファイル名をパス付きで取得する
-	SsString	getAnimePackFilePath( size_t index ) { 
+	SsString	getAnimePackFilePath( size_t index , bool add_basepath = true) { 
 		if ( animepackNames.size() <= index ) return "";
-		return getSsaeBasepath() + animepackNames[index];
+
+		if (add_basepath)
+		{
+			return getSsaeBasepath() + animepackNames[index];
+		}else{
+			return animepackNames[index];
+		}
 	}
 
 
@@ -188,7 +229,6 @@ public:
 	SsString	getCellMapFilePath( size_t index ) { 
 		if ( cellmapNames.size() <= index ) return "";
         SsString str = getSsceBasepath();
-
 
 		std::string f = cellmapNames[index];
 		
@@ -211,6 +251,12 @@ public:
 		return cellmapNames[index] ;
 	}
 
+	///SequencePack(ssqe)のファイル名をパス付きで取得する
+	SsString	getSequencePackFilePath( size_t index ) { 
+		if ( sequencepackNames.size() <= index ) return "";
+		return getSsqeBasepath() + sequencepackNames[index];
+	}
+
 };
 
 ///sspjのローダークラスです。
@@ -221,10 +267,12 @@ private:
 public:
 	ssloader_sspj(){}
 	virtual ~ssloader_sspj(){}
+	
 	static SsProject*	Load(const std::string& filename );
-
+	static SsProject*	Parse_ProjectOnly(const char* xml , size_t len);
 };
 
 
+}	// namespace spritestudio6
 
 #endif

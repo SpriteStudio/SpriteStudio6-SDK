@@ -1,9 +1,16 @@
-cmake_minimum_required(VERSION 3.11)
+include(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/initialize.cmake)
+cmake_minimum_required(VERSION 3.25)
 
 project(ssAnimator)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+OPTIONS()
+
+CCACHE()
+
+PREPARE()
 
 set(ssAnimator_SRCS
     ssplayer_cellmap.cpp

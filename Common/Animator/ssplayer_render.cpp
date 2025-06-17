@@ -1,3 +1,8 @@
 ﻿#include "ssplayer_render.h"
 
-ISsRenderer*	SsCurrentRenderer::m_currentrender = 0;
+namespace spritestudio6
+{
+
+ISsRenderer*	SsCurrentRenderer::m_currentrender = nullptr;
+
+}	// namespace spritestudio6

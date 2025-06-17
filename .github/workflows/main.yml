@@ -1,0 +1,90 @@
+name: CI
+
+on: [push]
+
+env:
+  SCCACHE_GHA_ENABLED: "true"
+  SCCACHE_CACHE_MULTIARCH: "1"
+  qtVersion: "6.9.0"
+  cmakeVersion: "4.0.0"
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [macos-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+#    - name: Run sccache-cache
+#      uses: mozilla-actions/sccache-action@v0.0.8
+#      with:
+#        version: "v0.10.0"
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+    - name: prepare build environment
+      run: |
+        brew install ninja
+        brew install glfw3
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: ${{ env.qtVersion }}
+    - name: "set QT_PREFIX"
+      run: echo "QT_PREFIX=${QT_ROOT_DIR}" >> $GITHUB_ENV
+    - name: release build
+      run: ./Scripts/release_macos.sh
+    - id: commit
+      uses: pr-mpt/actions-commit-hash@v3
+    - name: Upload Tools
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos_${{ steps.commit.outputs.short }}
+        path: Tools
+      if: startsWith(github.ref, 'refs/tags/')
+
+  win_x64_build:
+    strategy:
+      matrix:
+        platform: [windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - name: Setup Ninja
+      uses: seanmiddleditch/gha-setup-ninja@master
+#    - name: Run sccache-cache
+#      uses: mozilla-actions/sccache-action@v0.0.8
+#      with:
+#        version: "v0.10.0"
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+    - name: Install cmake
+      uses: jwlawson/actions-setup-cmake@v2
+      with:
+        cmake-version: ${{ env.cmakeVersion }}
+    - name: Check cmake
+      run: |
+        cmake --version
+        cmake -h
+    - name: Install x64 Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: ${{ env.qtVersion }}
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2022_64'
+    - name: "set x64 QT_PREFIX"
+      shell: bash
+      run: |
+        echo "QT_PREFIX=${QT_ROOT_DIR}" >> $GITHUB_ENV
+    - name: release x64 build
+      shell: cmd
+      run: Scripts\release_win.bat x64
+    - id: commit
+      uses: pr-mpt/actions-commit-hash@v3
+    - name: Upload Tools
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows_x64_${{ steps.commit.outputs.short }}
+        path: Tools
+      if: startsWith(github.ref, 'refs/tags/')

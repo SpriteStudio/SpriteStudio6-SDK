@@ -1,4 +1,4 @@
-﻿# Compiled Object files
+# Compiled Object files
 *.slo
 *.lo
 *.o
@@ -35,6 +35,7 @@ glfw-3.2.1.bin.WIN64/
 *.ssbp
 *.ssfb
 *.json
+*.sspkg
 
 .idea
 cmake-build-debug/
@@ -65,9 +66,7 @@ Build/Ss6Converter.dir/
 Build/Viewer2/Builds/VisualStudio2017/.vs/
 
 # Viewer2
-Build/Viewer2/JUCE
-Build/Viewer2/FRUT
-Build/Viewer2/CMakeLists.txt
+Build/Viewer2/build
 Build/Viewer2/cmakeBuild
 
 Tools/*
@@ -77,3 +76,29 @@ Build/Viewer2/JuceLibraryCode/
 
 Build/Converter/build/
 Build/Viewer/build/
+*.BAK
+testout/*
+Build/Converter/cmake_install.cmake
+Build/Converter/Converter/cmake_install.cmake
+Build/Converter/Converter/CTestTestfile.cmake
+Build/Converter/CTestTestfile.cmake
+Build/Converter/Converter/Ss6Converter_Common/Loader/ssLoader.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+Build/Converter/Converter/Ss6Converter_Common/Loader/CTestTestfile.cmake
+Build/Converter/Converter/Ss6Converter_Common/Loader/cmake_install.cmake
+Build/Converter/Converter/Ss6Converter_Common/Helper/ssHelper.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+Build/Converter/Converter/Ss6Converter_Common/Helper/CTestTestfile.cmake
+Build/Converter/Converter/Ss6Converter_Common/Helper/cmake_install.cmake
+Build/Converter/Converter/Ss6Converter_Common/CTestTestfile.cmake
+Build/Converter/Converter/Ss6Converter_Common/cmake_install.cmake
+Build/Converter/Converter/Ss6Converter_Common/Animator/ssAnimator.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+Build/Converter/Converter/Ss6Converter_Common/Animator/CTestTestfile.cmake
+Build/Converter/Converter/Ss6Converter_Common/Animator/cmake_install.cmake
+Build/Converter/Converter/Ss6Converter.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+
+Build/Converter/Converter/glfw/
+Build/Converter/cppfs/
+*.stash
+Build/Ss6ConverterGUI/build-Ss6ConverterGUI-Desktop_Qt_5_15_2_clang_64bit-Debug/
+Build/Ss6ConverterGUI/build-Ss6ConverterGUI-Desktop_Qt_5_15_2_clang_64bit-Debug/
+Build/Ss6ConverterGUI/build-Ss6ConverterGUI-Desktop_Qt_5_15_2_clang_64bit-Release/
+*.obj

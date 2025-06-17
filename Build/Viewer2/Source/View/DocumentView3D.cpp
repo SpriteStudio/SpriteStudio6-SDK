@@ -1,11 +1,15 @@
-﻿#include <GL/glew.h>
+#include "View/DocumentView3D.h"
+using namespace juce::gl;
+
+//#include "ssOpenGLSetting.h"
 #include "OpenGL/SSTextureGL.h"
 #include "ssplayer_render_gl.h"
 #include "ssplayer_shader_gl.h"
 #include "Controller/MainComponent.h"
 #include "Model/Player.h"
-#include "View/DocumentView3D.h"
 #include "View/MainWindow.h"
+
+#include "initgrew.h"
 
 DocumentView3D::DocumentView3D()
 {
@@ -32,19 +36,34 @@ DocumentView3D::~DocumentView3D()
 
 void DocumentView3D::initialise()
 {
-#if JUCE_WINDOWS
-	GLenum err = glewInit();
-#endif
 
-	rendererGL.reset(new SsRenderGL());
-	SsCurrentRenderer::SetCurrentRender(rendererGL.get());
-	texfactory.reset(new SSTextureFactory(new SSTextureGL()));
+	
+#ifdef USE_GLEW
+#if JUCE_WINDOWS
+	// TODO: comment out for JUCE 6.1 and more
+//	GLenum err = glewInit();
+#endif
+#else
+	if (!glfwInit())
+		exit(EXIT_FAILURE);
+	//juce::OpenGLShaderProgram
+	if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
+	{
+		std::cerr << "Failed to initialize GLAD" << std::endl;
+		return ;
+	}
+#endif
+	initOpenGL();
+
+	rendererGL.reset(new spritestudio6::SsRenderGL());
+	spritestudio6::SsCurrentRenderer::SetCurrentRender(rendererGL.get());
+	texfactory.reset(new spritestudio6::SSTextureFactory(new spritestudio6::SSTextureGL()));
 }
 
 void DocumentView3D::shutdown()
 {
-	SSTextureFactory::releaseAllTexture();
-	SSOpenGLShaderMan::Destory();
+	spritestudio6::SSTextureFactory::releaseAllTexture();
+	spritestudio6::SSOpenGLShaderMan::Destory();
 }
 
 void DocumentView3D::render()
@@ -61,22 +80,22 @@ void DocumentView3D::render()
 	OpenGLHelpers::clear(backGroundColour);
 
 	glMatrixMode(GL_PROJECTION);
-	glViewport(0, 0, width, height);
-	glLoadIdentity();
-	glOrtho(-width / 2, width / 2, -height / 2, height / 2, -2048, 2048);
+    glViewport(0, 0, width, height);
+    glLoadIdentity();
+    glOrtho(-width / 2, width / 2, -height / 2, height / 2, -2048, 2048);
 
 	float x = view_camera_x.getValue();
 	float y = view_camera_y.getValue();
 	float scale = view_camera_scale.getValue();
 
-	glTranslatef( x , y, 0);
-	glScalef(scale, scale, 0);
+    glTranslatef( x , y, 0);
+    glScalef(scale, scale, 0);
 //	glTranslatef(view_camera_xf, view_camera_yf, 0);
 
 	//レンダーステート設定(ループ初期化）
-	glDisable(GL_STENCIL_TEST);
-	glEnable(GL_DEPTH_TEST);
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glDisable(GL_STENCIL_TEST);
+    glEnable(GL_DEPTH_TEST);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
 	//描画
 	Player::drawAnime();

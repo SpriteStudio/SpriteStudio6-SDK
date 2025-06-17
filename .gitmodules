@@ -1,3 +1,0 @@
-[submodule "Build/Converter/flatbuffers"]
-	path = Build/Converter/flatbuffers
-	url = https://github.com/google/flatbuffers.git

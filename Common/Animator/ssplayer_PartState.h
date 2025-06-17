@@ -4,6 +4,12 @@
 //#include "../Loader/ssloader.h"
 //#include "../Helper/ssHelper.h"
 
+#include "ssplayer_effect2.h"
+
+#include <memory>
+
+namespace spritestudio6
+{
 
 class SsAnimeDecoder;
 //class SsEffectRenderer;
@@ -50,6 +56,7 @@ struct SsPartState
 	SsCellValue		cellValue;		///< セルアニメの値
 	SsPartsColorAnime partsColorValue;///< カラーアニメの値
 	SsColorAnime	colorValue;		///< カラーアニメの値
+	SsShaderAnime	shaderValue;	///< シェーダーアニメの値
 	SsVertexAnime	vertexValue;	///< 頂点アニメの値
 	SsEffectAttr	effectValue;	///< エフェクトの値
 	int				effectTime;
@@ -59,16 +66,19 @@ struct SsPartState
 	bool			noCells;				/// セル参照が見つからない
 	bool			is_parts_color;			/// パーツカラーが使用される 
 	bool			is_color_blend;			/// カラーブレンドが使用される (描画コストが高いシェーダが使われるためフラグ化)　※Ver6では非対応
+	bool			is_shader;				/// シェーダーが使用される 
 	bool			is_vertex_transform;	/// 頂点変形が使用される (描画コストが高いシェーダが使われるためフラグ化)
 	bool			is_localAlpha;			/// ローカル不透明度を使用している
 	bool			is_defrom;				/// デフォームアトリビュートを使用している
+
+	SsSignalAttr	signalValue;
 
 	SsInstanceAttr	instanceValue;
 
 	SsBlendType::_enum	alphaBlendType;
 		
-	SsAnimeDecoder*		refAnime;
-	SsEffectRenderV2*	refEffect;
+	std::unique_ptr<SsAnimeDecoder>		refAnime;
+	std::unique_ptr<SsEffectRenderV2>	refEffect;
 
 	//V4互換計算用
 	SsVector3		_temp_position;
@@ -80,11 +90,14 @@ struct SsPartState
 	int				masklimen;
 	bool			maskInfluence;
 
-	SsMeshPart*		meshPart;
+	std::unique_ptr<SsMeshPart>	meshPart;
 
 	SsDeformAttr	deformValue;
 
 	SsPart*			part;
+
+	//このStateを処理したdecoder
+	SsAnimeDecoder* execDecoder;
 
 	SsPartState();
 
@@ -96,5 +109,6 @@ struct SsPartState
 };
 
 
+}	//	namespace spritestudio6
 
 #endif

@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['tag_0',['tag',['../classspritestudio6_1_1_ss_attribute.html#ac29d8a5e4e0557695d2136ac79b17edb',1,'spritestudio6::SsAttribute']]],
+  ['tangentialaccel_1',['tangentialAccel',['../structspritestudio6_1_1particle_parameter.html#a3ac965ad10dea239add3dff89174857b',1,'spritestudio6::particleParameter']]],
+  ['tangentialaccel2_2',['tangentialAccel2',['../structspritestudio6_1_1particle_parameter.html#a58be517fbed443392413132c8a7141bb',1,'spritestudio6::particleParameter']]],
+  ['target_3',['target',['../structspritestudio6_1_1_ss_parts_color_anime.html#a398abbd5f5b7dc6912d344ad723e5695',1,'spritestudio6::SsPartsColorAnime::target'],['../structspritestudio6_1_1_ss_color_anime.html#ae3c2762209a6240d50a8f0c0973d19f3',1,'spritestudio6::SsColorAnime::target']]],
+  ['targetcell_4',['targetCell',['../classspritestudio6_1_1_ss_mesh_part.html#a5431f89817d61d9532e3e70a59a65f6c',1,'spritestudio6::SsMeshPart']]],
+  ['targetframe_5',['targetFrame',['../classspritestudio6_1_1_ss_effect_render_v2.html#adbb91fb76924797061a9c9f363a66698',1,'spritestudio6::SsEffectRenderV2']]],
+  ['targetnode_6',['targetNode',['../classspritestudio6_1_1_ss_effect_draw_batch.html#ac5e8963c9a0585acc2bd81dc60d92e41',1,'spritestudio6::SsEffectDrawBatch']]],
+  ['targettexture_7',['targetTexture',['../classspritestudio6_1_1_ss_mesh_part.html#aed45a241d0409bdcecf078715537c421',1,'spritestudio6::SsMeshPart']]],
+  ['tex_8',['tex',['../classspritestudio6_1_1_ss_cel_map_linker.html#ab5fe429161a18f5f73beb7538ba8ed23',1,'spritestudio6::SsCelMapLinker::tex'],['../classspritestudio6_1_1_s_s_texture_g_l.html#af1c6913983331750d5ba0d9debf5b1c6',1,'spritestudio6::SSTextureGL::tex']]],
+  ['tex_5fheight_9',['tex_height',['../classspritestudio6_1_1_s_s_texture_d_x9.html#a48e8c750198f0d0341e791dc41b859a3',1,'spritestudio6::SSTextureDX9::tex_height'],['../classspritestudio6_1_1_s_s_texture_g_l.html#a7d3097d8611139b22a556710014c55ef',1,'spritestudio6::SSTextureGL::tex_height'],['../classspritestudio6_1_1_s_s_texture_b_m_p.html#aae54a6edd5249ee000fea825cf3d2153',1,'spritestudio6::SSTextureBMP::tex_height']]],
+  ['tex_5fwidth_10',['tex_width',['../classspritestudio6_1_1_s_s_texture_d_x9.html#ae9632adfcc106f8ca74472a4342a78b8',1,'spritestudio6::SSTextureDX9::tex_width'],['../classspritestudio6_1_1_s_s_texture_g_l.html#ab591e48e098c4f99abb9c15a6d3327b1',1,'spritestudio6::SSTextureGL::tex_width'],['../classspritestudio6_1_1_s_s_texture_b_m_p.html#a17a7d65d142258d04cd819090ec56462',1,'spritestudio6::SSTextureBMP::tex_width']]],
+  ['texture_11',['texture',['../structspritestudio6_1_1_ss_cell_value.html#af50b1e4fed44778a15dc03da03e2b384',1,'spritestudio6::SsCellValue']]],
+  ['texturelist_12',['textureList',['../classspritestudio6_1_1_ss_project.html#a1f09f28d0a7fbb3eb20b0ca2e64c3220',1,'spritestudio6::SsProject']]],
+  ['time_13',['time',['../structspritestudio6_1_1_time_and_value.html#adc1dde203f84e5ec24ec49a2105dd286',1,'spritestudio6::TimeAndValue::time'],['../classspritestudio6_1_1_ss_keyframe.html#acba3867b1aa703d71f9f2b84218ee309',1,'spritestudio6::SsKeyframe::time'],['../classspritestudio6_1_1_ss_label.html#ad5595380dc723e26067ced8b16bbc573',1,'spritestudio6::SsLabel::time']]],
+  ['transcolor_14',['transColor',['../structspritestudio6_1_1particle_parameter.html#a571a07af831ef0bb77e5a8f638a48d12',1,'spritestudio6::particleParameter']]],
+  ['transcolor2_15',['transColor2',['../structspritestudio6_1_1particle_parameter.html#a55bc46eab9ce0c2f78c9f08b3a552deb',1,'spritestudio6::particleParameter']]],
+  ['transscale_16',['transscale',['../structspritestudio6_1_1particle_parameter.html#a16160ccc3d035a1f280e9b63ffd06971',1,'spritestudio6::particleParameter']]],
+  ['transscalefactor_17',['transscaleFactor',['../structspritestudio6_1_1particle_parameter.html#a021260057d331a5d5841b7f347ebfb60',1,'spritestudio6::particleParameter']]],
+  ['transscalefactor2_18',['transscaleFactor2',['../structspritestudio6_1_1particle_parameter.html#ad86d92ebe3fd058e7554480d90b1f41e',1,'spritestudio6::particleParameter']]],
+  ['transscalerange_19',['transscaleRange',['../structspritestudio6_1_1particle_parameter.html#a809fce706e55aaad586c9f149c09606a',1,'spritestudio6::particleParameter']]],
+  ['transspeed_20',['transSpeed',['../structspritestudio6_1_1particle_parameter.html#ab67f3c3a314bee1d5625cb2c7b5a21d8',1,'spritestudio6::particleParameter']]],
+  ['transspeed2_21',['transSpeed2',['../structspritestudio6_1_1particle_parameter.html#af9a461f1291e60bde4e6eb818b7bfac1',1,'spritestudio6::particleParameter']]],
+  ['tri_5fsize_22',['tri_size',['../classspritestudio6_1_1_ss_mesh_part.html#a773244bb016f141162bce664f2007ea6',1,'spritestudio6::SsMeshPart']]],
+  ['type_23',['type',['../classspritestudio6_1_1_ss_effect_render_emitter.html#aa287a119aedf85d4f5363c277bcd50d5',1,'spritestudio6::SsEffectRenderEmitter::type'],['../classspritestudio6_1_1_ss_part.html#ace88f6ebc2888d5255ec0f31a0fd026c',1,'spritestudio6::SsPart::type'],['../classspritestudio6_1_1_ss_effect_node.html#a3def7e359cb07df65f911ae419e855e8',1,'spritestudio6::SsEffectNode::type'],['../classspritestudio6_1_1_ss_sequence.html#ae2381a505892f06914859e634daa5cdc',1,'spritestudio6::SsSequence::type'],['../classspritestudio6_1_1_ss_signal_param.html#a5e6354574cddf8e733d789d3adbdc778',1,'spritestudio6::SsSignalParam::type'],['../classspritestudio6_1_1_ss_value.html#aea6fe39cdbdbc86f03384eb9cae7e632',1,'spritestudio6::SsValue::type']]]
+];

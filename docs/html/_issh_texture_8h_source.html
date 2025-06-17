@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.13.2"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- BEGIN opengraph metadata -->
+<meta property="og:title" content="Doxygen Awesome" />
+<meta property="og:image" content="https://repository-images.githubusercontent.com/348492097/4f16df80-88fb-11eb-9d31-4015ff22c452" />
+<meta property="og:description" content="Custom CSS theme for doxygen html-documentation with lots of customization parameters." />
+<meta property="og:url" content="https://jothepro.github.io/doxygen-awesome-css/" />
+<!-- END opengraph metadata -->
+<!-- BEGIN twitter metadata -->
+<meta name="twitter:image:src" content="https://repository-images.githubusercontent.com/348492097/4f16df80-88fb-11eb-9d31-4015ff22c452" />
+<meta name="twitter:title" content="Doxygen Awesome" />
+<meta name="twitter:description" content="Custom CSS theme for doxygen html-documentation with lots of customization parameters." />
+<!-- END twitter metadata -->
+<title>OPTPiX SpriteStudio SDK: Common/Helper/IsshTexture.h Source File</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link rel="icon" type="image/svg+xml" href="logo.drawio.svg"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+<script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+<script type="text/javascript" src="toggle-alternative-theme.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+</script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="custom.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="custom-alternative.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<!-- https://tholman.com/github-corners/ -->
+<a href="https://github.com/SpriteStudio/SpriteStudio6-SDK" class="github-corner" title="View source on GitHub" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 250 250" width="40" height="40" style="position: absolute; top: 0; border: 0; right: 0; z-index: 99;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">OPTPiX SpriteStudio SDK
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generated by Doxygen 1.13.2 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() { codefold.init(0); });
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function(){initNavTree('_issh_texture_8h_source.html',''); initResizable(true); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">IsshTexture.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="_issh_texture_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef __ISSGraphTexture__</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define __ISSGraphTexture__</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="sstypes_8h.html">../Loader/sstypes.h</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;map&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacespritestudio6.html">spritestudio6</a></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>{</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment">// nが2のべき乗かどうかチェックする</span></div>
+<div class="foldopen" id="foldopen00012" data-start="{" data-end="}">
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="namespacespritestudio6.html#a99ade0e1913c9ed668c521c14ae1b982">   12</a></span><span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="namespacespritestudio6.html#a99ade0e1913c9ed668c521c14ae1b982">SsUtTextureisPow2</a>(<span class="keywordtype">int</span> <a class="code hl_typedef" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>{</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 16; i++)</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    {</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>        <span class="keywordflow">if</span> (<a class="code hl_typedef" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a> == (1 &lt;&lt; i)) <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    }</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>}</div>
+</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_loader.html">   21</a></span><span class="keyword">class   </span><a class="code hl_class" href="classspritestudio6_1_1_s_s_texture_loader.html">SSTextureLoader</a></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>{</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_loader.html#aebd6ace327eed56430c8e037e81d2a7f">   24</a></span>    <span class="keyword">typedef</span> uint8_t* <a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#aebd6ace327eed56430c8e037e81d2a7f">DataHandle</a>;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_loader.html#a74cf23907c8a571e1df4e270d53fda52">   25</a></span>    <span class="keyword">static</span> <a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#aebd6ace327eed56430c8e037e81d2a7f">DataHandle</a> <a class="code hl_variable" href="classspritestudio6_1_1_s_s_texture_loader.html#a74cf23907c8a571e1df4e270d53fda52">InvalidDataHandle</a>;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_loader.html#a013bd53067a74e750bdf501b8b4bd62f">   27</a></span>    <span class="keyword">typedef</span> <a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#aebd6ace327eed56430c8e037e81d2a7f">DataHandle</a> (*<a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#a013bd53067a74e750bdf501b8b4bd62f">PrototypeLoadImageFromFile</a>)( <span class="keyword">const</span> <span class="keywordtype">char</span>* fileName, <span class="keywordtype">int</span>* <a class="code hl_typedef" href="glad_8h.html#a40951c575f383898be1ef550ed9cef60">width</a>, <span class="keywordtype">int</span>* <a class="code hl_typedef" href="glad_8h.html#a6feb0d091eed348e22b1733ee87809d8">height</a>, <span class="keywordtype">int</span>* bpp );</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_loader.html#aba50971ef0b52c7ef54179563cfdffd0">   28</a></span>    <span class="keyword">typedef</span> <a class="code hl_function" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a> (*<a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#aba50971ef0b52c7ef54179563cfdffd0">PrototypeDecodeEndImageFile</a>)( <a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#aebd6ace327eed56430c8e037e81d2a7f">DataHandle</a> handle );</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_loader.html#a4e56a53b9d43bf63e220c2d9151979ec">   29</a></span>    <span class="keyword">typedef</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* (*PrototypeMessageGetFailureLoadFromFile)();</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_loader.html#ac79c14f512bcb554d394ddee8d9c2536">   30</a></span>    <span class="keyword">typedef</span> bool (*<a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#ac79c14f512bcb554d394ddee8d9c2536">PrototypeCheckSizePow2</a>)( <span class="keywordtype">int</span> <a class="code hl_typedef" href="glad_8h.html#a40951c575f383898be1ef550ed9cef60">width</a>, <span class="keywordtype">int</span> <a class="code hl_typedef" href="glad_8h.html#a6feb0d091eed348e22b1733ee87809d8">height</a> );</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="comment">//MEMO: 下記関数群に関数ポインタを定義することで、テクスチャの標準読込関数を変更することができます（ただし実行時には本関数ポインタ群を直接実行しないでください）。</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="comment">//      ※関数を変更する際には、FunctionCheckSizePow2以外の関数は全てワンセットで変更する必要があります（機能実装に使用しているライブラリなどが異なるため）。</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="comment">//      ※これらの関数ポインタをnullptrに設定すると、次回使用時に標準実装関数に強制的に書き戻されます。</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_loader.html#a20c6579d7f944d9a9120c565a814011d">   35</a></span>    <span class="keyword">static</span> <a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#a013bd53067a74e750bdf501b8b4bd62f">PrototypeLoadImageFromFile</a> <a class="code hl_variable" href="classspritestudio6_1_1_s_s_texture_loader.html#a20c6579d7f944d9a9120c565a814011d">FunctionLoadImageFromFile</a>;                         <span class="comment">// テクスチャファイルのメモリ確保・ロードと初期解析処理（通常ISSTexture::Load関数から呼び出されます）</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_loader.html#af2d12738aa8c5143d459a405a0767659">   36</a></span>    <span class="keyword">static</span> <a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#aba50971ef0b52c7ef54179563cfdffd0">PrototypeDecodeEndImageFile</a> <a class="code hl_variable" href="classspritestudio6_1_1_s_s_texture_loader.html#af2d12738aa8c5143d459a405a0767659">FunctionDecodeEndImageFile</a>;                         <span class="comment">// LoadImageFromFileで解析したテクスチャファイルのデコード終了（通常ISSTexture::Load関数から呼び出されます）</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_loader.html#a253957d89466d91b6767fa631f088e09">   37</a></span>    <span class="keyword">static</span> <a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#a4e56a53b9d43bf63e220c2d9151979ec">PrototypeMessageGetFailureLoadFromFile</a> <a class="code hl_variable" href="classspritestudio6_1_1_s_s_texture_loader.html#a253957d89466d91b6767fa631f088e09">FunctionMessageGetFailureLoadFromFile</a>; <span class="comment">// LoadImageFromFileでエラーが起こった場合のエラーメッセージの取得（通常ISSTexture::Load関数から呼び出されます） ※エラー取得できない場合nullptrを返してください</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_loader.html#a3df248ee68651bed2fcf2000ae0d3a09">   38</a></span>    <span class="keyword">static</span> <a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#ac79c14f512bcb554d394ddee8d9c2536">PrototypeCheckSizePow2</a> <a class="code hl_variable" href="classspritestudio6_1_1_s_s_texture_loader.html#a3df248ee68651bed2fcf2000ae0d3a09">FunctionCheckSizePow2</a>;                                 <span class="comment">// テクスチャのXY辺長が2のn乗かのチェック</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="comment">//実行用関数群</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keyword">static</span> <a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#aebd6ace327eed56430c8e037e81d2a7f">DataHandle</a> <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_loader.html#ad34c5de866b47bb2e277e6bfa665d213">LoadImageFromFile</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* fileName, <span class="keywordtype">int</span>* <a class="code hl_typedef" href="glad_8h.html#a40951c575f383898be1ef550ed9cef60">width</a>=<span class="keyword">nullptr</span>, <span class="keywordtype">int</span>* <a class="code hl_typedef" href="glad_8h.html#a6feb0d091eed348e22b1733ee87809d8">height</a>=<span class="keyword">nullptr</span>, <span class="keywordtype">int</span>* bpp=<span class="keyword">nullptr</span> );</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_loader.html#aaff27b04bee9eb405701e32576e11316">DecodeEndImageFile</a>( <a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#aebd6ace327eed56430c8e037e81d2a7f">DataHandle</a> handle );</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_loader.html#a630f8f3a970e1decbc4af0c27d11908c">MessageGetFailureLoadFromFile</a>();</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_loader.html#a53e085259c043c6cc5099323bb2096a1">CheckSizePow2</a>( <span class="keywordtype">int</span> <a class="code hl_typedef" href="glad_8h.html#a40951c575f383898be1ef550ed9cef60">width</a>, <span class="keywordtype">int</span> <a class="code hl_typedef" href="glad_8h.html#a6feb0d091eed348e22b1733ee87809d8">height</a> );</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>};</div>
+</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="keyword">class </span><a class="code hl_class" href="classspritestudio6_1_1_s_s_texture_factory.html">SSTextureFactory</a>;</div>
+<div class="foldopen" id="foldopen00048" data-start="{" data-end="};">
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_i_s_s_texture.html">   48</a></span><span class="keyword">class </span><a class="code hl_function" href="classspritestudio6_1_1_i_s_s_texture.html#ae5b188d38015f8e5d69775a34a604e64">ISSTexture</a></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>{</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keyword">friend</span> SSTextureFactory;</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordtype">int</span> refCount;</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordtype">int</span> addref() { <span class="keywordflow">return</span> ++refCount; }</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keywordtype">int</span> release(){ </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        <span class="keywordflow">return</span> --refCount; }</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <a class="code hl_typedef" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> filenamepath;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <a class="code hl_typedef" href="classspritestudio6_1_1_s_s_texture_loader.html#aebd6ace327eed56430c8e037e81d2a7f">SSTextureLoader::DataHandle</a> dataHandle;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="keyword">public</span>:</div>
+<div class="foldopen" id="foldopen00063" data-start="{" data-end="}">
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_i_s_s_texture.html#ae5b188d38015f8e5d69775a34a604e64">   63</a></span>    <a class="code hl_function" href="classspritestudio6_1_1_i_s_s_texture.html#ae5b188d38015f8e5d69775a34a604e64">ISSTexture</a>() : refCount(0), dataHandle(<a class="code hl_class" href="classspritestudio6_1_1_s_s_texture_loader.html">SSTextureLoader</a>::InvalidDataHandle), filenamepath()</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    {}</div>
+</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="foldopen" id="foldopen00066" data-start="{" data-end="}">
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_i_s_s_texture.html#acf37bb07effe89ba5d41a10173216fb8">   66</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classspritestudio6_1_1_i_s_s_texture.html#acf37bb07effe89ba5d41a10173216fb8">~ISSTexture</a>()</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    {</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    }</div>
+</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_i_s_s_texture.html#a8533778d01c5ec5b4126f19ec52d185c">   70</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code hl_function" href="classspritestudio6_1_1_i_s_s_texture.html#a8533778d01c5ec5b4126f19ec52d185c">getWidth</a>() = 0;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_i_s_s_texture.html#a1116a705bdd27e4b76964194aa41f34a">   71</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code hl_function" href="classspritestudio6_1_1_i_s_s_texture.html#a1116a705bdd27e4b76964194aa41f34a">getHeight</a>() = 0;</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_i_s_s_texture.html#aee89b137f3c039b9c70633bd719c3769">   72</a></span>    <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code hl_function" href="classspritestudio6_1_1_i_s_s_texture.html#aee89b137f3c039b9c70633bd719c3769">getFilename</a>(){ <span class="keywordflow">return</span> filenamepath.c_str(); }</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_i_s_s_texture.html#a1a69fbf0781b2320344a8edaa414bf75">   74</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span>    <a class="code hl_function" href="classspritestudio6_1_1_i_s_s_texture.html#a1a69fbf0781b2320344a8edaa414bf75">Load</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* filename ) = 0;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_i_s_s_texture.html#a3d1a5a33f1e0613be2f4f51d6838b6d8">   75</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classspritestudio6_1_1_i_s_s_texture.html#ae5b188d38015f8e5d69775a34a604e64">ISSTexture</a>* <a class="code hl_function" href="classspritestudio6_1_1_i_s_s_texture.html#a3d1a5a33f1e0613be2f4f51d6838b6d8">create</a>() = 0;</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
+<div class="foldopen" id="foldopen00077" data-start="{" data-end="}">
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_i_s_s_texture.html#a2cc314a3e3c4d38543c002724a59ece5">   77</a></span>    <span class="keywordtype">bool</span>    <a class="code hl_function" href="classspritestudio6_1_1_i_s_s_texture.html#a2cc314a3e3c4d38543c002724a59ece5">isPow2</a>()</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    {</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="namespacespritestudio6.html#a99ade0e1913c9ed668c521c14ae1b982">SsUtTextureisPow2</a>( <a class="code hl_function" href="classspritestudio6_1_1_i_s_s_texture.html#a8533778d01c5ec5b4126f19ec52d185c">getWidth</a>() ) &amp;&amp; <a class="code hl_function" href="namespacespritestudio6.html#a99ade0e1913c9ed668c521c14ae1b982">SsUtTextureisPow2</a>( <a class="code hl_function" href="classspritestudio6_1_1_i_s_s_texture.html#a1116a705bdd27e4b76964194aa41f34a">getHeight</a>() );</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    }</div>
+</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>};</div>
+</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
+<div class="foldopen" id="foldopen00083" data-start="{" data-end="};">
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_factory.html">   83</a></span><span class="keyword">class   </span><a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_factory.html#a9df60577c70ea1e94b9c77689d1f3dfc">SSTextureFactory</a></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>{</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <span class="keyword">static</span> <a class="code hl_class" href="classspritestudio6_1_1_i_s_s_texture.html">ISSTexture</a>*            m_texture_base_class;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <span class="keyword">static</span> <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_factory.html#a9df60577c70ea1e94b9c77689d1f3dfc">SSTextureFactory</a>*    m_myInst;</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    std::map&lt;SsString, ISSTexture*&gt; textureCache;</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keywordtype">bool</span> auto_release_baseclass;</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="keyword">static</span> <a class="code hl_class" href="classspritestudio6_1_1_i_s_s_texture.html">ISSTexture</a>*    create() { <span class="keywordflow">return</span> m_texture_base_class-&gt;<a class="code hl_function" href="classspritestudio6_1_1_i_s_s_texture.html#a3d1a5a33f1e0613be2f4f51d6838b6d8">create</a>(); }</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_factory.html#a9df60577c70ea1e94b9c77689d1f3dfc">   97</a></span>    <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_factory.html#a9df60577c70ea1e94b9c77689d1f3dfc">SSTextureFactory</a>(){}</div>
+<div class="foldopen" id="foldopen00098" data-start="{" data-end="}">
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_factory.html#a8783d55a508baa767c9dd7433f96c456">   98</a></span>    <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_factory.html#a8783d55a508baa767c9dd7433f96c456">SSTextureFactory</a>(<a class="code hl_class" href="classspritestudio6_1_1_i_s_s_texture.html">ISSTexture</a>* texture_base_class , <span class="keywordtype">bool</span> auto_release_baseclass = <span class="keyword">true</span>)</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    { </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        m_myInst = this ; m_texture_base_class = texture_base_class;</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        this-&gt;auto_release_baseclass = auto_release_baseclass;</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    }</div>
+</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
+<div class="foldopen" id="foldopen00104" data-start="{" data-end="}">
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_factory.html#ac8c5f3d813de7a59f074898fd7779c87">  104</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_factory.html#ac8c5f3d813de7a59f074898fd7779c87">~SSTextureFactory</a>()</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    {</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keywordflow">if</span> (this-&gt;auto_release_baseclass)</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        {</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>            <span class="keywordflow">if</span> ( m_texture_base_class )</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>                <span class="keyword">delete</span> m_texture_base_class;</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            m_myInst = 0;</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>        }</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    }</div>
+</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno"><a class="line" href="classspritestudio6_1_1_s_s_texture_factory.html#a4630a31efd0917b2a429abd8edf732ce">  114</a></span>    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_factory.html#a4630a31efd0917b2a429abd8edf732ce">isExist</a>(){ <span class="keywordflow">return</span> m_myInst != 0; }</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>    </div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    <span class="keyword">static</span> <a class="code hl_class" href="classspritestudio6_1_1_i_s_s_texture.html">ISSTexture</a>*    <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_factory.html#a89f750751d85b874fa00e6db0ead4c45">loadTexture</a>(<a class="code hl_typedef" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> filePath);</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_factory.html#ac7183224be528d448c4adf0ca90bcd8f">releaseTexture</a>(<a class="code hl_class" href="classspritestudio6_1_1_i_s_s_texture.html">ISSTexture</a>* tex);</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span> </div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    <span class="comment">//参照ポインタを関係なしに強制的に削除する</span></div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_factory.html#a91c211d5671f1344d7196230e1de8267">releaseTextureForced</a>(<a class="code hl_class" href="classspritestudio6_1_1_i_s_s_texture.html">ISSTexture</a>* tex);</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_factory.html#a91c211d5671f1344d7196230e1de8267">releaseTextureForced</a>(<a class="code hl_typedef" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> filePath);</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_factory.html#a4630a31efd0917b2a429abd8edf732ce">isExist</a>(<a class="code hl_typedef" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> filePath);</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_factory.html#a4630a31efd0917b2a429abd8edf732ce">isExist</a>(<a class="code hl_class" href="classspritestudio6_1_1_i_s_s_texture.html">ISSTexture</a>* <a class="code hl_typedef" href="glad_8h.html#ab21590c4736d1459a5a0674a42b5a655">texture</a>);</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classspritestudio6_1_1_s_s_texture_factory.html#a1241941293eda7acf52af4ee43c19cdc">releaseAllTexture</a>();</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span> </div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>};</div>
+</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>}   <span class="comment">// namespace spritestudio6</span></div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span> </div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span><span class="preprocessor">#endif </span><span class="comment">//ifdef __ISSGraphTexture__</span></div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
+<div class="ttc" id="aclassspritestudio6_1_1_i_s_s_texture_html"><div class="ttname"><a href="classspritestudio6_1_1_i_s_s_texture.html">spritestudio6::ISSTexture</a></div><div class="ttdef"><b>Definition</b> IsshTexture.h:49</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_i_s_s_texture_html_a1116a705bdd27e4b76964194aa41f34a"><div class="ttname"><a href="classspritestudio6_1_1_i_s_s_texture.html#a1116a705bdd27e4b76964194aa41f34a">spritestudio6::ISSTexture::getHeight</a></div><div class="ttdeci">virtual int getHeight()=0</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_i_s_s_texture_html_a1a69fbf0781b2320344a8edaa414bf75"><div class="ttname"><a href="classspritestudio6_1_1_i_s_s_texture.html#a1a69fbf0781b2320344a8edaa414bf75">spritestudio6::ISSTexture::Load</a></div><div class="ttdeci">virtual bool Load(const char *filename)=0</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_i_s_s_texture_html_a2cc314a3e3c4d38543c002724a59ece5"><div class="ttname"><a href="classspritestudio6_1_1_i_s_s_texture.html#a2cc314a3e3c4d38543c002724a59ece5">spritestudio6::ISSTexture::isPow2</a></div><div class="ttdeci">bool isPow2()</div><div class="ttdef"><b>Definition</b> IsshTexture.h:77</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_i_s_s_texture_html_a3d1a5a33f1e0613be2f4f51d6838b6d8"><div class="ttname"><a href="classspritestudio6_1_1_i_s_s_texture.html#a3d1a5a33f1e0613be2f4f51d6838b6d8">spritestudio6::ISSTexture::create</a></div><div class="ttdeci">virtual ISSTexture * create()=0</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_i_s_s_texture_html_a8533778d01c5ec5b4126f19ec52d185c"><div class="ttname"><a href="classspritestudio6_1_1_i_s_s_texture.html#a8533778d01c5ec5b4126f19ec52d185c">spritestudio6::ISSTexture::getWidth</a></div><div class="ttdeci">virtual int getWidth()=0</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_i_s_s_texture_html_acf37bb07effe89ba5d41a10173216fb8"><div class="ttname"><a href="classspritestudio6_1_1_i_s_s_texture.html#acf37bb07effe89ba5d41a10173216fb8">spritestudio6::ISSTexture::~ISSTexture</a></div><div class="ttdeci">virtual ~ISSTexture()</div><div class="ttdef"><b>Definition</b> IsshTexture.h:66</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_i_s_s_texture_html_ae5b188d38015f8e5d69775a34a604e64"><div class="ttname"><a href="classspritestudio6_1_1_i_s_s_texture.html#ae5b188d38015f8e5d69775a34a604e64">spritestudio6::ISSTexture::ISSTexture</a></div><div class="ttdeci">ISSTexture()</div><div class="ttdef"><b>Definition</b> IsshTexture.h:63</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_i_s_s_texture_html_aee89b137f3c039b9c70633bd719c3769"><div class="ttname"><a href="classspritestudio6_1_1_i_s_s_texture.html#aee89b137f3c039b9c70633bd719c3769">spritestudio6::ISSTexture::getFilename</a></div><div class="ttdeci">virtual const char * getFilename()</div><div class="ttdef"><b>Definition</b> IsshTexture.h:72</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_factory_html"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_factory.html">spritestudio6::SSTextureFactory</a></div><div class="ttdef"><b>Definition</b> IsshTexture.h:84</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_factory_html_a1241941293eda7acf52af4ee43c19cdc"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_factory.html#a1241941293eda7acf52af4ee43c19cdc">spritestudio6::SSTextureFactory::releaseAllTexture</a></div><div class="ttdeci">static void releaseAllTexture()</div><div class="ttdef"><b>Definition</b> IsshTexture.cpp:205</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_factory_html_a4630a31efd0917b2a429abd8edf732ce"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_factory.html#a4630a31efd0917b2a429abd8edf732ce">spritestudio6::SSTextureFactory::isExist</a></div><div class="ttdeci">static bool isExist()</div><div class="ttdef"><b>Definition</b> IsshTexture.h:114</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_factory_html_a8783d55a508baa767c9dd7433f96c456"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_factory.html#a8783d55a508baa767c9dd7433f96c456">spritestudio6::SSTextureFactory::SSTextureFactory</a></div><div class="ttdeci">SSTextureFactory(ISSTexture *texture_base_class, bool auto_release_baseclass=true)</div><div class="ttdef"><b>Definition</b> IsshTexture.h:98</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_factory_html_a89f750751d85b874fa00e6db0ead4c45"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_factory.html#a89f750751d85b874fa00e6db0ead4c45">spritestudio6::SSTextureFactory::loadTexture</a></div><div class="ttdeci">static ISSTexture * loadTexture(SsString filePath)</div><div class="ttdef"><b>Definition</b> IsshTexture.cpp:98</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_factory_html_a91c211d5671f1344d7196230e1de8267"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_factory.html#a91c211d5671f1344d7196230e1de8267">spritestudio6::SSTextureFactory::releaseTextureForced</a></div><div class="ttdeci">static void releaseTextureForced(ISSTexture *tex)</div><div class="ttdef"><b>Definition</b> IsshTexture.cpp:150</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_factory_html_a9df60577c70ea1e94b9c77689d1f3dfc"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_factory.html#a9df60577c70ea1e94b9c77689d1f3dfc">spritestudio6::SSTextureFactory::SSTextureFactory</a></div><div class="ttdeci">SSTextureFactory()</div><div class="ttdef"><b>Definition</b> IsshTexture.h:97</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_factory_html_ac7183224be528d448c4adf0ca90bcd8f"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_factory.html#ac7183224be528d448c4adf0ca90bcd8f">spritestudio6::SSTextureFactory::releaseTexture</a></div><div class="ttdeci">static void releaseTexture(ISSTexture *tex)</div><div class="ttdef"><b>Definition</b> IsshTexture.cpp:161</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_factory_html_ac8c5f3d813de7a59f074898fd7779c87"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_factory.html#ac8c5f3d813de7a59f074898fd7779c87">spritestudio6::SSTextureFactory::~SSTextureFactory</a></div><div class="ttdeci">virtual ~SSTextureFactory()</div><div class="ttdef"><b>Definition</b> IsshTexture.h:104</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html">spritestudio6::SSTextureLoader</a></div><div class="ttdef"><b>Definition</b> IsshTexture.h:22</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_a013bd53067a74e750bdf501b8b4bd62f"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#a013bd53067a74e750bdf501b8b4bd62f">spritestudio6::SSTextureLoader::PrototypeLoadImageFromFile</a></div><div class="ttdeci">DataHandle(* PrototypeLoadImageFromFile)(const char *fileName, int *width, int *height, int *bpp)</div><div class="ttdef"><b>Definition</b> IsshTexture.h:27</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_a20c6579d7f944d9a9120c565a814011d"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#a20c6579d7f944d9a9120c565a814011d">spritestudio6::SSTextureLoader::FunctionLoadImageFromFile</a></div><div class="ttdeci">static PrototypeLoadImageFromFile FunctionLoadImageFromFile</div><div class="ttdef"><b>Definition</b> IsshTexture.h:35</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_a253957d89466d91b6767fa631f088e09"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#a253957d89466d91b6767fa631f088e09">spritestudio6::SSTextureLoader::FunctionMessageGetFailureLoadFromFile</a></div><div class="ttdeci">static PrototypeMessageGetFailureLoadFromFile FunctionMessageGetFailureLoadFromFile</div><div class="ttdef"><b>Definition</b> IsshTexture.h:37</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_a3df248ee68651bed2fcf2000ae0d3a09"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#a3df248ee68651bed2fcf2000ae0d3a09">spritestudio6::SSTextureLoader::FunctionCheckSizePow2</a></div><div class="ttdeci">static PrototypeCheckSizePow2 FunctionCheckSizePow2</div><div class="ttdef"><b>Definition</b> IsshTexture.h:38</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_a4e56a53b9d43bf63e220c2d9151979ec"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#a4e56a53b9d43bf63e220c2d9151979ec">spritestudio6::SSTextureLoader::PrototypeMessageGetFailureLoadFromFile</a></div><div class="ttdeci">const char *(* PrototypeMessageGetFailureLoadFromFile)()</div><div class="ttdef"><b>Definition</b> IsshTexture.h:29</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_a53e085259c043c6cc5099323bb2096a1"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#a53e085259c043c6cc5099323bb2096a1">spritestudio6::SSTextureLoader::CheckSizePow2</a></div><div class="ttdeci">static bool CheckSizePow2(int width, int height)</div><div class="ttdef"><b>Definition</b> IsshTexture.cpp:86</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_a630f8f3a970e1decbc4af0c27d11908c"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#a630f8f3a970e1decbc4af0c27d11908c">spritestudio6::SSTextureLoader::MessageGetFailureLoadFromFile</a></div><div class="ttdeci">static const char * MessageGetFailureLoadFromFile()</div><div class="ttdef"><b>Definition</b> IsshTexture.cpp:78</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_a74cf23907c8a571e1df4e270d53fda52"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#a74cf23907c8a571e1df4e270d53fda52">spritestudio6::SSTextureLoader::InvalidDataHandle</a></div><div class="ttdeci">static DataHandle InvalidDataHandle</div><div class="ttdef"><b>Definition</b> IsshTexture.h:25</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_aaff27b04bee9eb405701e32576e11316"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#aaff27b04bee9eb405701e32576e11316">spritestudio6::SSTextureLoader::DecodeEndImageFile</a></div><div class="ttdeci">static void DecodeEndImageFile(DataHandle handle)</div><div class="ttdef"><b>Definition</b> IsshTexture.cpp:70</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_aba50971ef0b52c7ef54179563cfdffd0"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#aba50971ef0b52c7ef54179563cfdffd0">spritestudio6::SSTextureLoader::PrototypeDecodeEndImageFile</a></div><div class="ttdeci">void(* PrototypeDecodeEndImageFile)(DataHandle handle)</div><div class="ttdef"><b>Definition</b> IsshTexture.h:28</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_ac79c14f512bcb554d394ddee8d9c2536"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#ac79c14f512bcb554d394ddee8d9c2536">spritestudio6::SSTextureLoader::PrototypeCheckSizePow2</a></div><div class="ttdeci">bool(* PrototypeCheckSizePow2)(int width, int height)</div><div class="ttdef"><b>Definition</b> IsshTexture.h:30</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_ad34c5de866b47bb2e277e6bfa665d213"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#ad34c5de866b47bb2e277e6bfa665d213">spritestudio6::SSTextureLoader::LoadImageFromFile</a></div><div class="ttdeci">static DataHandle LoadImageFromFile(const char *fileName, int *width=nullptr, int *height=nullptr, int *bpp=nullptr)</div><div class="ttdef"><b>Definition</b> IsshTexture.cpp:62</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_aebd6ace327eed56430c8e037e81d2a7f"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#aebd6ace327eed56430c8e037e81d2a7f">spritestudio6::SSTextureLoader::DataHandle</a></div><div class="ttdeci">uint8_t * DataHandle</div><div class="ttdef"><b>Definition</b> IsshTexture.h:24</div></div>
+<div class="ttc" id="aclassspritestudio6_1_1_s_s_texture_loader_html_af2d12738aa8c5143d459a405a0767659"><div class="ttname"><a href="classspritestudio6_1_1_s_s_texture_loader.html#af2d12738aa8c5143d459a405a0767659">spritestudio6::SSTextureLoader::FunctionDecodeEndImageFile</a></div><div class="ttdeci">static PrototypeDecodeEndImageFile FunctionDecodeEndImageFile</div><div class="ttdef"><b>Definition</b> IsshTexture.h:36</div></div>
+<div class="ttc" id="aglad_8h_html_a0788d3762d0c3c76e4c094d8078b4c27"><div class="ttname"><a href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a></div><div class="ttdeci">GLdouble n</div><div class="ttdef"><b>Definition</b> glad.h:4564</div></div>
+<div class="ttc" id="aglad_8h_html_a40951c575f383898be1ef550ed9cef60"><div class="ttname"><a href="glad_8h.html#a40951c575f383898be1ef550ed9cef60">width</a></div><div class="ttdeci">GLint GLsizei width</div><div class="ttdef"><b>Definition</b> glad.h:1965</div></div>
+<div class="ttc" id="aglad_8h_html_a6feb0d091eed348e22b1733ee87809d8"><div class="ttname"><a href="glad_8h.html#a6feb0d091eed348e22b1733ee87809d8">height</a></div><div class="ttdeci">GLint GLsizei GLsizei height</div><div class="ttdef"><b>Definition</b> glad.h:1965</div></div>
+<div class="ttc" id="aglad_8h_html_a950fc91edb4504f62f1c577bf4727c29"><div class="ttname"><a href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a></div><div class="ttdeci">typedef void(APIENTRYP PFNGLCULLFACEPROC)(GLenum mode)</div></div>
+<div class="ttc" id="aglad_8h_html_ab21590c4736d1459a5a0674a42b5a655"><div class="ttname"><a href="glad_8h.html#ab21590c4736d1459a5a0674a42b5a655">texture</a></div><div class="ttdeci">GLuint texture</div><div class="ttdef"><b>Definition</b> glad.h:2899</div></div>
+<div class="ttc" id="anamespacespritestudio6_html"><div class="ttname"><a href="namespacespritestudio6.html">spritestudio6</a></div><div class="ttdef"><b>Definition</b> ISsEffectRender.h:5</div></div>
+<div class="ttc" id="anamespacespritestudio6_html_a99ade0e1913c9ed668c521c14ae1b982"><div class="ttname"><a href="namespacespritestudio6.html#a99ade0e1913c9ed668c521c14ae1b982">spritestudio6::SsUtTextureisPow2</a></div><div class="ttdeci">bool SsUtTextureisPow2(int n)</div><div class="ttdef"><b>Definition</b> IsshTexture.h:12</div></div>
+<div class="ttc" id="anamespacespritestudio6_html_acf442d34d743e5ff798fc51de1a021d2"><div class="ttname"><a href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">spritestudio6::SsString</a></div><div class="ttdeci">std::string SsString</div><div class="ttdef"><b>Definition</b> sstypes.h:30</div></div>
+<div class="ttc" id="asstypes_8h_html"><div class="ttname"><a href="sstypes_8h.html">sstypes.h</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_4ab6b4cc6a7edbff49100e9123df213f.html">Common</a></li><li class="navelem"><a class="el" href="dir_e087beed5b02a80de5bb51a6cb3df588.html">Helper</a></li><li class="navelem"><a class="el" href="_issh_texture_8h.html">IsshTexture.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.13.2 </li>
+  </ul>
+</div>
+</body>
+</html>

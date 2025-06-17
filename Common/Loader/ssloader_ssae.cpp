@@ -1,13 +1,39 @@
 ﻿#include "ssloader_ssae.h"
+#include "ssFilesystem.h"
 
+namespace spritestudio6
+{
+
+SsAnimePack*	ssloader_ssae::Parse(const char* xmlstr , size_t len)
+{
+	libXML::XMLDocument xml;
+
+	if ( libXML::XML_SUCCESS == xml.Parse(xmlstr,len) )
+	{
+		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioAnimePack" );
+
+		SsAnimePack* animepack = new SsAnimePack();
+		animepack->__Serialize( &ar );
+		return animepack;
+	}
+	else
+	{
+		return 0;
+	}
+
+
+}
 
 SsAnimePack*	ssloader_ssae::Load(const std::string& filename )
 {
+	libXML::XMLDocument xml;
+	FILE *fp = ssFilesystem::openFile(filename);
+	if (fp == NULL) return 0;
+	libXML::XMLError result = xml.LoadFile(fp);
+	fclose(fp);
 
 	SsAnimePack* anime = new SsAnimePack();
-
-	XMLDocument xml;
-	if ( XML_SUCCESS == xml.LoadFile( filename.c_str() ) )
+	if ( libXML::XML_SUCCESS == result )
 	{
 		SsXmlIArchiver ar( xml.GetDocument() , "SpriteStudioAnimePack" );
 		anime->__Serialize( &ar );
@@ -18,6 +44,8 @@ SsAnimePack*	ssloader_ssae::Load(const std::string& filename )
 
 	return anime;
 }
+
+
 
 
 SsAnimation*	SsAnimePack::findAnimation(SsString& name)
@@ -69,8 +97,8 @@ void	SsMeshBind::loader(ISsXmlArchiver* ar)
 void	SsMeshBindInfo::fromString(SsString str)
 {
 
-	memset(weight, 0, SSMESHPART_BONEMAX *  sizeof(float));
-	memset(boneIndex, 0 , SSMESHPART_BONEMAX * sizeof(int));
+	memset(weight, 0, SSMESHBIND_BONEMAX *  sizeof(float));
+	memset(boneIndex, 0 , SSMESHBIND_BONEMAX * sizeof(int));
 	bindBoneNum = 0;
 
 
@@ -92,3 +120,4 @@ void	SsMeshBindInfo::fromString(SsString str)
 }
 
 
+}	// namespace spritestudio6

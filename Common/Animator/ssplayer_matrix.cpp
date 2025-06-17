@@ -5,6 +5,10 @@
 #include <memory.h>
 #include <math.h>
 
+namespace spritestudio6
+{
+
+
 void	IdentityMatrix( float* matrix )
 {
 
@@ -359,19 +363,19 @@ void 	SsOpenGLMatrix::inverseMatrix()
 
 
 				//オーバーフロー対策
-	for (int i = 0; i < 16; i++)
+	for (i = 0; i < 16; i++)
 	{
 		if (_matrix[i] > 0)
 		{
-			if ((0.000000000001) > _matrix[i] && _matrix[i] != 0)
+			if ((0.000000000001f) > _matrix[i] && _matrix[i] != 0)
 			{
-				_matrix[i] = 0.00001;
+				_matrix[i] = 0.00001f;
 			}
 		}
 		else {
-			if ((-0.000000000001) < _matrix[i] && _matrix[i] != 0)
+			if ((-0.000000000001f) < _matrix[i] && _matrix[i] != 0)
 			{
-				_matrix[i] = -0.00001;
+				_matrix[i] = -0.00001f;
 			}
 		}
 	}
@@ -417,7 +421,7 @@ void 	SsOpenGLMatrix::inverseMatrix()
 	{
 		for (j = 0; j< 4; j++)
 		{
-			_matrix[c] = inv_a[i][j];
+			_matrix[c] = (float)(inv_a[i][j]);
 			c++;
 		}
 	}
@@ -456,4 +460,4 @@ void  SsOpenGLMatrix::TransformVector3(SsVector3& src, SsVector3& dst)
 }
 
 
-
+}	// namespace spritestudio6

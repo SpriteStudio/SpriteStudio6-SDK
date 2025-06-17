@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.13.2"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- BEGIN opengraph metadata -->
+<meta property="og:title" content="Doxygen Awesome" />
+<meta property="og:image" content="https://repository-images.githubusercontent.com/348492097/4f16df80-88fb-11eb-9d31-4015ff22c452" />
+<meta property="og:description" content="Custom CSS theme for doxygen html-documentation with lots of customization parameters." />
+<meta property="og:url" content="https://jothepro.github.io/doxygen-awesome-css/" />
+<!-- END opengraph metadata -->
+<!-- BEGIN twitter metadata -->
+<meta name="twitter:image:src" content="https://repository-images.githubusercontent.com/348492097/4f16df80-88fb-11eb-9d31-4015ff22c452" />
+<meta name="twitter:title" content="Doxygen Awesome" />
+<meta name="twitter:description" content="Custom CSS theme for doxygen html-documentation with lots of customization parameters." />
+<!-- END twitter metadata -->
+<title>OPTPiX SpriteStudio SDK: Common/Loader/sstypes.cpp File Reference</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link rel="icon" type="image/svg+xml" href="logo.drawio.svg"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+<script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+<script type="text/javascript" src="toggle-alternative-theme.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+</script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="custom.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="custom-alternative.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<!-- https://tholman.com/github-corners/ -->
+<a href="https://github.com/SpriteStudio/SpriteStudio6-SDK" class="github-corner" title="View source on GitHub" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 250 250" width="40" height="40" style="position: absolute; top: 0; border: 0; right: 0; z-index: 99;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">OPTPiX SpriteStudio SDK
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generated by Doxygen 1.13.2 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() { codefold.init(0); });
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function(){initNavTree('sstypes_8cpp.html',''); initResizable(true); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle"><div class="title">sstypes.cpp File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="sstypes_8h_source.html">sstypes.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for sstypes.cpp:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="sstypes_8cpp__incl.svg" width="414" height="184"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html">spritestudio6</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a79b483946662ea67fda0f414bcff22a9" id="r_a79b483946662ea67fda0f414bcff22a9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a79b483946662ea67fda0f414bcff22a9">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888">SsPartType::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:a79b483946662ea67fda0f414bcff22a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ac8d1eb2e8bc141f2448233dc4ab88d" id="r_a2ac8d1eb2e8bc141f2448233dc4ab88d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a2ac8d1eb2e8bc141f2448233dc4ab88d">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888">SsPartType::_enum</a> &amp;out)</td></tr>
+<tr class="separator:a2ac8d1eb2e8bc141f2448233dc4ab88d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64c04b3d5d1acd0af6303e00c7920735" id="r_a64c04b3d5d1acd0af6303e00c7920735"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a64c04b3d5d1acd0af6303e00c7920735">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_parts_sort_mode.html#ab5417511acd94c1d226ee56d85d3193d">SsPartsSortMode::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:a64c04b3d5d1acd0af6303e00c7920735"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f205c8344b39c6bb74aef107c7f5cd0" id="r_a9f205c8344b39c6bb74aef107c7f5cd0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a9f205c8344b39c6bb74aef107c7f5cd0">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_parts_sort_mode.html#ab5417511acd94c1d226ee56d85d3193d">SsPartsSortMode::_enum</a> &amp;out)</td></tr>
+<tr class="separator:a9f205c8344b39c6bb74aef107c7f5cd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2807f34b3497f9c3e45349cb7f328e0b" id="r_a2807f34b3497f9c3e45349cb7f328e0b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a2807f34b3497f9c3e45349cb7f328e0b">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_bounds_type.html#a7fef63bee85b271b587254a2b7bf40a1">SsBoundsType::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:a2807f34b3497f9c3e45349cb7f328e0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a139735f33e88f937d18fd07023e25d7c" id="r_a139735f33e88f937d18fd07023e25d7c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a139735f33e88f937d18fd07023e25d7c">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_bounds_type.html#a7fef63bee85b271b587254a2b7bf40a1">SsBoundsType::_enum</a> &amp;out)</td></tr>
+<tr class="separator:a139735f33e88f937d18fd07023e25d7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a958fa167357e948d14844b0f849dc34b" id="r_a958fa167357e948d14844b0f849dc34b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a958fa167357e948d14844b0f849dc34b">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_inherit_type.html#a9cc62b2304bab85c1f2f613c5bb5afbd">SsInheritType::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:a958fa167357e948d14844b0f849dc34b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e33ae6059b79f4105b2a6e94372bf44" id="r_a7e33ae6059b79f4105b2a6e94372bf44"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a7e33ae6059b79f4105b2a6e94372bf44">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_inherit_type.html#a9cc62b2304bab85c1f2f613c5bb5afbd">SsInheritType::_enum</a> &amp;out)</td></tr>
+<tr class="separator:a7e33ae6059b79f4105b2a6e94372bf44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64e508c0503bcec97434f42cf8a3348a" id="r_a64e508c0503bcec97434f42cf8a3348a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a64e508c0503bcec97434f42cf8a3348a">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html#a3b800385d339d0f0d7b0fc85ce043707">SsBlendType::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:a64e508c0503bcec97434f42cf8a3348a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e6b383d2d7640fb1ef9ffabb81541a4" id="r_a1e6b383d2d7640fb1ef9ffabb81541a4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a1e6b383d2d7640fb1ef9ffabb81541a4">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html#a3b800385d339d0f0d7b0fc85ce043707">SsBlendType::_enum</a> &amp;out)</td></tr>
+<tr class="separator:a1e6b383d2d7640fb1ef9ffabb81541a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fbbff6f5f0a35ee821b40a4462f9a02" id="r_a0fbbff6f5f0a35ee821b40a4462f9a02"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a0fbbff6f5f0a35ee821b40a4462f9a02">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_interpolation_type.html#ad55a2abe2f7e17d4a1f02507754c4df0">SsInterpolationType::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:a0fbbff6f5f0a35ee821b40a4462f9a02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40d74bc6125d684313ef07011bfdc8a0" id="r_a40d74bc6125d684313ef07011bfdc8a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a40d74bc6125d684313ef07011bfdc8a0">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_interpolation_type.html#ad55a2abe2f7e17d4a1f02507754c4df0">SsInterpolationType::_enum</a> &amp;out)</td></tr>
+<tr class="separator:a40d74bc6125d684313ef07011bfdc8a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f158b0a75f63e0b8a5f7a425c18e3c2" id="r_a6f158b0a75f63e0b8a5f7a425c18e3c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a6f158b0a75f63e0b8a5f7a425c18e3c2">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_tex_wrap_mode.html#acb7a4a556cc4115c6302bcaef30ad69a">SsTexWrapMode::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:a6f158b0a75f63e0b8a5f7a425c18e3c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3f7243e75f3266a0f20dd77a41d864a" id="r_ac3f7243e75f3266a0f20dd77a41d864a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#ac3f7243e75f3266a0f20dd77a41d864a">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_tex_wrap_mode.html#acb7a4a556cc4115c6302bcaef30ad69a">SsTexWrapMode::_enum</a> &amp;out)</td></tr>
+<tr class="separator:ac3f7243e75f3266a0f20dd77a41d864a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad48a490825aae487a74acbedcdbda4b2" id="r_ad48a490825aae487a74acbedcdbda4b2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#ad48a490825aae487a74acbedcdbda4b2">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_tex_filter_mode.html#affc4acf8f0c790d2e3da3349cfec45d1">SsTexFilterMode::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:ad48a490825aae487a74acbedcdbda4b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a209c459c6b71f05cf12e4e6339a0cf9a" id="r_a209c459c6b71f05cf12e4e6339a0cf9a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a209c459c6b71f05cf12e4e6339a0cf9a">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_tex_filter_mode.html#affc4acf8f0c790d2e3da3349cfec45d1">SsTexFilterMode::_enum</a> &amp;out)</td></tr>
+<tr class="separator:a209c459c6b71f05cf12e4e6339a0cf9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a0f502e4ea0b606d7d534fd7a2bea34" id="r_a3a0f502e4ea0b606d7d534fd7a2bea34"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a3a0f502e4ea0b606d7d534fd7a2bea34">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_color_blend_target.html#a57e99689b8bf3c6b1197bafb6daa999d">SsColorBlendTarget::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:a3a0f502e4ea0b606d7d534fd7a2bea34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b6bef1c84f6403bff51340281214f64" id="r_a6b6bef1c84f6403bff51340281214f64"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a6b6bef1c84f6403bff51340281214f64">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_color_blend_target.html#a57e99689b8bf3c6b1197bafb6daa999d">SsColorBlendTarget::_enum</a> &amp;out)</td></tr>
+<tr class="separator:a6b6bef1c84f6403bff51340281214f64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40efdbd94e3458bd3cf973fa95f1336d" id="r_a40efdbd94e3458bd3cf973fa95f1336d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a40efdbd94e3458bd3cf973fa95f1336d">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37b">SsAttributeKind::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:a40efdbd94e3458bd3cf973fa95f1336d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4dc184d4256b0a05bae2bef881bd9818" id="r_a4dc184d4256b0a05bae2bef881bd9818"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a4dc184d4256b0a05bae2bef881bd9818">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37b">SsAttributeKind::_enum</a> &amp;out)</td></tr>
+<tr class="separator:a4dc184d4256b0a05bae2bef881bd9818"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49b12beee430ff69fd8f075fa50d78f8" id="r_a49b12beee430ff69fd8f075fa50d78f8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a49b12beee430ff69fd8f075fa50d78f8">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsEffectNodeType)</td></tr>
+<tr class="separator:a49b12beee430ff69fd8f075fa50d78f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96d0ef043b6574d9db8def5ffbddf031" id="r_a96d0ef043b6574d9db8def5ffbddf031"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a96d0ef043b6574d9db8def5ffbddf031">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_effect_node_type.html#a58329a6f74dd97633f40aca960e0ed8d">SsEffectNodeType::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:a96d0ef043b6574d9db8def5ffbddf031"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c269ebc7803c7ad56804ef510ba0258" id="r_a8c269ebc7803c7ad56804ef510ba0258"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a8c269ebc7803c7ad56804ef510ba0258">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_effect_node_type.html#a58329a6f74dd97633f40aca960e0ed8d">SsEffectNodeType::_enum</a> &amp;out)</td></tr>
+<tr class="separator:a8c269ebc7803c7ad56804ef510ba0258"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad059f5f1e01f1aa93e30161e3c5127fc" id="r_ad059f5f1e01f1aa93e30161e3c5127fc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#ad059f5f1e01f1aa93e30161e3c5127fc">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsRenderBlendType)</td></tr>
+<tr class="separator:ad059f5f1e01f1aa93e30161e3c5127fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36ecb8e8181484fc85567d8ad6ca13ec" id="r_a36ecb8e8181484fc85567d8ad6ca13ec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a36ecb8e8181484fc85567d8ad6ca13ec">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_render_blend_type.html#a92dff33c64e8644c536f048481e57b34">SsRenderBlendType::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:a36ecb8e8181484fc85567d8ad6ca13ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad11b35d73327957d0fd357b9a6eebea3" id="r_ad11b35d73327957d0fd357b9a6eebea3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#ad11b35d73327957d0fd357b9a6eebea3">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_render_blend_type.html#a92dff33c64e8644c536f048481e57b34">SsRenderBlendType::_enum</a> &amp;out)</td></tr>
+<tr class="separator:ad11b35d73327957d0fd357b9a6eebea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af97d8a3a4f3b9a3c815b3dc2b3142393" id="r_af97d8a3a4f3b9a3c815b3dc2b3142393"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#af97d8a3a4f3b9a3c815b3dc2b3142393">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_mesh_div_type.html#a7b0541189fac374d9fc732ecd2a5833e">SsMeshDivType::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:af97d8a3a4f3b9a3c815b3dc2b3142393"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf6c5f468d8bd9dc2f270b586f1408a6" id="r_acf6c5f468d8bd9dc2f270b586f1408a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#acf6c5f468d8bd9dc2f270b586f1408a6">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_mesh_div_type.html#a7b0541189fac374d9fc732ecd2a5833e">SsMeshDivType::_enum</a> &amp;out)</td></tr>
+<tr class="separator:acf6c5f468d8bd9dc2f270b586f1408a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2220e17da7fb778d3ac1e118c5099b4" id="r_aa2220e17da7fb778d3ac1e118c5099b4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#aa2220e17da7fb778d3ac1e118c5099b4">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_ik_rotation_arrow.html#afac8943a99174f3fd945caf6da8385bb">SsIkRotationArrow::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:aa2220e17da7fb778d3ac1e118c5099b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05f821644bdaa2405c808735d0736ee1" id="r_a05f821644bdaa2405c808735d0736ee1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a05f821644bdaa2405c808735d0736ee1">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_ik_rotation_arrow.html#afac8943a99174f3fd945caf6da8385bb">SsIkRotationArrow::_enum</a> &amp;out)</td></tr>
+<tr class="separator:a05f821644bdaa2405c808735d0736ee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab45b1b915b631000ee9668e82a71800f" id="r_ab45b1b915b631000ee9668e82a71800f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#ab45b1b915b631000ee9668e82a71800f">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_sequence_type.html#a14f4b04b3067bebe0cb08c551fad2109">SsSequenceType::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:ab45b1b915b631000ee9668e82a71800f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ae8f9816f55d44f3a0052a103fd66db" id="r_a8ae8f9816f55d44f3a0052a103fd66db"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a8ae8f9816f55d44f3a0052a103fd66db">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_sequence_type.html#a14f4b04b3067bebe0cb08c551fad2109">SsSequenceType::_enum</a> &amp;out)</td></tr>
+<tr class="separator:a8ae8f9816f55d44f3a0052a103fd66db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1591988eeab68b74638acc68ba3d0736" id="r_a1591988eeab68b74638acc68ba3d0736"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a1591988eeab68b74638acc68ba3d0736">spritestudio6::__EnumToString_</a> (<a class="el" href="namespacespritestudio6_1_1_ss_signal_param_type.html#acc0a8010459b90521a1bf990253eb0ea">SsSignalParamType::_enum</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>)</td></tr>
+<tr class="separator:a1591988eeab68b74638acc68ba3d0736"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17b960c90e4a5c182b3f0a6d3de02c99" id="r_a17b960c90e4a5c182b3f0a6d3de02c99"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a17b960c90e4a5c182b3f0a6d3de02c99">spritestudio6::__StringToEnum_</a> (<a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">SsString</a> <a class="el" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a>, <a class="el" href="namespacespritestudio6_1_1_ss_signal_param_type.html#acc0a8010459b90521a1bf990253eb0ea">SsSignalParamType::_enum</a> &amp;out)</td></tr>
+<tr class="separator:a17b960c90e4a5c182b3f0a6d3de02c99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_4ab6b4cc6a7edbff49100e9123df213f.html">Common</a></li><li class="navelem"><a class="el" href="dir_b87832979d05d3cff567f40ed80d5d47.html">Loader</a></li><li class="navelem"><a class="el" href="sstypes_8cpp.html">sstypes.cpp</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.13.2 </li>
+  </ul>
+</div>
+</body>
+</html>

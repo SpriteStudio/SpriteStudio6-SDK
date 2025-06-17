@@ -12,6 +12,7 @@
 #include <QScrollBar>
 #include <QThread>
 #include <QDesktopServices>
+#include <QStandardPaths>
 
 namespace Ui {
 class MainWindow;
@@ -45,6 +46,7 @@ private:
 
 private slots:
     void processErrOutput();
+    void processStdOutput();
     void processFinished( int exitCode, QProcess::ExitStatus exitStatus);
     void on_pushButton_listload_clicked();
     void on_pushButton_listsave_clicked();

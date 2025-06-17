@@ -1,0 +1,621 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.13.2"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- BEGIN opengraph metadata -->
+<meta property="og:title" content="Doxygen Awesome" />
+<meta property="og:image" content="https://repository-images.githubusercontent.com/348492097/4f16df80-88fb-11eb-9d31-4015ff22c452" />
+<meta property="og:description" content="Custom CSS theme for doxygen html-documentation with lots of customization parameters." />
+<meta property="og:url" content="https://jothepro.github.io/doxygen-awesome-css/" />
+<!-- END opengraph metadata -->
+<!-- BEGIN twitter metadata -->
+<meta name="twitter:image:src" content="https://repository-images.githubusercontent.com/348492097/4f16df80-88fb-11eb-9d31-4015ff22c452" />
+<meta name="twitter:title" content="Doxygen Awesome" />
+<meta name="twitter:description" content="Custom CSS theme for doxygen html-documentation with lots of customization parameters." />
+<!-- END twitter metadata -->
+<title>OPTPiX SpriteStudio SDK: Common/Loader/sstypes.h File Reference</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link rel="icon" type="image/svg+xml" href="logo.drawio.svg"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+<script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+<script type="text/javascript" src="toggle-alternative-theme.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+</script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="custom.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="custom-alternative.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<!-- https://tholman.com/github-corners/ -->
+<a href="https://github.com/SpriteStudio/SpriteStudio6-SDK" class="github-corner" title="View source on GitHub" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 250 250" width="40" height="40" style="position: absolute; top: 0; border: 0; right: 0; z-index: 99;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">OPTPiX SpriteStudio SDK
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generated by Doxygen 1.13.2 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() { codefold.init(0); });
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function(){initNavTree('sstypes_8h.html',''); initResizable(true); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle"><div class="title">sstypes.h File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;cmath&gt;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for sstypes.h:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="sstypes_8h__incl.svg" width="414" height="111"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div><div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="sstypes_8h__dep__incl.svg" width="2779" height="879"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+<p><a href="sstypes_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structspritestudio6_1_1_ss_point2.html">spritestudio6::SsPoint2</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">２次元座標を表現するためのクラスです。  <a href="structspritestudio6_1_1_ss_point2.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structspritestudio6_1_1_ss_point3.html">spritestudio6::SsPoint3</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">３次元座標を表現するためのクラスです。  <a href="structspritestudio6_1_1_ss_point3.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspritestudio6_1_1_ss_t_rect.html">spritestudio6::SsTRect&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">矩形  <a href="classspritestudio6_1_1_ss_t_rect.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspritestudio6_1_1_ss_t_color.html">spritestudio6::SsTColor&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">カラー値を定義するテンプレートクラスです。  <a href="classspritestudio6_1_1_ss_t_color.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structspritestudio6_1_1_to_lower.html">spritestudio6::ToLower</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspritestudio6_1_1_ss_curve.html">spritestudio6::SsCurve</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">曲線補間計算用パラメータ  <a href="classspritestudio6_1_1_ss_curve.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structspritestudio6_1_1_ss_color_blend_value.html">spritestudio6::SsColorBlendValue</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">カラーブレンドキーのカラー値  <a href="structspritestudio6_1_1_ss_color_blend_value.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structspritestudio6_1_1_ss_vertex_anime.html">spritestudio6::SsVertexAnime</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">頂点変形キーの４頂点変形値  <a href="structspritestudio6_1_1_ss_vertex_anime.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structspritestudio6_1_1_ss_parts_color_anime.html">spritestudio6::SsPartsColorAnime</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">パーツカラー使用時のブレンドタイプとカラー値  <a href="structspritestudio6_1_1_ss_parts_color_anime.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structspritestudio6_1_1_ss_color_anime.html">spritestudio6::SsColorAnime</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">カラーブレンド使用時のブレンドタイプとカラー値  <a href="structspritestudio6_1_1_ss_color_anime.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structspritestudio6_1_1_ss_shader_anime.html">spritestudio6::SsShaderAnime</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">シェーダー使用時のシェーダータイプとシェーダー値  <a href="structspritestudio6_1_1_ss_shader_anime.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspritestudio6_1_1_ss_effect_attr.html">spritestudio6::SsEffectAttr</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structspritestudio6_1_1_ss_ref_cell.html">spritestudio6::SsRefCell</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspritestudio6_1_1_ss_user_data_anime.html">spritestudio6::SsUserDataAnime</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionspritestudio6_1_1_ss_signal_param_value.html">spritestudio6::SsSignalParamValue</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspritestudio6_1_1_ss_signal_param.html">spritestudio6::SsSignalParam</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspritestudio6_1_1_ss_signal_command.html">spritestudio6::SsSignalCommand</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspritestudio6_1_1_ss_signal_attr.html">spritestudio6::SsSignalAttr</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspritestudio6_1_1_ss_instance_attr.html">spritestudio6::SsInstanceAttr</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structspritestudio6_1_1_ss_triangle.html">spritestudio6::SsTriangle</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structspritestudio6_1_1_ss_bone_bind.html">spritestudio6::SsBoneBind</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspritestudio6_1_1_ss_deform_attr.html">spritestudio6::SsDeformAttr</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html">spritestudio6</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_parts_sort_mode.html">spritestudio6::SsPartsSortMode</a></td></tr>
+<tr class="memdesc:namespacespritestudio6_1_1_ss_parts_sort_mode"><td class="mdescLeft">&#160;</td><td class="mdescRight">ソートモード <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_part_type.html">spritestudio6::SsPartType</a></td></tr>
+<tr class="memdesc:namespacespritestudio6_1_1_ss_part_type"><td class="mdescLeft">&#160;</td><td class="mdescRight">Animation Part Type. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_bounds_type.html">spritestudio6::SsBoundsType</a></td></tr>
+<tr class="memdesc:namespacespritestudio6_1_1_ss_bounds_type"><td class="mdescLeft">&#160;</td><td class="mdescRight">当たり判定形状 <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_inherit_type.html">spritestudio6::SsInheritType</a></td></tr>
+<tr class="memdesc:namespacespritestudio6_1_1_ss_inherit_type"><td class="mdescLeft">&#160;</td><td class="mdescRight">継承タイプ <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html">spritestudio6::SsBlendType</a></td></tr>
+<tr class="memdesc:namespacespritestudio6_1_1_ss_blend_type"><td class="mdescLeft">&#160;</td><td class="mdescRight">ブレンドタイプ <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_color_blend_target.html">spritestudio6::SsColorBlendTarget</a></td></tr>
+<tr class="memdesc:namespacespritestudio6_1_1_ss_color_blend_target"><td class="mdescLeft">&#160;</td><td class="mdescRight">カラーブレンドキーが使用されている際のカラー適用範囲の定義 <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_interpolation_type.html">spritestudio6::SsInterpolationType</a></td></tr>
+<tr class="memdesc:namespacespritestudio6_1_1_ss_interpolation_type"><td class="mdescLeft">&#160;</td><td class="mdescRight">補間モードの定義 <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_tex_wrap_mode.html">spritestudio6::SsTexWrapMode</a></td></tr>
+<tr class="memdesc:namespacespritestudio6_1_1_ss_tex_wrap_mode"><td class="mdescLeft">&#160;</td><td class="mdescRight">テクスチャラップモード <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_tex_filter_mode.html">spritestudio6::SsTexFilterMode</a></td></tr>
+<tr class="memdesc:namespacespritestudio6_1_1_ss_tex_filter_mode"><td class="mdescLeft">&#160;</td><td class="mdescRight">テクスチャフィルターモード 画素補間方法 <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html">spritestudio6::SsAttributeKind</a></td></tr>
+<tr class="memdesc:namespacespritestudio6_1_1_ss_attribute_kind"><td class="mdescLeft">&#160;</td><td class="mdescRight">アトリビュートの種類 <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_key_value_type.html">spritestudio6::SsKeyValueType</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_effect_node_type.html">spritestudio6::SsEffectNodeType</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_render_blend_type.html">spritestudio6::SsRenderBlendType</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_ik_rotation_arrow.html">spritestudio6::SsIkRotationArrow</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_sequence_type.html">spritestudio6::SsSequenceType</a></td></tr>
+<tr class="memdesc:namespacespritestudio6_1_1_ss_sequence_type"><td class="mdescLeft">&#160;</td><td class="mdescRight">シーケンスタイプ <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_signal_param_type.html">spritestudio6::SsSignalParamType</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_mesh_div_type.html">spritestudio6::SsMeshDivType</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:aea63cd8680eb762b0933030e1b3157c1" id="r_aea63cd8680eb762b0933030e1b3157c1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aea63cd8680eb762b0933030e1b3157c1">SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a>(<a class="el" href="glad_8h.html#a890efa53b3d7deeeced6f3a0d6653ed3">type</a>)</td></tr>
+<tr class="separator:aea63cd8680eb762b0933030e1b3157c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63dd1c86c7cb3328dcfd6e30155cbe8a" id="r_a63dd1c86c7cb3328dcfd6e30155cbe8a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a63dd1c86c7cb3328dcfd6e30155cbe8a">SPRITESTUDIO6SDK_NOUSE_ARGUMENT</a>(_name_)</td></tr>
+<tr class="separator:a63dd1c86c7cb3328dcfd6e30155cbe8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:acf442d34d743e5ff798fc51de1a021d2" id="r_acf442d34d743e5ff798fc51de1a021d2"><td class="memItemLeft" align="right" valign="top">typedef std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#acf442d34d743e5ff798fc51de1a021d2">spritestudio6::SsString</a></td></tr>
+<tr class="separator:acf442d34d743e5ff798fc51de1a021d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81fbc5fed2ea251eeb6163aba63580df" id="r_a81fbc5fed2ea251eeb6163aba63580df"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structspritestudio6_1_1_ss_point2.html">SsPoint2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a81fbc5fed2ea251eeb6163aba63580df">spritestudio6::SsVector2</a></td></tr>
+<tr class="separator:a81fbc5fed2ea251eeb6163aba63580df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84609ef8199145d3b4dd8c3ab929558e" id="r_a84609ef8199145d3b4dd8c3ab929558e"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structspritestudio6_1_1_ss_point3.html">SsPoint3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a84609ef8199145d3b4dd8c3ab929558e">spritestudio6::SsVector3</a></td></tr>
+<tr class="separator:a84609ef8199145d3b4dd8c3ab929558e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a067b9f585f40b8f4e7a342b1c0b47837" id="r_a067b9f585f40b8f4e7a342b1c0b47837"><td class="memItemLeft" align="right" valign="top">typedef unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a067b9f585f40b8f4e7a342b1c0b47837">spritestudio6::u32</a></td></tr>
+<tr class="separator:a067b9f585f40b8f4e7a342b1c0b47837"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96f920162bd6b56671b6e82f0f8233ef" id="r_a96f920162bd6b56671b6e82f0f8233ef"><td class="memItemLeft" align="right" valign="top">typedef unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a96f920162bd6b56671b6e82f0f8233ef">spritestudio6::u8</a></td></tr>
+<tr class="separator:a96f920162bd6b56671b6e82f0f8233ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95115bb32a0df7c7376e4d17f8bfb068" id="r_a95115bb32a0df7c7376e4d17f8bfb068"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classspritestudio6_1_1_ss_t_rect.html">SsTRect</a>&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a95115bb32a0df7c7376e4d17f8bfb068">spritestudio6::SsIRect</a></td></tr>
+<tr class="separator:a95115bb32a0df7c7376e4d17f8bfb068"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab050150ad9606e7b822f8288f00a882f" id="r_ab050150ad9606e7b822f8288f00a882f"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classspritestudio6_1_1_ss_t_color.html">SsTColor</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#ab050150ad9606e7b822f8288f00a882f">spritestudio6::SsFColor</a></td></tr>
+<tr class="memdesc:ab050150ad9606e7b822f8288f00a882f"><td class="mdescLeft">&#160;</td><td class="mdescRight">floatでのカラー値定義  <br /></td></tr>
+<tr class="separator:ab050150ad9606e7b822f8288f00a882f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71127f5a6350c9a593d572176d348c4b" id="r_a71127f5a6350c9a593d572176d348c4b"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classspritestudio6_1_1_ss_t_color.html">SsTColor</a>&lt; <a class="el" href="namespacespritestudio6.html#a067b9f585f40b8f4e7a342b1c0b47837">u32</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a71127f5a6350c9a593d572176d348c4b">spritestudio6::SsColor</a></td></tr>
+<tr class="memdesc:a71127f5a6350c9a593d572176d348c4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">unsigned intでのカラー値定義  <br /></td></tr>
+<tr class="separator:a71127f5a6350c9a593d572176d348c4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa10e38b70bbf66770c1d0e6e3ff5472c" id="r_aa10e38b70bbf66770c1d0e6e3ff5472c"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classspritestudio6_1_1_ss_t_color.html">SsTColor</a>&lt; <a class="el" href="namespacespritestudio6.html#a96f920162bd6b56671b6e82f0f8233ef">u8</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#aa10e38b70bbf66770c1d0e6e3ff5472c">spritestudio6::SsU8Color</a></td></tr>
+<tr class="separator:aa10e38b70bbf66770c1d0e6e3ff5472c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0447c1660ba42708469e1dc9eae0e8a0" id="r_a0447c1660ba42708469e1dc9eae0e8a0"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="structspritestudio6_1_1_ss_bone_bind.html">SsBoneBind</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a0447c1660ba42708469e1dc9eae0e8a0">spritestudio6::SsBoneBindArray</a></td></tr>
+<tr class="separator:a0447c1660ba42708469e1dc9eae0e8a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:ab5417511acd94c1d226ee56d85d3193d" id="r_ab5417511acd94c1d226ee56d85d3193d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_parts_sort_mode.html#ab5417511acd94c1d226ee56d85d3193d">spritestudio6::SsPartsSortMode::_enum</a> { <a class="el" href="namespacespritestudio6_1_1_ss_parts_sort_mode.html#ab5417511acd94c1d226ee56d85d3193dac715dcae32e5ef0308973d89d42dd0d6">spritestudio6::SsPartsSortMode::invalid</a> = -1
+, <a class="el" href="namespacespritestudio6_1_1_ss_parts_sort_mode.html#ab5417511acd94c1d226ee56d85d3193da3679df5c2e567b1824251f98a2d83a80">spritestudio6::SsPartsSortMode::prio</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_parts_sort_mode.html#ab5417511acd94c1d226ee56d85d3193da55ed082e824669539ef4b6b1e3e630ef">spritestudio6::SsPartsSortMode::z</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_parts_sort_mode.html#ab5417511acd94c1d226ee56d85d3193dae3238f3b34880f85d3893a6ddf62781e">spritestudio6::SsPartsSortMode::num</a>
+ }</td></tr>
+<tr class="separator:ab5417511acd94c1d226ee56d85d3193d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11684a63613f96b4375e68b81aef3888" id="r_a11684a63613f96b4375e68b81aef3888"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888">spritestudio6::SsPartType::_enum</a> { <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888a0901cb3683be938f4cdcaf15c7e764f4">spritestudio6::SsPartType::invalid</a> = -1
+, <a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888af58f0e0f5995c6413f789e0ad0578ef7">spritestudio6::SsPartType::null</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888a711d44973480e679559b0db46e2f82d5">spritestudio6::SsPartType::normal</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888a986785ee5142ddb64e5d1576ed44d196">spritestudio6::SsPartType::text</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888a3e2aacb24b214fad0050bd8ab86f4dab">spritestudio6::SsPartType::instance</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888ae3ae909da79a7e3c450c0fb6f1bc788b">spritestudio6::SsPartType::armature</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888a83e697309945dbecc8bff89ac7bdc579">spritestudio6::SsPartType::effect</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888a8d0dbdba58ad5c94bd749e6839fd5c0b">spritestudio6::SsPartType::mesh</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888ae7f6dbda34454a37f0c7c3d80d916135">spritestudio6::SsPartType::movenode</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888a324bdddfde8f7149a29ce71c47ce4d77">spritestudio6::SsPartType::constraint</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888a957ed5181c534b4a7b869ca662fb5a6f">spritestudio6::SsPartType::mask</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888ab9e5b1e9fe93e492fa31bb66f656fd29">spritestudio6::SsPartType::joint</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888a96bae664ce1f0b7fba47c11d723eb5e9">spritestudio6::SsPartType::bonepoint</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_part_type.html#a11684a63613f96b4375e68b81aef3888a2fabd6486805c3c574ef5183a740f43d">spritestudio6::SsPartType::num</a>
+<br />
+ }</td></tr>
+<tr class="separator:a11684a63613f96b4375e68b81aef3888"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fef63bee85b271b587254a2b7bf40a1" id="r_a7fef63bee85b271b587254a2b7bf40a1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_bounds_type.html#a7fef63bee85b271b587254a2b7bf40a1">spritestudio6::SsBoundsType::_enum</a> { <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_bounds_type.html#a7fef63bee85b271b587254a2b7bf40a1a2ccb8bd57d855b00987908c225e9f272">spritestudio6::SsBoundsType::invalid</a> = -1
+, <a class="el" href="namespacespritestudio6_1_1_ss_bounds_type.html#a7fef63bee85b271b587254a2b7bf40a1a90d0746a06be39c4fbdfa2b47f0b6aa0">spritestudio6::SsBoundsType::none</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_bounds_type.html#a7fef63bee85b271b587254a2b7bf40a1a2e114c2e9b0080184a85f1b6e1e15881">spritestudio6::SsBoundsType::quad</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_bounds_type.html#a7fef63bee85b271b587254a2b7bf40a1ac8ceb22f3b9d6c1a3601553d75c77f1f">spritestudio6::SsBoundsType::aabb</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_bounds_type.html#a7fef63bee85b271b587254a2b7bf40a1a58d338e42d7ff7c0a0b4e9be58cd5e5a">spritestudio6::SsBoundsType::circle</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_bounds_type.html#a7fef63bee85b271b587254a2b7bf40a1abea225af6c97d49a6f395386b109249b">spritestudio6::SsBoundsType::circle_smin</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_bounds_type.html#a7fef63bee85b271b587254a2b7bf40a1a639d1a7acf26d9a8d0ef988523efa6c9">spritestudio6::SsBoundsType::circle_smax</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_bounds_type.html#a7fef63bee85b271b587254a2b7bf40a1accb9b67b272039d05de2328637ed2e51">spritestudio6::SsBoundsType::num</a>
+<br />
+ }</td></tr>
+<tr class="separator:a7fef63bee85b271b587254a2b7bf40a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9cc62b2304bab85c1f2f613c5bb5afbd" id="r_a9cc62b2304bab85c1f2f613c5bb5afbd"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_inherit_type.html#a9cc62b2304bab85c1f2f613c5bb5afbd">spritestudio6::SsInheritType::_enum</a> { <a class="el" href="namespacespritestudio6_1_1_ss_inherit_type.html#a9cc62b2304bab85c1f2f613c5bb5afbdaa3d3eb723a777737d6253e81e07010a1">spritestudio6::SsInheritType::invalid</a> = -1
+, <a class="el" href="namespacespritestudio6_1_1_ss_inherit_type.html#a9cc62b2304bab85c1f2f613c5bb5afbda111b729909882f4256d4ab02ee736c80">spritestudio6::SsInheritType::parent</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_inherit_type.html#a9cc62b2304bab85c1f2f613c5bb5afbdaf45ad2ef6f4bbd1b939c9f16a53e6d1b">spritestudio6::SsInheritType::self</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_inherit_type.html#a9cc62b2304bab85c1f2f613c5bb5afbdab524e1a04d6ae9c7f746122f4095754c">spritestudio6::SsInheritType::num</a>
+ }</td></tr>
+<tr class="separator:a9cc62b2304bab85c1f2f613c5bb5afbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b800385d339d0f0d7b0fc85ce043707" id="r_a3b800385d339d0f0d7b0fc85ce043707"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html#a3b800385d339d0f0d7b0fc85ce043707">spritestudio6::SsBlendType::_enum</a> { <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html#a3b800385d339d0f0d7b0fc85ce043707a9a3282345713bf3d77fbf6f448e6e29b">spritestudio6::SsBlendType::invalid</a> =-1
+, <a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html#a3b800385d339d0f0d7b0fc85ce043707aabfb0138cc657347671b3725dc39154d">spritestudio6::SsBlendType::mix</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html#a3b800385d339d0f0d7b0fc85ce043707a89c485133f58b0f215d46d8c65964514">spritestudio6::SsBlendType::mul</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html#a3b800385d339d0f0d7b0fc85ce043707a64f1587bbf88ff8fe72320ba002fa586">spritestudio6::SsBlendType::add</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html#a3b800385d339d0f0d7b0fc85ce043707a34e4c2275de35927dcf5ca9d1097d6fc">spritestudio6::SsBlendType::sub</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html#a3b800385d339d0f0d7b0fc85ce043707aa5d4ae0810c1a8bd3770ec54ce261950">spritestudio6::SsBlendType::mulalpha</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html#a3b800385d339d0f0d7b0fc85ce043707ac9834dc24151156af36db5e4e8ba6a5b">spritestudio6::SsBlendType::screen</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html#a3b800385d339d0f0d7b0fc85ce043707a1f8213779a4d0adda3f767253ab2b1a0">spritestudio6::SsBlendType::exclusion</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html#a3b800385d339d0f0d7b0fc85ce043707a9eedc37e69ce60f5a632c77c9c3849e8">spritestudio6::SsBlendType::invert</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_blend_type.html#a3b800385d339d0f0d7b0fc85ce043707a103e34526127572c5734b7dbac70ef7f">spritestudio6::SsBlendType::num</a>
+<br />
+ }</td></tr>
+<tr class="separator:a3b800385d339d0f0d7b0fc85ce043707"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57e99689b8bf3c6b1197bafb6daa999d" id="r_a57e99689b8bf3c6b1197bafb6daa999d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_color_blend_target.html#a57e99689b8bf3c6b1197bafb6daa999d">spritestudio6::SsColorBlendTarget::_enum</a> { <a class="el" href="namespacespritestudio6_1_1_ss_color_blend_target.html#a57e99689b8bf3c6b1197bafb6daa999da0156b07c320a796fcf79aef31e24b8ce">spritestudio6::SsColorBlendTarget::invalid</a> = -1
+, <a class="el" href="namespacespritestudio6_1_1_ss_color_blend_target.html#a57e99689b8bf3c6b1197bafb6daa999da77cf136fe93a2f134d7bf16340063396">spritestudio6::SsColorBlendTarget::whole</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_color_blend_target.html#a57e99689b8bf3c6b1197bafb6daa999da5080f46e86360fb2054b704869143bf3">spritestudio6::SsColorBlendTarget::vertex</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_color_blend_target.html#a57e99689b8bf3c6b1197bafb6daa999da127fc72a141bb46d2c79d994168dcb5c">spritestudio6::SsColorBlendTarget::num</a>
+ }</td></tr>
+<tr class="separator:a57e99689b8bf3c6b1197bafb6daa999d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad55a2abe2f7e17d4a1f02507754c4df0" id="r_ad55a2abe2f7e17d4a1f02507754c4df0"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_interpolation_type.html#ad55a2abe2f7e17d4a1f02507754c4df0">spritestudio6::SsInterpolationType::_enum</a> { <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_interpolation_type.html#ad55a2abe2f7e17d4a1f02507754c4df0a7c3da0b0ca519552823a044c22bf0e04">spritestudio6::SsInterpolationType::invalid</a> = -1
+, <a class="el" href="namespacespritestudio6_1_1_ss_interpolation_type.html#ad55a2abe2f7e17d4a1f02507754c4df0afd77520c8c5004855f3fcff76edf18ae">spritestudio6::SsInterpolationType::none</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_interpolation_type.html#ad55a2abe2f7e17d4a1f02507754c4df0ad78c7cf0fc4f75d5832c490dbbc86383">spritestudio6::SsInterpolationType::linear</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_interpolation_type.html#ad55a2abe2f7e17d4a1f02507754c4df0ad5a170b5c4193835c5f6ef01003746d6">spritestudio6::SsInterpolationType::hermite</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_interpolation_type.html#ad55a2abe2f7e17d4a1f02507754c4df0a62d243cc0f41c88491203b2160195ba2">spritestudio6::SsInterpolationType::bezier</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_interpolation_type.html#ad55a2abe2f7e17d4a1f02507754c4df0a0dd01bf478d1767932498d65e5804a71">spritestudio6::SsInterpolationType::acceleration</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_interpolation_type.html#ad55a2abe2f7e17d4a1f02507754c4df0a20a2d94cfeef59b0e556dac1ea4764a3">spritestudio6::SsInterpolationType::deceleration</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_interpolation_type.html#ad55a2abe2f7e17d4a1f02507754c4df0a16bc07c7cb9a75623bc9b8b692735ec7">spritestudio6::SsInterpolationType::num</a>
+<br />
+ }</td></tr>
+<tr class="separator:ad55a2abe2f7e17d4a1f02507754c4df0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb7a4a556cc4115c6302bcaef30ad69a" id="r_acb7a4a556cc4115c6302bcaef30ad69a"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_tex_wrap_mode.html#acb7a4a556cc4115c6302bcaef30ad69a">spritestudio6::SsTexWrapMode::_enum</a> { <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_tex_wrap_mode.html#acb7a4a556cc4115c6302bcaef30ad69aab230ca4c8bb120b81829b14ef18c8c72">spritestudio6::SsTexWrapMode::invalid</a> = -1
+, <a class="el" href="namespacespritestudio6_1_1_ss_tex_wrap_mode.html#acb7a4a556cc4115c6302bcaef30ad69aaccc940a8e2429bc60cb1dbe892556fff">spritestudio6::SsTexWrapMode::clamp</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_tex_wrap_mode.html#acb7a4a556cc4115c6302bcaef30ad69aaf8370cb6d1ff985ca3ade7aa790b1f3d">spritestudio6::SsTexWrapMode::repeat</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_tex_wrap_mode.html#acb7a4a556cc4115c6302bcaef30ad69aadc806917291ded560dbd9b1afede5fe2">spritestudio6::SsTexWrapMode::mirror</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_tex_wrap_mode.html#acb7a4a556cc4115c6302bcaef30ad69aa60a7680138d6e7035494ece92f27ca34">spritestudio6::SsTexWrapMode::num</a>
+<br />
+ }</td></tr>
+<tr class="separator:acb7a4a556cc4115c6302bcaef30ad69a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affc4acf8f0c790d2e3da3349cfec45d1" id="r_affc4acf8f0c790d2e3da3349cfec45d1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_tex_filter_mode.html#affc4acf8f0c790d2e3da3349cfec45d1">spritestudio6::SsTexFilterMode::_enum</a> { <a class="el" href="namespacespritestudio6_1_1_ss_tex_filter_mode.html#affc4acf8f0c790d2e3da3349cfec45d1a89fc53b5352a1a110dec23d3f42e70bb">spritestudio6::SsTexFilterMode::invalid</a> = -1
+, <a class="el" href="namespacespritestudio6_1_1_ss_tex_filter_mode.html#affc4acf8f0c790d2e3da3349cfec45d1ad05c1f8319c58d36db98df6aa763dbd1">spritestudio6::SsTexFilterMode::nearlest</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_tex_filter_mode.html#affc4acf8f0c790d2e3da3349cfec45d1acebac7594d1481a61f3f4ccc61871886">spritestudio6::SsTexFilterMode::linear</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_tex_filter_mode.html#affc4acf8f0c790d2e3da3349cfec45d1a69d16d5075eaa3aece4d852da9b0678f">spritestudio6::SsTexFilterMode::num</a>
+ }</td></tr>
+<tr class="separator:affc4acf8f0c790d2e3da3349cfec45d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fa81eeb761845848e76521ad205b37b" id="r_a5fa81eeb761845848e76521ad205b37b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37b">spritestudio6::SsAttributeKind::_enum</a> { <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba5a8307cdb10804dcc5c8d78d06ee0ec7">spritestudio6::SsAttributeKind::invalid</a> =-1
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba5ce6314fe9bc903abd3f151758f3b684">spritestudio6::SsAttributeKind::cell</a> =0
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37bab3544489aa36b016a57a350877c2012d">spritestudio6::SsAttributeKind::posx</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba712f2e46e5128f0192dae65e8caf2f92">spritestudio6::SsAttributeKind::posy</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba9ccddf706e8558ffb62bca8abe4ab427">spritestudio6::SsAttributeKind::posz</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba073190258adebac636e2c6242902cb59">spritestudio6::SsAttributeKind::rotx</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba34a62e38f7e62abe09224a4d8654df16">spritestudio6::SsAttributeKind::roty</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37bad5bdc7006babedb57c90aeaf31ed663e">spritestudio6::SsAttributeKind::rotz</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba0476a5c9e4e7be32fd4a483a20f73207">spritestudio6::SsAttributeKind::sclx</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37baf6839dd055620d2c5ee7402bd33a4d6f">spritestudio6::SsAttributeKind::scly</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba383e77cd4f2aa4ff826b61ead5dda99e">spritestudio6::SsAttributeKind::losclx</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba6aa6a4bd1002fa0ac4d6540f5bbbced3">spritestudio6::SsAttributeKind::loscly</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37bac3cfbd91c9d21336e52c2fc836a261a6">spritestudio6::SsAttributeKind::alpha</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37bafad5858266779247904fa8b5e9b16d40">spritestudio6::SsAttributeKind::loalpha</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37bab5790afc2339f564db736a6017f63f8a">spritestudio6::SsAttributeKind::prio</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba3d0ae59f89df111daefbe13c87694ca9">spritestudio6::SsAttributeKind::fliph</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba2be9bdead720d1a4777223f0da10dca4">spritestudio6::SsAttributeKind::flipv</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba6462fb01d8eeec9350e7f1677ed2bf86">spritestudio6::SsAttributeKind::hide</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba1df76437a64c3e5c054eca838d6cd219">spritestudio6::SsAttributeKind::partsColor</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37bad178c28de647cb7f194da1fec0134144">spritestudio6::SsAttributeKind::color</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba4c200b5becf275edb2a9c38eb6289f98">spritestudio6::SsAttributeKind::shader</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba4ba4bbf0acba61810a7fba42edede77d">spritestudio6::SsAttributeKind::vertex</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba025ab945c37e2dfd4d8736465e3820b8">spritestudio6::SsAttributeKind::pivotx</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba2094289c1901890689aa91e5b94f32ec">spritestudio6::SsAttributeKind::pivoty</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba6995d1fa9ea86dc2e7124020010d4ff6">spritestudio6::SsAttributeKind::anchorx</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37baafa4c8cae2c1544368fa4721fbe673f2">spritestudio6::SsAttributeKind::anchory</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba6a2ac8e746a176507ba97a156c137c23">spritestudio6::SsAttributeKind::sizex</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37baa2bce84fadb11e30b736b1f5bd6e9c3a">spritestudio6::SsAttributeKind::sizey</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37baf807cf01d43c9a1a10943dc77acf93ba">spritestudio6::SsAttributeKind::imgfliph</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba9d3cd01c7fa80e836b50c6dff7d69a87">spritestudio6::SsAttributeKind::imgflipv</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba5ecf5b4631a9fd4c973d3724d1c42075">spritestudio6::SsAttributeKind::uvtx</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba9a37799a75697709f1485797f9bb02be">spritestudio6::SsAttributeKind::uvty</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37bab604808a9b59cad3e7a922a9a38eed79">spritestudio6::SsAttributeKind::uvrz</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37baa5997037485ed2c45b84a0cdbdbac743">spritestudio6::SsAttributeKind::uvsx</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37bad1d47cabbf567421c8684fb89eb3b569">spritestudio6::SsAttributeKind::uvsy</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba2e2f2318059d60e33c8c78e6ccc3b2d6">spritestudio6::SsAttributeKind::boundr</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37bae3755f6001578f9e749ae986e8af824e">spritestudio6::SsAttributeKind::mask</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37baa47ebca8480f58ca9e4e7d797c80061f">spritestudio6::SsAttributeKind::user</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba5ae356d71620291069b07669302a498e">spritestudio6::SsAttributeKind::signal</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37baf94e798986d06023ca83d09adb1d60a0">spritestudio6::SsAttributeKind::instance</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37baf10dca7509b9cba0d0c911ba52133ab8">spritestudio6::SsAttributeKind::effect</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba9b28018efe1ff20deaf96f16cf824acb">spritestudio6::SsAttributeKind::deform</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_attribute_kind.html#a5fa81eeb761845848e76521ad205b37ba7744de70b16d500558acdd8b72069552">spritestudio6::SsAttributeKind::num</a>
+<br />
+ }</td></tr>
+<tr class="separator:a5fa81eeb761845848e76521ad205b37b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a082ad401e31cd7f66d00dee0a6977502" id="r_a082ad401e31cd7f66d00dee0a6977502"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_key_value_type.html#a082ad401e31cd7f66d00dee0a6977502">spritestudio6::SsKeyValueType::_enum</a> { <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_key_value_type.html#a082ad401e31cd7f66d00dee0a6977502a039e6112e68fdb1638193735fc0052da">spritestudio6::SsKeyValueType::_unkown</a> = -1
+, <a class="el" href="namespacespritestudio6_1_1_ss_key_value_type.html#a082ad401e31cd7f66d00dee0a6977502a52b36852ca6945bc2e063b9b899c7d05">spritestudio6::SsKeyValueType::_bool</a> = 0
+, <a class="el" href="namespacespritestudio6_1_1_ss_key_value_type.html#a082ad401e31cd7f66d00dee0a6977502a002c19626765f332488bc21212053b3b">spritestudio6::SsKeyValueType::_float</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_key_value_type.html#a082ad401e31cd7f66d00dee0a6977502a14cc521463b5e5b4313ecd1ae81e6c89">spritestudio6::SsKeyValueType::_int</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_key_value_type.html#a082ad401e31cd7f66d00dee0a6977502a372750824e9dd0720629722f634a2ee9">spritestudio6::SsKeyValueType::_string</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_key_value_type.html#a082ad401e31cd7f66d00dee0a6977502ac6837d1fbaffdd26cb4b4dc8f9fa47f6">spritestudio6::SsKeyValueType::_cellmap</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_key_value_type.html#a082ad401e31cd7f66d00dee0a6977502a2215e4ce711cc12b3c5fc38d82c562ea">spritestudio6::SsKeyValueType::_vertexAnime</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_key_value_type.html#a082ad401e31cd7f66d00dee0a6977502ab18afce5f0500a93e3f6c4d8365a64dd">spritestudio6::SsKeyValueType::_colorAnime</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_key_value_type.html#a082ad401e31cd7f66d00dee0a6977502a98b8a6e0a8a74e81e003e571a68757f6">spritestudio6::SsKeyValueType::_userData</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_key_value_type.html#a082ad401e31cd7f66d00dee0a6977502a1bd7e287bac1996b0ef8a63304f62adf">spritestudio6::SsKeyValueType::_instance</a>
+<br />
+ }</td></tr>
+<tr class="separator:a082ad401e31cd7f66d00dee0a6977502"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58329a6f74dd97633f40aca960e0ed8d" id="r_a58329a6f74dd97633f40aca960e0ed8d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_effect_node_type.html#a58329a6f74dd97633f40aca960e0ed8d">spritestudio6::SsEffectNodeType::_enum</a> { <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_effect_node_type.html#a58329a6f74dd97633f40aca960e0ed8da517c83bc74bd984931887d3b7a29d462">spritestudio6::SsEffectNodeType::invalid</a> =-1
+, <a class="el" href="namespacespritestudio6_1_1_ss_effect_node_type.html#a58329a6f74dd97633f40aca960e0ed8da478733152022ab9e19707c4721c2199c">spritestudio6::SsEffectNodeType::root</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_effect_node_type.html#a58329a6f74dd97633f40aca960e0ed8daec825786c3863f0e240b90bee7920d07">spritestudio6::SsEffectNodeType::emmiter</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_effect_node_type.html#a58329a6f74dd97633f40aca960e0ed8da624c017cb7d929050e5abac0002a1fa2">spritestudio6::SsEffectNodeType::particle</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_effect_node_type.html#a58329a6f74dd97633f40aca960e0ed8daa22b2a7b1f2d67a937d1dd6b2807ff33">spritestudio6::SsEffectNodeType::num</a>
+<br />
+ }</td></tr>
+<tr class="separator:a58329a6f74dd97633f40aca960e0ed8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92dff33c64e8644c536f048481e57b34" id="r_a92dff33c64e8644c536f048481e57b34"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_render_blend_type.html#a92dff33c64e8644c536f048481e57b34">spritestudio6::SsRenderBlendType::_enum</a> { <a class="el" href="namespacespritestudio6_1_1_ss_render_blend_type.html#a92dff33c64e8644c536f048481e57b34a29ab5fea29f6925302f9277a42520dc1">spritestudio6::SsRenderBlendType::invalid</a> =-1
+, <a class="el" href="namespacespritestudio6_1_1_ss_render_blend_type.html#a92dff33c64e8644c536f048481e57b34a09d203499773bce1b965507981d57d2b">spritestudio6::SsRenderBlendType::Mix</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_render_blend_type.html#a92dff33c64e8644c536f048481e57b34addb94871e6e0e907765b4bbf9e246632">spritestudio6::SsRenderBlendType::Add</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_render_blend_type.html#a92dff33c64e8644c536f048481e57b34a9adb06573eeb95a929f23b0c01f0d105">spritestudio6::SsRenderBlendType::num</a>
+ }</td></tr>
+<tr class="separator:a92dff33c64e8644c536f048481e57b34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afac8943a99174f3fd945caf6da8385bb" id="r_afac8943a99174f3fd945caf6da8385bb"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_ik_rotation_arrow.html#afac8943a99174f3fd945caf6da8385bb">spritestudio6::SsIkRotationArrow::_enum</a> { <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_ik_rotation_arrow.html#afac8943a99174f3fd945caf6da8385bba00140b2cd7fe09410ca0ae62f2cb6940">spritestudio6::SsIkRotationArrow::unknown</a> = -1
+, <a class="el" href="namespacespritestudio6_1_1_ss_ik_rotation_arrow.html#afac8943a99174f3fd945caf6da8385bbad2a2a79e6ba11a8d6790a78f227801d4">spritestudio6::SsIkRotationArrow::arrowfree</a> = 0
+, <a class="el" href="namespacespritestudio6_1_1_ss_ik_rotation_arrow.html#afac8943a99174f3fd945caf6da8385bbaa4fd4d5379c5d12b5eecc8aa1fb6c165">spritestudio6::SsIkRotationArrow::clockwise</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_ik_rotation_arrow.html#afac8943a99174f3fd945caf6da8385bba9005976ebe6a46c754d4c37c5b683754">spritestudio6::SsIkRotationArrow::anticlockwise</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_ik_rotation_arrow.html#afac8943a99174f3fd945caf6da8385bbaa9f90bc820f4fa45750858ff8fac6c45">spritestudio6::SsIkRotationArrow::num</a>
+<br />
+ }</td></tr>
+<tr class="separator:afac8943a99174f3fd945caf6da8385bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14f4b04b3067bebe0cb08c551fad2109" id="r_a14f4b04b3067bebe0cb08c551fad2109"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_sequence_type.html#a14f4b04b3067bebe0cb08c551fad2109">spritestudio6::SsSequenceType::_enum</a> { <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_sequence_type.html#a14f4b04b3067bebe0cb08c551fad2109ab31687ccd849f5686d4cb72abf472b94">spritestudio6::SsSequenceType::invalid</a> =-1
+, <a class="el" href="namespacespritestudio6_1_1_ss_sequence_type.html#a14f4b04b3067bebe0cb08c551fad2109a5cdccd1fc5c3026a711de03babf682c5">spritestudio6::SsSequenceType::last</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_sequence_type.html#a14f4b04b3067bebe0cb08c551fad2109a8b6d84e3639660914ed013d1f89a34ac">spritestudio6::SsSequenceType::keep</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_sequence_type.html#a14f4b04b3067bebe0cb08c551fad2109a997abf361119cf6f50d400da09862c20">spritestudio6::SsSequenceType::top</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_sequence_type.html#a14f4b04b3067bebe0cb08c551fad2109a49d2b43038bf5c3b0a09e541231e0315">spritestudio6::SsSequenceType::num</a>
+<br />
+ }</td></tr>
+<tr class="separator:a14f4b04b3067bebe0cb08c551fad2109"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc0a8010459b90521a1bf990253eb0ea" id="r_acc0a8010459b90521a1bf990253eb0ea"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_signal_param_type.html#acc0a8010459b90521a1bf990253eb0ea">spritestudio6::SsSignalParamType::_enum</a> { <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_signal_param_type.html#acc0a8010459b90521a1bf990253eb0eaa33d29c816ca2df9729304d2184a091bf">spritestudio6::SsSignalParamType::none</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_signal_param_type.html#acc0a8010459b90521a1bf990253eb0eaa8aa69c1ce373bd054012ed1e4bd7da14">spritestudio6::SsSignalParamType::index</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_signal_param_type.html#acc0a8010459b90521a1bf990253eb0eaaa904b8a6a03894634b37bc8b641a3e3c">spritestudio6::SsSignalParamType::integer</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_signal_param_type.html#acc0a8010459b90521a1bf990253eb0eaad86a7bb9923bb28957f430099967abb1">spritestudio6::SsSignalParamType::floating</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacespritestudio6_1_1_ss_signal_param_type.html#acc0a8010459b90521a1bf990253eb0eaaccdeed02759dc05f5e26537ad15216b7">spritestudio6::SsSignalParamType::num</a>
+<br />
+ }</td></tr>
+<tr class="separator:acc0a8010459b90521a1bf990253eb0ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04455f84fff33f44cce2f17758ad7bb6" id="r_a04455f84fff33f44cce2f17758ad7bb6"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="namespacespritestudio6.html#a04455f84fff33f44cce2f17758ad7bb6a028acd9ee4d36005ca17be629bbd7f5c">spritestudio6::INSTANCE_LOOP_FLAG_INFINITY</a> = 1 &lt;&lt; 0
+, <a class="el" href="namespacespritestudio6.html#a04455f84fff33f44cce2f17758ad7bb6a99576a486c18092f15abdbe80e3d1d7f">spritestudio6::INSTANCE_LOOP_FLAG_REVERSE</a> = 1 &lt;&lt; 1
+, <a class="el" href="namespacespritestudio6.html#a04455f84fff33f44cce2f17758ad7bb6a85a82586e8ff3027c972d7431ed36155">spritestudio6::INSTANCE_LOOP_FLAG_PINGPONG</a> = 1 &lt;&lt; 2
+, <a class="el" href="namespacespritestudio6.html#a04455f84fff33f44cce2f17758ad7bb6aac1721ded56cd14e8c1f8855af298224">spritestudio6::INSTANCE_LOOP_FLAG_INDEPENDENT</a> = 1 &lt;&lt; 3
+ }</td></tr>
+<tr class="separator:a04455f84fff33f44cce2f17758ad7bb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8026b87dba210ec46a2cf309856ea873" id="r_a8026b87dba210ec46a2cf309856ea873"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="namespacespritestudio6.html#a8026b87dba210ec46a2cf309856ea873a14a130a3ef3e592578d031e2922aeee8">spritestudio6::EFFECT_LOOP_FLAG_INFINITY</a> = 1 &lt;&lt; 0
+ }</td></tr>
+<tr class="separator:a8026b87dba210ec46a2cf309856ea873"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b0541189fac374d9fc732ecd2a5833e" id="r_a7b0541189fac374d9fc732ecd2a5833e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6_1_1_ss_mesh_div_type.html#a7b0541189fac374d9fc732ecd2a5833e">spritestudio6::SsMeshDivType::_enum</a> { <a class="el" href="namespacespritestudio6_1_1_ss_mesh_div_type.html#a7b0541189fac374d9fc732ecd2a5833ea656759859067ee7ce6db3f589a8a8f2b">spritestudio6::SsMeshDivType::unknown</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_mesh_div_type.html#a7b0541189fac374d9fc732ecd2a5833eaf0803e27d27418bffc0c86f7307f23b8">spritestudio6::SsMeshDivType::polyline_base</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_mesh_div_type.html#a7b0541189fac374d9fc732ecd2a5833ea4353806fd18ee41af18200d04e406b5a">spritestudio6::SsMeshDivType::boxdiv</a>
+, <a class="el" href="namespacespritestudio6_1_1_ss_mesh_div_type.html#a7b0541189fac374d9fc732ecd2a5833ea7d9151a7d39b2f0cdecea1cafc3698e9">spritestudio6::SsMeshDivType::num</a>
+ }</td></tr>
+<tr class="separator:a7b0541189fac374d9fc732ecd2a5833e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ad726ea0fd2c89764180818dc78c2dab8" id="r_ad726ea0fd2c89764180818dc78c2dab8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#ad726ea0fd2c89764180818dc78c2dab8">spritestudio6::ConvertStringToSsColor</a> (const std::string &amp;str, <a class="el" href="namespacespritestudio6.html#a71127f5a6350c9a593d572176d348c4b">SsColor</a> &amp;out)</td></tr>
+<tr class="memdesc:ad726ea0fd2c89764180818dc78c2dab8"><td class="mdescLeft">&#160;</td><td class="mdescRight">与えられた文字列をカラー値に変換するための関数  <br /></td></tr>
+<tr class="separator:ad726ea0fd2c89764180818dc78c2dab8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5887ba43dc91dbf5aa3a6783265273cf" id="r_a5887ba43dc91dbf5aa3a6783265273cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a5887ba43dc91dbf5aa3a6783265273cf">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsPartsSortMode)</td></tr>
+<tr class="separator:a5887ba43dc91dbf5aa3a6783265273cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9192278fd854414304951ee723aa0be7" id="r_a9192278fd854414304951ee723aa0be7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a9192278fd854414304951ee723aa0be7">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsPartType)</td></tr>
+<tr class="separator:a9192278fd854414304951ee723aa0be7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad81197749071d130471f2f4eadc40e4f" id="r_ad81197749071d130471f2f4eadc40e4f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#ad81197749071d130471f2f4eadc40e4f">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsBoundsType)</td></tr>
+<tr class="separator:ad81197749071d130471f2f4eadc40e4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10ed4e14685b434fb1dfc18b3f720d3f" id="r_a10ed4e14685b434fb1dfc18b3f720d3f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a10ed4e14685b434fb1dfc18b3f720d3f">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsInheritType)</td></tr>
+<tr class="separator:a10ed4e14685b434fb1dfc18b3f720d3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f9659a39dcd94ecf5aeaaa472549d14" id="r_a1f9659a39dcd94ecf5aeaaa472549d14"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a1f9659a39dcd94ecf5aeaaa472549d14">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsBlendType)</td></tr>
+<tr class="separator:a1f9659a39dcd94ecf5aeaaa472549d14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78fc7e12c97ddf0e28b24e4252b94e8a" id="r_a78fc7e12c97ddf0e28b24e4252b94e8a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a78fc7e12c97ddf0e28b24e4252b94e8a">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsColorBlendTarget)</td></tr>
+<tr class="separator:a78fc7e12c97ddf0e28b24e4252b94e8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d4a76caab1c44608a82dc2c94a49cdd" id="r_a2d4a76caab1c44608a82dc2c94a49cdd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a2d4a76caab1c44608a82dc2c94a49cdd">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsInterpolationType)</td></tr>
+<tr class="separator:a2d4a76caab1c44608a82dc2c94a49cdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a171b8282bc029714576d47e9e471ade9" id="r_a171b8282bc029714576d47e9e471ade9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a171b8282bc029714576d47e9e471ade9">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsTexWrapMode)</td></tr>
+<tr class="separator:a171b8282bc029714576d47e9e471ade9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1edbca6c47d43fc43b9454d0524e593f" id="r_a1edbca6c47d43fc43b9454d0524e593f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a1edbca6c47d43fc43b9454d0524e593f">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsTexFilterMode)</td></tr>
+<tr class="separator:a1edbca6c47d43fc43b9454d0524e593f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2748688f9aae6f9c30a792a87b5a039a" id="r_a2748688f9aae6f9c30a792a87b5a039a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a2748688f9aae6f9c30a792a87b5a039a">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsAttributeKind)</td></tr>
+<tr class="separator:a2748688f9aae6f9c30a792a87b5a039a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49b12beee430ff69fd8f075fa50d78f8" id="r_a49b12beee430ff69fd8f075fa50d78f8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a49b12beee430ff69fd8f075fa50d78f8">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsEffectNodeType)</td></tr>
+<tr class="separator:a49b12beee430ff69fd8f075fa50d78f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad059f5f1e01f1aa93e30161e3c5127fc" id="r_ad059f5f1e01f1aa93e30161e3c5127fc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#ad059f5f1e01f1aa93e30161e3c5127fc">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsRenderBlendType)</td></tr>
+<tr class="separator:ad059f5f1e01f1aa93e30161e3c5127fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad935bc532a470b831046dccd8c63a4c3" id="r_ad935bc532a470b831046dccd8c63a4c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#ad935bc532a470b831046dccd8c63a4c3">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsIkRotationArrow)</td></tr>
+<tr class="separator:ad935bc532a470b831046dccd8c63a4c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59bef7877fd26fe3f90d6a5f683eb4b4" id="r_a59bef7877fd26fe3f90d6a5f683eb4b4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a59bef7877fd26fe3f90d6a5f683eb4b4">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsSequenceType)</td></tr>
+<tr class="separator:a59bef7877fd26fe3f90d6a5f683eb4b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a830dd1903a54d26a99c52b32b1305f11" id="r_a830dd1903a54d26a99c52b32b1305f11"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a830dd1903a54d26a99c52b32b1305f11">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsSignalParamType)</td></tr>
+<tr class="separator:a830dd1903a54d26a99c52b32b1305f11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fad57c916f44dfc4c7ecfd0f1b81b9f" id="r_a7fad57c916f44dfc4c7ecfd0f1b81b9f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacespritestudio6.html#a7fad57c916f44dfc4c7ecfd0f1b81b9f">spritestudio6::SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</a> (SsMeshDivType)</td></tr>
+<tr class="separator:a7fad57c916f44dfc4c7ecfd0f1b81b9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="aea63cd8680eb762b0933030e1b3157c1" name="aea63cd8680eb762b0933030e1b3157c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea63cd8680eb762b0933030e1b3157c1">&#9670;&#160;</a></span>SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em><a class="el" href="glad_8h.html#a890efa53b3d7deeeced6f3a0d6653ed3">type</a></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    SsString    __EnumToString_( type::_enum <a class="code hl_typedef" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a> );\</div>
+<div class="line">    <span class="keywordtype">void</span>    __StringToEnum_( SsString <a class="code hl_typedef" href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a> , type::_enum&amp; out);\</div>
+<div class="ttc" id="aglad_8h_html_a0788d3762d0c3c76e4c094d8078b4c27"><div class="ttname"><a href="glad_8h.html#a0788d3762d0c3c76e4c094d8078b4c27">n</a></div><div class="ttdeci">GLdouble n</div><div class="ttdef"><b>Definition</b> glad.h:4564</div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a63dd1c86c7cb3328dcfd6e30155cbe8a" name="a63dd1c86c7cb3328dcfd6e30155cbe8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63dd1c86c7cb3328dcfd6e30155cbe8a">&#9670;&#160;</a></span>SPRITESTUDIO6SDK_NOUSE_ARGUMENT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SPRITESTUDIO6SDK_NOUSE_ARGUMENT</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>_name_</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">( <a class="code hl_function" href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a> )( &amp;_name_ );</div>
+<div class="ttc" id="aglad_8h_html_a950fc91edb4504f62f1c577bf4727c29"><div class="ttname"><a href="glad_8h.html#a950fc91edb4504f62f1c577bf4727c29">void</a></div><div class="ttdeci">typedef void(APIENTRYP PFNGLCULLFACEPROC)(GLenum mode)</div></div>
+</div><!-- fragment -->
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_4ab6b4cc6a7edbff49100e9123df213f.html">Common</a></li><li class="navelem"><a class="el" href="dir_b87832979d05d3cff567f40ed80d5d47.html">Loader</a></li><li class="navelem"><a class="el" href="sstypes_8h.html">sstypes.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.13.2 </li>
+  </ul>
+</div>
+</body>
+</html>

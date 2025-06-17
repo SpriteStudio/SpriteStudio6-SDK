@@ -6,6 +6,13 @@
 
 #include "flatbuffers/flatbuffers.h"
 
+// Ensure the included flatbuffers.h is the same version as when this file was
+// generated, otherwise it may not be compatible.
+static_assert(FLATBUFFERS_VERSION_MAJOR == 25 &&
+              FLATBUFFERS_VERSION_MINOR == 2 &&
+              FLATBUFFERS_VERSION_REVISION == 10,
+             "Non-compatible flatbuffers version included");
+
 namespace ss {
 namespace ssfb {
 
@@ -44,27 +51,35 @@ struct EffectParticleElementRndSeedChange;
 struct EffectParticleElementBasic;
 
 struct EffectNode;
+struct EffectNodeBuilder;
 struct EffectNodeT;
 
 struct EffectFile;
+struct EffectFileBuilder;
 struct EffectFileT;
 
 struct CellMap;
+struct CellMapBuilder;
 struct CellMapT;
 
 struct Cell;
+struct CellBuilder;
 struct CellT;
 
 struct meshDataUV;
+struct meshDataUVBuilder;
 struct meshDataUVT;
 
 struct meshDataIndices;
+struct meshDataIndicesBuilder;
 struct meshDataIndicesT;
 
 struct partState;
+struct partStateBuilder;
 struct partStateT;
 
 struct frameDataIndex;
+struct frameDataIndexBuilder;
 struct frameDataIndexT;
 
 struct userDataInteger;
@@ -74,30 +89,39 @@ struct userDataRect;
 struct userDataPoint;
 
 struct userDataString;
+struct userDataStringBuilder;
 struct userDataStringT;
 
 struct userDataItem;
+struct userDataItemBuilder;
 struct userDataItemT;
 
 struct userDataPerFrame;
+struct userDataPerFrameBuilder;
 struct userDataPerFrameT;
 
 struct labelDataItem;
+struct labelDataItemBuilder;
 struct labelDataItemT;
 
 struct AnimationData;
+struct AnimationDataBuilder;
 struct AnimationDataT;
 
 struct AnimationInitialData;
+struct AnimationInitialDataBuilder;
 struct AnimationInitialDataT;
 
 struct PartData;
+struct PartDataBuilder;
 struct PartDataT;
 
 struct AnimePackData;
+struct AnimePackDataBuilder;
 struct AnimePackDataT;
 
 struct ProjectData;
+struct ProjectDataBuilder;
 struct ProjectDataT;
 
 bool operator==(const EffectParticleInfiniteEmitEnabled &lhs, const EffectParticleInfiniteEmitEnabled &rhs);
@@ -175,7 +199,7 @@ bool operator!=(const AnimePackDataT &lhs, const AnimePackDataT &rhs);
 bool operator==(const ProjectDataT &lhs, const ProjectDataT &rhs);
 bool operator!=(const ProjectDataT &lhs, const ProjectDataT &rhs);
 
-enum SsPartType {
+enum SsPartType : int8_t {
   SsPartType_Invalid = -1,
   SsPartType_Nulltype = 0,
   SsPartType_Normal = 1,
@@ -213,7 +237,7 @@ inline const SsPartType (&EnumValuesSsPartType())[13] {
 }
 
 inline const char * const *EnumNamesSsPartType() {
-  static const char * const names[] = {
+  static const char * const names[14] = {
     "Invalid",
     "Nulltype",
     "Normal",
@@ -233,12 +257,12 @@ inline const char * const *EnumNamesSsPartType() {
 }
 
 inline const char *EnumNameSsPartType(SsPartType e) {
-  if (e < SsPartType_Invalid || e > SsPartType_Bonepoint) return "";
+  if (::flatbuffers::IsOutRange(e, SsPartType_Invalid, SsPartType_Bonepoint)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(SsPartType_Invalid);
   return EnumNamesSsPartType()[index];
 }
 
-enum PART_FLAG {
+enum PART_FLAG : uint32_t {
   PART_FLAG_INVISIBLE = 1,
   PART_FLAG_FLIP_H = 2,
   PART_FLAG_FLIP_V = 4,
@@ -351,7 +375,7 @@ inline const char *EnumNamePART_FLAG(PART_FLAG e) {
   }
 }
 
-enum PART_FLAG2 {
+enum PART_FLAG2 : uint32_t {
   PART_FLAG2_MESHDATA = 1,
   PART_FLAG2_NONE = 0,
   PART_FLAG2_ANY = 1
@@ -365,7 +389,7 @@ inline const PART_FLAG2 (&EnumValuesPART_FLAG2())[1] {
 }
 
 inline const char * const *EnumNamesPART_FLAG2() {
-  static const char * const names[] = {
+  static const char * const names[2] = {
     "MESHDATA",
     nullptr
   };
@@ -373,12 +397,12 @@ inline const char * const *EnumNamesPART_FLAG2() {
 }
 
 inline const char *EnumNamePART_FLAG2(PART_FLAG2 e) {
-  if (e < PART_FLAG2_MESHDATA || e > PART_FLAG2_MESHDATA) return "";
+  if (::flatbuffers::IsOutRange(e, PART_FLAG2_MESHDATA, PART_FLAG2_MESHDATA)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(PART_FLAG2_MESHDATA);
   return EnumNamesPART_FLAG2()[index];
 }
 
-enum VERTEX_FLAG {
+enum VERTEX_FLAG : uint32_t {
   VERTEX_FLAG_LT = 1,
   VERTEX_FLAG_RT = 2,
   VERTEX_FLAG_LB = 4,
@@ -400,7 +424,7 @@ inline const VERTEX_FLAG (&EnumValuesVERTEX_FLAG())[5] {
 }
 
 inline const char * const *EnumNamesVERTEX_FLAG() {
-  static const char * const names[] = {
+  static const char * const names[17] = {
     "LT",
     "RT",
     "",
@@ -423,12 +447,12 @@ inline const char * const *EnumNamesVERTEX_FLAG() {
 }
 
 inline const char *EnumNameVERTEX_FLAG(VERTEX_FLAG e) {
-  if (e < VERTEX_FLAG_LT || e > VERTEX_FLAG_ONE) return "";
+  if (::flatbuffers::IsOutRange(e, VERTEX_FLAG_LT, VERTEX_FLAG_ONE)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(VERTEX_FLAG_LT);
   return EnumNamesVERTEX_FLAG()[index];
 }
 
-enum EffectNodeBehavior {
+enum EffectNodeBehavior : uint8_t {
   EffectNodeBehavior_NONE = 0,
   EffectNodeBehavior_EffectParticleElementBasic = 1,
   EffectNodeBehavior_EffectParticleElementRndSeedChange = 2,
@@ -476,7 +500,7 @@ inline const EffectNodeBehavior (&EnumValuesEffectNodeBehavior())[18] {
 }
 
 inline const char * const *EnumNamesEffectNodeBehavior() {
-  static const char * const names[] = {
+  static const char * const names[19] = {
     "NONE",
     "EffectParticleElementBasic",
     "EffectParticleElementRndSeedChange",
@@ -501,7 +525,7 @@ inline const char * const *EnumNamesEffectNodeBehavior() {
 }
 
 inline const char *EnumNameEffectNodeBehavior(EffectNodeBehavior e) {
-  if (e < EffectNodeBehavior_NONE || e > EffectNodeBehavior_EffectParticleInfiniteEmitEnabled) return "";
+  if (::flatbuffers::IsOutRange(e, EffectNodeBehavior_NONE, EffectNodeBehavior_EffectParticleInfiniteEmitEnabled)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesEffectNodeBehavior()[index];
 }
@@ -510,71 +534,143 @@ template<typename T> struct EffectNodeBehaviorTraits {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_NONE;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementBasic> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementBasic> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementBasic;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementRndSeedChange> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementRndSeedChange> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementRndSeedChange;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementDelay> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementDelay> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementDelay;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementGravity> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementGravity> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementGravity;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementPosition> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementPosition> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementPosition;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementRotation> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementRotation> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementRotation;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementRotationTrans> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementRotationTrans> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementRotationTrans;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementTransSpeed> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementTransSpeed> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTransSpeed;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementTangentialAcceleration> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementTangentialAcceleration> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTangentialAcceleration;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementInitColor> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementInitColor> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementInitColor;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementTransColor> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementTransColor> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTransColor;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementAlphaFade> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementAlphaFade> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementAlphaFade;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementSize> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementSize> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementSize;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleElementTransSize> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleElementTransSize> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTransSize;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticlePointGravity> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticlePointGravity> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticlePointGravity;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleTurnToDirectionEnabled> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleTurnToDirectionEnabled> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleTurnToDirectionEnabled;
 };
 
-template<> struct EffectNodeBehaviorTraits<EffectParticleInfiniteEmitEnabled> {
+template<> struct EffectNodeBehaviorTraits<ss::ssfb::EffectParticleInfiniteEmitEnabled> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleInfiniteEmitEnabled;
+};
+
+template<typename T> struct EffectNodeBehaviorUnionTraits {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_NONE;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementBasic> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementBasic;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementRndSeedChange> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementRndSeedChange;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementDelay> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementDelay;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementGravity> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementGravity;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementPosition> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementPosition;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementRotation> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementRotation;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementRotationTrans> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementRotationTrans;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementTransSpeed> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTransSpeed;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementTangentialAcceleration> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTangentialAcceleration;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementInitColor> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementInitColor;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementTransColor> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTransColor;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementAlphaFade> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementAlphaFade;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementSize> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementSize;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleElementTransSize> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleElementTransSize;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticlePointGravity> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticlePointGravity;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleTurnToDirectionEnabled> {
+  static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleTurnToDirectionEnabled;
+};
+
+template<> struct EffectNodeBehaviorUnionTraits<ss::ssfb::EffectParticleInfiniteEmitEnabled> {
   static const EffectNodeBehavior enum_value = EffectNodeBehavior_EffectParticleInfiniteEmitEnabled;
 };
 
@@ -586,8 +682,8 @@ struct EffectNodeBehaviorUnion {
   EffectNodeBehaviorUnion(EffectNodeBehaviorUnion&& u) FLATBUFFERS_NOEXCEPT :
     type(EffectNodeBehavior_NONE), value(nullptr)
     { std::swap(type, u.type); std::swap(value, u.value); }
-  EffectNodeBehaviorUnion(const EffectNodeBehaviorUnion &) FLATBUFFERS_NOEXCEPT;
-  EffectNodeBehaviorUnion &operator=(const EffectNodeBehaviorUnion &u) FLATBUFFERS_NOEXCEPT
+  EffectNodeBehaviorUnion(const EffectNodeBehaviorUnion &);
+  EffectNodeBehaviorUnion &operator=(const EffectNodeBehaviorUnion &u)
     { EffectNodeBehaviorUnion t(u); std::swap(type, t.type); std::swap(value, t.value); return *this; }
   EffectNodeBehaviorUnion &operator=(EffectNodeBehaviorUnion &&u) FLATBUFFERS_NOEXCEPT
     { std::swap(type, u.type); std::swap(value, u.value); return *this; }
@@ -595,156 +691,154 @@ struct EffectNodeBehaviorUnion {
 
   void Reset();
 
-#ifndef FLATBUFFERS_CPP98_STL
   template <typename T>
   void Set(T&& val) {
-    using RT = typename std::remove_reference<T>::type;
+    typedef typename std::remove_reference<T>::type RT;
     Reset();
-    type = EffectNodeBehaviorTraits<typename RT::TableType>::enum_value;
+    type = EffectNodeBehaviorUnionTraits<RT>::enum_value;
     if (type != EffectNodeBehavior_NONE) {
       value = new RT(std::forward<T>(val));
     }
   }
-#endif  // FLATBUFFERS_CPP98_STL
 
-  static void *UnPack(const void *obj, EffectNodeBehavior type, const flatbuffers::resolver_function_t *resolver);
-  flatbuffers::Offset<void> Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher = nullptr) const;
+  static void *UnPack(const void *obj, EffectNodeBehavior type, const ::flatbuffers::resolver_function_t *resolver);
+  ::flatbuffers::Offset<void> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr) const;
 
-  EffectParticleElementBasic *AsEffectParticleElementBasic() {
+  ss::ssfb::EffectParticleElementBasic *AsEffectParticleElementBasic() {
     return type == EffectNodeBehavior_EffectParticleElementBasic ?
-      reinterpret_cast<EffectParticleElementBasic *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementBasic *>(value) : nullptr;
   }
-  const EffectParticleElementBasic *AsEffectParticleElementBasic() const {
+  const ss::ssfb::EffectParticleElementBasic *AsEffectParticleElementBasic() const {
     return type == EffectNodeBehavior_EffectParticleElementBasic ?
-      reinterpret_cast<const EffectParticleElementBasic *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementBasic *>(value) : nullptr;
   }
-  EffectParticleElementRndSeedChange *AsEffectParticleElementRndSeedChange() {
+  ss::ssfb::EffectParticleElementRndSeedChange *AsEffectParticleElementRndSeedChange() {
     return type == EffectNodeBehavior_EffectParticleElementRndSeedChange ?
-      reinterpret_cast<EffectParticleElementRndSeedChange *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementRndSeedChange *>(value) : nullptr;
   }
-  const EffectParticleElementRndSeedChange *AsEffectParticleElementRndSeedChange() const {
+  const ss::ssfb::EffectParticleElementRndSeedChange *AsEffectParticleElementRndSeedChange() const {
     return type == EffectNodeBehavior_EffectParticleElementRndSeedChange ?
-      reinterpret_cast<const EffectParticleElementRndSeedChange *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementRndSeedChange *>(value) : nullptr;
   }
-  EffectParticleElementDelay *AsEffectParticleElementDelay() {
+  ss::ssfb::EffectParticleElementDelay *AsEffectParticleElementDelay() {
     return type == EffectNodeBehavior_EffectParticleElementDelay ?
-      reinterpret_cast<EffectParticleElementDelay *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementDelay *>(value) : nullptr;
   }
-  const EffectParticleElementDelay *AsEffectParticleElementDelay() const {
+  const ss::ssfb::EffectParticleElementDelay *AsEffectParticleElementDelay() const {
     return type == EffectNodeBehavior_EffectParticleElementDelay ?
-      reinterpret_cast<const EffectParticleElementDelay *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementDelay *>(value) : nullptr;
   }
-  EffectParticleElementGravity *AsEffectParticleElementGravity() {
+  ss::ssfb::EffectParticleElementGravity *AsEffectParticleElementGravity() {
     return type == EffectNodeBehavior_EffectParticleElementGravity ?
-      reinterpret_cast<EffectParticleElementGravity *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementGravity *>(value) : nullptr;
   }
-  const EffectParticleElementGravity *AsEffectParticleElementGravity() const {
+  const ss::ssfb::EffectParticleElementGravity *AsEffectParticleElementGravity() const {
     return type == EffectNodeBehavior_EffectParticleElementGravity ?
-      reinterpret_cast<const EffectParticleElementGravity *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementGravity *>(value) : nullptr;
   }
-  EffectParticleElementPosition *AsEffectParticleElementPosition() {
+  ss::ssfb::EffectParticleElementPosition *AsEffectParticleElementPosition() {
     return type == EffectNodeBehavior_EffectParticleElementPosition ?
-      reinterpret_cast<EffectParticleElementPosition *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementPosition *>(value) : nullptr;
   }
-  const EffectParticleElementPosition *AsEffectParticleElementPosition() const {
+  const ss::ssfb::EffectParticleElementPosition *AsEffectParticleElementPosition() const {
     return type == EffectNodeBehavior_EffectParticleElementPosition ?
-      reinterpret_cast<const EffectParticleElementPosition *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementPosition *>(value) : nullptr;
   }
-  EffectParticleElementRotation *AsEffectParticleElementRotation() {
+  ss::ssfb::EffectParticleElementRotation *AsEffectParticleElementRotation() {
     return type == EffectNodeBehavior_EffectParticleElementRotation ?
-      reinterpret_cast<EffectParticleElementRotation *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementRotation *>(value) : nullptr;
   }
-  const EffectParticleElementRotation *AsEffectParticleElementRotation() const {
+  const ss::ssfb::EffectParticleElementRotation *AsEffectParticleElementRotation() const {
     return type == EffectNodeBehavior_EffectParticleElementRotation ?
-      reinterpret_cast<const EffectParticleElementRotation *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementRotation *>(value) : nullptr;
   }
-  EffectParticleElementRotationTrans *AsEffectParticleElementRotationTrans() {
+  ss::ssfb::EffectParticleElementRotationTrans *AsEffectParticleElementRotationTrans() {
     return type == EffectNodeBehavior_EffectParticleElementRotationTrans ?
-      reinterpret_cast<EffectParticleElementRotationTrans *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementRotationTrans *>(value) : nullptr;
   }
-  const EffectParticleElementRotationTrans *AsEffectParticleElementRotationTrans() const {
+  const ss::ssfb::EffectParticleElementRotationTrans *AsEffectParticleElementRotationTrans() const {
     return type == EffectNodeBehavior_EffectParticleElementRotationTrans ?
-      reinterpret_cast<const EffectParticleElementRotationTrans *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementRotationTrans *>(value) : nullptr;
   }
-  EffectParticleElementTransSpeed *AsEffectParticleElementTransSpeed() {
+  ss::ssfb::EffectParticleElementTransSpeed *AsEffectParticleElementTransSpeed() {
     return type == EffectNodeBehavior_EffectParticleElementTransSpeed ?
-      reinterpret_cast<EffectParticleElementTransSpeed *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementTransSpeed *>(value) : nullptr;
   }
-  const EffectParticleElementTransSpeed *AsEffectParticleElementTransSpeed() const {
+  const ss::ssfb::EffectParticleElementTransSpeed *AsEffectParticleElementTransSpeed() const {
     return type == EffectNodeBehavior_EffectParticleElementTransSpeed ?
-      reinterpret_cast<const EffectParticleElementTransSpeed *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementTransSpeed *>(value) : nullptr;
   }
-  EffectParticleElementTangentialAcceleration *AsEffectParticleElementTangentialAcceleration() {
+  ss::ssfb::EffectParticleElementTangentialAcceleration *AsEffectParticleElementTangentialAcceleration() {
     return type == EffectNodeBehavior_EffectParticleElementTangentialAcceleration ?
-      reinterpret_cast<EffectParticleElementTangentialAcceleration *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementTangentialAcceleration *>(value) : nullptr;
   }
-  const EffectParticleElementTangentialAcceleration *AsEffectParticleElementTangentialAcceleration() const {
+  const ss::ssfb::EffectParticleElementTangentialAcceleration *AsEffectParticleElementTangentialAcceleration() const {
     return type == EffectNodeBehavior_EffectParticleElementTangentialAcceleration ?
-      reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementTangentialAcceleration *>(value) : nullptr;
   }
-  EffectParticleElementInitColor *AsEffectParticleElementInitColor() {
+  ss::ssfb::EffectParticleElementInitColor *AsEffectParticleElementInitColor() {
     return type == EffectNodeBehavior_EffectParticleElementInitColor ?
-      reinterpret_cast<EffectParticleElementInitColor *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementInitColor *>(value) : nullptr;
   }
-  const EffectParticleElementInitColor *AsEffectParticleElementInitColor() const {
+  const ss::ssfb::EffectParticleElementInitColor *AsEffectParticleElementInitColor() const {
     return type == EffectNodeBehavior_EffectParticleElementInitColor ?
-      reinterpret_cast<const EffectParticleElementInitColor *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementInitColor *>(value) : nullptr;
   }
-  EffectParticleElementTransColor *AsEffectParticleElementTransColor() {
+  ss::ssfb::EffectParticleElementTransColor *AsEffectParticleElementTransColor() {
     return type == EffectNodeBehavior_EffectParticleElementTransColor ?
-      reinterpret_cast<EffectParticleElementTransColor *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementTransColor *>(value) : nullptr;
   }
-  const EffectParticleElementTransColor *AsEffectParticleElementTransColor() const {
+  const ss::ssfb::EffectParticleElementTransColor *AsEffectParticleElementTransColor() const {
     return type == EffectNodeBehavior_EffectParticleElementTransColor ?
-      reinterpret_cast<const EffectParticleElementTransColor *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementTransColor *>(value) : nullptr;
   }
-  EffectParticleElementAlphaFade *AsEffectParticleElementAlphaFade() {
+  ss::ssfb::EffectParticleElementAlphaFade *AsEffectParticleElementAlphaFade() {
     return type == EffectNodeBehavior_EffectParticleElementAlphaFade ?
-      reinterpret_cast<EffectParticleElementAlphaFade *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementAlphaFade *>(value) : nullptr;
   }
-  const EffectParticleElementAlphaFade *AsEffectParticleElementAlphaFade() const {
+  const ss::ssfb::EffectParticleElementAlphaFade *AsEffectParticleElementAlphaFade() const {
     return type == EffectNodeBehavior_EffectParticleElementAlphaFade ?
-      reinterpret_cast<const EffectParticleElementAlphaFade *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementAlphaFade *>(value) : nullptr;
   }
-  EffectParticleElementSize *AsEffectParticleElementSize() {
+  ss::ssfb::EffectParticleElementSize *AsEffectParticleElementSize() {
     return type == EffectNodeBehavior_EffectParticleElementSize ?
-      reinterpret_cast<EffectParticleElementSize *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementSize *>(value) : nullptr;
   }
-  const EffectParticleElementSize *AsEffectParticleElementSize() const {
+  const ss::ssfb::EffectParticleElementSize *AsEffectParticleElementSize() const {
     return type == EffectNodeBehavior_EffectParticleElementSize ?
-      reinterpret_cast<const EffectParticleElementSize *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementSize *>(value) : nullptr;
   }
-  EffectParticleElementTransSize *AsEffectParticleElementTransSize() {
+  ss::ssfb::EffectParticleElementTransSize *AsEffectParticleElementTransSize() {
     return type == EffectNodeBehavior_EffectParticleElementTransSize ?
-      reinterpret_cast<EffectParticleElementTransSize *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleElementTransSize *>(value) : nullptr;
   }
-  const EffectParticleElementTransSize *AsEffectParticleElementTransSize() const {
+  const ss::ssfb::EffectParticleElementTransSize *AsEffectParticleElementTransSize() const {
     return type == EffectNodeBehavior_EffectParticleElementTransSize ?
-      reinterpret_cast<const EffectParticleElementTransSize *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleElementTransSize *>(value) : nullptr;
   }
-  EffectParticlePointGravity *AsEffectParticlePointGravity() {
+  ss::ssfb::EffectParticlePointGravity *AsEffectParticlePointGravity() {
     return type == EffectNodeBehavior_EffectParticlePointGravity ?
-      reinterpret_cast<EffectParticlePointGravity *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticlePointGravity *>(value) : nullptr;
   }
-  const EffectParticlePointGravity *AsEffectParticlePointGravity() const {
+  const ss::ssfb::EffectParticlePointGravity *AsEffectParticlePointGravity() const {
     return type == EffectNodeBehavior_EffectParticlePointGravity ?
-      reinterpret_cast<const EffectParticlePointGravity *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticlePointGravity *>(value) : nullptr;
   }
-  EffectParticleTurnToDirectionEnabled *AsEffectParticleTurnToDirectionEnabled() {
+  ss::ssfb::EffectParticleTurnToDirectionEnabled *AsEffectParticleTurnToDirectionEnabled() {
     return type == EffectNodeBehavior_EffectParticleTurnToDirectionEnabled ?
-      reinterpret_cast<EffectParticleTurnToDirectionEnabled *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleTurnToDirectionEnabled *>(value) : nullptr;
   }
-  const EffectParticleTurnToDirectionEnabled *AsEffectParticleTurnToDirectionEnabled() const {
+  const ss::ssfb::EffectParticleTurnToDirectionEnabled *AsEffectParticleTurnToDirectionEnabled() const {
     return type == EffectNodeBehavior_EffectParticleTurnToDirectionEnabled ?
-      reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleTurnToDirectionEnabled *>(value) : nullptr;
   }
-  EffectParticleInfiniteEmitEnabled *AsEffectParticleInfiniteEmitEnabled() {
+  ss::ssfb::EffectParticleInfiniteEmitEnabled *AsEffectParticleInfiniteEmitEnabled() {
     return type == EffectNodeBehavior_EffectParticleInfiniteEmitEnabled ?
-      reinterpret_cast<EffectParticleInfiniteEmitEnabled *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::EffectParticleInfiniteEmitEnabled *>(value) : nullptr;
   }
-  const EffectParticleInfiniteEmitEnabled *AsEffectParticleInfiniteEmitEnabled() const {
+  const ss::ssfb::EffectParticleInfiniteEmitEnabled *AsEffectParticleInfiniteEmitEnabled() const {
     return type == EffectNodeBehavior_EffectParticleInfiniteEmitEnabled ?
-      reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::EffectParticleInfiniteEmitEnabled *>(value) : nullptr;
   }
 };
 
@@ -756,72 +850,72 @@ inline bool operator==(const EffectNodeBehaviorUnion &lhs, const EffectNodeBehav
       return true;
     }
     case EffectNodeBehavior_EffectParticleElementBasic: {
-      return *(reinterpret_cast<const EffectParticleElementBasic *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementBasic *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementBasic *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementBasic *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      return *(reinterpret_cast<const EffectParticleElementRndSeedChange *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementRndSeedChange *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementRndSeedChange *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementRndSeedChange *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleElementDelay: {
-      return *(reinterpret_cast<const EffectParticleElementDelay *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementDelay *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementDelay *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementDelay *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleElementGravity: {
-      return *(reinterpret_cast<const EffectParticleElementGravity *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementGravity *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementGravity *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementGravity *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleElementPosition: {
-      return *(reinterpret_cast<const EffectParticleElementPosition *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementPosition *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementPosition *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementPosition *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleElementRotation: {
-      return *(reinterpret_cast<const EffectParticleElementRotation *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementRotation *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementRotation *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementRotation *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      return *(reinterpret_cast<const EffectParticleElementRotationTrans *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementRotationTrans *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementRotationTrans *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementRotationTrans *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      return *(reinterpret_cast<const EffectParticleElementTransSpeed *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementTransSpeed *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementTransSpeed *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementTransSpeed *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      return *(reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementTangentialAcceleration *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementTangentialAcceleration *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleElementInitColor: {
-      return *(reinterpret_cast<const EffectParticleElementInitColor *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementInitColor *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementInitColor *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementInitColor *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleElementTransColor: {
-      return *(reinterpret_cast<const EffectParticleElementTransColor *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementTransColor *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementTransColor *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementTransColor *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      return *(reinterpret_cast<const EffectParticleElementAlphaFade *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementAlphaFade *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementAlphaFade *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementAlphaFade *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleElementSize: {
-      return *(reinterpret_cast<const EffectParticleElementSize *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementSize *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementSize *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementSize *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleElementTransSize: {
-      return *(reinterpret_cast<const EffectParticleElementTransSize *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleElementTransSize *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleElementTransSize *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleElementTransSize *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticlePointGravity: {
-      return *(reinterpret_cast<const EffectParticlePointGravity *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticlePointGravity *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticlePointGravity *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticlePointGravity *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      return *(reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleTurnToDirectionEnabled *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleTurnToDirectionEnabled *>(rhs.value));
     }
     case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      return *(reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(lhs.value)) ==
-             *(reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::EffectParticleInfiniteEmitEnabled *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::EffectParticleInfiniteEmitEnabled *>(rhs.value));
     }
     default: {
       return false;
@@ -833,10 +927,10 @@ inline bool operator!=(const EffectNodeBehaviorUnion &lhs, const EffectNodeBehav
     return !(lhs == rhs);
 }
 
-bool VerifyEffectNodeBehavior(flatbuffers::Verifier &verifier, const void *obj, EffectNodeBehavior type);
-bool VerifyEffectNodeBehaviorVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
+bool VerifyEffectNodeBehavior(::flatbuffers::Verifier &verifier, const void *obj, EffectNodeBehavior type);
+bool VerifyEffectNodeBehaviorVector(::flatbuffers::Verifier &verifier, const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *values, const ::flatbuffers::Vector<uint8_t> *types);
 
-enum userDataValue {
+enum userDataValue : uint8_t {
   userDataValue_NONE = 0,
   userDataValue_userDataInteger = 1,
   userDataValue_userDataRect = 2,
@@ -858,7 +952,7 @@ inline const userDataValue (&EnumValuesuserDataValue())[5] {
 }
 
 inline const char * const *EnumNamesuserDataValue() {
-  static const char * const names[] = {
+  static const char * const names[6] = {
     "NONE",
     "userDataInteger",
     "userDataRect",
@@ -870,7 +964,7 @@ inline const char * const *EnumNamesuserDataValue() {
 }
 
 inline const char *EnumNameuserDataValue(userDataValue e) {
-  if (e < userDataValue_NONE || e > userDataValue_userDataString) return "";
+  if (::flatbuffers::IsOutRange(e, userDataValue_NONE, userDataValue_userDataString)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesuserDataValue()[index];
 }
@@ -879,19 +973,39 @@ template<typename T> struct userDataValueTraits {
   static const userDataValue enum_value = userDataValue_NONE;
 };
 
-template<> struct userDataValueTraits<userDataInteger> {
+template<> struct userDataValueTraits<ss::ssfb::userDataInteger> {
   static const userDataValue enum_value = userDataValue_userDataInteger;
 };
 
-template<> struct userDataValueTraits<userDataRect> {
+template<> struct userDataValueTraits<ss::ssfb::userDataRect> {
   static const userDataValue enum_value = userDataValue_userDataRect;
 };
 
-template<> struct userDataValueTraits<userDataPoint> {
+template<> struct userDataValueTraits<ss::ssfb::userDataPoint> {
   static const userDataValue enum_value = userDataValue_userDataPoint;
 };
 
-template<> struct userDataValueTraits<userDataString> {
+template<> struct userDataValueTraits<ss::ssfb::userDataString> {
+  static const userDataValue enum_value = userDataValue_userDataString;
+};
+
+template<typename T> struct userDataValueUnionTraits {
+  static const userDataValue enum_value = userDataValue_NONE;
+};
+
+template<> struct userDataValueUnionTraits<ss::ssfb::userDataInteger> {
+  static const userDataValue enum_value = userDataValue_userDataInteger;
+};
+
+template<> struct userDataValueUnionTraits<ss::ssfb::userDataRect> {
+  static const userDataValue enum_value = userDataValue_userDataRect;
+};
+
+template<> struct userDataValueUnionTraits<ss::ssfb::userDataPoint> {
+  static const userDataValue enum_value = userDataValue_userDataPoint;
+};
+
+template<> struct userDataValueUnionTraits<ss::ssfb::userDataStringT> {
   static const userDataValue enum_value = userDataValue_userDataString;
 };
 
@@ -903,8 +1017,8 @@ struct userDataValueUnion {
   userDataValueUnion(userDataValueUnion&& u) FLATBUFFERS_NOEXCEPT :
     type(userDataValue_NONE), value(nullptr)
     { std::swap(type, u.type); std::swap(value, u.value); }
-  userDataValueUnion(const userDataValueUnion &) FLATBUFFERS_NOEXCEPT;
-  userDataValueUnion &operator=(const userDataValueUnion &u) FLATBUFFERS_NOEXCEPT
+  userDataValueUnion(const userDataValueUnion &);
+  userDataValueUnion &operator=(const userDataValueUnion &u)
     { userDataValueUnion t(u); std::swap(type, t.type); std::swap(value, t.value); return *this; }
   userDataValueUnion &operator=(userDataValueUnion &&u) FLATBUFFERS_NOEXCEPT
     { std::swap(type, u.type); std::swap(value, u.value); return *this; }
@@ -912,52 +1026,50 @@ struct userDataValueUnion {
 
   void Reset();
 
-#ifndef FLATBUFFERS_CPP98_STL
   template <typename T>
   void Set(T&& val) {
-    using RT = typename std::remove_reference<T>::type;
+    typedef typename std::remove_reference<T>::type RT;
     Reset();
-    type = userDataValueTraits<typename RT::TableType>::enum_value;
+    type = userDataValueUnionTraits<RT>::enum_value;
     if (type != userDataValue_NONE) {
       value = new RT(std::forward<T>(val));
     }
   }
-#endif  // FLATBUFFERS_CPP98_STL
 
-  static void *UnPack(const void *obj, userDataValue type, const flatbuffers::resolver_function_t *resolver);
-  flatbuffers::Offset<void> Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher = nullptr) const;
+  static void *UnPack(const void *obj, userDataValue type, const ::flatbuffers::resolver_function_t *resolver);
+  ::flatbuffers::Offset<void> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr) const;
 
-  userDataInteger *AsuserDataInteger() {
+  ss::ssfb::userDataInteger *AsuserDataInteger() {
     return type == userDataValue_userDataInteger ?
-      reinterpret_cast<userDataInteger *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::userDataInteger *>(value) : nullptr;
   }
-  const userDataInteger *AsuserDataInteger() const {
+  const ss::ssfb::userDataInteger *AsuserDataInteger() const {
     return type == userDataValue_userDataInteger ?
-      reinterpret_cast<const userDataInteger *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::userDataInteger *>(value) : nullptr;
   }
-  userDataRect *AsuserDataRect() {
+  ss::ssfb::userDataRect *AsuserDataRect() {
     return type == userDataValue_userDataRect ?
-      reinterpret_cast<userDataRect *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::userDataRect *>(value) : nullptr;
   }
-  const userDataRect *AsuserDataRect() const {
+  const ss::ssfb::userDataRect *AsuserDataRect() const {
     return type == userDataValue_userDataRect ?
-      reinterpret_cast<const userDataRect *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::userDataRect *>(value) : nullptr;
   }
-  userDataPoint *AsuserDataPoint() {
+  ss::ssfb::userDataPoint *AsuserDataPoint() {
     return type == userDataValue_userDataPoint ?
-      reinterpret_cast<userDataPoint *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::userDataPoint *>(value) : nullptr;
   }
-  const userDataPoint *AsuserDataPoint() const {
+  const ss::ssfb::userDataPoint *AsuserDataPoint() const {
     return type == userDataValue_userDataPoint ?
-      reinterpret_cast<const userDataPoint *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::userDataPoint *>(value) : nullptr;
   }
-  userDataStringT *AsuserDataString() {
+  ss::ssfb::userDataStringT *AsuserDataString() {
     return type == userDataValue_userDataString ?
-      reinterpret_cast<userDataStringT *>(value) : nullptr;
+      reinterpret_cast<ss::ssfb::userDataStringT *>(value) : nullptr;
   }
-  const userDataStringT *AsuserDataString() const {
+  const ss::ssfb::userDataStringT *AsuserDataString() const {
     return type == userDataValue_userDataString ?
-      reinterpret_cast<const userDataStringT *>(value) : nullptr;
+      reinterpret_cast<const ss::ssfb::userDataStringT *>(value) : nullptr;
   }
 };
 
@@ -969,20 +1081,20 @@ inline bool operator==(const userDataValueUnion &lhs, const userDataValueUnion &
       return true;
     }
     case userDataValue_userDataInteger: {
-      return *(reinterpret_cast<const userDataInteger *>(lhs.value)) ==
-             *(reinterpret_cast<const userDataInteger *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::userDataInteger *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::userDataInteger *>(rhs.value));
     }
     case userDataValue_userDataRect: {
-      return *(reinterpret_cast<const userDataRect *>(lhs.value)) ==
-             *(reinterpret_cast<const userDataRect *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::userDataRect *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::userDataRect *>(rhs.value));
     }
     case userDataValue_userDataPoint: {
-      return *(reinterpret_cast<const userDataPoint *>(lhs.value)) ==
-             *(reinterpret_cast<const userDataPoint *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::userDataPoint *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::userDataPoint *>(rhs.value));
     }
     case userDataValue_userDataString: {
-      return *(reinterpret_cast<const userDataStringT *>(lhs.value)) ==
-             *(reinterpret_cast<const userDataStringT *>(rhs.value));
+      return *(reinterpret_cast<const ss::ssfb::userDataStringT *>(lhs.value)) ==
+             *(reinterpret_cast<const ss::ssfb::userDataStringT *>(rhs.value));
     }
     default: {
       return false;
@@ -994,22 +1106,22 @@ inline bool operator!=(const userDataValueUnion &lhs, const userDataValueUnion &
     return !(lhs == rhs);
 }
 
-bool VerifyuserDataValue(flatbuffers::Verifier &verifier, const void *obj, userDataValue type);
-bool VerifyuserDataValueVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
+bool VerifyuserDataValue(::flatbuffers::Verifier &verifier, const void *obj, userDataValue type);
+bool VerifyuserDataValueVector(::flatbuffers::Verifier &verifier, const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *values, const ::flatbuffers::Vector<uint8_t> *types);
 
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleInfiniteEmitEnabled FLATBUFFERS_FINAL_CLASS {
  private:
   int32_t flag_;
 
  public:
-  EffectParticleInfiniteEmitEnabled() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleInfiniteEmitEnabled));
+  EffectParticleInfiniteEmitEnabled()
+      : flag_(0) {
   }
   EffectParticleInfiniteEmitEnabled(int32_t _flag)
-      : flag_(flatbuffers::EndianScalar(_flag)) {
+      : flag_(::flatbuffers::EndianScalar(_flag)) {
   }
   int32_t flag() const {
-    return flatbuffers::EndianScalar(flag_);
+    return ::flatbuffers::EndianScalar(flag_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleInfiniteEmitEnabled, 4);
@@ -1029,14 +1141,14 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleTurnToDirectionEnabled FLAT
   float Rotation_;
 
  public:
-  EffectParticleTurnToDirectionEnabled() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleTurnToDirectionEnabled));
+  EffectParticleTurnToDirectionEnabled()
+      : Rotation_(0) {
   }
   EffectParticleTurnToDirectionEnabled(float _Rotation)
-      : Rotation_(flatbuffers::EndianScalar(_Rotation)) {
+      : Rotation_(::flatbuffers::EndianScalar(_Rotation)) {
   }
   float Rotation() const {
-    return flatbuffers::EndianScalar(Rotation_);
+    return ::flatbuffers::EndianScalar(Rotation_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleTurnToDirectionEnabled, 4);
@@ -1058,22 +1170,24 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticlePointGravity FLATBUFFERS_FI
   float Power_;
 
  public:
-  EffectParticlePointGravity() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticlePointGravity));
+  EffectParticlePointGravity()
+      : Position_x_(0),
+        Position_y_(0),
+        Power_(0) {
   }
   EffectParticlePointGravity(float _Position_x, float _Position_y, float _Power)
-      : Position_x_(flatbuffers::EndianScalar(_Position_x)),
-        Position_y_(flatbuffers::EndianScalar(_Position_y)),
-        Power_(flatbuffers::EndianScalar(_Power)) {
+      : Position_x_(::flatbuffers::EndianScalar(_Position_x)),
+        Position_y_(::flatbuffers::EndianScalar(_Position_y)),
+        Power_(::flatbuffers::EndianScalar(_Power)) {
   }
   float Position_x() const {
-    return flatbuffers::EndianScalar(Position_x_);
+    return ::flatbuffers::EndianScalar(Position_x_);
   }
   float Position_y() const {
-    return flatbuffers::EndianScalar(Position_y_);
+    return ::flatbuffers::EndianScalar(Position_y_);
   }
   float Power() const {
-    return flatbuffers::EndianScalar(Power_);
+    return ::flatbuffers::EndianScalar(Power_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticlePointGravity, 12);
@@ -1100,34 +1214,39 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransSize FLATBUFFER
   float ScaleFactorMaxValue_;
 
  public:
-  EffectParticleElementTransSize() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementTransSize));
+  EffectParticleElementTransSize()
+      : SizeXMinValue_(0),
+        SizeXMaxValue_(0),
+        SizeYMinValue_(0),
+        SizeYMaxValue_(0),
+        ScaleFactorMinValue_(0),
+        ScaleFactorMaxValue_(0) {
   }
   EffectParticleElementTransSize(float _SizeXMinValue, float _SizeXMaxValue, float _SizeYMinValue, float _SizeYMaxValue, float _ScaleFactorMinValue, float _ScaleFactorMaxValue)
-      : SizeXMinValue_(flatbuffers::EndianScalar(_SizeXMinValue)),
-        SizeXMaxValue_(flatbuffers::EndianScalar(_SizeXMaxValue)),
-        SizeYMinValue_(flatbuffers::EndianScalar(_SizeYMinValue)),
-        SizeYMaxValue_(flatbuffers::EndianScalar(_SizeYMaxValue)),
-        ScaleFactorMinValue_(flatbuffers::EndianScalar(_ScaleFactorMinValue)),
-        ScaleFactorMaxValue_(flatbuffers::EndianScalar(_ScaleFactorMaxValue)) {
+      : SizeXMinValue_(::flatbuffers::EndianScalar(_SizeXMinValue)),
+        SizeXMaxValue_(::flatbuffers::EndianScalar(_SizeXMaxValue)),
+        SizeYMinValue_(::flatbuffers::EndianScalar(_SizeYMinValue)),
+        SizeYMaxValue_(::flatbuffers::EndianScalar(_SizeYMaxValue)),
+        ScaleFactorMinValue_(::flatbuffers::EndianScalar(_ScaleFactorMinValue)),
+        ScaleFactorMaxValue_(::flatbuffers::EndianScalar(_ScaleFactorMaxValue)) {
   }
   float SizeXMinValue() const {
-    return flatbuffers::EndianScalar(SizeXMinValue_);
+    return ::flatbuffers::EndianScalar(SizeXMinValue_);
   }
   float SizeXMaxValue() const {
-    return flatbuffers::EndianScalar(SizeXMaxValue_);
+    return ::flatbuffers::EndianScalar(SizeXMaxValue_);
   }
   float SizeYMinValue() const {
-    return flatbuffers::EndianScalar(SizeYMinValue_);
+    return ::flatbuffers::EndianScalar(SizeYMinValue_);
   }
   float SizeYMaxValue() const {
-    return flatbuffers::EndianScalar(SizeYMaxValue_);
+    return ::flatbuffers::EndianScalar(SizeYMaxValue_);
   }
   float ScaleFactorMinValue() const {
-    return flatbuffers::EndianScalar(ScaleFactorMinValue_);
+    return ::flatbuffers::EndianScalar(ScaleFactorMinValue_);
   }
   float ScaleFactorMaxValue() const {
-    return flatbuffers::EndianScalar(ScaleFactorMaxValue_);
+    return ::flatbuffers::EndianScalar(ScaleFactorMaxValue_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementTransSize, 24);
@@ -1157,34 +1276,39 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementSize FLATBUFFERS_FIN
   float ScaleFactorMaxValue_;
 
  public:
-  EffectParticleElementSize() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementSize));
+  EffectParticleElementSize()
+      : SizeXMinValue_(0),
+        SizeXMaxValue_(0),
+        SizeYMinValue_(0),
+        SizeYMaxValue_(0),
+        ScaleFactorMinValue_(0),
+        ScaleFactorMaxValue_(0) {
   }
   EffectParticleElementSize(float _SizeXMinValue, float _SizeXMaxValue, float _SizeYMinValue, float _SizeYMaxValue, float _ScaleFactorMinValue, float _ScaleFactorMaxValue)
-      : SizeXMinValue_(flatbuffers::EndianScalar(_SizeXMinValue)),
-        SizeXMaxValue_(flatbuffers::EndianScalar(_SizeXMaxValue)),
-        SizeYMinValue_(flatbuffers::EndianScalar(_SizeYMinValue)),
-        SizeYMaxValue_(flatbuffers::EndianScalar(_SizeYMaxValue)),
-        ScaleFactorMinValue_(flatbuffers::EndianScalar(_ScaleFactorMinValue)),
-        ScaleFactorMaxValue_(flatbuffers::EndianScalar(_ScaleFactorMaxValue)) {
+      : SizeXMinValue_(::flatbuffers::EndianScalar(_SizeXMinValue)),
+        SizeXMaxValue_(::flatbuffers::EndianScalar(_SizeXMaxValue)),
+        SizeYMinValue_(::flatbuffers::EndianScalar(_SizeYMinValue)),
+        SizeYMaxValue_(::flatbuffers::EndianScalar(_SizeYMaxValue)),
+        ScaleFactorMinValue_(::flatbuffers::EndianScalar(_ScaleFactorMinValue)),
+        ScaleFactorMaxValue_(::flatbuffers::EndianScalar(_ScaleFactorMaxValue)) {
   }
   float SizeXMinValue() const {
-    return flatbuffers::EndianScalar(SizeXMinValue_);
+    return ::flatbuffers::EndianScalar(SizeXMinValue_);
   }
   float SizeXMaxValue() const {
-    return flatbuffers::EndianScalar(SizeXMaxValue_);
+    return ::flatbuffers::EndianScalar(SizeXMaxValue_);
   }
   float SizeYMinValue() const {
-    return flatbuffers::EndianScalar(SizeYMinValue_);
+    return ::flatbuffers::EndianScalar(SizeYMinValue_);
   }
   float SizeYMaxValue() const {
-    return flatbuffers::EndianScalar(SizeYMaxValue_);
+    return ::flatbuffers::EndianScalar(SizeYMaxValue_);
   }
   float ScaleFactorMinValue() const {
-    return flatbuffers::EndianScalar(ScaleFactorMinValue_);
+    return ::flatbuffers::EndianScalar(ScaleFactorMinValue_);
   }
   float ScaleFactorMaxValue() const {
-    return flatbuffers::EndianScalar(ScaleFactorMaxValue_);
+    return ::flatbuffers::EndianScalar(ScaleFactorMaxValue_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementSize, 24);
@@ -1210,18 +1334,19 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementAlphaFade FLATBUFFER
   float disprangeMaxValue_;
 
  public:
-  EffectParticleElementAlphaFade() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementAlphaFade));
+  EffectParticleElementAlphaFade()
+      : disprangeMinValue_(0),
+        disprangeMaxValue_(0) {
   }
   EffectParticleElementAlphaFade(float _disprangeMinValue, float _disprangeMaxValue)
-      : disprangeMinValue_(flatbuffers::EndianScalar(_disprangeMinValue)),
-        disprangeMaxValue_(flatbuffers::EndianScalar(_disprangeMaxValue)) {
+      : disprangeMinValue_(::flatbuffers::EndianScalar(_disprangeMinValue)),
+        disprangeMaxValue_(::flatbuffers::EndianScalar(_disprangeMaxValue)) {
   }
   float disprangeMinValue() const {
-    return flatbuffers::EndianScalar(disprangeMinValue_);
+    return ::flatbuffers::EndianScalar(disprangeMinValue_);
   }
   float disprangeMaxValue() const {
-    return flatbuffers::EndianScalar(disprangeMaxValue_);
+    return ::flatbuffers::EndianScalar(disprangeMaxValue_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementAlphaFade, 8);
@@ -1243,18 +1368,19 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransColor FLATBUFFE
   uint32_t ColorMaxValue_;
 
  public:
-  EffectParticleElementTransColor() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementTransColor));
+  EffectParticleElementTransColor()
+      : ColorMinValue_(0),
+        ColorMaxValue_(0) {
   }
   EffectParticleElementTransColor(uint32_t _ColorMinValue, uint32_t _ColorMaxValue)
-      : ColorMinValue_(flatbuffers::EndianScalar(_ColorMinValue)),
-        ColorMaxValue_(flatbuffers::EndianScalar(_ColorMaxValue)) {
+      : ColorMinValue_(::flatbuffers::EndianScalar(_ColorMinValue)),
+        ColorMaxValue_(::flatbuffers::EndianScalar(_ColorMaxValue)) {
   }
   uint32_t ColorMinValue() const {
-    return flatbuffers::EndianScalar(ColorMinValue_);
+    return ::flatbuffers::EndianScalar(ColorMinValue_);
   }
   uint32_t ColorMaxValue() const {
-    return flatbuffers::EndianScalar(ColorMaxValue_);
+    return ::flatbuffers::EndianScalar(ColorMaxValue_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementTransColor, 8);
@@ -1276,18 +1402,19 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementInitColor FLATBUFFER
   uint32_t ColorMaxValue_;
 
  public:
-  EffectParticleElementInitColor() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementInitColor));
+  EffectParticleElementInitColor()
+      : ColorMinValue_(0),
+        ColorMaxValue_(0) {
   }
   EffectParticleElementInitColor(uint32_t _ColorMinValue, uint32_t _ColorMaxValue)
-      : ColorMinValue_(flatbuffers::EndianScalar(_ColorMinValue)),
-        ColorMaxValue_(flatbuffers::EndianScalar(_ColorMaxValue)) {
+      : ColorMinValue_(::flatbuffers::EndianScalar(_ColorMinValue)),
+        ColorMaxValue_(::flatbuffers::EndianScalar(_ColorMaxValue)) {
   }
   uint32_t ColorMinValue() const {
-    return flatbuffers::EndianScalar(ColorMinValue_);
+    return ::flatbuffers::EndianScalar(ColorMinValue_);
   }
   uint32_t ColorMaxValue() const {
-    return flatbuffers::EndianScalar(ColorMaxValue_);
+    return ::flatbuffers::EndianScalar(ColorMaxValue_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementInitColor, 8);
@@ -1309,18 +1436,19 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTangentialAccelerati
   float AccelerationMaxValue_;
 
  public:
-  EffectParticleElementTangentialAcceleration() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementTangentialAcceleration));
+  EffectParticleElementTangentialAcceleration()
+      : AccelerationMinValue_(0),
+        AccelerationMaxValue_(0) {
   }
   EffectParticleElementTangentialAcceleration(float _AccelerationMinValue, float _AccelerationMaxValue)
-      : AccelerationMinValue_(flatbuffers::EndianScalar(_AccelerationMinValue)),
-        AccelerationMaxValue_(flatbuffers::EndianScalar(_AccelerationMaxValue)) {
+      : AccelerationMinValue_(::flatbuffers::EndianScalar(_AccelerationMinValue)),
+        AccelerationMaxValue_(::flatbuffers::EndianScalar(_AccelerationMaxValue)) {
   }
   float AccelerationMinValue() const {
-    return flatbuffers::EndianScalar(AccelerationMinValue_);
+    return ::flatbuffers::EndianScalar(AccelerationMinValue_);
   }
   float AccelerationMaxValue() const {
-    return flatbuffers::EndianScalar(AccelerationMaxValue_);
+    return ::flatbuffers::EndianScalar(AccelerationMaxValue_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementTangentialAcceleration, 8);
@@ -1342,18 +1470,19 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementTransSpeed FLATBUFFE
   float SpeedMaxValue_;
 
  public:
-  EffectParticleElementTransSpeed() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementTransSpeed));
+  EffectParticleElementTransSpeed()
+      : SpeedMinValue_(0),
+        SpeedMaxValue_(0) {
   }
   EffectParticleElementTransSpeed(float _SpeedMinValue, float _SpeedMaxValue)
-      : SpeedMinValue_(flatbuffers::EndianScalar(_SpeedMinValue)),
-        SpeedMaxValue_(flatbuffers::EndianScalar(_SpeedMaxValue)) {
+      : SpeedMinValue_(::flatbuffers::EndianScalar(_SpeedMinValue)),
+        SpeedMaxValue_(::flatbuffers::EndianScalar(_SpeedMaxValue)) {
   }
   float SpeedMinValue() const {
-    return flatbuffers::EndianScalar(SpeedMinValue_);
+    return ::flatbuffers::EndianScalar(SpeedMinValue_);
   }
   float SpeedMaxValue() const {
-    return flatbuffers::EndianScalar(SpeedMaxValue_);
+    return ::flatbuffers::EndianScalar(SpeedMaxValue_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementTransSpeed, 8);
@@ -1375,18 +1504,19 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRotationTrans FLATBU
   float EndLifeTimePer_;
 
  public:
-  EffectParticleElementRotationTrans() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementRotationTrans));
+  EffectParticleElementRotationTrans()
+      : RotationFactor_(0),
+        EndLifeTimePer_(0) {
   }
   EffectParticleElementRotationTrans(float _RotationFactor, float _EndLifeTimePer)
-      : RotationFactor_(flatbuffers::EndianScalar(_RotationFactor)),
-        EndLifeTimePer_(flatbuffers::EndianScalar(_EndLifeTimePer)) {
+      : RotationFactor_(::flatbuffers::EndianScalar(_RotationFactor)),
+        EndLifeTimePer_(::flatbuffers::EndianScalar(_EndLifeTimePer)) {
   }
   float RotationFactor() const {
-    return flatbuffers::EndianScalar(RotationFactor_);
+    return ::flatbuffers::EndianScalar(RotationFactor_);
   }
   float EndLifeTimePer() const {
-    return flatbuffers::EndianScalar(EndLifeTimePer_);
+    return ::flatbuffers::EndianScalar(EndLifeTimePer_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementRotationTrans, 8);
@@ -1410,26 +1540,29 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRotation FLATBUFFERS
   float RotationAddMaxValue_;
 
  public:
-  EffectParticleElementRotation() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementRotation));
+  EffectParticleElementRotation()
+      : RotationMinValue_(0),
+        RotationMaxValue_(0),
+        RotationAddMinValue_(0),
+        RotationAddMaxValue_(0) {
   }
   EffectParticleElementRotation(float _RotationMinValue, float _RotationMaxValue, float _RotationAddMinValue, float _RotationAddMaxValue)
-      : RotationMinValue_(flatbuffers::EndianScalar(_RotationMinValue)),
-        RotationMaxValue_(flatbuffers::EndianScalar(_RotationMaxValue)),
-        RotationAddMinValue_(flatbuffers::EndianScalar(_RotationAddMinValue)),
-        RotationAddMaxValue_(flatbuffers::EndianScalar(_RotationAddMaxValue)) {
+      : RotationMinValue_(::flatbuffers::EndianScalar(_RotationMinValue)),
+        RotationMaxValue_(::flatbuffers::EndianScalar(_RotationMaxValue)),
+        RotationAddMinValue_(::flatbuffers::EndianScalar(_RotationAddMinValue)),
+        RotationAddMaxValue_(::flatbuffers::EndianScalar(_RotationAddMaxValue)) {
   }
   float RotationMinValue() const {
-    return flatbuffers::EndianScalar(RotationMinValue_);
+    return ::flatbuffers::EndianScalar(RotationMinValue_);
   }
   float RotationMaxValue() const {
-    return flatbuffers::EndianScalar(RotationMaxValue_);
+    return ::flatbuffers::EndianScalar(RotationMaxValue_);
   }
   float RotationAddMinValue() const {
-    return flatbuffers::EndianScalar(RotationAddMinValue_);
+    return ::flatbuffers::EndianScalar(RotationAddMinValue_);
   }
   float RotationAddMaxValue() const {
-    return flatbuffers::EndianScalar(RotationAddMaxValue_);
+    return ::flatbuffers::EndianScalar(RotationAddMaxValue_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementRotation, 16);
@@ -1455,26 +1588,29 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementPosition FLATBUFFERS
   float OffsetYMaxValue_;
 
  public:
-  EffectParticleElementPosition() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementPosition));
+  EffectParticleElementPosition()
+      : OffsetXMinValue_(0),
+        OffsetXMaxValue_(0),
+        OffsetYMinValue_(0),
+        OffsetYMaxValue_(0) {
   }
   EffectParticleElementPosition(float _OffsetXMinValue, float _OffsetXMaxValue, float _OffsetYMinValue, float _OffsetYMaxValue)
-      : OffsetXMinValue_(flatbuffers::EndianScalar(_OffsetXMinValue)),
-        OffsetXMaxValue_(flatbuffers::EndianScalar(_OffsetXMaxValue)),
-        OffsetYMinValue_(flatbuffers::EndianScalar(_OffsetYMinValue)),
-        OffsetYMaxValue_(flatbuffers::EndianScalar(_OffsetYMaxValue)) {
+      : OffsetXMinValue_(::flatbuffers::EndianScalar(_OffsetXMinValue)),
+        OffsetXMaxValue_(::flatbuffers::EndianScalar(_OffsetXMaxValue)),
+        OffsetYMinValue_(::flatbuffers::EndianScalar(_OffsetYMinValue)),
+        OffsetYMaxValue_(::flatbuffers::EndianScalar(_OffsetYMaxValue)) {
   }
   float OffsetXMinValue() const {
-    return flatbuffers::EndianScalar(OffsetXMinValue_);
+    return ::flatbuffers::EndianScalar(OffsetXMinValue_);
   }
   float OffsetXMaxValue() const {
-    return flatbuffers::EndianScalar(OffsetXMaxValue_);
+    return ::flatbuffers::EndianScalar(OffsetXMaxValue_);
   }
   float OffsetYMinValue() const {
-    return flatbuffers::EndianScalar(OffsetYMinValue_);
+    return ::flatbuffers::EndianScalar(OffsetYMinValue_);
   }
   float OffsetYMaxValue() const {
-    return flatbuffers::EndianScalar(OffsetYMaxValue_);
+    return ::flatbuffers::EndianScalar(OffsetYMaxValue_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementPosition, 16);
@@ -1498,18 +1634,19 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementGravity FLATBUFFERS_
   float Gravity_y_;
 
  public:
-  EffectParticleElementGravity() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementGravity));
+  EffectParticleElementGravity()
+      : Gravity_x_(0),
+        Gravity_y_(0) {
   }
   EffectParticleElementGravity(float _Gravity_x, float _Gravity_y)
-      : Gravity_x_(flatbuffers::EndianScalar(_Gravity_x)),
-        Gravity_y_(flatbuffers::EndianScalar(_Gravity_y)) {
+      : Gravity_x_(::flatbuffers::EndianScalar(_Gravity_x)),
+        Gravity_y_(::flatbuffers::EndianScalar(_Gravity_y)) {
   }
   float Gravity_x() const {
-    return flatbuffers::EndianScalar(Gravity_x_);
+    return ::flatbuffers::EndianScalar(Gravity_x_);
   }
   float Gravity_y() const {
-    return flatbuffers::EndianScalar(Gravity_y_);
+    return ::flatbuffers::EndianScalar(Gravity_y_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementGravity, 8);
@@ -1530,14 +1667,14 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementDelay FLATBUFFERS_FI
   int32_t DelayTime_;
 
  public:
-  EffectParticleElementDelay() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementDelay));
+  EffectParticleElementDelay()
+      : DelayTime_(0) {
   }
   EffectParticleElementDelay(int32_t _DelayTime)
-      : DelayTime_(flatbuffers::EndianScalar(_DelayTime)) {
+      : DelayTime_(::flatbuffers::EndianScalar(_DelayTime)) {
   }
   int32_t DelayTime() const {
-    return flatbuffers::EndianScalar(DelayTime_);
+    return ::flatbuffers::EndianScalar(DelayTime_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementDelay, 4);
@@ -1557,14 +1694,14 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementRndSeedChange FLATBU
   int32_t Seed_;
 
  public:
-  EffectParticleElementRndSeedChange() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementRndSeedChange));
+  EffectParticleElementRndSeedChange()
+      : Seed_(0) {
   }
   EffectParticleElementRndSeedChange(int32_t _Seed)
-      : Seed_(flatbuffers::EndianScalar(_Seed)) {
+      : Seed_(::flatbuffers::EndianScalar(_Seed)) {
   }
   int32_t Seed() const {
-    return flatbuffers::EndianScalar(Seed_);
+    return ::flatbuffers::EndianScalar(Seed_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementRndSeedChange, 4);
@@ -1595,58 +1732,69 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) EffectParticleElementBasic FLATBUFFERS_FI
   float angleVariance_;
 
  public:
-  EffectParticleElementBasic() {
-    memset(static_cast<void *>(this), 0, sizeof(EffectParticleElementBasic));
+  EffectParticleElementBasic()
+      : SsEffectFunctionType_(0),
+        priority_(0),
+        maximumParticle_(0),
+        attimeCreate_(0),
+        interval_(0),
+        lifetime_(0),
+        speedMinValue_(0),
+        speedMaxValue_(0),
+        lifespanMinValue_(0),
+        lifespanMaxValue_(0),
+        angle_(0),
+        angleVariance_(0) {
   }
   EffectParticleElementBasic(int32_t _SsEffectFunctionType, int32_t _priority, int32_t _maximumParticle, int32_t _attimeCreate, int32_t _interval, int32_t _lifetime, float _speedMinValue, float _speedMaxValue, int32_t _lifespanMinValue, int32_t _lifespanMaxValue, float _angle, float _angleVariance)
-      : SsEffectFunctionType_(flatbuffers::EndianScalar(_SsEffectFunctionType)),
-        priority_(flatbuffers::EndianScalar(_priority)),
-        maximumParticle_(flatbuffers::EndianScalar(_maximumParticle)),
-        attimeCreate_(flatbuffers::EndianScalar(_attimeCreate)),
-        interval_(flatbuffers::EndianScalar(_interval)),
-        lifetime_(flatbuffers::EndianScalar(_lifetime)),
-        speedMinValue_(flatbuffers::EndianScalar(_speedMinValue)),
-        speedMaxValue_(flatbuffers::EndianScalar(_speedMaxValue)),
-        lifespanMinValue_(flatbuffers::EndianScalar(_lifespanMinValue)),
-        lifespanMaxValue_(flatbuffers::EndianScalar(_lifespanMaxValue)),
-        angle_(flatbuffers::EndianScalar(_angle)),
-        angleVariance_(flatbuffers::EndianScalar(_angleVariance)) {
+      : SsEffectFunctionType_(::flatbuffers::EndianScalar(_SsEffectFunctionType)),
+        priority_(::flatbuffers::EndianScalar(_priority)),
+        maximumParticle_(::flatbuffers::EndianScalar(_maximumParticle)),
+        attimeCreate_(::flatbuffers::EndianScalar(_attimeCreate)),
+        interval_(::flatbuffers::EndianScalar(_interval)),
+        lifetime_(::flatbuffers::EndianScalar(_lifetime)),
+        speedMinValue_(::flatbuffers::EndianScalar(_speedMinValue)),
+        speedMaxValue_(::flatbuffers::EndianScalar(_speedMaxValue)),
+        lifespanMinValue_(::flatbuffers::EndianScalar(_lifespanMinValue)),
+        lifespanMaxValue_(::flatbuffers::EndianScalar(_lifespanMaxValue)),
+        angle_(::flatbuffers::EndianScalar(_angle)),
+        angleVariance_(::flatbuffers::EndianScalar(_angleVariance)) {
   }
   int32_t SsEffectFunctionType() const {
-    return flatbuffers::EndianScalar(SsEffectFunctionType_);
+    return ::flatbuffers::EndianScalar(SsEffectFunctionType_);
   }
   int32_t priority() const {
-    return flatbuffers::EndianScalar(priority_);
+    return ::flatbuffers::EndianScalar(priority_);
   }
   int32_t maximumParticle() const {
-    return flatbuffers::EndianScalar(maximumParticle_);
+    return ::flatbuffers::EndianScalar(maximumParticle_);
   }
   int32_t attimeCreate() const {
-    return flatbuffers::EndianScalar(attimeCreate_);
+    return ::flatbuffers::EndianScalar(attimeCreate_);
   }
   int32_t interval() const {
-    return flatbuffers::EndianScalar(interval_);
+    return ::flatbuffers::EndianScalar(interval_);
   }
   int32_t lifetime() const {
-    return flatbuffers::EndianScalar(lifetime_);
+    return ::flatbuffers::EndianScalar(lifetime_);
   }
   float speedMinValue() const {
-    return flatbuffers::EndianScalar(speedMinValue_);
+    return ::flatbuffers::EndianScalar(speedMinValue_);
   }
   float speedMaxValue() const {
-    return flatbuffers::EndianScalar(speedMaxValue_);
+    return ::flatbuffers::EndianScalar(speedMaxValue_);
   }
   int32_t lifespanMinValue() const {
-    return flatbuffers::EndianScalar(lifespanMinValue_);
+    return ::flatbuffers::EndianScalar(lifespanMinValue_);
   }
   int32_t lifespanMaxValue() const {
-    return flatbuffers::EndianScalar(lifespanMaxValue_);
+    return ::flatbuffers::EndianScalar(lifespanMaxValue_);
   }
   float angle() const {
-    return flatbuffers::EndianScalar(angle_);
+    return ::flatbuffers::EndianScalar(angle_);
   }
   float angleVariance() const {
-    return flatbuffers::EndianScalar(angleVariance_);
+    return ::flatbuffers::EndianScalar(angleVariance_);
   }
 };
 FLATBUFFERS_STRUCT_END(EffectParticleElementBasic, 48);
@@ -1677,14 +1825,14 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) userDataInteger FLATBUFFERS_FINAL_CLASS {
   int32_t integer_;
 
  public:
-  userDataInteger() {
-    memset(static_cast<void *>(this), 0, sizeof(userDataInteger));
+  userDataInteger()
+      : integer_(0) {
   }
   userDataInteger(int32_t _integer)
-      : integer_(flatbuffers::EndianScalar(_integer)) {
+      : integer_(::flatbuffers::EndianScalar(_integer)) {
   }
   int32_t integer() const {
-    return flatbuffers::EndianScalar(integer_);
+    return ::flatbuffers::EndianScalar(integer_);
   }
 };
 FLATBUFFERS_STRUCT_END(userDataInteger, 4);
@@ -1707,26 +1855,29 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) userDataRect FLATBUFFERS_FINAL_CLASS {
   int32_t h_;
 
  public:
-  userDataRect() {
-    memset(static_cast<void *>(this), 0, sizeof(userDataRect));
+  userDataRect()
+      : x_(0),
+        y_(0),
+        w_(0),
+        h_(0) {
   }
   userDataRect(int32_t _x, int32_t _y, int32_t _w, int32_t _h)
-      : x_(flatbuffers::EndianScalar(_x)),
-        y_(flatbuffers::EndianScalar(_y)),
-        w_(flatbuffers::EndianScalar(_w)),
-        h_(flatbuffers::EndianScalar(_h)) {
+      : x_(::flatbuffers::EndianScalar(_x)),
+        y_(::flatbuffers::EndianScalar(_y)),
+        w_(::flatbuffers::EndianScalar(_w)),
+        h_(::flatbuffers::EndianScalar(_h)) {
   }
   int32_t x() const {
-    return flatbuffers::EndianScalar(x_);
+    return ::flatbuffers::EndianScalar(x_);
   }
   int32_t y() const {
-    return flatbuffers::EndianScalar(y_);
+    return ::flatbuffers::EndianScalar(y_);
   }
   int32_t w() const {
-    return flatbuffers::EndianScalar(w_);
+    return ::flatbuffers::EndianScalar(w_);
   }
   int32_t h() const {
-    return flatbuffers::EndianScalar(h_);
+    return ::flatbuffers::EndianScalar(h_);
   }
 };
 FLATBUFFERS_STRUCT_END(userDataRect, 16);
@@ -1750,18 +1901,19 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) userDataPoint FLATBUFFERS_FINAL_CLASS {
   int32_t y_;
 
  public:
-  userDataPoint() {
-    memset(static_cast<void *>(this), 0, sizeof(userDataPoint));
+  userDataPoint()
+      : x_(0),
+        y_(0) {
   }
   userDataPoint(int32_t _x, int32_t _y)
-      : x_(flatbuffers::EndianScalar(_x)),
-        y_(flatbuffers::EndianScalar(_y)) {
+      : x_(::flatbuffers::EndianScalar(_x)),
+        y_(::flatbuffers::EndianScalar(_y)) {
   }
   int32_t x() const {
-    return flatbuffers::EndianScalar(x_);
+    return ::flatbuffers::EndianScalar(x_);
   }
   int32_t y() const {
-    return flatbuffers::EndianScalar(y_);
+    return ::flatbuffers::EndianScalar(y_);
   }
 };
 FLATBUFFERS_STRUCT_END(userDataPoint, 8);
@@ -1777,43 +1929,20 @@ inline bool operator!=(const userDataPoint &lhs, const userDataPoint &rhs) {
 }
 
 
-struct EffectNodeT : public flatbuffers::NativeTable {
+struct EffectNodeT : public ::flatbuffers::NativeTable {
   typedef EffectNode TableType;
-  int16_t arrayIndex;
-  int16_t parentIndex;
-  int16_t type;
-  int16_t cellIndex;
-  int16_t blendType;
-  int16_t numBehavior;
-  std::vector<EffectNodeBehaviorUnion> Behavior;
-  EffectNodeT()
-      : arrayIndex(0),
-        parentIndex(0),
-        type(0),
-        cellIndex(0),
-        blendType(0),
-        numBehavior(0) {
-  }
+  int16_t arrayIndex = 0;
+  int16_t parentIndex = 0;
+  int16_t type = 0;
+  int16_t cellIndex = 0;
+  int16_t blendType = 0;
+  int16_t numBehavior = 0;
+  std::vector<ss::ssfb::EffectNodeBehaviorUnion> Behavior{};
 };
 
-inline bool operator==(const EffectNodeT &lhs, const EffectNodeT &rhs) {
-  return
-      (lhs.arrayIndex == rhs.arrayIndex) &&
-      (lhs.parentIndex == rhs.parentIndex) &&
-      (lhs.type == rhs.type) &&
-      (lhs.cellIndex == rhs.cellIndex) &&
-      (lhs.blendType == rhs.blendType) &&
-      (lhs.numBehavior == rhs.numBehavior) &&
-      (lhs.Behavior == rhs.Behavior);
-}
-
-inline bool operator!=(const EffectNodeT &lhs, const EffectNodeT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct EffectNode FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef EffectNodeT NativeTableType;
+  typedef EffectNodeBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_ARRAYINDEX = 4,
     VT_PARENTINDEX = 6,
@@ -1842,20 +1971,20 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t numBehavior() const {
     return GetField<int16_t>(VT_NUMBEHAVIOR, 0);
   }
-  const flatbuffers::Vector<uint8_t> *Behavior_type() const {
-    return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_BEHAVIOR_TYPE);
+  const ::flatbuffers::Vector<uint8_t> *Behavior_type() const {
+    return GetPointer<const ::flatbuffers::Vector<uint8_t> *>(VT_BEHAVIOR_TYPE);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<void>> *Behavior() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<void>> *>(VT_BEHAVIOR);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *Behavior() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *>(VT_BEHAVIOR);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int16_t>(verifier, VT_ARRAYINDEX) &&
-           VerifyField<int16_t>(verifier, VT_PARENTINDEX) &&
-           VerifyField<int16_t>(verifier, VT_TYPE) &&
-           VerifyField<int16_t>(verifier, VT_CELLINDEX) &&
-           VerifyField<int16_t>(verifier, VT_BLENDTYPE) &&
-           VerifyField<int16_t>(verifier, VT_NUMBEHAVIOR) &&
+           VerifyField<int16_t>(verifier, VT_ARRAYINDEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_PARENTINDEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_TYPE, 2) &&
+           VerifyField<int16_t>(verifier, VT_CELLINDEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_BLENDTYPE, 2) &&
+           VerifyField<int16_t>(verifier, VT_NUMBEHAVIOR, 2) &&
            VerifyOffset(verifier, VT_BEHAVIOR_TYPE) &&
            verifier.VerifyVector(Behavior_type()) &&
            VerifyOffset(verifier, VT_BEHAVIOR) &&
@@ -1863,14 +1992,15 @@ struct EffectNode FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyEffectNodeBehaviorVector(verifier, Behavior(), Behavior_type()) &&
            verifier.EndTable();
   }
-  EffectNodeT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(EffectNodeT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<EffectNode> Pack(flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  EffectNodeT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(EffectNodeT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<EffectNode> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct EffectNodeBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  typedef EffectNode Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_arrayIndex(int16_t arrayIndex) {
     fbb_.AddElement<int16_t>(EffectNode::VT_ARRAYINDEX, arrayIndex, 0);
   }
@@ -1889,34 +2019,33 @@ struct EffectNodeBuilder {
   void add_numBehavior(int16_t numBehavior) {
     fbb_.AddElement<int16_t>(EffectNode::VT_NUMBEHAVIOR, numBehavior, 0);
   }
-  void add_Behavior_type(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> Behavior_type) {
+  void add_Behavior_type(::flatbuffers::Offset<::flatbuffers::Vector<uint8_t>> Behavior_type) {
     fbb_.AddOffset(EffectNode::VT_BEHAVIOR_TYPE, Behavior_type);
   }
-  void add_Behavior(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> Behavior) {
+  void add_Behavior(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<void>>> Behavior) {
     fbb_.AddOffset(EffectNode::VT_BEHAVIOR, Behavior);
   }
-  explicit EffectNodeBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit EffectNodeBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  EffectNodeBuilder &operator=(const EffectNodeBuilder &);
-  flatbuffers::Offset<EffectNode> Finish() {
+  ::flatbuffers::Offset<EffectNode> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectNode>(end);
+    auto o = ::flatbuffers::Offset<EffectNode>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<EffectNode> CreateEffectNode(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<EffectNode> CreateEffectNode(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int16_t arrayIndex = 0,
     int16_t parentIndex = 0,
     int16_t type = 0,
     int16_t cellIndex = 0,
     int16_t blendType = 0,
     int16_t numBehavior = 0,
-    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> Behavior_type = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> Behavior = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<uint8_t>> Behavior_type = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<void>>> Behavior = 0) {
   EffectNodeBuilder builder_(_fbb);
   builder_.add_Behavior(Behavior);
   builder_.add_Behavior_type(Behavior_type);
@@ -1929,8 +2058,8 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNode(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<EffectNode> CreateEffectNodeDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<EffectNode> CreateEffectNodeDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int16_t arrayIndex = 0,
     int16_t parentIndex = 0,
     int16_t type = 0,
@@ -1938,9 +2067,9 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNodeDirect(
     int16_t blendType = 0,
     int16_t numBehavior = 0,
     const std::vector<uint8_t> *Behavior_type = nullptr,
-    const std::vector<flatbuffers::Offset<void>> *Behavior = nullptr) {
+    const std::vector<::flatbuffers::Offset<void>> *Behavior = nullptr) {
   auto Behavior_type__ = Behavior_type ? _fbb.CreateVector<uint8_t>(*Behavior_type) : 0;
-  auto Behavior__ = Behavior ? _fbb.CreateVector<flatbuffers::Offset<void>>(*Behavior) : 0;
+  auto Behavior__ = Behavior ? _fbb.CreateVector<::flatbuffers::Offset<void>>(*Behavior) : 0;
   return ss::ssfb::CreateEffectNode(
       _fbb,
       arrayIndex,
@@ -1953,47 +2082,27 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNodeDirect(
       Behavior__);
 }
 
-flatbuffers::Offset<EffectNode> CreateEffectNode(flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<EffectNode> CreateEffectNode(::flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct EffectFileT : public flatbuffers::NativeTable {
+struct EffectFileT : public ::flatbuffers::NativeTable {
   typedef EffectFile TableType;
-  std::string name;
-  int16_t fps;
-  int16_t isLockRandSeed;
-  int16_t lockRandSeed;
-  int16_t layoutScaleX;
-  int16_t layoutScaleY;
-  int16_t numNodeList;
-  std::vector<std::unique_ptr<EffectNodeT>> effectNode;
-  EffectFileT()
-      : fps(0),
-        isLockRandSeed(0),
-        lockRandSeed(0),
-        layoutScaleX(0),
-        layoutScaleY(0),
-        numNodeList(0) {
-  }
+  std::string name{};
+  int16_t fps = 0;
+  int16_t isLockRandSeed = 0;
+  int16_t lockRandSeed = 0;
+  int16_t layoutScaleX = 0;
+  int16_t layoutScaleY = 0;
+  int16_t numNodeList = 0;
+  std::vector<std::unique_ptr<ss::ssfb::EffectNodeT>> effectNode{};
+  EffectFileT() = default;
+  EffectFileT(const EffectFileT &o);
+  EffectFileT(EffectFileT&&) FLATBUFFERS_NOEXCEPT = default;
+  EffectFileT &operator=(EffectFileT o) FLATBUFFERS_NOEXCEPT;
 };
 
-inline bool operator==(const EffectFileT &lhs, const EffectFileT &rhs) {
-  return
-      (lhs.name == rhs.name) &&
-      (lhs.fps == rhs.fps) &&
-      (lhs.isLockRandSeed == rhs.isLockRandSeed) &&
-      (lhs.lockRandSeed == rhs.lockRandSeed) &&
-      (lhs.layoutScaleX == rhs.layoutScaleX) &&
-      (lhs.layoutScaleY == rhs.layoutScaleY) &&
-      (lhs.numNodeList == rhs.numNodeList) &&
-      (lhs.effectNode == rhs.effectNode);
-}
-
-inline bool operator!=(const EffectFileT &lhs, const EffectFileT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct EffectFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct EffectFile FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef EffectFileT NativeTableType;
+  typedef EffectFileBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_FPS = 6,
@@ -2004,8 +2113,8 @@ struct EffectFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_NUMNODELIST = 16,
     VT_EFFECTNODE = 18
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
   int16_t fps() const {
     return GetField<int16_t>(VT_FPS, 0);
@@ -2025,33 +2134,34 @@ struct EffectFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t numNodeList() const {
     return GetField<int16_t>(VT_NUMNODELIST, 0);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<EffectNode>> *effectNode() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<EffectNode>> *>(VT_EFFECTNODE);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::EffectNode>> *effectNode() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::EffectNode>> *>(VT_EFFECTNODE);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<int16_t>(verifier, VT_FPS) &&
-           VerifyField<int16_t>(verifier, VT_ISLOCKRANDSEED) &&
-           VerifyField<int16_t>(verifier, VT_LOCKRANDSEED) &&
-           VerifyField<int16_t>(verifier, VT_LAYOUTSCALEX) &&
-           VerifyField<int16_t>(verifier, VT_LAYOUTSCALEY) &&
-           VerifyField<int16_t>(verifier, VT_NUMNODELIST) &&
+           VerifyField<int16_t>(verifier, VT_FPS, 2) &&
+           VerifyField<int16_t>(verifier, VT_ISLOCKRANDSEED, 2) &&
+           VerifyField<int16_t>(verifier, VT_LOCKRANDSEED, 2) &&
+           VerifyField<int16_t>(verifier, VT_LAYOUTSCALEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_LAYOUTSCALEY, 2) &&
+           VerifyField<int16_t>(verifier, VT_NUMNODELIST, 2) &&
            VerifyOffset(verifier, VT_EFFECTNODE) &&
            verifier.VerifyVector(effectNode()) &&
            verifier.VerifyVectorOfTables(effectNode()) &&
            verifier.EndTable();
   }
-  EffectFileT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(EffectFileT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<EffectFile> Pack(flatbuffers::FlatBufferBuilder &_fbb, const EffectFileT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  EffectFileT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(EffectFileT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<EffectFile> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const EffectFileT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct EffectFileBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  typedef EffectFile Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(EffectFile::VT_NAME, name);
   }
   void add_fps(int16_t fps) {
@@ -2072,31 +2182,30 @@ struct EffectFileBuilder {
   void add_numNodeList(int16_t numNodeList) {
     fbb_.AddElement<int16_t>(EffectFile::VT_NUMNODELIST, numNodeList, 0);
   }
-  void add_effectNode(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<EffectNode>>> effectNode) {
+  void add_effectNode(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::EffectNode>>> effectNode) {
     fbb_.AddOffset(EffectFile::VT_EFFECTNODE, effectNode);
   }
-  explicit EffectFileBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit EffectFileBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  EffectFileBuilder &operator=(const EffectFileBuilder &);
-  flatbuffers::Offset<EffectFile> Finish() {
+  ::flatbuffers::Offset<EffectFile> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EffectFile>(end);
+    auto o = ::flatbuffers::Offset<EffectFile>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<EffectFile> CreateEffectFile(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
+inline ::flatbuffers::Offset<EffectFile> CreateEffectFile(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
     int16_t fps = 0,
     int16_t isLockRandSeed = 0,
     int16_t lockRandSeed = 0,
     int16_t layoutScaleX = 0,
     int16_t layoutScaleY = 0,
     int16_t numNodeList = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<EffectNode>>> effectNode = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::EffectNode>>> effectNode = 0) {
   EffectFileBuilder builder_(_fbb);
   builder_.add_effectNode(effectNode);
   builder_.add_name(name);
@@ -2109,8 +2218,8 @@ inline flatbuffers::Offset<EffectFile> CreateEffectFile(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<EffectFile> CreateEffectFileDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<EffectFile> CreateEffectFileDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
     int16_t fps = 0,
     int16_t isLockRandSeed = 0,
@@ -2118,9 +2227,9 @@ inline flatbuffers::Offset<EffectFile> CreateEffectFileDirect(
     int16_t layoutScaleX = 0,
     int16_t layoutScaleY = 0,
     int16_t numNodeList = 0,
-    const std::vector<flatbuffers::Offset<EffectNode>> *effectNode = nullptr) {
+    const std::vector<::flatbuffers::Offset<ss::ssfb::EffectNode>> *effectNode = nullptr) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
-  auto effectNode__ = effectNode ? _fbb.CreateVector<flatbuffers::Offset<EffectNode>>(*effectNode) : 0;
+  auto effectNode__ = effectNode ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::EffectNode>>(*effectNode) : 0;
   return ss::ssfb::CreateEffectFile(
       _fbb,
       name__,
@@ -2133,38 +2242,20 @@ inline flatbuffers::Offset<EffectFile> CreateEffectFileDirect(
       effectNode__);
 }
 
-flatbuffers::Offset<EffectFile> CreateEffectFile(flatbuffers::FlatBufferBuilder &_fbb, const EffectFileT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<EffectFile> CreateEffectFile(::flatbuffers::FlatBufferBuilder &_fbb, const EffectFileT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct CellMapT : public flatbuffers::NativeTable {
+struct CellMapT : public ::flatbuffers::NativeTable {
   typedef CellMap TableType;
-  std::string name;
-  std::string imagePath;
-  int16_t index;
-  int16_t wrapmode;
-  int16_t filtermode;
-  CellMapT()
-      : index(0),
-        wrapmode(0),
-        filtermode(0) {
-  }
+  std::string name{};
+  std::string imagePath{};
+  int16_t index = 0;
+  int16_t wrapmode = 0;
+  int16_t filtermode = 0;
 };
 
-inline bool operator==(const CellMapT &lhs, const CellMapT &rhs) {
-  return
-      (lhs.name == rhs.name) &&
-      (lhs.imagePath == rhs.imagePath) &&
-      (lhs.index == rhs.index) &&
-      (lhs.wrapmode == rhs.wrapmode) &&
-      (lhs.filtermode == rhs.filtermode);
-}
-
-inline bool operator!=(const CellMapT &lhs, const CellMapT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct CellMap FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct CellMap FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef CellMapT NativeTableType;
+  typedef CellMapBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_IMAGEPATH = 6,
@@ -2172,11 +2263,11 @@ struct CellMap FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_WRAPMODE = 10,
     VT_FILTERMODE = 12
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  const flatbuffers::String *imagePath() const {
-    return GetPointer<const flatbuffers::String *>(VT_IMAGEPATH);
+  const ::flatbuffers::String *imagePath() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_IMAGEPATH);
   }
   int16_t index() const {
     return GetField<int16_t>(VT_INDEX, 0);
@@ -2187,29 +2278,30 @@ struct CellMap FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t filtermode() const {
     return GetField<int16_t>(VT_FILTERMODE, 0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_IMAGEPATH) &&
            verifier.VerifyString(imagePath()) &&
-           VerifyField<int16_t>(verifier, VT_INDEX) &&
-           VerifyField<int16_t>(verifier, VT_WRAPMODE) &&
-           VerifyField<int16_t>(verifier, VT_FILTERMODE) &&
+           VerifyField<int16_t>(verifier, VT_INDEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_WRAPMODE, 2) &&
+           VerifyField<int16_t>(verifier, VT_FILTERMODE, 2) &&
            verifier.EndTable();
   }
-  CellMapT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(CellMapT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<CellMap> Pack(flatbuffers::FlatBufferBuilder &_fbb, const CellMapT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  CellMapT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(CellMapT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<CellMap> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const CellMapT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct CellMapBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  typedef CellMap Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(CellMap::VT_NAME, name);
   }
-  void add_imagePath(flatbuffers::Offset<flatbuffers::String> imagePath) {
+  void add_imagePath(::flatbuffers::Offset<::flatbuffers::String> imagePath) {
     fbb_.AddOffset(CellMap::VT_IMAGEPATH, imagePath);
   }
   void add_index(int16_t index) {
@@ -2221,22 +2313,21 @@ struct CellMapBuilder {
   void add_filtermode(int16_t filtermode) {
     fbb_.AddElement<int16_t>(CellMap::VT_FILTERMODE, filtermode, 0);
   }
-  explicit CellMapBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit CellMapBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  CellMapBuilder &operator=(const CellMapBuilder &);
-  flatbuffers::Offset<CellMap> Finish() {
+  ::flatbuffers::Offset<CellMap> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<CellMap>(end);
+    auto o = ::flatbuffers::Offset<CellMap>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<CellMap> CreateCellMap(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
-    flatbuffers::Offset<flatbuffers::String> imagePath = 0,
+inline ::flatbuffers::Offset<CellMap> CreateCellMap(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> imagePath = 0,
     int16_t index = 0,
     int16_t wrapmode = 0,
     int16_t filtermode = 0) {
@@ -2249,8 +2340,8 @@ inline flatbuffers::Offset<CellMap> CreateCellMap(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<CellMap> CreateCellMapDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<CellMap> CreateCellMapDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
     const char *imagePath = nullptr,
     int16_t index = 0,
@@ -2267,62 +2358,32 @@ inline flatbuffers::Offset<CellMap> CreateCellMapDirect(
       filtermode);
 }
 
-flatbuffers::Offset<CellMap> CreateCellMap(flatbuffers::FlatBufferBuilder &_fbb, const CellMapT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<CellMap> CreateCellMap(::flatbuffers::FlatBufferBuilder &_fbb, const CellMapT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct CellT : public flatbuffers::NativeTable {
+struct CellT : public ::flatbuffers::NativeTable {
   typedef Cell TableType;
-  std::string name;
-  std::unique_ptr<CellMapT> cellMap;
-  int16_t indexInCellMap;
-  int16_t x;
-  int16_t y;
-  int16_t width;
-  int16_t height;
-  float pivot_x;
-  float pivot_y;
-  float u1;
-  float v1;
-  float u2;
-  float v2;
-  CellT()
-      : indexInCellMap(0),
-        x(0),
-        y(0),
-        width(0),
-        height(0),
-        pivot_x(0.0f),
-        pivot_y(0.0f),
-        u1(0.0f),
-        v1(0.0f),
-        u2(0.0f),
-        v2(0.0f) {
-  }
+  std::string name{};
+  std::unique_ptr<ss::ssfb::CellMapT> cellMap{};
+  int16_t indexInCellMap = 0;
+  int16_t x = 0;
+  int16_t y = 0;
+  int16_t width = 0;
+  int16_t height = 0;
+  float pivot_x = 0.0f;
+  float pivot_y = 0.0f;
+  float u1 = 0.0f;
+  float v1 = 0.0f;
+  float u2 = 0.0f;
+  float v2 = 0.0f;
+  CellT() = default;
+  CellT(const CellT &o);
+  CellT(CellT&&) FLATBUFFERS_NOEXCEPT = default;
+  CellT &operator=(CellT o) FLATBUFFERS_NOEXCEPT;
 };
 
-inline bool operator==(const CellT &lhs, const CellT &rhs) {
-  return
-      (lhs.name == rhs.name) &&
-      (lhs.cellMap == rhs.cellMap) &&
-      (lhs.indexInCellMap == rhs.indexInCellMap) &&
-      (lhs.x == rhs.x) &&
-      (lhs.y == rhs.y) &&
-      (lhs.width == rhs.width) &&
-      (lhs.height == rhs.height) &&
-      (lhs.pivot_x == rhs.pivot_x) &&
-      (lhs.pivot_y == rhs.pivot_y) &&
-      (lhs.u1 == rhs.u1) &&
-      (lhs.v1 == rhs.v1) &&
-      (lhs.u2 == rhs.u2) &&
-      (lhs.v2 == rhs.v2);
-}
-
-inline bool operator!=(const CellT &lhs, const CellT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct Cell FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Cell FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef CellT NativeTableType;
+  typedef CellBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_CELLMAP = 6,
@@ -2338,11 +2399,11 @@ struct Cell FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_U2 = 26,
     VT_V2 = 28
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  const CellMap *cellMap() const {
-    return GetPointer<const CellMap *>(VT_CELLMAP);
+  const ss::ssfb::CellMap *cellMap() const {
+    return GetPointer<const ss::ssfb::CellMap *>(VT_CELLMAP);
   }
   int16_t indexInCellMap() const {
     return GetField<int16_t>(VT_INDEXINCELLMAP, 0);
@@ -2377,37 +2438,38 @@ struct Cell FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   float v2() const {
     return GetField<float>(VT_V2, 0.0f);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_CELLMAP) &&
            verifier.VerifyTable(cellMap()) &&
-           VerifyField<int16_t>(verifier, VT_INDEXINCELLMAP) &&
-           VerifyField<int16_t>(verifier, VT_X) &&
-           VerifyField<int16_t>(verifier, VT_Y) &&
-           VerifyField<int16_t>(verifier, VT_WIDTH) &&
-           VerifyField<int16_t>(verifier, VT_HEIGHT) &&
-           VerifyField<float>(verifier, VT_PIVOT_X) &&
-           VerifyField<float>(verifier, VT_PIVOT_Y) &&
-           VerifyField<float>(verifier, VT_U1) &&
-           VerifyField<float>(verifier, VT_V1) &&
-           VerifyField<float>(verifier, VT_U2) &&
-           VerifyField<float>(verifier, VT_V2) &&
+           VerifyField<int16_t>(verifier, VT_INDEXINCELLMAP, 2) &&
+           VerifyField<int16_t>(verifier, VT_X, 2) &&
+           VerifyField<int16_t>(verifier, VT_Y, 2) &&
+           VerifyField<int16_t>(verifier, VT_WIDTH, 2) &&
+           VerifyField<int16_t>(verifier, VT_HEIGHT, 2) &&
+           VerifyField<float>(verifier, VT_PIVOT_X, 4) &&
+           VerifyField<float>(verifier, VT_PIVOT_Y, 4) &&
+           VerifyField<float>(verifier, VT_U1, 4) &&
+           VerifyField<float>(verifier, VT_V1, 4) &&
+           VerifyField<float>(verifier, VT_U2, 4) &&
+           VerifyField<float>(verifier, VT_V2, 4) &&
            verifier.EndTable();
   }
-  CellT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(CellT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<Cell> Pack(flatbuffers::FlatBufferBuilder &_fbb, const CellT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  CellT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(CellT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<Cell> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const CellT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct CellBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  typedef Cell Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(Cell::VT_NAME, name);
   }
-  void add_cellMap(flatbuffers::Offset<CellMap> cellMap) {
+  void add_cellMap(::flatbuffers::Offset<ss::ssfb::CellMap> cellMap) {
     fbb_.AddOffset(Cell::VT_CELLMAP, cellMap);
   }
   void add_indexInCellMap(int16_t indexInCellMap) {
@@ -2443,22 +2505,21 @@ struct CellBuilder {
   void add_v2(float v2) {
     fbb_.AddElement<float>(Cell::VT_V2, v2, 0.0f);
   }
-  explicit CellBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit CellBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  CellBuilder &operator=(const CellBuilder &);
-  flatbuffers::Offset<Cell> Finish() {
+  ::flatbuffers::Offset<Cell> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Cell>(end);
+    auto o = ::flatbuffers::Offset<Cell>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<Cell> CreateCell(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
-    flatbuffers::Offset<CellMap> cellMap = 0,
+inline ::flatbuffers::Offset<Cell> CreateCell(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
+    ::flatbuffers::Offset<ss::ssfb::CellMap> cellMap = 0,
     int16_t indexInCellMap = 0,
     int16_t x = 0,
     int16_t y = 0,
@@ -2487,10 +2548,10 @@ inline flatbuffers::Offset<Cell> CreateCell(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Cell> CreateCellDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Cell> CreateCellDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
-    flatbuffers::Offset<CellMap> cellMap = 0,
+    ::flatbuffers::Offset<ss::ssfb::CellMap> cellMap = 0,
     int16_t indexInCellMap = 0,
     int16_t x = 0,
     int16_t y = 0,
@@ -2520,72 +2581,61 @@ inline flatbuffers::Offset<Cell> CreateCellDirect(
       v2);
 }
 
-flatbuffers::Offset<Cell> CreateCell(flatbuffers::FlatBufferBuilder &_fbb, const CellT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<Cell> CreateCell(::flatbuffers::FlatBufferBuilder &_fbb, const CellT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct meshDataUVT : public flatbuffers::NativeTable {
+struct meshDataUVT : public ::flatbuffers::NativeTable {
   typedef meshDataUV TableType;
-  std::vector<float> uv;
-  meshDataUVT() {
-  }
+  std::vector<float> uv{};
 };
 
-inline bool operator==(const meshDataUVT &lhs, const meshDataUVT &rhs) {
-  return
-      (lhs.uv == rhs.uv);
-}
-
-inline bool operator!=(const meshDataUVT &lhs, const meshDataUVT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct meshDataUV FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct meshDataUV FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef meshDataUVT NativeTableType;
+  typedef meshDataUVBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_UV = 4
   };
-  const flatbuffers::Vector<float> *uv() const {
-    return GetPointer<const flatbuffers::Vector<float> *>(VT_UV);
+  const ::flatbuffers::Vector<float> *uv() const {
+    return GetPointer<const ::flatbuffers::Vector<float> *>(VT_UV);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_UV) &&
            verifier.VerifyVector(uv()) &&
            verifier.EndTable();
   }
-  meshDataUVT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(meshDataUVT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<meshDataUV> Pack(flatbuffers::FlatBufferBuilder &_fbb, const meshDataUVT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  meshDataUVT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(meshDataUVT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<meshDataUV> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const meshDataUVT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct meshDataUVBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_uv(flatbuffers::Offset<flatbuffers::Vector<float>> uv) {
+  typedef meshDataUV Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_uv(::flatbuffers::Offset<::flatbuffers::Vector<float>> uv) {
     fbb_.AddOffset(meshDataUV::VT_UV, uv);
   }
-  explicit meshDataUVBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit meshDataUVBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  meshDataUVBuilder &operator=(const meshDataUVBuilder &);
-  flatbuffers::Offset<meshDataUV> Finish() {
+  ::flatbuffers::Offset<meshDataUV> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<meshDataUV>(end);
+    auto o = ::flatbuffers::Offset<meshDataUV>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<meshDataUV> CreatemeshDataUV(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<float>> uv = 0) {
+inline ::flatbuffers::Offset<meshDataUV> CreatemeshDataUV(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::Vector<float>> uv = 0) {
   meshDataUVBuilder builder_(_fbb);
   builder_.add_uv(uv);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<meshDataUV> CreatemeshDataUVDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<meshDataUV> CreatemeshDataUVDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const std::vector<float> *uv = nullptr) {
   auto uv__ = uv ? _fbb.CreateVector<float>(*uv) : 0;
   return ss::ssfb::CreatemeshDataUV(
@@ -2593,72 +2643,61 @@ inline flatbuffers::Offset<meshDataUV> CreatemeshDataUVDirect(
       uv__);
 }
 
-flatbuffers::Offset<meshDataUV> CreatemeshDataUV(flatbuffers::FlatBufferBuilder &_fbb, const meshDataUVT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<meshDataUV> CreatemeshDataUV(::flatbuffers::FlatBufferBuilder &_fbb, const meshDataUVT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct meshDataIndicesT : public flatbuffers::NativeTable {
+struct meshDataIndicesT : public ::flatbuffers::NativeTable {
   typedef meshDataIndices TableType;
-  std::vector<float> indices;
-  meshDataIndicesT() {
-  }
+  std::vector<float> indices{};
 };
 
-inline bool operator==(const meshDataIndicesT &lhs, const meshDataIndicesT &rhs) {
-  return
-      (lhs.indices == rhs.indices);
-}
-
-inline bool operator!=(const meshDataIndicesT &lhs, const meshDataIndicesT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct meshDataIndices FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct meshDataIndices FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef meshDataIndicesT NativeTableType;
+  typedef meshDataIndicesBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_INDICES = 4
   };
-  const flatbuffers::Vector<float> *indices() const {
-    return GetPointer<const flatbuffers::Vector<float> *>(VT_INDICES);
+  const ::flatbuffers::Vector<float> *indices() const {
+    return GetPointer<const ::flatbuffers::Vector<float> *>(VT_INDICES);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_INDICES) &&
            verifier.VerifyVector(indices()) &&
            verifier.EndTable();
   }
-  meshDataIndicesT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(meshDataIndicesT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<meshDataIndices> Pack(flatbuffers::FlatBufferBuilder &_fbb, const meshDataIndicesT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  meshDataIndicesT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(meshDataIndicesT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<meshDataIndices> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const meshDataIndicesT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct meshDataIndicesBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_indices(flatbuffers::Offset<flatbuffers::Vector<float>> indices) {
+  typedef meshDataIndices Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_indices(::flatbuffers::Offset<::flatbuffers::Vector<float>> indices) {
     fbb_.AddOffset(meshDataIndices::VT_INDICES, indices);
   }
-  explicit meshDataIndicesBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit meshDataIndicesBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  meshDataIndicesBuilder &operator=(const meshDataIndicesBuilder &);
-  flatbuffers::Offset<meshDataIndices> Finish() {
+  ::flatbuffers::Offset<meshDataIndices> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<meshDataIndices>(end);
+    auto o = ::flatbuffers::Offset<meshDataIndices>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<meshDataIndices> CreatemeshDataIndices(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<float>> indices = 0) {
+inline ::flatbuffers::Offset<meshDataIndices> CreatemeshDataIndices(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::Vector<float>> indices = 0) {
   meshDataIndicesBuilder builder_(_fbb);
   builder_.add_indices(indices);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<meshDataIndices> CreatemeshDataIndicesDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<meshDataIndices> CreatemeshDataIndicesDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const std::vector<float> *indices = nullptr) {
   auto indices__ = indices ? _fbb.CreateVector<float>(*indices) : 0;
   return ss::ssfb::CreatemeshDataIndices(
@@ -2666,36 +2705,19 @@ inline flatbuffers::Offset<meshDataIndices> CreatemeshDataIndicesDirect(
       indices__);
 }
 
-flatbuffers::Offset<meshDataIndices> CreatemeshDataIndices(flatbuffers::FlatBufferBuilder &_fbb, const meshDataIndicesT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<meshDataIndices> CreatemeshDataIndices(::flatbuffers::FlatBufferBuilder &_fbb, const meshDataIndicesT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct partStateT : public flatbuffers::NativeTable {
+struct partStateT : public ::flatbuffers::NativeTable {
   typedef partState TableType;
-  int16_t index;
-  uint32_t flag1;
-  uint32_t flag2;
-  std::vector<uint32_t> data;
-  partStateT()
-      : index(0),
-        flag1(0),
-        flag2(0) {
-  }
+  int16_t index = 0;
+  uint32_t flag1 = 0;
+  uint32_t flag2 = 0;
+  std::vector<uint32_t> data{};
 };
 
-inline bool operator==(const partStateT &lhs, const partStateT &rhs) {
-  return
-      (lhs.index == rhs.index) &&
-      (lhs.flag1 == rhs.flag1) &&
-      (lhs.flag2 == rhs.flag2) &&
-      (lhs.data == rhs.data);
-}
-
-inline bool operator!=(const partStateT &lhs, const partStateT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct partState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct partState FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef partStateT NativeTableType;
+  typedef partStateBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_INDEX = 4,
     VT_FLAG1 = 6,
@@ -2711,26 +2733,27 @@ struct partState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t flag2() const {
     return GetField<uint32_t>(VT_FLAG2, 0);
   }
-  const flatbuffers::Vector<uint32_t> *data() const {
-    return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_DATA);
+  const ::flatbuffers::Vector<uint32_t> *data() const {
+    return GetPointer<const ::flatbuffers::Vector<uint32_t> *>(VT_DATA);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int16_t>(verifier, VT_INDEX) &&
-           VerifyField<uint32_t>(verifier, VT_FLAG1) &&
-           VerifyField<uint32_t>(verifier, VT_FLAG2) &&
+           VerifyField<int16_t>(verifier, VT_INDEX, 2) &&
+           VerifyField<uint32_t>(verifier, VT_FLAG1, 4) &&
+           VerifyField<uint32_t>(verifier, VT_FLAG2, 4) &&
            VerifyOffset(verifier, VT_DATA) &&
            verifier.VerifyVector(data()) &&
            verifier.EndTable();
   }
-  partStateT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(partStateT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<partState> Pack(flatbuffers::FlatBufferBuilder &_fbb, const partStateT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  partStateT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(partStateT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<partState> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const partStateT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct partStateBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  typedef partState Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_index(int16_t index) {
     fbb_.AddElement<int16_t>(partState::VT_INDEX, index, 0);
   }
@@ -2740,27 +2763,26 @@ struct partStateBuilder {
   void add_flag2(uint32_t flag2) {
     fbb_.AddElement<uint32_t>(partState::VT_FLAG2, flag2, 0);
   }
-  void add_data(flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data) {
+  void add_data(::flatbuffers::Offset<::flatbuffers::Vector<uint32_t>> data) {
     fbb_.AddOffset(partState::VT_DATA, data);
   }
-  explicit partStateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit partStateBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  partStateBuilder &operator=(const partStateBuilder &);
-  flatbuffers::Offset<partState> Finish() {
+  ::flatbuffers::Offset<partState> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<partState>(end);
+    auto o = ::flatbuffers::Offset<partState>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<partState> CreatepartState(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<partState> CreatepartState(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int16_t index = 0,
     uint32_t flag1 = 0,
     uint32_t flag2 = 0,
-    flatbuffers::Offset<flatbuffers::Vector<uint32_t>> data = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<uint32_t>> data = 0) {
   partStateBuilder builder_(_fbb);
   builder_.add_data(data);
   builder_.add_flag2(flag2);
@@ -2769,8 +2791,8 @@ inline flatbuffers::Offset<partState> CreatepartState(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<partState> CreatepartStateDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<partState> CreatepartStateDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int16_t index = 0,
     uint32_t flag1 = 0,
     uint32_t flag2 = 0,
@@ -2784,104 +2806,84 @@ inline flatbuffers::Offset<partState> CreatepartStateDirect(
       data__);
 }
 
-flatbuffers::Offset<partState> CreatepartState(flatbuffers::FlatBufferBuilder &_fbb, const partStateT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<partState> CreatepartState(::flatbuffers::FlatBufferBuilder &_fbb, const partStateT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct frameDataIndexT : public flatbuffers::NativeTable {
+struct frameDataIndexT : public ::flatbuffers::NativeTable {
   typedef frameDataIndex TableType;
-  std::vector<std::unique_ptr<partStateT>> states;
-  frameDataIndexT() {
-  }
+  std::vector<std::unique_ptr<ss::ssfb::partStateT>> states{};
+  frameDataIndexT() = default;
+  frameDataIndexT(const frameDataIndexT &o);
+  frameDataIndexT(frameDataIndexT&&) FLATBUFFERS_NOEXCEPT = default;
+  frameDataIndexT &operator=(frameDataIndexT o) FLATBUFFERS_NOEXCEPT;
 };
 
-inline bool operator==(const frameDataIndexT &lhs, const frameDataIndexT &rhs) {
-  return
-      (lhs.states == rhs.states);
-}
-
-inline bool operator!=(const frameDataIndexT &lhs, const frameDataIndexT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct frameDataIndex FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct frameDataIndex FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef frameDataIndexT NativeTableType;
+  typedef frameDataIndexBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_STATES = 4
   };
-  const flatbuffers::Vector<flatbuffers::Offset<partState>> *states() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<partState>> *>(VT_STATES);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::partState>> *states() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::partState>> *>(VT_STATES);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_STATES) &&
            verifier.VerifyVector(states()) &&
            verifier.VerifyVectorOfTables(states()) &&
            verifier.EndTable();
   }
-  frameDataIndexT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(frameDataIndexT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<frameDataIndex> Pack(flatbuffers::FlatBufferBuilder &_fbb, const frameDataIndexT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  frameDataIndexT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(frameDataIndexT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<frameDataIndex> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const frameDataIndexT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct frameDataIndexBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_states(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<partState>>> states) {
+  typedef frameDataIndex Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_states(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::partState>>> states) {
     fbb_.AddOffset(frameDataIndex::VT_STATES, states);
   }
-  explicit frameDataIndexBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit frameDataIndexBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  frameDataIndexBuilder &operator=(const frameDataIndexBuilder &);
-  flatbuffers::Offset<frameDataIndex> Finish() {
+  ::flatbuffers::Offset<frameDataIndex> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<frameDataIndex>(end);
+    auto o = ::flatbuffers::Offset<frameDataIndex>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<partState>>> states = 0) {
+inline ::flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::partState>>> states = 0) {
   frameDataIndexBuilder builder_(_fbb);
   builder_.add_states(states);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndexDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<flatbuffers::Offset<partState>> *states = nullptr) {
-  auto states__ = states ? _fbb.CreateVector<flatbuffers::Offset<partState>>(*states) : 0;
+inline ::flatbuffers::Offset<frameDataIndex> CreateframeDataIndexDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    const std::vector<::flatbuffers::Offset<ss::ssfb::partState>> *states = nullptr) {
+  auto states__ = states ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::partState>>(*states) : 0;
   return ss::ssfb::CreateframeDataIndex(
       _fbb,
       states__);
 }
 
-flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(flatbuffers::FlatBufferBuilder &_fbb, const frameDataIndexT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(::flatbuffers::FlatBufferBuilder &_fbb, const frameDataIndexT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct userDataStringT : public flatbuffers::NativeTable {
+struct userDataStringT : public ::flatbuffers::NativeTable {
   typedef userDataString TableType;
-  int32_t length;
-  std::string data;
-  userDataStringT()
-      : length(0) {
-  }
+  int32_t length = 0;
+  std::string data{};
 };
 
-inline bool operator==(const userDataStringT &lhs, const userDataStringT &rhs) {
-  return
-      (lhs.length == rhs.length) &&
-      (lhs.data == rhs.data);
-}
-
-inline bool operator!=(const userDataStringT &lhs, const userDataStringT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct userDataString FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct userDataString FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef userDataStringT NativeTableType;
+  typedef userDataStringBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_LENGTH = 4,
     VT_DATA = 6
@@ -2889,54 +2891,54 @@ struct userDataString FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int32_t length() const {
     return GetField<int32_t>(VT_LENGTH, 0);
   }
-  const flatbuffers::String *data() const {
-    return GetPointer<const flatbuffers::String *>(VT_DATA);
+  const ::flatbuffers::String *data() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_DATA);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_LENGTH) &&
+           VerifyField<int32_t>(verifier, VT_LENGTH, 4) &&
            VerifyOffset(verifier, VT_DATA) &&
            verifier.VerifyString(data()) &&
            verifier.EndTable();
   }
-  userDataStringT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(userDataStringT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<userDataString> Pack(flatbuffers::FlatBufferBuilder &_fbb, const userDataStringT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  userDataStringT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(userDataStringT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<userDataString> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const userDataStringT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct userDataStringBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  typedef userDataString Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_length(int32_t length) {
     fbb_.AddElement<int32_t>(userDataString::VT_LENGTH, length, 0);
   }
-  void add_data(flatbuffers::Offset<flatbuffers::String> data) {
+  void add_data(::flatbuffers::Offset<::flatbuffers::String> data) {
     fbb_.AddOffset(userDataString::VT_DATA, data);
   }
-  explicit userDataStringBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit userDataStringBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  userDataStringBuilder &operator=(const userDataStringBuilder &);
-  flatbuffers::Offset<userDataString> Finish() {
+  ::flatbuffers::Offset<userDataString> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<userDataString>(end);
+    auto o = ::flatbuffers::Offset<userDataString>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<userDataString> CreateuserDataString(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<userDataString> CreateuserDataString(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int32_t length = 0,
-    flatbuffers::Offset<flatbuffers::String> data = 0) {
+    ::flatbuffers::Offset<::flatbuffers::String> data = 0) {
   userDataStringBuilder builder_(_fbb);
   builder_.add_data(data);
   builder_.add_length(length);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<userDataString> CreateuserDataStringDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<userDataString> CreateuserDataStringDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int32_t length = 0,
     const char *data = nullptr) {
   auto data__ = data ? _fbb.CreateString(data) : 0;
@@ -2946,33 +2948,18 @@ inline flatbuffers::Offset<userDataString> CreateuserDataStringDirect(
       data__);
 }
 
-flatbuffers::Offset<userDataString> CreateuserDataString(flatbuffers::FlatBufferBuilder &_fbb, const userDataStringT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<userDataString> CreateuserDataString(::flatbuffers::FlatBufferBuilder &_fbb, const userDataStringT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct userDataItemT : public flatbuffers::NativeTable {
+struct userDataItemT : public ::flatbuffers::NativeTable {
   typedef userDataItem TableType;
-  int16_t flags;
-  int16_t arrayIndex;
-  std::vector<userDataValueUnion> data;
-  userDataItemT()
-      : flags(0),
-        arrayIndex(0) {
-  }
+  int16_t flags = 0;
+  int16_t arrayIndex = 0;
+  std::vector<ss::ssfb::userDataValueUnion> data{};
 };
 
-inline bool operator==(const userDataItemT &lhs, const userDataItemT &rhs) {
-  return
-      (lhs.flags == rhs.flags) &&
-      (lhs.arrayIndex == rhs.arrayIndex) &&
-      (lhs.data == rhs.data);
-}
-
-inline bool operator!=(const userDataItemT &lhs, const userDataItemT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct userDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct userDataItem FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef userDataItemT NativeTableType;
+  typedef userDataItemBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_FLAGS = 4,
     VT_ARRAYINDEX = 6,
@@ -2985,16 +2972,16 @@ struct userDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t arrayIndex() const {
     return GetField<int16_t>(VT_ARRAYINDEX, 0);
   }
-  const flatbuffers::Vector<uint8_t> *data_type() const {
-    return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_DATA_TYPE);
+  const ::flatbuffers::Vector<uint8_t> *data_type() const {
+    return GetPointer<const ::flatbuffers::Vector<uint8_t> *>(VT_DATA_TYPE);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<void>> *data() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<void>> *>(VT_DATA);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *data() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *>(VT_DATA);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int16_t>(verifier, VT_FLAGS) &&
-           VerifyField<int16_t>(verifier, VT_ARRAYINDEX) &&
+           VerifyField<int16_t>(verifier, VT_FLAGS, 2) &&
+           VerifyField<int16_t>(verifier, VT_ARRAYINDEX, 2) &&
            VerifyOffset(verifier, VT_DATA_TYPE) &&
            verifier.VerifyVector(data_type()) &&
            VerifyOffset(verifier, VT_DATA) &&
@@ -3002,44 +2989,44 @@ struct userDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyuserDataValueVector(verifier, data(), data_type()) &&
            verifier.EndTable();
   }
-  userDataItemT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(userDataItemT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<userDataItem> Pack(flatbuffers::FlatBufferBuilder &_fbb, const userDataItemT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  userDataItemT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(userDataItemT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<userDataItem> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const userDataItemT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct userDataItemBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  typedef userDataItem Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_flags(int16_t flags) {
     fbb_.AddElement<int16_t>(userDataItem::VT_FLAGS, flags, 0);
   }
   void add_arrayIndex(int16_t arrayIndex) {
     fbb_.AddElement<int16_t>(userDataItem::VT_ARRAYINDEX, arrayIndex, 0);
   }
-  void add_data_type(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data_type) {
+  void add_data_type(::flatbuffers::Offset<::flatbuffers::Vector<uint8_t>> data_type) {
     fbb_.AddOffset(userDataItem::VT_DATA_TYPE, data_type);
   }
-  void add_data(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> data) {
+  void add_data(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<void>>> data) {
     fbb_.AddOffset(userDataItem::VT_DATA, data);
   }
-  explicit userDataItemBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit userDataItemBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  userDataItemBuilder &operator=(const userDataItemBuilder &);
-  flatbuffers::Offset<userDataItem> Finish() {
+  ::flatbuffers::Offset<userDataItem> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<userDataItem>(end);
+    auto o = ::flatbuffers::Offset<userDataItem>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<userDataItem> CreateuserDataItem(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<userDataItem> CreateuserDataItem(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int16_t flags = 0,
     int16_t arrayIndex = 0,
-    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data_type = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<void>>> data = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<uint8_t>> data_type = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<void>>> data = 0) {
   userDataItemBuilder builder_(_fbb);
   builder_.add_data(data);
   builder_.add_data_type(data_type);
@@ -3048,14 +3035,14 @@ inline flatbuffers::Offset<userDataItem> CreateuserDataItem(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<userDataItem> CreateuserDataItemDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<userDataItem> CreateuserDataItemDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int16_t flags = 0,
     int16_t arrayIndex = 0,
     const std::vector<uint8_t> *data_type = nullptr,
-    const std::vector<flatbuffers::Offset<void>> *data = nullptr) {
+    const std::vector<::flatbuffers::Offset<void>> *data = nullptr) {
   auto data_type__ = data_type ? _fbb.CreateVector<uint8_t>(*data_type) : 0;
-  auto data__ = data ? _fbb.CreateVector<flatbuffers::Offset<void>>(*data) : 0;
+  auto data__ = data ? _fbb.CreateVector<::flatbuffers::Offset<void>>(*data) : 0;
   return ss::ssfb::CreateuserDataItem(
       _fbb,
       flags,
@@ -3064,30 +3051,21 @@ inline flatbuffers::Offset<userDataItem> CreateuserDataItemDirect(
       data__);
 }
 
-flatbuffers::Offset<userDataItem> CreateuserDataItem(flatbuffers::FlatBufferBuilder &_fbb, const userDataItemT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<userDataItem> CreateuserDataItem(::flatbuffers::FlatBufferBuilder &_fbb, const userDataItemT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct userDataPerFrameT : public flatbuffers::NativeTable {
+struct userDataPerFrameT : public ::flatbuffers::NativeTable {
   typedef userDataPerFrame TableType;
-  int16_t frameIndex;
-  std::vector<std::unique_ptr<userDataItemT>> data;
-  userDataPerFrameT()
-      : frameIndex(0) {
-  }
+  int16_t frameIndex = 0;
+  std::vector<std::unique_ptr<ss::ssfb::userDataItemT>> data{};
+  userDataPerFrameT() = default;
+  userDataPerFrameT(const userDataPerFrameT &o);
+  userDataPerFrameT(userDataPerFrameT&&) FLATBUFFERS_NOEXCEPT = default;
+  userDataPerFrameT &operator=(userDataPerFrameT o) FLATBUFFERS_NOEXCEPT;
 };
 
-inline bool operator==(const userDataPerFrameT &lhs, const userDataPerFrameT &rhs) {
-  return
-      (lhs.frameIndex == rhs.frameIndex) &&
-      (lhs.data == rhs.data);
-}
-
-inline bool operator!=(const userDataPerFrameT &lhs, const userDataPerFrameT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct userDataPerFrame FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct userDataPerFrame FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef userDataPerFrameT NativeTableType;
+  typedef userDataPerFrameBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_FRAMEINDEX = 4,
     VT_DATA = 6
@@ -3095,134 +3073,121 @@ struct userDataPerFrame FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t frameIndex() const {
     return GetField<int16_t>(VT_FRAMEINDEX, 0);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<userDataItem>> *data() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<userDataItem>> *>(VT_DATA);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::userDataItem>> *data() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::userDataItem>> *>(VT_DATA);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int16_t>(verifier, VT_FRAMEINDEX) &&
+           VerifyField<int16_t>(verifier, VT_FRAMEINDEX, 2) &&
            VerifyOffset(verifier, VT_DATA) &&
            verifier.VerifyVector(data()) &&
            verifier.VerifyVectorOfTables(data()) &&
            verifier.EndTable();
   }
-  userDataPerFrameT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(userDataPerFrameT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<userDataPerFrame> Pack(flatbuffers::FlatBufferBuilder &_fbb, const userDataPerFrameT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  userDataPerFrameT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(userDataPerFrameT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<userDataPerFrame> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const userDataPerFrameT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct userDataPerFrameBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  typedef userDataPerFrame Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_frameIndex(int16_t frameIndex) {
     fbb_.AddElement<int16_t>(userDataPerFrame::VT_FRAMEINDEX, frameIndex, 0);
   }
-  void add_data(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<userDataItem>>> data) {
+  void add_data(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::userDataItem>>> data) {
     fbb_.AddOffset(userDataPerFrame::VT_DATA, data);
   }
-  explicit userDataPerFrameBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit userDataPerFrameBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  userDataPerFrameBuilder &operator=(const userDataPerFrameBuilder &);
-  flatbuffers::Offset<userDataPerFrame> Finish() {
+  ::flatbuffers::Offset<userDataPerFrame> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<userDataPerFrame>(end);
+    auto o = ::flatbuffers::Offset<userDataPerFrame>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<userDataPerFrame> CreateuserDataPerFrame(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<userDataPerFrame> CreateuserDataPerFrame(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int16_t frameIndex = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<userDataItem>>> data = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::userDataItem>>> data = 0) {
   userDataPerFrameBuilder builder_(_fbb);
   builder_.add_data(data);
   builder_.add_frameIndex(frameIndex);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<userDataPerFrame> CreateuserDataPerFrameDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<userDataPerFrame> CreateuserDataPerFrameDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int16_t frameIndex = 0,
-    const std::vector<flatbuffers::Offset<userDataItem>> *data = nullptr) {
-  auto data__ = data ? _fbb.CreateVector<flatbuffers::Offset<userDataItem>>(*data) : 0;
+    const std::vector<::flatbuffers::Offset<ss::ssfb::userDataItem>> *data = nullptr) {
+  auto data__ = data ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::userDataItem>>(*data) : 0;
   return ss::ssfb::CreateuserDataPerFrame(
       _fbb,
       frameIndex,
       data__);
 }
 
-flatbuffers::Offset<userDataPerFrame> CreateuserDataPerFrame(flatbuffers::FlatBufferBuilder &_fbb, const userDataPerFrameT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<userDataPerFrame> CreateuserDataPerFrame(::flatbuffers::FlatBufferBuilder &_fbb, const userDataPerFrameT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct labelDataItemT : public flatbuffers::NativeTable {
+struct labelDataItemT : public ::flatbuffers::NativeTable {
   typedef labelDataItem TableType;
-  std::string label;
-  int16_t frameIndex;
-  labelDataItemT()
-      : frameIndex(0) {
-  }
+  std::string label{};
+  int16_t frameIndex = 0;
 };
 
-inline bool operator==(const labelDataItemT &lhs, const labelDataItemT &rhs) {
-  return
-      (lhs.label == rhs.label) &&
-      (lhs.frameIndex == rhs.frameIndex);
-}
-
-inline bool operator!=(const labelDataItemT &lhs, const labelDataItemT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct labelDataItem FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct labelDataItem FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef labelDataItemT NativeTableType;
+  typedef labelDataItemBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_LABEL = 4,
     VT_FRAMEINDEX = 6
   };
-  const flatbuffers::String *label() const {
-    return GetPointer<const flatbuffers::String *>(VT_LABEL);
+  const ::flatbuffers::String *label() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_LABEL);
   }
   int16_t frameIndex() const {
     return GetField<int16_t>(VT_FRAMEINDEX, 0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_LABEL) &&
            verifier.VerifyString(label()) &&
-           VerifyField<int16_t>(verifier, VT_FRAMEINDEX) &&
+           VerifyField<int16_t>(verifier, VT_FRAMEINDEX, 2) &&
            verifier.EndTable();
   }
-  labelDataItemT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(labelDataItemT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<labelDataItem> Pack(flatbuffers::FlatBufferBuilder &_fbb, const labelDataItemT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  labelDataItemT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(labelDataItemT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<labelDataItem> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const labelDataItemT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct labelDataItemBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_label(flatbuffers::Offset<flatbuffers::String> label) {
+  typedef labelDataItem Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_label(::flatbuffers::Offset<::flatbuffers::String> label) {
     fbb_.AddOffset(labelDataItem::VT_LABEL, label);
   }
   void add_frameIndex(int16_t frameIndex) {
     fbb_.AddElement<int16_t>(labelDataItem::VT_FRAMEINDEX, frameIndex, 0);
   }
-  explicit labelDataItemBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit labelDataItemBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  labelDataItemBuilder &operator=(const labelDataItemBuilder &);
-  flatbuffers::Offset<labelDataItem> Finish() {
+  ::flatbuffers::Offset<labelDataItem> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<labelDataItem>(end);
+    auto o = ::flatbuffers::Offset<labelDataItem>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<labelDataItem> CreatelabelDataItem(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> label = 0,
+inline ::flatbuffers::Offset<labelDataItem> CreatelabelDataItem(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> label = 0,
     int16_t frameIndex = 0) {
   labelDataItemBuilder builder_(_fbb);
   builder_.add_label(label);
@@ -3230,8 +3195,8 @@ inline flatbuffers::Offset<labelDataItem> CreatelabelDataItem(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<labelDataItem> CreatelabelDataItemDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<labelDataItem> CreatelabelDataItemDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *label = nullptr,
     int16_t frameIndex = 0) {
   auto label__ = label ? _fbb.CreateString(label) : 0;
@@ -3241,66 +3206,35 @@ inline flatbuffers::Offset<labelDataItem> CreatelabelDataItemDirect(
       frameIndex);
 }
 
-flatbuffers::Offset<labelDataItem> CreatelabelDataItem(flatbuffers::FlatBufferBuilder &_fbb, const labelDataItemT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<labelDataItem> CreatelabelDataItem(::flatbuffers::FlatBufferBuilder &_fbb, const labelDataItemT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct AnimationDataT : public flatbuffers::NativeTable {
+struct AnimationDataT : public ::flatbuffers::NativeTable {
   typedef AnimationData TableType;
-  std::string name;
-  std::vector<std::unique_ptr<AnimationInitialDataT>> defaultData;
-  std::vector<std::unique_ptr<frameDataIndexT>> frameData;
-  std::vector<std::unique_ptr<userDataPerFrameT>> userData;
-  std::vector<std::unique_ptr<labelDataItemT>> labelData;
-  std::vector<std::unique_ptr<meshDataUVT>> meshsDataUV;
-  std::vector<std::unique_ptr<meshDataIndicesT>> meshsDataIndices;
-  int16_t startFrames;
-  int16_t endFrames;
-  int16_t totalFrames;
-  int16_t fps;
-  int16_t labelNum;
-  int16_t canvasSizeW;
-  int16_t canvasSizeH;
-  float canvasPvotX;
-  float canvasPvotY;
-  AnimationDataT()
-      : startFrames(0),
-        endFrames(0),
-        totalFrames(0),
-        fps(0),
-        labelNum(0),
-        canvasSizeW(0),
-        canvasSizeH(0),
-        canvasPvotX(0.0f),
-        canvasPvotY(0.0f) {
-  }
+  std::string name{};
+  std::vector<std::unique_ptr<ss::ssfb::AnimationInitialDataT>> defaultData{};
+  std::vector<std::unique_ptr<ss::ssfb::frameDataIndexT>> frameData{};
+  std::vector<std::unique_ptr<ss::ssfb::userDataPerFrameT>> userData{};
+  std::vector<std::unique_ptr<ss::ssfb::labelDataItemT>> labelData{};
+  std::vector<std::unique_ptr<ss::ssfb::meshDataUVT>> meshsDataUV{};
+  std::vector<std::unique_ptr<ss::ssfb::meshDataIndicesT>> meshsDataIndices{};
+  int16_t startFrames = 0;
+  int16_t endFrames = 0;
+  int16_t totalFrames = 0;
+  int16_t fps = 0;
+  int16_t labelNum = 0;
+  int16_t canvasSizeW = 0;
+  int16_t canvasSizeH = 0;
+  float canvasPvotX = 0.0f;
+  float canvasPvotY = 0.0f;
+  AnimationDataT() = default;
+  AnimationDataT(const AnimationDataT &o);
+  AnimationDataT(AnimationDataT&&) FLATBUFFERS_NOEXCEPT = default;
+  AnimationDataT &operator=(AnimationDataT o) FLATBUFFERS_NOEXCEPT;
 };
 
-inline bool operator==(const AnimationDataT &lhs, const AnimationDataT &rhs) {
-  return
-      (lhs.name == rhs.name) &&
-      (lhs.defaultData == rhs.defaultData) &&
-      (lhs.frameData == rhs.frameData) &&
-      (lhs.userData == rhs.userData) &&
-      (lhs.labelData == rhs.labelData) &&
-      (lhs.meshsDataUV == rhs.meshsDataUV) &&
-      (lhs.meshsDataIndices == rhs.meshsDataIndices) &&
-      (lhs.startFrames == rhs.startFrames) &&
-      (lhs.endFrames == rhs.endFrames) &&
-      (lhs.totalFrames == rhs.totalFrames) &&
-      (lhs.fps == rhs.fps) &&
-      (lhs.labelNum == rhs.labelNum) &&
-      (lhs.canvasSizeW == rhs.canvasSizeW) &&
-      (lhs.canvasSizeH == rhs.canvasSizeH) &&
-      (lhs.canvasPvotX == rhs.canvasPvotX) &&
-      (lhs.canvasPvotY == rhs.canvasPvotY);
-}
-
-inline bool operator!=(const AnimationDataT &lhs, const AnimationDataT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct AnimationData FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef AnimationDataT NativeTableType;
+  typedef AnimationDataBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_DEFAULTDATA = 6,
@@ -3319,26 +3253,26 @@ struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_CANVASPVOTX = 32,
     VT_CANVASPVOTY = 34
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<AnimationInitialData>> *defaultData() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<AnimationInitialData>> *>(VT_DEFAULTDATA);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::AnimationInitialData>> *defaultData() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::AnimationInitialData>> *>(VT_DEFAULTDATA);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<frameDataIndex>> *frameData() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<frameDataIndex>> *>(VT_FRAMEDATA);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::frameDataIndex>> *frameData() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::frameDataIndex>> *>(VT_FRAMEDATA);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<userDataPerFrame>> *userData() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<userDataPerFrame>> *>(VT_USERDATA);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::userDataPerFrame>> *userData() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::userDataPerFrame>> *>(VT_USERDATA);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<labelDataItem>> *labelData() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<labelDataItem>> *>(VT_LABELDATA);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::labelDataItem>> *labelData() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::labelDataItem>> *>(VT_LABELDATA);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<meshDataUV>> *meshsDataUV() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<meshDataUV>> *>(VT_MESHSDATAUV);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::meshDataUV>> *meshsDataUV() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::meshDataUV>> *>(VT_MESHSDATAUV);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<meshDataIndices>> *meshsDataIndices() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<meshDataIndices>> *>(VT_MESHSDATAINDICES);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::meshDataIndices>> *meshsDataIndices() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::meshDataIndices>> *>(VT_MESHSDATAINDICES);
   }
   int16_t startFrames() const {
     return GetField<int16_t>(VT_STARTFRAMES, 0);
@@ -3367,7 +3301,7 @@ struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   float canvasPvotY() const {
     return GetField<float>(VT_CANVASPVOTY, 0.0f);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -3389,44 +3323,45 @@ struct AnimationData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffset(verifier, VT_MESHSDATAINDICES) &&
            verifier.VerifyVector(meshsDataIndices()) &&
            verifier.VerifyVectorOfTables(meshsDataIndices()) &&
-           VerifyField<int16_t>(verifier, VT_STARTFRAMES) &&
-           VerifyField<int16_t>(verifier, VT_ENDFRAMES) &&
-           VerifyField<int16_t>(verifier, VT_TOTALFRAMES) &&
-           VerifyField<int16_t>(verifier, VT_FPS) &&
-           VerifyField<int16_t>(verifier, VT_LABELNUM) &&
-           VerifyField<int16_t>(verifier, VT_CANVASSIZEW) &&
-           VerifyField<int16_t>(verifier, VT_CANVASSIZEH) &&
-           VerifyField<float>(verifier, VT_CANVASPVOTX) &&
-           VerifyField<float>(verifier, VT_CANVASPVOTY) &&
+           VerifyField<int16_t>(verifier, VT_STARTFRAMES, 2) &&
+           VerifyField<int16_t>(verifier, VT_ENDFRAMES, 2) &&
+           VerifyField<int16_t>(verifier, VT_TOTALFRAMES, 2) &&
+           VerifyField<int16_t>(verifier, VT_FPS, 2) &&
+           VerifyField<int16_t>(verifier, VT_LABELNUM, 2) &&
+           VerifyField<int16_t>(verifier, VT_CANVASSIZEW, 2) &&
+           VerifyField<int16_t>(verifier, VT_CANVASSIZEH, 2) &&
+           VerifyField<float>(verifier, VT_CANVASPVOTX, 4) &&
+           VerifyField<float>(verifier, VT_CANVASPVOTY, 4) &&
            verifier.EndTable();
   }
-  AnimationDataT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(AnimationDataT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<AnimationData> Pack(flatbuffers::FlatBufferBuilder &_fbb, const AnimationDataT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  AnimationDataT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(AnimationDataT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<AnimationData> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const AnimationDataT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct AnimationDataBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  typedef AnimationData Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(AnimationData::VT_NAME, name);
   }
-  void add_defaultData(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<AnimationInitialData>>> defaultData) {
+  void add_defaultData(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::AnimationInitialData>>> defaultData) {
     fbb_.AddOffset(AnimationData::VT_DEFAULTDATA, defaultData);
   }
-  void add_frameData(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<frameDataIndex>>> frameData) {
+  void add_frameData(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::frameDataIndex>>> frameData) {
     fbb_.AddOffset(AnimationData::VT_FRAMEDATA, frameData);
   }
-  void add_userData(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<userDataPerFrame>>> userData) {
+  void add_userData(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::userDataPerFrame>>> userData) {
     fbb_.AddOffset(AnimationData::VT_USERDATA, userData);
   }
-  void add_labelData(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<labelDataItem>>> labelData) {
+  void add_labelData(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::labelDataItem>>> labelData) {
     fbb_.AddOffset(AnimationData::VT_LABELDATA, labelData);
   }
-  void add_meshsDataUV(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<meshDataUV>>> meshsDataUV) {
+  void add_meshsDataUV(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::meshDataUV>>> meshsDataUV) {
     fbb_.AddOffset(AnimationData::VT_MESHSDATAUV, meshsDataUV);
   }
-  void add_meshsDataIndices(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<meshDataIndices>>> meshsDataIndices) {
+  void add_meshsDataIndices(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::meshDataIndices>>> meshsDataIndices) {
     fbb_.AddOffset(AnimationData::VT_MESHSDATAINDICES, meshsDataIndices);
   }
   void add_startFrames(int16_t startFrames) {
@@ -3456,27 +3391,26 @@ struct AnimationDataBuilder {
   void add_canvasPvotY(float canvasPvotY) {
     fbb_.AddElement<float>(AnimationData::VT_CANVASPVOTY, canvasPvotY, 0.0f);
   }
-  explicit AnimationDataBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit AnimationDataBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  AnimationDataBuilder &operator=(const AnimationDataBuilder &);
-  flatbuffers::Offset<AnimationData> Finish() {
+  ::flatbuffers::Offset<AnimationData> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<AnimationData>(end);
+    auto o = ::flatbuffers::Offset<AnimationData>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<AnimationData> CreateAnimationData(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<AnimationInitialData>>> defaultData = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<frameDataIndex>>> frameData = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<userDataPerFrame>>> userData = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<labelDataItem>>> labelData = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<meshDataUV>>> meshsDataUV = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<meshDataIndices>>> meshsDataIndices = 0,
+inline ::flatbuffers::Offset<AnimationData> CreateAnimationData(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::AnimationInitialData>>> defaultData = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::frameDataIndex>>> frameData = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::userDataPerFrame>>> userData = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::labelDataItem>>> labelData = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::meshDataUV>>> meshsDataUV = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::meshDataIndices>>> meshsDataIndices = 0,
     int16_t startFrames = 0,
     int16_t endFrames = 0,
     int16_t totalFrames = 0,
@@ -3506,15 +3440,15 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationData(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<AnimationData> CreateAnimationDataDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<AnimationData> CreateAnimationDataDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
-    const std::vector<flatbuffers::Offset<AnimationInitialData>> *defaultData = nullptr,
-    const std::vector<flatbuffers::Offset<frameDataIndex>> *frameData = nullptr,
-    const std::vector<flatbuffers::Offset<userDataPerFrame>> *userData = nullptr,
-    const std::vector<flatbuffers::Offset<labelDataItem>> *labelData = nullptr,
-    const std::vector<flatbuffers::Offset<meshDataUV>> *meshsDataUV = nullptr,
-    const std::vector<flatbuffers::Offset<meshDataIndices>> *meshsDataIndices = nullptr,
+    const std::vector<::flatbuffers::Offset<ss::ssfb::AnimationInitialData>> *defaultData = nullptr,
+    const std::vector<::flatbuffers::Offset<ss::ssfb::frameDataIndex>> *frameData = nullptr,
+    const std::vector<::flatbuffers::Offset<ss::ssfb::userDataPerFrame>> *userData = nullptr,
+    const std::vector<::flatbuffers::Offset<ss::ssfb::labelDataItem>> *labelData = nullptr,
+    const std::vector<::flatbuffers::Offset<ss::ssfb::meshDataUV>> *meshsDataUV = nullptr,
+    const std::vector<::flatbuffers::Offset<ss::ssfb::meshDataIndices>> *meshsDataIndices = nullptr,
     int16_t startFrames = 0,
     int16_t endFrames = 0,
     int16_t totalFrames = 0,
@@ -3525,12 +3459,12 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationDataDirect(
     float canvasPvotX = 0.0f,
     float canvasPvotY = 0.0f) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
-  auto defaultData__ = defaultData ? _fbb.CreateVector<flatbuffers::Offset<AnimationInitialData>>(*defaultData) : 0;
-  auto frameData__ = frameData ? _fbb.CreateVector<flatbuffers::Offset<frameDataIndex>>(*frameData) : 0;
-  auto userData__ = userData ? _fbb.CreateVector<flatbuffers::Offset<userDataPerFrame>>(*userData) : 0;
-  auto labelData__ = labelData ? _fbb.CreateVector<flatbuffers::Offset<labelDataItem>>(*labelData) : 0;
-  auto meshsDataUV__ = meshsDataUV ? _fbb.CreateVector<flatbuffers::Offset<meshDataUV>>(*meshsDataUV) : 0;
-  auto meshsDataIndices__ = meshsDataIndices ? _fbb.CreateVector<flatbuffers::Offset<meshDataIndices>>(*meshsDataIndices) : 0;
+  auto defaultData__ = defaultData ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::AnimationInitialData>>(*defaultData) : 0;
+  auto frameData__ = frameData ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::frameDataIndex>>(*frameData) : 0;
+  auto userData__ = userData ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::userDataPerFrame>>(*userData) : 0;
+  auto labelData__ = labelData ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::labelDataItem>>(*labelData) : 0;
+  auto meshsDataUV__ = meshsDataUV ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::meshDataUV>>(*meshsDataUV) : 0;
+  auto meshsDataIndices__ = meshsDataIndices ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::meshDataIndices>>(*meshsDataIndices) : 0;
   return ss::ssfb::CreateAnimationData(
       _fbb,
       name__,
@@ -3551,139 +3485,53 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationDataDirect(
       canvasPvotY);
 }
 
-flatbuffers::Offset<AnimationData> CreateAnimationData(flatbuffers::FlatBufferBuilder &_fbb, const AnimationDataT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<AnimationData> CreateAnimationData(::flatbuffers::FlatBufferBuilder &_fbb, const AnimationDataT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct AnimationInitialDataT : public flatbuffers::NativeTable {
+struct AnimationInitialDataT : public ::flatbuffers::NativeTable {
   typedef AnimationInitialData TableType;
-  int16_t index;
-  int32_t lowflag;
-  int32_t highflag;
-  int16_t priority;
-  int16_t cellIndex;
-  int16_t opacity;
-  int16_t localopacity;
-  int16_t masklimen;
-  float positionX;
-  float positionY;
-  float positionZ;
-  float pivotX;
-  float pivotY;
-  float rotationX;
-  float rotationY;
-  float rotationZ;
-  float scaleX;
-  float scaleY;
-  float localscaleX;
-  float localscaleY;
-  float size_X;
-  float size_Y;
-  float uv_move_X;
-  float uv_move_Y;
-  float uv_rotation;
-  float uv_scale_X;
-  float uv_scale_Y;
-  float boundingRadius;
-  int32_t instanceValue_curKeyframe;
-  int32_t instanceValue_startFrame;
-  int32_t instanceValue_endFrame;
-  int32_t instanceValue_loopNum;
-  float instanceValue_speed;
-  int32_t instanceValue_loopflag;
-  int32_t effectValue_curKeyframe;
-  int32_t effectValue_startTime;
-  float effectValue_speed;
-  int32_t effectValue_loopflag;
-  AnimationInitialDataT()
-      : index(0),
-        lowflag(0),
-        highflag(0),
-        priority(0),
-        cellIndex(0),
-        opacity(0),
-        localopacity(0),
-        masklimen(0),
-        positionX(0.0f),
-        positionY(0.0f),
-        positionZ(0.0f),
-        pivotX(0.0f),
-        pivotY(0.0f),
-        rotationX(0.0f),
-        rotationY(0.0f),
-        rotationZ(0.0f),
-        scaleX(0.0f),
-        scaleY(0.0f),
-        localscaleX(0.0f),
-        localscaleY(0.0f),
-        size_X(0.0f),
-        size_Y(0.0f),
-        uv_move_X(0.0f),
-        uv_move_Y(0.0f),
-        uv_rotation(0.0f),
-        uv_scale_X(0.0f),
-        uv_scale_Y(0.0f),
-        boundingRadius(0.0f),
-        instanceValue_curKeyframe(0),
-        instanceValue_startFrame(0),
-        instanceValue_endFrame(0),
-        instanceValue_loopNum(0),
-        instanceValue_speed(0.0f),
-        instanceValue_loopflag(0),
-        effectValue_curKeyframe(0),
-        effectValue_startTime(0),
-        effectValue_speed(0.0f),
-        effectValue_loopflag(0) {
-  }
+  int16_t index = 0;
+  int32_t lowflag = 0;
+  int32_t highflag = 0;
+  int16_t priority = 0;
+  int16_t cellIndex = 0;
+  int16_t opacity = 0;
+  int16_t localopacity = 0;
+  int16_t masklimen = 0;
+  float positionX = 0.0f;
+  float positionY = 0.0f;
+  float positionZ = 0.0f;
+  float pivotX = 0.0f;
+  float pivotY = 0.0f;
+  float rotationX = 0.0f;
+  float rotationY = 0.0f;
+  float rotationZ = 0.0f;
+  float scaleX = 0.0f;
+  float scaleY = 0.0f;
+  float localscaleX = 0.0f;
+  float localscaleY = 0.0f;
+  float size_X = 0.0f;
+  float size_Y = 0.0f;
+  float uv_move_X = 0.0f;
+  float uv_move_Y = 0.0f;
+  float uv_rotation = 0.0f;
+  float uv_scale_X = 0.0f;
+  float uv_scale_Y = 0.0f;
+  float boundingRadius = 0.0f;
+  int32_t instanceValue_curKeyframe = 0;
+  int32_t instanceValue_startFrame = 0;
+  int32_t instanceValue_endFrame = 0;
+  int32_t instanceValue_loopNum = 0;
+  float instanceValue_speed = 0.0f;
+  int32_t instanceValue_loopflag = 0;
+  int32_t effectValue_curKeyframe = 0;
+  int32_t effectValue_startTime = 0;
+  float effectValue_speed = 0.0f;
+  int32_t effectValue_loopflag = 0;
 };
 
-inline bool operator==(const AnimationInitialDataT &lhs, const AnimationInitialDataT &rhs) {
-  return
-      (lhs.index == rhs.index) &&
-      (lhs.lowflag == rhs.lowflag) &&
-      (lhs.highflag == rhs.highflag) &&
-      (lhs.priority == rhs.priority) &&
-      (lhs.cellIndex == rhs.cellIndex) &&
-      (lhs.opacity == rhs.opacity) &&
-      (lhs.localopacity == rhs.localopacity) &&
-      (lhs.masklimen == rhs.masklimen) &&
-      (lhs.positionX == rhs.positionX) &&
-      (lhs.positionY == rhs.positionY) &&
-      (lhs.positionZ == rhs.positionZ) &&
-      (lhs.pivotX == rhs.pivotX) &&
-      (lhs.pivotY == rhs.pivotY) &&
-      (lhs.rotationX == rhs.rotationX) &&
-      (lhs.rotationY == rhs.rotationY) &&
-      (lhs.rotationZ == rhs.rotationZ) &&
-      (lhs.scaleX == rhs.scaleX) &&
-      (lhs.scaleY == rhs.scaleY) &&
-      (lhs.localscaleX == rhs.localscaleX) &&
-      (lhs.localscaleY == rhs.localscaleY) &&
-      (lhs.size_X == rhs.size_X) &&
-      (lhs.size_Y == rhs.size_Y) &&
-      (lhs.uv_move_X == rhs.uv_move_X) &&
-      (lhs.uv_move_Y == rhs.uv_move_Y) &&
-      (lhs.uv_rotation == rhs.uv_rotation) &&
-      (lhs.uv_scale_X == rhs.uv_scale_X) &&
-      (lhs.uv_scale_Y == rhs.uv_scale_Y) &&
-      (lhs.boundingRadius == rhs.boundingRadius) &&
-      (lhs.instanceValue_curKeyframe == rhs.instanceValue_curKeyframe) &&
-      (lhs.instanceValue_startFrame == rhs.instanceValue_startFrame) &&
-      (lhs.instanceValue_endFrame == rhs.instanceValue_endFrame) &&
-      (lhs.instanceValue_loopNum == rhs.instanceValue_loopNum) &&
-      (lhs.instanceValue_speed == rhs.instanceValue_speed) &&
-      (lhs.instanceValue_loopflag == rhs.instanceValue_loopflag) &&
-      (lhs.effectValue_curKeyframe == rhs.effectValue_curKeyframe) &&
-      (lhs.effectValue_startTime == rhs.effectValue_startTime) &&
-      (lhs.effectValue_speed == rhs.effectValue_speed) &&
-      (lhs.effectValue_loopflag == rhs.effectValue_loopflag);
-}
-
-inline bool operator!=(const AnimationInitialDataT &lhs, const AnimationInitialDataT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct AnimationInitialData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct AnimationInitialData FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef AnimationInitialDataT NativeTableType;
+  typedef AnimationInitialDataBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_INDEX = 4,
     VT_LOWFLAG = 6,
@@ -3838,56 +3686,57 @@ struct AnimationInitialData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table
   int32_t effectValue_loopflag() const {
     return GetField<int32_t>(VT_EFFECTVALUE_LOOPFLAG, 0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int16_t>(verifier, VT_INDEX) &&
-           VerifyField<int32_t>(verifier, VT_LOWFLAG) &&
-           VerifyField<int32_t>(verifier, VT_HIGHFLAG) &&
-           VerifyField<int16_t>(verifier, VT_PRIORITY) &&
-           VerifyField<int16_t>(verifier, VT_CELLINDEX) &&
-           VerifyField<int16_t>(verifier, VT_OPACITY) &&
-           VerifyField<int16_t>(verifier, VT_LOCALOPACITY) &&
-           VerifyField<int16_t>(verifier, VT_MASKLIMEN) &&
-           VerifyField<float>(verifier, VT_POSITIONX) &&
-           VerifyField<float>(verifier, VT_POSITIONY) &&
-           VerifyField<float>(verifier, VT_POSITIONZ) &&
-           VerifyField<float>(verifier, VT_PIVOTX) &&
-           VerifyField<float>(verifier, VT_PIVOTY) &&
-           VerifyField<float>(verifier, VT_ROTATIONX) &&
-           VerifyField<float>(verifier, VT_ROTATIONY) &&
-           VerifyField<float>(verifier, VT_ROTATIONZ) &&
-           VerifyField<float>(verifier, VT_SCALEX) &&
-           VerifyField<float>(verifier, VT_SCALEY) &&
-           VerifyField<float>(verifier, VT_LOCALSCALEX) &&
-           VerifyField<float>(verifier, VT_LOCALSCALEY) &&
-           VerifyField<float>(verifier, VT_SIZE_X) &&
-           VerifyField<float>(verifier, VT_SIZE_Y) &&
-           VerifyField<float>(verifier, VT_UV_MOVE_X) &&
-           VerifyField<float>(verifier, VT_UV_MOVE_Y) &&
-           VerifyField<float>(verifier, VT_UV_ROTATION) &&
-           VerifyField<float>(verifier, VT_UV_SCALE_X) &&
-           VerifyField<float>(verifier, VT_UV_SCALE_Y) &&
-           VerifyField<float>(verifier, VT_BOUNDINGRADIUS) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_CURKEYFRAME) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_STARTFRAME) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_ENDFRAME) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_LOOPNUM) &&
-           VerifyField<float>(verifier, VT_INSTANCEVALUE_SPEED) &&
-           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_LOOPFLAG) &&
-           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_CURKEYFRAME) &&
-           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_STARTTIME) &&
-           VerifyField<float>(verifier, VT_EFFECTVALUE_SPEED) &&
-           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_LOOPFLAG) &&
+           VerifyField<int16_t>(verifier, VT_INDEX, 2) &&
+           VerifyField<int32_t>(verifier, VT_LOWFLAG, 4) &&
+           VerifyField<int32_t>(verifier, VT_HIGHFLAG, 4) &&
+           VerifyField<int16_t>(verifier, VT_PRIORITY, 2) &&
+           VerifyField<int16_t>(verifier, VT_CELLINDEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_OPACITY, 2) &&
+           VerifyField<int16_t>(verifier, VT_LOCALOPACITY, 2) &&
+           VerifyField<int16_t>(verifier, VT_MASKLIMEN, 2) &&
+           VerifyField<float>(verifier, VT_POSITIONX, 4) &&
+           VerifyField<float>(verifier, VT_POSITIONY, 4) &&
+           VerifyField<float>(verifier, VT_POSITIONZ, 4) &&
+           VerifyField<float>(verifier, VT_PIVOTX, 4) &&
+           VerifyField<float>(verifier, VT_PIVOTY, 4) &&
+           VerifyField<float>(verifier, VT_ROTATIONX, 4) &&
+           VerifyField<float>(verifier, VT_ROTATIONY, 4) &&
+           VerifyField<float>(verifier, VT_ROTATIONZ, 4) &&
+           VerifyField<float>(verifier, VT_SCALEX, 4) &&
+           VerifyField<float>(verifier, VT_SCALEY, 4) &&
+           VerifyField<float>(verifier, VT_LOCALSCALEX, 4) &&
+           VerifyField<float>(verifier, VT_LOCALSCALEY, 4) &&
+           VerifyField<float>(verifier, VT_SIZE_X, 4) &&
+           VerifyField<float>(verifier, VT_SIZE_Y, 4) &&
+           VerifyField<float>(verifier, VT_UV_MOVE_X, 4) &&
+           VerifyField<float>(verifier, VT_UV_MOVE_Y, 4) &&
+           VerifyField<float>(verifier, VT_UV_ROTATION, 4) &&
+           VerifyField<float>(verifier, VT_UV_SCALE_X, 4) &&
+           VerifyField<float>(verifier, VT_UV_SCALE_Y, 4) &&
+           VerifyField<float>(verifier, VT_BOUNDINGRADIUS, 4) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_CURKEYFRAME, 4) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_STARTFRAME, 4) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_ENDFRAME, 4) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_LOOPNUM, 4) &&
+           VerifyField<float>(verifier, VT_INSTANCEVALUE_SPEED, 4) &&
+           VerifyField<int32_t>(verifier, VT_INSTANCEVALUE_LOOPFLAG, 4) &&
+           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_CURKEYFRAME, 4) &&
+           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_STARTTIME, 4) &&
+           VerifyField<float>(verifier, VT_EFFECTVALUE_SPEED, 4) &&
+           VerifyField<int32_t>(verifier, VT_EFFECTVALUE_LOOPFLAG, 4) &&
            verifier.EndTable();
   }
-  AnimationInitialDataT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(AnimationInitialDataT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<AnimationInitialData> Pack(flatbuffers::FlatBufferBuilder &_fbb, const AnimationInitialDataT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  AnimationInitialDataT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(AnimationInitialDataT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<AnimationInitialData> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const AnimationInitialDataT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct AnimationInitialDataBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  typedef AnimationInitialData Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_index(int16_t index) {
     fbb_.AddElement<int16_t>(AnimationInitialData::VT_INDEX, index, 0);
   }
@@ -4002,20 +3851,19 @@ struct AnimationInitialDataBuilder {
   void add_effectValue_loopflag(int32_t effectValue_loopflag) {
     fbb_.AddElement<int32_t>(AnimationInitialData::VT_EFFECTVALUE_LOOPFLAG, effectValue_loopflag, 0);
   }
-  explicit AnimationInitialDataBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit AnimationInitialDataBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  AnimationInitialDataBuilder &operator=(const AnimationInitialDataBuilder &);
-  flatbuffers::Offset<AnimationInitialData> Finish() {
+  ::flatbuffers::Offset<AnimationInitialData> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<AnimationInitialData>(end);
+    auto o = ::flatbuffers::Offset<AnimationInitialData>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<AnimationInitialData> CreateAnimationInitialData(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<AnimationInitialData> CreateAnimationInitialData(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int16_t index = 0,
     int32_t lowflag = 0,
     int32_t highflag = 0,
@@ -4096,51 +3944,25 @@ inline flatbuffers::Offset<AnimationInitialData> CreateAnimationInitialData(
   return builder_.Finish();
 }
 
-flatbuffers::Offset<AnimationInitialData> CreateAnimationInitialData(flatbuffers::FlatBufferBuilder &_fbb, const AnimationInitialDataT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<AnimationInitialData> CreateAnimationInitialData(::flatbuffers::FlatBufferBuilder &_fbb, const AnimationInitialDataT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct PartDataT : public flatbuffers::NativeTable {
+struct PartDataT : public ::flatbuffers::NativeTable {
   typedef PartData TableType;
-  std::string name;
-  int16_t index;
-  int16_t parentIndex;
-  SsPartType type;
-  int16_t boundsType;
-  int16_t alphaBlendType;
-  std::string refname;
-  std::string effectfilename;
-  std::string colorLabel;
-  int16_t maskInfluence;
-  PartDataT()
-      : index(0),
-        parentIndex(0),
-        type(SsPartType_Nulltype),
-        boundsType(0),
-        alphaBlendType(0),
-        maskInfluence(0) {
-  }
+  std::string name{};
+  int16_t index = 0;
+  int16_t parentIndex = 0;
+  ss::ssfb::SsPartType type = ss::ssfb::SsPartType_Nulltype;
+  int16_t boundsType = 0;
+  int16_t alphaBlendType = 0;
+  std::string refname{};
+  std::string effectfilename{};
+  std::string colorLabel{};
+  int16_t maskInfluence = 0;
 };
 
-inline bool operator==(const PartDataT &lhs, const PartDataT &rhs) {
-  return
-      (lhs.name == rhs.name) &&
-      (lhs.index == rhs.index) &&
-      (lhs.parentIndex == rhs.parentIndex) &&
-      (lhs.type == rhs.type) &&
-      (lhs.boundsType == rhs.boundsType) &&
-      (lhs.alphaBlendType == rhs.alphaBlendType) &&
-      (lhs.refname == rhs.refname) &&
-      (lhs.effectfilename == rhs.effectfilename) &&
-      (lhs.colorLabel == rhs.colorLabel) &&
-      (lhs.maskInfluence == rhs.maskInfluence);
-}
-
-inline bool operator!=(const PartDataT &lhs, const PartDataT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct PartData FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef PartDataT NativeTableType;
+  typedef PartDataBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_INDEX = 6,
@@ -4153,8 +3975,8 @@ struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_COLORLABEL = 20,
     VT_MASKINFLUENCE = 22
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
   int16_t index() const {
     return GetField<int16_t>(VT_INDEX, 0);
@@ -4162,8 +3984,8 @@ struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t parentIndex() const {
     return GetField<int16_t>(VT_PARENTINDEX, 0);
   }
-  SsPartType type() const {
-    return static_cast<SsPartType>(GetField<int8_t>(VT_TYPE, 0));
+  ss::ssfb::SsPartType type() const {
+    return static_cast<ss::ssfb::SsPartType>(GetField<int8_t>(VT_TYPE, 0));
   }
   int16_t boundsType() const {
     return GetField<int16_t>(VT_BOUNDSTYPE, 0);
@@ -4171,45 +3993,46 @@ struct PartData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t alphaBlendType() const {
     return GetField<int16_t>(VT_ALPHABLENDTYPE, 0);
   }
-  const flatbuffers::String *refname() const {
-    return GetPointer<const flatbuffers::String *>(VT_REFNAME);
+  const ::flatbuffers::String *refname() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_REFNAME);
   }
-  const flatbuffers::String *effectfilename() const {
-    return GetPointer<const flatbuffers::String *>(VT_EFFECTFILENAME);
+  const ::flatbuffers::String *effectfilename() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_EFFECTFILENAME);
   }
-  const flatbuffers::String *colorLabel() const {
-    return GetPointer<const flatbuffers::String *>(VT_COLORLABEL);
+  const ::flatbuffers::String *colorLabel() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_COLORLABEL);
   }
   int16_t maskInfluence() const {
     return GetField<int16_t>(VT_MASKINFLUENCE, 0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<int16_t>(verifier, VT_INDEX) &&
-           VerifyField<int16_t>(verifier, VT_PARENTINDEX) &&
-           VerifyField<int8_t>(verifier, VT_TYPE) &&
-           VerifyField<int16_t>(verifier, VT_BOUNDSTYPE) &&
-           VerifyField<int16_t>(verifier, VT_ALPHABLENDTYPE) &&
+           VerifyField<int16_t>(verifier, VT_INDEX, 2) &&
+           VerifyField<int16_t>(verifier, VT_PARENTINDEX, 2) &&
+           VerifyField<int8_t>(verifier, VT_TYPE, 1) &&
+           VerifyField<int16_t>(verifier, VT_BOUNDSTYPE, 2) &&
+           VerifyField<int16_t>(verifier, VT_ALPHABLENDTYPE, 2) &&
            VerifyOffset(verifier, VT_REFNAME) &&
            verifier.VerifyString(refname()) &&
            VerifyOffset(verifier, VT_EFFECTFILENAME) &&
            verifier.VerifyString(effectfilename()) &&
            VerifyOffset(verifier, VT_COLORLABEL) &&
            verifier.VerifyString(colorLabel()) &&
-           VerifyField<int16_t>(verifier, VT_MASKINFLUENCE) &&
+           VerifyField<int16_t>(verifier, VT_MASKINFLUENCE, 2) &&
            verifier.EndTable();
   }
-  PartDataT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(PartDataT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<PartData> Pack(flatbuffers::FlatBufferBuilder &_fbb, const PartDataT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  PartDataT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(PartDataT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<PartData> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const PartDataT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct PartDataBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  typedef PartData Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(PartData::VT_NAME, name);
   }
   void add_index(int16_t index) {
@@ -4218,7 +4041,7 @@ struct PartDataBuilder {
   void add_parentIndex(int16_t parentIndex) {
     fbb_.AddElement<int16_t>(PartData::VT_PARENTINDEX, parentIndex, 0);
   }
-  void add_type(SsPartType type) {
+  void add_type(ss::ssfb::SsPartType type) {
     fbb_.AddElement<int8_t>(PartData::VT_TYPE, static_cast<int8_t>(type), 0);
   }
   void add_boundsType(int16_t boundsType) {
@@ -4227,41 +4050,40 @@ struct PartDataBuilder {
   void add_alphaBlendType(int16_t alphaBlendType) {
     fbb_.AddElement<int16_t>(PartData::VT_ALPHABLENDTYPE, alphaBlendType, 0);
   }
-  void add_refname(flatbuffers::Offset<flatbuffers::String> refname) {
+  void add_refname(::flatbuffers::Offset<::flatbuffers::String> refname) {
     fbb_.AddOffset(PartData::VT_REFNAME, refname);
   }
-  void add_effectfilename(flatbuffers::Offset<flatbuffers::String> effectfilename) {
+  void add_effectfilename(::flatbuffers::Offset<::flatbuffers::String> effectfilename) {
     fbb_.AddOffset(PartData::VT_EFFECTFILENAME, effectfilename);
   }
-  void add_colorLabel(flatbuffers::Offset<flatbuffers::String> colorLabel) {
+  void add_colorLabel(::flatbuffers::Offset<::flatbuffers::String> colorLabel) {
     fbb_.AddOffset(PartData::VT_COLORLABEL, colorLabel);
   }
   void add_maskInfluence(int16_t maskInfluence) {
     fbb_.AddElement<int16_t>(PartData::VT_MASKINFLUENCE, maskInfluence, 0);
   }
-  explicit PartDataBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit PartDataBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  PartDataBuilder &operator=(const PartDataBuilder &);
-  flatbuffers::Offset<PartData> Finish() {
+  ::flatbuffers::Offset<PartData> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<PartData>(end);
+    auto o = ::flatbuffers::Offset<PartData>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<PartData> CreatePartData(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
+inline ::flatbuffers::Offset<PartData> CreatePartData(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
     int16_t index = 0,
     int16_t parentIndex = 0,
-    SsPartType type = SsPartType_Nulltype,
+    ss::ssfb::SsPartType type = ss::ssfb::SsPartType_Nulltype,
     int16_t boundsType = 0,
     int16_t alphaBlendType = 0,
-    flatbuffers::Offset<flatbuffers::String> refname = 0,
-    flatbuffers::Offset<flatbuffers::String> effectfilename = 0,
-    flatbuffers::Offset<flatbuffers::String> colorLabel = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> refname = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> effectfilename = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> colorLabel = 0,
     int16_t maskInfluence = 0) {
   PartDataBuilder builder_(_fbb);
   builder_.add_colorLabel(colorLabel);
@@ -4277,12 +4099,12 @@ inline flatbuffers::Offset<PartData> CreatePartData(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<PartData> CreatePartDataDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<PartData> CreatePartDataDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
     int16_t index = 0,
     int16_t parentIndex = 0,
-    SsPartType type = SsPartType_Nulltype,
+    ss::ssfb::SsPartType type = ss::ssfb::SsPartType_Nulltype,
     int16_t boundsType = 0,
     int16_t alphaBlendType = 0,
     const char *refname = nullptr,
@@ -4307,46 +4129,37 @@ inline flatbuffers::Offset<PartData> CreatePartDataDirect(
       maskInfluence);
 }
 
-flatbuffers::Offset<PartData> CreatePartData(flatbuffers::FlatBufferBuilder &_fbb, const PartDataT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<PartData> CreatePartData(::flatbuffers::FlatBufferBuilder &_fbb, const PartDataT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct AnimePackDataT : public flatbuffers::NativeTable {
+struct AnimePackDataT : public ::flatbuffers::NativeTable {
   typedef AnimePackData TableType;
-  std::string name;
-  std::vector<std::unique_ptr<PartDataT>> parts;
-  std::vector<std::unique_ptr<AnimationDataT>> animations;
-  AnimePackDataT() {
-  }
+  std::string name{};
+  std::vector<std::unique_ptr<ss::ssfb::PartDataT>> parts{};
+  std::vector<std::unique_ptr<ss::ssfb::AnimationDataT>> animations{};
+  AnimePackDataT() = default;
+  AnimePackDataT(const AnimePackDataT &o);
+  AnimePackDataT(AnimePackDataT&&) FLATBUFFERS_NOEXCEPT = default;
+  AnimePackDataT &operator=(AnimePackDataT o) FLATBUFFERS_NOEXCEPT;
 };
 
-inline bool operator==(const AnimePackDataT &lhs, const AnimePackDataT &rhs) {
-  return
-      (lhs.name == rhs.name) &&
-      (lhs.parts == rhs.parts) &&
-      (lhs.animations == rhs.animations);
-}
-
-inline bool operator!=(const AnimePackDataT &lhs, const AnimePackDataT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct AnimePackData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct AnimePackData FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef AnimePackDataT NativeTableType;
+  typedef AnimePackDataBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_PARTS = 6,
     VT_ANIMATIONS = 8
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<PartData>> *parts() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<PartData>> *>(VT_PARTS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::PartData>> *parts() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::PartData>> *>(VT_PARTS);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<AnimationData>> *animations() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<AnimationData>> *>(VT_ANIMATIONS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::AnimationData>> *animations() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::AnimationData>> *>(VT_ANIMATIONS);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -4358,40 +4171,40 @@ struct AnimePackData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVectorOfTables(animations()) &&
            verifier.EndTable();
   }
-  AnimePackDataT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(AnimePackDataT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<AnimePackData> Pack(flatbuffers::FlatBufferBuilder &_fbb, const AnimePackDataT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  AnimePackDataT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(AnimePackDataT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<AnimePackData> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const AnimePackDataT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct AnimePackDataBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  typedef AnimePackData Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(AnimePackData::VT_NAME, name);
   }
-  void add_parts(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<PartData>>> parts) {
+  void add_parts(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::PartData>>> parts) {
     fbb_.AddOffset(AnimePackData::VT_PARTS, parts);
   }
-  void add_animations(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<AnimationData>>> animations) {
+  void add_animations(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::AnimationData>>> animations) {
     fbb_.AddOffset(AnimePackData::VT_ANIMATIONS, animations);
   }
-  explicit AnimePackDataBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit AnimePackDataBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  AnimePackDataBuilder &operator=(const AnimePackDataBuilder &);
-  flatbuffers::Offset<AnimePackData> Finish() {
+  ::flatbuffers::Offset<AnimePackData> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<AnimePackData>(end);
+    auto o = ::flatbuffers::Offset<AnimePackData>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<AnimePackData> CreateAnimePackData(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<PartData>>> parts = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<AnimationData>>> animations = 0) {
+inline ::flatbuffers::Offset<AnimePackData> CreateAnimePackData(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::PartData>>> parts = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::AnimationData>>> animations = 0) {
   AnimePackDataBuilder builder_(_fbb);
   builder_.add_animations(animations);
   builder_.add_parts(parts);
@@ -4399,14 +4212,14 @@ inline flatbuffers::Offset<AnimePackData> CreateAnimePackData(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<AnimePackData> CreateAnimePackDataDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<AnimePackData> CreateAnimePackDataDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
-    const std::vector<flatbuffers::Offset<PartData>> *parts = nullptr,
-    const std::vector<flatbuffers::Offset<AnimationData>> *animations = nullptr) {
+    const std::vector<::flatbuffers::Offset<ss::ssfb::PartData>> *parts = nullptr,
+    const std::vector<::flatbuffers::Offset<ss::ssfb::AnimationData>> *animations = nullptr) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
-  auto parts__ = parts ? _fbb.CreateVector<flatbuffers::Offset<PartData>>(*parts) : 0;
-  auto animations__ = animations ? _fbb.CreateVector<flatbuffers::Offset<AnimationData>>(*animations) : 0;
+  auto parts__ = parts ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::PartData>>(*parts) : 0;
+  auto animations__ = animations ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::AnimationData>>(*animations) : 0;
   return ss::ssfb::CreateAnimePackData(
       _fbb,
       name__,
@@ -4414,51 +4227,29 @@ inline flatbuffers::Offset<AnimePackData> CreateAnimePackDataDirect(
       animations__);
 }
 
-flatbuffers::Offset<AnimePackData> CreateAnimePackData(flatbuffers::FlatBufferBuilder &_fbb, const AnimePackDataT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<AnimePackData> CreateAnimePackData(::flatbuffers::FlatBufferBuilder &_fbb, const AnimePackDataT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct ProjectDataT : public flatbuffers::NativeTable {
+struct ProjectDataT : public ::flatbuffers::NativeTable {
   typedef ProjectData TableType;
-  uint32_t dataId;
-  uint32_t version;
-  uint32_t flags;
-  std::string imageBaseDir;
-  std::vector<std::unique_ptr<CellT>> cells;
-  std::vector<std::unique_ptr<AnimePackDataT>> animePacks;
-  std::vector<std::unique_ptr<EffectFileT>> effectFileList;
-  int16_t numCells;
-  int16_t numAnimePacks;
-  int16_t numEffectFileList;
-  ProjectDataT()
-      : dataId(0),
-        version(0),
-        flags(0),
-        numCells(0),
-        numAnimePacks(0),
-        numEffectFileList(0) {
-  }
+  uint32_t dataId = 0;
+  uint32_t version = 0;
+  uint32_t flags = 0;
+  std::string imageBaseDir{};
+  std::vector<std::unique_ptr<ss::ssfb::CellT>> cells{};
+  std::vector<std::unique_ptr<ss::ssfb::AnimePackDataT>> animePacks{};
+  std::vector<std::unique_ptr<ss::ssfb::EffectFileT>> effectFileList{};
+  int16_t numCells = 0;
+  int16_t numAnimePacks = 0;
+  int16_t numEffectFileList = 0;
+  ProjectDataT() = default;
+  ProjectDataT(const ProjectDataT &o);
+  ProjectDataT(ProjectDataT&&) FLATBUFFERS_NOEXCEPT = default;
+  ProjectDataT &operator=(ProjectDataT o) FLATBUFFERS_NOEXCEPT;
 };
 
-inline bool operator==(const ProjectDataT &lhs, const ProjectDataT &rhs) {
-  return
-      (lhs.dataId == rhs.dataId) &&
-      (lhs.version == rhs.version) &&
-      (lhs.flags == rhs.flags) &&
-      (lhs.imageBaseDir == rhs.imageBaseDir) &&
-      (lhs.cells == rhs.cells) &&
-      (lhs.animePacks == rhs.animePacks) &&
-      (lhs.effectFileList == rhs.effectFileList) &&
-      (lhs.numCells == rhs.numCells) &&
-      (lhs.numAnimePacks == rhs.numAnimePacks) &&
-      (lhs.numEffectFileList == rhs.numEffectFileList);
-}
-
-inline bool operator!=(const ProjectDataT &lhs, const ProjectDataT &rhs) {
-    return !(lhs == rhs);
-}
-
-
-struct ProjectData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct ProjectData FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef ProjectDataT NativeTableType;
+  typedef ProjectDataBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_DATAID = 4,
     VT_VERSION = 6,
@@ -4480,17 +4271,17 @@ struct ProjectData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t flags() const {
     return GetField<uint32_t>(VT_FLAGS, 0);
   }
-  const flatbuffers::String *imageBaseDir() const {
-    return GetPointer<const flatbuffers::String *>(VT_IMAGEBASEDIR);
+  const ::flatbuffers::String *imageBaseDir() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_IMAGEBASEDIR);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<Cell>> *cells() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Cell>> *>(VT_CELLS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::Cell>> *cells() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::Cell>> *>(VT_CELLS);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<AnimePackData>> *animePacks() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<AnimePackData>> *>(VT_ANIMEPACKS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::AnimePackData>> *animePacks() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::AnimePackData>> *>(VT_ANIMEPACKS);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<EffectFile>> *effectFileList() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<EffectFile>> *>(VT_EFFECTFILELIST);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::EffectFile>> *effectFileList() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::EffectFile>> *>(VT_EFFECTFILELIST);
   }
   int16_t numCells() const {
     return GetField<int16_t>(VT_NUMCELLS, 0);
@@ -4501,11 +4292,11 @@ struct ProjectData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int16_t numEffectFileList() const {
     return GetField<int16_t>(VT_NUMEFFECTFILELIST, 0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<uint32_t>(verifier, VT_DATAID) &&
-           VerifyField<uint32_t>(verifier, VT_VERSION) &&
-           VerifyField<uint32_t>(verifier, VT_FLAGS) &&
+           VerifyField<uint32_t>(verifier, VT_DATAID, 4) &&
+           VerifyField<uint32_t>(verifier, VT_VERSION, 4) &&
+           VerifyField<uint32_t>(verifier, VT_FLAGS, 4) &&
            VerifyOffset(verifier, VT_IMAGEBASEDIR) &&
            verifier.VerifyString(imageBaseDir()) &&
            VerifyOffset(verifier, VT_CELLS) &&
@@ -4517,19 +4308,20 @@ struct ProjectData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffset(verifier, VT_EFFECTFILELIST) &&
            verifier.VerifyVector(effectFileList()) &&
            verifier.VerifyVectorOfTables(effectFileList()) &&
-           VerifyField<int16_t>(verifier, VT_NUMCELLS) &&
-           VerifyField<int16_t>(verifier, VT_NUMANIMEPACKS) &&
-           VerifyField<int16_t>(verifier, VT_NUMEFFECTFILELIST) &&
+           VerifyField<int16_t>(verifier, VT_NUMCELLS, 2) &&
+           VerifyField<int16_t>(verifier, VT_NUMANIMEPACKS, 2) &&
+           VerifyField<int16_t>(verifier, VT_NUMEFFECTFILELIST, 2) &&
            verifier.EndTable();
   }
-  ProjectDataT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(ProjectDataT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<ProjectData> Pack(flatbuffers::FlatBufferBuilder &_fbb, const ProjectDataT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  ProjectDataT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(ProjectDataT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<ProjectData> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const ProjectDataT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct ProjectDataBuilder {
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  typedef ProjectData Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_dataId(uint32_t dataId) {
     fbb_.AddElement<uint32_t>(ProjectData::VT_DATAID, dataId, 0);
   }
@@ -4539,16 +4331,16 @@ struct ProjectDataBuilder {
   void add_flags(uint32_t flags) {
     fbb_.AddElement<uint32_t>(ProjectData::VT_FLAGS, flags, 0);
   }
-  void add_imageBaseDir(flatbuffers::Offset<flatbuffers::String> imageBaseDir) {
+  void add_imageBaseDir(::flatbuffers::Offset<::flatbuffers::String> imageBaseDir) {
     fbb_.AddOffset(ProjectData::VT_IMAGEBASEDIR, imageBaseDir);
   }
-  void add_cells(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Cell>>> cells) {
+  void add_cells(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::Cell>>> cells) {
     fbb_.AddOffset(ProjectData::VT_CELLS, cells);
   }
-  void add_animePacks(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<AnimePackData>>> animePacks) {
+  void add_animePacks(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::AnimePackData>>> animePacks) {
     fbb_.AddOffset(ProjectData::VT_ANIMEPACKS, animePacks);
   }
-  void add_effectFileList(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<EffectFile>>> effectFileList) {
+  void add_effectFileList(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::EffectFile>>> effectFileList) {
     fbb_.AddOffset(ProjectData::VT_EFFECTFILELIST, effectFileList);
   }
   void add_numCells(int16_t numCells) {
@@ -4560,27 +4352,26 @@ struct ProjectDataBuilder {
   void add_numEffectFileList(int16_t numEffectFileList) {
     fbb_.AddElement<int16_t>(ProjectData::VT_NUMEFFECTFILELIST, numEffectFileList, 0);
   }
-  explicit ProjectDataBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit ProjectDataBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  ProjectDataBuilder &operator=(const ProjectDataBuilder &);
-  flatbuffers::Offset<ProjectData> Finish() {
+  ::flatbuffers::Offset<ProjectData> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<ProjectData>(end);
+    auto o = ::flatbuffers::Offset<ProjectData>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<ProjectData> CreateProjectData(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<ProjectData> CreateProjectData(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t dataId = 0,
     uint32_t version = 0,
     uint32_t flags = 0,
-    flatbuffers::Offset<flatbuffers::String> imageBaseDir = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Cell>>> cells = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<AnimePackData>>> animePacks = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<EffectFile>>> effectFileList = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> imageBaseDir = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::Cell>>> cells = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::AnimePackData>>> animePacks = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<ss::ssfb::EffectFile>>> effectFileList = 0,
     int16_t numCells = 0,
     int16_t numAnimePacks = 0,
     int16_t numEffectFileList = 0) {
@@ -4598,22 +4389,22 @@ inline flatbuffers::Offset<ProjectData> CreateProjectData(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<ProjectData> CreateProjectDataDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<ProjectData> CreateProjectDataDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t dataId = 0,
     uint32_t version = 0,
     uint32_t flags = 0,
     const char *imageBaseDir = nullptr,
-    const std::vector<flatbuffers::Offset<Cell>> *cells = nullptr,
-    const std::vector<flatbuffers::Offset<AnimePackData>> *animePacks = nullptr,
-    const std::vector<flatbuffers::Offset<EffectFile>> *effectFileList = nullptr,
+    const std::vector<::flatbuffers::Offset<ss::ssfb::Cell>> *cells = nullptr,
+    const std::vector<::flatbuffers::Offset<ss::ssfb::AnimePackData>> *animePacks = nullptr,
+    const std::vector<::flatbuffers::Offset<ss::ssfb::EffectFile>> *effectFileList = nullptr,
     int16_t numCells = 0,
     int16_t numAnimePacks = 0,
     int16_t numEffectFileList = 0) {
   auto imageBaseDir__ = imageBaseDir ? _fbb.CreateString(imageBaseDir) : 0;
-  auto cells__ = cells ? _fbb.CreateVector<flatbuffers::Offset<Cell>>(*cells) : 0;
-  auto animePacks__ = animePacks ? _fbb.CreateVector<flatbuffers::Offset<AnimePackData>>(*animePacks) : 0;
-  auto effectFileList__ = effectFileList ? _fbb.CreateVector<flatbuffers::Offset<EffectFile>>(*effectFileList) : 0;
+  auto cells__ = cells ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::Cell>>(*cells) : 0;
+  auto animePacks__ = animePacks ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::AnimePackData>>(*animePacks) : 0;
+  auto effectFileList__ = effectFileList ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::EffectFile>>(*effectFileList) : 0;
   return ss::ssfb::CreateProjectData(
       _fbb,
       dataId,
@@ -4628,35 +4419,52 @@ inline flatbuffers::Offset<ProjectData> CreateProjectDataDirect(
       numEffectFileList);
 }
 
-flatbuffers::Offset<ProjectData> CreateProjectData(flatbuffers::FlatBufferBuilder &_fbb, const ProjectDataT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<ProjectData> CreateProjectData(::flatbuffers::FlatBufferBuilder &_fbb, const ProjectDataT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-inline EffectNodeT *EffectNode::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new EffectNodeT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const EffectNodeT &lhs, const EffectNodeT &rhs) {
+  return
+      (lhs.arrayIndex == rhs.arrayIndex) &&
+      (lhs.parentIndex == rhs.parentIndex) &&
+      (lhs.type == rhs.type) &&
+      (lhs.cellIndex == rhs.cellIndex) &&
+      (lhs.blendType == rhs.blendType) &&
+      (lhs.numBehavior == rhs.numBehavior) &&
+      (lhs.Behavior == rhs.Behavior);
 }
 
-inline void EffectNode::UnPackTo(EffectNodeT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const EffectNodeT &lhs, const EffectNodeT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline EffectNodeT *EffectNode::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<EffectNodeT>(new EffectNodeT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void EffectNode::UnPackTo(EffectNodeT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = arrayIndex(); _o->arrayIndex = _e; };
-  { auto _e = parentIndex(); _o->parentIndex = _e; };
-  { auto _e = type(); _o->type = _e; };
-  { auto _e = cellIndex(); _o->cellIndex = _e; };
-  { auto _e = blendType(); _o->blendType = _e; };
-  { auto _e = numBehavior(); _o->numBehavior = _e; };
-  { auto _e = Behavior_type(); if (_e) { _o->Behavior.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Behavior[_i].type = static_cast<EffectNodeBehavior>(_e->Get(_i)); } } };
-  { auto _e = Behavior(); if (_e) { _o->Behavior.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Behavior[_i].value = EffectNodeBehaviorUnion::UnPack(_e->Get(_i), Behavior_type()->GetEnum<EffectNodeBehavior>(_i), _resolver); } } };
+  { auto _e = arrayIndex(); _o->arrayIndex = _e; }
+  { auto _e = parentIndex(); _o->parentIndex = _e; }
+  { auto _e = type(); _o->type = _e; }
+  { auto _e = cellIndex(); _o->cellIndex = _e; }
+  { auto _e = blendType(); _o->blendType = _e; }
+  { auto _e = numBehavior(); _o->numBehavior = _e; }
+  { auto _e = Behavior_type(); if (_e) { _o->Behavior.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Behavior[_i].type = static_cast<ss::ssfb::EffectNodeBehavior>(_e->Get(_i)); } } else { _o->Behavior.resize(0); } }
+  { auto _e = Behavior(); if (_e) { _o->Behavior.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Behavior[_i].value = ss::ssfb::EffectNodeBehaviorUnion::UnPack(_e->Get(_i), Behavior_type()->GetEnum<EffectNodeBehavior>(_i), _resolver); } } else { _o->Behavior.resize(0); } }
 }
 
-inline flatbuffers::Offset<EffectNode> EffectNode::Pack(flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<EffectNode> EffectNode::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateEffectNode(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<EffectNode> CreateEffectNode(flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<EffectNode> CreateEffectNode(::flatbuffers::FlatBufferBuilder &_fbb, const EffectNodeT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const EffectNodeT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const EffectNodeT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _arrayIndex = _o->arrayIndex;
   auto _parentIndex = _o->parentIndex;
   auto _type = _o->type;
@@ -4664,7 +4472,7 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNode(flatbuffers::FlatBufferB
   auto _blendType = _o->blendType;
   auto _numBehavior = _o->numBehavior;
   auto _Behavior_type = _o->Behavior.size() ? _fbb.CreateVector<uint8_t>(_o->Behavior.size(), [](size_t i, _VectorArgs *__va) { return static_cast<uint8_t>(__va->__o->Behavior[i].type); }, &_va) : 0;
-  auto _Behavior = _o->Behavior.size() ? _fbb.CreateVector<flatbuffers::Offset<void>>(_o->Behavior.size(), [](size_t i, _VectorArgs *__va) { return __va->__o->Behavior[i].Pack(*__va->__fbb, __va->__rehasher); }, &_va) : 0;
+  auto _Behavior = _o->Behavior.size() ? _fbb.CreateVector<::flatbuffers::Offset<void>>(_o->Behavior.size(), [](size_t i, _VectorArgs *__va) { return __va->__o->Behavior[i].Pack(*__va->__fbb, __va->__rehasher); }, &_va) : 0;
   return ss::ssfb::CreateEffectNode(
       _fbb,
       _arrayIndex,
@@ -4677,33 +4485,75 @@ inline flatbuffers::Offset<EffectNode> CreateEffectNode(flatbuffers::FlatBufferB
       _Behavior);
 }
 
-inline EffectFileT *EffectFile::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new EffectFileT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const EffectFileT &lhs, const EffectFileT &rhs) {
+  return
+      (lhs.name == rhs.name) &&
+      (lhs.fps == rhs.fps) &&
+      (lhs.isLockRandSeed == rhs.isLockRandSeed) &&
+      (lhs.lockRandSeed == rhs.lockRandSeed) &&
+      (lhs.layoutScaleX == rhs.layoutScaleX) &&
+      (lhs.layoutScaleY == rhs.layoutScaleY) &&
+      (lhs.numNodeList == rhs.numNodeList) &&
+      (lhs.effectNode.size() == rhs.effectNode.size() && std::equal(lhs.effectNode.cbegin(), lhs.effectNode.cend(), rhs.effectNode.cbegin(), [](std::unique_ptr<ss::ssfb::EffectNodeT> const &a, std::unique_ptr<ss::ssfb::EffectNodeT> const &b) { return (a == b) || (a && b && *a == *b); }));
 }
 
-inline void EffectFile::UnPackTo(EffectFileT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const EffectFileT &lhs, const EffectFileT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline EffectFileT::EffectFileT(const EffectFileT &o)
+      : name(o.name),
+        fps(o.fps),
+        isLockRandSeed(o.isLockRandSeed),
+        lockRandSeed(o.lockRandSeed),
+        layoutScaleX(o.layoutScaleX),
+        layoutScaleY(o.layoutScaleY),
+        numNodeList(o.numNodeList) {
+  effectNode.reserve(o.effectNode.size());
+  for (const auto &effectNode_ : o.effectNode) { effectNode.emplace_back((effectNode_) ? new ss::ssfb::EffectNodeT(*effectNode_) : nullptr); }
+}
+
+inline EffectFileT &EffectFileT::operator=(EffectFileT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(name, o.name);
+  std::swap(fps, o.fps);
+  std::swap(isLockRandSeed, o.isLockRandSeed);
+  std::swap(lockRandSeed, o.lockRandSeed);
+  std::swap(layoutScaleX, o.layoutScaleX);
+  std::swap(layoutScaleY, o.layoutScaleY);
+  std::swap(numNodeList, o.numNodeList);
+  std::swap(effectNode, o.effectNode);
+  return *this;
+}
+
+inline EffectFileT *EffectFile::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<EffectFileT>(new EffectFileT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void EffectFile::UnPackTo(EffectFileT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = name(); if (_e) _o->name = _e->str(); };
-  { auto _e = fps(); _o->fps = _e; };
-  { auto _e = isLockRandSeed(); _o->isLockRandSeed = _e; };
-  { auto _e = lockRandSeed(); _o->lockRandSeed = _e; };
-  { auto _e = layoutScaleX(); _o->layoutScaleX = _e; };
-  { auto _e = layoutScaleY(); _o->layoutScaleY = _e; };
-  { auto _e = numNodeList(); _o->numNodeList = _e; };
-  { auto _e = effectNode(); if (_e) { _o->effectNode.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->effectNode[_i] = std::unique_ptr<EffectNodeT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = name(); if (_e) _o->name = _e->str(); }
+  { auto _e = fps(); _o->fps = _e; }
+  { auto _e = isLockRandSeed(); _o->isLockRandSeed = _e; }
+  { auto _e = lockRandSeed(); _o->lockRandSeed = _e; }
+  { auto _e = layoutScaleX(); _o->layoutScaleX = _e; }
+  { auto _e = layoutScaleY(); _o->layoutScaleY = _e; }
+  { auto _e = numNodeList(); _o->numNodeList = _e; }
+  { auto _e = effectNode(); if (_e) { _o->effectNode.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->effectNode[_i]) { _e->Get(_i)->UnPackTo(_o->effectNode[_i].get(), _resolver); } else { _o->effectNode[_i] = std::unique_ptr<ss::ssfb::EffectNodeT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->effectNode.resize(0); } }
 }
 
-inline flatbuffers::Offset<EffectFile> EffectFile::Pack(flatbuffers::FlatBufferBuilder &_fbb, const EffectFileT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<EffectFile> EffectFile::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const EffectFileT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateEffectFile(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<EffectFile> CreateEffectFile(flatbuffers::FlatBufferBuilder &_fbb, const EffectFileT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<EffectFile> CreateEffectFile(::flatbuffers::FlatBufferBuilder &_fbb, const EffectFileT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const EffectFileT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const EffectFileT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _name = _o->name.empty() ? 0 : _fbb.CreateString(_o->name);
   auto _fps = _o->fps;
   auto _isLockRandSeed = _o->isLockRandSeed;
@@ -4711,7 +4561,7 @@ inline flatbuffers::Offset<EffectFile> CreateEffectFile(flatbuffers::FlatBufferB
   auto _layoutScaleX = _o->layoutScaleX;
   auto _layoutScaleY = _o->layoutScaleY;
   auto _numNodeList = _o->numNodeList;
-  auto _effectNode = _o->effectNode.size() ? _fbb.CreateVector<flatbuffers::Offset<EffectNode>> (_o->effectNode.size(), [](size_t i, _VectorArgs *__va) { return CreateEffectNode(*__va->__fbb, __va->__o->effectNode[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _effectNode = _o->effectNode.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::EffectNode>> (_o->effectNode.size(), [](size_t i, _VectorArgs *__va) { return CreateEffectNode(*__va->__fbb, __va->__o->effectNode[i].get(), __va->__rehasher); }, &_va ) : 0;
   return ss::ssfb::CreateEffectFile(
       _fbb,
       _name,
@@ -4724,30 +4574,45 @@ inline flatbuffers::Offset<EffectFile> CreateEffectFile(flatbuffers::FlatBufferB
       _effectNode);
 }
 
-inline CellMapT *CellMap::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new CellMapT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const CellMapT &lhs, const CellMapT &rhs) {
+  return
+      (lhs.name == rhs.name) &&
+      (lhs.imagePath == rhs.imagePath) &&
+      (lhs.index == rhs.index) &&
+      (lhs.wrapmode == rhs.wrapmode) &&
+      (lhs.filtermode == rhs.filtermode);
 }
 
-inline void CellMap::UnPackTo(CellMapT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const CellMapT &lhs, const CellMapT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline CellMapT *CellMap::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<CellMapT>(new CellMapT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void CellMap::UnPackTo(CellMapT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = name(); if (_e) _o->name = _e->str(); };
-  { auto _e = imagePath(); if (_e) _o->imagePath = _e->str(); };
-  { auto _e = index(); _o->index = _e; };
-  { auto _e = wrapmode(); _o->wrapmode = _e; };
-  { auto _e = filtermode(); _o->filtermode = _e; };
+  { auto _e = name(); if (_e) _o->name = _e->str(); }
+  { auto _e = imagePath(); if (_e) _o->imagePath = _e->str(); }
+  { auto _e = index(); _o->index = _e; }
+  { auto _e = wrapmode(); _o->wrapmode = _e; }
+  { auto _e = filtermode(); _o->filtermode = _e; }
 }
 
-inline flatbuffers::Offset<CellMap> CellMap::Pack(flatbuffers::FlatBufferBuilder &_fbb, const CellMapT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<CellMap> CellMap::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const CellMapT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateCellMap(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<CellMap> CreateCellMap(flatbuffers::FlatBufferBuilder &_fbb, const CellMapT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<CellMap> CreateCellMap(::flatbuffers::FlatBufferBuilder &_fbb, const CellMapT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const CellMapT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const CellMapT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _name = _o->name.empty() ? 0 : _fbb.CreateString(_o->name);
   auto _imagePath = _o->imagePath.empty() ? 0 : _fbb.CreateString(_o->imagePath);
   auto _index = _o->index;
@@ -4762,38 +4627,94 @@ inline flatbuffers::Offset<CellMap> CreateCellMap(flatbuffers::FlatBufferBuilder
       _filtermode);
 }
 
-inline CellT *Cell::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new CellT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const CellT &lhs, const CellT &rhs) {
+  return
+      (lhs.name == rhs.name) &&
+      ((lhs.cellMap == rhs.cellMap) || (lhs.cellMap && rhs.cellMap && *lhs.cellMap == *rhs.cellMap)) &&
+      (lhs.indexInCellMap == rhs.indexInCellMap) &&
+      (lhs.x == rhs.x) &&
+      (lhs.y == rhs.y) &&
+      (lhs.width == rhs.width) &&
+      (lhs.height == rhs.height) &&
+      (lhs.pivot_x == rhs.pivot_x) &&
+      (lhs.pivot_y == rhs.pivot_y) &&
+      (lhs.u1 == rhs.u1) &&
+      (lhs.v1 == rhs.v1) &&
+      (lhs.u2 == rhs.u2) &&
+      (lhs.v2 == rhs.v2);
 }
 
-inline void Cell::UnPackTo(CellT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const CellT &lhs, const CellT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline CellT::CellT(const CellT &o)
+      : name(o.name),
+        cellMap((o.cellMap) ? new ss::ssfb::CellMapT(*o.cellMap) : nullptr),
+        indexInCellMap(o.indexInCellMap),
+        x(o.x),
+        y(o.y),
+        width(o.width),
+        height(o.height),
+        pivot_x(o.pivot_x),
+        pivot_y(o.pivot_y),
+        u1(o.u1),
+        v1(o.v1),
+        u2(o.u2),
+        v2(o.v2) {
+}
+
+inline CellT &CellT::operator=(CellT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(name, o.name);
+  std::swap(cellMap, o.cellMap);
+  std::swap(indexInCellMap, o.indexInCellMap);
+  std::swap(x, o.x);
+  std::swap(y, o.y);
+  std::swap(width, o.width);
+  std::swap(height, o.height);
+  std::swap(pivot_x, o.pivot_x);
+  std::swap(pivot_y, o.pivot_y);
+  std::swap(u1, o.u1);
+  std::swap(v1, o.v1);
+  std::swap(u2, o.u2);
+  std::swap(v2, o.v2);
+  return *this;
+}
+
+inline CellT *Cell::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<CellT>(new CellT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void Cell::UnPackTo(CellT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = name(); if (_e) _o->name = _e->str(); };
-  { auto _e = cellMap(); if (_e) _o->cellMap = std::unique_ptr<CellMapT>(_e->UnPack(_resolver)); };
-  { auto _e = indexInCellMap(); _o->indexInCellMap = _e; };
-  { auto _e = x(); _o->x = _e; };
-  { auto _e = y(); _o->y = _e; };
-  { auto _e = width(); _o->width = _e; };
-  { auto _e = height(); _o->height = _e; };
-  { auto _e = pivot_x(); _o->pivot_x = _e; };
-  { auto _e = pivot_y(); _o->pivot_y = _e; };
-  { auto _e = u1(); _o->u1 = _e; };
-  { auto _e = v1(); _o->v1 = _e; };
-  { auto _e = u2(); _o->u2 = _e; };
-  { auto _e = v2(); _o->v2 = _e; };
+  { auto _e = name(); if (_e) _o->name = _e->str(); }
+  { auto _e = cellMap(); if (_e) { if(_o->cellMap) { _e->UnPackTo(_o->cellMap.get(), _resolver); } else { _o->cellMap = std::unique_ptr<ss::ssfb::CellMapT>(_e->UnPack(_resolver)); } } else if (_o->cellMap) { _o->cellMap.reset(); } }
+  { auto _e = indexInCellMap(); _o->indexInCellMap = _e; }
+  { auto _e = x(); _o->x = _e; }
+  { auto _e = y(); _o->y = _e; }
+  { auto _e = width(); _o->width = _e; }
+  { auto _e = height(); _o->height = _e; }
+  { auto _e = pivot_x(); _o->pivot_x = _e; }
+  { auto _e = pivot_y(); _o->pivot_y = _e; }
+  { auto _e = u1(); _o->u1 = _e; }
+  { auto _e = v1(); _o->v1 = _e; }
+  { auto _e = u2(); _o->u2 = _e; }
+  { auto _e = v2(); _o->v2 = _e; }
 }
 
-inline flatbuffers::Offset<Cell> Cell::Pack(flatbuffers::FlatBufferBuilder &_fbb, const CellT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<Cell> Cell::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const CellT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateCell(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<Cell> CreateCell(flatbuffers::FlatBufferBuilder &_fbb, const CellT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<Cell> CreateCell(::flatbuffers::FlatBufferBuilder &_fbb, const CellT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const CellT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const CellT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _name = _o->name.empty() ? 0 : _fbb.CreateString(_o->name);
   auto _cellMap = _o->cellMap ? CreateCellMap(_fbb, _o->cellMap.get(), _rehasher) : 0;
   auto _indexInCellMap = _o->indexInCellMap;
@@ -4824,81 +4745,117 @@ inline flatbuffers::Offset<Cell> CreateCell(flatbuffers::FlatBufferBuilder &_fbb
       _v2);
 }
 
-inline meshDataUVT *meshDataUV::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new meshDataUVT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const meshDataUVT &lhs, const meshDataUVT &rhs) {
+  return
+      (lhs.uv == rhs.uv);
 }
 
-inline void meshDataUV::UnPackTo(meshDataUVT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const meshDataUVT &lhs, const meshDataUVT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline meshDataUVT *meshDataUV::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<meshDataUVT>(new meshDataUVT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void meshDataUV::UnPackTo(meshDataUVT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = uv(); if (_e) { _o->uv.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->uv[_i] = _e->Get(_i); } } };
+  { auto _e = uv(); if (_e) { _o->uv.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->uv[_i] = _e->Get(_i); } } else { _o->uv.resize(0); } }
 }
 
-inline flatbuffers::Offset<meshDataUV> meshDataUV::Pack(flatbuffers::FlatBufferBuilder &_fbb, const meshDataUVT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<meshDataUV> meshDataUV::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const meshDataUVT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreatemeshDataUV(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<meshDataUV> CreatemeshDataUV(flatbuffers::FlatBufferBuilder &_fbb, const meshDataUVT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<meshDataUV> CreatemeshDataUV(::flatbuffers::FlatBufferBuilder &_fbb, const meshDataUVT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const meshDataUVT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const meshDataUVT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _uv = _o->uv.size() ? _fbb.CreateVector(_o->uv) : 0;
   return ss::ssfb::CreatemeshDataUV(
       _fbb,
       _uv);
 }
 
-inline meshDataIndicesT *meshDataIndices::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new meshDataIndicesT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const meshDataIndicesT &lhs, const meshDataIndicesT &rhs) {
+  return
+      (lhs.indices == rhs.indices);
 }
 
-inline void meshDataIndices::UnPackTo(meshDataIndicesT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const meshDataIndicesT &lhs, const meshDataIndicesT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline meshDataIndicesT *meshDataIndices::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<meshDataIndicesT>(new meshDataIndicesT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void meshDataIndices::UnPackTo(meshDataIndicesT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = indices(); if (_e) { _o->indices.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->indices[_i] = _e->Get(_i); } } };
+  { auto _e = indices(); if (_e) { _o->indices.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->indices[_i] = _e->Get(_i); } } else { _o->indices.resize(0); } }
 }
 
-inline flatbuffers::Offset<meshDataIndices> meshDataIndices::Pack(flatbuffers::FlatBufferBuilder &_fbb, const meshDataIndicesT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<meshDataIndices> meshDataIndices::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const meshDataIndicesT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreatemeshDataIndices(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<meshDataIndices> CreatemeshDataIndices(flatbuffers::FlatBufferBuilder &_fbb, const meshDataIndicesT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<meshDataIndices> CreatemeshDataIndices(::flatbuffers::FlatBufferBuilder &_fbb, const meshDataIndicesT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const meshDataIndicesT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const meshDataIndicesT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _indices = _o->indices.size() ? _fbb.CreateVector(_o->indices) : 0;
   return ss::ssfb::CreatemeshDataIndices(
       _fbb,
       _indices);
 }
 
-inline partStateT *partState::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new partStateT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const partStateT &lhs, const partStateT &rhs) {
+  return
+      (lhs.index == rhs.index) &&
+      (lhs.flag1 == rhs.flag1) &&
+      (lhs.flag2 == rhs.flag2) &&
+      (lhs.data == rhs.data);
 }
 
-inline void partState::UnPackTo(partStateT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const partStateT &lhs, const partStateT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline partStateT *partState::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<partStateT>(new partStateT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void partState::UnPackTo(partStateT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = index(); _o->index = _e; };
-  { auto _e = flag1(); _o->flag1 = _e; };
-  { auto _e = flag2(); _o->flag2 = _e; };
-  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i] = _e->Get(_i); } } };
+  { auto _e = index(); _o->index = _e; }
+  { auto _e = flag1(); _o->flag1 = _e; }
+  { auto _e = flag2(); _o->flag2 = _e; }
+  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i] = _e->Get(_i); } } else { _o->data.resize(0); } }
 }
 
-inline flatbuffers::Offset<partState> partState::Pack(flatbuffers::FlatBufferBuilder &_fbb, const partStateT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<partState> partState::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const partStateT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreatepartState(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<partState> CreatepartState(flatbuffers::FlatBufferBuilder &_fbb, const partStateT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<partState> CreatepartState(::flatbuffers::FlatBufferBuilder &_fbb, const partStateT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const partStateT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const partStateT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _index = _o->index;
   auto _flag1 = _o->flag1;
   auto _flag2 = _o->flag2;
@@ -4911,53 +4868,86 @@ inline flatbuffers::Offset<partState> CreatepartState(flatbuffers::FlatBufferBui
       _data);
 }
 
-inline frameDataIndexT *frameDataIndex::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new frameDataIndexT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const frameDataIndexT &lhs, const frameDataIndexT &rhs) {
+  return
+      (lhs.states.size() == rhs.states.size() && std::equal(lhs.states.cbegin(), lhs.states.cend(), rhs.states.cbegin(), [](std::unique_ptr<ss::ssfb::partStateT> const &a, std::unique_ptr<ss::ssfb::partStateT> const &b) { return (a == b) || (a && b && *a == *b); }));
 }
 
-inline void frameDataIndex::UnPackTo(frameDataIndexT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const frameDataIndexT &lhs, const frameDataIndexT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline frameDataIndexT::frameDataIndexT(const frameDataIndexT &o) {
+  states.reserve(o.states.size());
+  for (const auto &states_ : o.states) { states.emplace_back((states_) ? new ss::ssfb::partStateT(*states_) : nullptr); }
+}
+
+inline frameDataIndexT &frameDataIndexT::operator=(frameDataIndexT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(states, o.states);
+  return *this;
+}
+
+inline frameDataIndexT *frameDataIndex::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<frameDataIndexT>(new frameDataIndexT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void frameDataIndex::UnPackTo(frameDataIndexT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = states(); if (_e) { _o->states.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->states[_i] = std::unique_ptr<partStateT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = states(); if (_e) { _o->states.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->states[_i]) { _e->Get(_i)->UnPackTo(_o->states[_i].get(), _resolver); } else { _o->states[_i] = std::unique_ptr<ss::ssfb::partStateT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->states.resize(0); } }
 }
 
-inline flatbuffers::Offset<frameDataIndex> frameDataIndex::Pack(flatbuffers::FlatBufferBuilder &_fbb, const frameDataIndexT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<frameDataIndex> frameDataIndex::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const frameDataIndexT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateframeDataIndex(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(flatbuffers::FlatBufferBuilder &_fbb, const frameDataIndexT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<frameDataIndex> CreateframeDataIndex(::flatbuffers::FlatBufferBuilder &_fbb, const frameDataIndexT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const frameDataIndexT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
-  auto _states = _o->states.size() ? _fbb.CreateVector<flatbuffers::Offset<partState>> (_o->states.size(), [](size_t i, _VectorArgs *__va) { return CreatepartState(*__va->__fbb, __va->__o->states[i].get(), __va->__rehasher); }, &_va ) : 0;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const frameDataIndexT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _states = _o->states.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::partState>> (_o->states.size(), [](size_t i, _VectorArgs *__va) { return CreatepartState(*__va->__fbb, __va->__o->states[i].get(), __va->__rehasher); }, &_va ) : 0;
   return ss::ssfb::CreateframeDataIndex(
       _fbb,
       _states);
 }
 
-inline userDataStringT *userDataString::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new userDataStringT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const userDataStringT &lhs, const userDataStringT &rhs) {
+  return
+      (lhs.length == rhs.length) &&
+      (lhs.data == rhs.data);
 }
 
-inline void userDataString::UnPackTo(userDataStringT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const userDataStringT &lhs, const userDataStringT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline userDataStringT *userDataString::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<userDataStringT>(new userDataStringT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void userDataString::UnPackTo(userDataStringT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = length(); _o->length = _e; };
-  { auto _e = data(); if (_e) _o->data = _e->str(); };
+  { auto _e = length(); _o->length = _e; }
+  { auto _e = data(); if (_e) _o->data = _e->str(); }
 }
 
-inline flatbuffers::Offset<userDataString> userDataString::Pack(flatbuffers::FlatBufferBuilder &_fbb, const userDataStringT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<userDataString> userDataString::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const userDataStringT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateuserDataString(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<userDataString> CreateuserDataString(flatbuffers::FlatBufferBuilder &_fbb, const userDataStringT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<userDataString> CreateuserDataString(::flatbuffers::FlatBufferBuilder &_fbb, const userDataStringT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const userDataStringT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const userDataStringT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _length = _o->length;
   auto _data = _o->data.empty() ? 0 : _fbb.CreateString(_o->data);
   return ss::ssfb::CreateuserDataString(
@@ -4966,33 +4956,46 @@ inline flatbuffers::Offset<userDataString> CreateuserDataString(flatbuffers::Fla
       _data);
 }
 
-inline userDataItemT *userDataItem::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new userDataItemT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const userDataItemT &lhs, const userDataItemT &rhs) {
+  return
+      (lhs.flags == rhs.flags) &&
+      (lhs.arrayIndex == rhs.arrayIndex) &&
+      (lhs.data == rhs.data);
 }
 
-inline void userDataItem::UnPackTo(userDataItemT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const userDataItemT &lhs, const userDataItemT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline userDataItemT *userDataItem::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<userDataItemT>(new userDataItemT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void userDataItem::UnPackTo(userDataItemT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = flags(); _o->flags = _e; };
-  { auto _e = arrayIndex(); _o->arrayIndex = _e; };
-  { auto _e = data_type(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i].type = static_cast<userDataValue>(_e->Get(_i)); } } };
-  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i].value = userDataValueUnion::UnPack(_e->Get(_i), data_type()->GetEnum<userDataValue>(_i), _resolver); } } };
+  { auto _e = flags(); _o->flags = _e; }
+  { auto _e = arrayIndex(); _o->arrayIndex = _e; }
+  { auto _e = data_type(); if (_e) { _o->data.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i].type = static_cast<ss::ssfb::userDataValue>(_e->Get(_i)); } } else { _o->data.resize(0); } }
+  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i].value = ss::ssfb::userDataValueUnion::UnPack(_e->Get(_i), data_type()->GetEnum<userDataValue>(_i), _resolver); } } else { _o->data.resize(0); } }
 }
 
-inline flatbuffers::Offset<userDataItem> userDataItem::Pack(flatbuffers::FlatBufferBuilder &_fbb, const userDataItemT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<userDataItem> userDataItem::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const userDataItemT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateuserDataItem(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<userDataItem> CreateuserDataItem(flatbuffers::FlatBufferBuilder &_fbb, const userDataItemT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<userDataItem> CreateuserDataItem(::flatbuffers::FlatBufferBuilder &_fbb, const userDataItemT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const userDataItemT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const userDataItemT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _flags = _o->flags;
   auto _arrayIndex = _o->arrayIndex;
   auto _data_type = _o->data.size() ? _fbb.CreateVector<uint8_t>(_o->data.size(), [](size_t i, _VectorArgs *__va) { return static_cast<uint8_t>(__va->__o->data[i].type); }, &_va) : 0;
-  auto _data = _o->data.size() ? _fbb.CreateVector<flatbuffers::Offset<void>>(_o->data.size(), [](size_t i, _VectorArgs *__va) { return __va->__o->data[i].Pack(*__va->__fbb, __va->__rehasher); }, &_va) : 0;
+  auto _data = _o->data.size() ? _fbb.CreateVector<::flatbuffers::Offset<void>>(_o->data.size(), [](size_t i, _VectorArgs *__va) { return __va->__o->data[i].Pack(*__va->__fbb, __va->__rehasher); }, &_va) : 0;
   return ss::ssfb::CreateuserDataItem(
       _fbb,
       _flags,
@@ -5001,56 +5004,92 @@ inline flatbuffers::Offset<userDataItem> CreateuserDataItem(flatbuffers::FlatBuf
       _data);
 }
 
-inline userDataPerFrameT *userDataPerFrame::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new userDataPerFrameT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const userDataPerFrameT &lhs, const userDataPerFrameT &rhs) {
+  return
+      (lhs.frameIndex == rhs.frameIndex) &&
+      (lhs.data.size() == rhs.data.size() && std::equal(lhs.data.cbegin(), lhs.data.cend(), rhs.data.cbegin(), [](std::unique_ptr<ss::ssfb::userDataItemT> const &a, std::unique_ptr<ss::ssfb::userDataItemT> const &b) { return (a == b) || (a && b && *a == *b); }));
 }
 
-inline void userDataPerFrame::UnPackTo(userDataPerFrameT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const userDataPerFrameT &lhs, const userDataPerFrameT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline userDataPerFrameT::userDataPerFrameT(const userDataPerFrameT &o)
+      : frameIndex(o.frameIndex) {
+  data.reserve(o.data.size());
+  for (const auto &data_ : o.data) { data.emplace_back((data_) ? new ss::ssfb::userDataItemT(*data_) : nullptr); }
+}
+
+inline userDataPerFrameT &userDataPerFrameT::operator=(userDataPerFrameT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(frameIndex, o.frameIndex);
+  std::swap(data, o.data);
+  return *this;
+}
+
+inline userDataPerFrameT *userDataPerFrame::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<userDataPerFrameT>(new userDataPerFrameT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void userDataPerFrame::UnPackTo(userDataPerFrameT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = frameIndex(); _o->frameIndex = _e; };
-  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i] = std::unique_ptr<userDataItemT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = frameIndex(); _o->frameIndex = _e; }
+  { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->data[_i]) { _e->Get(_i)->UnPackTo(_o->data[_i].get(), _resolver); } else { _o->data[_i] = std::unique_ptr<ss::ssfb::userDataItemT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->data.resize(0); } }
 }
 
-inline flatbuffers::Offset<userDataPerFrame> userDataPerFrame::Pack(flatbuffers::FlatBufferBuilder &_fbb, const userDataPerFrameT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<userDataPerFrame> userDataPerFrame::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const userDataPerFrameT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateuserDataPerFrame(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<userDataPerFrame> CreateuserDataPerFrame(flatbuffers::FlatBufferBuilder &_fbb, const userDataPerFrameT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<userDataPerFrame> CreateuserDataPerFrame(::flatbuffers::FlatBufferBuilder &_fbb, const userDataPerFrameT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const userDataPerFrameT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const userDataPerFrameT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _frameIndex = _o->frameIndex;
-  auto _data = _o->data.size() ? _fbb.CreateVector<flatbuffers::Offset<userDataItem>> (_o->data.size(), [](size_t i, _VectorArgs *__va) { return CreateuserDataItem(*__va->__fbb, __va->__o->data[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _data = _o->data.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::userDataItem>> (_o->data.size(), [](size_t i, _VectorArgs *__va) { return CreateuserDataItem(*__va->__fbb, __va->__o->data[i].get(), __va->__rehasher); }, &_va ) : 0;
   return ss::ssfb::CreateuserDataPerFrame(
       _fbb,
       _frameIndex,
       _data);
 }
 
-inline labelDataItemT *labelDataItem::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new labelDataItemT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const labelDataItemT &lhs, const labelDataItemT &rhs) {
+  return
+      (lhs.label == rhs.label) &&
+      (lhs.frameIndex == rhs.frameIndex);
 }
 
-inline void labelDataItem::UnPackTo(labelDataItemT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const labelDataItemT &lhs, const labelDataItemT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline labelDataItemT *labelDataItem::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<labelDataItemT>(new labelDataItemT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void labelDataItem::UnPackTo(labelDataItemT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = label(); if (_e) _o->label = _e->str(); };
-  { auto _e = frameIndex(); _o->frameIndex = _e; };
+  { auto _e = label(); if (_e) _o->label = _e->str(); }
+  { auto _e = frameIndex(); _o->frameIndex = _e; }
 }
 
-inline flatbuffers::Offset<labelDataItem> labelDataItem::Pack(flatbuffers::FlatBufferBuilder &_fbb, const labelDataItemT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<labelDataItem> labelDataItem::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const labelDataItemT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreatelabelDataItem(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<labelDataItem> CreatelabelDataItem(flatbuffers::FlatBufferBuilder &_fbb, const labelDataItemT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<labelDataItem> CreatelabelDataItem(::flatbuffers::FlatBufferBuilder &_fbb, const labelDataItemT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const labelDataItemT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const labelDataItemT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _label = _o->label.empty() ? 0 : _fbb.CreateString(_o->label);
   auto _frameIndex = _o->frameIndex;
   return ss::ssfb::CreatelabelDataItem(
@@ -5059,48 +5098,119 @@ inline flatbuffers::Offset<labelDataItem> CreatelabelDataItem(flatbuffers::FlatB
       _frameIndex);
 }
 
-inline AnimationDataT *AnimationData::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new AnimationDataT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const AnimationDataT &lhs, const AnimationDataT &rhs) {
+  return
+      (lhs.name == rhs.name) &&
+      (lhs.defaultData.size() == rhs.defaultData.size() && std::equal(lhs.defaultData.cbegin(), lhs.defaultData.cend(), rhs.defaultData.cbegin(), [](std::unique_ptr<ss::ssfb::AnimationInitialDataT> const &a, std::unique_ptr<ss::ssfb::AnimationInitialDataT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.frameData.size() == rhs.frameData.size() && std::equal(lhs.frameData.cbegin(), lhs.frameData.cend(), rhs.frameData.cbegin(), [](std::unique_ptr<ss::ssfb::frameDataIndexT> const &a, std::unique_ptr<ss::ssfb::frameDataIndexT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.userData.size() == rhs.userData.size() && std::equal(lhs.userData.cbegin(), lhs.userData.cend(), rhs.userData.cbegin(), [](std::unique_ptr<ss::ssfb::userDataPerFrameT> const &a, std::unique_ptr<ss::ssfb::userDataPerFrameT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.labelData.size() == rhs.labelData.size() && std::equal(lhs.labelData.cbegin(), lhs.labelData.cend(), rhs.labelData.cbegin(), [](std::unique_ptr<ss::ssfb::labelDataItemT> const &a, std::unique_ptr<ss::ssfb::labelDataItemT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.meshsDataUV.size() == rhs.meshsDataUV.size() && std::equal(lhs.meshsDataUV.cbegin(), lhs.meshsDataUV.cend(), rhs.meshsDataUV.cbegin(), [](std::unique_ptr<ss::ssfb::meshDataUVT> const &a, std::unique_ptr<ss::ssfb::meshDataUVT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.meshsDataIndices.size() == rhs.meshsDataIndices.size() && std::equal(lhs.meshsDataIndices.cbegin(), lhs.meshsDataIndices.cend(), rhs.meshsDataIndices.cbegin(), [](std::unique_ptr<ss::ssfb::meshDataIndicesT> const &a, std::unique_ptr<ss::ssfb::meshDataIndicesT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.startFrames == rhs.startFrames) &&
+      (lhs.endFrames == rhs.endFrames) &&
+      (lhs.totalFrames == rhs.totalFrames) &&
+      (lhs.fps == rhs.fps) &&
+      (lhs.labelNum == rhs.labelNum) &&
+      (lhs.canvasSizeW == rhs.canvasSizeW) &&
+      (lhs.canvasSizeH == rhs.canvasSizeH) &&
+      (lhs.canvasPvotX == rhs.canvasPvotX) &&
+      (lhs.canvasPvotY == rhs.canvasPvotY);
 }
 
-inline void AnimationData::UnPackTo(AnimationDataT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const AnimationDataT &lhs, const AnimationDataT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline AnimationDataT::AnimationDataT(const AnimationDataT &o)
+      : name(o.name),
+        startFrames(o.startFrames),
+        endFrames(o.endFrames),
+        totalFrames(o.totalFrames),
+        fps(o.fps),
+        labelNum(o.labelNum),
+        canvasSizeW(o.canvasSizeW),
+        canvasSizeH(o.canvasSizeH),
+        canvasPvotX(o.canvasPvotX),
+        canvasPvotY(o.canvasPvotY) {
+  defaultData.reserve(o.defaultData.size());
+  for (const auto &defaultData_ : o.defaultData) { defaultData.emplace_back((defaultData_) ? new ss::ssfb::AnimationInitialDataT(*defaultData_) : nullptr); }
+  frameData.reserve(o.frameData.size());
+  for (const auto &frameData_ : o.frameData) { frameData.emplace_back((frameData_) ? new ss::ssfb::frameDataIndexT(*frameData_) : nullptr); }
+  userData.reserve(o.userData.size());
+  for (const auto &userData_ : o.userData) { userData.emplace_back((userData_) ? new ss::ssfb::userDataPerFrameT(*userData_) : nullptr); }
+  labelData.reserve(o.labelData.size());
+  for (const auto &labelData_ : o.labelData) { labelData.emplace_back((labelData_) ? new ss::ssfb::labelDataItemT(*labelData_) : nullptr); }
+  meshsDataUV.reserve(o.meshsDataUV.size());
+  for (const auto &meshsDataUV_ : o.meshsDataUV) { meshsDataUV.emplace_back((meshsDataUV_) ? new ss::ssfb::meshDataUVT(*meshsDataUV_) : nullptr); }
+  meshsDataIndices.reserve(o.meshsDataIndices.size());
+  for (const auto &meshsDataIndices_ : o.meshsDataIndices) { meshsDataIndices.emplace_back((meshsDataIndices_) ? new ss::ssfb::meshDataIndicesT(*meshsDataIndices_) : nullptr); }
+}
+
+inline AnimationDataT &AnimationDataT::operator=(AnimationDataT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(name, o.name);
+  std::swap(defaultData, o.defaultData);
+  std::swap(frameData, o.frameData);
+  std::swap(userData, o.userData);
+  std::swap(labelData, o.labelData);
+  std::swap(meshsDataUV, o.meshsDataUV);
+  std::swap(meshsDataIndices, o.meshsDataIndices);
+  std::swap(startFrames, o.startFrames);
+  std::swap(endFrames, o.endFrames);
+  std::swap(totalFrames, o.totalFrames);
+  std::swap(fps, o.fps);
+  std::swap(labelNum, o.labelNum);
+  std::swap(canvasSizeW, o.canvasSizeW);
+  std::swap(canvasSizeH, o.canvasSizeH);
+  std::swap(canvasPvotX, o.canvasPvotX);
+  std::swap(canvasPvotY, o.canvasPvotY);
+  return *this;
+}
+
+inline AnimationDataT *AnimationData::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<AnimationDataT>(new AnimationDataT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void AnimationData::UnPackTo(AnimationDataT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = name(); if (_e) _o->name = _e->str(); };
-  { auto _e = defaultData(); if (_e) { _o->defaultData.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->defaultData[_i] = std::unique_ptr<AnimationInitialDataT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = frameData(); if (_e) { _o->frameData.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->frameData[_i] = std::unique_ptr<frameDataIndexT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = userData(); if (_e) { _o->userData.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->userData[_i] = std::unique_ptr<userDataPerFrameT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = labelData(); if (_e) { _o->labelData.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->labelData[_i] = std::unique_ptr<labelDataItemT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = meshsDataUV(); if (_e) { _o->meshsDataUV.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->meshsDataUV[_i] = std::unique_ptr<meshDataUVT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = meshsDataIndices(); if (_e) { _o->meshsDataIndices.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->meshsDataIndices[_i] = std::unique_ptr<meshDataIndicesT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = startFrames(); _o->startFrames = _e; };
-  { auto _e = endFrames(); _o->endFrames = _e; };
-  { auto _e = totalFrames(); _o->totalFrames = _e; };
-  { auto _e = fps(); _o->fps = _e; };
-  { auto _e = labelNum(); _o->labelNum = _e; };
-  { auto _e = canvasSizeW(); _o->canvasSizeW = _e; };
-  { auto _e = canvasSizeH(); _o->canvasSizeH = _e; };
-  { auto _e = canvasPvotX(); _o->canvasPvotX = _e; };
-  { auto _e = canvasPvotY(); _o->canvasPvotY = _e; };
+  { auto _e = name(); if (_e) _o->name = _e->str(); }
+  { auto _e = defaultData(); if (_e) { _o->defaultData.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->defaultData[_i]) { _e->Get(_i)->UnPackTo(_o->defaultData[_i].get(), _resolver); } else { _o->defaultData[_i] = std::unique_ptr<ss::ssfb::AnimationInitialDataT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->defaultData.resize(0); } }
+  { auto _e = frameData(); if (_e) { _o->frameData.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->frameData[_i]) { _e->Get(_i)->UnPackTo(_o->frameData[_i].get(), _resolver); } else { _o->frameData[_i] = std::unique_ptr<ss::ssfb::frameDataIndexT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->frameData.resize(0); } }
+  { auto _e = userData(); if (_e) { _o->userData.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->userData[_i]) { _e->Get(_i)->UnPackTo(_o->userData[_i].get(), _resolver); } else { _o->userData[_i] = std::unique_ptr<ss::ssfb::userDataPerFrameT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->userData.resize(0); } }
+  { auto _e = labelData(); if (_e) { _o->labelData.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->labelData[_i]) { _e->Get(_i)->UnPackTo(_o->labelData[_i].get(), _resolver); } else { _o->labelData[_i] = std::unique_ptr<ss::ssfb::labelDataItemT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->labelData.resize(0); } }
+  { auto _e = meshsDataUV(); if (_e) { _o->meshsDataUV.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->meshsDataUV[_i]) { _e->Get(_i)->UnPackTo(_o->meshsDataUV[_i].get(), _resolver); } else { _o->meshsDataUV[_i] = std::unique_ptr<ss::ssfb::meshDataUVT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->meshsDataUV.resize(0); } }
+  { auto _e = meshsDataIndices(); if (_e) { _o->meshsDataIndices.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->meshsDataIndices[_i]) { _e->Get(_i)->UnPackTo(_o->meshsDataIndices[_i].get(), _resolver); } else { _o->meshsDataIndices[_i] = std::unique_ptr<ss::ssfb::meshDataIndicesT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->meshsDataIndices.resize(0); } }
+  { auto _e = startFrames(); _o->startFrames = _e; }
+  { auto _e = endFrames(); _o->endFrames = _e; }
+  { auto _e = totalFrames(); _o->totalFrames = _e; }
+  { auto _e = fps(); _o->fps = _e; }
+  { auto _e = labelNum(); _o->labelNum = _e; }
+  { auto _e = canvasSizeW(); _o->canvasSizeW = _e; }
+  { auto _e = canvasSizeH(); _o->canvasSizeH = _e; }
+  { auto _e = canvasPvotX(); _o->canvasPvotX = _e; }
+  { auto _e = canvasPvotY(); _o->canvasPvotY = _e; }
 }
 
-inline flatbuffers::Offset<AnimationData> AnimationData::Pack(flatbuffers::FlatBufferBuilder &_fbb, const AnimationDataT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<AnimationData> AnimationData::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const AnimationDataT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateAnimationData(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<AnimationData> CreateAnimationData(flatbuffers::FlatBufferBuilder &_fbb, const AnimationDataT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<AnimationData> CreateAnimationData(::flatbuffers::FlatBufferBuilder &_fbb, const AnimationDataT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const AnimationDataT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const AnimationDataT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _name = _o->name.empty() ? 0 : _fbb.CreateString(_o->name);
-  auto _defaultData = _o->defaultData.size() ? _fbb.CreateVector<flatbuffers::Offset<AnimationInitialData>> (_o->defaultData.size(), [](size_t i, _VectorArgs *__va) { return CreateAnimationInitialData(*__va->__fbb, __va->__o->defaultData[i].get(), __va->__rehasher); }, &_va ) : 0;
-  auto _frameData = _o->frameData.size() ? _fbb.CreateVector<flatbuffers::Offset<frameDataIndex>> (_o->frameData.size(), [](size_t i, _VectorArgs *__va) { return CreateframeDataIndex(*__va->__fbb, __va->__o->frameData[i].get(), __va->__rehasher); }, &_va ) : 0;
-  auto _userData = _o->userData.size() ? _fbb.CreateVector<flatbuffers::Offset<userDataPerFrame>> (_o->userData.size(), [](size_t i, _VectorArgs *__va) { return CreateuserDataPerFrame(*__va->__fbb, __va->__o->userData[i].get(), __va->__rehasher); }, &_va ) : 0;
-  auto _labelData = _o->labelData.size() ? _fbb.CreateVector<flatbuffers::Offset<labelDataItem>> (_o->labelData.size(), [](size_t i, _VectorArgs *__va) { return CreatelabelDataItem(*__va->__fbb, __va->__o->labelData[i].get(), __va->__rehasher); }, &_va ) : 0;
-  auto _meshsDataUV = _o->meshsDataUV.size() ? _fbb.CreateVector<flatbuffers::Offset<meshDataUV>> (_o->meshsDataUV.size(), [](size_t i, _VectorArgs *__va) { return CreatemeshDataUV(*__va->__fbb, __va->__o->meshsDataUV[i].get(), __va->__rehasher); }, &_va ) : 0;
-  auto _meshsDataIndices = _o->meshsDataIndices.size() ? _fbb.CreateVector<flatbuffers::Offset<meshDataIndices>> (_o->meshsDataIndices.size(), [](size_t i, _VectorArgs *__va) { return CreatemeshDataIndices(*__va->__fbb, __va->__o->meshsDataIndices[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _defaultData = _o->defaultData.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::AnimationInitialData>> (_o->defaultData.size(), [](size_t i, _VectorArgs *__va) { return CreateAnimationInitialData(*__va->__fbb, __va->__o->defaultData[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _frameData = _o->frameData.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::frameDataIndex>> (_o->frameData.size(), [](size_t i, _VectorArgs *__va) { return CreateframeDataIndex(*__va->__fbb, __va->__o->frameData[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _userData = _o->userData.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::userDataPerFrame>> (_o->userData.size(), [](size_t i, _VectorArgs *__va) { return CreateuserDataPerFrame(*__va->__fbb, __va->__o->userData[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _labelData = _o->labelData.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::labelDataItem>> (_o->labelData.size(), [](size_t i, _VectorArgs *__va) { return CreatelabelDataItem(*__va->__fbb, __va->__o->labelData[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _meshsDataUV = _o->meshsDataUV.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::meshDataUV>> (_o->meshsDataUV.size(), [](size_t i, _VectorArgs *__va) { return CreatemeshDataUV(*__va->__fbb, __va->__o->meshsDataUV[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _meshsDataIndices = _o->meshsDataIndices.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::meshDataIndices>> (_o->meshsDataIndices.size(), [](size_t i, _VectorArgs *__va) { return CreatemeshDataIndices(*__va->__fbb, __va->__o->meshsDataIndices[i].get(), __va->__rehasher); }, &_va ) : 0;
   auto _startFrames = _o->startFrames;
   auto _endFrames = _o->endFrames;
   auto _totalFrames = _o->totalFrames;
@@ -5130,63 +5240,111 @@ inline flatbuffers::Offset<AnimationData> CreateAnimationData(flatbuffers::FlatB
       _canvasPvotY);
 }
 
-inline AnimationInitialDataT *AnimationInitialData::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new AnimationInitialDataT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const AnimationInitialDataT &lhs, const AnimationInitialDataT &rhs) {
+  return
+      (lhs.index == rhs.index) &&
+      (lhs.lowflag == rhs.lowflag) &&
+      (lhs.highflag == rhs.highflag) &&
+      (lhs.priority == rhs.priority) &&
+      (lhs.cellIndex == rhs.cellIndex) &&
+      (lhs.opacity == rhs.opacity) &&
+      (lhs.localopacity == rhs.localopacity) &&
+      (lhs.masklimen == rhs.masklimen) &&
+      (lhs.positionX == rhs.positionX) &&
+      (lhs.positionY == rhs.positionY) &&
+      (lhs.positionZ == rhs.positionZ) &&
+      (lhs.pivotX == rhs.pivotX) &&
+      (lhs.pivotY == rhs.pivotY) &&
+      (lhs.rotationX == rhs.rotationX) &&
+      (lhs.rotationY == rhs.rotationY) &&
+      (lhs.rotationZ == rhs.rotationZ) &&
+      (lhs.scaleX == rhs.scaleX) &&
+      (lhs.scaleY == rhs.scaleY) &&
+      (lhs.localscaleX == rhs.localscaleX) &&
+      (lhs.localscaleY == rhs.localscaleY) &&
+      (lhs.size_X == rhs.size_X) &&
+      (lhs.size_Y == rhs.size_Y) &&
+      (lhs.uv_move_X == rhs.uv_move_X) &&
+      (lhs.uv_move_Y == rhs.uv_move_Y) &&
+      (lhs.uv_rotation == rhs.uv_rotation) &&
+      (lhs.uv_scale_X == rhs.uv_scale_X) &&
+      (lhs.uv_scale_Y == rhs.uv_scale_Y) &&
+      (lhs.boundingRadius == rhs.boundingRadius) &&
+      (lhs.instanceValue_curKeyframe == rhs.instanceValue_curKeyframe) &&
+      (lhs.instanceValue_startFrame == rhs.instanceValue_startFrame) &&
+      (lhs.instanceValue_endFrame == rhs.instanceValue_endFrame) &&
+      (lhs.instanceValue_loopNum == rhs.instanceValue_loopNum) &&
+      (lhs.instanceValue_speed == rhs.instanceValue_speed) &&
+      (lhs.instanceValue_loopflag == rhs.instanceValue_loopflag) &&
+      (lhs.effectValue_curKeyframe == rhs.effectValue_curKeyframe) &&
+      (lhs.effectValue_startTime == rhs.effectValue_startTime) &&
+      (lhs.effectValue_speed == rhs.effectValue_speed) &&
+      (lhs.effectValue_loopflag == rhs.effectValue_loopflag);
 }
 
-inline void AnimationInitialData::UnPackTo(AnimationInitialDataT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const AnimationInitialDataT &lhs, const AnimationInitialDataT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline AnimationInitialDataT *AnimationInitialData::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<AnimationInitialDataT>(new AnimationInitialDataT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void AnimationInitialData::UnPackTo(AnimationInitialDataT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = index(); _o->index = _e; };
-  { auto _e = lowflag(); _o->lowflag = _e; };
-  { auto _e = highflag(); _o->highflag = _e; };
-  { auto _e = priority(); _o->priority = _e; };
-  { auto _e = cellIndex(); _o->cellIndex = _e; };
-  { auto _e = opacity(); _o->opacity = _e; };
-  { auto _e = localopacity(); _o->localopacity = _e; };
-  { auto _e = masklimen(); _o->masklimen = _e; };
-  { auto _e = positionX(); _o->positionX = _e; };
-  { auto _e = positionY(); _o->positionY = _e; };
-  { auto _e = positionZ(); _o->positionZ = _e; };
-  { auto _e = pivotX(); _o->pivotX = _e; };
-  { auto _e = pivotY(); _o->pivotY = _e; };
-  { auto _e = rotationX(); _o->rotationX = _e; };
-  { auto _e = rotationY(); _o->rotationY = _e; };
-  { auto _e = rotationZ(); _o->rotationZ = _e; };
-  { auto _e = scaleX(); _o->scaleX = _e; };
-  { auto _e = scaleY(); _o->scaleY = _e; };
-  { auto _e = localscaleX(); _o->localscaleX = _e; };
-  { auto _e = localscaleY(); _o->localscaleY = _e; };
-  { auto _e = size_X(); _o->size_X = _e; };
-  { auto _e = size_Y(); _o->size_Y = _e; };
-  { auto _e = uv_move_X(); _o->uv_move_X = _e; };
-  { auto _e = uv_move_Y(); _o->uv_move_Y = _e; };
-  { auto _e = uv_rotation(); _o->uv_rotation = _e; };
-  { auto _e = uv_scale_X(); _o->uv_scale_X = _e; };
-  { auto _e = uv_scale_Y(); _o->uv_scale_Y = _e; };
-  { auto _e = boundingRadius(); _o->boundingRadius = _e; };
-  { auto _e = instanceValue_curKeyframe(); _o->instanceValue_curKeyframe = _e; };
-  { auto _e = instanceValue_startFrame(); _o->instanceValue_startFrame = _e; };
-  { auto _e = instanceValue_endFrame(); _o->instanceValue_endFrame = _e; };
-  { auto _e = instanceValue_loopNum(); _o->instanceValue_loopNum = _e; };
-  { auto _e = instanceValue_speed(); _o->instanceValue_speed = _e; };
-  { auto _e = instanceValue_loopflag(); _o->instanceValue_loopflag = _e; };
-  { auto _e = effectValue_curKeyframe(); _o->effectValue_curKeyframe = _e; };
-  { auto _e = effectValue_startTime(); _o->effectValue_startTime = _e; };
-  { auto _e = effectValue_speed(); _o->effectValue_speed = _e; };
-  { auto _e = effectValue_loopflag(); _o->effectValue_loopflag = _e; };
+  { auto _e = index(); _o->index = _e; }
+  { auto _e = lowflag(); _o->lowflag = _e; }
+  { auto _e = highflag(); _o->highflag = _e; }
+  { auto _e = priority(); _o->priority = _e; }
+  { auto _e = cellIndex(); _o->cellIndex = _e; }
+  { auto _e = opacity(); _o->opacity = _e; }
+  { auto _e = localopacity(); _o->localopacity = _e; }
+  { auto _e = masklimen(); _o->masklimen = _e; }
+  { auto _e = positionX(); _o->positionX = _e; }
+  { auto _e = positionY(); _o->positionY = _e; }
+  { auto _e = positionZ(); _o->positionZ = _e; }
+  { auto _e = pivotX(); _o->pivotX = _e; }
+  { auto _e = pivotY(); _o->pivotY = _e; }
+  { auto _e = rotationX(); _o->rotationX = _e; }
+  { auto _e = rotationY(); _o->rotationY = _e; }
+  { auto _e = rotationZ(); _o->rotationZ = _e; }
+  { auto _e = scaleX(); _o->scaleX = _e; }
+  { auto _e = scaleY(); _o->scaleY = _e; }
+  { auto _e = localscaleX(); _o->localscaleX = _e; }
+  { auto _e = localscaleY(); _o->localscaleY = _e; }
+  { auto _e = size_X(); _o->size_X = _e; }
+  { auto _e = size_Y(); _o->size_Y = _e; }
+  { auto _e = uv_move_X(); _o->uv_move_X = _e; }
+  { auto _e = uv_move_Y(); _o->uv_move_Y = _e; }
+  { auto _e = uv_rotation(); _o->uv_rotation = _e; }
+  { auto _e = uv_scale_X(); _o->uv_scale_X = _e; }
+  { auto _e = uv_scale_Y(); _o->uv_scale_Y = _e; }
+  { auto _e = boundingRadius(); _o->boundingRadius = _e; }
+  { auto _e = instanceValue_curKeyframe(); _o->instanceValue_curKeyframe = _e; }
+  { auto _e = instanceValue_startFrame(); _o->instanceValue_startFrame = _e; }
+  { auto _e = instanceValue_endFrame(); _o->instanceValue_endFrame = _e; }
+  { auto _e = instanceValue_loopNum(); _o->instanceValue_loopNum = _e; }
+  { auto _e = instanceValue_speed(); _o->instanceValue_speed = _e; }
+  { auto _e = instanceValue_loopflag(); _o->instanceValue_loopflag = _e; }
+  { auto _e = effectValue_curKeyframe(); _o->effectValue_curKeyframe = _e; }
+  { auto _e = effectValue_startTime(); _o->effectValue_startTime = _e; }
+  { auto _e = effectValue_speed(); _o->effectValue_speed = _e; }
+  { auto _e = effectValue_loopflag(); _o->effectValue_loopflag = _e; }
 }
 
-inline flatbuffers::Offset<AnimationInitialData> AnimationInitialData::Pack(flatbuffers::FlatBufferBuilder &_fbb, const AnimationInitialDataT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<AnimationInitialData> AnimationInitialData::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const AnimationInitialDataT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateAnimationInitialData(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<AnimationInitialData> CreateAnimationInitialData(flatbuffers::FlatBufferBuilder &_fbb, const AnimationInitialDataT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<AnimationInitialData> CreateAnimationInitialData(::flatbuffers::FlatBufferBuilder &_fbb, const AnimationInitialDataT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const AnimationInitialDataT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const AnimationInitialDataT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _index = _o->index;
   auto _lowflag = _o->lowflag;
   auto _highflag = _o->highflag;
@@ -5267,35 +5425,55 @@ inline flatbuffers::Offset<AnimationInitialData> CreateAnimationInitialData(flat
       _effectValue_loopflag);
 }
 
-inline PartDataT *PartData::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new PartDataT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const PartDataT &lhs, const PartDataT &rhs) {
+  return
+      (lhs.name == rhs.name) &&
+      (lhs.index == rhs.index) &&
+      (lhs.parentIndex == rhs.parentIndex) &&
+      (lhs.type == rhs.type) &&
+      (lhs.boundsType == rhs.boundsType) &&
+      (lhs.alphaBlendType == rhs.alphaBlendType) &&
+      (lhs.refname == rhs.refname) &&
+      (lhs.effectfilename == rhs.effectfilename) &&
+      (lhs.colorLabel == rhs.colorLabel) &&
+      (lhs.maskInfluence == rhs.maskInfluence);
 }
 
-inline void PartData::UnPackTo(PartDataT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const PartDataT &lhs, const PartDataT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline PartDataT *PartData::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<PartDataT>(new PartDataT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void PartData::UnPackTo(PartDataT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = name(); if (_e) _o->name = _e->str(); };
-  { auto _e = index(); _o->index = _e; };
-  { auto _e = parentIndex(); _o->parentIndex = _e; };
-  { auto _e = type(); _o->type = _e; };
-  { auto _e = boundsType(); _o->boundsType = _e; };
-  { auto _e = alphaBlendType(); _o->alphaBlendType = _e; };
-  { auto _e = refname(); if (_e) _o->refname = _e->str(); };
-  { auto _e = effectfilename(); if (_e) _o->effectfilename = _e->str(); };
-  { auto _e = colorLabel(); if (_e) _o->colorLabel = _e->str(); };
-  { auto _e = maskInfluence(); _o->maskInfluence = _e; };
+  { auto _e = name(); if (_e) _o->name = _e->str(); }
+  { auto _e = index(); _o->index = _e; }
+  { auto _e = parentIndex(); _o->parentIndex = _e; }
+  { auto _e = type(); _o->type = _e; }
+  { auto _e = boundsType(); _o->boundsType = _e; }
+  { auto _e = alphaBlendType(); _o->alphaBlendType = _e; }
+  { auto _e = refname(); if (_e) _o->refname = _e->str(); }
+  { auto _e = effectfilename(); if (_e) _o->effectfilename = _e->str(); }
+  { auto _e = colorLabel(); if (_e) _o->colorLabel = _e->str(); }
+  { auto _e = maskInfluence(); _o->maskInfluence = _e; }
 }
 
-inline flatbuffers::Offset<PartData> PartData::Pack(flatbuffers::FlatBufferBuilder &_fbb, const PartDataT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<PartData> PartData::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const PartDataT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreatePartData(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<PartData> CreatePartData(flatbuffers::FlatBufferBuilder &_fbb, const PartDataT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<PartData> CreatePartData(::flatbuffers::FlatBufferBuilder &_fbb, const PartDataT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const PartDataT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const PartDataT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _name = _o->name.empty() ? 0 : _fbb.CreateString(_o->name);
   auto _index = _o->index;
   auto _parentIndex = _o->parentIndex;
@@ -5320,31 +5498,59 @@ inline flatbuffers::Offset<PartData> CreatePartData(flatbuffers::FlatBufferBuild
       _maskInfluence);
 }
 
-inline AnimePackDataT *AnimePackData::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new AnimePackDataT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const AnimePackDataT &lhs, const AnimePackDataT &rhs) {
+  return
+      (lhs.name == rhs.name) &&
+      (lhs.parts.size() == rhs.parts.size() && std::equal(lhs.parts.cbegin(), lhs.parts.cend(), rhs.parts.cbegin(), [](std::unique_ptr<ss::ssfb::PartDataT> const &a, std::unique_ptr<ss::ssfb::PartDataT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.animations.size() == rhs.animations.size() && std::equal(lhs.animations.cbegin(), lhs.animations.cend(), rhs.animations.cbegin(), [](std::unique_ptr<ss::ssfb::AnimationDataT> const &a, std::unique_ptr<ss::ssfb::AnimationDataT> const &b) { return (a == b) || (a && b && *a == *b); }));
 }
 
-inline void AnimePackData::UnPackTo(AnimePackDataT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const AnimePackDataT &lhs, const AnimePackDataT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline AnimePackDataT::AnimePackDataT(const AnimePackDataT &o)
+      : name(o.name) {
+  parts.reserve(o.parts.size());
+  for (const auto &parts_ : o.parts) { parts.emplace_back((parts_) ? new ss::ssfb::PartDataT(*parts_) : nullptr); }
+  animations.reserve(o.animations.size());
+  for (const auto &animations_ : o.animations) { animations.emplace_back((animations_) ? new ss::ssfb::AnimationDataT(*animations_) : nullptr); }
+}
+
+inline AnimePackDataT &AnimePackDataT::operator=(AnimePackDataT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(name, o.name);
+  std::swap(parts, o.parts);
+  std::swap(animations, o.animations);
+  return *this;
+}
+
+inline AnimePackDataT *AnimePackData::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<AnimePackDataT>(new AnimePackDataT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void AnimePackData::UnPackTo(AnimePackDataT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = name(); if (_e) _o->name = _e->str(); };
-  { auto _e = parts(); if (_e) { _o->parts.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->parts[_i] = std::unique_ptr<PartDataT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = animations(); if (_e) { _o->animations.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->animations[_i] = std::unique_ptr<AnimationDataT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = name(); if (_e) _o->name = _e->str(); }
+  { auto _e = parts(); if (_e) { _o->parts.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->parts[_i]) { _e->Get(_i)->UnPackTo(_o->parts[_i].get(), _resolver); } else { _o->parts[_i] = std::unique_ptr<ss::ssfb::PartDataT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->parts.resize(0); } }
+  { auto _e = animations(); if (_e) { _o->animations.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->animations[_i]) { _e->Get(_i)->UnPackTo(_o->animations[_i].get(), _resolver); } else { _o->animations[_i] = std::unique_ptr<ss::ssfb::AnimationDataT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->animations.resize(0); } }
 }
 
-inline flatbuffers::Offset<AnimePackData> AnimePackData::Pack(flatbuffers::FlatBufferBuilder &_fbb, const AnimePackDataT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<AnimePackData> AnimePackData::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const AnimePackDataT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateAnimePackData(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<AnimePackData> CreateAnimePackData(flatbuffers::FlatBufferBuilder &_fbb, const AnimePackDataT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<AnimePackData> CreateAnimePackData(::flatbuffers::FlatBufferBuilder &_fbb, const AnimePackDataT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const AnimePackDataT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const AnimePackDataT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _name = _o->name.empty() ? 0 : _fbb.CreateString(_o->name);
-  auto _parts = _o->parts.size() ? _fbb.CreateVector<flatbuffers::Offset<PartData>> (_o->parts.size(), [](size_t i, _VectorArgs *__va) { return CreatePartData(*__va->__fbb, __va->__o->parts[i].get(), __va->__rehasher); }, &_va ) : 0;
-  auto _animations = _o->animations.size() ? _fbb.CreateVector<flatbuffers::Offset<AnimationData>> (_o->animations.size(), [](size_t i, _VectorArgs *__va) { return CreateAnimationData(*__va->__fbb, __va->__o->animations[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _parts = _o->parts.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::PartData>> (_o->parts.size(), [](size_t i, _VectorArgs *__va) { return CreatePartData(*__va->__fbb, __va->__o->parts[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _animations = _o->animations.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::AnimationData>> (_o->animations.size(), [](size_t i, _VectorArgs *__va) { return CreateAnimationData(*__va->__fbb, __va->__o->animations[i].get(), __va->__rehasher); }, &_va ) : 0;
   return ss::ssfb::CreateAnimePackData(
       _fbb,
       _name,
@@ -5352,42 +5558,92 @@ inline flatbuffers::Offset<AnimePackData> CreateAnimePackData(flatbuffers::FlatB
       _animations);
 }
 
-inline ProjectDataT *ProjectData::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new ProjectDataT();
-  UnPackTo(_o, _resolver);
-  return _o;
+
+inline bool operator==(const ProjectDataT &lhs, const ProjectDataT &rhs) {
+  return
+      (lhs.dataId == rhs.dataId) &&
+      (lhs.version == rhs.version) &&
+      (lhs.flags == rhs.flags) &&
+      (lhs.imageBaseDir == rhs.imageBaseDir) &&
+      (lhs.cells.size() == rhs.cells.size() && std::equal(lhs.cells.cbegin(), lhs.cells.cend(), rhs.cells.cbegin(), [](std::unique_ptr<ss::ssfb::CellT> const &a, std::unique_ptr<ss::ssfb::CellT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.animePacks.size() == rhs.animePacks.size() && std::equal(lhs.animePacks.cbegin(), lhs.animePacks.cend(), rhs.animePacks.cbegin(), [](std::unique_ptr<ss::ssfb::AnimePackDataT> const &a, std::unique_ptr<ss::ssfb::AnimePackDataT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.effectFileList.size() == rhs.effectFileList.size() && std::equal(lhs.effectFileList.cbegin(), lhs.effectFileList.cend(), rhs.effectFileList.cbegin(), [](std::unique_ptr<ss::ssfb::EffectFileT> const &a, std::unique_ptr<ss::ssfb::EffectFileT> const &b) { return (a == b) || (a && b && *a == *b); })) &&
+      (lhs.numCells == rhs.numCells) &&
+      (lhs.numAnimePacks == rhs.numAnimePacks) &&
+      (lhs.numEffectFileList == rhs.numEffectFileList);
 }
 
-inline void ProjectData::UnPackTo(ProjectDataT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline bool operator!=(const ProjectDataT &lhs, const ProjectDataT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+inline ProjectDataT::ProjectDataT(const ProjectDataT &o)
+      : dataId(o.dataId),
+        version(o.version),
+        flags(o.flags),
+        imageBaseDir(o.imageBaseDir),
+        numCells(o.numCells),
+        numAnimePacks(o.numAnimePacks),
+        numEffectFileList(o.numEffectFileList) {
+  cells.reserve(o.cells.size());
+  for (const auto &cells_ : o.cells) { cells.emplace_back((cells_) ? new ss::ssfb::CellT(*cells_) : nullptr); }
+  animePacks.reserve(o.animePacks.size());
+  for (const auto &animePacks_ : o.animePacks) { animePacks.emplace_back((animePacks_) ? new ss::ssfb::AnimePackDataT(*animePacks_) : nullptr); }
+  effectFileList.reserve(o.effectFileList.size());
+  for (const auto &effectFileList_ : o.effectFileList) { effectFileList.emplace_back((effectFileList_) ? new ss::ssfb::EffectFileT(*effectFileList_) : nullptr); }
+}
+
+inline ProjectDataT &ProjectDataT::operator=(ProjectDataT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(dataId, o.dataId);
+  std::swap(version, o.version);
+  std::swap(flags, o.flags);
+  std::swap(imageBaseDir, o.imageBaseDir);
+  std::swap(cells, o.cells);
+  std::swap(animePacks, o.animePacks);
+  std::swap(effectFileList, o.effectFileList);
+  std::swap(numCells, o.numCells);
+  std::swap(numAnimePacks, o.numAnimePacks);
+  std::swap(numEffectFileList, o.numEffectFileList);
+  return *this;
+}
+
+inline ProjectDataT *ProjectData::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<ProjectDataT>(new ProjectDataT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void ProjectData::UnPackTo(ProjectDataT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = dataId(); _o->dataId = _e; };
-  { auto _e = version(); _o->version = _e; };
-  { auto _e = flags(); _o->flags = _e; };
-  { auto _e = imageBaseDir(); if (_e) _o->imageBaseDir = _e->str(); };
-  { auto _e = cells(); if (_e) { _o->cells.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->cells[_i] = std::unique_ptr<CellT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = animePacks(); if (_e) { _o->animePacks.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->animePacks[_i] = std::unique_ptr<AnimePackDataT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = effectFileList(); if (_e) { _o->effectFileList.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->effectFileList[_i] = std::unique_ptr<EffectFileT>(_e->Get(_i)->UnPack(_resolver)); } } };
-  { auto _e = numCells(); _o->numCells = _e; };
-  { auto _e = numAnimePacks(); _o->numAnimePacks = _e; };
-  { auto _e = numEffectFileList(); _o->numEffectFileList = _e; };
+  { auto _e = dataId(); _o->dataId = _e; }
+  { auto _e = version(); _o->version = _e; }
+  { auto _e = flags(); _o->flags = _e; }
+  { auto _e = imageBaseDir(); if (_e) _o->imageBaseDir = _e->str(); }
+  { auto _e = cells(); if (_e) { _o->cells.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->cells[_i]) { _e->Get(_i)->UnPackTo(_o->cells[_i].get(), _resolver); } else { _o->cells[_i] = std::unique_ptr<ss::ssfb::CellT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->cells.resize(0); } }
+  { auto _e = animePacks(); if (_e) { _o->animePacks.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->animePacks[_i]) { _e->Get(_i)->UnPackTo(_o->animePacks[_i].get(), _resolver); } else { _o->animePacks[_i] = std::unique_ptr<ss::ssfb::AnimePackDataT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->animePacks.resize(0); } }
+  { auto _e = effectFileList(); if (_e) { _o->effectFileList.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->effectFileList[_i]) { _e->Get(_i)->UnPackTo(_o->effectFileList[_i].get(), _resolver); } else { _o->effectFileList[_i] = std::unique_ptr<ss::ssfb::EffectFileT>(_e->Get(_i)->UnPack(_resolver)); } } } else { _o->effectFileList.resize(0); } }
+  { auto _e = numCells(); _o->numCells = _e; }
+  { auto _e = numAnimePacks(); _o->numAnimePacks = _e; }
+  { auto _e = numEffectFileList(); _o->numEffectFileList = _e; }
 }
 
-inline flatbuffers::Offset<ProjectData> ProjectData::Pack(flatbuffers::FlatBufferBuilder &_fbb, const ProjectDataT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<ProjectData> ProjectData::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const ProjectDataT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateProjectData(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<ProjectData> CreateProjectData(flatbuffers::FlatBufferBuilder &_fbb, const ProjectDataT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<ProjectData> CreateProjectData(::flatbuffers::FlatBufferBuilder &_fbb, const ProjectDataT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const ProjectDataT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const ProjectDataT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _dataId = _o->dataId;
   auto _version = _o->version;
   auto _flags = _o->flags;
   auto _imageBaseDir = _o->imageBaseDir.empty() ? 0 : _fbb.CreateString(_o->imageBaseDir);
-  auto _cells = _o->cells.size() ? _fbb.CreateVector<flatbuffers::Offset<Cell>> (_o->cells.size(), [](size_t i, _VectorArgs *__va) { return CreateCell(*__va->__fbb, __va->__o->cells[i].get(), __va->__rehasher); }, &_va ) : 0;
-  auto _animePacks = _o->animePacks.size() ? _fbb.CreateVector<flatbuffers::Offset<AnimePackData>> (_o->animePacks.size(), [](size_t i, _VectorArgs *__va) { return CreateAnimePackData(*__va->__fbb, __va->__o->animePacks[i].get(), __va->__rehasher); }, &_va ) : 0;
-  auto _effectFileList = _o->effectFileList.size() ? _fbb.CreateVector<flatbuffers::Offset<EffectFile>> (_o->effectFileList.size(), [](size_t i, _VectorArgs *__va) { return CreateEffectFile(*__va->__fbb, __va->__o->effectFileList[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _cells = _o->cells.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::Cell>> (_o->cells.size(), [](size_t i, _VectorArgs *__va) { return CreateCell(*__va->__fbb, __va->__o->cells[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _animePacks = _o->animePacks.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::AnimePackData>> (_o->animePacks.size(), [](size_t i, _VectorArgs *__va) { return CreateAnimePackData(*__va->__fbb, __va->__o->animePacks[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _effectFileList = _o->effectFileList.size() ? _fbb.CreateVector<::flatbuffers::Offset<ss::ssfb::EffectFile>> (_o->effectFileList.size(), [](size_t i, _VectorArgs *__va) { return CreateEffectFile(*__va->__fbb, __va->__o->effectFileList[i].get(), __va->__rehasher); }, &_va ) : 0;
   auto _numCells = _o->numCells;
   auto _numAnimePacks = _o->numAnimePacks;
   auto _numEffectFileList = _o->numEffectFileList;
@@ -5405,70 +5661,70 @@ inline flatbuffers::Offset<ProjectData> CreateProjectData(flatbuffers::FlatBuffe
       _numEffectFileList);
 }
 
-inline bool VerifyEffectNodeBehavior(flatbuffers::Verifier &verifier, const void *obj, EffectNodeBehavior type) {
+inline bool VerifyEffectNodeBehavior(::flatbuffers::Verifier &verifier, const void *obj, EffectNodeBehavior type) {
   switch (type) {
     case EffectNodeBehavior_NONE: {
       return true;
     }
     case EffectNodeBehavior_EffectParticleElementBasic: {
-      return verifier.Verify<EffectParticleElementBasic>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementBasic>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      return verifier.Verify<EffectParticleElementRndSeedChange>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementRndSeedChange>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementDelay: {
-      return verifier.Verify<EffectParticleElementDelay>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementDelay>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementGravity: {
-      return verifier.Verify<EffectParticleElementGravity>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementGravity>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementPosition: {
-      return verifier.Verify<EffectParticleElementPosition>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementPosition>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementRotation: {
-      return verifier.Verify<EffectParticleElementRotation>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementRotation>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      return verifier.Verify<EffectParticleElementRotationTrans>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementRotationTrans>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      return verifier.Verify<EffectParticleElementTransSpeed>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementTransSpeed>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      return verifier.Verify<EffectParticleElementTangentialAcceleration>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementTangentialAcceleration>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementInitColor: {
-      return verifier.Verify<EffectParticleElementInitColor>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementInitColor>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementTransColor: {
-      return verifier.Verify<EffectParticleElementTransColor>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementTransColor>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      return verifier.Verify<EffectParticleElementAlphaFade>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementAlphaFade>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementSize: {
-      return verifier.Verify<EffectParticleElementSize>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementSize>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleElementTransSize: {
-      return verifier.Verify<EffectParticleElementTransSize>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleElementTransSize>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticlePointGravity: {
-      return verifier.Verify<EffectParticlePointGravity>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticlePointGravity>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      return verifier.Verify<EffectParticleTurnToDirectionEnabled>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleTurnToDirectionEnabled>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      return verifier.Verify<EffectParticleInfiniteEmitEnabled>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::EffectParticleInfiniteEmitEnabled>(static_cast<const uint8_t *>(obj), 0, 4);
     }
-    default: return false;
+    default: return true;
   }
 }
 
-inline bool VerifyEffectNodeBehaviorVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types) {
+inline bool VerifyEffectNodeBehaviorVector(::flatbuffers::Verifier &verifier, const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *values, const ::flatbuffers::Vector<uint8_t> *types) {
   if (!values || !types) return !values && !types;
   if (values->size() != types->size()) return false;
-  for (flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
+  for (::flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
     if (!VerifyEffectNodeBehavior(
         verifier,  values->Get(i), types->GetEnum<EffectNodeBehavior>(i))) {
       return false;
@@ -5477,222 +5733,224 @@ inline bool VerifyEffectNodeBehaviorVector(flatbuffers::Verifier &verifier, cons
   return true;
 }
 
-inline void *EffectNodeBehaviorUnion::UnPack(const void *obj, EffectNodeBehavior type, const flatbuffers::resolver_function_t *resolver) {
+inline void *EffectNodeBehaviorUnion::UnPack(const void *obj, EffectNodeBehavior type, const ::flatbuffers::resolver_function_t *resolver) {
+  (void)resolver;
   switch (type) {
     case EffectNodeBehavior_EffectParticleElementBasic: {
-      auto ptr = reinterpret_cast<const EffectParticleElementBasic *>(obj);
-      return new EffectParticleElementBasic(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementBasic *>(obj);
+      return new ss::ssfb::EffectParticleElementBasic(*ptr);
     }
     case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRndSeedChange *>(obj);
-      return new EffectParticleElementRndSeedChange(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementRndSeedChange *>(obj);
+      return new ss::ssfb::EffectParticleElementRndSeedChange(*ptr);
     }
     case EffectNodeBehavior_EffectParticleElementDelay: {
-      auto ptr = reinterpret_cast<const EffectParticleElementDelay *>(obj);
-      return new EffectParticleElementDelay(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementDelay *>(obj);
+      return new ss::ssfb::EffectParticleElementDelay(*ptr);
     }
     case EffectNodeBehavior_EffectParticleElementGravity: {
-      auto ptr = reinterpret_cast<const EffectParticleElementGravity *>(obj);
-      return new EffectParticleElementGravity(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementGravity *>(obj);
+      return new ss::ssfb::EffectParticleElementGravity(*ptr);
     }
     case EffectNodeBehavior_EffectParticleElementPosition: {
-      auto ptr = reinterpret_cast<const EffectParticleElementPosition *>(obj);
-      return new EffectParticleElementPosition(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementPosition *>(obj);
+      return new ss::ssfb::EffectParticleElementPosition(*ptr);
     }
     case EffectNodeBehavior_EffectParticleElementRotation: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotation *>(obj);
-      return new EffectParticleElementRotation(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementRotation *>(obj);
+      return new ss::ssfb::EffectParticleElementRotation(*ptr);
     }
     case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotationTrans *>(obj);
-      return new EffectParticleElementRotationTrans(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementRotationTrans *>(obj);
+      return new ss::ssfb::EffectParticleElementRotationTrans(*ptr);
     }
     case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSpeed *>(obj);
-      return new EffectParticleElementTransSpeed(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementTransSpeed *>(obj);
+      return new ss::ssfb::EffectParticleElementTransSpeed(*ptr);
     }
     case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(obj);
-      return new EffectParticleElementTangentialAcceleration(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementTangentialAcceleration *>(obj);
+      return new ss::ssfb::EffectParticleElementTangentialAcceleration(*ptr);
     }
     case EffectNodeBehavior_EffectParticleElementInitColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementInitColor *>(obj);
-      return new EffectParticleElementInitColor(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementInitColor *>(obj);
+      return new ss::ssfb::EffectParticleElementInitColor(*ptr);
     }
     case EffectNodeBehavior_EffectParticleElementTransColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransColor *>(obj);
-      return new EffectParticleElementTransColor(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementTransColor *>(obj);
+      return new ss::ssfb::EffectParticleElementTransColor(*ptr);
     }
     case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      auto ptr = reinterpret_cast<const EffectParticleElementAlphaFade *>(obj);
-      return new EffectParticleElementAlphaFade(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementAlphaFade *>(obj);
+      return new ss::ssfb::EffectParticleElementAlphaFade(*ptr);
     }
     case EffectNodeBehavior_EffectParticleElementSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementSize *>(obj);
-      return new EffectParticleElementSize(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementSize *>(obj);
+      return new ss::ssfb::EffectParticleElementSize(*ptr);
     }
     case EffectNodeBehavior_EffectParticleElementTransSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSize *>(obj);
-      return new EffectParticleElementTransSize(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementTransSize *>(obj);
+      return new ss::ssfb::EffectParticleElementTransSize(*ptr);
     }
     case EffectNodeBehavior_EffectParticlePointGravity: {
-      auto ptr = reinterpret_cast<const EffectParticlePointGravity *>(obj);
-      return new EffectParticlePointGravity(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticlePointGravity *>(obj);
+      return new ss::ssfb::EffectParticlePointGravity(*ptr);
     }
     case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(obj);
-      return new EffectParticleTurnToDirectionEnabled(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleTurnToDirectionEnabled *>(obj);
+      return new ss::ssfb::EffectParticleTurnToDirectionEnabled(*ptr);
     }
     case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(obj);
-      return new EffectParticleInfiniteEmitEnabled(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleInfiniteEmitEnabled *>(obj);
+      return new ss::ssfb::EffectParticleInfiniteEmitEnabled(*ptr);
     }
     default: return nullptr;
   }
 }
 
-inline flatbuffers::Offset<void> EffectNodeBehaviorUnion::Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher) const {
+inline ::flatbuffers::Offset<void> EffectNodeBehaviorUnion::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const ::flatbuffers::rehasher_function_t *_rehasher) const {
+  (void)_rehasher;
   switch (type) {
     case EffectNodeBehavior_EffectParticleElementBasic: {
-      auto ptr = reinterpret_cast<const EffectParticleElementBasic *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementBasic *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRndSeedChange *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementRndSeedChange *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleElementDelay: {
-      auto ptr = reinterpret_cast<const EffectParticleElementDelay *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementDelay *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleElementGravity: {
-      auto ptr = reinterpret_cast<const EffectParticleElementGravity *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementGravity *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleElementPosition: {
-      auto ptr = reinterpret_cast<const EffectParticleElementPosition *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementPosition *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleElementRotation: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotation *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementRotation *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      auto ptr = reinterpret_cast<const EffectParticleElementRotationTrans *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementRotationTrans *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSpeed *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementTransSpeed *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTangentialAcceleration *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementTangentialAcceleration *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleElementInitColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementInitColor *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementInitColor *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleElementTransColor: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransColor *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementTransColor *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      auto ptr = reinterpret_cast<const EffectParticleElementAlphaFade *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementAlphaFade *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleElementSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementSize *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementSize *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleElementTransSize: {
-      auto ptr = reinterpret_cast<const EffectParticleElementTransSize *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleElementTransSize *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticlePointGravity: {
-      auto ptr = reinterpret_cast<const EffectParticlePointGravity *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticlePointGravity *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleTurnToDirectionEnabled *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleTurnToDirectionEnabled *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      auto ptr = reinterpret_cast<const EffectParticleInfiniteEmitEnabled *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::EffectParticleInfiniteEmitEnabled *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     default: return 0;
   }
 }
 
-inline EffectNodeBehaviorUnion::EffectNodeBehaviorUnion(const EffectNodeBehaviorUnion &u) FLATBUFFERS_NOEXCEPT : type(u.type), value(nullptr) {
+inline EffectNodeBehaviorUnion::EffectNodeBehaviorUnion(const EffectNodeBehaviorUnion &u) : type(u.type), value(nullptr) {
   switch (type) {
     case EffectNodeBehavior_EffectParticleElementBasic: {
-      value = new EffectParticleElementBasic(*reinterpret_cast<EffectParticleElementBasic *>(u.value));
+      value = new ss::ssfb::EffectParticleElementBasic(*reinterpret_cast<ss::ssfb::EffectParticleElementBasic *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      value = new EffectParticleElementRndSeedChange(*reinterpret_cast<EffectParticleElementRndSeedChange *>(u.value));
+      value = new ss::ssfb::EffectParticleElementRndSeedChange(*reinterpret_cast<ss::ssfb::EffectParticleElementRndSeedChange *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleElementDelay: {
-      value = new EffectParticleElementDelay(*reinterpret_cast<EffectParticleElementDelay *>(u.value));
+      value = new ss::ssfb::EffectParticleElementDelay(*reinterpret_cast<ss::ssfb::EffectParticleElementDelay *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleElementGravity: {
-      value = new EffectParticleElementGravity(*reinterpret_cast<EffectParticleElementGravity *>(u.value));
+      value = new ss::ssfb::EffectParticleElementGravity(*reinterpret_cast<ss::ssfb::EffectParticleElementGravity *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleElementPosition: {
-      value = new EffectParticleElementPosition(*reinterpret_cast<EffectParticleElementPosition *>(u.value));
+      value = new ss::ssfb::EffectParticleElementPosition(*reinterpret_cast<ss::ssfb::EffectParticleElementPosition *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleElementRotation: {
-      value = new EffectParticleElementRotation(*reinterpret_cast<EffectParticleElementRotation *>(u.value));
+      value = new ss::ssfb::EffectParticleElementRotation(*reinterpret_cast<ss::ssfb::EffectParticleElementRotation *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      value = new EffectParticleElementRotationTrans(*reinterpret_cast<EffectParticleElementRotationTrans *>(u.value));
+      value = new ss::ssfb::EffectParticleElementRotationTrans(*reinterpret_cast<ss::ssfb::EffectParticleElementRotationTrans *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      value = new EffectParticleElementTransSpeed(*reinterpret_cast<EffectParticleElementTransSpeed *>(u.value));
+      value = new ss::ssfb::EffectParticleElementTransSpeed(*reinterpret_cast<ss::ssfb::EffectParticleElementTransSpeed *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      value = new EffectParticleElementTangentialAcceleration(*reinterpret_cast<EffectParticleElementTangentialAcceleration *>(u.value));
+      value = new ss::ssfb::EffectParticleElementTangentialAcceleration(*reinterpret_cast<ss::ssfb::EffectParticleElementTangentialAcceleration *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleElementInitColor: {
-      value = new EffectParticleElementInitColor(*reinterpret_cast<EffectParticleElementInitColor *>(u.value));
+      value = new ss::ssfb::EffectParticleElementInitColor(*reinterpret_cast<ss::ssfb::EffectParticleElementInitColor *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleElementTransColor: {
-      value = new EffectParticleElementTransColor(*reinterpret_cast<EffectParticleElementTransColor *>(u.value));
+      value = new ss::ssfb::EffectParticleElementTransColor(*reinterpret_cast<ss::ssfb::EffectParticleElementTransColor *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      value = new EffectParticleElementAlphaFade(*reinterpret_cast<EffectParticleElementAlphaFade *>(u.value));
+      value = new ss::ssfb::EffectParticleElementAlphaFade(*reinterpret_cast<ss::ssfb::EffectParticleElementAlphaFade *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleElementSize: {
-      value = new EffectParticleElementSize(*reinterpret_cast<EffectParticleElementSize *>(u.value));
+      value = new ss::ssfb::EffectParticleElementSize(*reinterpret_cast<ss::ssfb::EffectParticleElementSize *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleElementTransSize: {
-      value = new EffectParticleElementTransSize(*reinterpret_cast<EffectParticleElementTransSize *>(u.value));
+      value = new ss::ssfb::EffectParticleElementTransSize(*reinterpret_cast<ss::ssfb::EffectParticleElementTransSize *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticlePointGravity: {
-      value = new EffectParticlePointGravity(*reinterpret_cast<EffectParticlePointGravity *>(u.value));
+      value = new ss::ssfb::EffectParticlePointGravity(*reinterpret_cast<ss::ssfb::EffectParticlePointGravity *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      value = new EffectParticleTurnToDirectionEnabled(*reinterpret_cast<EffectParticleTurnToDirectionEnabled *>(u.value));
+      value = new ss::ssfb::EffectParticleTurnToDirectionEnabled(*reinterpret_cast<ss::ssfb::EffectParticleTurnToDirectionEnabled *>(u.value));
       break;
     }
     case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      value = new EffectParticleInfiniteEmitEnabled(*reinterpret_cast<EffectParticleInfiniteEmitEnabled *>(u.value));
+      value = new ss::ssfb::EffectParticleInfiniteEmitEnabled(*reinterpret_cast<ss::ssfb::EffectParticleInfiniteEmitEnabled *>(u.value));
       break;
     }
     default:
@@ -5703,87 +5961,87 @@ inline EffectNodeBehaviorUnion::EffectNodeBehaviorUnion(const EffectNodeBehavior
 inline void EffectNodeBehaviorUnion::Reset() {
   switch (type) {
     case EffectNodeBehavior_EffectParticleElementBasic: {
-      auto ptr = reinterpret_cast<EffectParticleElementBasic *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementBasic *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleElementRndSeedChange: {
-      auto ptr = reinterpret_cast<EffectParticleElementRndSeedChange *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementRndSeedChange *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleElementDelay: {
-      auto ptr = reinterpret_cast<EffectParticleElementDelay *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementDelay *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleElementGravity: {
-      auto ptr = reinterpret_cast<EffectParticleElementGravity *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementGravity *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleElementPosition: {
-      auto ptr = reinterpret_cast<EffectParticleElementPosition *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementPosition *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleElementRotation: {
-      auto ptr = reinterpret_cast<EffectParticleElementRotation *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementRotation *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleElementRotationTrans: {
-      auto ptr = reinterpret_cast<EffectParticleElementRotationTrans *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementRotationTrans *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleElementTransSpeed: {
-      auto ptr = reinterpret_cast<EffectParticleElementTransSpeed *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementTransSpeed *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleElementTangentialAcceleration: {
-      auto ptr = reinterpret_cast<EffectParticleElementTangentialAcceleration *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementTangentialAcceleration *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleElementInitColor: {
-      auto ptr = reinterpret_cast<EffectParticleElementInitColor *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementInitColor *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleElementTransColor: {
-      auto ptr = reinterpret_cast<EffectParticleElementTransColor *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementTransColor *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleElementAlphaFade: {
-      auto ptr = reinterpret_cast<EffectParticleElementAlphaFade *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementAlphaFade *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleElementSize: {
-      auto ptr = reinterpret_cast<EffectParticleElementSize *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementSize *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleElementTransSize: {
-      auto ptr = reinterpret_cast<EffectParticleElementTransSize *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleElementTransSize *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticlePointGravity: {
-      auto ptr = reinterpret_cast<EffectParticlePointGravity *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticlePointGravity *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleTurnToDirectionEnabled: {
-      auto ptr = reinterpret_cast<EffectParticleTurnToDirectionEnabled *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleTurnToDirectionEnabled *>(value);
       delete ptr;
       break;
     }
     case EffectNodeBehavior_EffectParticleInfiniteEmitEnabled: {
-      auto ptr = reinterpret_cast<EffectParticleInfiniteEmitEnabled *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::EffectParticleInfiniteEmitEnabled *>(value);
       delete ptr;
       break;
     }
@@ -5793,32 +6051,32 @@ inline void EffectNodeBehaviorUnion::Reset() {
   type = EffectNodeBehavior_NONE;
 }
 
-inline bool VerifyuserDataValue(flatbuffers::Verifier &verifier, const void *obj, userDataValue type) {
+inline bool VerifyuserDataValue(::flatbuffers::Verifier &verifier, const void *obj, userDataValue type) {
   switch (type) {
     case userDataValue_NONE: {
       return true;
     }
     case userDataValue_userDataInteger: {
-      return verifier.Verify<userDataInteger>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::userDataInteger>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case userDataValue_userDataRect: {
-      return verifier.Verify<userDataRect>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::userDataRect>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case userDataValue_userDataPoint: {
-      return verifier.Verify<userDataPoint>(static_cast<const uint8_t *>(obj), 0);
+      return verifier.VerifyField<ss::ssfb::userDataPoint>(static_cast<const uint8_t *>(obj), 0, 4);
     }
     case userDataValue_userDataString: {
-      auto ptr = reinterpret_cast<const userDataString *>(obj);
+      auto ptr = reinterpret_cast<const ss::ssfb::userDataString *>(obj);
       return verifier.VerifyTable(ptr);
     }
-    default: return false;
+    default: return true;
   }
 }
 
-inline bool VerifyuserDataValueVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types) {
+inline bool VerifyuserDataValueVector(::flatbuffers::Verifier &verifier, const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *values, const ::flatbuffers::Vector<uint8_t> *types) {
   if (!values || !types) return !values && !types;
   if (values->size() != types->size()) return false;
-  for (flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
+  for (::flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
     if (!VerifyuserDataValue(
         verifier,  values->Get(i), types->GetEnum<userDataValue>(i))) {
       return false;
@@ -5827,66 +6085,68 @@ inline bool VerifyuserDataValueVector(flatbuffers::Verifier &verifier, const fla
   return true;
 }
 
-inline void *userDataValueUnion::UnPack(const void *obj, userDataValue type, const flatbuffers::resolver_function_t *resolver) {
+inline void *userDataValueUnion::UnPack(const void *obj, userDataValue type, const ::flatbuffers::resolver_function_t *resolver) {
+  (void)resolver;
   switch (type) {
     case userDataValue_userDataInteger: {
-      auto ptr = reinterpret_cast<const userDataInteger *>(obj);
-      return new userDataInteger(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::userDataInteger *>(obj);
+      return new ss::ssfb::userDataInteger(*ptr);
     }
     case userDataValue_userDataRect: {
-      auto ptr = reinterpret_cast<const userDataRect *>(obj);
-      return new userDataRect(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::userDataRect *>(obj);
+      return new ss::ssfb::userDataRect(*ptr);
     }
     case userDataValue_userDataPoint: {
-      auto ptr = reinterpret_cast<const userDataPoint *>(obj);
-      return new userDataPoint(*ptr);
+      auto ptr = reinterpret_cast<const ss::ssfb::userDataPoint *>(obj);
+      return new ss::ssfb::userDataPoint(*ptr);
     }
     case userDataValue_userDataString: {
-      auto ptr = reinterpret_cast<const userDataString *>(obj);
+      auto ptr = reinterpret_cast<const ss::ssfb::userDataString *>(obj);
       return ptr->UnPack(resolver);
     }
     default: return nullptr;
   }
 }
 
-inline flatbuffers::Offset<void> userDataValueUnion::Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher) const {
+inline ::flatbuffers::Offset<void> userDataValueUnion::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const ::flatbuffers::rehasher_function_t *_rehasher) const {
+  (void)_rehasher;
   switch (type) {
     case userDataValue_userDataInteger: {
-      auto ptr = reinterpret_cast<const userDataInteger *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::userDataInteger *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case userDataValue_userDataRect: {
-      auto ptr = reinterpret_cast<const userDataRect *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::userDataRect *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case userDataValue_userDataPoint: {
-      auto ptr = reinterpret_cast<const userDataPoint *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::userDataPoint *>(value);
       return _fbb.CreateStruct(*ptr).Union();
     }
     case userDataValue_userDataString: {
-      auto ptr = reinterpret_cast<const userDataStringT *>(value);
+      auto ptr = reinterpret_cast<const ss::ssfb::userDataStringT *>(value);
       return CreateuserDataString(_fbb, ptr, _rehasher).Union();
     }
     default: return 0;
   }
 }
 
-inline userDataValueUnion::userDataValueUnion(const userDataValueUnion &u) FLATBUFFERS_NOEXCEPT : type(u.type), value(nullptr) {
+inline userDataValueUnion::userDataValueUnion(const userDataValueUnion &u) : type(u.type), value(nullptr) {
   switch (type) {
     case userDataValue_userDataInteger: {
-      value = new userDataInteger(*reinterpret_cast<userDataInteger *>(u.value));
+      value = new ss::ssfb::userDataInteger(*reinterpret_cast<ss::ssfb::userDataInteger *>(u.value));
       break;
     }
     case userDataValue_userDataRect: {
-      value = new userDataRect(*reinterpret_cast<userDataRect *>(u.value));
+      value = new ss::ssfb::userDataRect(*reinterpret_cast<ss::ssfb::userDataRect *>(u.value));
       break;
     }
     case userDataValue_userDataPoint: {
-      value = new userDataPoint(*reinterpret_cast<userDataPoint *>(u.value));
+      value = new ss::ssfb::userDataPoint(*reinterpret_cast<ss::ssfb::userDataPoint *>(u.value));
       break;
     }
     case userDataValue_userDataString: {
-      value = new userDataStringT(*reinterpret_cast<userDataStringT *>(u.value));
+      value = new ss::ssfb::userDataStringT(*reinterpret_cast<ss::ssfb::userDataStringT *>(u.value));
       break;
     }
     default:
@@ -5897,22 +6157,22 @@ inline userDataValueUnion::userDataValueUnion(const userDataValueUnion &u) FLATB
 inline void userDataValueUnion::Reset() {
   switch (type) {
     case userDataValue_userDataInteger: {
-      auto ptr = reinterpret_cast<userDataInteger *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::userDataInteger *>(value);
       delete ptr;
       break;
     }
     case userDataValue_userDataRect: {
-      auto ptr = reinterpret_cast<userDataRect *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::userDataRect *>(value);
       delete ptr;
       break;
     }
     case userDataValue_userDataPoint: {
-      auto ptr = reinterpret_cast<userDataPoint *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::userDataPoint *>(value);
       delete ptr;
       break;
     }
     case userDataValue_userDataString: {
-      auto ptr = reinterpret_cast<userDataStringT *>(value);
+      auto ptr = reinterpret_cast<ss::ssfb::userDataStringT *>(value);
       delete ptr;
       break;
     }
@@ -5923,11 +6183,11 @@ inline void userDataValueUnion::Reset() {
 }
 
 inline const ss::ssfb::ProjectData *GetProjectData(const void *buf) {
-  return flatbuffers::GetRoot<ss::ssfb::ProjectData>(buf);
+  return ::flatbuffers::GetRoot<ss::ssfb::ProjectData>(buf);
 }
 
 inline const ss::ssfb::ProjectData *GetSizePrefixedProjectData(const void *buf) {
-  return flatbuffers::GetSizePrefixedRoot<ss::ssfb::ProjectData>(buf);
+  return ::flatbuffers::GetSizePrefixedRoot<ss::ssfb::ProjectData>(buf);
 }
 
 inline const char *ProjectDataIdentifier() {
@@ -5935,36 +6195,47 @@ inline const char *ProjectDataIdentifier() {
 }
 
 inline bool ProjectDataBufferHasIdentifier(const void *buf) {
-  return flatbuffers::BufferHasIdentifier(
+  return ::flatbuffers::BufferHasIdentifier(
       buf, ProjectDataIdentifier());
 }
 
+inline bool SizePrefixedProjectDataBufferHasIdentifier(const void *buf) {
+  return ::flatbuffers::BufferHasIdentifier(
+      buf, ProjectDataIdentifier(), true);
+}
+
 inline bool VerifyProjectDataBuffer(
-    flatbuffers::Verifier &verifier) {
+    ::flatbuffers::Verifier &verifier) {
   return verifier.VerifyBuffer<ss::ssfb::ProjectData>(ProjectDataIdentifier());
 }
 
 inline bool VerifySizePrefixedProjectDataBuffer(
-    flatbuffers::Verifier &verifier) {
+    ::flatbuffers::Verifier &verifier) {
   return verifier.VerifySizePrefixedBuffer<ss::ssfb::ProjectData>(ProjectDataIdentifier());
 }
 
 inline void FinishProjectDataBuffer(
-    flatbuffers::FlatBufferBuilder &fbb,
-    flatbuffers::Offset<ss::ssfb::ProjectData> root) {
+    ::flatbuffers::FlatBufferBuilder &fbb,
+    ::flatbuffers::Offset<ss::ssfb::ProjectData> root) {
   fbb.Finish(root, ProjectDataIdentifier());
 }
 
 inline void FinishSizePrefixedProjectDataBuffer(
-    flatbuffers::FlatBufferBuilder &fbb,
-    flatbuffers::Offset<ss::ssfb::ProjectData> root) {
+    ::flatbuffers::FlatBufferBuilder &fbb,
+    ::flatbuffers::Offset<ss::ssfb::ProjectData> root) {
   fbb.FinishSizePrefixed(root, ProjectDataIdentifier());
 }
 
-inline std::unique_ptr<ProjectDataT> UnPackProjectData(
+inline std::unique_ptr<ss::ssfb::ProjectDataT> UnPackProjectData(
     const void *buf,
-    const flatbuffers::resolver_function_t *res = nullptr) {
-  return std::unique_ptr<ProjectDataT>(GetProjectData(buf)->UnPack(res));
+    const ::flatbuffers::resolver_function_t *res = nullptr) {
+  return std::unique_ptr<ss::ssfb::ProjectDataT>(GetProjectData(buf)->UnPack(res));
+}
+
+inline std::unique_ptr<ss::ssfb::ProjectDataT> UnPackSizePrefixedProjectData(
+    const void *buf,
+    const ::flatbuffers::resolver_function_t *res = nullptr) {
+  return std::unique_ptr<ss::ssfb::ProjectDataT>(GetSizePrefixedProjectData(buf)->UnPack(res));
 }
 
 }  // namespace ssfb

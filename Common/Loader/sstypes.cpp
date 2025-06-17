@@ -1,5 +1,7 @@
-﻿
-#include "sstypes.h"
+﻿#include "sstypes.h"
+
+namespace spritestudio6
+{
 
 //---------------------------------------------------------------
 //相互変換 SsPartType
@@ -13,13 +15,13 @@ SsString	__EnumToString_( SsPartType::_enum n )
 	if ( SsPartType::effect == n) return "effect";
 
 
-	if (SsPartType::armature) return "armature";
-	if (SsPartType::mesh) return "mesh";
-	if (SsPartType::movenode) return "movenode";
-	if (SsPartType::constraint) return "constraint";
-	if (SsPartType::mask) return "mask";
-	if (SsPartType::joint) return "joint";
-	if (SsPartType::bonepoint) return "bonepoint";
+	if (SsPartType::armature == n) return "armature";
+	if (SsPartType::mesh == n) return "mesh";
+	if (SsPartType::movenode == n) return "movenode";
+	if (SsPartType::constraint == n) return "constraint";
+	if (SsPartType::mask == n) return "mask";
+	if (SsPartType::joint == n) return "joint";
+	if (SsPartType::bonepoint == n) return "bonepoint";
 
 
 	return "invalid";	
@@ -258,6 +260,7 @@ SsString	__EnumToString_( SsAttributeKind::_enum n )
 	if ( SsAttributeKind::hide == n)		return "HIDE";
 	if ( SsAttributeKind::partsColor == n)	return "PCOL";
 	if ( SsAttributeKind::color == n)		return "VCOL";
+	if ( SsAttributeKind::shader == n)		return "SHDR";
 	if ( SsAttributeKind::vertex == n)		return "VERT";
 	if ( SsAttributeKind::pivotx == n)		return "PVTX";
 	if ( SsAttributeKind::pivoty == n)		return "PVTY";
@@ -275,6 +278,7 @@ SsString	__EnumToString_( SsAttributeKind::_enum n )
 	if ( SsAttributeKind::mask == n)		return "MASK";
 	if ( SsAttributeKind::boundr == n)		return "BNDR";
 	if ( SsAttributeKind::user == n)		return "USER";
+	if ( SsAttributeKind::signal == n)		return "SIGN";
 	if ( SsAttributeKind::instance == n)    return "IPRM";
 	if ( SsAttributeKind::mask == n)	    return "MASK";
 	if ( SsAttributeKind::deform == n)	    return "DEFM";
@@ -308,6 +312,7 @@ void	__StringToEnum_( SsString n , SsAttributeKind::_enum &out )
 	if ( n == "HIDE") out = SsAttributeKind::hide;
 	if ( n == "PCOL") out = SsAttributeKind::partsColor;
 	if ( n == "VCOL") out = SsAttributeKind::color;
+	if ( n == "SHDR") out = SsAttributeKind::shader;
 	if ( n == "VERT") out = SsAttributeKind::vertex;
 	if ( n == "PVTX") out = SsAttributeKind::pivotx;
 	if ( n == "PVTY") out = SsAttributeKind::pivoty;
@@ -324,6 +329,7 @@ void	__StringToEnum_( SsString n , SsAttributeKind::_enum &out )
 	if ( n == "UVSY") out = SsAttributeKind::uvsy;
 	if ( n == "BNDR") out = SsAttributeKind::boundr;
 	if ( n == "USER") out = SsAttributeKind::user;
+	if ( n == "SIGN") out = SsAttributeKind::signal;
 	if ( n == "IPRM") out = SsAttributeKind::instance;
 	if ( n == "EFCT") out = SsAttributeKind::effect;
 	if ( n == "MASK") out = SsAttributeKind::mask;
@@ -333,7 +339,7 @@ void	__StringToEnum_( SsString n , SsAttributeKind::_enum &out )
 }
 
 
-SS_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsEffectNodeType );
 
 //---------------------------------------------------------------
 //相互変換 SsPartType
@@ -357,7 +363,7 @@ void 	__StringToEnum_( SsString n , SsEffectNodeType::_enum& out)
 }
 
 
-SS_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
+SPRITESTUDIO6SDK_DECLARE_ENUM_STRING_DEF( SsRenderBlendType );
 
 //---------------------------------------------------------------
 //相互変換 SsPartType
@@ -416,5 +422,42 @@ void 	__StringToEnum_(SsString n, SsIkRotationArrow::_enum& out)
 	if (n == "anticlockwise") out = SsIkRotationArrow::anticlockwise;
 }
 
+//---------------------------------------------------------------
+//相互変換 SsSequenceType
+SsString	__EnumToString_(SsSequenceType::_enum n)
+{
+	if (n == SsSequenceType::last) return "LAST";
+	if (n == SsSequenceType::keep) return "KEEP";
+	if (n == SsSequenceType::top) return "TOP";
+
+	return "invalid";
+}
+
+void 	__StringToEnum_(SsString n, SsSequenceType::_enum& out)
+{
+	out = SsSequenceType::invalid;
+	if (n == "LAST") out = SsSequenceType::last;
+	if (n == "KEEP") out = SsSequenceType::keep;
+	if (n == "TOP") out = SsSequenceType::top;
+}
+
+//相互変換 SsSignalParamType
+SsString	__EnumToString_(SsSignalParamType::_enum n)
+{
+	if (n == SsSignalParamType::index) return "index";
+	if (n == SsSignalParamType::integer) return "integer";
+	if (n == SsSignalParamType::floating) return "floating";
+
+	return "none";
+}
+
+void 	__StringToEnum_(SsString n, SsSignalParamType::_enum& out)
+{
+	out = SsSignalParamType::none;
+	if (n == "index") out = SsSignalParamType::index;
+	if (n == "integer") out = SsSignalParamType::integer;
+	if (n == "floating") out = SsSignalParamType::floating;
+}
 
 
+}	// namespace spritestudio6

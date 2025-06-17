@@ -14,7 +14,6 @@
 #import <AppKit/NSOpenPanel.h>
 #import <Foundation/Foundation.h>
 
-
 extern void GlContexMakeCurrent();
 
 bool MacOSXFileOpenDlg::show()
@@ -25,7 +24,7 @@ bool MacOSXFileOpenDlg::show()
     [openPanel setAllowedFileTypes:allowedFileTypes];
     NSInteger pressedButton = [openPanel runModal];
     
-    if( pressedButton == NSOKButton ){
+    if( pressedButton == NSModalResponseOK ){
         
         // get file path
         NSURL * filePath = [openPanel URL];
@@ -36,7 +35,7 @@ bool MacOSXFileOpenDlg::show()
         filepath = (char*)[urlString UTF8String];//形式を変換
         GlContexMakeCurrent();
         return true;
-    }else if( pressedButton == NSCancelButton ){
+    }else if( pressedButton == NSModalResponseCancel ){
      	NSLog(@"Cancel button was pressed.");
     }else{
      	// error
@@ -45,8 +44,5 @@ bool MacOSXFileOpenDlg::show()
     GlContexMakeCurrent();
     return false;
 }
-
-
-
 
 #endif
