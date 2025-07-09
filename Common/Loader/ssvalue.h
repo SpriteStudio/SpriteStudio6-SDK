@@ -44,6 +44,7 @@ public:
 		bool					_bool;
 		SsArray*				_array;
 		SsHash*					_hash;
+		void*					_ptr;
 	};
 
 	int		_int_temp;
@@ -51,7 +52,7 @@ public:
 	bool	_bool_temp;
 
 
-	SsValue() : type(unkown) , _str(0){}
+	SsValue() : type(unkown) , _ptr(nullptr), _int_temp(0), _float_temp(0), _bool_temp(false) {}
 
 	explicit SsValue(bool b ) : type(boolean_type) {  _bool = b; }
 	explicit SsValue(int n, char* org = 0) : type(int_type) {
@@ -83,6 +84,11 @@ public:
 
 		switch( x.type )
 		{
+			default:
+				_ptr = nullptr;
+				_int_temp = _float_temp = 0;
+				_bool_temp = false;
+				break;
 			case string_type:
 				_str = new SsString( *x._str );
 				_float_temp = (float)atof( _str->c_str() );

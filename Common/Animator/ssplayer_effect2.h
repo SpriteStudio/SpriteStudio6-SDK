@@ -255,7 +255,7 @@ struct particleParameter
 	int			overrideRSeed;
 
 
-	particleParameter(){}
+	particleParameter(): delay(0.0f), overrideRSeed(0), userOverrideRSeed(false) {}
 };
 
 

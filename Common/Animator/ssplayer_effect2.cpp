@@ -625,6 +625,7 @@ void SsEffectRenderV2::particleDraw(SsEffectEmitter* e , double time , SsEffectE
 		lp.stime = drawe->stime;
 		lp.lifetime = drawe->endtime;
 		lp.pid = 0;
+		lp.rot = 0;
 
 		if ( parent )lp.pid = plp->id;
 
@@ -643,8 +644,10 @@ void SsEffectRenderV2::particleDraw(SsEffectEmitter* e , double time , SsEffectE
 				pp.pid = plp->pid;
 				//パーティクルが発生した時間の親の位置を取る
 
+				#if 0 // memo: ptime は参照されない。2025/07/09
 				int ptime = lp.stime + pp.stime;
 				if ( ptime > lp.lifetime ) ptime = lp.lifetime;
+				#endif
 
 				//逆算はデバッグしずらいかもしれない
 				parent->updateParticle( (float)lp.stime + pp.stime , &pp);
