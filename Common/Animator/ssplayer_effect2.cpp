@@ -846,8 +846,9 @@ void    SsEffectRenderV2::reload()
 	layoutScale.y = (float)(this->effectData->layoutScaleY) / 100.0f;
 
 	//MEMO: cnumはスコープ内ワークなので、スマートポインタ化していません。
-	int* cnum = new int[list.size()];
-	for(size_t i=0; i<list.size(); i++)
+	int cnum_count = list.size();
+	int* cnum = new int[cnum_count];
+	for (size_t i = 0; i < cnum_count; i++)
 	{
 		cnum[i] = 0;
 	}
@@ -855,7 +856,7 @@ void    SsEffectRenderV2::reload()
 	bool _Infinite = false;
 	//パラメータを取得
 	//以前のデータ形式から変換
-	for ( size_t i = 0 ; i < list.size() ; i ++ )
+	for ( size_t i = 0 ; i < cnum_count; i ++ )
 	{
 		SsEffectNode *node = list[i];
 

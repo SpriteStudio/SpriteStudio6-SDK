@@ -52,43 +52,42 @@ public:
 	bool	_bool_temp;
 
 
-	SsValue() : type(unkown) , _ptr(nullptr), _int_temp(0), _float_temp(0), _bool_temp(false) {}
+	SsValue(): type(unkown) { init(); }
 
-	explicit SsValue(bool b ) : type(boolean_type) {  _bool = b; }
+	explicit SsValue(bool b) : type(boolean_type) { init(); _bool = b; }
 	explicit SsValue(int n, char* org = 0) : type(int_type) {
+		init();
 		_int = n; 
 		if (org)
 			org_txt = SsString(org);
 	}
 	explicit SsValue(float n, char* org = 0) : type(float_type)
 	{ 
+		init();
 		_float = n; 
 		if (org)
 			org_txt = SsString(org);
 
 	}
-	explicit SsValue(SsString& str)   {  type = string_type; _str = new SsString(str); }
-	explicit SsValue(const char* str)   {  type = string_type; _str = new SsString(str); }
+	explicit SsValue(SsString& str)   { init(); type = string_type; _str = new SsString(str); }
+	explicit SsValue(const char* str)   { init(); type = string_type; _str = new SsString(str); }
 	explicit SsValue(SsArray& n)
-	  { 
-			type = array_type; 
-			_array = new SsArray(n);
-		}
+	{ 
+		init();
+		type = array_type; 
+		_array = new SsArray(n);
+	}
 
 
-	explicit SsValue(SsHash& n)  { type = hash_type; _hash = new SsHash(n); }
+	explicit SsValue(SsHash& n)  { init(); type = hash_type; _hash = new SsHash(n); }
 
 
     SsValue(const SsValue& x)
 	{
+		init();
 
 		switch( x.type )
 		{
-			default:
-				_ptr = nullptr;
-				_int_temp = _float_temp = 0;
-				_bool_temp = false;
-				break;
 			case string_type:
 				_str = new SsString( *x._str );
 				_float_temp = (float)atof( _str->c_str() );
@@ -125,6 +124,14 @@ public:
 			new (this) SsValue(x);
 		}
 		return *this;
+	}
+
+	void	init()
+	{
+		_ptr = nullptr;
+		_int_temp = 0;
+		_float_temp = 0.0f;
+		_bool_temp = false;
 	}
 
 	void	release()

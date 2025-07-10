@@ -178,7 +178,7 @@ public:
 				}
 			}
 
-			if ( root->child == sub )
+			if ( root->child == sub && sub != nullptr)
 			{
 				treeitem* temp = root->child;
 				if ( temp )
@@ -189,8 +189,7 @@ public:
 						temp->sibling_next->parent = root;
 					}
 				}
-				root->child = root->child->sibling_next;
-
+				root->child = root->child ? root->child->sibling_next : nullptr;
 			}
 
 			if ( root->sibling_next )

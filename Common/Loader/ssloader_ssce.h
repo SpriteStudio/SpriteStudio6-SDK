@@ -37,7 +37,7 @@ public:
 	int	divw;
 	int	divh;
 
-	SsCell(){}
+	SsCell(): rotated(false), ismesh(false), divtype(SsMeshDivType::_enum::polyline_base), divw(1), divh(1) {}
 	virtual ~SsCell() {
 /*
 		for (std::vector<SsVector2*>::iterator itr = innerPoint.begin();
@@ -102,7 +102,7 @@ public:
 	SsString					loadFilepath;		///<実際にロードした場所
 
 
-	SsCellMap(){}
+	SsCellMap(): overrideTexSettings(false), wrapMode(SsTexWrapMode::_enum::clamp), filterMode(SsTexFilterMode::_enum::nearlest) {}
 	virtual ~SsCellMap()
 	{
 		for ( std::vector<SsCell*>::iterator itr = cells.begin() ; 

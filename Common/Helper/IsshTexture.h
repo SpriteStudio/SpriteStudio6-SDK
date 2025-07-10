@@ -94,7 +94,7 @@ private:
 	static ISSTexture*	create() { return m_texture_base_class->create(); }
 
 public:
-	SSTextureFactory(){}
+	SSTextureFactory(): auto_release_baseclass(true) {}
 	SSTextureFactory(ISSTexture* texture_base_class , bool auto_release_baseclass = true)
 	{ 
 		m_myInst = this ; m_texture_base_class = texture_base_class;

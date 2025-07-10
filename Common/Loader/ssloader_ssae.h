@@ -28,7 +28,7 @@ public:
 	int						startFrame;		//!< アニメーションの開始フレーム
 	int						endFrame;		//!< アニメーションの終了フレーム
 
-	SsAnimationSettings(){}
+	SsAnimationSettings();
 	virtual ~SsAnimationSettings(){}
 public:
 
@@ -109,7 +109,11 @@ public:
 
 public:
 	SsPart() : 
-	  name("") , arrayIndex(0), parentIndex(0) , show(0) , locked(0) , maskInfluence(true)
+	  name("") , arrayIndex(0), parentIndex(0) , show(0) , locked(0) , maskInfluence(true),
+		type(SsPartType::_enum::invalid),
+		boundsType(SsBoundsType::_enum::none),
+		inheritType(SsInheritType::_enum::parent),
+		alphaBlendType(SsBlendType::_enum::mix)
 	  {
 			refEffectName = "";
 			boneLength = 0;
@@ -266,7 +270,7 @@ public:
 
 
 public:
-	SsModel(){}
+	SsModel(): setupAnimation(nullptr) {}
 	virtual~ SsModel()
 	{
 		for ( std::vector<SsPart*>::iterator itr = partList.begin() ; 
@@ -320,6 +324,8 @@ public:
 	SsString	name;	///< 名前 [変数名変更禁止]
 	int			time;	///< 設置された時間(フレーム) [変数名変更禁止]
 
+	SsLabel(): time(0) {}
+
 	SPRITESTUDIO6SDK_SERIALIZE_BLOCK
 	{
 		SPRITESTUDIO6SDK_SSAR_DECLARE( name );
@@ -342,7 +348,7 @@ public:
 	bool						isSetup;		///< セットアップアニメか？
 
 public:
-	SsAnimation(){}
+	SsAnimation(): overrideSettings(false), isSetup(false) {}
 	virtual ~SsAnimation()
 	{
 		for ( std::vector<SsPartAnime*>::iterator itr = partAnimes.begin() ; 

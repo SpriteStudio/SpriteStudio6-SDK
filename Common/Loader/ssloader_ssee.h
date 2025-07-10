@@ -90,8 +90,8 @@ public:
 
 public:
 	SsEffectNode() :
-	  arrayIndex(0), parentIndex(0),	
-		  type(SsEffectNodeType::invalid)
+	  arrayIndex(0), parentIndex(0), type(SsEffectNodeType::invalid), visible(true)
+			
 	{}
 	~SsEffectNode(){}
 
@@ -129,7 +129,7 @@ public:
 
 
 public:
-	SsEffectModel() : root(0)
+	SsEffectModel() : root(nullptr), lockRandSeed(false), isLockRandSeed(false), fps(30), layoutScaleX(1), layoutScaleY(1)
 	{}
 
 	virtual ~SsEffectModel(){

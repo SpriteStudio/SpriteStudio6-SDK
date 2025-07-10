@@ -53,7 +53,7 @@ public:
 	virtual EnumSsArchiver::Type getType(){ return EnumSsArchiver::unkown;}
 
 
-	ISsXmlArchiver(){}
+	ISsXmlArchiver(): m_xml(nullptr) {}
 	virtual ~ISsXmlArchiver(){}
 
 	libXML::XMLElement*	getxml(){ return m_xml;} 

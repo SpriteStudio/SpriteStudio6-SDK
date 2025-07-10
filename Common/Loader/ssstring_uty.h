@@ -73,7 +73,7 @@ private:
 	int	tokennum;
 
 public:
-	SsStringTokenizer() {}
+	SsStringTokenizer(): tokenIndex(0), tokennum(0) {}
 	virtual ~SsStringTokenizer() {}
 
 	SsStringTokenizer(std::string src_str ,  char token ) {

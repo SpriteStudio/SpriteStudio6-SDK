@@ -23,7 +23,7 @@ public:
 	int						repeatCount;	/// 繰り返し再生回数
 
 public:
-	SsSequenceItem(){}
+	SsSequenceItem(): repeatCount(1) {}
 	virtual ~SsSequenceItem()
 	{
 	}
@@ -46,7 +46,7 @@ public:
 	std::vector<SsSequenceItem*>	list;		/// このシーケンスがもつアイテムのリスト
 
 public:
-	SsSequence(){}
+	SsSequence(): index(0), type(SsSequenceType::_enum::last) {}
 	virtual ~SsSequence()
 	{
 		for ( std::vector<SsSequenceItem*>::iterator itr = list.begin() ; 

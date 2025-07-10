@@ -364,7 +364,7 @@ public:
 
 	bool	syncStartEnd;	///< [編集用パラメータ]カーブエディタでの編集時に始点・終点ハンドルを同期して動かすか？
 
-	SsCurve() : startTime(0.f), startValue(0.f), endTime(0.f), endValue(0.f), startKeyTime(0.f), endKeyTime(0.f){}
+	SsCurve() : startTime(0.f), startValue(0.f), endTime(0.f), endValue(0.f), startKeyTime(0.f), endKeyTime(0.f), syncStartEnd(true) {}
 	~SsCurve(){}
 
 };
@@ -790,8 +790,9 @@ struct SsRefCell
 	int			mapid;
 	std::string	name;
 
-	
+	SsRefCell(): mapid(0) {}
 };
+
 class SsUserDataAnime
 {
 public:
@@ -809,7 +810,8 @@ public:
 		useInteger(false),
 		usePoint(false),
 		useRect(false),
-		useString(false)
+		useString(false),
+		integer(0)
 	{}
 };
 

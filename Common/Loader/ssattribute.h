@@ -58,7 +58,7 @@ public:
 	AttributeKeyDic		key_dic;
 
 public:
-	SsAttribute(){}
+	SsAttribute(): tag(SsAttributeKind::_enum::invalid) {}
 	virtual ~SsAttribute(){
 		for ( AttributeKeyList::iterator itr = key.begin() ; 
 			itr != key.end() ; itr ++ ) delete (*itr);
