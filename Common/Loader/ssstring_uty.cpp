@@ -1,5 +1,6 @@
 ﻿#include "ssstring_uty.h"
 #include "sscharconverter.h"
+#include "../Helper/DebugPrint.h"
 
 #ifdef _WIN32
 #include <direct.h>
@@ -60,21 +61,31 @@ std::string path2file(const std::string &path) {
 
 
 
-bool	is_digit_string( std::string &in_str , bool* is_priod )
+bool	is_digit_string( std::string &in_str , bool* has_period )
 {
-	std::istringstream in(in_str);
-	 char c;
-	
-	if ( is_priod != NULL )*is_priod = false;
+	//if (in_str == "0.501960813999176")
+	//{
+	//	SS_WARN_PRINT("is_digit_string: in_str == 0.501960813999176");
+	//}
 
-	while (in)
+	std::istringstream in(in_str);
+	char c;
+	
+	if ( has_period != NULL ) *has_period = false;
+
+	if (in_str.empty())
 	{
-		in.get(c);
+		// 空文字列は数字ではない
+		return false;
+	}
+
+	while (in.get(c))
+	{
 		if ( c < 0 ) return false;
 
 		if ( c =='.' )
 		{
-			if ( is_priod != NULL )*is_priod = true;
+			if ( has_period != NULL ) *has_period = true;
 		}
 		if ( !(isdigit( c ) || c =='.' || c=='-' || c=='+' ) )
 		{
@@ -188,5 +199,36 @@ bool checkFileVersion(std::string fileVersion, std::string nowVersion)
 	return ret;
 }
 
+double double_from_string(const char* str, bool* success)
+{
+	if (success)
+		*success = false;
+
+	if (str == nullptr || *str == '\0')
+	{
+		// Invalid input
+		return 0.0f;
+	}
+	errno = 0;
+	char* endptr;
+	double result = strtod(str, &endptr);
+	if (endptr == str)
+	{
+		// No conversion could be performed
+		//SS_WARN_PRINT("No conversion could be performed");
+		//SS_WARN_PRINT(str);
+		return 0.0f;
+	}
+	if (errno == ERANGE)
+	{
+		// Underflow or overflow occurred but result is still valid
+		return result;
+	}
+
+	if (success)
+		*success = true;
+
+	return result;
+}
 
 }	// namespace spritestudio6
