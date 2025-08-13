@@ -625,6 +625,7 @@ void SsEffectRenderV2::particleDraw(SsEffectEmitter* e , double time , SsEffectE
 		lp.stime = drawe->stime;
 		lp.lifetime = drawe->endtime;
 		lp.pid = 0;
+		lp.rot = 0;
 
 		if ( parent )lp.pid = plp->id;
 
@@ -643,8 +644,10 @@ void SsEffectRenderV2::particleDraw(SsEffectEmitter* e , double time , SsEffectE
 				pp.pid = plp->pid;
 				//パーティクルが発生した時間の親の位置を取る
 
+				#if 0 // memo: ptime は参照されない。2025/07/09
 				int ptime = lp.stime + pp.stime;
 				if ( ptime > lp.lifetime ) ptime = lp.lifetime;
+				#endif
 
 				//逆算はデバッグしずらいかもしれない
 				parent->updateParticle( (float)lp.stime + pp.stime , &pp);
@@ -843,8 +846,9 @@ void    SsEffectRenderV2::reload()
 	layoutScale.y = (float)(this->effectData->layoutScaleY) / 100.0f;
 
 	//MEMO: cnumはスコープ内ワークなので、スマートポインタ化していません。
-	int* cnum = new int[list.size()];
-	for(size_t i=0; i<list.size(); i++)
+	int cnum_count = list.size();
+	int* cnum = new int[cnum_count];
+	for (size_t i = 0; i < cnum_count; i++)
 	{
 		cnum[i] = 0;
 	}
@@ -852,7 +856,7 @@ void    SsEffectRenderV2::reload()
 	bool _Infinite = false;
 	//パラメータを取得
 	//以前のデータ形式から変換
-	for ( size_t i = 0 ; i < list.size() ; i ++ )
+	for ( size_t i = 0 ; i < cnum_count; i ++ )
 	{
 		SsEffectNode *node = list[i];
 

@@ -53,7 +53,7 @@ public:
 
 	int							vertexAnimeFloat;			//!< 頂点変形アトリビュートの少数対応
 
-	SsProjectSetting() 
+	SsProjectSetting(): wrapMode(SsTexWrapMode::_enum::clamp), filterMode(SsTexFilterMode::_enum::nearlest), queryExportBaseDirectory(false)
 	{
 		vertexAnimeFloat = false;							//!< SpriteStudio6.1以前のデータの場合は存在しないのでOFFを初期値とする
 	}

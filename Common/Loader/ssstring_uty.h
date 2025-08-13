@@ -63,6 +63,13 @@ std::string nomarizeFilename( std::string str );
 */
 bool checkFileVersion(std::string fileVersion, std::string nowVersion);
 
+/*
+* @brief 文字列をdouble型に変換します。
+* @param[in] str 変換する文字列
+* @param[out] success 変換に成功したかどうかを示すフラグ
+* retval 変換したdouble値
+*/
+double double_from_string(const char* str, bool* success = nullptr);
 
 
 class SsStringTokenizer
@@ -73,7 +80,7 @@ private:
 	int	tokennum;
 
 public:
-	SsStringTokenizer() {}
+	SsStringTokenizer(): tokenIndex(0), tokennum(0) {}
 	virtual ~SsStringTokenizer() {}
 
 	SsStringTokenizer(std::string src_str ,  char token ) {
@@ -95,7 +102,7 @@ public:
 	{
 		if (isEnd()) return false;
 		std::string str = string_array[tokenIndex];
-		*out = (float)atof(str.c_str());
+		*out = (float)double_from_string(str.c_str());
 		tokenIndex++;
 		return !isEnd();
 	}

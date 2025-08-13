@@ -81,12 +81,12 @@ public:
 
 public:
 	SsMeshPart() :
-		isBind(false), targetCell(0)
+		isBind(false), targetCell(nullptr), targetTexture(nullptr), myPartState(nullptr)
+		, indices_num(0), tri_size(0), ver_size(0), outter_vertexnum(0)
 		, bindBoneInfo()
 		, weightColors()
 		, vertices_outer()
 		, draw_vertices()
-		, myPartState(0)
 		, vertices(), colors(), uvs(), indices()
 		, update_vertices_outer()
 		, offset_world_vertices()
@@ -95,7 +95,8 @@ public:
 
 
 	SsMeshPart(SsPartState* s) :
-		isBind(false), targetCell(0)
+		isBind(false), targetCell(nullptr), targetTexture(nullptr), myPartState(s)
+		, indices_num(0), tri_size(0), ver_size(0), outter_vertexnum(0)
 		, weightColors()
 		, bindBoneInfo()
 		, vertices_outer()
@@ -104,7 +105,6 @@ public:
 		, update_vertices_outer()
 		, offset_world_vertices()
 	{
-		myPartState = s;
 	}
 
 	~SsMeshPart()

@@ -73,7 +73,9 @@ public:
 
 		if ( l > 32 ) l = 32;
 		for ( size_t i = 0 ; i < l ; i++ ) m_ident[i] = _ident[i];
-		m_ident[l+1] = 0;
+		// １バイトのオーバーラン修正
+		//m_ident[l+1] = 0;
+		m_ident[l] = 0;
 
 	}
 
@@ -176,7 +178,7 @@ public:
 				}
 			}
 
-			if ( root->child == sub )
+			if ( root->child == sub && sub != nullptr)
 			{
 				treeitem* temp = root->child;
 				if ( temp )
@@ -187,8 +189,7 @@ public:
 						temp->sibling_next->parent = root;
 					}
 				}
-				root->child = root->child->sibling_next;
-
+				root->child = root->child ? root->child->sibling_next : nullptr;
 			}
 
 			if ( root->sibling_next )

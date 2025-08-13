@@ -21,9 +21,11 @@ struct SsCellValue
 	SsTexFilterMode::_enum		filterMode;	///< テクスチャのフィルタモード
 
 	SsCellValue() :  
-		cell(0) ,  
-		texture(0)
-		{}
+		cell(nullptr) ,  
+		texture(nullptr),
+		filterMode(SsTexFilterMode::_enum::nearlest),
+		wrapMode(SsTexWrapMode::_enum::clamp)
+	{}
 };
 
 class SsCelMapLinker

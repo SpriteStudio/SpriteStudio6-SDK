@@ -1,6 +1,7 @@
 ﻿#include "ssloader.h"
 #include "sstypes.h"
 #include "ssattribute.h"
+#include "ssstring_uty.h"
 #include "../Helper/DebugPrint.h"
 
 namespace spritestudio6
@@ -359,8 +360,8 @@ void	GetSsDeformAnime(const SsKeyframe* key, SsDeformAttr& v)
 			if (cnt < datasize)
 			{
 				int idx = (int)atoi(str_list[1 + (cnt * 3)].c_str());		//index
-				float x = (float)atof(str_list[2 + (cnt * 3)].c_str());	//x
-				float y = (float)atof(str_list[3 + (cnt * 3)].c_str());	//y
+				float x = (float)double_from_string(str_list[2 + (cnt * 3)].c_str());	//x
+				float y = (float)double_from_string(str_list[3 + (cnt * 3)].c_str());	//y
 
 
 				if (i == idx)

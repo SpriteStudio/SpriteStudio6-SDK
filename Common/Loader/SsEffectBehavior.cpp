@@ -20,23 +20,23 @@ SsEffectElementBase*	SsEffectBehavior::Factory(const char* name , libXML::XMLEle
 	SsEffectElementBase * ret = 0;
 
 	if ( strcmp( name , "Basic" ) == 0 ) ret = new ParticleElementBasic();
-	if ( strcmp( name , "OverWriteSeed" ) == 0 ) ret = new ParticleElementRndSeedChange();
-	if ( strcmp( name , "Delay" ) == 0 ) ret = new ParticleElementDelay();
-	if ( strcmp( name , "Gravity" ) == 0 ) ret = new ParticleElementGravity();
-	if ( strcmp( name , "init_position" ) == 0 ) ret = new ParticleElementPosition();
-//	if ( strcmp( name , "trans_position" ) == 0 ) ret = new ParticleElementTransPosition();
-	if ( strcmp( name , "init_rotation" ) == 0 ) ret = new ParticleElementRotation();
-	if ( strcmp( name , "trans_rotation" ) == 0 ) ret = new ParticleElementRotationTrans();
-	if ( strcmp( name , "trans_speed" ) == 0 ) ret = new ParticleElementTransSpeed();
-	if ( strcmp( name , "add_tangentiala" ) == 0 ) ret = new ParticleElementTangentialAcceleration();
-	if ( strcmp( name , "init_vertexcolor" ) == 0 ) ret = new ParticleElementInitColor();
-	if ( strcmp( name , "trans_vertexcolor" ) == 0 ) ret = new ParticleElementTransColor();
-	if ( strcmp( name , "trans_colorfade" ) == 0 ) ret = new ParticleElementAlphaFade();
-	if ( strcmp( name , "init_size" ) == 0 ) ret = new ParticleElementSize();
-	if ( strcmp( name , "trans_size" ) == 0 ) ret = new ParticleElementTransSize();
-	if ( strcmp( name , "add_pointgravity" ) == 0 ) ret = new ParticlePointGravity();
-	if ( strcmp( name , "TurnToDirection" ) == 0 ) ret = new ParticleTurnToDirectionEnabled();
-	if ( strcmp( name , "InfiniteEmit" ) == 0 ) ret = new ParticleInfiniteEmitEnabled();
+	else if ( strcmp( name , "OverWriteSeed" ) == 0 ) ret = new ParticleElementRndSeedChange();
+	else if ( strcmp( name , "Delay" ) == 0 ) ret = new ParticleElementDelay();
+	else if ( strcmp( name , "Gravity" ) == 0 ) ret = new ParticleElementGravity();
+	else if ( strcmp( name , "init_position" ) == 0 ) ret = new ParticleElementPosition();
+//	else if ( strcmp( name , "trans_position" ) == 0 ) ret = new ParticleElementTransPosition();
+	else if ( strcmp( name , "init_rotation" ) == 0 ) ret = new ParticleElementRotation();
+	else if ( strcmp( name , "trans_rotation" ) == 0 ) ret = new ParticleElementRotationTrans();
+	else if ( strcmp( name , "trans_speed" ) == 0 ) ret = new ParticleElementTransSpeed();
+	else if ( strcmp( name , "add_tangentiala" ) == 0 ) ret = new ParticleElementTangentialAcceleration();
+	else if ( strcmp( name , "init_vertexcolor" ) == 0 ) ret = new ParticleElementInitColor();
+	else if ( strcmp( name , "trans_vertexcolor" ) == 0 ) ret = new ParticleElementTransColor();
+	else if ( strcmp( name , "trans_colorfade" ) == 0 ) ret = new ParticleElementAlphaFade();
+	else if ( strcmp( name , "init_size" ) == 0 ) ret = new ParticleElementSize();
+	else if ( strcmp( name , "trans_size" ) == 0 ) ret = new ParticleElementTransSize();
+	else if ( strcmp( name , "add_pointgravity" ) == 0 ) ret = new ParticlePointGravity();
+	else if ( strcmp( name , "TurnToDirection" ) == 0 ) ret = new ParticleTurnToDirectionEnabled();
+	else if ( strcmp( name , "InfiniteEmit" ) == 0 ) ret = new ParticleInfiniteEmitEnabled();
 
 	if ( ret )
 	{

@@ -23,7 +23,7 @@ void	SsValueSeriarizer( ISsXmlArchiver* ar , SsValue& v , const std::string key 
 class SsValue{
 public:
 	enum{
-		unkown,
+		unknown,
 		string_type,
 		int_type,
 		float_type,
@@ -44,6 +44,7 @@ public:
 		bool					_bool;
 		SsArray*				_array;
 		SsHash*					_hash;
+		void*					_ptr;
 	};
 
 	int		_int_temp;
@@ -51,99 +52,110 @@ public:
 	bool	_bool_temp;
 
 
-	SsValue() : type(unkown) , _str(0){}
+	SsValue(): type(unknown) { init(); }
 
-	explicit SsValue(bool b ) : type(boolean_type) {  _bool = b; }
+	explicit SsValue(bool b) : type(boolean_type) { init(); _bool = b; }
 	explicit SsValue(int n, char* org = 0) : type(int_type) {
+		init();
 		_int = n; 
 		if (org)
 			org_txt = SsString(org);
 	}
 	explicit SsValue(float n, char* org = 0) : type(float_type)
 	{ 
+		init();
 		_float = n; 
 		if (org)
 			org_txt = SsString(org);
 
 	}
-	explicit SsValue(SsString& str)   {  type = string_type; _str = new SsString(str); }
-	explicit SsValue(const char* str)   {  type = string_type; _str = new SsString(str); }
+	explicit SsValue(SsString& str)   { init(); type = string_type; _str = new SsString(str); }
+	explicit SsValue(const char* str)   { init(); type = string_type; _str = new SsString(str); }
 	explicit SsValue(SsArray& n)
-	  { 
-			type = array_type; 
-			_array = new SsArray(n);
-		}
+	{ 
+		init();
+		type = array_type; 
+		_array = new SsArray(n);
+	}
 
 
-	explicit SsValue(SsHash& n)  { type = hash_type; _hash = new SsHash(n); }
+	explicit SsValue(SsHash& n)  { init(); type = hash_type; _hash = new SsHash(n); }
 
 
     SsValue(const SsValue& x)
 	{
-
-		switch( x.type )
-		{
-			case string_type:
-				_str = new SsString( *x._str );
-				_float_temp = (float)atof( _str->c_str() );
-				_int_temp = atoi( _str->c_str() );
-				break;
-			case int_type:
-				_int = x._int;
-				_float_temp = (float)_int;
-				_bool_temp = _int == 1 ? true : false;
-				break;
-			case float_type:
-				_float = x._float;
-				_int_temp = (int)_float;
-				_bool_temp = _int > 0 ? true : false;
-				break;
-			case boolean_type:
-				_bool = x._bool;
-				break;
-			case array_type:
-				_array = new SsArray( *x._array);
-				break;
-			case hash_type:
-				_hash = new SsHash( *x._hash);
-				break;
-		}
-		type = x.type;
-		org_txt = x.org_txt;
-
+		*this = x;
 	}
     SsValue& operator=(const SsValue& x)
 	{
-		if (this != &x) {
-			this->release();
-			new (this) SsValue(x);
+		type = x.type;
+		name = x.name;
+		org_txt = x.org_txt;
+
+		// This is not enough because temp values must be determined by the value of my type which is string, int, float and boolean.
+		_int_temp = x._int_temp;
+		_float_temp = x._float_temp;
+		_bool_temp = x._bool_temp;
+
+		switch (x.type)
+		{
+		default:
+		case unknown:
+			_ptr = x._ptr;
+			break;
+		case string_type:
+			_str = new SsString(*x._str);
+			_float_temp = (float)double_from_string(x._str->c_str());
+			_int_temp = atoi(_str->c_str());
+			break;
+		case int_type:
+			_int = x._int;
+			_float_temp = (float)_int;
+			_bool_temp = _int == 1 ? true : false;
+			break;
+		case float_type:
+			_float = x._float;
+			_int_temp = (int)_float;
+			_bool_temp = _float > 0.0f ? true : false;
+			break;
+		case boolean_type:
+			_bool = x._bool;
+			_int_temp = _bool ? 1 : 0;
+			_float_temp = _bool ? 1.0f : 0.0f;
+			break;
+		case hash_type:
+			_hash = new SsHash(*x._hash);
+			break;
+		case array_type:
+			_array = new SsArray(*x._array);
+			break;
 		}
 		return *this;
 	}
 
-	void	release()
+	void	init()
 	{
-		name.~SsString();
-		org_txt.~SsString();
+		_ptr = nullptr;
+		_int_temp = 0;
+		_float_temp = 0.0f;
+		_bool_temp = false;
+	}
 
-		if(type == string_type && _str) {
+	virtual ~SsValue() {
+		if (type == string_type && _str) {
 			delete _str;
 			return;
 		}
 
-		if(type == array_type && _array) {
+		if (type == array_type && _array) {
 			delete _array;
 			return;
 		}
-		if(type == hash_type && _hash)
+		if (type == hash_type && _hash)
 		{
 			delete _hash;
 			return;
 		}
-	}
-
-	virtual ~SsValue() {
-		release();
 	}
 
 	template <typename T> bool is() const;
@@ -315,13 +327,13 @@ template <> inline bool SsValue::is<SsHash>() const {
 inline static  SsValue	SsValueSeriarizer__MakeValue( const char* v )
 {
     std::string temp = v;
-	bool is_priod;
+	bool has_period;
 
-	if ( is_digit_string( temp , &is_priod) )
+	if ( is_digit_string( temp , &has_period) )
 	{
-		if ( is_priod )
+		if ( has_period )
 		{
-			return SsValue( (float)atof( v ) , (char*)v );
+			return SsValue( (float)double_from_string( v ) , (char*)v );
 		}
 
 		return SsValue( (int)atoi( v ), (char*)v);
