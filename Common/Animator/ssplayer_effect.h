@@ -72,30 +72,45 @@ public:
 
 public:
 
-	SsEffectRenderAtom() :
-		parent(0),
-		m_isInit(false),
-		m_isLive(true),
-		_lifetime(10.0f),
-		_life(1.0f),
-		rotation(0),
-		position(0,0,0),
-		scale(1.0f,1.0f),
-		m_isCreateChild(false)
-		{
-		}
+	SsEffectRenderAtom()
+	{
+		init();
+	}
 
-	SsEffectRenderAtom( SsEffectNode* refdata , SsEffectRenderAtom* _p){
+	SsEffectRenderAtom( SsEffectNode* refdata , SsEffectRenderAtom* _p)
+	{
+		init();
+
         data = refdata;
 		setParent(_p);
 
 		_lifetime = 0;
-		position = SsVector3(0,0,0);
 		scale = SsVector2(0,0);
-		rotation = 0.0f;
 	}
 
 	virtual ~SsEffectRenderAtom(){}
+
+	// コンストラクタの共通初期化処理
+	void	init()
+	{
+		position = SsVector3(0, 0, 0);
+		rotation = 0;
+		scale = SsVector2(1.0f, 1.0f);
+
+		parent = nullptr;
+		data = nullptr;
+
+		m_isLive = true;
+		m_isInit	= false;
+		m_isCreateChild = false;
+
+		_lifetime	= 10.0f;
+		_exsitTime	= 0.0f;
+		_life	= 1.0f;
+
+		undead	= false;
+		alpha	= 1.0f;
+	}
 
 	void	setParent( SsEffectRenderAtom* _p ){ parent = _p; }
     SsRenderType::_enum	getMyType(){ return SsRenderType::BaseNode;}
@@ -169,7 +184,7 @@ public:
 	std::list<SsEffectRenderAtom*> drawlist;
 
 
-	SsEffectDrawBatch() : priority(0) , dispCell(0),targetNode(0) {}
+	SsEffectDrawBatch() : priority(0) , dispCell(nullptr), targetNode(nullptr), blendType(SsRenderBlendType::_enum::Mix) {}
 	~SsEffectDrawBatch(){}
 
 	void	drawSetting();

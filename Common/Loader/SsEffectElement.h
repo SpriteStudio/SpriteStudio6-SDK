@@ -4,6 +4,7 @@
 
 #include "sstypes.h"
 #include "ssarchiver.h"
+#include "ssstring_uty.h"
 #include "SsEffectElement.h"
 
 namespace spritestudio6
@@ -119,8 +120,8 @@ typedef VarianceValue<SsU8Color>    	SsU8cVValue;
 
 template<> inline bool VarianceValue<float>::inputString( SsString _value , SsString _subvalue )
 { 
-	value = (float)atof(_value.c_str());
-	subvalue = (float)atof(_subvalue.c_str());
+	value = (float)double_from_string(_value.c_str());
+	subvalue = (float)double_from_string(_subvalue.c_str());
 
 	return true;
 }

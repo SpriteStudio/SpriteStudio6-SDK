@@ -1,6 +1,7 @@
 ﻿#include "ssarchiver.h"
 #include "ssstring_uty.h"
 #include "sscharconverter.h"
+#include <errno.h>
 
 namespace spritestudio6
 {
@@ -47,7 +48,7 @@ bool	SsXmlIArchiver::dc( const char* name , float& member )
 	SPRITESTUDIO6SDK_AR_SELF_CHECK();
 	SsString str;
 	dc( name , str );
-	member = (float)atof( str.c_str() );
+	member = (float)double_from_string( str.c_str() );
 	if (str == "")
 	{
 		return false;
@@ -178,10 +179,10 @@ bool	SsXmlIArchiver::dc( const char* name , SsCurve& member )
 		{
 			return false;
 		}else{
-			member.startTime = (float)atof( str_list[0].c_str() );
-			member.startValue = (float)atof( str_list[1].c_str() );
-			member.endTime = (float)atof( str_list[2].c_str() );
-			member.endValue = (float)atof( str_list[3].c_str() );		
+			member.startTime = (float)double_from_string( str_list[0].c_str() );
+			member.startValue = (float)double_from_string( str_list[1].c_str() );
+			member.endTime = (float)double_from_string( str_list[2].c_str() );
+			member.endValue = (float)double_from_string( str_list[3].c_str() );
 
 			return true;
 		}
@@ -234,8 +235,8 @@ bool	SsXmlIArchiver::dc(const char* name, SsBoneBind& member)
 		}
 		else 
 		{
-			member.boneIndex = (float)atof(str_list[0].c_str());
-			member.blend = (float)atof(str_list[1].c_str());
+			member.boneIndex = (float)double_from_string(str_list[0].c_str());
+			member.blend = (float)double_from_string(str_list[1].c_str());
 
 			return true;
 		}
@@ -296,8 +297,8 @@ bool	StringToPoint2( const std::string& str , SsPoint2& point )
 		point.y = 0;
 		return false;
 	}else{
-		point.x = (float)atof( str_list[0].c_str() );
-		point.y = (float)atof( str_list[1].c_str() );
+		point.x = (float)double_from_string( str_list[0].c_str() );
+		point.y = (float)double_from_string( str_list[1].c_str() );
 	}
 
 	return true;
@@ -316,10 +317,10 @@ bool	StringToIRect( const std::string& str , SsIRect& rect )
 		rect.h = 0;
 		return false;
 	}else{
-		rect.x = (int)atof( str_list[0].c_str() );
-		rect.y = (int)atof( str_list[1].c_str() );
-		rect.w = (int)atof( str_list[2].c_str() );
-		rect.h = (int)atof( str_list[3].c_str() );
+		rect.x = (int)double_from_string( str_list[0].c_str() );
+		rect.y = (int)double_from_string( str_list[1].c_str() );
+		rect.w = (int)double_from_string( str_list[2].c_str() );
+		rect.h = (int)double_from_string( str_list[3].c_str() );
 	}
 
 	return true;

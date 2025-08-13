@@ -4,6 +4,19 @@
 namespace spritestudio6
 {
 
+// アニメーション設定。初期値はエディタ(v7.4.2時点)に合わせた。
+SsAnimationSettings::SsAnimationSettings()
+	: fps(30)
+	, frameCount(11)
+	, sortMode(SsPartsSortMode::_enum::prio)
+	, canvasSize(320, 320)
+	, pivot(0, 0)
+	, startFrame(0)
+	, endFrame(10)
+{
+}
+
+
 SsAnimePack*	ssloader_ssae::Parse(const char* xmlstr , size_t len)
 {
 	libXML::XMLDocument xml;

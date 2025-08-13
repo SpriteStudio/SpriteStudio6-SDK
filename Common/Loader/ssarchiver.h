@@ -7,6 +7,9 @@
 #include <vector>
 #include <map>
 
+#include "../Helper/DebugPrint.h"
+
+
 // MEMO: 定義順の関係でここでusingしてしまうと問題が発生する
 // using namespace tinyxml2;
 
@@ -23,7 +26,7 @@ namespace EnumSsArchiver
 {
 	enum Type
 	{
-		unkown = 0, //不明
+		unknown = 0, //不明
 		in,			//Input
 		out,		//Output
 	};
@@ -50,10 +53,10 @@ private:
 
 public:
 
-	virtual EnumSsArchiver::Type getType(){ return EnumSsArchiver::unkown;}
+	virtual EnumSsArchiver::Type getType(){ return EnumSsArchiver::unknown;}
 
 
-	ISsXmlArchiver(){}
+	ISsXmlArchiver(): m_xml(nullptr) {}
 	virtual ~ISsXmlArchiver(){}
 
 	libXML::XMLElement*	getxml(){ return m_xml;} 
