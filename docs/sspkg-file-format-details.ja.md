@@ -1,3 +1,5 @@
+[**日本語**](./sspkg-file-format-details.ja.md) | [**English**](./sspkg-file-format-details.md)
+
 # sspkg ファイルフォーマットについて
 ## 概要
 sspkgファイルはオリジナルのデータと再生用のssfbをZIPで格納したファイルになる。

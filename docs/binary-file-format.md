@@ -1,3 +1,5 @@
+[**日本語**](./binary-file-format.ja.md) | [**English**](./binary-file-format.md)
+
 # Binary File Format
 ## Note
 This information is outdated, so please do not use this content as a reference.

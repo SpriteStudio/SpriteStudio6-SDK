@@ -1,3 +1,5 @@
+[**日本語**](./how-to-build-sdk-gui.ja.md) | [**English**](./how-to-build-sdk-gui.md)
+
 # How to Build the SDK (GUI)
 This section describes the build procedure using a GUI.
 It includes steps for setting up the development environment in a GUI.

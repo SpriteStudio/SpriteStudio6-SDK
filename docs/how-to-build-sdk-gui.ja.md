@@ -1,3 +1,5 @@
+[**日本語**](./how-to-build-sdk-gui.ja.md) | [**English**](./how-to-build-sdk-gui.md)
+
 # SDKのビルド方法(GUI編)
 ここでは、GUI でのビルド手順について記載します。
 GUI での開発環境の構築手順を含みます。

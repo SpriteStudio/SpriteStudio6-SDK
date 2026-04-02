@@ -1,3 +1,5 @@
+[**日本語**](./README.ja.md) | [**English**](./README.md)
+
 # SpriteStudio 6 SDK
 Copyright © CRI Middleware Co., Ltd.
 

@@ -1,3 +1,5 @@
+[**日本語**](./how-to-build-sdk.ja.md) | [**English**](./how-to-build-sdk.md)
+
 # SDKのビルド方法
 # はじめに
 ここでは CLI でのビルド手順について記載します。

@@ -1,3 +1,5 @@
+[**日本語**](./plistConverter.ja.md) | [**English**](./plistConverter.md)
+
 # plistConverter
 ## 概要
 plistConverter は OPTPiX SpriteStudio 6 のスプライトシート機能で出力されたセル情報(plist)をPlayStationMobile SDK で使用しやすいxml形式に変換するコンバータです。

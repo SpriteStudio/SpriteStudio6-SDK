@@ -1,3 +1,5 @@
+[**日本語**](./viewer.ja.md) | [**English**](./viewer.md)
+
 # Viewer
 ## Overview
 This is a sample program for playing animation data created with OPTPiX SpriteStudio 6.

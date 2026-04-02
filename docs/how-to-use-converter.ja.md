@@ -1,3 +1,5 @@
+[**日本語**](./how-to-use-converter.ja.md) | [**English**](./how-to-use-converter.md)
+
 # コンバータの使い方
 # Ss6Converter
 ## お知らせ

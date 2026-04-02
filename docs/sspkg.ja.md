@@ -1,3 +1,5 @@
+[**日本語**](./sspkg.ja.md) | [**English**](./sspkg.md)
+
 # sspkg
 ## 概要
 sspkgファイルはオリジナルのデータと再生用のssfbをZIPで格納したファイルになる。

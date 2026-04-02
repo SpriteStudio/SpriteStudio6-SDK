@@ -1,3 +1,5 @@
+[**日本語**](./viewer.ja.md) | [**English**](./viewer.md)
+
 # ビューア
 ## 概要
 OPTPiX SpriteStudio 6 で制作したアニメーションデータを再生するためのサンプルプログラムです。

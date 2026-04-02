@@ -1,3 +1,5 @@
+[**日本語**](./plistConverter.ja.md) | [**English**](./plistConverter.md)
+
 # plistConverter
 ## Overview
 plistConverter is a tool for converting cell information (plist) output by the sprite sheet feature of OPTPiX SpriteStudio 6 into an XML format that is easy to use with the PlayStation®Mobile SDK.

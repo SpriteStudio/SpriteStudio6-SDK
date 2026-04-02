@@ -1,3 +1,5 @@
+[**日本語**](./sspkg-format.ja.md) | [**English**](./sspkg-format.md)
+
 # sspkg Format
 ## Overview
 The sspkg file is a ZIP archive containing the original data and an ssfb file for playback.
