@@ -1,0 +1,21 @@
+# ビューア
+## 概要
+OPTPiX SpriteStudio 6 で制作したアニメーションデータを再生するためのサンプルプログラムです。
+OpenGL を利用しており、Windows/Mac 両方で動作します。
+ソースファイルを公開しており自由にカスタマイズしてお使いいただけます。
+## ダウンロード
+* Windows 版
+* [安定版](https://github.com/SpriteStudio/SpriteStudio6-SDK/blob/master/Tools/viewer_sample.zip?raw=true)
+* [開発版](https://github.com/SpriteStudio/SpriteStudio6-SDK/blob/develop/Tools/viewer_sample.zip?raw=true)
+* Mac 版
+* [安定版](https://github.com/SpriteStudio/SpriteStudio6-SDK/blob/master/Tools/viewer_sample_Mac.zip?raw=true)
+* [開発版](https://github.com/SpriteStudio/SpriteStudio6-SDK/blob/develop/Tools/viewer_sample_Mac.zip?raw=true)
+## 使い方
+* ダウンロードし、解凍した実行ファイルを実行します。
+* Main Panel の Load .sspj メニューを選択し、再生したい.sspj ファイルを指定します。
+* Play で再生し、Pause で一時停止します。
+* Animation で ssae ファイル、及び含まれるアニメーションを選択し再生します。
+## ビルド方法
+* ソースファイルの場所
+* 各ブランチの Build/Viewer にあります。
+* [ビルドの手順](how-to-build-sdk.ja.md)
