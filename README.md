@@ -25,18 +25,29 @@ Copyright © CRI Middleware Co., Ltd.
 develop ブランチは最新の開発版のため、何らかの不具合が含まれている可能性があります。
 安定版が必要な場合[Release](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases)から取得してください。
 
+## 更新履歴
+
+- [master](https://github.com/SpriteStudio/SpriteStudio6-SDK/commits/master)
+- [develop](https://github.com/SpriteStudio/SpriteStudio6-SDK/commits/develop)
+
 ## 対応する SpriteStudio のバージョン
 **SDKバージョン_SpriteStudioバージョン** の形式 (例: 2.2.0_SS7.1.0) でリリースが作られています。
 詳しくは[Releases](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases) をご覧ください。
 
+## ツール類
+
+- ダウンロード
+  - [最新版](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases/latest)
+  - [全バージョン](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases)
+- 使い方
+  - [コンバータ](./docs/how-to-use-converter.md)
+  - [ビューア](./docs/viewer.md)
+- その他
+  - [SS6Playerシリーズとエンジニア向けツール](http://www.webtech.co.jp/help/ja/spritestudio/download/forprogrammer/)  
+
 ## SDKのビルド方法
 * [SDKのビルド方法](./docs/how-to-build-sdk.md)
 * [(参考) SS6Converter、ビューアーをビルドする方法](http://www.webtech.co.jp/help/ja/spritestudio/guide/output6/sdk/#viewer_build) _※ヘルプセンターのページにジャンプします。_
-
-## ssbpファイルを利用する場合の注意点
-ssbpファイルにはフォーマットバージョンが存在し、ご利用の再生プログラム(SS6Player for Cocos2d-x および ssbpLib)のバージョンに応じて対応したフォーマットのファイルを出力するコンバータ(本SDK同梱)を利用する必要があります。
-下記表を確認の上、該当するバージョンのコンバータを使用してください。
-[各バージョンの対応表はこちら](./docs/how-to-use-converter.md#%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC%E3%81%A8%E3%81%AE%E4%BA%92%E6%8F%9B%E6%80%A7%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6)
 
 ## データ構造とクラスリファレンス
 [SpriteStudio6 SDK Document](https://spritestudio.github.io/SpriteStudio6-SDK/html/index.html)
