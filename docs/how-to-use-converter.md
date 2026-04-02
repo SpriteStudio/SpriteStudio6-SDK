@@ -1,75 +1,76 @@
-# コンバータの使い方
+# How to Use the Converter
 # Ss6Converter
-## お知らせ
-* 2021/04/07 出力するデータサイズを大幅に削減した新しいコンバータを公開しました。[Ss6ConverterVer2](https://github.com/SpriteStudio/Ss6ConverterVer2/wiki) こちらもご確認下さい。
-* 2019/02/25 C言語のソースファイル形式で出力する機能は近い将来削除される予定です。利用場面が限定的であり現在のところメンテナンスコストに比してサポートを継続する価値が無いと考えられるからです。今後も最新のSDKと共に継続してご利用になりたいユーザー様は[こちら](../README.md#inquiry)からご相談ください。
-## 概要
-Ss6Converter は OPTPiX SpriteStudio 6 で製作したアニメーションデータをランタイム用の形式(ssbp、json、ssfb)に変換するコンバータです。
-このコンバータが出力するデータは汎用目的であり、特定のプレイヤー専用のデータを出力するものではありません。
-[ソースファイル](https://github.com/SpriteStudio/SpriteStudio6-SDK/tree/master/Build/Converter)を公開していますので自由にカスタマイズすることが可能です。
-## 取得方法
-[releases](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases) から各プラットフォームの Ss6Converter アーカイブをダウンロードしてください。
-最新版は [こちらに](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases/latest) になります。
-## 動作を確認している環境
-* 動作を確認しているOSのバージョン
-* Windows版 ：10
-## 使用手順
-### GUIで行う場合
+## Notices
+* 2021/04/07 We have released a new converter that significantly reduces the output data size. Please also check [Ss6ConverterVer2](https://github.com/SpriteStudio/Ss6ConverterVer2/wiki).
+* 2019/02/25 The feature to output in C language source file format is planned to be removed in the near future. This is because its use cases are limited, and it is currently considered not worth the maintenance cost. If you are a user who wish to continue using this with the latest SDK, please contact us from [here](../README.md#contact).
+## Overview
+Ss6Converter is a tool for converting animation data created with OPTPiX SpriteStudio 6 into formats for runtimes (ssbp, json, ssfb).
+The data output by this converter is for general purposes and is not intended for a specific player only.
+Since the [source files](https://github.com/SpriteStudio/SpriteStudio6-SDK/tree/master/Build/Converter) are public, you can customize it freely.
+## How to Obtain
+Please download the Ss6Converter archive for your platform from [Releases](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases).
+The latest version is [here](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases/latest).
+## Confirmed Operating Environments
+* Confirmed OS versions
+* Windows version: 10
+## Usage Procedures
+### Using the GUI
 ![2019-09-26_15h45_48](https://user-images.githubusercontent.com/5117608/65668943-a11bd380-e07d-11e9-8268-e05d2281f917.png)
-1. Ss6ConveterGUIを実行します。
-2. コンバートするsspjファイルをドラック＆ドロップして登録します。
-3. 必要なファイル形式を選択します。(使用するプレイヤープログラムが対応する形式を選んでください)
-4. `Convet Start` ボタンを押してコンバートを開始します。
-5. Statusが「Convert Success!」と表示されると、sspj フォルダに選択した形式の拡張子(.ssbp/.json/.ssfbなど)が付いた同名のファイルが作成されます。
-### コマンドラインで行う場合
-コマンドプロンプトを起動し以下の様に入力し実行します。
-`Ss6Converter 変換対象のsspjファイルの**フルパス** [オプション]...`
-#### オプション
-* -o `出力フォルダのパス`
-	+ 省略した場合、sspj ファイルと同じフォルダに出力されます。
-* -f `出力するファイル形式の指定`
-	+ 形式には ssbp/json/ssfb のいずれかを指定します。※2019/09/26 時点
-	+ 使用するプレイヤープログラムが対応する形式を選択してください。
-#### 実行例
+1. Run `Ss6ConverterGUI`.
+2. Drag and drop the sspj files you want to convert to register them.
+3. Select the required file format. (Choose the format supported by the player program you are using)
+4. Press the `Convert Start` button to begin conversion.
+5. When the status shows "Convert Success!", files with the same name and the selected extension (.ssbp/.json/.ssfb, etc.) will be created in the sspj folder.
+### Using the Command Line
+Start the command prompt and execute it as follows:
+`Ss6Converter **Full Path** of the target sspj file [Options]...`
+#### Options
+* -o `Output folder path`
+	+ If omitted, it will be output to the same folder as the sspj file.
+* -f `Specify output file format`
+	+ Specify one of ssbp, json, or ssfb. *As of 2019/09/26
+	+ Select the format supported by the player program you are using.
+#### Execution Example
 ```
 Ss6Converter C:\ss_anime\test.sspj -o D:\output_path\ -f ssfb
 ```
-`C:\ss_anime\test.sspj` ファイル及び、このsspjファイルに登録された ssae, ssce, ssee ファイルを１つのssfbファイルに変換し、`D:\output_path\` フォルダに保存します。
-変換に成功すると出力フォルダに選択した形式の拡張子(.ssbp/.json/.ssfbなど)が付いた同名のファイルが作成されます。
+Converts the `C:\ss_anime\test.sspj` file and the ssae, ssce, and ssee files registered in this sspj file into a single ssfb file, and saves it in the `D:\output_path\` folder.
+Upon successful conversion, a file with the same name and the selected extension (.ssbp/.json/.ssfb, etc.) will be created in the output folder.
 
-## 出力ファイルについて
-出力ファイルには、test.sspj に登録された全ての *.ssae *.ssce *.ssee ファイルが変換され含まれています。
-参照イメージ(画像ファイル)は含まれませんのでプレイヤー側で利用する際に適切な場所へ配置するようにしてください。
+## About Output Files
+The output file contains all converted *.ssae, *.ssce, and *.ssee files registered in test.sspj.
+Reference images (image files) are not included, so please place them in an appropriate location when using them on the player side.
 
-## ssbpファイルとプレイヤーとの互換性
-ssbpファイルにはフォーマットバージョンが存在しており、アップデートによって変更が生じると使用中のプレイヤーで再生できなくなる可能性があります。
-下記の表を参考に、プレイヤーが対応しているSpriteStudioのバージョンに該当するSDKを取得し、ここに含まれるコンバータを利用するようにしてください
+## Compatibility between ssbp Files and Players
+ssbp files have format versions, and if changes occur due to updates, they may become unplayable on the player you are using.
+Referring to the table below, please obtain the SDK corresponding to the SpriteStudio version supported by your player and use the converter included in it.
 
-**SS6Player for Cocos2d-x および ssbpLib をご利用の方は特にご注意ください。**
+**Users of SS6Player for Cocos2d-x and ssbpLib should be particularly careful.**
 
-| ssbpのフォーマットバージョン | [SS6 SDK のバージョン](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases) | [SpriteStudio](https://www.webtech.co.jp/help/ja/spritestudio/download/ss6download/) | 備考 |
+| ssbp Format Version | [SS6 SDK Version](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases) | [SpriteStudio](https://www.webtech.co.jp/help/en/spritestudio/download/ss6download/) | Remarks |
+| --- | --- | --- | --- |
 | 11 | 1.6.x | 6.2.0 | |
 | 10 | 1.5.x | 6.2.0 | |
 | 9 | 1.4.x | 6.1.3 | |
 | 8 | 1.3.x | 6.1 | |
 | 7 | 1.2.x | 6.0 | |
 | 6 | 1.1.x | 6.0 | |
-| 5 | 1.0.x | 6.0 | ※メッシュデータには対応していません。 |
-* ssbpファイルのバージョンの違いによってアニメが再生できない場合の対処方法
-	+ プレイヤーの最新バージョンを取得し差し替え、または、差分をマージする。全アニメデータを再コンバートする必要がございます。
-	+ 動作確認が取れているプレイヤーとコンバータの組み合わせて使用し、アップデートする必要のある部分のみプレイヤーをマージする。
+| 5 | 1.0.x | 6.0 | *Does not support mesh data. |
+* How to deal with cases where animation cannot be played due to different ssbp file versions:
+	+ Obtain and replace with the latest version of the player, or merge the differences. All animation data needs to be re-converted.
+	+ Use a combination of a player and converter that have been confirmed to work, and merge only the parts of the player that need updating.
 
-## データ作成時の注意点
-* ファイル名に全角文字を使用しないでください。
-* セル名、パーツ名、ラベル名に全角文字を使用しないでください。
-* 16色PNGには対応していません。圧縮ありで保存した場合に16色PNGに変換される場合があります。
-コンバートができない場合は圧縮なしで保存して試してみてください。
-* セルマップには必ず１つのセルリストを登録してください。
-セルリストがない場合プレイヤーがssbpファイルの解析に失敗します。
+## Precautions for Data Creation
+* Do not use double-byte characters in file names.
+* Do not use double-byte characters in cell names, part names, or label names.
+* 16-color PNG is not supported. It may be converted to 16-color PNG if saved with compression.
+If conversion is not possible, try saving without compression.
+* Always register one cell list in the cell map.
+Without a cell list, the player will fail to parse the ssbp file.
 
-## ファイルフォーマット
-- [ssbp のフォーマット](binary-file-format.md)
-- [sspkg のフォーマット](sspkg.md)
+## File Format
+- [ssbp Format](binary-file-format.md)
+- [sspkg Format](sspkg.md)
 
-## コンバータのビルド方法
-* [ビルドの手順](how-to-build-sdk.md)
+## How to Build the Converter
+* [Build Procedure](how-to-build-sdk.md)

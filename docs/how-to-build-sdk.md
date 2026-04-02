@@ -1,171 +1,171 @@
-# SDKのビルド方法
-# はじめに
-ここでは CLI でのビルド手順について記載します。
-GUI でのビルド手順については [SDKのビルド方法(GUI編)](how-to-build-sdk-gui.md)を参照してください。
-# 環境構築
+# How to Build the SDK
+# Introduction
+This section describes the build procedure using a CLI.
+For the GUI build procedure, please refer to [How to Build the SDK (GUI)](how-to-build-sdk-gui.md).
+# Environment Setup
 ## Windows
-下記をインストールしてください。
-* Visual Studio 2022 以上
+Please install the following:
+* Visual Studio 2022 or higher
 * PowerShell
 * [Qt](https://www.qt.io/download-open-source) (*1, *2)
 * [git](https://git-scm.com/downloads)
 * [CMake](https://cmake.org/download/)
-\*1: Qt のバージョンは 6.9.0 を推奨しています。それ以外のバージョンを利用する場合は環境変数 `QT_PREFIX` にて 該当バージョンの Visual Studio の root path を指定してください。(e.g. 6.9.1 を利用する場合は `set QT_PREFIX=C:\Qt\6.9.1\msvc202_64` か `set QT_PREFIX=C:\Qt\6.9.1\msvc2022_arm64` と設定してください。)
-\*2: x64 と arm64 の Qt を入れることを推奨しています。
-下記はオプショナルになります。ビルド高速化の為のソフトウェアです。
+\*1: Qt version 6.9.0 is recommended. If using other versions, specify the root path of the corresponding Visual Studio version in the environment variable `QT_PREFIX`. (e.g., if using 6.9.1, set `set QT_PREFIX=C:\Qt\6.9.1\msvc2022_64` or `set QT_PREFIX=C:\Qt\6.9.1\msvc2022_arm64`.)
+\*2: It is recommended to install both x64 and arm64 versions of Qt.
+The following are optional software for faster builds:
 * [Ninja](https://ninja-build.org/)
 * [sccache](https://github.com/mozilla/sccache)
-[Scoop](https://scoop.sh/) を利用すれば下記コマンドでインストール可能です。
+You can install them using [Scoop](https://scoop.sh/) with the following command:
 ```
 scoop install ninja sccache
 ```
 ## macOS
-下記をインストールしてください。
+Please install the following:
 * Xcode
 * [Qt](https://www.qt.io/download-open-source) (*1)
 * [git](https://git-scm.com/downloads)
 * [CMake](https://cmake.org/download/)
-Xcode と Qt 以外は [homebrew](https://brew.sh/) を利用すれば下記コマンドでインストール可能です。
+Except for Xcode and Qt, you can install them using [homebrew](https://brew.sh/) with the following command:
 ```
 brew install git cmake
 ```
-\*1: Ss6Converter-Qt を Universal Binary 2 (x64 と arm64 両方対応)にするには Qt 本家から Qt をダウンロードしてください。 Qt のバージョンは 6.9.0 を推奨しています。それ以外のバージョンを利用する場合は環境変数 `QT_PREFIX` にて Qt の root path を指定してください。(e.g. 6.9.1 を利用する場合は `export QT_PREFIX=~/Qt/6.9.1/macos` と設定してください。)
-下記はオプショナルになります。ビルド高速化の為のソフトウェアです。
+\*1: To make Ss6Converter-Qt a Universal Binary 2 (supporting both x64 and arm64), download Qt from the official Qt website. Qt version 6.9.0 is recommended. If using other versions, specify the Qt root path in the environment variable `QT_PREFIX`. (e.g., if using 6.9.1, set `export QT_PREFIX=~/Qt/6.9.1/macos`.)
+The following are optional software for faster builds:
 * [Ninja](https://ninja-build.org/)
 * [sccache](https://github.com/mozilla/sccache)
-[homebrew](https://brew.sh/) を利用すれば下記コマンドでインストール可能です。
+You can install them using [homebrew](https://brew.sh/) with the following command:
 ```
 brew install ninja sccache
 ```
-# ソース取得
+# Obtaining Source Code
 ```
 git clone --recursive https://github.com/SpriteStudio/SpriteStudio6-SDK.git
 ```
-# ビルドスクリプトの引数
-## 接頭辞が release_ のビルドスクリプトの引数
-ビルドタイプは `Release` になります。ビルドタイプの変更不可です
-Windows では第一引数で実行バイナリのアーキテクチャを指定できます。 `x64` か `arm64` を設定できます。指定がない場合はビルドスクリプトを実行した端末のアーキテクチャと同じものになります。
-## 接頭辞が build_ のビルドスクリプトの引数
-ビルドタイプをデバッグビルドにする場合は第一引数に `Debug` を設定してください。リリースビルドする場合は第一引数に `Release` を設定してください。指定がない場合は `Debug` になります。
-Windows では第二引数で実行バイナリのアーキテクチャを指定できます。 `x64` か `arm64` を設定できます。指定がない場合はビルドスクリプトを実行した端末のアーキテクチャと同じものになります。
-# 全リリースビルド
-リリース物を生成するビルドです。全プロジェクトをビルドします。
+# Build Script Arguments
+## Arguments for scripts prefixed with `release_`
+The build type will be `Release`. The build type cannot be changed.
+On Windows, you can specify the architecture of the executable binary in the first argument. `x64` or `arm64` can be set. If not specified, it will be the same as the architecture of the terminal running the build script.
+## Arguments for scripts prefixed with `build_`
+To make the build type a Debug build, set `Debug` in the first argument. For a Release build, set `Release` in the first argument. If not specified, it will default to `Debug`.
+On Windows, you can specify the architecture of the executable binary in the second argument. `x64` or `arm64` can be set. If not specified, it will be the same as the architecture of the terminal running the build script.
+# Building All Releases
+This is a build for generating release artifacts. It builds all projects.
 ## Windows
-`SpriteStudio6-SDK\Scripts\release_win.bat` を実行します。
+Run `SpriteStudio6-SDK\Scripts\release_win.bat`.
 ```
 .\Scripts\release_win.bat
 ```
-Ss6Converter, Ss6Converter-Qt と Viewer2 をリリースビルドし、zip 圧縮したファイルを `SpriteStudio6-SDK\Tools` に格納します。
+It builds Ss6Converter, Ss6Converter-Qt, and Viewer2 in Release mode and stores the zipped files in `SpriteStudio6-SDK\Tools`.
 ## macOS
-`SpriteStudio6-SDK/Scripts/release_macos.sh` を実行します。
+Run `SpriteStudio6-SDK/Scripts/release_macos.sh`.
 ```
 ./Scripts/release_macos.sh
 ```
-Ss6Converter, Ss6Converter-Qt と Viewer2 をリリースビルドし、zip 圧縮したファイルを `SpriteStudio6-SDK/Tools` に格納します。
-# Ss6Converter ビルド
-## リリースビルド
-Ss6Converter(コマンドライン) と Ss6Converter-Qt(GUI ラッパー) をビルドします。
-デフォルトビルドタイプは `Release` になります。
+It builds Ss6Converter, Ss6Converter-Qt, and Viewer2 in Release mode and stores the zipped files in `SpriteStudio6-SDK/Tools`.
+# Building Ss6Converter
+## Release Build
+Builds Ss6Converter (command line) and Ss6Converter-Qt (GUI wrapper).
+The default build type is `Release`.
 ### Windows
-`SpriteStudio6-SDK\Scripts\release_converter_win.bat` を実行します。
-成果物は `SpriteStudio6-SDK\Tools\Ss6Converter.zip` となります。
+Run `SpriteStudio6-SDK\Scripts\release_converter_win.bat`.
+The artifact will be `SpriteStudio6-SDK\Tools\Ss6Converter.zip`.
 ```
 .\Scripts\release_converter_win.bat
 ```
-成果物の確認方法は下記になります。
+To verify the artifact:
 ```
 powershell Expand-Archive -Force .\Tools\Ss6Converter.zip .\Tools\nstart .\Tools\Ss6Converter
 ```
 ### macOS
-`SpriteStudio6-SDK/Scripts/release_converter_macos.sh` を実行します。
-成果物は `SpriteStudio6-SDK/Tools/Ss6Converter_Mac.zip` となります。
+Run `SpriteStudio6-SDK/Scripts/release_converter_macos.sh`.
+The artifact will be `SpriteStudio6-SDK/Tools/Ss6Converter_Mac.zip`.
 ```
 ./Scripts/release_converter_macos.sh
 ```
-成果物の確認方法は下記になります。
+To verify the artifact:
 ```
 unzip -o ./Tools/Ss6Converter_Mac.zip -d ./Tools
 open ./Tools/Ss6Converter
 ```
-## 開発ビルド
-デフォルトビルドタイプは `Debug` になります。
+## Development Build
+The default build type is `Debug`.
 ### Windows
-Ss6Converter のビルドは `SpriteStudio6-SDK\Scripts\build_converter_win.bat` を実行します。
-ビルド作業ディレクトリは `SpriteStudio6-SDK\Build\Converter\build` となります。
+To build Ss6Converter, run `SpriteStudio6-SDK\Scripts\build_converter_win.bat`.
+The build working directory will be `SpriteStudio6-SDK\Build\Converter\build`.
 ```
 .\Scripts\build_converter_win.bat
 ```
-成果物の確認方法は下記になります。
+To verify the artifact:
 ```
 .\Build\Converter\build\Debug\Ss6Converter.exe -h
 ```
-Ss6Converter-Qt のビルドは `SpriteStudio6-SDK\Scripts\build_convertergui_win.bat` を実行します。
-ビルド作業ディレクトリは `SpriteStudio6-SDK\Build\Ss6ConverterGUI\build` となります。
+To build Ss6Converter-Qt, run `SpriteStudio6-SDK\Scripts\build_convertergui_win.bat`.
+The build working directory will be `SpriteStudio6-SDK\Build\Ss6ConverterGUI\build`.
 ```
 .\Scripts\build_convertergui_win.bat
 ```
-成果物の確認方法は下記になります。ただし、Ss6Converter を同封していないので変換できません。
+To verify the artifact (Note: It cannot convert because Ss6Converter is not included):
 ```
 .\Build\Ss6ConverterGUI\Ss6ConverterGUI\build\Debug\Ss6ConverterGUI.exe
 ```
 ### macOS
-Ss6Converter (コマンドライン)のビルドは`SpriteStudio6-SDK/Scripts/build_converter_macos.sh` を実行します。
-ビルド作業ディレクトリは `SpriteStudio6-SDK/Build/Converter/build` となります。
+To build Ss6Converter (command line), run `SpriteStudio6-SDK/Scripts/build_converter_macos.sh`.
+The build working directory will be `SpriteStudio6-SDK/Build/Converter/build`.
 ```
 ./Scripts/build_converter_macos.sh
 ```
-成果物の確認方法は下記になります。
+To verify the artifact:
 ```
 ./Build/Converter/build/Ss6Converter -h
 ```
-Ss6Converter-Qt のビルドは `SpriteStudio6-SDK/Scripts/build_convertergui_macos.sh` を実行します。
-ビルド作業ディレクトリは `SpriteStudio6-SDK/Build/Ss6ConverterGUI/build` となります。
+To build Ss6Converter-Qt, run `SpriteStudio6-SDK/Scripts/build_convertergui_macos.sh`.
+The build working directory will be `SpriteStudio6-SDK/Build/Ss6ConverterGUI/build`.
 ```
 ./Scripts/build_convertergui_macos.sh
 ```
-成果物の確認方法は下記になります。ただし、Ss6Converter を同封していないので変換できません。
+To verify the artifact (Note: It cannot convert because Ss6Converter is not included):
 ```
 open ./Build/Ss6ConverterGUI/Ss6ConverterGUI/build/Ss6ConverterGUI.app
 ```
-# Viewer2 ビルド
-### リリースビルド
-Viewer2 をビルドします。
-デフォルトビルドタイプは `Release` になります。
+# Building Viewer2
+### Release Build
+Builds Viewer2.
+The default build type is `Release`.
 #### Windows
-SSViewer2 をパッケージングした zip アーカイブファイルを作るには `SpriteStudio6-SDK/Scripts/release_viewer2_win.bat` を実行します。
-成果物は `SpriteStudio6-SDK/Tools/viewer_sample_2_Win.zip` となります。
-デフォルトビルドタイプは Release になります。
+To create a zip archive of the packaged SSViewer2, run `SpriteStudio6-SDK/Scripts/release_viewer2_win.bat`.
+The artifact will be `SpriteStudio6-SDK/Tools/viewer_sample_2_Win.zip`.
+The default build type is Release.
 ```
 ./Scripts/release_viewer2_win.bat
 ```
-成果物の確認方法は下記になります。
+To verify the artifact:
 ```
 powershell Expand-Archive -Force .\Tools\viewer_sample_2_Win.zip .\Tools\nstart .\Tools\viewer_sample_2_Win
 ```
 #### macOS
-SSViewer2 をパッケージングした zip アーカイブファイルを作るには `SpriteStudio6-SDK/Scripts/release_viewer2_macos.sh` を実行します。
-成果物は `SpriteStudio6-SDK/Tools/viewer_sample_2_Mac.zip` となります。
-デフォルトビルドタイプは Release になります。
+To create a zip archive of the packaged SSViewer2, run `SpriteStudio6-SDK/Scripts/release_viewer2_macos.sh`.
+The artifact will be `SpriteStudio6-SDK/Tools/viewer_sample_2_Mac.zip`.
+The default build type is Release.
 ```
 ./Scripts/release_viewer2_macos.sh
 ```
-成果物の確認方法は下記になります。
+To verify the artifact:
 ```
 unzip -o ./Tools/viewer_sample_2_Mac.zip -d ./Tools
 open ./Tools/viewer_sample_2_Mac
 ```
-### 開発ビルド
-デフォルトビルドタイプは `Debug` になります。
+### Development Build
+The default build type is `Debug`.
 #### Windows
-`SpriteStudio6-SDK\Scripts\build_viewer2_win.bat` を実行します。
-`SpriteStudio6-SDK\Build\Viewer2\cmakeBuild` にてビルドします。
+Run `SpriteStudio6-SDK\Scripts\build_viewer2_win.bat`.
+Builds in `SpriteStudio6-SDK\Build\Viewer2\cmakeBuild`.
 ```
 .\Scripts\build_viewer2_win.bat
 start Build\Viewer2\cmakeBuild\SSView2_artefacts\Debug\SSViewer2.app
 ```
 #### macOS
-`SpriteStudio6-SDK/Scripts/build_viewer2_macos.sh` を実行します。
-`SpriteStudio6-SDK/Build/Viewer2/cmakeBuild` にてビルドします。
+Run `SpriteStudio6-SDK/Scripts/build_viewer2_macos.sh`.
+Builds in `SpriteStudio6-SDK/Build/Viewer2/cmakeBuild`.
 ```
 ./Scripts/build_viewer2_macos.sh
 open Build/Viewer2/cmakeBuild/SSView2_artefacts/Debug/SSViewer2.app

@@ -1,101 +1,101 @@
-# バイナリファイルのフォーマット
-## 注意
-情報が古いので、この内容は参考にしないでください。
-## 概要
-* 変換時に指定した sspj ファイルと登録されているssae, ssce すべての情報を１つにパックします。
-* sspj,ssae,ssce ファイルが持つ情報のうち再生に必要な情報のみを含んでいます。
-* アニメーションの補間計算はコンバート時に行われます。(実行時計算にも対応予定)
-* 座標値はグローバル化せずローカル値のまま保持します。
-## 詳細
-* ファイル構造
-ssbpファイルは次の情報で構成されています。
-SS5PlayerData.hにssbp解析用の構造体が定義されています。
-	+ プロジェクト設定
+# Binary File Format
+## Note
+This information is outdated, so please do not use this content as a reference.
+## Overview
+* Packs the specified sspj file and all registered ssae and ssce information into one at the time of conversion.
+* Contains only the information necessary for playback from the information held by the sspj, ssae, and ssce files.
+* Animation interpolation calculations are performed during conversion. (Runtime calculation is also planned to be supported)
+* Coordinate values are kept as local values without being globalized.
+## Details
+* File Structure
+The ssbp file consists of the following information.
+Structures for ssbp parsing are defined in `SS5PlayerData.h`.
+	+ Project Settings
 	- struct ProjectData
-	- dataId　　　　　　　　ssbpファイルデータ確認用のID
-	- version　　　　　　　ssbpファイルのバージョン
-	- flags　　　　　　　　予備
-	- imageBaseDir　　　　リソースパス、コンバート時の引数で設定する
-	- cells　　　　　　　　セル構造体へのポインタ（配列の先頭アドレス）
-	- animePacks　　　　　アニメパック構造体へのポインタ（配列の先頭アドレス）
-	- numCells　　　　　　セルの数
-	- numAnimePacks　　　　アニメーションの数
-	+ セル
+	- dataId　　　　　　　　ID for verifying ssbp file data
+	- version　　　　　　　ssbp file version
+	- flags　　　　　　　　Reserved
+	- imageBaseDir　　　　Resource path, set by argument during conversion
+	- cells　　　　　　　　Pointer to cell structures (start address of array)
+	- animePacks　　　　　Pointer to animation pack structures (start address of array)
+	- numCells　　　　　　Number of cells
+	- numAnimePacks　　　　Number of animations
+	+ Cell
 	- struct Cell
-	- name　　　　　　　　セル名
-	- cellMap;　　　　　　セルマップ構造体へのポインタ（配列の先頭アドレス）
-	- indexInCellMap　　　セル番号
-	- x　　　　　　　　　　セル画像内の開始X座標
-	- y　　　　　　　　　　セル画像内の開始Y座標
-	- width　　　　　　　　セルの幅
-	- height　　　　　　　セルの高さ
-	- reserved　　　　　　予備
-	+ セルマップ
+	- name　　　　　　　　Cell name
+	- cellMap;　　　　　　Pointer to cell map structure (start address of array)
+	- indexInCellMap　　　Cell index
+	- x　　　　　　　　　　Starting X coordinate within the cell image
+	- y　　　　　　　　　　Starting Y coordinate within the cell image
+	- width　　　　　　　　Width of the cell
+	- height　　　　　　　Height of the cell
+	- reserved　　　　　　Reserved
+	+ Cell Map
 	- struct CellMap
-	- name　　　　　　　　セルマップ名(ssce名)
-	- imagePath　　　　　　テクスチャファイル名
-	- index　　　　　　　　セルマップ番号
-	- reserved　　　　　　予備
-	+ アニメパック
+	- name　　　　　　　　Cell map name (ssce name)
+	- imagePath　　　　　　Texture file name
+	- index　　　　　　　　Cell map number
+	- reserved　　　　　　Reserved
+	+ Animation Pack
 	- struct AnimePackData
-	- name　　　　　　　　　　　モーション名
-	- parts　　　　　　　　　　　パーツ構造体へのポインタ
-	- animations; 　　　　アニメ（モーション）構造体へのポインタ
-	- numParts　　　　　　　　　パーツ数
-	- numAnimations　　　　　　モーション数
-	+ アニメ
+	- name　　　　　　　　　　　Motion name
+	- parts　　　　　　　　　　　Pointer to parts structure
+	- animations; 　　　　Pointer to animation (motion) structure
+	- numParts　　　　　　　　　Number of parts
+	- numAnimations　　　　　　Number of motions
+	+ Animation
 	- struct AnimationData
-	- name　　　　　　　　　　　モーション名
-	- defaultData　　　　　　　パーツの初期値（配列の先頭アドレス）
-	- frameData　　　　　　　　各フレームのパーツデータ（配列の先頭アドレス）
-	- userData　　　　　　　　　ユーザーデータ（配列の先頭アドレス）
-	- labelData　　　　　　　　ラベルデータ（配列の先頭アドレス）
-	- numFrames　　　　　　　　総フレーム
-	- fps　　　　　　　　　　　再生スピード
-	- labelNum　　　　　　　　ラベルデータの数
-	+ パーツ初期値
+	- name　　　　　　　　　　　Motion name
+	- defaultData　　　　　　　Initial values of parts (start address of array)
+	- frameData　　　　　　　　Part data for each frame (start address of array)
+	- userData　　　　　　　　　User data (start address of array)
+	- labelData　　　　　　　　Label data (start address of array)
+	- numFrames　　　　　　　　Total frames
+	- fps　　　　　　　　　　　Playback speed
+	- labelNum　　　　　　　　Number of label data
+	+ Initial Part Values
 	- struct AnimationInitialData
-	- index　　　　　　　　　　　パーツインデックス、SS上のフレームコントロールの順番
-	- dummy　　　　　　　　　　　バイナリデータ出力用のアライメントダミーデータ
-	- flags　　　　　　　　　　　非表示、X反転、Y反転フラグ
-	- cellIndex　　　　　　　　　セルインデックス
-	- positionX　　　　　　　　　X座標初期値
-	- positionY　　　　　　　　　Y座標初期値
-	- opacity　　　　　　　　　　透明度初期値
-	- anchorX　　　　　　　　　　原点Xオフセット＋セルに設定された原点Xオフセット初期値
-	- anchorY　　　　　　　　　　原点Yオフセット＋セルに設定された原点Yオフセット初期値
-	- rotationX　　　　　　　　　X回転初期値
-	- rotationY　　　　　　　　　Y回転初期値
-	- rotationZ　　　　　　　　　Z回転初期値
-	- scaleX　　　　　　　　　　　X拡大率初期値
-	- scaleY　　　　　　　　　　　Y拡大率初期値
-	- size_X　　　　　　　　　　　Xサイズ初期値
-	- size_Y　　　　　　　　　　　Yサイズ初期値
-	- uv_move_X　　　　　　　　　UV　X移動初期値
-	- uv_move_Y　　　　　　　　　UV　Y移動初期値
-	- uv_rotation　　　　　　　　UV回転初期値
-	- uv_scale_X　　　　　　　　　UV　Xスケール初期値
-	- uv_scale_Y　　　　　　　　　UV　Yスケール初期値
-	- boundingRadius　　　　　　当たり半径初期値
-	+ 各フレームのパーツデータ
-	- パーツデータは可変長で初期値と異なるデータのみが格納されています。
-	- ヘッダ部
-	* パーツインデックス
-	* フラグ
-	+ フラグにはビット対応でどのデータが含まれるかが入っています。
-	+ フラグの内容によってファイルからデータを読むか、初期値からデータを読むかを決定する。
-	+ 詳細はSS5Player cocos2d-xに含まれるSS5Player.cppのvoid Player::setFrame(int frameNo)を参照
-	+ ユーザーデータ
+	- index　　　　　　　　　　　Part index, order of frame control on SS
+	- dummy　　　　　　　　　　　Alignment dummy data for binary data output
+	- flags　　　　　　　　　　　Hidden, X flip, Y flip flags
+	- cellIndex　　　　　　　　　Cell index
+	- positionX　　　　　　　　　Initial X coordinate
+	- positionY　　　　　　　　　Initial Y coordinate
+	- opacity　　　　　　　　　　Initial opacity
+	- anchorX　　　　　　　　　　Origin X offset + initial origin X offset set in the cell
+	- anchorY　　　　　　　　　　Origin Y offset + initial origin Y offset set in the cell
+	- rotationX　　　　　　　　　Initial X rotation
+	- rotationY　　　　　　　　　Initial Y rotation
+	- rotationZ　　　　　　　　　Initial Z rotation
+	- scaleX　　　　　　　　　　　Initial X scale
+	- scaleY　　　　　　　　　　　Initial Y scale
+	- size_X　　　　　　　　　　　Initial X size
+	- size_Y　　　　　　　　　　　Initial Y size
+	- uv_move_X　　　　　　　　　Initial UV X move
+	- uv_move_Y　　　　　　　　　Initial UV Y move
+	- uv_rotation　　　　　　　　Initial UV rotation
+	- uv_scale_X　　　　　　　　　Initial UV X scale
+	- uv_scale_Y　　　　　　　　　Initial UV Y scale
+	- boundingRadius　　　　　　Initial collision radius
+	+ Part data for each frame
+	- Part data is variable length and only contains data that differs from the initial values.
+	- Header section
+	* Part index
+	* Flags
+	+ The flags bitwise indicate which data is included.
+	+ Based on the flags, it is determined whether to read data from the file or from the initial values.
+	+ For details, refer to `void Player::setFrame(int frameNo)` in `SS5Player.cpp` included in SS5Player cocos2d-x.
+	+ User Data
 	- struct UserData
-	- partName　　　　　　　このユーザーデータが設定されているパーツ名
-	- frameNo　　　　　　　このユーザーデータが設定されているフレーム
-	- flags　　　　　　　　含まれるデータの種類
-	- integer　　　　　　　整数
-	- rect[4]　　　　　　　矩形データ
-	- point[2]　　　　　　　座標データ
-	- str　　　　　　　　　文字列
-	- strSize　　　　　　　文字列のサイズ
-	+ ラベルデータ
+	- partName　　　　　　　Name of the part where this user data is set
+	- frameNo　　　　　　　Frame where this user data is set
+	- flags　　　　　　　　Types of data included
+	- integer　　　　　　　Integer
+	- rect[4]　　　　　　　Rectangle data
+	- point[2]　　　　　　　Coordinate data
+	- str　　　　　　　　　String
+	- strSize　　　　　　　Size of the string
+	+ Label Data
 	- struct LabelData
-	- str　　　　　　　　　ラベル名
-	- frameNo　　　　　　　ラベルを設定したフレーム
+	- str　　　　　　　　　Label name
+	- frameNo　　　　　　　Frame where the label was set

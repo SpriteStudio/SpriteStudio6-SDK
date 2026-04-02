@@ -1,21 +1,21 @@
-# ビューア
-## 概要
-OPTPiX SpriteStudio 6 で制作したアニメーションデータを再生するためのサンプルプログラムです。
-OpenGL を利用しており、Windows/Mac 両方で動作します。
-ソースファイルを公開しており自由にカスタマイズしてお使いいただけます。
-## ダウンロード
-* Windows 版
-* [安定版](https://github.com/SpriteStudio/SpriteStudio6-SDK/blob/master/Tools/viewer_sample.zip?raw=true)
-* [開発版](https://github.com/SpriteStudio/SpriteStudio6-SDK/blob/develop/Tools/viewer_sample.zip?raw=true)
-* Mac 版
-* [安定版](https://github.com/SpriteStudio/SpriteStudio6-SDK/blob/master/Tools/viewer_sample_Mac.zip?raw=true)
-* [開発版](https://github.com/SpriteStudio/SpriteStudio6-SDK/blob/develop/Tools/viewer_sample_Mac.zip?raw=true)
-## 使い方
-* ダウンロードし、解凍した実行ファイルを実行します。
-* Main Panel の Load .sspj メニューを選択し、再生したい.sspj ファイルを指定します。
-* Play で再生し、Pause で一時停止します。
-* Animation で ssae ファイル、及び含まれるアニメーションを選択し再生します。
-## ビルド方法
-* ソースファイルの場所
-* 各ブランチの Build/Viewer にあります。
-* [ビルドの手順](how-to-build-sdk.md)
+# Viewer
+## Overview
+This is a sample program for playing animation data created with OPTPiX SpriteStudio 6.
+It uses OpenGL and runs on both Windows and Mac.
+The source files are public, and you can customize them freely.
+## Download
+* Windows Version
+* [Stable Version](https://github.com/SpriteStudio/SpriteStudio6-SDK/blob/master/Tools/viewer_sample.zip?raw=true)
+* [Development Version](https://github.com/SpriteStudio/SpriteStudio6-SDK/blob/develop/Tools/viewer_sample.zip?raw=true)
+* Mac Version
+* [Stable Version](https://github.com/SpriteStudio/SpriteStudio6-SDK/blob/master/Tools/viewer_sample_Mac.zip?raw=true)
+* [Development Version](https://github.com/SpriteStudio/SpriteStudio6-SDK/blob/develop/Tools/viewer_sample_Mac.zip?raw=true)
+## Usage
+* Download and run the unzipped executable file.
+* Select the "Load .sspj" menu in the Main Panel and specify the .sspj file you want to play.
+* "Play" to play, and "Pause" to pause.
+* Use "Animation" to select and play an ssae file and the animations it contains.
+## How to Build
+* Location of Source Files
+* Located in Build/Viewer of each branch.
+* [Build Procedure](how-to-build-sdk.md)

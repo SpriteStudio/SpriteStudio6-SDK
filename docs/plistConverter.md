@@ -1,28 +1,26 @@
 # plistConverter
-## 概要
-plistConverter は OPTPiX SpriteStudio 6 のスプライトシート機能で出力されたセル情報(plist)をPlayStationMobile SDK で使用しやすいxml形式に変換するコンバータです。
-ソースファイルを公開していますので自由にカスタマイズすることが可能です。
-* 免責事項
-本ソフトウェアは**評価版**であり、動作検証、評価を目的として配布しているため、
-何らかの不具合が含まれている可能性があることをご了承いただいた上で、
-ご利用いただきますようお願い致します。
-## 取得方法
-Windowsで使用する事ができます。
-tools/plistConverter.zipに実行ファイルが含まれています。
-Build/plistConverterにソースファイルが含まれています。
-Visual Studio Express 2013 for Windows DesktopでplistConverter_src.zipないのplistConverter.slnを開きビルドしてください。
-## 使用手順
-* Sprite Studio 6でスプライトシートの作成
-メニュー＞OPTPiX Labs＞スプライトシートを生成を選択します。
-Trim Transparentをチェックします。
-Output FormatをCocos2d-xにします。
-TextureSize等を設定し、Exportボタンを押します。
-plistとpngが出力されます。
-* plistのコンバート
-コマンドプロンプトを起動し、plistConverter.exe を実行します。
-第一引数に plist のパスを設定します。
-同じフォルダにxmlファイルが作成されます。
-* ゲームへの組み込み
-作成したxmlファイルとpngファイルをプロジェクトへ追加します。
-出力したxmlファイルから画像を表示するサンプルプログラムを公開しています。
-[こちらをご参照ください。](https://github.com/SpriteStudio/SS5PlayerForPlayStationMobile/wiki/textuerpack)
+## Overview
+plistConverter is a tool for converting cell information (plist) output by the sprite sheet feature of OPTPiX SpriteStudio 6 into an XML format that is easy to use with the PlayStation®Mobile SDK.
+Since the source files are public, you can customize it freely.
+* Disclaimer
+This software is an **evaluation version** distributed for the purpose of operation verification and evaluation. Please use it with the understanding that it may contain some bugs.
+## How to Obtain
+It can be used on Windows.
+The executable file is included in `tools/plistConverter.zip`.
+The source files are included in `Build/plistConverter`.
+To build, open `plistConverter.sln` inside `plistConverter_src.zip` with Visual Studio Express 2013 for Windows Desktop.
+## Usage Procedures
+* Creating a Sprite Sheet in SpriteStudio 6
+Select Menu > OPTPiX Labs > Generate Sprite Sheet.
+Check "Trim Transparent".
+Set "Output Format" to "Cocos2d-x".
+Set the texture size, etc., and press the "Export" button.
+A plist and a png will be output.
+* Converting the plist
+Start the command prompt and run `plistConverter.exe`.
+Set the path of the plist in the first argument.
+An XML file will be created in the same folder.
+* Integration into a Game
+Add the created XML and PNG files to your project.
+We have released a sample program that displays images from the output XML file.
+[Please refer to this for details.](https://github.com/SpriteStudio/SS5PlayerForPlayStationMobile/wiki/textuerpack)

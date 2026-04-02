@@ -1,87 +1,87 @@
 # SpriteStudio 6 SDK
 Copyright © CRI Middleware Co., Ltd.
 
-## 概要
-本SDKは、[OPTPiX SpriteStudio 6以降](http://www.webtech.co.jp/spritestudio/)で製作されたデータ(sspj,ssce,ssae,ssee)をユーザーの皆様の再生環境に応じて柔軟にご利用いただくためのライブラリ、およびツール群で構成されます。
+## Overview
+This SDK consists of libraries and tools for flexibly using data (sspj, ssce, ssae, ssee) created with [OPTPiX SpriteStudio 6 or later](http://www.webtech.co.jp/spritestudio/) in your own playback environment.
 
-* sspjLib :SpriteStudioのプロジェクトファイルsspjを解析するためのライブラリです。
-    * ローダー：SpriteStudio 6 形式のファイル(sspj,ssce,ssae,ssee）の読み込みモジュール
-    * アニメータ：座標変換、補間計算などを行うアニメーションモジュール
-    * ドローワー：OpenGL を利用した描画モジュール
-* Tools：ライブラリを使用して作成されたツールです。
-    * ビューアー：Windows/Mac 用ビューアーサンプル
-    * コンバータ：sspjファイルから再生プログラム用のファイル(.ssbp .json等)へ変換します。
+* sspjLib: A library for parsing SpriteStudio project files (sspj).
+    * Loader: Module for loading SpriteStudio 6 format files (sspj, ssce, ssae, ssee).
+    * Animator: Animation module that performs coordinate transformation, interpolation calculation, etc.
+    * Drawer: Drawing module using OpenGL.
+* Tools: Tools created using the library.
+    * Viewer: Viewer sample for Windows/Mac.
+    * Converter: Converts sspj files into files for playback programs (.ssbp, .json, etc.).
 
-### 想定する用途
-本SDKの用途は、sspjを解析して新たなプラットフォーム用プレイヤーを作成したり、別のフォーマットにデータを加工、変換するツールの作成となります。
-ゲームやアプリで使用する場合は、アニメーション制御に特化したプレイヤープログラムを公開しています。
-またアニメーション編集に役立つ外部ツールも公開していますので、以下のリンクを参照してみてください。
-* [OPTPiX ヘルプセンター](http://www.webtech.co.jp/help/ja/spritestudio/download/forprogrammer/)
-* [GitHubのSpriteStudioリポジトリ](https://github.com/SpriteStudio?tab=repositories)
+### Intended Use
+The purpose of this SDK is to parse sspj files to create players for new platforms, or to create tools for processing and converting data into other formats.
+For use in games and apps, we provide player programs specialized for animation control.
+We also provide external tools useful for animation editing, so please refer to the links below.
+* [OPTPiX Help Center](http://www.webtech.co.jp/help/en/spritestudio/download/forprogrammer/)
+* [SpriteStudio Repositories on GitHub](https://github.com/SpriteStudio?tab=repositories)
 
-### 免責事項
-本SDKは**リファレンス実装**を目指してメンテナンスされています。
-特定のプラットフォームを意識した最適化は行わず、ある程度の冗長性を維持しています。
-develop ブランチは最新の開発版のため、何らかの不具合が含まれている可能性があります。
-安定版が必要な場合[Release](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases)から取得してください。
+### Disclaimer
+This SDK is maintained with the goal of being a **reference implementation**.
+It maintains a certain degree of redundancy without performing optimizations for specific platforms.
+Since the `develop` branch is the latest development version, it may contain some bugs.
+If you need a stable version, please obtain it from [Releases](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases).
 
-## 更新履歴
+## Update History
 
 - [master](https://github.com/SpriteStudio/SpriteStudio6-SDK/commits/master)
 - [develop](https://github.com/SpriteStudio/SpriteStudio6-SDK/commits/develop)
 
-## 対応する SpriteStudio のバージョン
-**SDKバージョン_SpriteStudioバージョン** の形式 (例: 2.2.0_SS7.1.0) でリリースが作られています。
-詳しくは[Releases](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases) をご覧ください。
+## Supported SpriteStudio Versions
+Releases are created in the format **SDK Version_SpriteStudio Version** (e.g., 2.2.0_SS7.1.0).
+For details, please see [Releases](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases).
 
-## ツール類
+## Tools
 
-- ダウンロード
-  - [最新版](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases/latest)
-  - [全バージョン](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases)
-- 使い方
-  - [コンバータ](./docs/how-to-use-converter.md)
-  - [ビューア](./docs/viewer.md)
-- その他
-  - [SS6Playerシリーズとエンジニア向けツール](http://www.webtech.co.jp/help/ja/spritestudio/download/forprogrammer/)  
+- Download
+  - [Latest Version](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases/latest)
+  - [All Versions](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases)
+- Usage
+  - [Converter](./docs/how-to-use-converter.md)
+  - [Viewer](./docs/viewer.md)
+- Others
+  - [SS6Player Series and Tools for Engineers](http://www.webtech.co.jp/help/en/spritestudio/download/forprogrammer/)  
 
-## SDKのビルド方法
-* [SDKのビルド方法](./docs/how-to-build-sdk.md)
-* [(参考) SS6Converter、ビューアーをビルドする方法](http://www.webtech.co.jp/help/ja/spritestudio/guide/output6/sdk/#viewer_build) _※ヘルプセンターのページにジャンプします。_
+## How to Build the SDK
+* [How to Build the SDK](./docs/how-to-build-sdk.md)
+* [(Reference) How to Build SS6Converter and Viewer](http://www.webtech.co.jp/help/ja/spritestudio/guide/output6/sdk/#viewer_build) _*Note: Jumps to the Help Center page._
 
-## データ構造とクラスリファレンス
+## Data Structure and Class Reference
 [SpriteStudio6 SDK Document](https://spritestudio.github.io/SpriteStudio6-SDK/html/index.html)
 
-## ブランチルール
-SpriteStudioSDKにはmasterとdevelopがあり、プレイヤーを含む最新のコードはdevelopにコミットされます。
-安定版と判断した段階で、developからmasterへマージしてバージョン番号を付与しています。
+## Branch Rules
+SpriteStudioSDK has `master` and `develop` branches. The latest code, including the player, is committed to `develop`.
+Once judged to be a stable version, it is merged from `develop` to `master` and assigned a version number.
 
-## Pull Request
-Pull Request は大歓迎です！
-リクエスト送信前にIssue化しておく必要はありません。
-変更内容はコミット時のコメントに記入していただければ十分です。
+## Pull Requests
+Pull Requests are very welcome!
+There is no need to create an Issue before sending a request.
+Providing details of the changes in the commit comments is sufficient.
 
-## 使用しているオープンソースライブラリ
-SDKでは以下のライブラリを使用しています。
-各ライブラリのライセンス等については下記リンクよりご確認ください。
-* ローダー
+## Open Source Libraries Used
+The SDK uses the following libraries.
+Please check the links below for the licenses of each library.
+* Loader
     * [TinyXML2](http://www.grinninglizard.com/tinyxml/)
-* レンダラー
+* Renderer
     * [OpenGL](http://www.opengl.org/)
-    * [glew ( Windows )](http://glew.sourceforge.net/)
-* ビューアーサンプルのGUI
+    * [glew (Windows)](http://glew.sourceforge.net/)
+* Viewer Sample GUI
     * [glfw3](http://www.glfw.org/)
     * [JUCE 7](https://juce.com/)
 
 ## SpriteStudio 5 3rdParty
-ご好意で提供していただいたプログラムを公開しています。
-ご使用の前にこちらをお読みください。[SpriteStudio 5 3rdParty](http://spritestudio3rdparty.github.io/)
+We publish programs provided by the community.
+Please read this before use. [SpriteStudio 5 3rdParty](http://spritestudio3rdparty.github.io/)
 
-## お問い合わせ
-ご質問、ご要望、不具合のご報告は [Issues](https://github.com/SpriteStudio/SpriteStudio6-SDK/issues) に投稿してください。
-非公開でのお問い合わせを希望される場合は、[ヘルプセンター](https://www.webtech.co.jp/help/ja/spritestudio7/inquiries/ssplayer_tool/) よりお寄せください。
-再現データなどの送付が必要な場合も、上記ヘルプセンター経由でファイルを送信してください。
+## Contact
+Please post questions, requests, and bug reports to [Issues](https://github.com/SpriteStudio/SpriteStudio6-SDK/issues).
+If you prefer to contact us privately, please use the [Help Center](https://www.webtech.co.jp/help/en/spritestudio7/inquiries/ssplayer_tool/).
+If you need to send reproduction data, please do so via the Help Center.
 
-株式会社ＣＲＩ・ミドルウェア
+CRI Middleware Co., Ltd.
 [https://www.cri-mw.co.jp/](https://www.cri-mw.co.jp/)
 Copyright © CRI Middleware Co., Ltd.
