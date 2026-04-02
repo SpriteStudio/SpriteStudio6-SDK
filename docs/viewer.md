@@ -18,4 +18,4 @@ OpenGL を利用しており、Windows/Mac 両方で動作します。
 ## ビルド方法
 * ソースファイルの場所
 * 各ブランチの Build/Viewer にあります。
-* [ビルドの手順](SDKのビルド方法.md)
+* [ビルドの手順](how-to-build-sdk.md)

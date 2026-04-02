@@ -1,7 +1,7 @@
 # SDKのビルド方法
 # はじめに
 ここでは CLI でのビルド手順について記載します。
-GUI でのビルド手順については [SDKのビルド方法(GUI編)](SDKのビルド方法(GUI編).md)を参照してください。
+GUI でのビルド手順については [SDKのビルド方法(GUI編)](how-to-build-sdk-gui.md)を参照してください。
 # 環境構築
 ## Windows
 下記をインストールしてください。
@@ -29,7 +29,7 @@ Xcode と Qt 以外は [homebrew](https://brew.sh/) を利用すれば下記コ�
 ```
 brew install git cmake
 ```
-\*1: Ss6Converter-Qt を Universal Binary 2 (x64 と arm64 両方対応)にするには Qt 本家から Qt をダウンロードしてください。Qt のバージョンは 6.9.0 を推奨しています。それ以外のバージョンを利用する場合は環境変数 `QT_PREFIX` にて Qt の root path を指定してください。(e.g. 6.9.1 を利用する場合は `export QT_PREFIX=~/Qt/6.9.1/macos` と設定してください。)
+\*1: Ss6Converter-Qt を Universal Binary 2 (x64 と arm64 両方対応)にするには Qt 本家から Qt をダウンロードしてください。 Qt のバージョンは 6.9.0 を推奨しています。それ以外のバージョンを利用する場合は環境変数 `QT_PREFIX` にて Qt の root path を指定してください。(e.g. 6.9.1 を利用する場合は `export QT_PREFIX=~/Qt/6.9.1/macos` と設定してください。)
 下記はオプショナルになります。ビルド高速化の為のソフトウェアです。
 * [Ninja](https://ninja-build.org/)
 * [sccache](https://github.com/mozilla/sccache)

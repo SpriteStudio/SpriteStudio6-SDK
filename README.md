@@ -30,13 +30,13 @@ develop ブランチは最新の開発版のため、何らかの不具合が含
 詳しくは[Releases](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases) をご覧ください。
 
 ## SDKのビルド方法
-* [SDKのビルド方法](./docs/SDKのビルド方法.md)
+* [SDKのビルド方法](./docs/how-to-build-sdk.md)
 * [(参考) SS6Converter、ビューアーをビルドする方法](http://www.webtech.co.jp/help/ja/spritestudio/guide/output6/sdk/#viewer_build) _※ヘルプセンターのページにジャンプします。_
 
 ## ssbpファイルを利用する場合の注意点
 ssbpファイルにはフォーマットバージョンが存在し、ご利用の再生プログラム(SS6Player for Cocos2d-x および ssbpLib)のバージョンに応じて対応したフォーマットのファイルを出力するコンバータ(本SDK同梱)を利用する必要があります。
 下記表を確認の上、該当するバージョンのコンバータを使用してください。
-[各バージョンの対応表はこちら](./docs/コンバータの使い方.md#%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC%E3%81%A8%E3%81%AE%E4%BA%92%E6%8F%9B%E6%80%A7%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6)
+[各バージョンの対応表はこちら](./docs/how-to-use-converter.md#%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC%E3%81%A8%E3%81%AE%E4%BA%92%E6%8F%9B%E6%80%A7%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6)
 
 ## データ構造とクラスリファレンス
 [SpriteStudio6 SDK Document](https://spritestudio.github.io/SpriteStudio6-SDK/html/index.html)

@@ -8,7 +8,7 @@ Ss6Converter は OPTPiX SpriteStudio 6 で製作したアニメーションデ�
 このコンバータが出力するデータは汎用目的であり、特定のプレイヤー専用のデータを出力するものではありません。
 [ソースファイル](https://github.com/SpriteStudio/SpriteStudio6-SDK/tree/master/Build/Converter)を公開していますので自由にカスタマイズすることが可能です。
 ## 取得方法
-[releases](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases) から各プラットフォーム의 Ss6Converter アーカイブをダウンロードしてください。
+[releases](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases) から各プラットフォームの Ss6Converter アーカイブをダウンロードしてください。
 最新版は [こちらに](https://github.com/SpriteStudio/SpriteStudio6-SDK/releases/latest) になります。
 ## 動作を確認している環境
 * 動作を確認しているOSのバージョン
@@ -61,4 +61,4 @@ ssbpファイルにはフォーマットバージョンが存在しており、�
 * セルマップには必ず１つのセルリストを登録してください。
 セルリストがない場合プレイヤーがssbpファイルの解析に失敗します。
 ## コンバータのビルド方法
-* [ビルドの手順](SDKのビルド方法.md)
+* [ビルドの手順](how-to-build-sdk.md)
