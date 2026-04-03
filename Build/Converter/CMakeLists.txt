@@ -43,6 +43,13 @@ set(MZ_WZAES OFF CACHE INTERNAL "")
 set(MZ_OPENSSL OFF CACHE INTERNAL "")
 set(MZ_LIBBSD OFF CACHE INTERNAL "")
 set(MZ_ICONV OFF CACHE INTERNAL "")
+
+# Disable installation of minizip-ng and its dependencies to avoid alias target errors in CMake 3.31+
+set(SKIP_INSTALL_ALL ON CACHE INTERNAL "")
+set(SKIP_INSTALL_LIBRARIES ON CACHE INTERNAL "")
+set(SKIP_INSTALL_HEADERS ON CACHE INTERNAL "")
+set(SKIP_INSTALL_EXECUTABLES ON CACHE INTERNAL "")
+
 FetchContent_MakeAvailable(minizip-ng)
 include_directories(${minizip-ng_SOURCE_DIR})
 include_directories(${minizip-ng_SOURCE_DIR}/compat)
@@ -179,11 +186,20 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Common/Helper)
 # for win & mac suport thumbnail
 if(WIN32 OR APPLE)
     message("fetch glfw")
-    set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "")
-    set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "")
-    set(GLFW_BUILD_DOCS OFF CACHE INTERNAL "")
-    set(GLFW_INSTALL OFF CACHE INTERNAL "")
-    set(GLFW_VULKAN_STATIC OFF CACHE INTERNAL "")
+    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+    set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+    set(GLFW_VULKAN_STATIC OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_VULKAN OFF CACHE BOOL "" FORCE)
+    if(WIN32)
+        set(GLFW_BUILD_WIN32 ON CACHE BOOL "" FORCE)
+        set(GLFW_BUILD_WAYLAND OFF CACHE BOOL "" FORCE)
+        set(GLFW_BUILD_X11 OFF CACHE BOOL "" FORCE)
+    elseif(APPLE)
+        set(GLFW_BUILD_COCOA ON CACHE BOOL "" FORCE)
+    endif()
+
     FetchContent_Declare(
             glfw
             GIT_REPOSITORY https://github.com/glfw/glfw.git
