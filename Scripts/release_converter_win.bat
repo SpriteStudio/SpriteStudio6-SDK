@@ -47,7 +47,7 @@ if ERRORLEVEL 1 (
 ) else (
   copy "%BUILDDIR%\Converter\build\Ss6Converter.exe" Ss6Converter\ || exit /b 1
   copy "%BUILDDIR%\Ss6ConverterGUI\Ss6ConverterGUI\build\Ss6ConverterGUI.exe" Ss6Converter\ || exit /b 1
-  %QT_PREFIX%\..\msvc2022_64\bin\windeployqt6.exe --qtpaths %QTPATHS% Ss6Converter\ || exit /b 1
+  %QT_PREFIX%\..\msvc2022_64\bin\windeployqt6.exe --qtpaths %QTPATHS% Ss6Converter\Ss6ConverterGUI.exe || exit /b 1
 )
 set ZIPNAME=Ss6Converter_%TARGET_ARCH%
 powershell compress-archive Ss6Converter %ZIPNAME%.zip
