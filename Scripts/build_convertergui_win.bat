@@ -48,7 +48,7 @@ pushd build
 
 where ninja >nul 2>nul
 if ERRORLEVEL 1 (
-  cmake -A %TARGET_ARCH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || exit /b 1
+  cmake -A %TARGET_ARCH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_PREFIX_PATH="%QT_PREFIX%" .. || exit /b 1
   cmake --build . --target ALL_BUILD --parallel -- /p:Configuration=%BUILD_TYPE% || exit /b 1
 ) else (
 
@@ -58,7 +58,7 @@ if ERRORLEVEL 1 (
       call %VCVARSALL% %HOST_ARCH%_%TARGET_ARCH%
   )
 
-  cmake -G Ninja -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_SYSTEM_PROCESSOR=%TARGET_ARCH% .. || exit /b 1
+  cmake -G Ninja -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_SYSTEM_PROCESSOR=%TARGET_ARCH% -DCMAKE_PREFIX_PATH="%QT_PREFIX%" .. || exit /b 1
   cmake --build . --parallel || exit /b 1
 )
 

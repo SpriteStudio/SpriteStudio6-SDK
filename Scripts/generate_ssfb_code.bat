@@ -16,9 +16,16 @@ rem Build flatc
 rmdir /S /Q build
 mkdir build
 pushd build
-cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DENABLE_FLATC=ON .. || exit /b 1
-cmake --build . --target flatc --parallel -- /p:Configuration=%BUILD_TYPE% || exit /b 1
-set FLATC="%BUILDDIR%\Converter\build\_deps\flatbuffers-build\flatc.exe"
+where ninja >nul 2>nul
+if ERRORLEVEL 1 (
+  cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DENABLE_FLATC=ON .. || exit /b 1
+  cmake --build . --target flatc --parallel --config %BUILD_TYPE% || exit /b 1
+  set FLATC="%BUILDDIR%\Converter\build\_deps\flatbuffers-build\%BUILD_TYPE%\flatc.exe"
+) else (
+  cmake -G Ninja -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DENABLE_FLATC=ON .. || exit /b 1
+  cmake --build . --target flatc --parallel || exit /b 1
+  set FLATC="%BUILDDIR%\Converter\build\_deps\flatbuffers-build\flatc.exe"
+)
 popd
 
 rem generate ssfb code
