@@ -81,7 +81,7 @@ Please read this before use. [SpriteStudio 5 3rdParty](http://spritestudio3rdpar
 
 ## Contact
 Please post questions, requests, and bug reports to [Issues](https://github.com/SpriteStudio/SpriteStudio6-SDK/issues).
-If you prefer to contact us privately, please use the [Help Center](https://www.webtech.co.jp/help/en/spritestudio7/inquiries/ssplayer_tool/).
+If you prefer to contact us privately, please use the [Help Center](https://ssl.webtech.co.jp/form/inquiry_en_parse.php).
 If you need to send reproduction data, please do so via the Help Center.
 
 CRI Middleware Co., Ltd.
