@@ -22,12 +22,7 @@ call "%CURDIR%\build_viewer2_win.bat" Release %TARGET_ARCH% || exit /b 1
 pushd %BASEDIR%
 rmdir /S /Q viewer_sample_2
 mkdir viewer_sample_2
-where ninja >nul 2>nul
-if ERRORLEVEL 1 (
-  copy "%BUILDDIR%\Viewer2\cmakeBuild\SSView2_artefacts\Release\SSViewer2.exe" viewer_sample_2\ || exit /b 1
-) else (
-  copy "%BUILDDIR%\Viewer2\cmakeBuild\SSView2_artefacts\SSViewer2.exe" viewer_sample_2\ || exit /b 1
-)
+copy "%BUILDDIR%\Viewer2\cmakeBuild\SSView2_artefacts\Release\SSViewer2.exe" viewer_sample_2\
 set ZIPNAME=viewer_sample_2_%TARGET_ARCH%
 powershell compress-archive viewer_sample_2 %ZIPNAME%.zip
 move /y %ZIPNAME%.zip %TOOLSDIR%\
