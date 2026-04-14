@@ -1,4 +1,4 @@
-﻿
+
 #include <stdio.h>
 #include <cstdlib>
 
@@ -19,10 +19,35 @@
 namespace spritestudio6
 {
 
+namespace {
+	// 内部用数学ヘルパー (SDK依存を避けるため)
+	float getVector2Length(const effect_v2::Vector2& v) {
+		return std::sqrt(v.x * v.x + v.y * v.y);
+	}
+
+	effect_v2::Vector2 normalizeVector2(const effect_v2::Vector2& v) {
+		float len = getVector2Length(v);
+		if (len == 0) return effect_v2::Vector2(0, 0);
+		return effect_v2::Vector2(v.x / len, v.y / len);
+	}
+
+	float getAngle360(const effect_v2::Vector2& v1, const effect_v2::Vector2& v2) {
+		// SsVector2::get_angle_360 の代替
+		float cos_val = v1.x * v2.x + v1.y * v2.y;
+		float sin_val = v1.x * v2.y - v1.y * v2.x;
+		float angle = std::atan2(sin_val, cos_val);
+		return angle;
+	}
+
+    constexpr float PI = 3.1415926535f;
+    float degreeToRadian(float degree) {
+        return degree * PI / 180.0f;
+    }
+}
 
 static u8 blendNumber( u8 a , u8 b , float rate )
 {
-	return (u8)((int)( a + ( b - a ) * rate ));
+	return (u8)((int32_t)( a + ( b - a ) * rate ));
 }
 
 static float blendFloat( float a,float b , float rate )
@@ -31,333 +56,334 @@ static float blendFloat( float a,float b , float rate )
 }
 
 
-double OutQuad(double t,double totaltime,double max ,double min )
+float outQuad(float t,float totaltime,float max ,float min )
 {
-	if( totaltime == 0.0 ) return 0.0;
+	if( totaltime == 0.0f ) return 0.0f;
 
 	if ( t > totaltime ) t = totaltime;
 	max -= min;
 	t /= totaltime;
-	return -max*t*(t-2)+min;
+	return -max*t*(t-2.0f)+min;
 }
+
+namespace effect_v2 {
+
+namespace {
+	void calcPositionAndSpeed(xorshift32& rand, const ParticleParameter& p, float t, float life, float& outX, float& outY) {
+		float rad = p.angle + (rand.genrand_float32() * p.angleVariance - p.angleVariance / 2.0f);
+		float speed = p.speed + (p.speed2 * rand.genrand_float32());
+
+		float addr = 0;
+		if (p.useTanAccel) {
+			float accel = p.tangentialAccel + (rand.genrand_float32() * p.tangentialAccel2);
+			float _speed = (speed <= 0) ? 0.1f : speed;
+			float l = life * _speed * 0.2f; //円の半径
+			float c = 3.14f * l;
+			addr = (accel / c) * t;
+		}
+
+		float x = std::cos(rad + addr) * speed * t;
+		float y = std::sin(rad + addr) * speed * t;
+
+		if (p.useTransSpeed) {
+			float transspeed = p.transSpeed + (p.transSpeed2 * rand.genrand_float32());
+			float speedadd = transspeed / life;
+
+			float addtx = std::cos(rad + addr) * speed;
+			float addtx_trans = std::cos(rad + addr) * speedadd;
+			float addx = ((addtx_trans * t) + addtx) * (t + 1.0f) / 2.0f;
+
+			float addty = std::sin(rad + addr) * speed;
+			float addty_trans = std::sin(rad + addr) * speedadd;
+			float addy = ((addty_trans * t) + addty) * (t + 1.0f) / 2.0f;
+
+			x = addx;
+			y = addy;
+		}
+
+		if (p.useGravity) {
+			float t2 = t * t;
+			x += (0.5f * p.gravity.x * t2);
+			y += (0.5f * p.gravity.y * t2);
+		}
+
+		outX = x;
+		outY = y;
+	}
+
+	void calcOffset(xorshift32& rand, const ParticleParameter& p, float& ox, float& oy) {
+		ox = 0; oy = 0;
+		if (p.useOffset) {
+			ox = p.offset.x + (p.offset2.x * rand.genrand_float32());
+			oy = p.offset.y + (p.offset2.y * rand.genrand_float32());
+		}
+	}
+
+	float calcRotation(xorshift32& rand, const ParticleParameter& p, float t, float life) {
+		if (!p.useRotation) return 0.0f;
+
+		float rot = p.rotation + (rand.genrand_float32() * p.rotation2);
+		float add = p.rotationAdd + (rand.genrand_float32() * p.rotationAdd2);
+
+		if (p.useRotationTrans) {
+			float lastt = life * p.endLifeTimePer;
+			if (lastt == 0) {
+				rot += (add * p.rotationFactor) * t;
+			} else {
+				float addf = (add * p.rotationFactor - add) / lastt;
+				float mod_t = std::max(0.0f, t - lastt);
+				float nowt = std::min(t, lastt);
+				float final_soul = add + addf * nowt;
+				float addrf = (final_soul + add) * (nowt + 1.0f) / 2.0f;
+				addrf -= add;
+				addrf += (mod_t * final_soul);
+				rot += addrf;
+			}
+		} else {
+			rot += (add * t);
+		}
+		return rot;
+	}
+
+	Color calcColor(xorshift32& rand, const ParticleParameter& p, float lifeper) {
+		Color color(255, 255, 255, 255);
+
+		if (p.useColor) {
+			color.a = p.initColor.a + (u8)(rand.genrand_float32() * p.initColor2.a);
+			color.r = p.initColor.r + (u8)(rand.genrand_float32() * p.initColor2.r);
+			color.g = p.initColor.g + (u8)(rand.genrand_float32() * p.initColor2.g);
+			color.b = p.initColor.b + (u8)(rand.genrand_float32() * p.initColor2.b);
+		}
+
+		if (p.useTransColor) {
+			Color ecolor;
+			ecolor.a = p.transColor.a + (u8)(rand.genrand_float32() * p.transColor2.a);
+			ecolor.r = p.transColor.r + (u8)(rand.genrand_float32() * p.transColor2.r);
+			ecolor.g = p.transColor.g + (u8)(rand.genrand_float32() * p.transColor2.g);
+			ecolor.b = p.transColor.b + (u8)(rand.genrand_float32() * p.transColor2.b);
+
+			color.a = blendNumber(color.a, ecolor.a, lifeper);
+			color.r = blendNumber(color.r, ecolor.r, lifeper);
+			color.g = blendNumber(color.g, ecolor.g, lifeper);
+			color.b = blendNumber(color.b, ecolor.b, lifeper);
+		}
+
+		if (p.useAlphaFade) {
+			float start = p.alphaFade;
+			float end = p.alphaFade2;
+			float per = lifeper * 100.0f;
+
+			if (per < start && start > 0.0f) {
+				float alpha = (start - per) / start;
+				color.a = (u8)((float)color.a * (1.0f - alpha));
+			} else if (per > end) {
+				if (end >= 100.0f) {
+					color.a = 0;
+				} else {
+					float alpha = std::min(1.0f, (per - end) / (100.0f - end));
+					color.a = (u8)((float)color.a * (1.0f - alpha));
+				}
+			}
+		}
+		return color;
+	}
+
+	void calcScale(xorshift32& rand, const ParticleParameter& p, float lifeper, float& outScaleX, float& outScaleY) {
+		float scaleX = 1.0f;
+		float scaleY = 1.0f;
+		float scalefactor = 1.0f;
+
+		if (p.useInitScale) {
+			scaleX = p.scale.x + (rand.genrand_float32() * p.scaleRange.x);
+			scaleY = p.scale.y + (rand.genrand_float32() * p.scaleRange.y);
+			scalefactor = p.scaleFactor + (rand.genrand_float32() * p.scaleFactor2);
+		}
+
+		if (p.useTransScale) {
+			float s2_x = p.transscale.x + (rand.genrand_float32() * p.transscaleRange.x);
+			float s2_y = p.transscale.y + (rand.genrand_float32() * p.transscaleRange.y);
+			float sf2 = p.transscaleFactor + (rand.genrand_float32() * p.transscaleFactor2);
+
+			scaleX = blendFloat(scaleX, s2_x, lifeper);
+			scaleY = blendFloat(scaleY, s2_y, lifeper);
+			scalefactor = blendFloat(scalefactor, sf2, lifeper);
+		}
+
+		outScaleX = scaleX * scalefactor;
+		outScaleY = scaleY * scalefactor;
+	}
+
+	void applyPointGravity(const ParticleParameter& p, float& x, float& y, float ox, float oy, const Vector2& position, float t, float life) {
+		Vector2 v(p.gravityPos.x - (ox + position.x), p.gravityPos.y - (oy + position.y));
+		Vector2 nv = normalizeVector2(v);
+
+		float gp = p.gravityPower;
+		if (gp > 0) {
+            float dist = std::sqrt(v.x * v.x + v.y * v.y);
+			float len = std::max(0.1f, dist);
+			float et = (len / gp) * 0.90f;
+			float gt = std::min(t, et * 0.90f);
+
+			x += nv.x * gp * gt;
+			y += nv.y * gp * gt;
+
+			float blend = outQuad(gt, et, 0.9f, 0.0f) + (t / life * 0.1f);
+			x = blendFloat(x, p.gravityPos.x, blend);
+			y = blendFloat(y, p.gravityPos.y, blend);
+		} else {
+			x += nv.x * gp * t;
+			y += nv.y * gp * t;
+		}
+	}
+
+	void calculatePositionOnly(
+		xorshift32& rand,
+		const ParticleParameter& p,
+		float t,
+		float life,
+		const Vector2& position,
+		float& outX,
+		float& outY
+	) {
+		float x, y;
+		calcPositionAndSpeed(rand, p, t, life, x, y);
+
+		float ox, oy;
+		calcOffset(rand, p, ox, oy);
+
+		outX = x + ox + position.x;
+		outY = y + oy + position.y;
+
+		if (p.usePGravity) {
+			applyPointGravity(p, outX, outY, ox, oy, position, t, life);
+		}
+	}
+}
+
+void EffectSimulator::calculateState(
+	float currentTime,
+	const ParticleExistSt& drawe,
+	const EmitterParameter& emitterParams,
+	const ParticleParameter& particleParams,
+	int32_t emitterSeed,
+	int32_t seedOffset,
+	const std::vector<unsigned long>& seedList,
+	size_t seedTableLen,
+	const Vector2& position,
+	int32_t pid,
+	ParticleDrawState& outState
+)
+{
+	float _t = (float)(currentTime - (float)drawe.stime);
+	float _life = (float)((float)drawe.endtime - (float)drawe.stime);
+
+	if (_life == 0) return;
+	float _lifeper = (float)(_t / _life);
+
+	unsigned long pseed = seedList[drawe.id % seedTableLen];
+	unsigned long seed = (uint32_t)(pseed + (unsigned long)emitterSeed + (unsigned long)pid + (unsigned long)seedOffset);
+
+	{
+		xorshift32 rand;
+		rand.init_genrand((unsigned long)seed);
+
+		// 乱数の消費順序を維持するために、各要素の計算関数を元の順番で呼び出す
+		float x, y;
+		calcPositionAndSpeed(rand, particleParams, _t, _life, x, y);
+
+		float ox, oy;
+		calcOffset(rand, particleParams, ox, oy);
+
+		outState.rotation = calcRotation(rand, particleParams, _t, _life);
+		outState.color = calcColor(rand, particleParams, _lifeper);
+		calcScale(rand, particleParams, _lifeper, outState.scaleX, outState.scaleY);
+
+		outState.x = x + ox + position.x;
+		outState.y = y + oy + position.y;
+
+		if (particleParams.usePGravity) {
+			applyPointGravity(particleParams, outState.x, outState.y, ox, oy, position, _t, _life);
+		}
+	}
+
+	outState.direction = 0.0f;
+	if (particleParams.useTurnDirec) {
+		xorshift32 rand;
+		rand.init_genrand((unsigned long)seed);
+
+		float nextX, nextY;
+		calculatePositionOnly(rand, particleParams, _t + 1.0f, _life, position, nextX, nextY);
+
+		outState.direction = getAngle360(Vector2(1, 0), Vector2(outState.x - nextX, outState.y - nextY)) 
+                             + (float)(degreeToRadian(90.0f) + degreeToRadian(particleParams.direcRotAdd));
+	}
+}
+
+void EffectSimulator::calculateStateBatch(
+	float currentTime,
+	const ParticleExistSt drawe[ParticleStateBatch::BATCH_SIZE],
+	const EmitterParameter& emitterParams,
+	const ParticleParameter& particleParams,
+	int32_t emitterSeed,
+	int32_t seedOffset,
+	const std::vector<unsigned long>& seedList,
+	size_t seedTableLen,
+	const Vector2& position,
+	const int32_t pids[ParticleStateBatch::BATCH_SIZE],
+	ParticleStateBatch& outBatch
+)
+{
+	for (int32_t i = 0; i < ParticleStateBatch::BATCH_SIZE; ++i) {
+		ParticleDrawState ds;
+		calculateState(currentTime, drawe[i], emitterParams, particleParams, emitterSeed, seedOffset, seedList, seedTableLen, position, pids[i], ds);
+		outBatch.x[i] = ds.x;
+		outBatch.y[i] = ds.y;
+		outBatch.scaleX[i] = ds.scaleX;
+		outBatch.scaleY[i] = ds.scaleY;
+		outBatch.rotation[i] = ds.rotation;
+		outBatch.direction[i] = ds.direction;
+		outBatch.color[i] = ds.color;
+	}
+}
+
+} // namespace effect_v2
 
 //現在時間から産出される位置を求める
 //time変数から求められる式とする
 //パーティクル座標計算のコア
-void	SsEffectEmitter::updateParticle(float time, particleDrawData* p, bool recalc )
+void	SsEffectEmitter::updateParticle(float time, int32_t id, int32_t pid, int32_t seedOffset, int32_t stime, int32_t endtime, const effect_v2::Vector2& emitterPos, ParticleDrawData* p )
 {
-	float _t = (float)(time - p->stime);
-	float _tm = (float)(_t - 1.0f );
-	float _t2 = _t * _t; //(経過時間の二乗)
-	float _life = (float)( p->lifetime - p->stime);
-
-	if ( _life == 0 ) return ;
-	float _lifeper = (float)( _t / _life );
-
-
-	//_t = 0時点の値を作る
-	//シード値で固定化されることが前提
-	std::vector<unsigned long>&	seedListRaw = *(seedList.get());
-	unsigned long pseed = seedListRaw[p->id % seedTableLen];
-
-	//自身のシード値、エミッターのシード値、親パーティクルのＩＤをシード値とする
-	rand.init_genrand(( pseed + emitterSeed + p->pid + seedOffset ));
-
-
-	float rad = particle.angle + (rand.genrand_float32() * (particle.angleVariance ) - particle.angleVariance/2.0f);
-	//float speed = rand.genrand_float32() * particle.speed;
-	float speed = particle.speed + ( particle.speed2 * rand.genrand_float32() );
-
-
-	//接線加速度
-	float addr = 0;
-	if ( particle.useTanAccel )
-	{
-		float accel = particle.tangentialAccel + (rand.genrand_float32() * particle.tangentialAccel2);
-
-		float _speed = speed;
-		if ( _speed <= 0 )_speed = 0.1f;
-		//平均角速度を求める
-		float l = _life * _speed * 0.2f; //円の半径
-		float c = 3.14f * l;
-
-		//最円周 / 加速度(pixel)
-		addr = ( accel / c ) * _t;
-	}
-
-	float x = cos(rad + addr) * speed * (float)_t;
-	float y = sin(rad + addr) * speed * (float)_t;
-
-	if ( particle.useTransSpeed )
-	{
-		float transspeed = particle.transSpeed + ( particle.transSpeed2 * rand.genrand_float32() );
-        float speedadd = transspeed / _life;
-
-		float addtx =  cos(rad + addr) * speed;
-		float addtx_trans =  cos(rad + addr) * speedadd;
-
-		float addx = (( addtx_trans * _t ) + addtx ) * (_t+1.0f) / 2.0f;
-
-
-		float addty =  sin(rad + addr) * speed;
-		float addty_trans =  sin(rad + addr) * speedadd;
-
-		float addy = (( addty_trans * _t ) + addty ) * ( _t+1.0f) / 2.0f;
-
-		x = addx;
-		y = addy;
-
-	}
-
-
-	//重力加速度の計算
-	if ( particle.useGravity )
-	{
-		x += (0.5f * particle.gravity.x * (_t2));
-		y += (0.5f * particle.gravity.y * (_t2));
-	}
-
-	//初期位置オフセット
-	float ox,oy;
-	ox = oy = 0;
-	if ( particle.useOffset )
-	{
-		ox = (particle.offset.x + (particle.offset2.x * rand.genrand_float32()));
-		oy = (particle.offset.y + (particle.offset2.y * rand.genrand_float32()));
-	}
-
-	//角度初期値
-	p->rot = 0;
-	if ( particle.useRotation )
-	{
-		p->rot = particle.rotation + (rand.genrand_float32() * particle.rotation2);
-		float add = particle.rotationAdd + (rand.genrand_float32() * particle.rotationAdd2);
-
-		//角度変化
-		if ( particle.useRotationTrans )
-		{
-			//到達までの絶対時間
-			float lastt = _life * particle.endLifeTimePer;
-
-			float addf = 0;
-			if ( lastt == 0 )
-			{
-			  	float addrf =  (add * particle.rotationFactor) * _t;
-				p->rot+=addrf;
-			}else{
-				//1フレームで加算される量
-				addf = ( add * particle.rotationFactor - add ) / lastt;
-
-				//あまり時間
-				float mod_t = _t - lastt;
-				if ( mod_t < 0 ) mod_t = 0;
-
-				//現在時間（最終時間でリミット
-				float nowt = _t;
-				if ( nowt > lastt ) nowt = lastt;
-
-				//最終項 + 初項 x F / 2
-				float final_soul = add + addf * nowt;
-				float addrf = ( final_soul + add ) * (nowt+1.0f) / 2.0f;
-				addrf-=add;
-				addrf+= ( mod_t * ( final_soul ) ); //あまりと終項の積を加算
-				p->rot+=addrf;
-			}
-		}else{
-			p->rot+= ( (add*_t) );
-		}
-	}
-
-	//カラーの初期値、カラーの変化
-	p->color.a = 0xff;
-	p->color.r = 0xff;
-	p->color.g = 0xff;
-	p->color.b = 0xff;
-
-	if ( particle.useColor)
-	{
-		p->color.a = particle.initColor.a + (u8)(rand.genrand_float32() * particle.initColor2.a );
-		p->color.r = particle.initColor.r + (u8)(rand.genrand_float32() * particle.initColor2.r );
-		p->color.g = particle.initColor.g + (u8)(rand.genrand_float32() * particle.initColor2.g );
-		p->color.b = particle.initColor.b + (u8)(rand.genrand_float32() * particle.initColor2.b );
-	}
-
-	if ( particle.useTransColor )
-	{
-		SsU8Color ecolor;
-		ecolor.a = particle.transColor.a + (u8)(rand.genrand_float32() * particle.transColor2.a );
-		ecolor.r = particle.transColor.r + (u8)(rand.genrand_float32() * particle.transColor2.r );
-		ecolor.g = particle.transColor.g + (u8)(rand.genrand_float32() * particle.transColor2.g );
-		ecolor.b = particle.transColor.b + (u8)(rand.genrand_float32() * particle.transColor2.b );
-
-		p->color.a = blendNumber( p->color.a , ecolor.a , _lifeper );
-		p->color.r = blendNumber( p->color.r , ecolor.r , _lifeper );
-		p->color.g = blendNumber( p->color.g , ecolor.g , _lifeper );
-		p->color.b = blendNumber( p->color.b , ecolor.b , _lifeper );
-	}
-
-	if ( particle.useAlphaFade )
-	{
-
-		float start = particle.alphaFade;
-		float end = particle.alphaFade2;
-        float per = _lifeper * 100.0f;
-
-
-		if ( ( per < start ) && ( start > 0.0f ) ) //Ver6.2　0除算発生する可能性対策
-		{
-			float alpha = (start - per) / start;
-//			p->color.a*= 1.0f - alpha;
-			p->color.a = (u8)((float)p->color.a * (1.0f - alpha));
-		}else{
-
-			if ( per > end )
-			{
-
-				if (end>=100.0f)
-				{
-					p->color.a = 0;
-				}else{
-					float alpha = (per-end) / (100.0f-end);
-                    if ( alpha >=1.0f ) alpha = 1.0f;
-
-//					p->color.a*= 1.0f - alpha;
-					p->color.a = (u8)((float)p->color.a * (1.0f - alpha));
-				}
-			}
-		}
-	}
-
-
-	//スケーリング
-	p->scale.x = 1.0f;
-	p->scale.y = 1.0f;
-	float scalefactor = 1.0f;
-
-	if ( particle.useInitScale )
-	{
-		p->scale.x = particle.scale.x + (rand.genrand_float32() * particle.scaleRange.x );
-		p->scale.y = particle.scale.y + (rand.genrand_float32() * particle.scaleRange.y );
-
-        scalefactor = particle.scaleFactor + (rand.genrand_float32() * particle.scaleFactor2 );
-
-
-	}
-
-	if ( particle.useTransScale )
-	{
-		SsVector2 s2;
-		float sf2;
-		s2.x = particle.transscale.x + (rand.genrand_float32() * particle.transscaleRange.x );
-		s2.y = particle.transscale.y + (rand.genrand_float32() * particle.transscaleRange.y );
-
-		sf2 = particle.transscaleFactor + (rand.genrand_float32() * particle.transscaleFactor2 );
-
-		p->scale.x = blendFloat( p->scale.x , s2.x , _lifeper );
-		p->scale.y = blendFloat( p->scale.y , s2.y , _lifeper );
-        scalefactor = blendFloat( scalefactor , sf2 , _lifeper );
-
-	}
-
-	p->scale.x*=scalefactor;
-	p->scale.y*=scalefactor;
-
-	p->x = x + ox + position.x;//エミッタからのオフセットを加算
-	p->y = y + oy + position.y;//エミッタからのオフセットを加算
-
-
-  	//指定の点へよせる
-	if ( particle.usePGravity )
-	{
-
-		//生成地点からの距離
-		SsVector2 v = SsVector2(  particle.gravityPos.x - (ox + position.x) ,
-                         particle.gravityPos.y - (oy + position.y) );
-
-
-		SsVector2 nv;
-		SsVector2::normalize( v , &nv );
-
-		float gp = particle.gravityPower;
-		if (gp > 0) {
-			SsVector2 v2 = SsVector2(p->x, p->y);
-
-			//6.2対応　収束点座標を(0, 0)にすると収束しない
-			float len = v.length(); // 生成位置からの距離
-			if (len == 0.0f) {
-				len = 0.1f;
-				nv.x = 1;
-				nv.y = 0;
-			}
-
-			float et = (len / gp)*0.90f;;
-
-			float _gt = _t;
-			if ( _gt >= (int)et )
-			{
-				_gt = et*0.90f;// + (_t / _life *0.1f);
-			}
-
-			nv = nv * gp * _gt;
-			p->x += nv.x;
-			p->y += nv.y;
-
-
-			float blend = (float)(OutQuad(_gt, et, 0.9f, 0.0f));
-			blend = blend; // *gp;
-			blend += (_t / _life *0.1f);
-
-			p->x = blendFloat(p->x, particle.gravityPos.x, blend);
-			p->y = blendFloat(p->y, particle.gravityPos.y, blend);
-
-		}
-		else {
-			nv = nv * gp * _t;
-			// パワーマイナスの場合は単純に反発させる
-			// 距離による減衰はない
-			p->x += nv.x;
-			p->y += nv.y;
-		}
-
-#if 0
-		float gx = OutQuad( _t *0.8f , _life ,  particle.gravityPos.x , ox + position.x );
-		float gy = OutQuad( _t *0.8f , _life ,  particle.gravityPos.y , oy + position.y );
-
-		float gp = particle.gravityPower;
-
-		if ( gp < 0 )
-		{
-			p->x = blendFloat( p->x , -gx , -gp);
-			p->y = blendFloat( p->y , -gy , -gp);
-
-		}else{
-			p->x = blendFloat( p->x , gx , gp);
-			p->y = blendFloat( p->y , gy , gp);
-		}
-#endif
-	}
-
-    //前のフレームからの方向を取る
-	p->direc = 0.0f;
-	if ( particle.useTurnDirec && recalc==false )
-	{
-		particleDrawData dp;
-        dp = *p;
-
-//		if ( time > 0.0f )
-		{
-			updateParticle( time + 1.0f , &dp , true );
-			p->direc =  SsVector2::get_angle_360(
-								SsVector2( 1 , 0 ) ,
-								SsVector2(p->x - dp.x, p->y - dp.y) ) + (float)(DegreeToRadian(90) + DegreeToRadian(particle.direcRotAdd));
-		}
-	}
-
-
+	effect_v2::ParticleDrawState ds;
+	ParticleExistSt drawe;
+	drawe.id = id;
+	drawe.stime = stime;
+	drawe.endtime = endtime;
+
+	effect_v2::EffectSimulator::calculateState(
+		time,
+		drawe,
+		this->emitter,
+		this->particle,
+		this->emitterSeed,
+		seedOffset,
+		*(this->seedList.get()),
+		this->seedTableLen,
+		emitterPos,
+		pid,
+		ds
+	);
+
+	p->x = ds.x;
+	p->y = ds.y;
+	p->rot = ds.rotation;
+	p->direc = ds.direction;
+	p->color = ds.color;
+	p->scale.x = ds.scaleX;
+	p->scale.y = ds.scaleY;
 }
 
 
-bool compare_life( emitPattern& left,  emitPattern& right)
+bool compare_life( const EmitPattern& left,  const EmitPattern& right)
 {
 	if ( left.life == right.life )
 	{
@@ -370,53 +396,42 @@ bool compare_life( emitPattern& left,  emitPattern& right)
 
 void	SsEffectEmitter::precalculate2()
 {
-	rand.init_genrand( emitterSeed );
+	rand.init_genrand( (unsigned long)emitterSeed );
 
-	_emitpattern.clear();
+	emitPatterns.clear();
 	//_lifeExtend.clear();
-	_offsetPattern.clear();
-
-	if ( !particleExistList )
-	{
-		particleExistList.reset( new std::vector<particleExistSt>(emitter.emitmax) ); //存在しているパーティクルが入る計算用バッファ
-	}
-
-	std::vector<particleExistSt>& particleExistListRaw = *(particleExistList.get());
-	for(int i=0; i<emitter.emitmax; i++)
-	{
-		particleExistListRaw[i].Cleanup();
-	}
+	offsetPatterns.clear();
 
 	if ( emitter.emitnum < 1 ) emitter.emitnum = 1;
 
-	int cycle =  (int)(( (float)(emitter.emitmax * emitter.interval)  / (float)emitter.emitnum ) + 0.5f) ;
-    int group =  emitter.emitmax / emitter.emitnum;
+	int32_t cycle =  (int32_t)(( (float)(emitter.emitmax * emitter.interval)  / (float)emitter.emitnum ) + 0.5f) ;
+    int32_t group =  emitter.emitmax / emitter.emitnum;
 
-	int extendsize = emitter.emitmax*LIFE_EXTEND_SCALE;
+	int32_t extendsize = emitter.emitmax*LIFE_EXTEND_SCALE;
     if ( extendsize < LIFE_EXTEND_MIN ) extendsize = LIFE_EXTEND_MIN;
 
 
 
 
-	int shot = 0;
-	int offset = (int)(particle.delay);
-	for ( int i = 0 ; i < emitter.emitmax ; i++ )
+	int32_t shot = 0;
+	int32_t offset = (int32_t)(particle.delay);
+	for ( int32_t i = 0 ; i < emitter.emitmax ; i++ )
 	{
 		if ( shot >= emitter.emitnum )
 		{
 			shot = 0;
 			offset+= emitter.interval;
 		}
-		_offsetPattern.push_back(offset);
+		offsetPatterns.push_back(offset);
 		shot++;
 	}
 
 
-	for ( int i = 0 ; i < extendsize ; i++ )
+	for ( int32_t i = 0 ; i < extendsize ; i++ )
 	{
-		emitPattern e;
+		EmitPattern e;
 		e.uid = i;
-		e.life = emitter.particleLife + (int)(emitter.particleLife2 * rand.genrand_float32());
+		e.life = emitter.particleLife + (int32_t)(emitter.particleLife2 * rand.genrand_float32());
 		e.cycle = cycle;
 
 		if ( e.life > cycle )
@@ -424,16 +439,16 @@ void	SsEffectEmitter::precalculate2()
 			e.cycle = e.life;
 		}
 
-		_emitpattern.push_back( e );
+		emitPatterns.push_back( e );
 	}
 
 
 	seedList.reset();
 
-    particleListBufferSize = emitter.emitmax;
+    particleListBufferSize = (size_t)emitter.emitmax;
 
 
-	rand.init_genrand((emitterSeed));
+	rand.init_genrand((unsigned long)(emitterSeed));
 
 	seedTableLen = particleListBufferSize * 3;
 	seedList.reset( new std::vector<unsigned long>(seedTableLen) );
@@ -452,64 +467,63 @@ void	SsEffectEmitter::precalculate2()
 
 
 
-void SsEffectEmitter::updateEmitter( double _time , int slide ) 
+void SsEffectEmitter::updateEmitter( SsEffectEmitterState& state, float _time , int32_t slide ) 
 {
-	int onum = (int)(_offsetPattern.size());
-	int pnum = (int)(_emitpattern.size());
+	int32_t onum = (int32_t)(offsetPatterns.size());
+	int32_t pnum = (int32_t)(emitPatterns.size());
 	slide = slide * SEED_MAGIC;
 
-	std::vector<particleExistSt>& particleExistListRaw = *(particleExistList.get());
-	for ( int i = 0 ; i < onum ; i ++ )
+	for ( int32_t i = 0 ; i < onum ; i ++ )
 	{
-		int slide_num = ( i + slide ) % pnum;
+		int32_t slide_num = ( i + slide ) % pnum;
 
-		emitPattern* targetEP = &_emitpattern[slide_num];
+		EmitPattern* targetEP = &emitPatterns[slide_num];
 
-		int t = (int)(_time - _offsetPattern[i]);
+		float t = _time - (float)offsetPatterns[i];
 
-		particleExistListRaw[i].exist = false;
-		particleExistListRaw[i].born = false;
+		state.particleState.exist[i] = false;
+		state.particleState.born[i] = false;
 
 		if ( targetEP->cycle != 0 )
 		{
-			int loopnum = t / targetEP->cycle;
-			int cycle_top = loopnum * targetEP->cycle;
+			int32_t loopnum = (int32_t)(t / (float)targetEP->cycle);
+			int32_t cycle_top = loopnum * targetEP->cycle;
 
-			particleExistListRaw[i].cycle = loopnum;
+			state.particleState.cycle[i] = loopnum;
 
-			particleExistListRaw[i].stime = cycle_top + _offsetPattern[i];
-			particleExistListRaw[i].endtime = particleExistListRaw[i].stime + targetEP->life;// + _lifeExtend[slide_num];
+			state.particleState.stime[i] = cycle_top + offsetPatterns[i];
+			state.particleState.endtime[i] = state.particleState.stime[i] + targetEP->life;// + _lifeExtend[slide_num];
 
-			if ( (double)particleExistListRaw[i].stime <= _time &&  (double)particleExistListRaw[i].endtime > _time )
+			if ( (float)state.particleState.stime[i] <= _time &&  (float)state.particleState.endtime[i] > _time )
 			{
-				particleExistListRaw[i].exist = true;
-				particleExistListRaw[i].born = true;
+				state.particleState.exist[i] = true;
+				state.particleState.born[i] = true;
 			}
 
 			if ( !this->emitter.Infinite )
 			{
-				if ( particleExistListRaw[i].stime >= this->emitter.life ) //エミッターが終了している
+				if ( state.particleState.stime[i] >= this->emitter.life ) //エミッターが終了している
 				{
-					particleExistListRaw[i].exist = false;    //作られてない
+					state.particleState.exist[i] = false;    //作られてない
 
 					//最終的な値に計算し直し <-事前計算しておくといいかも・
-					int t = this->emitter.life - _offsetPattern[i];
-					int loopnum = t / targetEP->cycle;
+					int32_t t_limit = this->emitter.life - offsetPatterns[i];
+					int32_t loopnum_limit = t_limit / targetEP->cycle;
 
-					int cycle_top = loopnum * targetEP->cycle;
+					int32_t cycle_top_limit = loopnum_limit * targetEP->cycle;
 
-					particleExistListRaw[i].stime = cycle_top + _offsetPattern[i];
+					state.particleState.stime[i] = cycle_top_limit + offsetPatterns[i];
 
-					particleExistListRaw[i].endtime = particleExistListRaw[i].stime + targetEP->life;// + _lifeExtend[slide_num];
-					particleExistListRaw[i].born = false;
+					state.particleState.endtime[i] = state.particleState.stime[i] + targetEP->life;// + _lifeExtend[slide_num];
+					state.particleState.born[i] = false;
 				}else{
-					particleExistListRaw[i].born = true;
+					state.particleState.born[i] = true;
 				}
 			}
 
-			if ( t < 0 ){
-				 particleExistListRaw[i].exist = false;
-				 particleExistListRaw[i].born = false;
+			if ( t < 0.0f ){
+				 state.particleState.exist[i] = false;
+				 state.particleState.born[i] = false;
 			}
 		}
 	}
@@ -517,156 +531,107 @@ void SsEffectEmitter::updateEmitter( double _time , int slide )
 }
 
 
-const particleExistSt*	SsEffectEmitter::getParticleDataFromID(int id)
+void SsEffectRenderV2::particleDraw(int32_t emitterIndex, float time, int32_t parentIndex, ParticleDrawData* plp)
 {
-	std::vector<particleExistSt>& particleExistListRaw = *(particleExistList.get());
-	return &particleExistListRaw[id];
-}
+	float t = time;
+
+	if (emitterIndex < 0 || emitterIndex >= (int32_t)emitterList.size()) return;
+	SsEffectEmitter* e = emitterList[emitterIndex].get();
+	if (e == nullptr) return;
+
+	SsEffectEmitterState& emitterState = state.emitterStates[emitterIndex];
+
+	int32_t pnum = e->getParticleIdMax();
+
+	int slide = (parentIndex < 0) ? 0 : plp->id;
+
+	e->updateEmitter(emitterState, time, slide);
 
 
-void	SsEffectRenderV2::drawSprite(
-		SsCellValue*		dispCell,
-		SsVector2 _position,
-		SsVector2 _size,
-		float     _rotation,
-		float	  direction,
-		SsFColor	_color,
-		SsRenderBlendType::_enum blendType
-	)
-{
-
-	//SsCellValue*			dispCell;
-
-	SsCurrentRenderer::getRender()->renderSetup(0);	
-
-	switch( static_cast<int>(blendType) )
+	for (int32_t id = 0; id < pnum; id++)
 	{
-		case SsRenderBlendType::Mix:
-			SsCurrentRenderer::getRender()->SetAlphaBlendMode(SsBlendType::mix);					
-			break;
-		case SsRenderBlendType::Add:
-			SsCurrentRenderer::getRender()->SetAlphaBlendMode(SsBlendType::add);					
-			break;
-	}
-
-	SsCurrentRenderer::getRender()->SetTexture( dispCell );
-
-
-	float		matrix[4 * 4];	///< 行列
-	IdentityMatrix( matrix );
-
-	float parentAlpha = 1.0f;
-
-	if ( parentState )
-	{
-		memcpy( matrix , parentState->matrix , sizeof( float ) * 16 );
-    	parentAlpha = parentState->alpha;
-	}
-
-
-	TranslationMatrixM( matrix , _position.x * layoutScale.x , _position.y * layoutScale.y , 0.0f );
-
-	RotationXYZMatrixM( matrix , 0 , 0 , (float)(DegreeToRadian(_rotation))+direction );
-
-    ScaleMatrixM(  matrix , _size.x, _size.y, 1.0f );
-
-	SsFColor fcolor;
-	fcolor.fromARGB( _color.toARGB() );
-	fcolor.a = fcolor.a * parentAlpha;
-
-
-	if ( ( dispCell->cell ) && ( fcolor.a != 0.0f ) )
-	{
-
-		SsVector2 pivot = SsVector2( dispCell->cell->pivot.x ,dispCell->cell->pivot.y);
-
-		pivot.x = pivot.x * dispCell->cell->size.x;
-		pivot.y = pivot.y * dispCell->cell->size.y;
-
-		SsVector2 dispscale = dispCell->cell->size;
-
-
-		SsCurrentRenderer::getRender()->renderSpriteSimple(
-			matrix,
-			(int)dispscale.x , (int)dispscale.y ,  pivot,
-					dispCell->uvs[0],
-					dispCell->uvs[3], fcolor );
-	}	
-
-
-}
-
-
-void SsEffectRenderV2::particleDraw(SsEffectEmitter* e , double time , SsEffectEmitter* parent , particleDrawData* plp )
-{
-	double t = time;
-
-	if (e == 0) return;
-
-	int pnum = e->getParticleIDMax();
-
-	int slide = (parent == 0) ? 0 : plp->id;
-
-	e->updateEmitter( time, slide ); 
-
-
-	for (auto id = 0; id < pnum; id++)
-	{
-		const particleExistSt* drawe = e->getParticleDataFromID(id);
-
-        if ( !drawe->born )continue;
+		if (!emitterState.particleState.born[id]) continue;
 
 		float targettime = ((float)t + 0.0f);
-		particleDrawData lp;
-		particleDrawData pp;
+		ParticleDrawData lp;
+		ParticleDrawData pp;
 		pp.x = 0; pp.y = 0;
 
-		lp.id = id + drawe->cycle;
-		lp.stime = drawe->stime;
-		lp.lifetime = drawe->endtime;
+		lp.id = id + emitterState.particleState.cycle[id];
+		lp.stime = (int32_t)emitterState.particleState.stime[id];
+		lp.lifetime = (int32_t)emitterState.particleState.endtime[id];
 		lp.pid = 0;
 		lp.rot = 0;
 
-		if ( parent )lp.pid = plp->id;
+		if (parentIndex >= 0)lp.pid = plp->id;
 
 		//if ( lp.stime == lp.lifetime ) continue;
 
 		//if ( lp.stime <= targettime && lp.lifetime >= targettime)
-		if ( drawe->exist )
+		if (emitterState.particleState.exist[id])
 		{
 
-			if (parent)
+			if (parentIndex >= 0)
 			{
-				//親から描画するパーティクルの初期位置を調べる
-				pp.id = plp->id;
-				pp.stime = plp->stime;
-				pp.lifetime = plp->lifetime;
-				pp.pid = plp->pid;
-				//パーティクルが発生した時間の親の位置を取る
+				SsEffectEmitter* parentEmitter = emitterList[parentIndex].get();
+				SsEffectEmitterState& parentEmitterState = state.emitterStates[parentIndex];
+				if (parentEmitter)
+				{
+					//親から描画するパーティクルの初期位置を調べる
+					pp.id = plp->id;
+					pp.stime = plp->stime;
+					pp.lifetime = plp->lifetime;
+					pp.pid = plp->pid;
+					//パーティクルが発生した時間の親の位置を取る
 
-				#if 0 // memo: ptime は参照されない。2025/07/09
-				int ptime = lp.stime + pp.stime;
-				if ( ptime > lp.lifetime ) ptime = lp.lifetime;
-				#endif
+					#if 0 // memo: ptime は参照されない。2025/07/09
+					int32_t ptime = lp.stime + pp.stime;
+					if (ptime > lp.lifetime) ptime = lp.lifetime;
+					#endif
 
-				//逆算はデバッグしずらいかもしれない
-				parent->updateParticle( (float)lp.stime + pp.stime , &pp);
-				e->position.x = pp.x;
-				e->position.y = pp.y;
+					//逆算はデバッグしずらいかもしれない
+					parentEmitter->updateParticle((float)lp.stime + pp.stime, 
+						plp->id + parentEmitterState.particleState.cycle[plp->id], 
+						plp->pid, 
+						state.seedOffset,
+						parentEmitterState.particleState.stime[plp->id], 
+						parentEmitterState.particleState.endtime[plp->id], 
+						parentEmitterState.position,
+						&pp);
+					emitterState.position.x = pp.x;
+					emitterState.position.y = pp.y;
+				}
 
 			}
 
 
-			e->updateParticle(targettime, &lp);
+			e->updateParticle(targettime, 
+				id + emitterState.particleState.cycle[id], 
+				lp.pid, 
+				state.seedOffset,
+				emitterState.particleState.stime[id], 
+				emitterState.particleState.endtime[id], 
+				emitterState.position,
+				&lp);
 
+			if (_rendererDelegate)
+			{
+				effect_v2::ParticleDrawState pds;
+				pds.x = lp.x * layoutScale.x;
+				pds.y = lp.y * layoutScale.y;
+				pds.scaleX = lp.scale.x;
+				pds.scaleY = lp.scale.y;
+				pds.rotation = lp.rot;
+				pds.direction = lp.direc;
 
-			SsFColor fcolor;
-			fcolor.fromARGB(lp.color.toARGB());
+				float parentAlpha = (parentState) ? parentState->alpha : 1.0f;
+				pds.color.a = (u8)((float)lp.color.a * parentAlpha);
+                pds.color.r = lp.color.r;
+                pds.color.g = lp.color.g;
+                pds.color.b = lp.color.b;
 
-			drawSprite( &e->dispCell ,
-						SsVector2(lp.x,lp.y),
-						lp.scale,
-						lp.rot , lp.direc , fcolor , e->refData->BlendType );
+				_rendererDelegate->drawSprite(e->dispCell.get(), pds, (int32_t)e->refData->BlendType);
+			}
 
 
 		}
@@ -686,6 +651,8 @@ void	SsEffectRenderV2::initEmitter( SsEffectEmitter* e , SsEffectNode* node)
 	e->refData = node->GetMyBehavior();
 	e->refCell = e->refData->refCell;
 
+    if (!e->dispCell) e->dispCell = std::make_unique<SsCellValue>();
+
 	//セルの初期化
 	SsCelMapLinker* link = this->curCellMapManager->getCellMapLink( e->refData->CellMapName );
 
@@ -696,7 +663,7 @@ void	SsEffectRenderV2::initEmitter( SsEffectEmitter* e , SsEffectNode* node)
 		getCellValue(	this->curCellMapManager , 
 			e->refData->CellMapName ,
 			e->refData->CellName , 
-			e->dispCell ); 
+			*e->dispCell ); 
 	}else{
 		DEBUG_PRINTF( "cell not found : %s , %s\n" , 
 			e->refData->CellMapName.c_str(), 
@@ -706,7 +673,7 @@ void	SsEffectRenderV2::initEmitter( SsEffectEmitter* e , SsEffectNode* node)
 
 	SsEffectFunctionExecuter::initializeEffect( e->refData , e );
 
-	e->emitterSeed = this->mySeed;
+	e->emitterSeed = (int32_t)this->mySeed;
 
 	if ( e->particle.userOverrideRSeed )
 	{
@@ -715,23 +682,24 @@ void	SsEffectRenderV2::initEmitter( SsEffectEmitter* e , SsEffectNode* node)
 	}else{
 		if ( this->effectData->isLockRandSeed )
 		{
-			e->emitterSeed = (this->effectData->lockRandSeed+1) * SEED_MAGIC;
+			e->emitterSeed = (int32_t)(this->effectData->lockRandSeed+1) * SEED_MAGIC;
 		}
 	}
 
-	e->emitter.life += (int)e->particle.delay;//ディレイ分加算
+	e->emitter.life += (int32_t)e->particle.delay;//ディレイ分加算
 }
 
 
 void	SsEffectRenderV2::clearEmitterList()
 {
-	for ( size_t i = 0 ; i < this->emmiterList.size(); i++)
+	for ( size_t i = 0 ; i < this->emitterList.size(); i++)
 	{
-		emmiterList[i].reset();
+		emitterList[i].reset();
 	}
 
-	emmiterList.clear();
+	emitterList.clear();
 	updateList.clear();
+	state.emitterStates.clear();
 
 }
 
@@ -749,18 +717,18 @@ void	SsEffectRenderV2::setEffectData(SsEffectModel* data)
 void	SsEffectRenderV2::update()
 {
 
-	if ( !m_isPlay ) return;
+	if ( !state.isPlay ) return;
 
-	targetFrame = nowFrame;
+	state.targetFrame = state.currentFrame;
 
 	if ( !this->Infinite )
 	{
-		if ( this->isloop() ) //自動ループの場合
+		if ( this->isLoop() ) //自動ループの場合
 		{
-			if ( nowFrame > getEffectTimeLength() )
+			if ( state.currentFrame > (float)getEffectTimeLength() )
 			{
-				targetFrame = (float)((int)nowFrame % getEffectTimeLength());
-				int l = (int)( nowFrame / (float)(getEffectTimeLength()) );
+				state.targetFrame = (float)((int32_t)state.currentFrame % getEffectTimeLength());
+				int32_t l = (int32_t)( state.currentFrame / (float)(getEffectTimeLength()) );
 				setSeedOffset( l );
 			}
 		}
@@ -770,14 +738,14 @@ void	SsEffectRenderV2::update()
 
 void	SsEffectRenderV2::draw()
 {
-    if ( nowFrame < 0 ) return;
+    if ( state.currentFrame < 0 ) return;
 
 	for ( size_t i = 0 ; i < updateList.size() ; i++ )
 	{
 		SsEffectEmitter* e = updateList[i];
 		if ( e )
 		{
-			e->setSeedOffset( seedOffset ); 
+			// Seed offset is now in state.seedOffset, and it's passed down to particleDraw
 		}
 	}
 
@@ -785,33 +753,35 @@ void	SsEffectRenderV2::draw()
 	{
 		SsEffectEmitter* e = updateList[i];
 
-		if ( e->_parent )
+		if ( e->parentIndex > 0 )
 		{
-			//グローバルの時間で現在親がどれだけ生成されているのかをチェックする
-			e->_parent->updateEmitter(targetFrame , 0);
-
-			int loopnum =  e->_parent->getParticleIDMax();
-			for ( int n = 0 ; n < loopnum ; n ++ )
+			SsEffectEmitter* parentEmitter = emitterList[e->parentIndex].get();
+			SsEffectEmitterState& parentEmitterState = state.emitterStates[e->parentIndex];
+			if (parentEmitter)
 			{
-				const particleExistSt* drawe = e->_parent->getParticleDataFromID(n);
+				//グローバルの時間で現在親がどれだけ生成されているのかをチェックする
+				parentEmitter->updateEmitter(parentEmitterState, state.targetFrame, 0);
 
-				if ( drawe->born )
+				int32_t loopnum = parentEmitter->getParticleIdMax();
+				for (int32_t n = 0; n < loopnum; n++)
 				{
-					particleDrawData lp;
-					lp.stime = drawe->stime;
-					lp.lifetime = drawe->endtime;
-					lp.id = n;
-					lp.pid = 0;
+					if (parentEmitterState.particleState.born[n])
+					{
+						ParticleDrawData lp;
+						lp.stime = (int32_t)parentEmitterState.particleState.stime[n];
+						lp.lifetime = (int32_t)parentEmitterState.particleState.endtime[n];
+						lp.id = n;
+						lp.pid = 0;
 
-					float targettime = (targetFrame + 0.0f);
-					float ptime = (targettime - lp.stime );
+						float targettime = (state.targetFrame + 0.0f);
+						float ptime = (targettime - (float)lp.stime);
 
-	  				particleDraw( e , ptime , e->_parent , &lp);
+						particleDraw(e->uid, ptime, e->parentIndex, &lp);
+					}
 				}
 			}
-
 		}else{
-			particleDraw( e , targetFrame );
+			particleDraw( e->uid , state.targetFrame );
 		}
 	}
 
@@ -829,152 +799,126 @@ bool compare_priority( SsEffectEmitter* left,  SsEffectEmitter* right)
 }
 
 
-void    SsEffectRenderV2::reload()
+void    SsEffectRenderV2::setup(std::vector<std::unique_ptr<SsEffectEmitter>> emitters, bool isInfiniteParam)
 {
-	nowFrame = 0;
-
-    //updateが必要か
+	state.currentFrame = 0;
 	stop();
 	clearEmitterList();
 
-	SsEffectNode* root = this->effectData->GetRoot();
+	emitterList = std::move(emitters);
+	Infinite = isInfiniteParam;
 
-    //this->effectData->updateNodeList();//ツールじゃないので要らない
-    const std::vector<SsEffectNode*>& list = this->effectData->getNodeList();
-
-	layoutScale.x = (float)(this->effectData->layoutScaleX) / 100.0f;
-	layoutScale.y = (float)(this->effectData->layoutScaleY) / 100.0f;
-
-	//MEMO: cnumはスコープ内ワークなので、スマートポインタ化していません。
-	int cnum_count = list.size();
-	int* cnum = new int[cnum_count];
-	for (size_t i = 0; i < cnum_count; i++)
-	{
-		cnum[i] = 0;
-	}
-
-	bool _Infinite = false;
-	//パラメータを取得
-	//以前のデータ形式から変換
-	for ( size_t i = 0 ; i < cnum_count; i ++ )
-	{
-		SsEffectNode *node = list[i];
-
-		if ( node->GetType() == SsEffectNodeType::emmiter )
-		{
-			// MEMO: 本処理の最後でスマートポインタ化しています（途中生成中断があり得るので）
-			SsEffectEmitter* e = new SsEffectEmitter();
-			//パラメータをコピー
-
-			e->_parentIndex = node->parentIndex;
-			//繋ぎ先は恐らくパーティクルなのでエミッタに変換
-			if ( e->_parentIndex != 0 )
-			{
-				e->_parentIndex = list[e->_parentIndex]->parentIndex;
-
-			}
-
-			cnum[e->_parentIndex]++;
-			if ( cnum[e->_parentIndex] > 10 )
-			{
-				delete e;
-				e = 0;
-				_isWarningData = true;
-				continue; //子１０ノード表示制限
-			}
-
-			//孫抑制対策
-			if ( e->_parentIndex != 0 )
-			{
-				int a = list[e->_parentIndex]->parentIndex;
-				if ( a != 0 )
-				{
-				   if ( list[a]->parentIndex > 0 ) {
-						delete e;
-						e = 0;
-						_isWarningData = true;
-						continue;
-				   }
-				}
-			}
-
-			initEmitter( e , node );
-			this->emmiterList.push_back( std::move( std::unique_ptr<SsEffectEmitter>(e) ) );
-			if ( e->emitter.Infinite ) _Infinite = true;
-		}else
-		{
-			//エミッター同士を繋ぎたいので
-			this->emmiterList.push_back( std::move( std::unique_ptr<SsEffectEmitter>() ) );
-		}
-	}
-
-	delete[] cnum;
-	Infinite = _Infinite;
-
-
-    //親子関係整理
-
+	state.emitterStates.resize(emitterList.size());
 
 	effectTimeLength = 0;
-	//事前計算計算  updateListにルートの子を配置し親子関係を結ぶ
-	SsEffectEmitter* emitter;
-	for ( size_t i = 0 ; i < this->emmiterList.size(); i++)
+	for (size_t i = 0; i < this->emitterList.size(); i++)
 	{
-		emitter = emmiterList[i].get();
-		if ( emitter != 0 )
+		SsEffectEmitter* emitter = emitterList[i].get();
+		if (emitter != nullptr)
 		{
+			emitter->uid = (int32_t)i;
+			emitter->precalculate2();
+			state.emitterStates[i].resize((size_t)emitter->emitter.emitmax);
 
-			emitter->uid = (int)i;
-			//emitter->precalculate();
-			emitter->precalculate2(); //ループ対応形式
-
-
-			int  pi = emitter->_parentIndex;
-
-			if ( emitter->_parentIndex == 0 )  //ルート直下
+			int32_t pi = emitter->parentIndex;
+			if (pi == 0) // ルート直下
 			{
-				emitter->_parent = 0;
-				emitter->globaltime = emitter->getTimeLength();
+				emitter->globalTime = emitter->getTimeLength();
 				updateList.push_back(emitter);
-			}else{
-				SsEffectEmitter* emitterPI = emmiterList[pi].get();
-
-				emitter->_parent = emitterPI;
-
-				emitter->globaltime = (size_t)(emitter->getTimeLength()) + (size_t)(emitterPI->getTimeLength());
-
+			}
+			else if (pi >= 0 && pi < (int32_t)emitterList.size())
+			{
+				SsEffectEmitter* emitterPI = emitterList[pi].get();
+				emitter->globalTime = (int32_t)(emitter->getTimeLength()) + (int32_t)(emitterPI->getTimeLength());
 				updateList.push_back(emitter);
 			}
 
-			if ( emitter->globaltime > effectTimeLength )
+			if (emitter->globalTime > effectTimeLength)
 			{
-				effectTimeLength = emitter->globaltime;
+				effectTimeLength = emitter->globalTime;
 			}
 		}
 	}
 	//プライオリティソート
-	std::sort( updateList.begin() , updateList.end() , compare_priority );
+	std::sort(updateList.begin(), updateList.end(), compare_priority);
+}
 
+void    SsEffectRenderV2::reload()
+{
+	if (!effectData) return;
 
+	//Modelに記載されているエミッターのリストを一時的に作成
+	const std::vector<SsEffectNode*>& list = this->effectData->getNodeList();
+	int32_t cnum_count = (int32_t)list.size();
+	std::unique_ptr<int32_t[]> cnum(new int32_t[cnum_count]);
+	for (int32_t i = 0; i < cnum_count; i++) cnum[i] = 0;
+
+	std::vector<std::unique_ptr<SsEffectEmitter>> tempEmitters;
+	bool _Infinite = false;
+
+	layoutScale.x = (float)(this->effectData->layoutScaleX) / 100.0f;
+	layoutScale.y = (float)(this->effectData->layoutScaleY) / 100.0f;
+
+	for (size_t i = 0; i < (size_t)cnum_count; i++)
+	{
+		SsEffectNode* node = list[i];
+		if (node->GetType() == SsEffectNodeType::emmiter)
+		{
+			std::unique_ptr<SsEffectEmitter> e(new SsEffectEmitter());
+			e->parentIndex = node->parentIndex;
+			if (e->parentIndex != 0)
+			{
+				e->parentIndex = list[e->parentIndex]->parentIndex;
+			}
+
+			cnum[e->parentIndex]++;
+			if (cnum[e->parentIndex] > 10)
+			{
+				_isWarningData = true;
+				tempEmitters.push_back(nullptr);
+				continue;
+			}
+
+			if (e->parentIndex != 0)
+			{
+				int32_t a = list[e->parentIndex]->parentIndex;
+				if (a != 0 && list[a]->parentIndex > 0)
+				{
+					_isWarningData = true;
+					tempEmitters.push_back(nullptr);
+					continue;
+				}
+			}
+
+			initEmitter(e.get(), node);
+			if (e->emitter.Infinite) _Infinite = true;
+			tempEmitters.push_back(std::move(e));
+		}
+		else
+		{
+			tempEmitters.push_back(nullptr);
+		}
+	}
+
+	setup(std::move(tempEmitters), _Infinite);
 }
 
 
-size_t  SsEffectRenderV2::getEffectTimeLength()
+int32_t  SsEffectRenderV2::getEffectTimeLength()
 {
 
 	return effectTimeLength;
 }
 
 
-int	SsEffectRenderV2::getCurrentFPS(){
+int32_t	SsEffectRenderV2::getCurrentFps(){
 	if (effectData)
 	{
 		if ( effectData->fps == 0 ) return 30;
 
-		return effectData->fps;
+		return (int32_t)effectData->fps;
 	}
 	return 30;
 }
 
 }	// namespace spritestudio6
-
