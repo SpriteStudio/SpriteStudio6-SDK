@@ -17,6 +17,7 @@ set(ssAnimator_SRCS
     ssplayer_PartState.cpp
     ssplayer_render.cpp
     ssplayer_matrix.cpp
+    ssplayer_matrix_v2.cpp
     ssplayer_effect.cpp
     ssplayer_effectfunction.cpp
     ssplayer_animedecode.cpp
@@ -31,6 +32,7 @@ set(ssAnimator_HEADERS
     ssplayer_PartState.h
     ssplayer_render.h
     ssplayer_matrix.h
+    ssplayer_matrix_v2.h
     ssplayer_effect.h
     ssplayer_effectfunction.h
     MersenneTwister.h

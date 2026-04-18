@@ -1,168 +1,112 @@
-﻿#ifndef __SSPLAYER_MATRIX__
+#ifndef __SSPLAYER_MATRIX__
 #define __SSPLAYER_MATRIX__
 
-#include "../Loader/sstypes.h"
-#include <memory>
+#include "ssplayer_matrix_v2.h"
 
 namespace spritestudio6
 {
 
-void	IdentityMatrix( float* matrix );
-void    ScaleMatrix( float* _matrix , const float x , const float y , const float z);
-void    TranslationMatrix( float* _matrix , const float x , const float y , const float z );
-void	MultiplyMatrix(const float *m0, const float *m1, float *matrix);
-void    Matrix4RotationX( float* _matrix ,const float radians );
-void    Matrix4RotationY( float* _matrix ,const float radians );
-void    Matrix4RotationZ( float* _matrix ,const float radians );
+// Legacy C-style functions re-implemented using v2
+void IdentityMatrix(float* matrix);
+void ScaleMatrix(float* _matrix, const float x, const float y, const float z);
+void TranslationMatrix(float* _matrix, const float x, const float y, const float z);
+void MultiplyMatrix(const float* m0, const float* m1, float* matrix);
+void Matrix4RotationX(float* _matrix, const float radians);
+void Matrix4RotationY(float* _matrix, const float radians);
+void Matrix4RotationZ(float* _matrix, const float radians);
 
-void	MatrixTransformVector3(float* _matrix, SsVector3& src, SsVector3& dst);
+void MatrixTransformVector3(float* _matrix, SsVector3& src, SsVector3& dst);
 
-
-
-inline	void	TranslationMatrixM(  float* _matrix , const float x , const float y , const float z )
+inline void TranslationMatrixM(float* _matrix, const float x, const float y, const float z)
 {
-	float	_m[16];
-	IdentityMatrix( _m );
-	TranslationMatrix( _m , x , y , z );
-
-	MultiplyMatrix( _m , _matrix , _matrix );
+    SsMatrix4x4 m = SsMatrix4x4(_matrix) * SsMatrix4x4::CreateTranslation(x, y, z);
+    std::memcpy(_matrix, m.m, sizeof(float) * 16);
 }
 
-inline	void	ScaleMatrixM(  float* _matrix , const float x , const float y , const float z )
+inline void ScaleMatrixM(float* _matrix, const float x, const float y, const float z)
 {
-
-	float	_m[16];
-	IdentityMatrix( _m );
-	ScaleMatrix( _m , x , y , z );
-	MultiplyMatrix( _m , _matrix , _matrix );
+    SsMatrix4x4 m = SsMatrix4x4(_matrix) * SsMatrix4x4::CreateScale(x, y, z);
+    std::memcpy(_matrix, m.m, sizeof(float) * 16);
 }
 
-inline	void	RotationXYZMatrixM(  float* _matrix , const float x , const float y , const float z )
+inline void RotationXYZMatrixM(float* _matrix, const float x, const float y, const float z)
 {
-
-	if ( x != 0.0f )
-	{
-		float	_m[16];
-		IdentityMatrix( _m );
-		Matrix4RotationX( _m , x );
-
-		MultiplyMatrix( _m , _matrix , _matrix );
-	}
-
-	if ( y != 0.0f )
-	{
-		float	_m[16];
-		IdentityMatrix( _m );
-		Matrix4RotationY( _m , y );
-
-		MultiplyMatrix( _m , _matrix , _matrix );
-	}
-
-	if ( z != 0.0f )
-	{
-		float	_m[16];
-		IdentityMatrix( _m );
-		Matrix4RotationZ( _m , z );
-
-		MultiplyMatrix( _m , _matrix , _matrix );
-	}
+    SsMatrix4x4 m(_matrix);
+    if (x != 0.0f) m = m * SsMatrix4x4::CreateRotationX(x);
+    if (y != 0.0f) m = m * SsMatrix4x4::CreateRotationY(y);
+    if (z != 0.0f) m = m * SsMatrix4x4::CreateRotationZ(z);
+    std::memcpy(_matrix, m.m, sizeof(float) * 16);
 }
 
-
+/**
+ * Legacy SsOpenGLMatrix class (Now a wrapper for SsMatrix4x4)
+ * Renamed to imply it's for compatibility, but keeping the original name for source compatibility.
+ */
 class SsOpenGLMatrix
 {
 public:
-	float _matrix[16];
-
+    float _matrix[16];
 
 public:
-	SsOpenGLMatrix()
-	{
-		identityMatrix();
-	}
-	SsOpenGLMatrix(float* src)
-	{
-		identityMatrix();
-		pushMatrix(src);
-	}
-	virtual ~SsOpenGLMatrix() {}
+    SsOpenGLMatrix() { identityMatrix(); }
+    SsOpenGLMatrix(float* src) { pushMatrix(src); }
+    virtual ~SsOpenGLMatrix() {}
 
-	//単位行列の作成
-	void	identityMatrix();
+    void identityMatrix()
+    {
+        SsMatrix4x4 m;
+        std::memcpy(_matrix, m.m, sizeof(float) * 16);
+    }
 
+    void popMatrix(float* dst) { std::memcpy(dst, _matrix, sizeof(float) * 16); }
+    void pushMatrix(float* src) { std::memcpy(_matrix, src, sizeof(float) * 16); }
 
-	void	popMatrix(float* dst);
-	void	pushMatrix(float* src);
+    inline void Scaling(const float x, const float y, const float z)
+    {
+        SsMatrix4x4 m = SsMatrix4x4(_matrix) * SsMatrix4x4::CreateScale(x, y, z);
+        std::memcpy(_matrix, m.m, sizeof(float) * 16);
+    }
 
+    inline void Translation(const float x, const float y, const float z)
+    {
+        SsMatrix4x4 m = SsMatrix4x4(_matrix) * SsMatrix4x4::CreateTranslation(x, y, z);
+        std::memcpy(_matrix, m.m, sizeof(float) * 16);
+    }
 
-	inline void	Scaling(const float x, const float y, const float z)
-	{
-		SsOpenGLMatrix m;
-		m.setScaleMatrix(x, y, z);
-		this->multiply(m, *this);
-	}
+    void setScaleMatrix(const float x, const float y, const float z);
+    void setTranslationMatrix(const float x, const float y, const float z);
+    void multiply(SsOpenGLMatrix& m1, SsOpenGLMatrix& m2);
 
-	inline	void	Translation(const float x, const float y, const float z)
-	{
-		SsOpenGLMatrix m;
-		m.setTranslationMatrix(x, y, z);
-		this->multiply(m, *this);
-	}
+    void inverseMatrix()
+    {
+        SsMatrix4x4 m(_matrix);
+        m = m.Inverse();
+        std::memcpy(_matrix, m.m, sizeof(float) * 16);
+    }
 
+    float getPositionX() const { return _matrix[12]; }
+    float getPositionY() const { return _matrix[13]; }
 
-	void	setScaleMatrix(const float x, const float y, const float z);
-	void    setTranslationMatrix(const float x, const float y, const float z);
-	void 	multiply(SsOpenGLMatrix& m1, SsOpenGLMatrix& m2);
+    void TransformVector3(SsVector3& src, SsVector3& dst)
+    {
+        SsMatrix4x4 m(_matrix);
+        dst = m.Transform(src);
+    }
 
-	// 4x4の逆行列の計算
-	void	inverseMatrix();
+    inline void RotationXYZ(const float x, const float y, const float z)
+    {
+        SsMatrix4x4 m(_matrix);
+        if (x != 0.0f) m = m * SsMatrix4x4::CreateRotationX(x);
+        if (y != 0.0f) m = m * SsMatrix4x4::CreateRotationY(y);
+        if (z != 0.0f) m = m * SsMatrix4x4::CreateRotationZ(z);
+        std::memcpy(_matrix, m.m, sizeof(float) * 16);
+    }
 
-
-	float 	getPositionX() { return _matrix[12]; }
-	float 	getPositionY() { return _matrix[12 + 1]; }
-
-	void  	TransformVector3(SsVector3& in, SsVector3& out);
-//	void  	TransformVector4(SsVector4& src, SsVector4& dst);
-
-
-
-	inline void RotationXYZ(const float x, const float y, const float z)
-	{
-		if (x != 0.0f)
-		{
-			SsOpenGLMatrix mx;
-			SsOpenGLMatrix temp(this->_matrix);
-			mx.Matrix4RotationX(x);
-			this->multiply(mx, temp);
-		}
-
-		if (y != 0.0f)
-		{
-			SsOpenGLMatrix my;
-			SsOpenGLMatrix temp(this->_matrix);
-			my.Matrix4RotationY(y);
-			this->multiply(my, temp);
-		}
-
-		if (z != 0.0f)
-		{
-			SsOpenGLMatrix mz;
-			SsOpenGLMatrix temp(this->_matrix);
-			mz.Matrix4RotationZ(z);
-			this->multiply(mz, temp);
-		}
-	}
-
-	void    Matrix4RotationX(const float radians);
-	void    Matrix4RotationY(const float radians);
-	void    Matrix4RotationZ(const float radians);
-private:
-
-
+    void Matrix4RotationX(const float radians);
+    void Matrix4RotationY(const float radians);
+    void Matrix4RotationZ(const float radians);
 };
 
+} // namespace spritestudio6
 
-}	// namespace spritestudio6
-
-#endif
-
+#endif // __SSPLAYER_MATRIX__
