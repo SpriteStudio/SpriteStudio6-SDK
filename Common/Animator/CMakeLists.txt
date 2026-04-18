@@ -22,6 +22,7 @@ set(ssAnimator_SRCS
     ssplayer_animedecode.cpp
     ssplayer_effect2.cpp
     ssplayer_mesh.cpp
+    ssplayer_mesh_v2.cpp
 )
 
 set(ssAnimator_HEADERS
@@ -36,6 +37,7 @@ set(ssAnimator_HEADERS
     ssplayer_animedecode.h
     ssplayer_effect2.h
     ssplayer_mesh.h
+    ssplayer_mesh_v2.h
     ${CMAKE_CURRENT_SOURCE_DIR}/../Loader/sstypes.h
 )
 
