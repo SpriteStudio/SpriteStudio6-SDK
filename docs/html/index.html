@@ -133,6 +133,17 @@ $(function(){initNavTree('index.html',''); initResizable(true); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_misc_2mainpage"></a></p>
+<blockquote class="doxtable">
+<p>後継の <b>SpriteStudio SDK</b> へ移行してください。</p>
+<p><a href="https://github.com/cri-middleware/SpriteStudio-SDK">https://github.com/cri-middleware/SpriteStudio-SDK</a></p>
+<p>本 SDK の構成要素の移行先は次のとおりです。</p>
+<ul>
+<li>sspjLib のローダー → <a href="https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/libs/sspj/README.md"><code>libsspj</code></a></li>
+<li>sspjLib のアニメータ → <a href="https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/libs/ssruntime/README.md"><code>libssruntime</code></a></li>
+<li>コンバータ → <a href="https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/cli/README.md"><code>ssconverter-cli</code></a>（デスクトップアプリは <a href="https://github.com/cri-middleware/SSConverterGUI">SSConverter GUI</a>）</li>
+</ul>
+<p><code>libssruntime</code> で Player を作る手順は <a href="https://cri-middleware.github.io/SpriteStudio-SDK/ja/">SpriteStudio Player 移植ガイド</a> を参照してください。 </p>
+</blockquote>
 <h1><a class="anchor" id="autotoc_md1"></a>
 初めに</h1>
 <p>このドキュメントはOPTPiX SpriteStudioのデータを取り扱うためのC++ライブラリのドキュメントです。 また、SpriteStudioから排出されるXMLデータの構造を記載するドキュメントとなります。</p>
