@@ -1,5 +1,17 @@
 # SpriteStudio 6 SDK
 
+> 後継の **SpriteStudio SDK** へ移行してください。
+>
+> <https://github.com/cri-middleware/SpriteStudio-SDK>
+>
+> 本 SDK の構成要素の移行先は次のとおりです。
+>
+> - sspjLib のローダー → [`libsspj`](https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/libs/sspj/README.md)
+> - sspjLib のアニメータ → [`libssruntime`](https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/libs/ssruntime/README.md)
+> - コンバータ → [`ssconverter-cli`](https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/cli/README.md)（デスクトップアプリは [SSConverter GUI](https://github.com/cri-middleware/SSConverterGUI)）
+>
+> `libssruntime` で Player を作る手順は [SpriteStudio Player 移植ガイド](https://cri-middleware.github.io/SpriteStudio-SDK/ja/) を参照してください。
+
 # 初めに
 
 このドキュメントはOPTPiX SpriteStudioのデータを取り扱うためのC++ライブラリのドキュメントです。

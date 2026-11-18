@@ -2,6 +2,9 @@
 
 # コンバータの使い方
 # Ss6Converter
+
+> **このコンバータの後継は [SpriteStudio SDK](https://github.com/cri-middleware/SpriteStudio-SDK) の [`ssconverter-cli`](https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/cli/README.md) です。** デスクトップアプリは [SSConverter GUI](https://github.com/cri-middleware/SSConverterGUI) を使ってください。
+
 ## お知らせ
 * 2021/04/07 出力するデータサイズを大幅に削減した新しいコンバータを公開しました。[Ss6ConverterVer2](https://github.com/SpriteStudio/Ss6ConverterVer2/wiki) こちらもご確認下さい。
 * 2019/02/25 C言語のソースファイル形式で出力する機能は近い将来削除される予定です。利用場面が限定的であり現在のところメンテナンスコストに比してサポートを継続する価値が無いと考えられるからです。今後も最新のSDKと共に継続してご利用になりたいユーザー様は[こちら](../README.ja.md#inquiry)からご相談ください。

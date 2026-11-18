@@ -3,6 +3,19 @@
 # SpriteStudio 6 SDK
 Copyright © CRI Middleware Co., Ltd.
 
+> [!IMPORTANT]
+> Please move to the successor, **SpriteStudio SDK**.
+>
+> <https://github.com/cri-middleware/SpriteStudio-SDK>
+>
+> The successors of this SDK's parts are:
+>
+> - sspjLib Loader → [`libsspj`](https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/libs/sspj/README.md)
+> - sspjLib Animator → [`libssruntime`](https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/libs/ssruntime/README.md)
+> - Converter → [`ssconverter-cli`](https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/cli/README.md), or [SSConverter GUI](https://github.com/cri-middleware/SSConverterGUI) for a desktop app
+>
+> To build a player on `libssruntime`, see the [SpriteStudio Player Porting Guide](https://cri-middleware.github.io/SpriteStudio-SDK/).
+
 ## Overview
 This SDK consists of libraries and tools for flexibly using data (sspj, ssce, ssae, ssee) created with [OPTPiX SpriteStudio 6 or later](http://www.webtech.co.jp/spritestudio/) in your own playback environment.
 
