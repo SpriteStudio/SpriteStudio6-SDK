@@ -1,6 +1,9 @@
 [**日本語**](./viewer.ja.md) | [**English**](./viewer.md)
 
 # ビューア
+
+> **このビューアの後継は [SpriteStudio SDK](https://github.com/cri-middleware/SpriteStudio-SDK) にありません。** インストールせずに自分のアニメーションを確かめるには、[ブラウザで試す](https://cri-middleware.github.io/SpriteStudio-Docs/ja/overview/try-it/) を参照してください。
+
 ## 概要
 OPTPiX SpriteStudio 6 で制作したアニメーションデータを再生するためのサンプルプログラムです。
 OpenGL を利用しており、Windows/Mac 両方で動作します。

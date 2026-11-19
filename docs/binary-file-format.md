@@ -1,6 +1,9 @@
 [**日本語**](./binary-file-format.ja.md) | [**English**](./binary-file-format.md)
 
 # Binary File Format
+
+> **The successor, [SpriteStudio SDK](https://github.com/cri-middleware/SpriteStudio-SDK), uses `.ssab` in place of `.ssbp`.** See [Format Specification](https://cri-middleware.github.io/SpriteStudio-Docs/sdk/format-spec/).
+
 ## Note
 This information is outdated, so please do not use this content as a reference.
 ## Overview

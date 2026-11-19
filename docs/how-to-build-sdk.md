@@ -1,6 +1,9 @@
 [**日本語**](./how-to-build-sdk.ja.md) | [**English**](./how-to-build-sdk.md)
 
 # How to Build the SDK
+
+> **The successor of this SDK is [SpriteStudio SDK](https://github.com/cri-middleware/SpriteStudio-SDK).** To build its converter from source, see [`ssconverter-cli`](https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/cli/README.md#build-from-source); for the desktop app, see the [SSConverter GUI Development Guide](https://cri-middleware.github.io/SSConverterGUI/development/).
+
 # Introduction
 This section describes the build procedure using a CLI.
 For the GUI build procedure, please refer to [How to Build the SDK (GUI)](how-to-build-sdk-gui.md).

@@ -1,6 +1,9 @@
 [**日本語**](./sspkg-format.ja.md) | [**English**](./sspkg-format.md)
 
 # sspkg Format
+
+> **The successor, [SpriteStudio SDK](https://github.com/cri-middleware/SpriteStudio-SDK), has no sspkg.** Its runtime format is `.ssab`; see [Format Specification](https://cri-middleware.github.io/SpriteStudio-Docs/sdk/format-spec/).
+
 ## Overview
 The sspkg file is a ZIP archive containing the original data and an ssfb file for playback.
 ## Storage Structure
