@@ -1,6 +1,9 @@
 [**日本語**](./sspkg.ja.md) | [**English**](./sspkg.md)
 
 # sspkg
+
+> **後継の [SpriteStudio SDK](https://github.com/cri-middleware/SpriteStudio-SDK) に sspkg はありません。** ランタイム形式は `.ssab` です。[フォーマット仕様](https://cri-middleware.github.io/SpriteStudio-Docs/ja/sdk/format-spec/) を参照してください。
+
 ## 概要
 sspkgファイルはオリジナルのデータと再生用のssfbをZIPで格納したファイルになる。
 ## 格納状態

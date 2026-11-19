@@ -1,6 +1,9 @@
 [**日本語**](./viewer.ja.md) | [**English**](./viewer.md)
 
 # Viewer
+
+> **This viewer has no successor in [SpriteStudio SDK](https://github.com/cri-middleware/SpriteStudio-SDK).** To preview your own animation without installing anything, see [Try It in Your Browser](https://cri-middleware.github.io/SpriteStudio-Docs/overview/try-it/).
+
 ## Overview
 This is a sample program for playing animation data created with OPTPiX SpriteStudio 6.
 It uses OpenGL and runs on both Windows and Mac.

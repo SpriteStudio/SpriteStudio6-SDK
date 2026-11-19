@@ -14,6 +14,8 @@ Copyright © CRI Middleware Co., Ltd.
 > - sspjLib Animator → [`libssruntime`](https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/libs/ssruntime/README.md)
 > - Converter → [`ssconverter-cli`](https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/cli/README.md), or [SSConverter GUI](https://github.com/cri-middleware/SSConverterGUI) for a desktop app
 >
+> For the players and tools for each platform, see [SpriteStudio Docs](https://cri-middleware.github.io/SpriteStudio-Docs/).
+>
 > To build a player on `libssruntime`, see the [SpriteStudio Player Porting Guide](https://cri-middleware.github.io/SpriteStudio-SDK/).
 
 ## Overview

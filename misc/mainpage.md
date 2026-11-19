@@ -10,6 +10,8 @@
 > - sspjLib のアニメータ → [`libssruntime`](https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/libs/ssruntime/README.md)
 > - コンバータ → [`ssconverter-cli`](https://github.com/cri-middleware/SpriteStudio-SDK/blob/HEAD/cli/README.md)（デスクトップアプリは [SSConverter GUI](https://github.com/cri-middleware/SSConverterGUI)）
 >
+> プラットフォームごとの Player とツールは [SpriteStudio Docs](https://cri-middleware.github.io/SpriteStudio-Docs/ja/) を参照してください。
+>
 > `libssruntime` で Player を作る手順は [SpriteStudio Player 移植ガイド](https://cri-middleware.github.io/SpriteStudio-SDK/ja/) を参照してください。
 
 # 初めに
